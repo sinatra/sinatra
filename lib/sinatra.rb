@@ -6,14 +6,13 @@
   end
 end
 
-require File.dirname(__FILE__) + '/sinatra/core_ext/class'
-require File.dirname(__FILE__) + '/sinatra/core_ext/hash'
+SINATRA_ROOT = File.dirname(__FILE__) + '/..'
 
-require File.dirname(__FILE__) + '/sinatra/logger'
-require File.dirname(__FILE__) + '/sinatra/event'
-require File.dirname(__FILE__) + '/sinatra/dispatcher'
-require File.dirname(__FILE__) + '/sinatra/server'
-require File.dirname(__FILE__) + '/sinatra/dsl'
+require File.dirname(__FILE__) + '/sinatra/loader'
+
+Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/lib/sinatra/core_ext/*.rb')
+Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/lib/sinatra/*.rb')
+Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/vendor/*/init.rb')
 
 SINATRA_LOGGER = Sinatra::Logger.new(STDOUT)
 
@@ -24,12 +23,6 @@ def set_logger(logger = SINATRA_LOGGER)
 end
 
 set_logger
-
-SINATRA_ROOT = File.dirname(__FILE__) + '/..'
-
-Dir.glob(SINATRA_ROOT + '/vendor/*/init.rb').each do |plugin|
-  require plugin
-end
 
 at_exit do
   Sinatra::Server.new.start unless Sinatra::Server.running

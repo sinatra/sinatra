@@ -1,13 +1,13 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../../lib/'
 require 'sinatra'
 
-# after_attend :log_fun_stuff
-# 
-# helpers do
-#   def log_fun_stuff
-#     logger.debug "THIS IS COOL!"
-#   end
-# end
+after_attend :log_fun_stuff
+
+helpers do
+  def log_fun_stuff
+    logger.debug "THIS IS COOL!"
+  end
+end
 
 get '/' do
   body <<-HTML

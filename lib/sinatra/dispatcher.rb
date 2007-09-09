@@ -1,16 +1,16 @@
 module Sinatra
-  
-  DEFAULT_HEADERS = { 'Content-Type' => 'text/html' }
-  
+    
   class Dispatcher
 
     cattr_accessor :logger
         
-    def headers
-      DEFAULT_HEADERS
+    def default_headers
+      { 'Content-Type' => 'text/html' }
     end
 
     def call(env)
+      Loader.reload!
+      
       @request = Rack::Request.new(env)
       
       event = EventManager.determine_event(
@@ -19,7 +19,7 @@ module Sinatra
       )
       
       result = event.attend(@request)
-      [result.status, headers.merge(result.headers), result.body]
+      [result.status, default_headers.merge(result.headers), result.body]
     rescue => e
       logger.exception e
     end

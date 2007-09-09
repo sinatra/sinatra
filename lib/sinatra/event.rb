@@ -1,8 +1,11 @@
 module Sinatra
   
   module EventManager
-    
     extend self
+
+    def reset!
+      @events.clear
+    end
 
     def events
       @events || []
@@ -110,10 +113,9 @@ module Sinatra
     end
     
     def attend(request)
+      context = EventContext.new(request)
       begin
-        context = EventContext.new(request)
         context.instance_eval(&@block) if @block
-        context
       rescue => e
         context.error e
       end
@@ -127,6 +129,7 @@ module Sinatra
       def run_through_after_filters(context)
         after_filters.each { |filter| context.send(filter) }
       end
+      
   end
   
 end
