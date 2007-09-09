@@ -18,7 +18,7 @@ require File.dirname(__FILE__) + '/sinatra/dsl'
 SINATRA_LOGGER = Sinatra::Logger.new(STDOUT)
 
 def set_logger(logger = SINATRA_LOGGER)
-  [Sinatra::Server, Sinatra::EventContext, Sinatra::Event].each do |klass|
+  [Sinatra::Server, Sinatra::EventContext, Sinatra::Event, Sinatra::Dispatcher].each do |klass|
     klass.logger = logger
   end
 end

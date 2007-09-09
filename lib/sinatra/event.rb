@@ -12,6 +12,25 @@ module Sinatra
       (@events ||= []) << event
     end
     
+    def determine_event(verb, path)
+      EventManager.events.detect(method(:not_found)) do |e| 
+        e.path == path && e.verb == verb
+      end
+    end
+    
+    def not_found
+      Event.new(:get, nil) do
+        status 404
+        views_dir SINATRA_ROOT + '/files'
+    
+        if request.path_info == '/'
+          erb :default_index
+        else
+          erb :not_found
+        end
+      end
+    end
+    
   end
   
   class EventContext
