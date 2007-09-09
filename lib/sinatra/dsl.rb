@@ -7,5 +7,13 @@ module Kernel
       end
     end_eval
   end
+  
+  def after_attend(filter_name = nil, &block)
+    Sinatra::Event.after_attend(filter_name, &block)
+  end
+  
+  def helpers(&block)
+    Sinatra::EventContext.class_eval &block
+  end
 
 end

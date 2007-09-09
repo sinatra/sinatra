@@ -34,6 +34,14 @@ module Sinatra
       @body = value if value
       @body || ''
     end
+    
+    def error(value = nil)
+      if value
+        @error = value
+        status 500
+      end
+      @error
+    end
         
     # This allows for:
     #  header 'Content-Type' => 'text/html'
@@ -53,11 +61,25 @@ module Sinatra
       @params ||= @request.params.symbolize_keys
     end
     
+    def log_event
+      logger.info "#{request.request_method} #{request.path_info} | Status: #{status} | Params: #{params.inspect}"
+      logger.exception(error) if error
+    end
+    
   end
   
   class Event
 
     cattr_accessor :logger
+    cattr_accessor :after_filters
+    
+    self.after_filters = []
+    
+    def self.after_attend(filter)
+      after_filters << filter
+    end
+    
+    after_attend :log_event
     
     attr_reader :path, :verb
     
@@ -72,23 +94,20 @@ module Sinatra
       begin
         context = EventContext.new(request)
         context.instance_eval(&@block) if @block
-        log_event(request, context, nil)
         context
       rescue => e
-        context.status 500
-        log_event(request, context, e)
-        context
+        context.error e
       end
+      run_through_after_filters(context)
+      context
     end
     alias :call :attend
 
     private
     
-      def log_event(request, context, e)
-        logger.info "#{request.request_method} #{request.path_info} | Status: #{context.status} | Params: #{context.params.inspect}"
-        logger.exception(e) if e
+      def run_through_after_filters(context)
+        after_filters.each { |filter| context.send(filter) }
       end
-    
   end
   
 end
