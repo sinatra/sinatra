@@ -4,8 +4,6 @@ module Sinatra
   
   module TestMethods
 
-    @response = nil unless defined?("@response")
-
     %w(get post put delete).each do |verb|
       module_eval <<-end_eval
         def #{verb}_it(path, params = {})
@@ -17,22 +15,22 @@ module Sinatra
     end
 
     def response
-      @response
+      @response || Rack::MockResponse.new(404, {}, '')
     end
 
     def status
-      @response.status
+      response.status
     end
 
     def text
-      @response.body
+      response.body
     end
     alias :xml :text
     alias :html :text
     alias :body :text
 
     def headers
-      @response.headers
+      response.headers
     end
     
     private

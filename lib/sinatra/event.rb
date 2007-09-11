@@ -26,7 +26,7 @@ module Sinatra
         status 404
         views_dir SINATRA_ROOT + '/files'
     
-        if request.path_info == '/'
+        if request.path_info == '/' && request.request_method == 'GET'
           erb :default_index
         else
           erb :not_found
