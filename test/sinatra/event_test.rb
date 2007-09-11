@@ -2,6 +2,10 @@ require File.dirname(__FILE__) + '/../helper'
 
 describe "Event" do
   
+  before(:each) do
+    Sinatra::EventManager.reset!
+  end
+  
   it "should return 500 if exception thrown" do
     Sinatra::Environment.set_loggers stub_everything
 
@@ -23,6 +27,11 @@ describe "Event" do
 
     Sinatra::EventManager.expects(:not_found).never
     Sinatra::EventManager.determine_event(:get, '/sdf')
+  end
+  
+  it "should show default 404 if custom not present" do
+    Sinatra::EventManager.expects(:not_found)
+    Sinatra::EventManager.determine_event(:get, '/asdfsasd')
   end
   
 end

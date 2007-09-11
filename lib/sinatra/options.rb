@@ -28,7 +28,12 @@ module Sinatra
     end
     
     def log_file
-      File.dirname($0) + ('/%s.log' % environment)
+      # TODO find a better way that this
+      if File.basename($0, '.rb') == 'rake_test_loader'  # hack to satisfy rake
+        '%s.log' % environment
+      else
+        File.dirname($0) + ('/%s.log' % environment)
+      end
     end
     
     def set_environment(env)

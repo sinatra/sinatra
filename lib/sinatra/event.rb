@@ -16,13 +16,13 @@ module Sinatra
     end
     
     def determine_event(verb, path, if_nil = :present_error)
-      events.detect(method(if_nil)) do |e|
-        e.path == path && e.verb == verb
+      event = events.find(method(if_nil)) do |e|
+        e.verb == verb && e.path.matches?(path)
       end
     end
     
     def present_error
-      determine_event(:get, 404, :not_found)
+      determine_event(:get, '404', :not_found)
     end
     
     def not_found
@@ -112,12 +112,13 @@ module Sinatra
     
     def initialize(verb, path, register = true, &block)
       @verb = verb
-      @path = path
+      @path = PrettyUrl.new(path.to_s)
       @block = block
       EventManager.register_event(self) if register
     end
     
     def attend(request)
+      request.params.merge!(path.extract_params(request.path_info))
       context = EventContext.new(request)
       begin
         context.instance_eval(&@block) if @block
