@@ -6,6 +6,7 @@ module Sinatra
     
     attr_with_default :port, 4567
     attr_with_default :environment, :development
+    attr_with_default :console, nil
 
     def parse!(args)
       OptionParser.new do |opts|
@@ -14,6 +15,9 @@ module Sinatra
         end
         opts.on '-e environment', 'Set the environment (default if development)' do |env|
           @environment = env
+        end
+        opts.on '-c', '--console', 'Run in console mode' do
+          @console = true
         end
         opts.on '-h', '--help', '-?', 'Show this message' do
           puts opts

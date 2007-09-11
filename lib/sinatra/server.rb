@@ -10,6 +10,9 @@ module Sinatra
     def start
       begin
         setup_environment
+
+        Irb.start! if Options.console
+
         tail_thread = tail(Options.log_file)
         Rack::Handler::Mongrel.run(Dispatcher.new, :Port => Options.port) do |server|
           logger.info "== Sinatra has taken the stage on port #{server.port}!"
