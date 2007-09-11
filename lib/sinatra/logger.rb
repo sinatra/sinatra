@@ -9,6 +9,7 @@ module Sinatra
     %w(info debug error warn).each do |n|
       define_method n do |message|
         @stream.puts message
+        @stream.flush
       end
     end
     

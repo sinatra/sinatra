@@ -45,4 +45,5 @@ class Class # :nodoc:
     cattr_reader(*syms)
     cattr_writer(*syms)
   end
+  
 end
