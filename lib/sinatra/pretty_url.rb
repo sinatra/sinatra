@@ -3,6 +3,8 @@ module Sinatra
   class PrettyUrl
     attr_reader :path, :vars
     
+    VALID_FORMATS = %w( xml html )
+    
     def initialize(path)
       @path = path
       @param_keys = []
@@ -20,10 +22,16 @@ module Sinatra
           @vars[v] = matches[i]
         end
       end
+      vars[:format] = extract_format(path)
       vars
     end
     
     private
+    
+      def extract_format(path)
+        format = (path).split('.')[-1]
+        VALID_FORMATS.include?(format) ? format : 'html'
+      end
     
       def create_regex_from_path(path)
         path = path.dup

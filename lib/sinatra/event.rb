@@ -26,7 +26,7 @@ module Sinatra
     end
     
     def not_found
-      Event.new(:get, nil, false) do
+      Event.new(:get, 'not_found', false) do
         status 404
         views_dir SINATRA_ROOT + '/files'
     

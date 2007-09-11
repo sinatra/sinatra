@@ -56,5 +56,5 @@ describe "When a dispatcher receives a request" do
     get_it '/blake'
     Sinatra::EventManager.events.size.should.equal 0
   end
-    
+      
 end
