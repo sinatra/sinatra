@@ -56,8 +56,9 @@ module Sinatra
       @status || 200
     end
     
-    def body(value = nil)
+    def body(value = nil, &block)
       @body = value if value
+      @body = block.call if block
       @body || ''
     end
     
