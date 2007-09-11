@@ -9,7 +9,7 @@ module Sinatra
     end
 
     def call(env)
-      Loader.reload! if Options.environment == :production
+      Loader.reload! if Options.environment == :development
       
       @request = Rack::Request.new(env)
       

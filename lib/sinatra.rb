@@ -37,6 +37,7 @@ Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/lib/sinatra/core_ext/*.rb')
 Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/lib/sinatra/*.rb')
 Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/vendor/*/init.rb')
 
-at_exit do
-  Sinatra::Server.new.start unless Sinatra::Server.running
-end
+Sinatra::Environment.setup!
+Sinatra::Irb.start! if Sinatra::Options.console
+
+at_exit { Sinatra::Server.new.start unless Sinatra::Server.running }

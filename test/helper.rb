@@ -9,7 +9,8 @@ require File.dirname(__FILE__) + '/../lib/sinatra'
 end
 
 Sinatra::Server.running = true
+Sinatra::Options.set_environment :test
 
 class Test::Unit::TestCase
-  include TestMethods
+  include Sinatra::TestMethods
 end

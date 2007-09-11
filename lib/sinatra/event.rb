@@ -4,7 +4,7 @@ module Sinatra
     extend self
 
     def reset!
-      @events.clear
+      @events.clear if @events
     end
 
     def events
@@ -15,14 +15,18 @@ module Sinatra
       (@events ||= []) << event
     end
     
-    def determine_event(verb, path)
-      EventManager.events.detect(method(:not_found)) do |e| 
+    def determine_event(verb, path, if_nil = :present_error)
+      events.detect(method(if_nil)) do |e|
         e.path == path && e.verb == verb
       end
     end
     
+    def present_error
+      determine_event(:get, 404, :not_found)
+    end
+    
     def not_found
-      Event.new(:get, nil) do
+      Event.new(:get, nil, false) do
         status 404
         views_dir SINATRA_ROOT + '/files'
     
@@ -105,11 +109,11 @@ module Sinatra
     
     attr_reader :path, :verb
     
-    def initialize(verb, path, &block)
+    def initialize(verb, path, register = true, &block)
       @verb = verb
       @path = path
       @block = block
-      EventManager.register_event(self)
+      EventManager.register_event(self) if register
     end
     
     def attend(request)
