@@ -1,31 +1,19 @@
+require 'uri'
+
 module Sinatra
   
   module TestMethods
 
     @response = nil unless defined?("@response")
 
-    def get_it(path)
-      request = Rack::MockRequest.new(Sinatra::Dispatcher.new)
-      @response = request.get path
-      body
-    end
-
-    def post_it(path)
-      request = Rack::MockRequest.new(Sinatra::Dispatcher.new)
-      @response = request.post path
-      body
-    end
-    
-    def put_it(path)
-      request = Rack::MockRequest.new(Sinatra::Dispatcher.new)
-      @response = request.put path
-      body
-    end
-    
-    def delete_it(path)
-      request = Rack::MockRequest.new(Sinatra::Dispatcher.new)
-      @response = request.delete path
-      body
+    %w(get post put delete).each do |verb|
+      module_eval <<-end_eval
+        def #{verb}_it(path, params = {})
+          request = Rack::MockRequest.new(Sinatra::Dispatcher.new)
+          @response = request.#{verb} path, :input => generate_input(params)
+          body
+        end
+      end_eval
     end
 
     def response
@@ -46,6 +34,12 @@ module Sinatra
     def headers
       @response.headers
     end
+    
+    private
+    
+      def generate_input(params)
+        params.map { |k,v| "#{k}=#{URI.escape(v)}" }.join('&')
+      end
 
   end
   
