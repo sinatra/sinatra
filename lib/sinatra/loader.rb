@@ -5,9 +5,11 @@ module Sinatra
     extend self
 
     def reload!
-      EventManager.reset!
-      load_files loaded_files
-      load $0
+      silence_warnings do
+        EventManager.reset!
+        load_files loaded_files
+        load $0
+      end
     end
 
     def load_files(*files)

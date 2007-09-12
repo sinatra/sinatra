@@ -29,7 +29,7 @@ module Sinatra
     private
     
       def extract_format(path)
-        format = (path).split('.')[-1]
+        format = File.extname(path)[1..-1]
         VALID_FORMATS.include?(format) ? format : 'html'
       end
     
