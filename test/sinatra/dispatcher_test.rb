@@ -56,5 +56,16 @@ describe "When a dispatcher receives a request" do
     get_it '/blake'
     Sinatra::EventManager.events.size.should.equal 0
   end
+  
+  it "should return blocks result if body not called" do
+    event = Sinatra::Event.new(:get, '/return_block') do
+      'no body called'
+    end
+    
+    get_it '/return_block'
+
+    status.should.equal 200
+    html.should.equal 'no body called'
+  end
       
 end

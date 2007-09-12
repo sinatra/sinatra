@@ -59,7 +59,7 @@ module Sinatra
     def body(value = nil, &block)
       @body = value if value
       @body = block.call if block
-      @body || ''
+      @body
     end
     
     def error(value = nil)
@@ -121,7 +121,8 @@ module Sinatra
       request.params.merge!(path.extract_params(request.path_info))
       context = EventContext.new(request)
       begin
-        context.instance_eval(&@block) if @block
+        result = context.instance_eval(&@block) if @block
+        context.body context.body || result || ''
       rescue => e
         context.error e
       end

@@ -33,5 +33,5 @@ describe "Event" do
     Sinatra::EventManager.expects(:not_found)
     Sinatra::EventManager.determine_event(:get, '/asdfsasd')
   end
-  
+    
 end
