@@ -67,5 +67,14 @@ describe "When a dispatcher receives a request" do
     status.should.equal 200
     html.should.equal 'no body called'
   end
+  
+  it "should recognize pretty urls" do
+    Sinatra::Event.new(:get, '/test/:name') do
+      params[:name]
+    end
+    
+    get_it '/test/blake'
+    body.should.equal 'blake'
+  end
       
 end

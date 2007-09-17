@@ -17,7 +17,7 @@ module Sinatra
     
     def determine_event(verb, path, if_nil = :present_error)
       event = events.find(method(if_nil)) do |e|
-        e.verb == verb && e.path.matches?(path)
+        e.verb == verb && e.recognize(path)
       end
     end
     
@@ -112,13 +112,14 @@ module Sinatra
     
     def initialize(verb, path, register = true, &block)
       @verb = verb
-      @path = PrettyUrl.new(path.to_s)
+      @path = path
+      @route = Route.new(path)
       @block = block
       EventManager.register_event(self) if register
     end
     
     def attend(request)
-      request.params.merge!(path.extract_params(request.path_info))
+      request.params.merge!(@route.params)
       context = EventContext.new(request)
       begin
         result = context.instance_eval(&@block) if @block
@@ -130,6 +131,10 @@ module Sinatra
       context
     end
     alias :call :attend
+
+    def recognize(path)
+      @route.recognize(path)
+    end
 
     private
     
