@@ -7,6 +7,12 @@ module Sinatra
       
       Object.send(:include, TestMethods) # added to allow post_to in console
       
+      Object.class_eval do
+        def reload!
+          Loader.reload!
+        end
+      end
+      
       ARGV.clear # Avoid passing args to IRB 
       require 'irb' 
       require 'irb/completion' 
