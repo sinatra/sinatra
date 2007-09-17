@@ -16,4 +16,8 @@ module Kernel
     Sinatra::EventContext.class_eval &block
   end
 
+  def static(path, root)
+    Sinatra::StaticEvent.new(path, File.join(File.dirname($0) + root))
+  end
+
 end

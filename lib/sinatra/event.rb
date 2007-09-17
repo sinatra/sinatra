@@ -144,4 +144,38 @@ module Sinatra
       
   end
   
+  class StaticEvent < Event
+    
+    def initialize(path, root, register = true)
+      super(:get, path, register)
+      @root = File.expand_path(root)
+    end
+
+    def recognize(path)
+      canserve = File.dirname(path) == @path
+      @filename = File.join(@root, path.gsub(/^#{@path}/, ''))
+      canserve && File.exists?(@filename)
+    end
+    
+    def attend(request)
+      puts 'attend ' + self.inspect
+      @body = self
+    end
+    
+    def status; 200; end
+    
+    def headers; {}; end
+    
+    def body; @body; end
+    
+    def each
+      File.open(@filename, "rb") { |file|
+        while part = file.read(8192)
+          yield part
+        end
+      }
+    end
+
+  end
+  
 end
