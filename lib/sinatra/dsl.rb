@@ -13,11 +13,19 @@ module Kernel
   end
   
   def helpers(&block)
-    Sinatra::EventContext.class_eval &block
+    Sinatra::EventContext.class_eval(&block)
   end
 
   def static(path, root)
     Sinatra::StaticEvent.new(path, File.join(File.dirname($0) + root))
   end
-
+  
+  %w(test development production).each do |env|
+    module_eval <<-end_eval
+      def #{env}
+        yield if Sinatra::Options.environment == :#{env}
+      end
+    end_eval
+  end
+  
 end
