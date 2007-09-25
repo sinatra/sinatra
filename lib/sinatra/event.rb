@@ -99,6 +99,12 @@ module Sinatra
       @views_dir || File.dirname($0) + '/views'
     end
     
+    def redirect(path)
+      logger.info "Redirecting to: #{path}"
+      status 302
+      header 'Location' => path
+    end
+    
     def determine_template(content, ext)
       if content.is_a?(Symbol)
         File.read("%s/%s.%s" % [views_dir, content, ext])
