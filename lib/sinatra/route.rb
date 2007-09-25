@@ -2,15 +2,14 @@ module Sinatra
 
   class Route
 
-    DEFAULT_PARAMS = { :format => 'html' }
-
-    attr_reader :regex, :params
-
     SYMBOL_FIND = /:[a-z_]+/.freeze
     PARENTHETICAL_SEGMENT_STRING = "([^\/.,;?]+)".freeze
 
+    attr_reader :regex, :params
+
     def initialize(template)
       @template = template.to_s.strip
+      @default_params = { :format => 'html' }
       @params = {}
       extract_keys
       genereate_route
@@ -23,7 +22,7 @@ module Sinatra
             
       if param_values
         keys = @keys.size < param_values.size ? @keys.concat([:format]) : @keys
-        @params = DEFAULT_PARAMS.merge(@keys.zip(param_values).to_hash)
+        @params = @default_params.merge(@keys.zip(param_values).to_hash)
         true
       else
         false
@@ -45,12 +44,16 @@ module Sinatra
 
       def genereate_route_with_format
         template = @template.dup
-        template << '.:format' unless template =~ /\.:format$/
+        if template =~ /\.:format$|\.([\w\d]+)$/
+          @default_params[:format] = $1 if $1
+        else
+          template << '.:format'
+        end
         to_regex_route(template)
       end
   
       def to_regex_route(template)
-        /^#{template.gsub(/\./, '\.').gsub(SYMBOL_FIND, PARENTHETICAL_SEGMENT_STRING)}$/        
+        /^#{template.gsub(/\./, '\.').gsub(SYMBOL_FIND, PARENTHETICAL_SEGMENT_STRING)}$/
       end
 
       def genereate_route
