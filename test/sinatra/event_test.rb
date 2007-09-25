@@ -7,7 +7,7 @@ describe "Event" do
   end
   
   it "should return 500 if exception thrown" do
-    Sinatra::Environment.set_loggers stub_everything
+    Sinatra::Environment.prepare_loggers stub_everything
 
     event = Sinatra::Event.new(:get, '/') do
       raise 'whaaaa!'
@@ -19,7 +19,7 @@ describe "Event" do
   end
   
   it "custom error if present" do
-    Sinatra::Environment.set_loggers stub_everything
+    Sinatra::Environment.prepare_loggers stub_everything
     
     event = Sinatra::Event.new(:get, '404') do
       body 'custom 404'

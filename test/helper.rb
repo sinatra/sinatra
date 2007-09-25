@@ -10,6 +10,7 @@ end
 
 Sinatra::Server.running = true
 Sinatra::Options.set_environment :test
+Sinatra::Environment.prepare_loggers
 
 class Test::Unit::TestCase
   include Sinatra::TestMethods

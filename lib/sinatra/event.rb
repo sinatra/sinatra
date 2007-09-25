@@ -164,35 +164,94 @@ module Sinatra
   class StaticEvent < Event
     
     def initialize(path, root, register = true)
+      @root = root
       super(:get, path, register)
-      @root = File.expand_path(root)
     end
 
     def recognize(path)
-      canserve = File.dirname(path) == @path
-      @filename = File.join(@root, path.gsub(/^#{@path}/, ''))
-      canserve && File.exists?(@filename)
+      File.exists?(physical_path_for(path))
+    end
+    
+    def physical_path_for(path)
+      path.gsub(/^#{@path}/, @root)
     end
     
     def attend(request)
-      puts 'attend ' + self.inspect
-      @body = self
+      @filename = physical_path_for(request.path_info)
+      context = EventContext.new(request)
+      context.body self
+      context.header 'Content-Type' => MIME_TYPES[File.extname(@filename)[1..-1]]
+      context.header 'Content-Length' => File.size(@filename).to_s
+      context
     end
     
-    def status; 200; end
-    
-    def headers; {}; end
-    
-    def body; @body; end
-    
     def each
-      File.open(@filename, "rb") { |file|
+      File.open(@filename, "rb") do |file|
         while part = file.read(8192)
           yield part
         end
-      }
+      end
     end
-
-  end
+    
+    # :stopdoc:
+    # From WEBrick.
+    MIME_TYPES = {
+      "ai"    => "application/postscript",
+      "asc"   => "text/plain",
+      "avi"   => "video/x-msvideo",
+      "bin"   => "application/octet-stream",
+      "bmp"   => "image/bmp",
+      "class" => "application/octet-stream",
+      "cer"   => "application/pkix-cert",
+      "crl"   => "application/pkix-crl",
+      "crt"   => "application/x-x509-ca-cert",
+     #"crl"   => "application/x-pkcs7-crl",
+      "css"   => "text/css",
+      "dms"   => "application/octet-stream",
+      "doc"   => "application/msword",
+      "dvi"   => "application/x-dvi",
+      "eps"   => "application/postscript",
+      "etx"   => "text/x-setext",
+      "exe"   => "application/octet-stream",
+      "gif"   => "image/gif",
+      "htm"   => "text/html",
+      "html"  => "text/html",
+      "jpe"   => "image/jpeg",
+      "jpeg"  => "image/jpeg",
+      "jpg"   => "image/jpeg",
+      "lha"   => "application/octet-stream",
+      "lzh"   => "application/octet-stream",
+      "mov"   => "video/quicktime",
+      "mpe"   => "video/mpeg",
+      "mpeg"  => "video/mpeg",
+      "mpg"   => "video/mpeg",
+      "pbm"   => "image/x-portable-bitmap",
+      "pdf"   => "application/pdf",
+      "pgm"   => "image/x-portable-graymap",
+      "png"   => "image/png",
+      "pnm"   => "image/x-portable-anymap",
+      "ppm"   => "image/x-portable-pixmap",
+      "ppt"   => "application/vnd.ms-powerpoint",
+      "ps"    => "application/postscript",
+      "qt"    => "video/quicktime",
+      "ras"   => "image/x-cmu-raster",
+      "rb"    => "text/plain",
+      "rd"    => "text/plain",
+      "rtf"   => "application/rtf",
+      "sgm"   => "text/sgml",
+      "sgml"  => "text/sgml",
+      "tif"   => "image/tiff",
+      "tiff"  => "image/tiff",
+      "txt"   => "text/plain",
+      "xbm"   => "image/x-xbitmap",
+      "xls"   => "application/vnd.ms-excel",
+      "xml"   => "text/xml",
+      "xpm"   => "image/x-xpixmap",
+      "xwd"   => "image/x-xwindowdump",
+      "zip"   => "application/zip",
+    }
+    # :startdoc:
+  
+  end  
   
 end

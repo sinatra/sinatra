@@ -17,9 +17,9 @@ module Kernel
   end
 
   def static(path, root)
-    Sinatra::StaticEvent.new(path, File.join(File.dirname($0) + root))
+    Sinatra::StaticEvent.new(path, root)
   end
-  
+    
   %w(test development production).each do |env|
     module_eval <<-end_eval
       def #{env}

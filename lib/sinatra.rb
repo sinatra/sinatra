@@ -37,7 +37,10 @@ Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/lib/sinatra/core_ext/*.rb')
 Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/lib/sinatra/*.rb')
 Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/vendor/*/init.rb')
 
-Sinatra::Environment.setup!
-Sinatra::Irb.start! if Sinatra::Options.console
+Sinatra::Environment.prepare
 
-at_exit { Sinatra::Server.new.start unless Sinatra::Server.running }
+at_exit do
+  Sinatra::Environment.prepare_loggers unless Sinatra::Options.environment == :test
+  Sinatra::Irb.start! if Sinatra::Options.console
+  Sinatra::Server.new.start unless Sinatra::Server.running
+end
