@@ -1,0 +1,9 @@
+GET /erb | Status: 200 | Params: {:format=>"html", :name=>"blake"}
+GET /erb | Status: 200 | Params: {:format=>"html"}
+GET /erb2 | Status: 200 | Params: {:format=>"html"}
+GET /erb2 | Status: 200 | Params: {:format=>"html"}
+GET /erb2 | Status: 200 | Params: {:format=>"html", :name=>"blake"}
+GET /erb2 | Status: 200 | Params: {:format=>"html", :name=>"blake"}
+GET /erb2 | Status: 200 | Params: {:format=>"html", :name=>"blake"}
+GET /erb2 | Status: 200 | Params: {:format=>"html", :name=>"blake"}
+GET /erb | Status: 200 | Params: {:format=>"html", :name=>"blake"}
