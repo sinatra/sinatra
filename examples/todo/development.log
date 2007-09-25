@@ -1,0 +1,13 @@
+GET / | Status: 200 | Params: {:format=>"html"}
+Redirecting to: /
+POST / | Status: 302 | Params: {:format=>"html", :_method=>"index"}
+GET / | Status: 200 | Params: {:format=>"html"}
+Redirecting to: /
+POST / | Status: 302 | Params: {:format=>"html", :_method=>"index"}
+GET / | Status: 200 | Params: {:format=>"html"}
+Redirecting to: /
+POST / | Status: 302 | Params: {:format=>"html", :_method=>"index"}
+GET / | Status: 200 | Params: {:format=>"html"}
+Redirecting to: /
+POST / | Status: 302 | Params: {:format=>"html", :_method=>"index"}
+GET / | Status: 200 | Params: {:format=>"html"}
