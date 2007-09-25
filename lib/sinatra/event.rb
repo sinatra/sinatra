@@ -64,8 +64,10 @@ module Sinatra
     
     def error(value = nil)
       if value
-        @error = value
         status 500
+        @error = value
+        views_dir SINATRA_ROOT + '/files/'
+        erb :error
       end
       @error
     end
