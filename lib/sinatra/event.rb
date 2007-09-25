@@ -84,6 +84,10 @@ module Sinatra
     end
     alias :header :headers
     
+    def session
+      request.env['rack.session']
+    end
+
     def params
       @params ||= @request.params.symbolize_keys
     end
