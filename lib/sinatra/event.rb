@@ -92,6 +92,19 @@ module Sinatra
       @params ||= @request.params.symbolize_keys
     end
     
+    def views_dir(value = nil)
+      @views_dir = value if value
+      @views_dir || File.dirname($0) + '/views'
+    end
+    
+    def determine_template(content, ext)
+      if content.is_a?(Symbol)
+        File.read("%s/%s.%s" % [views_dir, content, ext])
+      else
+        content
+      end
+    end
+    
     def log_event
       logger.info "#{request.request_method} #{request.path_info} | Status: #{status} | Params: #{params.inspect}"
       logger.exception(error) if error
