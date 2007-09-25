@@ -17,6 +17,5 @@ describe "Route" do
     route.recognize('/foo/bar.xml').should.equal true
     route.params.should.equal :test => 'bar', :format => 'xml'
   end
-
 end
 
