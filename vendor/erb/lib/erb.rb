@@ -2,13 +2,16 @@ module Sinatra
   
   module Erb
     
-    module InstanceMethods
+    module EventContext
       
-      def erb(content)
+      def render_erb(content)
         require 'erb'
-        body ERB.new(determine_template(content, :erb)).result(binding)
+        body ERB.new(content).result(binding)
       end
       
+      def erb(template, options = {}, &layout)
+        render(template, :erb, options, &layout)
+      end
     end
     
   end

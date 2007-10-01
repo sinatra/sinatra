@@ -2,13 +2,16 @@ module Sinatra
   
   module Haml
     
-    module InstanceMethods
+    module EventContext
       
-      def haml(content)
-        require 'haml' 
-        body ::Haml::Engine.new(determine_template(content, :haml)).render(self)
+      def render_haml(content)
+        require 'haml'
+        body ::Haml::Engine.new(content).render(self)
       end
       
+      def haml(template, options = {}, &layout)
+        render(template, :haml, options, &layout)
+      end
     end
     
   end
