@@ -36,4 +36,7 @@ module Kernel
     end
   end
   
+  def sessions(on_off)
+    Sinatra::Session::Cookie.use = on_off
+  end
 end

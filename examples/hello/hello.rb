@@ -1,9 +1,13 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../../lib'
 require 'sinatra'
 
-# get '/' do
-#   "Hello World!"
-# end
+production do
+  sessions :off
+end
+
+get '/' do
+  "Hello World!"
+end
 
 get '/erb.xml' do
   header 'Content-Type' => 'application/xml'
@@ -16,5 +20,11 @@ end
 
 get '/erb2' do
   erb 'Hello <%= params[:name].capitalize || "World" %> 2!'
+end
+
+# Custom 404
+
+get 404 do
+  'Custom 404!!!!'
 end
 
