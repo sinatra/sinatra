@@ -28,4 +28,12 @@ module Kernel
     end_eval
   end
   
+  def layout(name = :layout, options = {})
+    Layouts[name] = unless block_given?
+      File.read("%s/%s" % [options[:views_directory] || 'views', name])
+    else
+      yield
+    end
+  end
+  
 end
