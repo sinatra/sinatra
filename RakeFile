@@ -25,15 +25,6 @@ begin
 rescue LoadError
 end
 
-task :default => :test
-
-desc 'Test'
-Rake::TestTask.new do |t|
-  t.libs << 'test'
-  t.pattern = './**/*_test.rb'
-  t.verbose = true
-end
-
 desc 'Clear all the log files from here down'
 task :remove_logs do
   Dir.glob(Dir.pwd + '/**/*.log') do |logfile|
