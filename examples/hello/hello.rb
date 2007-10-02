@@ -1,9 +1,9 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../../lib'
 require 'sinatra'
 
-get '/' do
-  "Hello World!"
-end
+# get '/' do
+#   "Hello World!"
+# end
 
 get '/erb.xml' do
   header 'Content-Type' => 'application/xml'

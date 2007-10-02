@@ -1,5 +1,29 @@
 require 'rake/testtask'
 require 'ftools'
+require 'hoe'
+
+Version = '0.1.0'
+
+begin
+  require 'rubygems'
+  gem 'echoe'
+  ENV['RUBY_FLAGS'] = ""
+  require 'echoe'
+
+  Echoe.new('sinatra') do |p|
+    p.rubyforge_name = 'sinatra'
+    p.dependencies = ['mongrel >=1.0.1', 'rack >=0.2.0']    
+    p.summary = "Sinatra is a classy web-framework dressed in a DSL"
+    p.description = "Sinatra is a classy web-framework dressed in a DSL"
+    p.url = "http://sinatra.rubyforge.org/"
+    p.author = 'Blake Mizerany'
+    p.email = "blake.mizerany@gmail.com"
+    p.test_pattern = 'test/**/*_test.rb'
+    p.include_rakefile = true
+  end
+
+rescue LoadError
+end
 
 task :default => :test
 
