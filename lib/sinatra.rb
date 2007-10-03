@@ -34,6 +34,7 @@ SINATRA_ROOT = File.dirname(__FILE__) + '/..'
 require File.dirname(__FILE__) + '/sinatra/loader'
 
 Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/lib/sinatra/core_ext/*.rb')
+Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/lib/sinatra/rack_ext/*.rb')
 Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/lib/sinatra/*.rb')
 Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/vendor/*/init.rb')
 

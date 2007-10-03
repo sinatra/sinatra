@@ -76,5 +76,16 @@ describe "When a dispatcher receives a request" do
     get_it '/test/blake'
     body.should.equal 'blake'
   end
-      
+   
+  it "should respond to DELETE and PUT" do
+    Sinatra::Event.new(:delete, '/') do
+      request.request_method
+    end
+    
+    # Browser only know GET and POST.  DELETE and PUT are signaled by passing in a _method paramater
+    post_it '/', :_method => 'DELETE'
+    status.should.equal 200
+    text.should.equal 'DELETE'
+  end
+  
 end
