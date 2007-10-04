@@ -23,6 +23,13 @@ module Sinatra
           end
         end
         alias :mate :show!
+        
+        def result_info
+          info = <<-end_info
+          # Status: #{status}
+          # Headers: #{headers.inspect}
+          end_info
+        end
       end
       
       ARGV.clear # Avoid passing args to IRB 

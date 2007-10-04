@@ -1,7 +1,7 @@
 require 'uri'
 
 module Sinatra
-  
+      
   module TestMethods
 
     %w(get post put delete).each do |verb|
@@ -14,13 +14,6 @@ module Sinatra
       end_eval
     end
         
-    def result_info
-      info = <<-end_info
-      # Status: #{status}
-      # Headers: #{headers.inspect}
-      end_info
-    end
-
     def response
       @response || Rack::MockResponse.new(404, {}, '')
     end
