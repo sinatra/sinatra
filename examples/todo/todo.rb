@@ -11,8 +11,8 @@ get '/' do
     %li.item
       %div
         = item
-        %form{:action => "/", :method => 'POST'}
-          %input{:type => 'hidden', :name => '_method', :value => 'index'}
+        %form{:action => "/" + index.to_s, :method => 'POST'}
+          %input{:type => 'hidden', :name => '_method', :value => 'DELETE'}
           %input{:type => 'submit', :value => 'delete'}
 %form{:action => '/clear', :method => 'POST'}
   %input{:value => 'clear', :type => :submit}
@@ -33,5 +33,6 @@ post '/clear' do
 end
 
 delete '/:id' do
-  
+  session[:items].delete_at(params[:id].to_i)
+  redirect '/'
 end

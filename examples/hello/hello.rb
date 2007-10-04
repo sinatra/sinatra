@@ -24,7 +24,7 @@ end
 
 # Custom 404
 
-get 404 do
-  'Custom 404!!!!'
-end
+# get 404 do
+#   'Custom 404!!!!'
+# end
 
