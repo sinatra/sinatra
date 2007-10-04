@@ -13,19 +13,7 @@ module Sinatra
         end
       end_eval
     end
-    
-    def show!(editor = nil)
-      editor = editor || ENV['EDITOR']
-      IO.popen(editor, 'w') do |f| 
-        f.puts "<!--"
-        f.puts result_info
-        f.puts "-->"
-        f.puts
-        f.puts body
-      end
-    end
-    alias :mate :show!
-    
+        
     def result_info
       info = <<-end_info
       # Status: #{status}
