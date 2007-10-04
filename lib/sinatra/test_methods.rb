@@ -1,9 +1,20 @@
 require 'uri'
 
 module Sinatra
-      
+
+  # These methods are for integration testing without an internet connection.  They are available in Test::Unit::TestCase and when in Irb.
+    
   module TestMethods
 
+    # get_it, post_it, put_it, delete_it
+    # Executes the method and returns the result of the body
+    # 
+    # options:
+    # +:params+ a hash of name parameters
+    #
+    # Example:
+    #   get_it '/', :name => 'Blake' # => 'Hello Blake!'
+    #
     %w(get post put delete).each do |verb|
       module_eval <<-end_eval
         def #{verb}_it(path, params = {})

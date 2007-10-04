@@ -1,3 +1,6 @@
+# Compliments to why for this:
+# http://whytheluckystiff.net/articles/seeingMetaclassesClearly.html
+
 class Object
    # The hidden singleton lurks behind everyone
    def metaclass; class << self; self; end; end

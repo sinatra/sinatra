@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../helper'
 
-class Sinatra::EventContext
+class Sinatra::EventContext # :nodoc:
 
   def render_foo(template)
     require 'erb'

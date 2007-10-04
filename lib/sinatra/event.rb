@@ -1,6 +1,6 @@
 module Sinatra
   
-  module EventManager
+  module EventManager # :nodoc:
     extend self
 
     def reset!
@@ -39,7 +39,7 @@ module Sinatra
     
   end
     
-  class Event
+  class Event # :nodoc:
 
     cattr_accessor :logger
     cattr_accessor :after_filters
@@ -88,7 +88,7 @@ module Sinatra
       
   end
   
-  class StaticEvent < Event
+  class StaticEvent < Event # :nodoc:
     
     def initialize(path, root, register = true)
       @root = root

@@ -1,6 +1,6 @@
-module Rack
+module Rack #:nodoc:
   
-  class Request
+  class Request #:nodoc:
     
     def request_method
       if @env['REQUEST_METHOD'] == 'POST' && %w(PUT DELETE).include?(params['_method'])
