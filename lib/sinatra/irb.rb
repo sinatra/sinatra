@@ -28,6 +28,7 @@ module Sinatra
             f.puts
             f.puts body
           end
+          nil
         end
         alias :mate :show!
         
