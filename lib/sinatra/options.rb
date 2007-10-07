@@ -7,6 +7,9 @@ module Sinatra
     attr_with_default :port, 4567
     attr_with_default :environment, :development
     attr_with_default :console, nil
+    attr_with_default :use_mutex, false
+
+    alias :use_mutex? :use_mutex
 
     def parse!(args)
       return if @environment == :test
@@ -23,6 +26,9 @@ module Sinatra
         opts.on '-h', '--help', '-?', 'Show this message' do
           puts opts
           exit!
+        end
+        opts.on '-X', '--mutex', 'Use mutex lock when attending events' do
+          @use_mutex = true
         end
       end.parse!(ARGV)
     end

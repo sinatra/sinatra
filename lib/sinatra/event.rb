@@ -1,3 +1,5 @@
+require 'thread'
+
 module Sinatra
   
   module EventManager # :nodoc:
@@ -44,6 +46,8 @@ module Sinatra
     cattr_accessor :logger
     cattr_accessor :after_filters
     
+    @@mutex = Mutex.new
+    
     self.after_filters = []
     
     def self.after_attend(filter)
@@ -66,12 +70,12 @@ module Sinatra
       request.params.merge!(@route.params)
       context = EventContext.new(request)
       begin
-        result = context.instance_eval(&@block) if @block
+        result = run_safely { context.instance_eval(&@block) if @block }
         context.body context.body || result || ''
       rescue => e
         context.error e
       end
-      run_through_after_filters(context)
+      run_safely { run_through_after_filters(context) }
       context
     end
     alias :call :attend
@@ -82,6 +86,16 @@ module Sinatra
 
     private
     
+      def run_safely
+        if Options.use_mutex?
+          @@mutex.synchronize do
+            yield
+          end
+        else
+          yield
+        end
+      end
+  
       def run_through_after_filters(context)
         after_filters.each { |filter| context.send(filter) }
       end
