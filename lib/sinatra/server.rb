@@ -19,6 +19,9 @@ module Sinatra
           end
         end
         self.class.running = true
+      rescue Errno::EADDRINUSE => e
+        puts "== Someone is already performing on port #{Options.port}!"
+        logger.exception e
       rescue => e
         logger.exception e
       ensure
