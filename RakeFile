@@ -19,7 +19,7 @@ begin
     p.email = "blake.mizerany@gmail.com"
     p.test_pattern = 'test/**/*_test.rb'
     p.include_rakefile = true
-    p.rdoc_pattern = ['README', 'LICENSE'] << Dir.glob('lib/**/*.rb') << Dir.glob('vendor/**/*.rb')
+    p.rdoc_pattern = ['README', 'LICENSE'] + Dir.glob('lib/**/*.rb') + Dir.glob('vendor/**/*.rb')
     p.docs_host = "bmizerany@rubyforge.org:/var/www/gforge-projects/sinatra/"
   end
 
