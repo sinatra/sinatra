@@ -45,15 +45,30 @@ module Sinatra
 
     cattr_accessor :logger
     cattr_accessor :after_filters
+    cattr_accessor :before_filters
     
     @@mutex = Mutex.new
     
+    self.before_filters = []
     self.after_filters = []
     
-    def self.after_attend(filter)
-      after_filters << filter
+    def self.before_attend(method_name = nil, &block)
+      setup_filter(:before_filters, method_name, &block)
+    end
+
+    def self.after_attend(method_name = nil, &block)
+      setup_filter(:after_filters, method_name, &block)
     end
     
+    def self.setup_filter(filter_set_name, method_name, &block)
+      raise "Must specify method or block" if method_name.nil? and !block_given?
+      send(filter_set_name) << if block_given?
+        block
+      else
+        method_name
+      end
+    end
+      
     after_attend :log_event
     
     attr_reader :path, :verb
@@ -69,13 +84,27 @@ module Sinatra
     def attend(request)
       request.params.merge!(@route.params)
       context = EventContext.new(request)
-      begin
-        result = run_safely { context.instance_eval(&@block) if @block }
-        context.body context.body || result || ''
-      rescue => e
-        context.error e
+      run_safely do
+        caught = catch(:halt) do
+          call_filters(before_filters, context)
+        end
+        body = case caught
+          when :filter_chain_completed
+            begin
+              context.instance_eval(&@block) if @block
+            rescue => e
+              context.error e
+            end
+          when Symbol
+            context.send(caught)
+          when String
+            caught
+          when Fixnum
+            context.status caught
+        end
+        context.body context.body || body || ''
+        call_filters(after_filters, context)
       end
-      run_safely { run_through_after_filters(context) }
       context
     end
     alias :call :attend
@@ -95,9 +124,19 @@ module Sinatra
           yield
         end
       end
-  
-      def run_through_after_filters(context)
-        after_filters.each { |filter| context.send(filter) }
+      
+      # Adapted from Merb
+      # calls a filter chain according to rules.
+      def call_filters(filter_set, context)
+        filter_set.each do |filter|
+          case filter
+            when Symbol, String
+             context.send(filter)
+            when Proc
+             context.instance_eval(&filter)
+          end
+        end
+        :filter_chain_completed
       end
       
   end

@@ -55,10 +55,33 @@ module Sinatra
     end
 
     # Run given block after each Event's execution
+    # Usage:
+    #   before_attend do
+    #     logger.debug "After event attend!"
+    #   end
+    # or
+    #   before_attend :authorize # authorize is a helper method defined using helpers
+    #
+    # Stop execution using - throw :halt
+    #   before_attend do
+    #     throw :halt, 401 unless has_access?
+    #   end
+    # Throw a Symbol to execute a helper method
+    # Throw a String to render it as the content
+    # Throw a Fixnum to set the status
+    #
+    def before_attend(filter_name = nil, &block)
+      Sinatra::Event.before_attend(filter_name, &block)
+    end
+
+    # Run given block after each Event's execution
     # Example:
     #   after_attend do
     #     logger.debug "After event attend!"
     #   end
+    # or 
+    #   after_attend :clean_up  # clean_up is a helper method defined using helpers
+    #
     def after_attend(filter_name = nil, &block)
       Sinatra::Event.after_attend(filter_name, &block)
     end

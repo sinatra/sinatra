@@ -33,5 +33,14 @@ describe "Event" do
     Sinatra::EventManager.expects(:not_found)
     Sinatra::EventManager.determine_event(:get, '/asdfsasd')
   end
+
+  it "should not execute event if halted" do
+    Sinatra::Event.before_filters << lambda { throw :halt, 'whoa!' }
+    event = Sinatra::Event.new(:get, '/') do
+      foo
+    end
+    event.expects(:foo).never
+    get_it('/').should.equal 'whoa!'
+  end
     
 end
