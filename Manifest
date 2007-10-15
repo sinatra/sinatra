@@ -30,6 +30,7 @@ lib/sinatra/sessions.rb
 lib/sinatra/test_methods.rb
 lib/sinatra.rb
 LICENSE
+Manifest
 RakeFile
 README
 sinatra.gemspec
@@ -50,4 +51,3 @@ vendor/erb/lib/erb.rb
 vendor/haml/init.rb
 vendor/haml/lib/haml.rb
 Rakefile
-Manifest

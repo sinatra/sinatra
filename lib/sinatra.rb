@@ -38,6 +38,8 @@ Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/lib/sinatra/rack_ext/*.rb')
 Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/lib/sinatra/*.rb')
 Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/vendor/*/init.rb')
 
+Sinatra::Loader.load_files Dir.glob(File.dirname($0) + '/vendor/*/init.rb')
+
 Sinatra::Environment.prepare
 
 at_exit do

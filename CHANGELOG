@@ -1,2 +1,3 @@
+v0.1.6 Additions:  require users vendor directory on load
 v0.1.5 Mutex and before-filters
 v0.1.0 Released!
