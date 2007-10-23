@@ -114,21 +114,11 @@ module Sinatra
       Sinatra::StaticEvent.new(path, root)
     end
     
-    # Execute block if in development mode (Used for configuration)
-    def development
-      yield if Sinatra::Options.environment == :development
+    # Execute block if in environment is equal to env (Used for configuration)
+    def config_for(env = :development)
+      yield if Sinatra::Options.environment == env.to_sym
     end
-  
-    # Execute block if in production mode (Used for configuration)
-    def production
-      yield if Sinatra::Options.environment == :production
-    end
-  
-    # Execute block if in test mode (Used for configuration)
-    # def test
-    #   yield if Sinatra::Options.environment == :test
-    # end
-  
+    
     # Define named layouts (default name is <tt>:layout</tt>)
     # 
     # Examples:

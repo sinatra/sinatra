@@ -1,10 +1,15 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../../lib'
 require 'sinatra'
 
-production do
-  sessions :off
+config_for(:production) do
+
+  get 404 do
+    "Not sure what you're looking for .. try something else."
+  end
 end
 
+sessions :off
+  
 get '/' do
   "Hello World!"
 end
@@ -21,10 +26,3 @@ end
 get '/erb2' do
   erb 'Hello <%= params[:name].capitalize || "World" %> 2!'
 end
-
-# Custom 404
-
-# get 404 do
-#   'Custom 404!!!!'
-# end
-
