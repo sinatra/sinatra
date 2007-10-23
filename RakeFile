@@ -10,7 +10,7 @@ begin
   require 'echoe'
 
   Echoe.new('sinatra') do |p|
-    p.rubyforge_name = 'bmizerany'
+    p.rubyforge_name = 'sinatra'
     p.dependencies = ['mongrel >=1.0.1', 'rack >=0.2.0']    
     p.summary = "Sinatra is a classy web-framework dressed in a DSL"
     p.description = "Sinatra is a classy web-framework dressed in a DSL"
@@ -20,7 +20,7 @@ begin
     p.test_pattern = 'test/**/*_test.rb'
     p.include_rakefile = true
     p.rdoc_pattern = ['README', 'LICENSE'] + Dir.glob('lib/**/*.rb') + Dir.glob('vendor/**/*.rb')
-    p.docs_host = "bmizerany@rubyforge.org:/var/www/gforge-projects/sinatra/"
+    p.docs_host = "bmizerany@rubyforge.org:/var/www/gforge-projects/"
   end
 
 rescue LoadError

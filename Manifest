@@ -33,7 +33,6 @@ LICENSE
 Manifest
 RakeFile
 README
-sinatra.gemspec
 site/index.htm
 site/index.html
 site/logo.png
