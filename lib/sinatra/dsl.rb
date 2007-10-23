@@ -125,9 +125,9 @@ module Sinatra
     end
   
     # Execute block if in test mode (Used for configuration)
-    def test
-      yield if Sinatra::Options.environment == :test
-    end
+    # def test
+    #   yield if Sinatra::Options.environment == :test
+    # end
   
     # Define named layouts (default name is <tt>:layout</tt>)
     # 

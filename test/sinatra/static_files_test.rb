@@ -9,6 +9,7 @@ context "StaticEvent" do
   
   specify "recognizes paths prefixed with it's path" do
     File.expects(:exists?).with('/x/bar/test.jpg').returns(true)
+    File.expects(:file?).with('/x/bar/test.jpg').returns(true)
     Sinatra::StaticEvent.new('/foo', '/x/bar').recognize('/foo/test.jpg').should.equal true
     
     File.expects(:exists?).with('/x/bar/test.jpg').returns(false)
@@ -21,6 +22,12 @@ context "StaticEvent" do
     result = Sinatra::StaticEvent.new('/foo', '/x/bar').attend(stub(:path_info => '/foo/test.jpg'))
     result.headers.should.equal 'Content-Type' => 'image/jpeg', 'Content-Length' => '255'
     result.body.each { }
+  end
+  
+  specify "makes sure it is a file and not a directory" do
+    File.expects(:exists?).with('/x/bar').returns(true)
+    File.expects(:file?).with('/x/bar').returns(false)
+    Sinatra::StaticEvent.new('/foo', '/x').recognize('/foo/bar').should.equal false
   end
   
 end

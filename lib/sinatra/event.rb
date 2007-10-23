@@ -149,7 +149,8 @@ module Sinatra
     end
 
     def recognize(path)
-      File.exists?(physical_path_for(path))
+      filename = physical_path_for(path)
+      File.exists?(filename) && File.file?(filename)
     end
     
     def physical_path_for(path)
