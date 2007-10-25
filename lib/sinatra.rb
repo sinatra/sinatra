@@ -36,14 +36,14 @@ require File.dirname(__FILE__) + '/sinatra/loader'
 Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/lib/sinatra/core_ext/*.rb')
 Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/lib/sinatra/rack_ext/*.rb')
 Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/lib/sinatra/*.rb')
-Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/vendor/*/init.rb')
-
-Sinatra::Loader.load_files Dir.glob(File.dirname($0) + '/vendor/*/init.rb')
 
 Sinatra::Environment.prepare
 
+Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/vendor/*/init.rb')
+Sinatra::Loader.load_files Dir.glob(File.dirname($0) + '/vendor/*/init.rb')
+
 at_exit do
-  Sinatra::Environment.prepare_loggers unless Sinatra::Options.environment == :test
+  Sinatra::Environment.prepare_loggers
   Sinatra::Irb.start! if Sinatra::Options.console
   Sinatra::Server.new.start unless Sinatra::Server.running
 end
