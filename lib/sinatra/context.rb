@@ -5,19 +5,20 @@ module Sinatra
   class EventContext
   
     cattr_accessor :logger
-    attr_reader :request
+    attr_reader :request, :response
 
     include Sinatra::Renderer
   
     def initialize(request) #:nodoc:
       @request = request
-      @headers = {}
+      @response = Rack::Response.new
+      @response.body = nil
     end
   
     # Sets or returns the status
     def status(value = nil)
-      @status = value if value
-      @status || 200
+      @response.status = value if value
+      @response.status || 200
     end
   
     # Sets or returns the body
@@ -30,9 +31,9 @@ module Sinatra
     # both are the same
     #
     def body(value = nil, &block)
-      @body = value if value
-      @body = block.call if block
-      @body
+      @response.body = value if value
+      @response.body = block.call if block
+      @response.body
     end
     
     # Renders an exception to +body+ and sets status to 500
@@ -56,8 +57,8 @@ module Sinatra
     # 
     # Whatever blows your hair back
     def headers(value = nil)
-      @headers.merge!(value) if value
-      @headers
+      @response.headers.merge!(value) if value
+      @response.headers
     end
     alias :header :headers
   

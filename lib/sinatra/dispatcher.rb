@@ -3,10 +3,6 @@ module Sinatra
   class Dispatcher
 
     cattr_accessor :logger
-        
-    def default_headers
-      { 'Content-Type' => 'text/html' }
-    end
 
     def call(env)
       Loader.reload! if Options.environment == :development
@@ -19,7 +15,7 @@ module Sinatra
       )
     
       result = event.attend(@request)
-      [result.status, default_headers.merge(result.headers), result.body]
+      result.response.to_a
     end
     
   end
