@@ -2,10 +2,6 @@ require File.dirname(__FILE__) + '/../helper'
 
 describe "When a dispatcher receives a request" do  
   
-  before(:each) do
-    Sinatra::EventManager.reset!
-  end
-      
   it "should attend to the event" do
     
     Sinatra::Event.new(:get, '/') do

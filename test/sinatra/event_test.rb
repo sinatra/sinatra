@@ -2,10 +2,6 @@ require File.dirname(__FILE__) + '/../helper'
 
 describe "Event" do
   
-  before(:each) do
-    Sinatra::EventManager.reset!
-  end
-  
   it "should return 500 if exception thrown" do
     Sinatra::Environment.prepare_loggers stub_everything
 

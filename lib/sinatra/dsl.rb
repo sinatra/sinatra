@@ -155,7 +155,7 @@ module Sinatra
     #   get_it '/cooltrick' # => 'Cool wicked Trick'
     #
     def layout(name = :layout, options = {})
-      Layouts[name] = unless block_given?
+      Sinatra::Renderer::Layouts[name] = unless block_given?
         File.read("%s/%s" % [options[:views_directory] || 'views', name])
       else
         yield

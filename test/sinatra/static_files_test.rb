@@ -3,10 +3,6 @@ require 'stringio'
 
 context "StaticEvent" do
   
-  before(:each) do
-    Sinatra::EventManager.reset!
-  end
-  
   specify "recognizes paths prefixed with it's path" do
     File.expects(:exists?).with('/x/bar/test.jpg').returns(true)
     File.expects(:file?).with('/x/bar/test.jpg').returns(true)

@@ -30,6 +30,7 @@ class Test::Spec::TestCase
     @testcase.setup do
       Sinatra::EventManager.reset!
       Sinatra::Event.reset!
+      Sinatra::Renderer::Layouts.clear
     end
   end
 end

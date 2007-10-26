@@ -1,5 +1,3 @@
-Layouts = Hash.new # :nodoc:
-
 module Sinatra
 
   # The magic or rendering happens here.  This is included in Sinatra::EventContext on load.
@@ -8,6 +6,8 @@ module Sinatra
   # create custom wrappers for your favorite rendering engines outside of erb and haml.
 
   module Renderer
+
+    Layouts = Hash.new # :nodoc:
     
     DEFAULT_OPTIONS = {
       :views_directory => 'views',

@@ -12,7 +12,6 @@ end
 describe "Renderer" do
 
   before(:each) do
-    Layouts.clear
     @context = Sinatra::EventContext.new(stub())
   end
 
@@ -29,10 +28,10 @@ describe "Renderer" do
   end
   
   it "should render default layout if it exists and layout if no layout name given" do
-    Layouts[:layout] = 'X <%= yield %> Y'
+    Sinatra::Renderer::Layouts[:layout] = 'X <%= yield %> Y'
     @context.render('foo', :foo).should.equal 'X foo Y'
     
-    Layouts[:foo] = 'Foo <%= yield %> Layout'
+    Sinatra::Renderer::Layouts[:foo] = 'Foo <%= yield %> Layout'
     @context.render('bar', :foo, :layout => :foo).should.equal 'Foo bar Layout'
   end
   
