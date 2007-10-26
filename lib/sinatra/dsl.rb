@@ -70,8 +70,8 @@ module Sinatra
     # Throw a String to render it as the content
     # Throw a Fixnum to set the status
     #
-    def before_attend(filter_name = nil, &block)
-      Sinatra::Event.before_attend(filter_name, &block)
+    def before_attend(filter_name = nil, options ={}, &block)
+      Sinatra::Event.before_attend(filter_name, options, &block)
     end
 
     # Run given block after each Event's execution
@@ -82,8 +82,8 @@ module Sinatra
     # or 
     #   after_attend :clean_up  # clean_up is a helper method defined using helpers
     #
-    def after_attend(filter_name = nil, &block)
-      Sinatra::Event.after_attend(filter_name, &block)
+    def after_attend(filter_name = nil, options ={}, &block)
+      Sinatra::Event.after_attend(filter_name, options, &block)
     end
   
     # Add methods to each event for use during execution

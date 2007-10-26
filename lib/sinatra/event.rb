@@ -52,21 +52,23 @@ module Sinatra
     self.before_filters = []
     self.after_filters = []
     
-    def self.before_attend(method_name = nil, &block)
-      setup_filter(:before_filters, method_name, &block)
+    def self.before_attend(method_name = nil, options ={}, &block)
+      setup_filter(:before_filters, method_name, options, &block)
     end
 
-    def self.after_attend(method_name = nil, &block)
-      setup_filter(:after_filters, method_name, &block)
+    def self.after_attend(method_name = nil, options = {}, &block)
+      setup_filter(:after_filters, method_name, options, &block)
     end
     
-    def self.setup_filter(filter_set_name, method_name, &block)
+    def self.setup_filter(filter_set_name, method_name, options = {}, &block)
       raise "Must specify method or block" if method_name.nil? and !block_given?
-      send(filter_set_name) << if block_given?
+      value = if block_given?
         block
       else
         method_name
       end
+      insert_index = options[:infront] == true ? 0 : -1
+      send(filter_set_name).insert(insert_index, value)
     end
       
     after_attend :log_event
