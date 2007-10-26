@@ -43,6 +43,7 @@ Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/vendor/*/init.rb')
 Sinatra::Loader.load_files Dir.glob(File.dirname($0) + '/vendor/*/init.rb')
 
 at_exit do
+  raise $! if $!
   Sinatra::Environment.prepare_loggers unless Sinatra::Environment.test?
   Sinatra::Irb.start! if Sinatra::Options.console
   Sinatra::Server.new.start unless Sinatra::Server.running
