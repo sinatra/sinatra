@@ -61,11 +61,6 @@ module Sinatra
     end
     alias :header :headers
   
-    # Returns a Hash of session data.  Keys are symbolized
-    def session
-      request.env['rack.session']
-    end
-
     # Returns a Hash of params.  Keys are symbolized
     def params
       @params ||= @request.params.symbolize_keys

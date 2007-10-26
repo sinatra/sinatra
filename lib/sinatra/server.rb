@@ -10,7 +10,7 @@ module Sinatra
     def start
       begin
         tail_thread = tail(Options.log_file)
-        Rack::Handler::Mongrel.run(Sinatra::Session::Cookie.new(Dispatcher.new), :Port => Options.port) do |server|
+        Rack::Handler::Mongrel.run(Dispatcher.new, :Port => Options.port) do |server|
           puts "== Sinatra has taken the stage on port #{server.port}!"
           trap("INT") do
             server.stop

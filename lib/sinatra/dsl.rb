@@ -162,13 +162,6 @@ module Sinatra
       end
     end  
   
-    # Turn sessions <tt>:on</tt> or <tt>:off</tt>
-    #  
-    # NOTE:  There is currently no way to turn it on or off per Event... patches anyone?)
-    def sessions(on_off)
-      Sinatra::Session::Cookie.use = on_off
-    end
-
   end
 
 end

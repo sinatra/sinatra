@@ -8,8 +8,6 @@ config_for(:production) do
   end
 end
 
-sessions :off
-  
 get '/' do
   "Hello World!"
 end
