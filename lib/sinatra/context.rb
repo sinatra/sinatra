@@ -5,6 +5,7 @@ module Sinatra
   class EventContext
   
     cattr_accessor :logger
+    cattr_accessor :reraise_errors
     attr_reader :request, :response
 
     include Sinatra::Renderer
@@ -38,6 +39,7 @@ module Sinatra
     
     # Renders an exception to +body+ and sets status to 500
     def error(value = nil)
+      raise value if value.kind_of?(Exception) && reraise_errors
       if value
         status 500
         @error = value

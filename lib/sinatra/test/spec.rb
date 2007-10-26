@@ -9,6 +9,7 @@ module Sinatra
         Server.running = true
         Options.set_environment :test
         Environment.prepare_loggers
+        EventContext.reraise_errors = true
       end
     end
   end

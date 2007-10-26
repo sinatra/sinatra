@@ -5,6 +5,8 @@ describe "Event" do
   it "should return 500 if exception thrown" do
     Sinatra::Environment.prepare_loggers stub_everything
 
+    Sinatra::EventContext.any_instance.expects(:reraise_errors).returns(false)
+
     event = Sinatra::Event.new(:get, '/') do
       raise 'whaaaa!'
     end
