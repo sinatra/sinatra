@@ -9,9 +9,9 @@ module Sinatra
       # This can be use to if you already have the template on hand and don't
       # need a layout.  This is speedier than using haml
       #
-      def render_haml(template)
+      def render_haml(template, &block)
         require 'haml'
-        body ::Haml::Engine.new(template).render(self)
+        body ::Haml::Engine.new(template).render(self, &block)
       end
       
       # Renders Haml within an event.
