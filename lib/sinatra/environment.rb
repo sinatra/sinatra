@@ -1,6 +1,10 @@
 module Sinatra
   module Environment
     extend self
+
+    def test?
+      Options.environment == :test
+    end
         
     def prepare
       Options.parse!(ARGV)

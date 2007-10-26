@@ -52,6 +52,11 @@ module Sinatra
     self.before_filters = []
     self.after_filters = []
     
+    def self.reset!
+      self.before_filters.clear
+      self.after_filters.clear
+    end
+    
     def self.before_attend(method_name = nil, options ={}, &block)
       setup_filter(:before_filters, method_name, options, &block)
     end
@@ -70,9 +75,7 @@ module Sinatra
       insert_index = options[:infront] == true ? 0 : -1
       send(filter_set_name).insert(insert_index, value)
     end
-      
-    after_attend :log_event
-    
+          
     attr_reader :path, :verb
     
     def initialize(verb, path, register = true, &block)
@@ -107,6 +110,7 @@ module Sinatra
         context.body context.body || body || ''
         call_filters(after_filters, context)
       end
+      context.log_event
       context
     end
     alias :call :attend
