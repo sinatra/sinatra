@@ -45,7 +45,15 @@ module Sinatra
       end
       @error
     end
-      
+    
+    def set_cookie(key, value)
+      @response.set_cookie(key, value)
+    end
+    
+    def delete_cookie(key, value)
+      @response.delete_cookie(key, value)
+    end
+    
     # Sets or returns response headers
     #
     # *Usage*
