@@ -35,7 +35,7 @@ I'm going to move quick.  I'll let you drool at your own pace.
 * Refresh (no need to restart Sinatra):
     http://localhost:4567
 
-* Modify again (then refresh):
+* Modify again (then refresh) -- And yes, this presentation logic can be quickly extracted to a template.. see below.
     get '/' do
       <<-HTML
         <form action='/' method="POST">
@@ -48,6 +48,25 @@ I'm going to move quick.  I'll let you drool at your own pace.
     post '/' do
       "Hello #{params[:name] || 'World'}!"
     end
+
+* Test (lyrics_test.rb) -- We should be doing this first... for the purposes of this tutorial, we're doing it here
+
+ require 'sinatra/test/spec'
+ require 'lyrics'
+  
+ context "My app" do
+   specify "should have a form" do
+     get_it '/'
+     response.should.be.ok
+     body.scan('form').size.should.equal 1
+
+     post_it '/', :name => 'Sinatra'
+     response.should.be.ok
+     body.should.equal 'Hello Sinatra!'
+   end
+ end
+
+For more test helpers see: Sinatra::Test::Methods and http://rack.rubyforge.org/doc/classes/Rack/Response/Helpers.html
 
 * Now you try:
   Use the Sinatra::Erb::EventContext or Sinatra::Haml::EventContext to do the same.  Do them inline and as template files.

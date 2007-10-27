@@ -3,7 +3,6 @@ require 'uri'
 module Sinatra
 
   # These methods are for integration testing without an internet connection.  They are available in Test::Unit::TestCase and when in Irb.
-    
   module Test
     
     module Methods
@@ -27,14 +26,17 @@ module Sinatra
         end_eval
       end
         
+      # The response returned by the Event
       def response
         @response || Rack::MockResponse.new(404, {}, '')
       end
 
+      # The status returned by the event
       def status
         response.status
       end
 
+      # The text returned by the event
       def text
         response.body
       end
@@ -42,6 +44,7 @@ module Sinatra
       alias :html :text
       alias :body :text
 
+      # The headers returned by the event
       def headers
         response.headers
       end
