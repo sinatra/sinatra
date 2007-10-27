@@ -4,8 +4,10 @@ module Sinatra
   module Test
     module Spec
       def self.included(base)
-        require File.dirname(__FILE__) + '/../../sinatra'
-        require 'test/spec'
+        silence_warnings do
+          require File.dirname(__FILE__) + '/../../sinatra'
+          require 'test/spec'
+        end
         Server.running = true
         Options.set_environment :test
         Environment.prepare_loggers
