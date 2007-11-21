@@ -72,6 +72,7 @@ module Sinatra
     end
 
     error 404 do
+      status 404
       "<h1>Not Found</h1>"
     end
   end
@@ -165,3 +166,5 @@ def error(num, &b)
   raise 'You must specify a block to assciate with an error' if b.nil?
   Sinatra.define_error_route(num, &b)
 end
+
+Sinatra.setup_default_events!

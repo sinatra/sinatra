@@ -33,6 +33,7 @@ context "Dispatching" do
   
   specify "should return standard 404" do
     get_it '/'
+    status.should.equal 404
     body.should.equal '<h1>Not Found</h1>'
   end
   
