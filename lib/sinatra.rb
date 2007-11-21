@@ -1,50 +1,65 @@
-# Copyright (c) 2007 Blake Mizerany
-# 
-# Permission is hereby granted, free of charge, to any person
-# obtaining a copy of this software and associated documentation
-# files (the "Software"), to deal in the Software without
-# restriction, including without limitation the rights to use,
-# copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the
-# Software is furnished to do so, subject to the following
-# conditions:
-# 
-# The above copyright notice and this permission notice shall be
-# included in all copies or substantial portions of the Software.
-# 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-# OTHER DEALINGS IN THE SOFTWARE.
+require "rubygems"
+require "rack"
 
-%w(rubygems rack).each do |library|
-  begin
-    require library
-  rescue LoadError
-    raise "== Sinatra cannot run without #{library} installed"
+class String
+  def to_param
+    URI.escape(self)
+  end
+  
+  def from_param
+    URI.unescape(self)
   end
 end
 
-SINATRA_ROOT = File.dirname(__FILE__) + '/..'
-
-require File.dirname(__FILE__) + '/sinatra/loader'
-
-Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/lib/sinatra/core_ext/*.rb')
-Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/lib/sinatra/rack_ext/*.rb')
-Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/lib/sinatra/*.rb')
-
-Sinatra::Environment.prepare
-
-Sinatra::Loader.load_files Dir.glob(SINATRA_ROOT + '/vendor/*/init.rb')
-Sinatra::Loader.load_files Dir.glob(File.dirname($0) + '/vendor/*/init.rb')
-
-at_exit do
-  raise $! if $!
-  Sinatra::Environment.prepare_loggers unless Sinatra::Environment.test?
-  Sinatra::Irb.start! if Sinatra::Options.console
-  Sinatra::Server.new.start unless Sinatra::Server.running
+class Symbol
+  def to_proc 
+    Proc.new { |*args| args.shift.__send__(self, *args) }
+  end
 end
+
+class Array
+  def to_hash
+    self.inject({}) { |h, (k, v)|  h[k] = v; h }
+  end
+end
+
+module Sinatra
+  extend self
+  
+  def request_types
+    @request_types ||= %w(GET PUT POST DELETE)
+  end
+  
+  def events
+    @events ||= Hash.new do |hash, key|
+      hash[key] = [] if request_types.include?(key)
+    end
+  end
+  
+  class Route
+    
+    URI_CHAR = '[^/?:,&#]'.freeze unless defined?(URI_CHAR)
+    PARAM = /:(#{URI_CHAR}+)/.freeze unless defined?(PARAM)
+    
+    def initialize(path, &b)
+      @path, @block = path, b
+      @param_keys = []
+      regex = path.to_s.gsub(PARAM) do
+        @param_keys << $1.intern
+        "(#{URI_CHAR}+)"
+      end
+      @pattern = /^#{regex}$/
+      @struct = Struct.new(:block, :params)
+    end
+    
+    def match(path)
+      return nil unless path =~ @pattern
+      params = @param_keys.zip($~.captures.map(&:from_param)).to_hash
+      @struct.new(@block, params)
+    end
+    
+  end
+  
+end
+
+

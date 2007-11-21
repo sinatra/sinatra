@@ -1,8 +1,0 @@
-v0.1.7 FIXES:
-
-* test/development/production helpers changed to config_for.  There was a problem with "test" fubar'ing libraries such as the new release of Sequel
-* StaticEvent now makes sure the file it's looking for is really a file.
-
-v0.1.6 Additions:  require users vendor directory on load
-v0.1.5 Mutex and before-filters
-v0.1.0 Released!
