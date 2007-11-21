@@ -104,15 +104,14 @@ module Sinatra
       request.request_method.downcase.to_sym, 
       request.path_info
     )
+    context = EventContext.new(request, response)
     begin
-      context = EventContext.new(request, response)
       result = context.instance_eval(&route.block)
       context.body = Array(result.to_s)
       context.finish
     rescue => e
       raise e if config[:raise_errors]
       route = Sinatra.routes[500] || Error
-      context = EventContext.new(request, response)
       context.status 500
       context.body Array(context.instance_eval(&route.block))
       context.finish
