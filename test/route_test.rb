@@ -1,6 +1,4 @@
-require File.dirname(__FILE__) + "/../lib/sinatra"
-require 'test/spec'
-require 'mocha'
+require File.dirname(__FILE__) + '/helper'
 
 context "A Route in general" do
     

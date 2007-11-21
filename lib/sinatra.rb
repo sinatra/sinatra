@@ -21,25 +21,43 @@ class Array
   def to_hash
     self.inject({}) { |h, (k, v)|  h[k] = v; h }
   end
+  
+  def to_proc
+    Proc.new { |*args| args.shift.send(self[0], args + self[1..-1]) }
+  end
 end
+
+
+module Enumerable
+  def eject(&block)
+    find { |e| result = block[e] and break result }
+  end
+end
+
 
 module Sinatra
   extend self
   
   def request_types
-    @request_types ||= %w(GET PUT POST DELETE)
+    @request_types ||= [:get, :put, :post, :delete]
   end
   
-  def events
-    @events ||= Hash.new do |hash, key|
+  def routes
+    @routes ||= Hash.new do |hash, key|
       hash[key] = [] if request_types.include?(key)
     end
+  end
+  
+  def determine_event(verb, path)
+    routes[verb].eject { |r| r.match(path) }
   end
   
   class Route
     
     URI_CHAR = '[^/?:,&#]'.freeze unless defined?(URI_CHAR)
     PARAM = /:(#{URI_CHAR}+)/.freeze unless defined?(PARAM)
+    
+    attr_reader :block, :path
     
     def initialize(path, &b)
       @path, @block = path, b
