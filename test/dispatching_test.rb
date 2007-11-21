@@ -1,7 +1,5 @@
 require File.dirname(__FILE__) + '/helper'
 
-
-
 context "Dispatching" do
     
   include Sinatra::Test::Methods
@@ -11,7 +9,7 @@ context "Dispatching" do
   end
     
   specify "should return the correct block" do
-    Sinatra.routes[:get] << r = Sinatra::Route.new('/') do
+    r = get '/' do
       'main'
     end
             
@@ -21,6 +19,7 @@ context "Dispatching" do
   
   specify "should return custom 404" do
     Sinatra.routes[404] = r = Proc.new { 'custom 404' }
+        
     result = Sinatra.determine_route(:get, '/')
     result.should.be r
   end
@@ -33,7 +32,7 @@ context "Dispatching" do
   specify "should give custom 500 if error when called" do
     Sinatra.routes[500] = r = Proc.new { 'custom 500' }
 
-    Sinatra.routes[:get] << Sinatra::Route.new('/') do
+    get '/' do
       raise 'asdf'
     end
     
@@ -43,7 +42,7 @@ context "Dispatching" do
   end
   
   specify "should give standard 500 if error when called" do
-    Sinatra.routes[:get] << Sinatra::Route.new('/') do
+    get '/' do
       raise 'asdf'
     end
     

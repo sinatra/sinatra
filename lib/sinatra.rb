@@ -94,6 +94,11 @@ module Sinatra
     end
   end
   
+  def define_route(verb, path, &b)
+    routes[verb] << route = Route.new(path, &b)
+    route
+  end
+  
   class Route
     
     URI_CHAR = '[^/?:,&#]'.freeze unless defined?(URI_CHAR)
@@ -122,4 +127,6 @@ module Sinatra
   
 end
 
-
+def get(path, &b)
+  Sinatra.define_route(:get, path, &b)
+end
