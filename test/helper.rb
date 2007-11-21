@@ -2,6 +2,7 @@ require File.dirname(__FILE__) + "/../lib/sinatra"
 require 'test/spec'
 require 'mocha'
 
+Sinatra.config[:raise_errors] = true
 
 module Sinatra
   

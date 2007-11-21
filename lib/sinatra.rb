@@ -58,7 +58,11 @@ module Sinatra
 
   EventContext = Struct.new(:request, :response) do
     def method_missing(name, *args)
-      response.send(name, *args)
+      if args.size == 1 && response.respond_to?("#{name}=")
+        response.send("#{name}=", args.first)
+      else
+        response.send(name, *args)
+      end
     end
   end
   
@@ -84,6 +88,10 @@ module Sinatra
     @config ||= {}
   end
   
+  def config=(c)
+    @config = c
+  end
+  
   def determine_route(verb, path)
     found = routes[verb].eject { |r| r.match(path) }
     found || routes[404] || NotFound
@@ -99,11 +107,15 @@ module Sinatra
     begin
       context = EventContext.new(request, response)
       result = context.instance_eval(&route.block)
-      context.body = result
+      context.body = Array(result.to_s)
       context.finish
     rescue => e
       raise e if config[:raise_errors]
-      [500, {}, (routes[500] || Error).call]
+      route = Sinatra.routes[500] || Error
+      context = EventContext.new(request, response)
+      context.status 500
+      context.body Array(context.instance_eval(&route.block))
+      context.finish
     end
   end
   

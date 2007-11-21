@@ -3,10 +3,15 @@ require File.dirname(__FILE__) + '/helper'
 context "Dispatching" do
     
   include Sinatra::Test::Methods
+      
+  def dont_raise_errors
+    Sinatra.config[:raise_errors] = false
+    yield
+    Sinatra.config[:raise_errors] = true
+  end
     
   setup do
     Sinatra.routes.clear
-    Sinatra.config.clear
   end
     
   specify "should return the correct block" do
@@ -37,7 +42,9 @@ context "Dispatching" do
       raise 'asdf'
     end
     
-    get_it '/'
+    dont_raise_errors do
+      get_it '/'
+    end
 
     body.should.equal 'custom 500'
   end
@@ -47,21 +54,13 @@ context "Dispatching" do
       raise 'asdf'
     end
     
-    get_it '/'
+    dont_raise_errors do
+      get_it '/'
+    end
 
-    body.should.match /^asdf/
+    body.should.match(/^asdf/)
   end
   
-  specify "should raise errors to top if requested" do
-    Sinatra.config[:raise_errors] = true
-    
-    get '/' do
-      raise 'asdf'
-    end
-    
-    lambda { get_it '/' }.should.raise(RuntimeError)
-  end
-
   specify "should run in a context" do
     Sinatra::EventContext.any_instance.expects(:foo).returns 'in foo'
     
@@ -84,5 +83,35 @@ context "Dispatching" do
     body.should.equal '/blake'
     
   end
+  
+  specify "has DSLified methods for response" do
+    get '/' do
+      status 555
+      'uh oh'
+    end
+    
+    get_it '/'
+
+    body.should.equal "uh oh"
+    status.should.equal 555
+  end
+          
+end
+
+context "An Event in test mode" do
+  
+  include Sinatra::Test::Methods
+
+  setup do
+    Sinatra.routes.clear
+  end
+
+  specify "should raise errors to top" do
+    get '/' do
+      raise 'asdf'
+    end
       
+    lambda { get_it '/' }.should.raise(RuntimeError)
+  end
+
 end
