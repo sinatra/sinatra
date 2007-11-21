@@ -11,6 +11,20 @@ class String
   end
 end
 
+class Hash
+  def to_params
+    map { |k,v| "#{k}=#{URI.escape(v)}" }.join('&')
+  end
+  
+  def symbolize_keys
+    self.inject({}) { |h,(k,v)| h[k.to_sym] = v; h }
+  end
+  
+  def pass(*keys)
+    reject { |k,v| !keys.include?(k) }
+  end
+end
+
 class Symbol
   def to_proc 
     Proc.new { |*args| args.shift.__send__(self, *args) }
@@ -38,6 +52,10 @@ end
 module Sinatra
   extend self
   
+  Error = Proc.new do 
+    "#{$!.message}\n\t#{$!.backtrace.join("\n\t")}"
+  end
+  
   def request_types
     @request_types ||= [:get, :put, :post, :delete]
   end
@@ -48,8 +66,22 @@ module Sinatra
     end
   end
   
-  def determine_event(verb, path)
-    routes[verb].eject { |r| r.match(path) }
+  def determine_route(verb, path)
+    found = routes[verb].eject { |r| r.match(path) }
+    found ||= routes[404]
+  end
+  
+  def call(env)
+    request = Rack::Request.new(env)
+    route = determine_route(
+      request.request_method.downcase.to_sym, 
+      request.path_info
+    )
+    begin
+      [200, {}, route.block.call]
+    rescue => e
+      [500, {}, (routes[500] || Error).call]
+    end
   end
   
   class Route
