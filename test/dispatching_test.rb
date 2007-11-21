@@ -12,6 +12,7 @@ context "Dispatching" do
     
   setup do
     Sinatra.routes.clear
+    Sinatra.setup_default_events!
   end
     
   specify "should return the correct block" do
@@ -104,6 +105,7 @@ context "An Event in test mode" do
 
   setup do
     Sinatra.routes.clear
+    Sinatra.setup_default_events!
   end
 
   specify "should raise errors to top" do

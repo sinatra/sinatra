@@ -66,12 +66,14 @@ module Sinatra
     end
   end
   
-  Error = Proc.new do 
-    "#{$!.message}\n\t#{$!.backtrace.join("\n\t")}"
-  end
+  def setup_default_events!
+    error 500 do
+      "#{$!.message}\n\t#{$!.backtrace.join("\n\t")}"
+    end
 
-  NotFound = Proc.new do 
-    "<h1>Not Found</h1>"
+    error 404 do
+      "<h1>Not Found</h1>"
+    end
   end
   
   def request_types
@@ -94,7 +96,7 @@ module Sinatra
   
   def determine_route(verb, path)
     found = routes[verb].eject { |r| r.match(path) }
-    found || routes[404] || NotFound
+    found || routes[404]
   end
   
   def call(env)
@@ -111,7 +113,7 @@ module Sinatra
       context.finish
     rescue => e
       raise e if config[:raise_errors]
-      route = Sinatra.routes[500] || Error
+      route = Sinatra.routes[500]
       context.status 500
       context.body Array(context.instance_eval(&route.block))
       context.finish
@@ -121,6 +123,10 @@ module Sinatra
   def define_route(verb, path, &b)
     routes[verb] << route = Route.new(path, &b)
     route
+  end
+  
+  def define_error_route(num, &b)
+    routes[num] = b
   end
   
   class Route
@@ -153,4 +159,9 @@ end
 
 def get(path, &b)
   Sinatra.define_route(:get, path, &b)
+end
+
+def error(num, &b)
+  raise 'You must specify a block to assciate with an error' if b.nil?
+  Sinatra.define_error_route(num, &b)
 end
