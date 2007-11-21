@@ -47,16 +47,20 @@ class Proc
   end
 end
 
-
 module Enumerable
   def eject(&block)
     find { |e| result = block[e] and break result }
   end
 end
 
-
 module Sinatra
   extend self
+
+  EventContext = Struct.new(:request, :response) do
+    def method_missing(name, *args)
+      response.send(name, *args)
+    end
+  end
   
   Error = Proc.new do 
     "#{$!.message}\n\t#{$!.backtrace.join("\n\t")}"
@@ -76,6 +80,10 @@ module Sinatra
     end
   end
   
+  def config
+    @config ||= {}
+  end
+  
   def determine_route(verb, path)
     found = routes[verb].eject { |r| r.match(path) }
     found || routes[404] || NotFound
@@ -83,13 +91,18 @@ module Sinatra
   
   def call(env)
     request = Rack::Request.new(env)
+    response = Rack::Response.new
     route = determine_route(
       request.request_method.downcase.to_sym, 
       request.path_info
     )
     begin
-      [200, {}, route.block.call]
+      context = EventContext.new(request, response)
+      result = context.instance_eval(&route.block)
+      context.body = result
+      context.finish
     rescue => e
+      raise e if config[:raise_errors]
       [500, {}, (routes[500] || Error).call]
     end
   end
@@ -124,7 +137,7 @@ module Sinatra
     end
     
   end
-  
+    
 end
 
 def get(path, &b)

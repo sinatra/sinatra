@@ -6,6 +6,7 @@ context "Dispatching" do
     
   setup do
     Sinatra.routes.clear
+    Sinatra.config.clear
   end
     
   specify "should return the correct block" do
@@ -50,5 +51,38 @@ context "Dispatching" do
 
     body.should.match /^asdf/
   end
+  
+  specify "should raise errors to top if requested" do
+    Sinatra.config[:raise_errors] = true
     
+    get '/' do
+      raise 'asdf'
+    end
+    
+    lambda { get_it '/' }.should.raise(RuntimeError)
+  end
+
+  specify "should run in a context" do
+    Sinatra::EventContext.any_instance.expects(:foo).returns 'in foo'
+    
+    get '/' do
+      foo
+    end
+    
+    get_it '/'
+    body.should.equal 'in foo'
+  end
+  
+  specify "has access to the request" do
+    
+    get '/blake' do
+      request.path_info
+    end
+    
+    get_it '/blake'
+    
+    body.should.equal '/blake'
+    
+  end
+      
 end
