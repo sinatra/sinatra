@@ -37,7 +37,7 @@ class Array
   end
   
   def to_proc
-    Proc.new { |*args| args.shift.send(self[0], args + self[1..-1]) }
+    Proc.new { |*args| args.shift.__send__(self[0], args + self[1..-1]) }
   end
 end
 
