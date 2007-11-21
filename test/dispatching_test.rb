@@ -25,6 +25,11 @@ context "Dispatching" do
     result.should.be r
   end
   
+  specify "should return standard 404" do
+    get_it '/'
+    body.should.equal '<h1>Not Found</h1>'
+  end
+  
   specify "should give custom 500 if error when called" do
     Sinatra.routes[500] = r = Proc.new { 'custom 500' }
 
@@ -46,5 +51,5 @@ context "Dispatching" do
 
     body.should.match /^asdf/
   end
-  
+    
 end

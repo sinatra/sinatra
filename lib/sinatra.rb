@@ -41,6 +41,12 @@ class Array
   end
 end
 
+class Proc
+  def block
+    self
+  end
+end
+
 
 module Enumerable
   def eject(&block)
@@ -55,6 +61,10 @@ module Sinatra
   Error = Proc.new do 
     "#{$!.message}\n\t#{$!.backtrace.join("\n\t")}"
   end
+
+  NotFound = Proc.new do 
+    "<h1>Not Found</h1>"
+  end
   
   def request_types
     @request_types ||= [:get, :put, :post, :delete]
@@ -68,7 +78,7 @@ module Sinatra
   
   def determine_route(verb, path)
     found = routes[verb].eject { |r| r.match(path) }
-    found ||= routes[404]
+    found || routes[404] || NotFound
   end
   
   def call(env)
