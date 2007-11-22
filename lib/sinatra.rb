@@ -96,8 +96,7 @@ module Sinatra
   end
   
   def determine_route(verb, path)
-    found = routes[verb].eject { |r| r.match(path) }
-    found || routes[404]
+    routes[verb].eject { |r| r.match(path) } || routes[404]
   end
   
   def call(env)
@@ -108,8 +107,10 @@ module Sinatra
       request.path_info
     )
     context = EventContext.new(request, response)
+    context.status = nil
     begin
       result = context.instance_eval(&route.block)
+      context.status ||= route.default_status
       context.body = Array(result.to_s)
       context.finish
     rescue => e
@@ -126,8 +127,8 @@ module Sinatra
     route
   end
   
-  def define_error_route(num, &b)
-    routes[num] = b
+  def define_error(code, &b)
+    routes[code] = Error.new(code, &b)
   end
   
   class Route
@@ -145,15 +146,29 @@ module Sinatra
         "(#{URI_CHAR}+)"
       end
       @pattern = /^#{regex}$/
-      @struct = Struct.new(:block, :params)
+      @struct = Struct.new(:block, :params, :default_status)
     end
-    
+        
     def match(path)
       return nil unless path =~ @pattern
       params = @param_keys.zip($~.captures.map(&:from_param)).to_hash
-      @struct.new(@block, params)
+      @struct.new(@block, params, 200)
     end
     
+  end
+  
+  class Error
+    
+    attr_reader :block
+    
+    def initialize(code, &b)
+      @code, @block = code, b
+    end
+    
+    def default_status
+      @code
+    end
+        
   end
     
 end
@@ -162,9 +177,9 @@ def get(path, &b)
   Sinatra.define_route(:get, path, &b)
 end
 
-def error(num, &b)
+def error(code, &b)
   raise 'You must specify a block to assciate with an error' if b.nil?
-  Sinatra.define_error_route(num, &b)
+  Sinatra.define_error(code, &b)
 end
 
 Sinatra.setup_default_events!

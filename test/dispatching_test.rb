@@ -36,7 +36,7 @@ context "Dispatching" do
     status.should.equal 404
     body.should.equal '<h1>Not Found</h1>'
   end
-  
+    
   specify "should give custom 500 if error when called" do
     Sinatra.routes[500] = r = Proc.new { 'custom 500' }
 
