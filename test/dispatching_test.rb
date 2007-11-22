@@ -1,16 +1,9 @@
 require File.dirname(__FILE__) + '/helper'
 
 context "Dispatching" do
-    
-  include Sinatra::Test::Methods
-      
-  def dont_raise_errors
-    Sinatra.config[:raise_errors] = false
-    yield
-    Sinatra.config[:raise_errors] = true
-  end
-    
+        
   setup do
+    Sinatra.config = nil
     Sinatra.routes.clear
     Sinatra.setup_default_events!
   end
@@ -102,8 +95,6 @@ end
 
 context "An Event in test mode" do
   
-  include Sinatra::Test::Methods
-
   setup do
     Sinatra.routes.clear
     Sinatra.setup_default_events!

@@ -88,11 +88,19 @@ module Sinatra
   end
   
   def config
-    @config ||= {}
+    @config ||= @default_config
   end
   
   def config=(c)
     @config = c
+  end
+  
+  def default_config
+    @default_config ||= {
+      :run => true,
+      :raise_errors => false,
+      :env => :development
+    }
   end
   
   def determine_route(verb, path)
@@ -177,9 +185,9 @@ def get(path, &b)
   Sinatra.define_route(:get, path, &b)
 end
 
-def error(code, &b)
+def error(*codes, &b)
   raise 'You must specify a block to assciate with an error' if b.nil?
-  Sinatra.define_error(code, &b)
+  codes.each { |code| Sinatra.define_error(code, &b) }
 end
 
 Sinatra.setup_default_events!

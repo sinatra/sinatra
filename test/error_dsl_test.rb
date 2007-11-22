@@ -4,6 +4,7 @@ context "Defining Errors" do
 
   setup do
     Sinatra.routes.clear
+    Sinatra.config = nil
     Sinatra.setup_default_events!
   end
   
@@ -24,9 +25,9 @@ context "Defining Errors" do
     should.be.not_found
   end
   
-  xspecify "should handle multiple errors" do
+  specify "should handle multiple errors" do
     
-    get 404, 500 do
+    error 404, 500 do
       'multi custom error'
     end
     
@@ -34,7 +35,17 @@ context "Defining Errors" do
       raise 'asdf'
     end
     
+    dont_raise_errors do
+      get_it '/error'
+    end
+    
+    status.should.equal 500
+    body.should.equal 'multi custom error'
+    
     get_it '/'
+    status.should.equal 404
+    
+    body.should.equal 'multi custom error'
     
   end
   

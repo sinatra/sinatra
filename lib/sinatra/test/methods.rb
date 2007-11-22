@@ -28,10 +28,16 @@ module Sinatra
         get_it(@response.location)
       end
 
+      def dont_raise_errors
+        Sinatra.config[:raise_errors] = false
+        yield
+        Sinatra.config[:raise_errors] = true
+      end
+
       def method_missing(name, *args)
         @response.send(name, *args)
       end
-
+      
     end
 
   end
