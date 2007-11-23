@@ -72,7 +72,6 @@ module Sinatra
     end
 
     error 404 do
-      status 404
       "<h1>Not Found</h1>"
     end
   end
