@@ -154,13 +154,13 @@ module Sinatra
         "(#{URI_CHAR}+)"
       end
       @pattern = /^#{regex}$/
-      @struct = Struct.new(:block, :params, :default_status)
+      @struct = Struct.new(:path, :block, :params, :default_status)
     end
         
     def match(path)
       return nil unless path =~ @pattern
       params = @param_keys.zip($~.captures.map(&:from_param)).to_hash
-      @struct.new(@block, params, 200)
+      @struct.new(@path, @block, params, 200)
     end
     
   end
@@ -181,8 +181,8 @@ module Sinatra
     
 end
 
-def get(path, &b)
-  Sinatra.define_route(:get, path, &b)
+def get(*paths, &b)
+  paths.map { |path| Sinatra.define_route(:get, path, &b) }
 end
 
 def error(*codes, &b)

@@ -12,9 +12,9 @@ context "Dispatching" do
     r = get '/' do
       'main'
     end
-            
+        
     result = Sinatra.determine_route(:get, '/')
-    result.block.should.be r.block
+    result.path.should.equal r.first.path
   end
   
   specify "should return custom 404" do
