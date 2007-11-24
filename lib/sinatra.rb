@@ -122,16 +122,22 @@ module Sinatra
     Sinatra.mime_types[ext] || config[:default_static_mime_type]
   end
   
-  def call(env)
-    request = Rack::Request.new(env)
-
-    path = Sinatra.config[:root] + '/public' + request.path_info
+  def serve_static_file(path)
+    path = Sinatra.config[:root] + '/public' + path
     if File.file?(path)
       headers = {
         'Content-Type' => Array(content_type_for(path)),
         'Content-Length' => Array(File.size(path))
       }
-      return [200, headers, File.read(path)]
+      [200, headers, File.read(path)]
+    end
+  end
+  
+  def call(env)
+    request = Rack::Request.new(env)
+
+    if found = serve_static_file(request.path_info)
+      return found
     end
         
     response = Rack::Response.new
