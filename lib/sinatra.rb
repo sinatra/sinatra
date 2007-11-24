@@ -65,7 +65,11 @@ end
 module Sinatra
   extend self
 
-  EventContext = Struct.new(:request, :response) do
+  EventContext = Struct.new(:request, :response, :route_params) do
+    def params
+      @params ||= request.params.merge(route_params).symbolize_keys
+    end
+    
     def method_missing(name, *args)
       if args.size == 1 && response.respond_to?("#{name}=")
         response.send("#{name}=", args.first)
@@ -109,7 +113,8 @@ module Sinatra
       :raise_errors => false,
       :env => :development,
       :root => File.dirname($0),
-      :default_static_mime_type => 'text/plain'
+      :default_static_mime_type => 'text/plain',
+      :default_params => { :format => 'html' }
     }
   end
   
@@ -145,7 +150,7 @@ module Sinatra
       request.request_method.downcase.to_sym, 
       request.path_info
     )
-    context = EventContext.new(request, response)
+    context = EventContext.new(request, response, route.params)
     context.status = nil
     begin
       result = context.instance_eval(&route.block)
@@ -186,13 +191,19 @@ module Sinatra
         @param_keys << $1.intern
         "(#{URI_CHAR}+)"
       end
-      @pattern = /^#{regex}$/
+      @param_keys << :format
+      @pattern = /^#{regex}(?:\.(#{URI_CHAR}+))?$/
     end
         
     def match(path)
       return nil unless path =~ @pattern
-      params = @param_keys.zip($~.captures.map(&:from_param)).to_hash
-      Result.new(@path, @block, params, 200)
+      params = @param_keys.zip($~.captures.compact.map(&:from_param)).to_hash
+      Result.new(@path, @block, include_format(params), 200)
+    end
+    
+    def include_format(h)
+      h.delete(:format) unless h[:format]
+      Sinatra.config[:default_params].merge(h)
     end
     
   end
@@ -208,7 +219,8 @@ module Sinatra
     def default_status
       @code
     end
-        
+    
+    def params; {}; end
   end
       
 end

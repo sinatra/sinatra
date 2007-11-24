@@ -90,6 +90,26 @@ context "Dispatching" do
     body.should.equal "uh oh"
     status.should.equal 555
   end
+  
+  specify "should give format for free" do
+    get '/formatted' do
+      params[:format].should.equal 'xml'
+    end
+    
+    get_it '/formatted.xml'
+    
+    should.be.ok
+  end
+  
+  specify "should give format default html format for free" do
+    get '/formatted' do
+      params[:format].should.equal 'html'
+    end
+    
+    get_it '/formatted'
+    
+    should.be.ok
+  end
           
 end
 
