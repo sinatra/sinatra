@@ -238,4 +238,8 @@ def mime_type(content_type, *exts)
   exts.each { |ext| Sinatra::MIME_TYPES.merge(ext.to_s, content_type) }
 end
 
+def helpers(&b)
+  Sinatra::EventContext.class_eval(&b)
+end
+
 Sinatra.setup_default_events!
