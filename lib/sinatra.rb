@@ -1,6 +1,15 @@
 require "rubygems"
 require "rack"
 
+require 'sinatra/mime_types'
+
+def silence_warnings
+  old_verbose, $VERBOSE = $VERBOSE, nil
+  yield
+ensure
+  $VERBOSE = old_verbose
+end
+
 class String
   def to_param
     URI.escape(self)
@@ -87,7 +96,7 @@ module Sinatra
   end
   
   def config
-    @config ||= @default_config
+    @config ||= @default_config.dup
   end
   
   def config=(c)
@@ -98,7 +107,9 @@ module Sinatra
     @default_config ||= {
       :run => true,
       :raise_errors => false,
-      :env => :development
+      :env => :development,
+      :root => File.dirname($0),
+      :default_static_mime_type => 'text/plain'
     }
   end
   
@@ -106,8 +117,23 @@ module Sinatra
     routes[verb].eject { |r| r.match(path) } || routes[404]
   end
   
+  def content_type_for(path)
+    ext = File.extname(path)[1..-1]
+    Sinatra.mime_types[ext] || config[:default_static_mime_type]
+  end
+  
   def call(env)
     request = Rack::Request.new(env)
+
+    path = Sinatra.config[:root] + '/public' + request.path_info
+    if File.file?(path)
+      headers = {
+        'Content-Type' => Array(content_type_for(path)),
+        'Content-Length' => Array(File.size(path))
+      }
+      return [200, headers, File.read(path)]
+    end
+        
     response = Rack::Response.new
     route = determine_route(
       request.request_method.downcase.to_sym, 
@@ -139,9 +165,11 @@ module Sinatra
   end
   
   class Route
-    
+        
     URI_CHAR = '[^/?:,&#]'.freeze unless defined?(URI_CHAR)
     PARAM = /:(#{URI_CHAR}+)/.freeze unless defined?(PARAM)
+    
+    Result = Struct.new(:path, :block, :params, :default_status)
     
     attr_reader :block, :path
     
@@ -153,13 +181,12 @@ module Sinatra
         "(#{URI_CHAR}+)"
       end
       @pattern = /^#{regex}$/
-      @struct = Struct.new(:path, :block, :params, :default_status)
     end
         
     def match(path)
       return nil unless path =~ @pattern
       params = @param_keys.zip($~.captures.map(&:from_param)).to_hash
-      @struct.new(@path, @block, params, 200)
+      Result.new(@path, @block, params, 200)
     end
     
   end
@@ -177,7 +204,7 @@ module Sinatra
     end
         
   end
-    
+      
 end
 
 def get(*paths, &b)
@@ -187,6 +214,10 @@ end
 def error(*codes, &b)
   raise 'You must specify a block to assciate with an error' if b.nil?
   codes.each { |code| Sinatra.define_error(code, &b) }
+end
+
+def mime_type(content_type, *exts)
+  exts.each { |ext| Sinatra::MIME_TYPES.merge(ext.to_s, content_type) }
 end
 
 Sinatra.setup_default_events!
