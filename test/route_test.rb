@@ -9,7 +9,7 @@ context "A Route in general" do
     
     result = e.match('/')
     result.block.call.should.equal 'hello'
-    result.params.should.be.empty
+    result.params.should.equal :format => 'html'
   end
   
   specify "matches with params from path" do
@@ -21,7 +21,7 @@ context "A Route in general" do
     result = e.match('/blake%20mizerany')
     result.should.not.be.nil
     result.block.call.should.equal 'hello again'
-    result.params.should.equal :name => 'blake mizerany'
+    result.params.should.equal :name => 'blake mizerany', :format => "html" 
   end
   
   specify "matches multiple vars in path" do
@@ -33,7 +33,8 @@ context "A Route in general" do
     result = e.match('/blake%20mizerany/25')
     result.should.not.be.nil
     result.block.call.should.equal 'hello again'
-    result.params.should.equal :name => 'blake mizerany', :age => '25'
+    result.params.should.equal :name => 'blake mizerany', :age => '25',
+                               :format => "html"
   end
     
 end
