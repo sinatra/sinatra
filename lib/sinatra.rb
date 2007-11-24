@@ -191,8 +191,12 @@ module Sinatra
         @param_keys << $1.intern
         "(#{URI_CHAR}+)"
       end
-      @param_keys << :format
-      @pattern = /^#{regex}(?:\.(#{URI_CHAR}+))?$/
+      if path =~ /:format$/
+        @pattern = /^#{regex}$/
+      else
+        @param_keys << :format
+        @pattern = /^#{regex}(?:\.(#{URI_CHAR}+))?$/
+      end
     end
         
     def match(path)

@@ -110,6 +110,22 @@ context "Dispatching" do
     
     should.be.ok
   end
+  
+  specify "format for free is overrided by :format in route" do
+
+    get '/formatted.:format' do
+      params[:format]
+    end
+    
+    get_it '/formatted.xml'
+    should.be.ok
+    body.should.equal 'xml'
+    
+    get_it '/formatted.js'
+    should.be.ok
+    body.should.equal 'js'
+    
+  end
           
 end
 
