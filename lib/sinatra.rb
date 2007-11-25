@@ -1,4 +1,13 @@
 require "rubygems"
+
+if ENV['SWIFT']
+ require 'swiftcore/swiftiplied_mongrel'
+ puts "Using Swiftiplied Mongrel"
+elsif ENV['EVENT']
+  require 'swiftcore/evented_mongrel' 
+  puts "Using Evented Mongrel"
+end
+
 require "rack"
 
 require 'sinatra/mime_types'
@@ -67,6 +76,23 @@ end
 module Sinatra
   extend self
 
+  def run
+    
+    begin
+      puts "== Sinatra has taken the stage on port #{Sinatra.config[:port]} for #{Sinatra.config[:env]}"
+      require 'pp'
+      Rack::Handler::Mongrel.run(Sinatra, :Port => Sinatra.config[:port]) do |server|
+        trap(:INT) do
+          server.stop
+          puts "\n== Sinatra has ended his set (crowd applauds)"
+        end
+      end
+    rescue Errno::EADDRINUSE => e
+      puts "== Someone is already performing on port #{Sinatra.config[:port]}!"
+    end
+    
+  end
+
   EventContext = Struct.new(:request, :response, :route_params) do
     def params
       @params ||= request.params.merge(route_params).symbolize_keys
@@ -87,7 +113,7 @@ module Sinatra
   
   def setup_default_events!
     error 500 do
-      "#{$!.message}\n\t#{$!.backtrace.join("\n\t")}"
+      "<h2>#{$!.message}</h2>#{$!.backtrace.join("<br/>")}"
     end
 
     error 404 do
@@ -110,7 +136,7 @@ module Sinatra
   end
   
   def config
-    @config ||= @default_config.dup
+    @config ||= default_config.dup
   end
   
   def config=(c)
@@ -120,6 +146,7 @@ module Sinatra
   def default_config
     @default_config ||= {
       :run => true,
+      :port => 4567,
       :raise_errors => false,
       :env => :development,
       :root => File.dirname($0),
@@ -268,6 +295,18 @@ def get(*paths, &b)
   paths.map { |path| Sinatra.define_route(:get, path, &b) }
 end
 
+def post(*paths, &b)
+  paths.map { |path| Sinatra.define_route(:post, path, &b) }
+end
+
+def put(*paths, &b)
+  paths.map { |path| Sinatra.define_route(:put, path, &b) }
+end
+
+def delete(*paths, &b)
+  paths.map { |path| Sinatra.define_route(:delete, path, &b) }
+end
+
 def error(*codes, &b)
   raise 'You must specify a block to assciate with an error' if b.nil?
   codes.each { |code| Sinatra.define_error(code, &b) }
@@ -289,8 +328,17 @@ def helpers(&b)
   Sinatra::EventContext.class_eval(&b)
 end
 
+def configures(*envs)
+  yield if (envs.include?(Sinatra.config[:env]) || 
+    envs.empty?) && 
+    !Sinatra.config[:reloading]
+end
+
 Sinatra.setup_default_events!
 
 Sinatra::EventContext.send :include, Sinatra::SendFileMixin
 
-
+at_exit do
+  raise $! if $!
+  Sinatra.run if Sinatra.config[:run]
+end
