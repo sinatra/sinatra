@@ -160,6 +160,10 @@ module Sinatra
     @config = c
   end
   
+  def development?
+    config[:env] == :development
+  end
+  
   def default_config
     @default_config ||= {
       :run => true,
@@ -193,6 +197,9 @@ module Sinatra
   end
   
   def call(env)
+    
+    reload! if Sinatra.development?
+    
     request = Rack::Request.new(env)
 
     if found = serve_static_file(request.path_info)
@@ -236,6 +243,13 @@ module Sinatra
     routes.clear
     config = nil
     setup_default_events!
+  end
+  
+  def reload!
+    config[:reloading] = true
+    reset!
+    load $0
+    config[:reloading] = false
   end
   
   protected
