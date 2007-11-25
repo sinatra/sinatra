@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-class NotFound
+class CustomResult
   
   def to_result(cx, *args)
     cx.status 404
@@ -54,7 +54,7 @@ context "Filters" do
   specify "halts with custom result" do
     
     before do
-      throw :halt, NotFound.new
+      throw :halt, CustomResult.new
     end
     
     get '/custom' do

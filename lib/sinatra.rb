@@ -188,6 +188,12 @@ module Sinatra
     filters[type] << b
   end
   
+  def reset!
+    routes.clear
+    config = nil
+    setup_default_events!
+  end
+  
   protected
 
     def handle_with_filters(cx, &b)
@@ -195,7 +201,10 @@ module Sinatra
         filters[:before].each { |x| cx.instance_eval(&x) }
         [:complete, b]
       end
-      result = caught.to_result(cx)
+      caught = catch(:halt) do
+        caught.to_result(cx)
+      end
+      result = caught.to_result(cx) if caught
       filters[:after].each { |x| cx.instance_eval(&x) }
       cx.body Array(result.to_s)
       cx
