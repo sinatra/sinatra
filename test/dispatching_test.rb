@@ -53,7 +53,7 @@ context "Dispatching" do
       get_it '/'
     end
 
-    body.should.match(/^asdf/)
+    body.should.match(/^<h2>asdf<\/h2>/)
   end
   
   specify "should run in a context" do
