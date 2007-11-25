@@ -9,9 +9,11 @@ context "Event's DSL" do
     end
     
     get_it '/'
+    should.be.ok
     body.should.equal 'hello from me'
     
     get_it '/foo'
+    should.be.ok
     body.should.equal 'hello from me'
     
   end

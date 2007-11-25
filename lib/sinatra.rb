@@ -2,6 +2,8 @@ require "rubygems"
 require "rack"
 
 require 'sinatra/mime_types'
+require 'sinatra/send_file_mixin'
+require 'sinatra/halt_results'
 
 def silence_warnings
   old_verbose, $VERBOSE = $VERBOSE, nil
@@ -70,6 +72,10 @@ module Sinatra
       @params ||= request.params.merge(route_params).symbolize_keys
     end
     
+    def complete(b)
+      self.instance_eval(&b)
+    end
+    
     def method_missing(name, *args)
       if args.size == 1 && response.respond_to?("#{name}=")
         response.send("#{name}=", args.first)
@@ -97,6 +103,10 @@ module Sinatra
     @routes ||= Hash.new do |hash, key|
       hash[key] = [] if request_types.include?(key)
     end
+  end
+  
+  def filters
+    @filters ||= Hash.new { |hash, key| hash[key] = [] }
   end
   
   def config
@@ -153,9 +163,8 @@ module Sinatra
     context = EventContext.new(request, response, route.params)
     context.status = nil
     begin
-      result = context.instance_eval(&route.block)
+      context = handle_with_filters(context, &route.block)
       context.status ||= route.default_status
-      context.body = Array(result.to_s)
       context.finish
     rescue => e
       raise e if config[:raise_errors]
@@ -174,6 +183,19 @@ module Sinatra
   def define_error(code, &b)
     routes[code] = Error.new(code, &b)
   end
+  
+  protected
+
+    def handle_with_filters(cx, &b)
+      caught = catch(:halt) do
+        filters[:before].each { |x| cx.instance_eval(&x) }
+        [:complete, b]
+      end
+      result = caught.to_result(cx)
+      filters[:after].each { |x| cx.instance_eval(&x) }
+      cx.body Array(result.to_s)
+      cx
+    end
   
   class Route
         
@@ -247,3 +269,7 @@ def helpers(&b)
 end
 
 Sinatra.setup_default_events!
+
+Sinatra::EventContext.send :include, Sinatra::SendFileMixin
+
+
