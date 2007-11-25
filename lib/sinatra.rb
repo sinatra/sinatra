@@ -184,6 +184,10 @@ module Sinatra
     routes[code] = Error.new(code, &b)
   end
   
+  def define_filter(type, &b)
+    filters[type] << b
+  end
+  
   protected
 
     def handle_with_filters(cx, &b)
@@ -258,6 +262,14 @@ end
 def error(*codes, &b)
   raise 'You must specify a block to assciate with an error' if b.nil?
   codes.each { |code| Sinatra.define_error(code, &b) }
+end
+
+def before(&b)
+  Sinatra.define_filter(:before, &b)
+end
+
+def after(&b)
+  Sinatra.define_filter(:after, &b)
 end
 
 def mime_type(content_type, *exts)
