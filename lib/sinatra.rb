@@ -10,8 +10,9 @@ end
 
 require "rack"
 
-require 'sinatra/mime_types'
-require 'sinatra/halt_results'
+require File.dirname(__FILE__) + '/sinatra/mime_types'
+require File.dirname(__FILE__) + '/sinatra/halt_results'
+require File.dirname(__FILE__) + '/sinatra/logger'
 
 def silence_warnings
   old_verbose, $VERBOSE = $VERBOSE, nil
@@ -75,6 +76,8 @@ end
 module Sinatra
   extend self
 
+  attr_accessor :logger
+
   def run
     
     begin
@@ -96,6 +99,10 @@ module Sinatra
     
     attr_reader :request, :response, :route_params
     
+    def logger
+      Sinatra.logger
+    end
+    
     def initialize(request, response, route_params)
       @request, @response, @route_params = 
         request, response, route_params
@@ -113,7 +120,7 @@ module Sinatra
     # for redirecting within your same app. Or it can
     # be a fully qualified url to another site.
     def redirect(url)
-      puts "Redirecting to: #{url}"
+      logger.info "Redirecting to: #{url}"
       status(302)
       headers.merge!({'Location'=> url})
       return ''
@@ -364,6 +371,17 @@ def configures(*envs)
     envs.empty?) && 
     !Sinatra.config[:reloading]
 end
+
+Sinatra.logger = Sinatra::Logger.new(STDOUT)
+
+if Sinatra.config[:env] != :test
+  Thread.new do
+    while true
+      Sinatra.logger.flush
+      sleep(0.3)
+    end
+  end
+end  
 
 Sinatra.setup_default_events!
 
