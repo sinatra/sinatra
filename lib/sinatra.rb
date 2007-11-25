@@ -11,7 +11,6 @@ end
 require "rack"
 
 require 'sinatra/mime_types'
-require 'sinatra/send_file_mixin'
 require 'sinatra/halt_results'
 
 def silence_warnings
@@ -93,13 +92,31 @@ module Sinatra
     
   end
 
-  EventContext = Struct.new(:request, :response, :route_params) do
+  class EventContext
+    
+    attr_reader :request, :response, :route_params
+    
+    def initialize(request, response, route_params)
+      @request, @response, @route_params = 
+        request, response, route_params
+    end
+    
     def params
       @params ||= request.params.merge(route_params).symbolize_keys
     end
     
     def complete(b)
       self.instance_eval(&b)
+    end
+    
+    # redirect to another url It can be like /foo/bar
+    # for redirecting within your same app. Or it can
+    # be a fully qualified url to another site.
+    def redirect(url)
+      puts "Redirecting to: #{url}"
+      status(302)
+      headers.merge!({'Location'=> url})
+      return ''
     end
     
     def method_missing(name, *args)
@@ -335,8 +352,6 @@ def configures(*envs)
 end
 
 Sinatra.setup_default_events!
-
-Sinatra::EventContext.send :include, Sinatra::SendFileMixin
 
 at_exit do
   raise $! if $!
