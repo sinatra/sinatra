@@ -122,7 +122,7 @@ module Sinatra
     def redirect(url)
       logger.info "Redirecting to: #{url}"
       status(302)
-      headers.merge!({'Location'=> url})
+      headers.merge!('Location' => url)
       return ''
     end
     
@@ -133,6 +133,7 @@ module Sinatra
         response.send(name, *args)
       end
     end
+    
   end
   
   def setup_default_events!
@@ -206,10 +207,13 @@ module Sinatra
   def call(env)
     
     reload! if Sinatra.development?
+
+    time = Time.now
     
     request = Rack::Request.new(env)
 
     if found = serve_static_file(request.path_info)
+      log_request_and_response(time, request, Rack::Response.new(found))
       return found
     end
         
@@ -223,16 +227,19 @@ module Sinatra
     begin
       context = handle_with_filters(context, &route.block)
       context.status ||= route.default_status
-      context.finish
     rescue => e
       raise e if config[:raise_errors]
       route = Sinatra.routes[500]
       context.status 500
       context.body Array(context.instance_eval(&route.block))
-      context.finish
+    ensure
+      log_request_and_response(time, request, response)
+      logger.flush
     end
+    
+    context.finish
   end
-  
+    
   def define_route(verb, path, &b)
     routes[verb] << route = Route.new(path, &b)
     route
@@ -247,8 +254,9 @@ module Sinatra
   end
   
   def reset!
+    self.config = nil
     routes.clear
-    config = nil
+    filters.clear
     setup_default_events!
   end
   
@@ -260,6 +268,29 @@ module Sinatra
   end
   
   protected
+  
+    def log_request_and_response(time, request, response)
+      now = Time.now
+
+      # Common Log Format: http://httpd.apache.org/docs/1.3/logs.html#common
+      # lilith.local - - [07/Aug/2006 23:58:02] "GET / HTTP/1.1" 500 -
+      #             %{%s - %s [%s] "%s %s%s %s" %d %s\n} %
+      logger.info %{%s - %s [%s] "%s %s%s %s" %d %s %0.4f\n} %
+        [
+          request.env["REMOTE_ADDR"] || "-",
+          request.env["REMOTE_USER"] || "-",
+          now.strftime("%d/%b/%Y %H:%M:%S"),
+          request.env["REQUEST_METHOD"],
+          request.env["PATH_INFO"],
+          request.env["QUERY_STRING"].empty? ? 
+            "" : 
+            "?" + request.env["QUERY_STRING"],
+          request.env["HTTP_VERSION"],
+          response.status.to_s[0..3].to_i,
+          (response.body.length.zero? ? "-" : response.body.length.to_s),
+          now - time
+        ]
+    end
 
     def handle_with_filters(cx, &b)
       caught = catch(:halt) do
@@ -308,6 +339,10 @@ module Sinatra
     def include_format(h)
       h.delete(:format) unless h[:format]
       Sinatra.config[:default_params].merge(h)
+    end
+    
+    def pretty_print(pp)
+      pp.text "{Route: #{@pattern} : [#{@param_keys.map(&:inspect).join(",")}] }"
     end
     
   end
@@ -372,16 +407,7 @@ def configures(*envs)
     !Sinatra.config[:reloading]
 end
 
-Sinatra.logger = Sinatra::Logger.new(STDOUT)
-
-if Sinatra.config[:env] != :test
-  Thread.new do
-    while true
-      Sinatra.logger.flush
-      sleep(0.3)
-    end
-  end
-end  
+Sinatra.logger = Sinatra::Logger.new("#{Sinatra.config[:env]}.log")
 
 Sinatra.setup_default_events!
 

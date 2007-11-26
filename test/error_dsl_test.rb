@@ -3,9 +3,7 @@ require File.dirname(__FILE__) + '/helper'
 context "Defining Errors" do
 
   setup do
-    Sinatra.routes.clear
-    Sinatra.config = nil
-    Sinatra.setup_default_events!
+    Sinatra.reset!
   end
   
   specify "should raise error if no block given" do

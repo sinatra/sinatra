@@ -12,9 +12,7 @@ end
 context "Filters" do
   
   setup do
-    Sinatra.filters.clear
-    Sinatra.routes.clear
-    Sinatra.config = nil
+    Sinatra.reset!
   end
 
   specify "halts when told" do

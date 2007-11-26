@@ -3,10 +3,9 @@ require File.dirname(__FILE__) + '/helper'
 context "Dispatching" do
         
   setup do
-    Sinatra.config = nil
-    Sinatra.routes.clear
-    Sinatra.setup_default_events!
+    Sinatra.reset!
   end
+  
     
   specify "should return the correct block" do
     r = get '/' do

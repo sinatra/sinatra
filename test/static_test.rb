@@ -3,10 +3,7 @@ require File.dirname(__FILE__) + '/helper'
 context "Static" do
   
   setup do
-    Sinatra.routes.clear
-    Sinatra.config = nil
-    Sinatra.setup_default_events!
-    
+    Sinatra.reset!
     Sinatra.config[:root] = File.dirname(__FILE__)
   end
   

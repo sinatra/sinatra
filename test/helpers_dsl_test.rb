@@ -2,6 +2,10 @@ require File.dirname(__FILE__) + '/helper'
 
 context "Helpers" do
   
+  setup do
+    Sinatra.reset!
+  end
+  
   specify "for event context" do
     
     helpers do
@@ -15,7 +19,7 @@ context "Helpers" do
     end
     
     get_it '/'
-    
+        
     should.be.ok
     body.should.equal 'foo'
     
