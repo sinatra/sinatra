@@ -330,7 +330,7 @@ module Sinatra
     
     attr_reader :block, :path
     
-    def initialize(path, groups, &b)
+    def initialize(path, groups = :all, &b)
       @path, @groups, @block = path, Array(groups), b
       @param_keys = []
       @struct = Struct.new(:path, :groups, :block, :params, :default_status)
