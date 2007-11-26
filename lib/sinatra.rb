@@ -305,26 +305,22 @@ module Sinatra
 
     def handle_with_filters(groups, cx, &b)
       caught = catch(:halt) do
-        filters_to_run = filters[:before][:all]
-        filters_to_run += groups.inject([]) do |m, g|
-          m + filters[:before][g]
-        end
-        filters_to_run.each { |x| cx.instance_eval(&x) }
+        filters_for(:before, groups).each { |x| cx.instance_eval(&x) }
         [:complete, b]
       end
       caught = catch(:halt) do
         caught.to_result(cx)
       end
       result = caught.to_result(cx) if caught
-      
-      filters_to_run = filters[:after][:all]
-      filters_to_run += groups.inject([]) do |m, g|
-        m + filters[:after][g]
-      end
-      filters_to_run.each { |x| cx.instance_eval(&x) }
-      
+      filters_for(:after, groups).each { |x| cx.instance_eval(&x) }
       cx.body Array(result.to_s)
       cx
+    end
+    
+    def filters_for(type, groups)
+      filters[type][:all] + groups.inject([]) do |m, g|
+        m + filters[type][g]
+      end
     end
   
   class Route

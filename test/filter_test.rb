@@ -69,6 +69,10 @@ context "Filters" do
 end
 
 context "Filter grouping" do
+  
+  setup do
+    Sinatra.reset!
+  end
 
   specify "befores only run for groups if specified" do
 
