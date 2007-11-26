@@ -135,6 +135,12 @@ module Sinatra
     end
     
   end
+
+  def setup_logger
+    self.logger = Sinatra::Logger.new(
+      config[:root] + "/#{Sinatra.config[:env]}.log"
+    )
+  end
   
   def setup_default_events!
     error 500 do
@@ -178,7 +184,7 @@ module Sinatra
       :port => 4567,
       :raise_errors => false,
       :env => :development,
-      :root => File.dirname($0),
+      :root => Dir.pwd,
       :default_static_mime_type => 'text/plain',
       :default_params => { :format => 'html' }
     }
@@ -261,10 +267,10 @@ module Sinatra
   end
   
   def reload!
-    config[:reloading] = true
     reset!
+    self.config[:reloading] = true
     load $0
-    config[:reloading] = false
+    self.config[:reloading] = false
   end
   
   protected
@@ -311,13 +317,12 @@ module Sinatra
     URI_CHAR = '[^/?:,&#]'.freeze unless defined?(URI_CHAR)
     PARAM = /:(#{URI_CHAR}+)/.freeze unless defined?(PARAM)
     
-    Result = Struct.new(:path, :block, :params, :default_status)
-    
     attr_reader :block, :path
     
     def initialize(path, &b)
       @path, @block = path, b
       @param_keys = []
+      @struct = Struct.new(:path, :block, :params, :default_status)
       regex = path.to_s.gsub(PARAM) do
         @param_keys << $1.intern
         "(#{URI_CHAR}+)"
@@ -333,7 +338,7 @@ module Sinatra
     def match(path)
       return nil unless path =~ @pattern
       params = @param_keys.zip($~.captures.compact.map(&:from_param)).to_hash
-      Result.new(@path, @block, include_format(params), 200)
+      @struct.new(@path, @block, include_format(params), 200)
     end
     
     def include_format(h)
@@ -402,16 +407,15 @@ def helpers(&b)
 end
 
 def configures(*envs)
-  yield if (envs.include?(Sinatra.config[:env]) || 
-    envs.empty?) && 
-    !Sinatra.config[:reloading]
+  return if Sinatra.config[:reloading]
+  yield if (envs.include?(Sinatra.config[:env]) || envs.empty?)
 end
-
-Sinatra.logger = Sinatra::Logger.new("#{Sinatra.config[:env]}.log")
+alias :configure :configures
 
 Sinatra.setup_default_events!
 
 at_exit do
   raise $! if $!
+  Sinatra.setup_logger
   Sinatra.run if Sinatra.config[:run]
 end
