@@ -388,15 +388,18 @@ def get(*paths, &b)
 end
 
 def post(*paths, &b)
-  paths.map { |path| Sinatra.define_route(:post, path, &b) }
+  options = Hash === paths.last ? paths.pop : {}
+  paths.map { |path| Sinatra.define_route(:post, path, options, &b) }
 end
 
 def put(*paths, &b)
-  paths.map { |path| Sinatra.define_route(:put, path, &b) }
+  options = Hash === paths.last ? paths.pop : {}
+  paths.map { |path| Sinatra.define_route(:put, path, options, &b) }
 end
 
 def delete(*paths, &b)
-  paths.map { |path| Sinatra.define_route(:delete, path, &b) }
+  options = Hash === paths.last ? paths.pop : {}
+  paths.map { |path| Sinatra.define_route(:delete, path, options, &b) }
 end
 
 def error(*codes, &b)
