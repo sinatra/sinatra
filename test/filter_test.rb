@@ -68,3 +68,42 @@ context "Filters" do
   
 end
 
+context "Filter grouping" do
+
+  specify "befores only run for groups if specified" do
+
+    Sinatra::EventContext.any_instance.expects(:foo).times(4)
+    
+    before do
+      foo  # this should be called before all events
+    end
+    
+    after do
+      foo
+    end
+    
+    before :admins do
+      throw :halt, 'not authorized'
+    end
+    
+    get '/', :groups => :admins do
+      'asdf'
+    end
+    
+    get '/foo' do
+      'yeah!'
+    end
+            
+    get_it '/'
+  
+    should.be.ok
+    body.should.equal 'not authorized'
+    
+    get_it '/foo'
+    
+    should.be.ok
+    body.should.equal 'yeah!'
+
+  end
+  
+end

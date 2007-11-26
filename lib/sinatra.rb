@@ -163,7 +163,12 @@ module Sinatra
   end
   
   def filters
-    @filters ||= Hash.new { |hash, key| hash[key] = [] }
+    unless @filters 
+      @filters = Hash.new do |hash, key| 
+        hash[key] = Hash.new { |hash, key| hash[key] = [] }
+      end
+    end
+    @filters
   end
   
   def config
@@ -231,7 +236,7 @@ module Sinatra
     context = EventContext.new(request, response, route.params)
     context.status = nil
     begin
-      context = handle_with_filters(context, &route.block)
+      context = handle_with_filters(route.groups, context, &route.block)
       context.status ||= route.default_status
     rescue => e
       raise e if config[:raise_errors]
@@ -246,8 +251,8 @@ module Sinatra
     context.finish
   end
     
-  def define_route(verb, path, &b)
-    routes[verb] << route = Route.new(path, &b)
+  def define_route(verb, path, options = {}, &b)
+    routes[verb] << route = Route.new(path, Array(options[:groups]), &b)
     route
   end
   
@@ -255,8 +260,8 @@ module Sinatra
     routes[code] = Error.new(code, &b)
   end
   
-  def define_filter(type, &b)
-    filters[type] << b
+  def define_filter(type, group, &b)
+    filters[type][group] << b
   end
   
   def reset!
@@ -298,16 +303,26 @@ module Sinatra
         ]
     end
 
-    def handle_with_filters(cx, &b)
+    def handle_with_filters(groups, cx, &b)
       caught = catch(:halt) do
-        filters[:before].each { |x| cx.instance_eval(&x) }
+        filters_to_run = filters[:before][:all]
+        filters_to_run += groups.inject([]) do |m, g|
+          m + filters[:before][g]
+        end
+        filters_to_run.each { |x| cx.instance_eval(&x) }
         [:complete, b]
       end
       caught = catch(:halt) do
         caught.to_result(cx)
       end
       result = caught.to_result(cx) if caught
-      filters[:after].each { |x| cx.instance_eval(&x) }
+      
+      filters_to_run = filters[:after][:all]
+      filters_to_run += groups.inject([]) do |m, g|
+        m + filters[:after][g]
+      end
+      filters_to_run.each { |x| cx.instance_eval(&x) }
+      
       cx.body Array(result.to_s)
       cx
     end
@@ -319,10 +334,10 @@ module Sinatra
     
     attr_reader :block, :path
     
-    def initialize(path, &b)
-      @path, @block = path, b
+    def initialize(path, groups, &b)
+      @path, @groups, @block = path, Array(groups), b
       @param_keys = []
-      @struct = Struct.new(:path, :block, :params, :default_status)
+      @struct = Struct.new(:path, :groups, :block, :params, :default_status)
       regex = path.to_s.gsub(PARAM) do
         @param_keys << $1.intern
         "(#{URI_CHAR}+)"
@@ -338,7 +353,7 @@ module Sinatra
     def match(path)
       return nil unless path =~ @pattern
       params = @param_keys.zip($~.captures.compact.map(&:from_param)).to_hash
-      @struct.new(@path, @block, include_format(params), 200)
+      @struct.new(@path, @groups, @block, include_format(params), 200)
     end
     
     def include_format(h)
@@ -347,7 +362,7 @@ module Sinatra
     end
     
     def pretty_print(pp)
-      pp.text "{Route: #{@pattern} : [#{@param_keys.map(&:inspect).join(",")}] }"
+      pp.text "{Route: #{@pattern} : [#{@param_keys.map(&:inspect).join(",")}] : #{@groups.join(",")} }"
     end
     
   end
@@ -365,12 +380,15 @@ module Sinatra
     end
     
     def params; {}; end
+    
+    def groups; []; end
   end
       
 end
 
 def get(*paths, &b)
-  paths.map { |path| Sinatra.define_route(:get, path, &b) }
+  options = Hash === paths.last ? paths.pop : {}
+  paths.map { |path| Sinatra.define_route(:get, path, options, &b) }
 end
 
 def post(*paths, &b)
@@ -390,12 +408,14 @@ def error(*codes, &b)
   codes.each { |code| Sinatra.define_error(code, &b) }
 end
 
-def before(&b)
-  Sinatra.define_filter(:before, &b)
+def before(*groups, &b)
+  groups = [:all] if groups.empty?
+  groups.each { |group| Sinatra.define_filter(:before, group, &b) }
 end
 
-def after(&b)
-  Sinatra.define_filter(:after, &b)
+def after(*groups, &b)
+  groups = [:all] if groups.empty?
+  groups.each { |group| Sinatra.define_filter(:after, group, &b) }
 end
 
 def mime_type(content_type, *exts)
