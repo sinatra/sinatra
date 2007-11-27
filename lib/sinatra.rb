@@ -436,5 +436,11 @@ Sinatra.setup_default_events!
 at_exit do
   raise $! if $!
   Sinatra.setup_logger
+  
+  #TODO:  Move this into command line options
+  if ARGV.include?('-i')
+    require File.dirname(__FILE__) + '/sinatra/irb'
+  end
+  
   Sinatra.run if Sinatra.config[:run]
 end
