@@ -1,5 +1,7 @@
 
 module Sinatra
+
+  Result = Struct.new(:body)
   
   class Event
     
@@ -8,6 +10,10 @@ module Sinatra
     def initialize(path, &b)
       @path = path
       @block = b
+    end
+    
+    def invoke
+      Result.new(block.call)
     end
     
   end
@@ -26,7 +32,9 @@ module Sinatra
     end
     
     def lookup(method, path)
-      events[method].find { |e| e.path == path }
+      events[method].find do |e| 
+        result = e.invoke and break result
+      end
     end
     
   end

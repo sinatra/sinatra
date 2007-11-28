@@ -15,7 +15,9 @@ context "Simple Events" do
         
     result = application.lookup(:get, '/')
     
-    result.should.equal route
-  end
+    result.should.not.be.nil
+    result.body.should.equal 'Hello'
     
+  end
+      
 end
