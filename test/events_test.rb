@@ -12,15 +12,16 @@ context "Simple Events" do
     }
   end
 
-  def invoke_simple(path, request_path)
-    event = Sinatra::Event.new(path) { 'Simple' }
+  def invoke_simple(path, request_path, &b)
+    event = Sinatra::Event.new(path, &b)
     event.invoke(simple_request_hash(:get, request_path))
   end
   
   specify "return last value" do
-    result = invoke_simple('/', '/')
+    block = Proc.new { 'Simple' }
+    result = invoke_simple('/', '/', &block)
     result.should.not.be.nil
-    result.body.should.equal 'Simple'
+    result.block.should.be block
     result.params.should.equal Hash.new
   end
   
@@ -39,5 +40,5 @@ context "Simple Events" do
     result = invoke_simple('/x/y', '/x//y')
     result.should.not.be.nil
   end
-        
+          
 end

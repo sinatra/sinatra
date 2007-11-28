@@ -3,7 +3,7 @@ require 'rack'
 
 module Sinatra
 
-  Result = Struct.new(:body, :params)
+  Result = Struct.new(:block, :params)
   
   class Event
 
@@ -26,7 +26,7 @@ module Sinatra
     def invoke(env)
       return unless pattern =~ env['PATH_INFO'].squeeze('/')
       params = param_keys.zip($~.captures.map(&:from_param)).to_hash
-      Result.new(block.call, params)
+      Result.new(block, params)
     end
     
   end
