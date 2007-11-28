@@ -78,9 +78,10 @@ module Sinatra
       )
       returned = context.instance_eval(&result.block)
       context.body ||= returned
+      context.body = String === context.body ? [*context.body] : context.body
       context.finish
     end
-    
+        
   end
   
 end

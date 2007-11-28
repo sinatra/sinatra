@@ -1,7 +1,8 @@
 require File.dirname(__FILE__) + '/../lib/sinatra'
 
-require 'rubygems'
-require 'test/spec'
+require "rubygems"
+require "test/spec"
+require "mocha"
 
 module Sinatra::TestHelper
   

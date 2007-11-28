@@ -35,15 +35,12 @@ context "Looking up a request" do
               
 end
 
-
-context "Calling an app" do
+context "An app returns" do
   
   setup do
     @app = Sinatra::Application.new
   end
-  
-  # - 404 if no events found
-  
+    
   specify "404 if no events found" do
     request = Rack::MockRequest.new(@app)
     result = request.get('/')
@@ -62,7 +59,50 @@ context "Calling an app" do
     result.body.should.equal 'Hello World'
   end
   
-  specify "evaluates events in a clean context" do
+  specify "an objects result from each if it has it" do
+    
+    class TesterWithEach
+      def each
+        yield 'foo'
+        yield 'bar'
+        yield 'baz'
+      end
+    end
+    
+    @app.define_event(:get, '/') do
+      TesterWithEach.new
+    end
+    
+    request = Rack::MockRequest.new(@app)
+    result = request.get('/')
+    result.should.be.ok
+    result.body.should.equal 'foobarbaz'
+    
+  end
+  
+  specify "the body set if set before the last" do
+        
+    @app.define_event(:get, '/') do
+      self.body = 'Blake'
+      'Mizerany'
+    end
+    
+    request = Rack::MockRequest.new(@app)
+    result = request.get('/')
+    result.should.be.ok
+    result.body.should.equal 'Blake'
+    
+  end
+  
+end
+  
+context "Events in an app" do
+  
+  setup do
+    @app = Sinatra::Application.new
+  end
+  
+  specify "evaluate in a clean context" do
     Sinatra::EventContext.class_eval do
       def foo
         'foo'
@@ -79,7 +119,7 @@ context "Calling an app" do
     result.body.should.equal 'foo'
   end
   
-  specify "gives the event access to request, response, and params" do
+  specify "get access to request, response, and params" do
     @app.define_event(:get, '/:foo') do
       params[:foo] + params[:bar]
     end
@@ -89,5 +129,7 @@ context "Calling an app" do
     result.should.be.ok
     result.body.should.equal 'foobaz'
   end
-  
+    
 end
+
+
