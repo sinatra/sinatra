@@ -1,10 +1,32 @@
 require 'rubygems'
 require 'rack'
 
+class Class
+  def dslify_writter(*syms)
+    syms.each do |sym|
+      class_eval <<-end_eval
+        def #{sym}(v=nil)
+          self.send "#{sym}=", v if v
+          v
+        end
+      end_eval
+    end
+  end
+end
+
 module Sinatra
+  extend self
 
   Result = Struct.new(:block, :params)
   
+  def application
+    @app ||= Application.new
+  end
+  
+  def application=(app)
+    @app = app
+  end
+      
   class Event
 
     URI_CHAR = '[^/?:,&#]'.freeze unless defined?(URI_CHAR)
@@ -33,7 +55,19 @@ module Sinatra
   
   class EventContext
     
+    module ResponseHelpers
+
+      def redirect(path)
+        throw :halt, NotFound.new(path)
+      end
+
+    end
+    
+    include ResponseHelpers
+    
     attr_accessor :request, :response
+    
+    dslify_writter :status, :body
     
     def initialize(request, response, route_params)
       @request = request
@@ -46,10 +80,26 @@ module Sinatra
       @params ||= @route_params.merge(@request.params).symbolize_keys
     end
     
+    def complete(returned)
+      @response.body ||= returned
+    end
+    
     def method_missing(name, *args, &b)
       @response.send(name, *args, &b)
     end
     
+  end
+  
+  class NotFound
+    def initialize(path)
+      @path = path
+    end
+    
+    def to_result(cx, *args)
+      cx.status(302)
+      cx.header.merge!('Location' => @path)
+      cx.body('')
+    end
   end
   
   class Application
@@ -76,15 +126,39 @@ module Sinatra
         Rack::Response.new,
         result.params
       )
-      returned = context.instance_eval(&result.block)
-      context.body ||= returned
-      context.body = String === context.body ? [*context.body] : context.body
+      returned = catch(:halt) do
+        [:complete, context.instance_eval(&result.block)]
+      end
+      result = returned.to_result(context)
+      context.body = String === result ? [*result] : result
       context.finish
     end
         
   end
   
 end
+
+def get(path, &b)
+  Sinatra.application.define_event(:get, path, &b)
+end
+
+def post(path, &b)
+  Sinatra.application.define_event(:post, path, &b)
+end
+
+def put(path, &b)
+  Sinatra.application.define_event(:put, path, &b)
+end
+
+def delete(path, &b)
+  Sinatra.application.define_event(:delete, path, &b)
+end
+
+def helpers(&b)
+  Sinatra::EventContext.class_eval(&b)
+end
+
+### Misc Core Extensions
 
 module Kernel
 
@@ -155,4 +229,37 @@ module Enumerable
     find { |e| result = block[e] and break result }
   end
   
+end
+
+### Core Extension results for throw :halt
+
+class Proc
+  def to_result(cx, *args)
+    cx.instance_eval(&self)
+  end
+end
+
+class String
+  def to_result(cx, *args)
+    cx.body self
+  end
+end
+
+class Array
+  def to_result(cx, *args)
+    self.shift.to_result(cx, *self)
+  end
+end
+
+class Symbol
+  def to_result(cx, *args)
+    cx.send(self, *args)
+  end
+end
+
+class Fixnum
+  def to_result(cx, *args)
+    cx.status self
+    cx.body args.first
+  end
 end
