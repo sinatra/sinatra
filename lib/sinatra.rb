@@ -31,6 +31,9 @@ module Sinatra
     
   end
   
+  class EventContext
+  end
+  
   class Application
     
     attr_reader :events
@@ -50,7 +53,8 @@ module Sinatra
     
     def call(env)
       return [404, {}, 'Not Found'] unless event = lookup(env)
-      [200, {}, event.block.call]
+      result = EventContext.new.instance_eval(&event.block)
+      [200, {}, result]
     end
     
   end

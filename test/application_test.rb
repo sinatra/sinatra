@@ -62,4 +62,21 @@ context "Calling an app" do
     result.body.should.equal 'Hello World'
   end
   
+  specify "evaluates events in a clean context" do
+    Sinatra::EventContext.class_eval do
+      def foo
+        'foo'
+      end
+    end
+    
+    @app.define_event(:get, '/foo') do
+      foo
+    end
+    
+    request = Rack::MockRequest.new(@app)
+    result = request.get('/foo')
+    result.should.be.ok
+    result.body.should.equal 'foo'
+  end
+  
 end
