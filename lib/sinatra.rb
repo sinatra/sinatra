@@ -85,21 +85,19 @@ module Sinatra
     end
     
     def complete(returned)
-      _render(@response.body || returned)
+      @response.body || returned
     end
     
-    protected
+    def render(content, options={}, &b)
+      content
+    end
+
+    private
     
       def _body=(content)
         @response.body = content
       end
     
-      def _render(content)
-        # This is for renderers to override
-        # See http://sinatrarb.com/renderers
-        content
-      end
-      
       def method_missing(name, *args, &b)
         raise NoMethodError.new('body=') if name == :body=
         @response.send(name, *args, &b)
