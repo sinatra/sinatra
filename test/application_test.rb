@@ -34,3 +34,32 @@ context "Looking up a request" do
   end
               
 end
+
+
+context "Calling an app" do
+  
+  setup do
+    @app = Sinatra::Application.new
+  end
+  
+  # - 404 if no events found
+  
+  specify "404 if no events found" do
+    request = Rack::MockRequest.new(@app)
+    result = request.get('/')
+    result.should.be.not_found
+    result.body.should.equal 'Not Found'
+  end
+  
+  specify "200 if success" do
+    @app.define_event(:get, '/') do
+      'Hello World'
+    end
+    
+    request = Rack::MockRequest.new(@app)
+    result = request.get('/')
+    result.should.be.ok
+    result.body.should.equal 'Hello World'
+  end
+  
+end

@@ -48,6 +48,11 @@ module Sinatra
       events[env['REQUEST_METHOD'].downcase.to_sym].eject(&[:invoke, env])
     end
     
+    def call(env)
+      return [404, {}, 'Not Found'] unless event = lookup(env)
+      [200, {}, event.block.call]
+    end
+    
   end
   
 end
