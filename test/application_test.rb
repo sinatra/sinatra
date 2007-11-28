@@ -79,4 +79,15 @@ context "Calling an app" do
     result.body.should.equal 'foo'
   end
   
+  specify "gives the event access to request, response, and params" do
+    @app.define_event(:get, '/:foo') do
+      params[:foo] + params[:bar]
+    end
+    
+    request = Rack::MockRequest.new(@app)
+    result = request.get('/foo?bar=baz')
+    result.should.be.ok
+    result.body.should.equal 'foobaz'
+  end
+  
 end

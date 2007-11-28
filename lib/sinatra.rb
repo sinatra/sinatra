@@ -32,6 +32,24 @@ module Sinatra
   end
   
   class EventContext
+    
+    attr_accessor :request, :response
+    
+    def initialize(request, response, route_params)
+      @request = request
+      @response = response
+      @route_params = route_params
+      @response.body = nil
+    end
+    
+    def params
+      @params ||= @route_params.merge(@request.params).symbolize_keys
+    end
+    
+    def method_missing(name, *args, &b)
+      @response.send(name, *args, &b)
+    end
+    
   end
   
   class Application
@@ -52,9 +70,15 @@ module Sinatra
     end
     
     def call(env)
-      return [404, {}, 'Not Found'] unless event = lookup(env)
-      result = EventContext.new.instance_eval(&event.block)
-      [200, {}, result]
+      return [404, {}, 'Not Found'] unless result = lookup(env)
+      context = EventContext.new(
+        Rack::Request.new(env), 
+        Rack::Response.new,
+        result.params
+      )
+      returned = context.instance_eval(&result.block)
+      context.body ||= returned
+      context.finish
     end
     
   end
