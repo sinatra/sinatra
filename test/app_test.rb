@@ -35,4 +35,21 @@ context "Sinatra" do
     body.should.equal 'Mizerany'
   end
   
+  specify "body sets content and ends event" do
+    
+    Sinatra::EventContext.any_instance.expects(:foo).never
+    
+    get '/set_body' do
+      body 'Hello!'
+      body 'Not this'
+      foo
+    end
+    
+    get_it '/set_body'
+    
+    should.be.ok
+    body.should.equal 'Hello!'
+    
+  end
+      
 end

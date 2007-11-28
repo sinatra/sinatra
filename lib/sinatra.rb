@@ -67,7 +67,7 @@ module Sinatra
     
     attr_accessor :request, :response
     
-    dslify_writter :status, :body
+    dslify_writter :status
     
     def initialize(request, response, route_params)
       @request = request
@@ -80,13 +80,30 @@ module Sinatra
       @params ||= @route_params.merge(@request.params).symbolize_keys
     end
     
-    def complete(returned)
-      @response.body ||= returned
+    def body(content)
+      throw :halt, content
     end
     
-    def method_missing(name, *args, &b)
-      @response.send(name, *args, &b)
+    def complete(returned)
+      _render(@response.body || returned)
     end
+    
+    protected
+    
+      def _body=(content)
+        @response.body = content
+      end
+    
+      def _render(content)
+        # This is for renderers to override
+        # See http://sinatrarb.com/renderers
+        content
+      end
+      
+      def method_missing(name, *args, &b)
+        raise NoMethodError.new('body=') if name == :body=
+        @response.send(name, *args, &b)
+      end
     
   end
   
@@ -98,7 +115,7 @@ module Sinatra
     def to_result(cx, *args)
       cx.status(302)
       cx.header.merge!('Location' => @path)
-      cx.body('')
+      cx.send :_body=, ''
     end
   end
   
@@ -130,7 +147,7 @@ module Sinatra
         [:complete, context.instance_eval(&result.block)]
       end
       result = returned.to_result(context)
-      context.body = String === result ? [*result] : result
+      context.send :_body=, String === result ? [*result] : result
       context.finish
     end
         
@@ -241,7 +258,7 @@ end
 
 class String
   def to_result(cx, *args)
-    cx.body self
+    cx.send :_body=, self
   end
 end
 

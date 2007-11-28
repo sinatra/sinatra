@@ -83,7 +83,7 @@ context "An app returns" do
   specify "the body set if set before the last" do
         
     @app.define_event(:get, '/') do
-      self.body = 'Blake'
+      body 'Blake'
       'Mizerany'
     end
     
