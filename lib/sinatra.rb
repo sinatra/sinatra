@@ -92,8 +92,7 @@ module Sinatra
           when String
             content
           when Symbol
-            filename = (options[:views_directory] || 'views') + "/#{content}.#{ext}"
-            File.new(filename)
+            File.new(filename_for(content, options))
           end
         end
       
@@ -102,10 +101,13 @@ module Sinatra
           if layout = layouts[name || :layout]
             return layout
           end
-          filename = (options[:views_directory] || 'views') + "/#{name}.#{ext}"
-          if File.file?(filename)
+          if File.file?(filename = filename_for(name, options))
             File.new(filename)
           end
+        end
+        
+        def filename_for(name, options={})
+          (options[:views_directory] || 'views') + "/#{name}.#{ext}"
         end
                 
         def ext
