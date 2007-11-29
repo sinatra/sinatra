@@ -58,7 +58,7 @@ module Sinatra
     module ResponseHelpers
 
       def redirect(path)
-        throw :halt, NotFound.new(path)
+        throw :halt, Redirect.new(path)
       end
 
     end
@@ -67,16 +67,27 @@ module Sinatra
     module RenderingHelpers
       
       def render(content, options={})
-        @content = instance_eval(%Q{"#{content}"})
-        options[:layout] ||= :layout unless options[:layout] == false
-        if layout = layouts[options[:layout]]
-          @content = instance_eval(&layout)
-        else
-          @content
-        end
+        @content = _evaluate_render(%Q{"#{content}"})
+        layout = resolve_layout(options[:layout])
+        @content = _evaluate_render(layout) if layout
+        @content
       end
       
       private
+        
+        def _evaluate_render(content, options={})
+          case content
+          when String
+            instance_eval(content)
+          when Proc
+            instance_eval(&content)
+          end
+        end
+      
+        def resolve_layout(name, options={})
+          return if name == false
+          layouts[name || :layout]
+        end
 
         def layouts
           Sinatra.application.layouts
@@ -122,7 +133,7 @@ module Sinatra
     
   end
   
-  class NotFound
+  class Redirect
     def initialize(path)
       @path = path
     end
@@ -133,7 +144,7 @@ module Sinatra
       cx.send :_body=, ''
     end
   end
-  
+    
   class Application
     
     attr_reader :events, :layouts
