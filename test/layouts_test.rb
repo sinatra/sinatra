@@ -44,4 +44,17 @@ context "Layouts (in general)" do
     
   end
   
+  specify "can be read from a file if they're not inlined" do
+    
+    get '/foo' do
+      @title = 'Welcome to the Hello Program'
+      render 'Blake', :layout => :foo, 
+                      :views_directory => File.dirname(__FILE__) + "/views"
+    end
+    
+    get_it '/foo'
+    body.should.equal "Welcome to the Hello Program\nHi Blake\n"
+    
+  end
+  
 end

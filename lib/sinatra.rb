@@ -68,7 +68,7 @@ module Sinatra
       
       def render(content, options={})
         @content = _evaluate_render(%Q{"#{content}"})
-        layout = resolve_layout(options[:layout])
+        layout = resolve_layout(options[:layout], options)
         @content = _evaluate_render(layout) if layout
         @content
       end
@@ -81,12 +81,24 @@ module Sinatra
             instance_eval(content)
           when Proc
             instance_eval(&content)
+          when File
+            instance_eval(%Q{"#{content.read}"})
           end
         end
       
         def resolve_layout(name, options={})
           return if name == false
-          layouts[name || :layout]
+          if layout = layouts[name || :layout]
+            return layout
+          end
+          filename = (options[:views_directory] || 'views') + "/#{name}.#{ext}"
+          if File.file?(filename)
+            File.new(filename)
+          end
+        end
+                
+        def ext
+          :html
         end
 
         def layouts
