@@ -124,7 +124,7 @@ module Sinatra
     
     attr_accessor :request, :response
     
-    dslify_writter :status
+    dslify_writter :status, :body
     
     def initialize(request, response, route_params)
       @request = request
@@ -137,7 +137,7 @@ module Sinatra
       @params ||= @route_params.merge(@request.params).symbolize_keys
     end
     
-    def body(content)
+    def stop(content)
       throw :halt, content
     end
     
@@ -147,12 +147,7 @@ module Sinatra
     
     private
 
-      def _body=(content)
-        @response.body = content
-      end
-    
       def method_missing(name, *args, &b)
-        raise NoMethodError.new('body=') if name == :body=
         @response.send(name, *args, &b)
       end
     
@@ -166,7 +161,7 @@ module Sinatra
     def to_result(cx, *args)
       cx.status(302)
       cx.header.merge!('Location' => @path)
-      cx.send :_body=, ''
+      cx.body = ''
     end
   end
     
@@ -203,7 +198,7 @@ module Sinatra
         [:complete, context.instance_eval(&result.block)]
       end
       result = returned.to_result(context)
-      context.send :_body=, String === result ? [*result] : result
+      context.body = String === result ? [*result] : result
       context.finish
     end
         
@@ -318,7 +313,7 @@ end
 
 class String
   def to_result(cx, *args)
-    cx.send :_body=, self
+    cx.body = self
   end
 end
 
@@ -340,3 +335,11 @@ class Fixnum
     cx.body args.first
   end
 end
+
+class NilClass
+  def to_result(cx, *args)
+    cx.body = ''
+    # log warning here
+  end
+end
+

@@ -40,8 +40,8 @@ context "Sinatra" do
     Sinatra::EventContext.any_instance.expects(:foo).never
     
     get '/set_body' do
-      body 'Hello!'
-      body 'Not this'
+      stop 'Hello!'
+      stop 'World!'
       foo
     end
     
