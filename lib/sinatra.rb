@@ -50,7 +50,7 @@ module Sinatra
     begin
       puts "== Sinatra has taken the stage on port #{port} for #{env}"
       require 'pp'
-      Rack::Handler::Mongrel.run(Sinatra.application, :Port => port) do |server|
+      Rack::Handler::Mongrel.run(application, :Port => port) do |server|
         trap(:INT) do
           server.stop
           puts "\n== Sinatra has ended his set (crowd applauds)"
@@ -201,7 +201,19 @@ module Sinatra
     
   class Application
     
-    attr_reader :events, :layouts
+    attr_reader :events, :layouts, :default_options
+    
+    def self.default_options
+      @@default_options = {
+        :run => true,
+        :port => 4567,
+        :environment => :development
+      }
+    end
+    
+    def default_options
+      @@default_options
+    end
     
     def initialize
       @events = Hash.new { |hash, key| hash[key] = [] }
@@ -220,12 +232,9 @@ module Sinatra
     def lookup(env)
       events[env['REQUEST_METHOD'].downcase.to_sym].eject(&[:invoke, env])
     end
-    
+
     def options
-      OpenStruct.new(
-        :port => 4567,
-        :env => :development
-      )
+      @options ||= OpenStruct.new(default_options)
     end
     
     def call(env)
@@ -385,5 +394,5 @@ class NilClass
 end
 
 at_exit do
-  Sinatra.run
+  Sinatra.run if Sinatra.application.options.run
 end

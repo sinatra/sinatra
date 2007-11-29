@@ -1,6 +1,8 @@
 require 'test/unit'
-require File.dirname(__FILE__) + '/../sinatra/test/methods'
+require File.dirname(__FILE__) + '/methods'
 
 Test::Unit::TestCase.send(:include, Sinatra::Test::Methods)
 
-# Sinatra.application.options.env ||= ENV['RAILS_ENV'].to_sym || :test
+Sinatra::Application.default_options.merge!(
+  :run => false
+)
