@@ -22,20 +22,4 @@ context "Layouts (in general)" do
 
   end
   
-  xspecify "are rendered for default return value" do
-    
-    layout do
-      %Q{This is #{@content}!}
-    end
-    
-    get '/lay' do
-      'Blake'
-    end
-    
-    get_it '/lay'
-    should.be.ok
-    body.should.equal 'This is Blake!'
-    
-  end
-  
 end

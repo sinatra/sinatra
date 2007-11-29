@@ -88,9 +88,9 @@ module Sinatra
       @response.body || returned
     end
     
-    def render(content, options={}, &b)
+    def render(content, options={})
       @content = instance_eval(%Q{"#{content}"})
-      @content = instance_eval(&layout) if layout
+      @content = instance_eval(&layout) if options[:layout] != false && layout
       @content
     end
 
