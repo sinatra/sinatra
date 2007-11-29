@@ -204,15 +204,15 @@ module Sinatra
     attr_reader :events, :layouts, :default_options
     
     def self.default_options
-      @@default_options = {
+      @@default_options ||= {
         :run => true,
         :port => 4567,
-        :environment => :development
+        :env => :development
       }
     end
     
     def default_options
-      @@default_options
+      self.class.default_options
     end
     
     def initialize
