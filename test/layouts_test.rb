@@ -22,4 +22,26 @@ context "Layouts (in general)" do
 
   end
   
+  specify "can use named layouts" do
+    
+    layout :pretty do
+      %Q{<h1>#{@content}</h1>}
+    end
+        
+    get '/pretty' do
+      render 'Foo', :layout => :pretty
+    end
+    
+    get '/not_pretty' do
+      render 'Bar'
+    end
+    
+    get_it '/pretty'
+    body.should.equal '<h1>Foo</h1>'
+    
+    get_it '/not_pretty'
+    body.should.equal 'Bar'
+    
+  end
+  
 end

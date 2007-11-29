@@ -62,8 +62,29 @@ module Sinatra
       end
 
     end
-    
     include ResponseHelpers
+    
+    module RenderingHelpers
+      
+      def render(content, options={})
+        @content = instance_eval(%Q{"#{content}"})
+        options[:layout] ||= :layout unless options[:layout] == false
+        if layout = layouts[options[:layout]]
+          @content = instance_eval(&layout)
+        else
+          @content
+        end
+      end
+      
+      private
+
+        def layouts
+          Sinatra.application.layouts
+        end
+      
+    end
+    include RenderingHelpers
+    
     
     attr_accessor :request, :response
     
@@ -88,18 +109,8 @@ module Sinatra
       @response.body || returned
     end
     
-    def render(content, options={})
-      @content = instance_eval(%Q{"#{content}"})
-      @content = instance_eval(&layout) if options[:layout] != false && layout
-      @content
-    end
-
     private
-    
-      def layout
-        Sinatra.application.layout
-      end
-    
+
       def _body=(content)
         @response.body = content
       end
@@ -125,10 +136,11 @@ module Sinatra
   
   class Application
     
-    attr_reader :events, :layout
+    attr_reader :events, :layouts
     
     def initialize
       @events = Hash.new { |hash, key| hash[key] = [] }
+      @layouts = Hash.new
     end
     
     def define_event(method, path, &b)
@@ -136,8 +148,8 @@ module Sinatra
       event
     end
     
-    def define_layout(&b)
-      @layout = b
+    def define_layout(name=:layout, &b)
+      layouts[name] = b
     end
     
     def lookup(env)
@@ -183,8 +195,8 @@ def helpers(&b)
   Sinatra::EventContext.class_eval(&b)
 end
 
-def layout(&b)
-  Sinatra.application.define_layout(&b)
+def layout(name = :layout, &b)
+  Sinatra.application.define_layout(name, &b)
 end
 
 ### Misc Core Extensions
