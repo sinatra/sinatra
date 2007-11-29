@@ -1,5 +1,15 @@
 require 'rubygems'
+
+if ENV['SWIFT']
+ require 'swiftcore/swiftiplied_mongrel'
+ puts "Using Swiftiplied Mongrel"
+elsif ENV['EVENT']
+  require 'swiftcore/evented_mongrel' 
+  puts "Using Evented Mongrel"
+end
+
 require 'rack'
+require 'ostruct'
 
 class Class
   def dslify_writter(*syms)
@@ -25,6 +35,31 @@ module Sinatra
   
   def application=(app)
     @app = app
+  end
+  
+  def port
+    application.options.port
+  end
+  
+  def env
+    application.options.env
+  end
+  
+  def run
+    
+    begin
+      puts "== Sinatra has taken the stage on port #{port} for #{env}"
+      require 'pp'
+      Rack::Handler::Mongrel.run(Sinatra.application, :Port => port) do |server|
+        trap(:INT) do
+          server.stop
+          puts "\n== Sinatra has ended his set (crowd applauds)"
+        end
+      end
+    rescue Errno::EADDRINUSE => e
+      puts "== Someone is already performing on port #{port}!"
+    end
+    
   end
       
   class Event
@@ -121,7 +156,6 @@ module Sinatra
     end
     include RenderingHelpers
     
-    
     attr_accessor :request, :response
     
     dslify_writter :status, :body
@@ -185,6 +219,13 @@ module Sinatra
     
     def lookup(env)
       events[env['REQUEST_METHOD'].downcase.to_sym].eject(&[:invoke, env])
+    end
+    
+    def options
+      OpenStruct.new(
+        :port => 4567,
+        :env => :development
+      )
     end
     
     def call(env)
@@ -343,3 +384,6 @@ class NilClass
   end
 end
 
+at_exit do
+  Sinatra.run
+end

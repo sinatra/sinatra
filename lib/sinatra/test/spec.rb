@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test'
+require File.dirname(__FILE__) + '/unit'
 require 'test/spec'
 
 class Test::Unit::TestCase
