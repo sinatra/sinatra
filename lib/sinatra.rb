@@ -89,10 +89,16 @@ module Sinatra
     end
     
     def render(content, options={}, &b)
-      content
+      @content = instance_eval(%Q{"#{content}"})
+      @content = instance_eval(&layout) if layout
+      @content
     end
 
     private
+    
+      def layout
+        Sinatra.application.layout
+      end
     
       def _body=(content)
         @response.body = content
@@ -119,7 +125,7 @@ module Sinatra
   
   class Application
     
-    attr_reader :events
+    attr_reader :events, :layout
     
     def initialize
       @events = Hash.new { |hash, key| hash[key] = [] }
@@ -128,6 +134,10 @@ module Sinatra
     def define_event(method, path, &b)
       events[method] << event = Event.new(path, &b)
       event
+    end
+    
+    def define_layout(&b)
+      @layout = b
     end
     
     def lookup(env)
@@ -171,6 +181,10 @@ end
 
 def helpers(&b)
   Sinatra::EventContext.class_eval(&b)
+end
+
+def layout(&b)
+  Sinatra.application.define_layout(&b)
 end
 
 ### Misc Core Extensions
