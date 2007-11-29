@@ -67,7 +67,8 @@ module Sinatra
     module RenderingHelpers
       
       def render(content, options={})
-        @content = _evaluate_render(%Q{"#{content}"})
+        template = resolve_template(content, options)
+        @content = _evaluate_render(template)
         layout = resolve_layout(options[:layout], options)
         @content = _evaluate_render(layout) if layout
         @content
@@ -78,11 +79,21 @@ module Sinatra
         def _evaluate_render(content, options={})
           case content
           when String
-            instance_eval(content)
+            instance_eval(%Q{"#{content}"})
           when Proc
             instance_eval(&content)
           when File
             instance_eval(%Q{"#{content.read}"})
+          end
+        end
+        
+        def resolve_template(content, options={})
+          case content
+          when String
+            content
+          when Symbol
+            filename = (options[:views_directory] || 'views') + "/#{content}.#{ext}"
+            File.new(filename)
           end
         end
       
