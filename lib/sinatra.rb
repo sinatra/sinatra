@@ -332,6 +332,7 @@ def configures(*envs, &b)
   yield if  envs.include?(Sinatra.application.options.env) ||
             envs.empty?
 end
+alias :configure :configures
 
 ### Misc Core Extensions
 
