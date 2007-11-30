@@ -64,7 +64,7 @@ module Sinatra
       
   class Event
 
-    URI_CHAR = '[^/?:,&#]'.freeze unless defined?(URI_CHAR)
+    URI_CHAR = '[^/?:,&#\.]'.freeze unless defined?(URI_CHAR)
     PARAM = /:(#{URI_CHAR}+)/.freeze unless defined?(PARAM)
     
     attr_reader :path, :block, :param_keys, :pattern
@@ -328,6 +328,11 @@ def layout(name = :layout, &b)
   Sinatra.application.define_layout(name, &b)
 end
 
+def configures(*envs, &b)
+  yield if  envs.include?(Sinatra.application.options.env) ||
+            envs.empty?
+end
+
 ### Misc Core Extensions
 
 module Kernel
@@ -444,4 +449,75 @@ end
 at_exit do
   raise $! if $!
   Sinatra.run if Sinatra.application.options.run
+end
+
+ENV['SINATRA_ENV'] = 'test' if $0 =~ /_test\.rb$/
+Sinatra::Application.default_options.merge!(
+  :env => (ENV['SINATRA_ENV'] || 'development').to_sym
+)
+
+configures :development do
+  
+  get '/sinatra_custom_images/:image.png' do
+    File.read(File.dirname(__FILE__) + "/../images/#{params[:image]}.png")
+  end
+  
+  error 404 do
+    %Q(
+    <html>
+      <body style='text-align: center; color: #888; font-family: Arial; font-size: 22px; margin: 20px'>
+      <h2>Sinatra doesn't know this diddy.</h2>
+      <img src='/sinatra_custom_images/404.png'></img>
+      </body>
+    </html>
+    )
+  end
+  
+  error 500 do
+    @error = request.env['sinatra.error']
+    %Q(
+    <html>
+    	<body>
+    		<style type="text/css" media="screen">
+    			body {
+    				font-family: Verdana;
+    				color: #333;
+    			}
+
+    			#content {
+    				width: 700px;
+    				margin-left: 20px;
+    			}
+
+    			#content h1 {
+    				width: 99%;
+    				color: #1D6B8D;
+    				font-weight: bold;
+    			}
+    			
+    			#stacktrace {
+    			  margin-top: -20px;
+    			}
+
+    			#stacktrace pre {
+    				font-size: 12px;
+    				border-left: 2px solid #ddd;
+    				padding-left: 10px;
+    			}
+
+    			#stacktrace img {
+    				margin-top: 10px;
+    			}
+    		</style>
+    		<div id="content">
+      		<img src="/sinatra_custom_images/500.png" />
+    			<div id="stacktrace">
+    				<h1>#{@error.message}</h1>
+    				<pre><code>#{@error.backtrace.join("\n")}</code></pre>
+    		</div>
+    	</body>
+    </html>
+    )
+  end
+  
 end
