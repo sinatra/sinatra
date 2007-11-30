@@ -45,7 +45,7 @@ context "An app returns" do
     request = Rack::MockRequest.new(@app)
     result = request.get('/')
     result.should.be.not_found
-    result.body.should.equal 'Not Found'
+    result.body.should.equal '<h1>Not Found</h1>'
   end
   
   specify "200 if success" do

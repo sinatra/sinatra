@@ -27,7 +27,7 @@ end
 module Sinatra
   extend self
 
-  Result = Struct.new(:block, :params)
+  Result = Struct.new(:block, :params, :status) unless defined?(Result)
   
   def application
     @app ||= Application.new
@@ -83,77 +83,92 @@ module Sinatra
     def invoke(env)
       return unless pattern =~ env['PATH_INFO'].squeeze('/')
       params = param_keys.zip($~.captures.map(&:from_param)).to_hash
-      Result.new(block, params)
+      Result.new(block, params, 200)
     end
     
   end
   
+  class Error
+    
+    attr_reader :code, :block
+    
+    def initialize(code, &b)
+      @code, @block = code, b
+    end
+    
+    def invoke(env)
+      Result.new(block, {}, 404)
+    end
+    
+  end
+  
+  module ResponseHelpers
+
+    def redirect(path)
+      throw :halt, Redirect.new(path)
+    end
+
+  end
+  
+  module RenderingHelpers
+    
+    def render(content, options={})
+      template = resolve_template(content, options)
+      @content = _evaluate_render(template)
+      layout = resolve_layout(options[:layout], options)
+      @content = _evaluate_render(layout) if layout
+      @content
+    end
+    
+    private
+      
+      def _evaluate_render(content, options={})
+        case content
+        when String
+          instance_eval(%Q{"#{content}"})
+        when Proc
+          instance_eval(&content)
+        when File
+          instance_eval(%Q{"#{content.read}"})
+        end
+      end
+      
+      def resolve_template(content, options={})
+        case content
+        when String
+          content
+        when Symbol
+          File.new(filename_for(content, options))
+        end
+      end
+    
+      def resolve_layout(name, options={})
+        return if name == false
+        if layout = layouts[name || :layout]
+          return layout
+        end
+        if File.file?(filename = filename_for(name, options))
+          File.new(filename)
+        end
+      end
+      
+      def filename_for(name, options={})
+        (options[:views_directory] || 'views') + "/#{name}.#{ext}"
+      end
+              
+      def ext
+        :html
+      end
+
+      def layouts
+        Sinatra.application.layouts
+      end
+    
+  end
+
   class EventContext
     
-    module ResponseHelpers
-
-      def redirect(path)
-        throw :halt, Redirect.new(path)
-      end
-
-    end
     include ResponseHelpers
-    
-    module RenderingHelpers
-      
-      def render(content, options={})
-        template = resolve_template(content, options)
-        @content = _evaluate_render(template)
-        layout = resolve_layout(options[:layout], options)
-        @content = _evaluate_render(layout) if layout
-        @content
-      end
-      
-      private
-        
-        def _evaluate_render(content, options={})
-          case content
-          when String
-            instance_eval(%Q{"#{content}"})
-          when Proc
-            instance_eval(&content)
-          when File
-            instance_eval(%Q{"#{content.read}"})
-          end
-        end
-        
-        def resolve_template(content, options={})
-          case content
-          when String
-            content
-          when Symbol
-            File.new(filename_for(content, options))
-          end
-        end
-      
-        def resolve_layout(name, options={})
-          return if name == false
-          if layout = layouts[name || :layout]
-            return layout
-          end
-          if File.file?(filename = filename_for(name, options))
-            File.new(filename)
-          end
-        end
-        
-        def filename_for(name, options={})
-          (options[:views_directory] || 'views') + "/#{name}.#{ext}"
-        end
-                
-        def ext
-          :html
-        end
-
-        def layouts
-          Sinatra.application.layouts
-        end
-      
-    end
     include RenderingHelpers
     
     attr_accessor :request, :response
@@ -214,7 +229,7 @@ module Sinatra
     def default_options
       self.class.default_options
     end
-    
+        
     def initialize
       @events = Hash.new { |hash, key| hash[key] = [] }
       @layouts = Hash.new
@@ -229,8 +244,19 @@ module Sinatra
       layouts[name] = b
     end
     
+    def define_error(code, &b)
+      events[:errors][code] = Error.new(code, &b)
+    end
+    
     def lookup(env)
-      events[env['REQUEST_METHOD'].downcase.to_sym].eject(&[:invoke, env])
+      e = events[env['REQUEST_METHOD'].downcase.to_sym].eject(&[:invoke, env])
+      e ||= (events[:errors][404] || basic_not_found).invoke(env)
+    end
+    
+    def basic_not_found
+      Error.new(404) do
+        '<h1>Not Found</h1>'
+      end
     end
 
     def options
@@ -238,12 +264,13 @@ module Sinatra
     end
     
     def call(env)
-      return [404, {}, 'Not Found'] unless result = lookup(env)
+      result = lookup(env)
       context = EventContext.new(
         Rack::Request.new(env), 
         Rack::Response.new,
         result.params
       )
+      context.status(result.status)
       returned = catch(:halt) do
         [:complete, context.instance_eval(&result.block)]
       end
@@ -274,6 +301,10 @@ end
 
 def helpers(&b)
   Sinatra::EventContext.class_eval(&b)
+end
+
+def error(code, &b)
+  Sinatra.application.define_error(code, &b)
 end
 
 def layout(name = :layout, &b)
