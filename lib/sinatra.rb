@@ -258,27 +258,44 @@ module Sinatra
         '<h1>Not Found</h1>'
       end
     end
+    
+    def basic_error
+      Error.new(500) do
+        '<h1>Internal Server Error</h1>'
+      end
+    end
 
     def options
       @options ||= OpenStruct.new(default_options)
     end
     
     def call(env)
-      result = lookup(env)
-      context = EventContext.new(
-        Rack::Request.new(env), 
-        Rack::Response.new,
-        result.params
-      )
-      context.status(result.status)
-      returned = catch(:halt) do
-        [:complete, context.instance_eval(&result.block)]
+      body = nil
+      begin
+        result = lookup(env)
+        context = EventContext.new(
+          Rack::Request.new(env), 
+          Rack::Response.new,
+          result.params
+        )
+        context.status(result.status)
+        returned = catch(:halt) do
+          [:complete, context.instance_eval(&result.block)]
+        end
+        body = returned.to_result(context)
+      rescue => e
+        env['sinatra.error'] = e
+        result = (events[:errors][500] || basic_error).invoke(env)
+        returned = catch(:halt) do
+          [:complete, context.instance_eval(&result.block)]
+        end
+        body = returned.to_result(context)
+        context.status(500)
       end
-      result = returned.to_result(context)
-      context.body = String === result ? [*result] : result
+      context.body = String === body ? [*body] : body
       context.finish
     end
-        
+    
   end
   
 end
