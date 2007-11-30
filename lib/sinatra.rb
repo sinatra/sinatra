@@ -442,5 +442,6 @@ class NilClass
 end
 
 at_exit do
+  raise $! if $!
   Sinatra.run if Sinatra.application.options.run
 end
