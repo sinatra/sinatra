@@ -2,6 +2,14 @@ require File.dirname(__FILE__) + '/helper'
 
 context "Custom Errors (in general)" do
 
+  setup do
+    Sinatra.application.options.raise_errors = false
+  end
+  
+  teardown do
+    Sinatra.application.options.raise_errors = true
+  end
+
   specify "override the default 404" do
     
     get_it '/'

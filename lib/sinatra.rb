@@ -327,8 +327,10 @@ module Sinatra
           [:complete, context.instance_eval(&result.block)]
         end
         body = returned.to_result(context)
+        context.body = String === body ? [*body] : body
+        context.finish
       rescue => e
-        raise e if options.env == :test
+        raise e if options.raise_errors
         env['sinatra.error'] = e
         result = (events[:errors][500] || basic_error).invoke(env)
         returned = catch(:halt) do
@@ -336,9 +338,9 @@ module Sinatra
         end
         body = returned.to_result(context)
         context.status(500)
+        context.body = String === body ? [*body] : body
+        context.finish
       end
-      context.body = String === body ? [*body] : body
-      context.finish
     end
     
   end
