@@ -45,12 +45,16 @@ module Sinatra
     application.options.env
   end
   
+  def build_application
+    Rack::CommonLogger.new(application)
+  end
+  
   def run
     
     begin
       puts "== Sinatra has taken the stage on port #{port} for #{env}"
       require 'pp'
-      Rack::Handler::Mongrel.run(application, :Port => port) do |server|
+      Rack::Handler::Mongrel.run(build_application, :Port => port) do |server|
         trap(:INT) do
           server.stop
           puts "\n== Sinatra has ended his set (crowd applauds)"
@@ -102,10 +106,32 @@ module Sinatra
     
   end
   
+  class Static
+            
+    def invoke(env)
+      return unless File.file?(
+        Sinatra.application.options.public + env['PATH_INFO']
+      )
+      Result.new(block, {}, 200)
+    end
+    
+    def block
+      Proc.new do
+        send_file Sinatra.application.options.public + 
+          request.env['PATH_INFO']
+      end
+    end
+    
+  end
+  
   module ResponseHelpers
 
     def redirect(path)
       throw :halt, Redirect.new(path)
+    end
+    
+    def send_file(filename)
+      throw :halt, SendFile.new(filename)
     end
 
   end
@@ -214,6 +240,16 @@ module Sinatra
     end
   end
     
+  class SendFile
+    def initialize(filename)
+      @filename = filename
+    end
+    
+    def to_result(cx, *args)
+      cx.body = File.read(@filename)
+    end
+  end
+    
   class Application
     
     attr_reader :events, :layouts, :default_options
@@ -222,7 +258,9 @@ module Sinatra
       @@default_options ||= {
         :run => true,
         :port => 4567,
-        :env => :development
+        :env => :development,
+        :root => Dir.pwd,
+        :public => Dir.pwd + '/public'
       }
     end
     
@@ -248,9 +286,16 @@ module Sinatra
       events[:errors][code] = Error.new(code, &b)
     end
     
+    def static
+      @static ||= Static.new
+    end
+    
     def lookup(env)
-      e = events[env['REQUEST_METHOD'].downcase.to_sym].eject(&[:invoke, env])
+      method = env['REQUEST_METHOD'].downcase.to_sym
+      e = static.invoke(env) 
+      e ||= events[method].eject(&[:invoke, env])
       e ||= (events[:errors][404] || basic_not_found).invoke(env)
+      e
     end
     
     def basic_not_found
@@ -270,20 +315,20 @@ module Sinatra
     end
     
     def call(env)
-      body = nil
-      begin
-        result = lookup(env)
-        context = EventContext.new(
-          Rack::Request.new(env), 
-          Rack::Response.new,
-          result.params
-        )
+      result = lookup(env)
+      context = EventContext.new(
+        Rack::Request.new(env), 
+        Rack::Response.new,
+        result.params
+      )
+      body = begin
         context.status(result.status)
         returned = catch(:halt) do
           [:complete, context.instance_eval(&result.block)]
         end
         body = returned.to_result(context)
       rescue => e
+        raise e if options.env == :test
         env['sinatra.error'] = e
         result = (events[:errors][500] || basic_error).invoke(env)
         returned = catch(:halt) do
