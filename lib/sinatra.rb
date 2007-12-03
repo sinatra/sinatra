@@ -321,7 +321,7 @@ module Sinatra
         Rack::Response.new,
         result.params
       )
-      body = begin
+      begin
         context.status(result.status)
         returned = catch(:halt) do
           [:complete, context.instance_eval(&result.block)]
