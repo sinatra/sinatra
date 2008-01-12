@@ -70,22 +70,29 @@ module Sinatra
 
     URI_CHAR = '[^/?:,&#\.]'.freeze unless defined?(URI_CHAR)
     PARAM = /:(#{URI_CHAR}+)/.freeze unless defined?(PARAM)
+    SPLAT = /(.*?)/
+    attr_reader :path, :block, :param_keys, :pattern, :options
     
-    attr_reader :path, :block, :param_keys, :pattern
-    
-    def initialize(path, &b)
+    def initialize(path, options = {}, &b)
       @path = path
       @block = b
       @param_keys = []
+      @options = options
       regex = @path.to_s.gsub(PARAM) do
         @param_keys << $1.intern
         "(#{URI_CHAR}+)"
       end
+      
+      regex.gsub!('*', SPLAT.to_s)
+      
       @pattern = /^#{regex}$/
     end
         
     def invoke(env)
       return unless pattern =~ env['PATH_INFO'].squeeze('/')
+      if options[:agent] 
+        return unless env['HTTP_USER_AGENT'] =~ options[:agent]
+      end
       params = param_keys.zip($~.captures.map(&:from_param)).to_hash
       Result.new(block, params, 200)
     end
@@ -273,8 +280,8 @@ module Sinatra
       @layouts = Hash.new
     end
     
-    def define_event(method, path, &b)
-      events[method] << event = Event.new(path, &b)
+    def define_event(method, path, options = {}, &b)
+      events[method] << event = Event.new(path, options, &b)
       event
     end
     
@@ -282,7 +289,7 @@ module Sinatra
       layouts[name] = b
     end
     
-    def define_error(code, &b)
+    def define_error(code, options = {}, &b)
       events[:errors][code] = Error.new(code, &b)
     end
     
@@ -347,28 +354,28 @@ module Sinatra
   
 end
 
-def get(path, &b)
-  Sinatra.application.define_event(:get, path, &b)
+def get(path, options ={}, &b)
+  Sinatra.application.define_event(:get, path, options, &b)
 end
 
-def post(path, &b)
-  Sinatra.application.define_event(:post, path, &b)
+def post(path, options ={}, &b)
+  Sinatra.application.define_event(:post, path, options, &b)
 end
 
-def put(path, &b)
-  Sinatra.application.define_event(:put, path, &b)
+def put(path, options ={}, &b)
+  Sinatra.application.define_event(:put, path, options, &b)
 end
 
-def delete(path, &b)
-  Sinatra.application.define_event(:delete, path, &b)
+def delete(path, options ={}, &b)
+  Sinatra.application.define_event(:delete, path, options, &b)
 end
 
 def helpers(&b)
   Sinatra::EventContext.class_eval(&b)
 end
 
-def error(code, &b)
-  Sinatra.application.define_error(code, &b)
+def error(code, options = {}, &b)
+  Sinatra.application.define_error(code, options, &b)
 end
 
 def layout(name = :layout, &b)

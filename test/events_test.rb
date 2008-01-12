@@ -40,5 +40,11 @@ context "Simple Events" do
     result = invoke_simple('/x/y', '/x//y')
     result.should.not.be.nil
   end
+  
+  specify "understands splat" do
+    invoke_simple('/foo/*', '/foo/bar').should.not.be.nil
+    invoke_simple('/foo/*', '/foo/bar/baz').should.not.be.nil
+    invoke_simple('/foo/*', '/foo/baz').should.not.be.nil
+  end  
           
 end

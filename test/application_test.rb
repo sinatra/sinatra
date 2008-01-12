@@ -129,6 +129,30 @@ context "Events in an app" do
     result.should.be.ok
     result.body.should.equal 'foobaz'
   end
+  
+  specify "can filters by agent" do
+    
+    @app.define_event(:get, '/', :agent => /Windows/) do
+      request.env['HTTP_USER_AGENT']
+    end
+    
+    Rack::MockRequest::DEFAULT_ENV.merge!('HTTP_USER_AGENT' => 'Windows')
+    
+    request = Rack::MockRequest.new(@app)
+    result = request.get('/')
+    result.should.be.ok
+    result.body.should.equal 'Windows'
+
+    Rack::MockRequest::DEFAULT_ENV.merge!('HTTP_USER_AGENT' => 'Mac')
+
+    request = Rack::MockRequest.new(@app)
+    result = request.get('/')
+    result.should.not.be.ok
+
+    Rack::MockRequest::DEFAULT_ENV.delete('HTTP_USER_AGENT')
+        
+  end
+  
     
 end
 
