@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'metaid'
 
 if ENV['SWIFT']
  require 'swiftcore/swiftiplied_mongrel'
@@ -89,10 +90,10 @@ module Sinatra
     end
         
     def invoke(env)
-      return unless pattern =~ env['PATH_INFO'].squeeze('/')
       if options[:agent] 
         return unless env['HTTP_USER_AGENT'] =~ options[:agent]
       end
+      return unless pattern =~ env['PATH_INFO'].squeeze('/')
       params = param_keys.zip($~.captures.map(&:from_param)).to_hash
       Result.new(block, params, 200)
     end
