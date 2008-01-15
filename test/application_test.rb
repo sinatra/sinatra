@@ -136,24 +136,17 @@ context "Events in an app" do
       request.env['HTTP_USER_AGENT']
     end
     
-    Rack::MockRequest::DEFAULT_ENV.merge!('HTTP_USER_AGENT' => 'Windows')
-    
     request = Rack::MockRequest.new(@app)
-    result = request.get('/')
+    result = request.get('/', :agent => 'Windows')
     result.should.be.ok
     result.body.should.equal 'Windows'
 
-    Rack::MockRequest::DEFAULT_ENV.merge!('HTTP_USER_AGENT' => 'Mac')
-
     request = Rack::MockRequest.new(@app)
-    result = request.get('/')
+    result = request.get('/', :agent => 'Mac')
     result.should.not.be.ok
 
-    Rack::MockRequest::DEFAULT_ENV.delete('HTTP_USER_AGENT')
-        
   end
   
-    
 end
 
 
