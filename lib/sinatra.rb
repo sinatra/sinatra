@@ -275,10 +275,19 @@ module Sinatra
     def default_options
       self.class.default_options
     end
+
+    def load_options!
+      require 'optparse'
+      OptionParser.new do |op|
+        op.on('-p port') { |port| default_options[:port] = port }
+        op.on('-e env') { |env| default_options[:env] = env }
+      end.parse!(ARGV.dup)
+    end
         
     def initialize
       @events = Hash.new { |hash, key| hash[key] = [] }
       @layouts = Hash.new
+      load_options!
     end
     
     def define_event(method, path, options = {}, &b)
