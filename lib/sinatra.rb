@@ -260,7 +260,8 @@ module Sinatra
     
   class Application
     
-    attr_reader :events, :layouts, :default_options
+    attr_reader :events, :layouts, :default_options, :filters
+    attr_writer :options
     
     def self.default_options
       @@default_options ||= {
@@ -286,6 +287,7 @@ module Sinatra
         
     def initialize
       @events = Hash.new { |hash, key| hash[key] = [] }
+      @filters = Hash.new { |hash, key| hash[key] = [] }
       @layouts = Hash.new
       load_options!
     end
@@ -301,6 +303,10 @@ module Sinatra
     
     def define_error(code, options = {}, &b)
       events[:errors][code] = Error.new(code, &b)
+    end
+    
+    def define_filter(type, &b)
+      filters[:before] << b
     end
     
     def static
@@ -330,7 +336,7 @@ module Sinatra
     def options
       @options ||= OpenStruct.new(default_options)
     end
-    
+        
     def call(env)
       result = lookup(env)
       context = EventContext.new(
@@ -341,6 +347,7 @@ module Sinatra
       begin
         context.status(result.status)
         returned = catch(:halt) do
+          filters[:before].each { |f| context.instance_eval(&f) }
           [:complete, context.instance_eval(&result.block)]
         end
         body = returned.to_result(context)
@@ -378,6 +385,10 @@ end
 
 def delete(path, options ={}, &b)
   Sinatra.application.define_event(:delete, path, options, &b)
+end
+
+def before(&b)
+  Sinatra.application.define_filter(:before, &b)
 end
 
 def helpers(&b)
@@ -515,11 +526,6 @@ at_exit do
   raise $! if $!
   Sinatra.run if Sinatra.application.options.run
 end
-
-ENV['SINATRA_ENV'] = 'test' if $0 =~ /_test\.rb$/
-Sinatra::Application.default_options.merge!(
-  :env => (ENV['SINATRA_ENV'] || 'development').to_sym
-)
 
 configures :development do
   
