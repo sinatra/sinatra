@@ -142,6 +142,12 @@ module Sinatra
       throw :halt, SendFile.new(filename)
     end
 
+    def headers(header = nil)
+      @response.headers.merge!(header) if header
+      @response.headers
+    end
+    alias :header :headers
+
   end
   
   module RenderingHelpers
