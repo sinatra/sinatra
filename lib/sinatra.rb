@@ -357,7 +357,8 @@ module Sinatra
           [:complete, context.instance_eval(&result.block)]
         end
         body = returned.to_result(context)
-        context.body = String === body ? [*body] : body
+        body = '' unless body.respond_to?(:each)
+        context.body = body.kind_of?(String) ? [*body] : body
         context.finish
       rescue => e
         raise e if options.raise_errors

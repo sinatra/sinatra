@@ -6,6 +6,16 @@ context "Sinatra" do
     Sinatra.application = nil
   end
   
+  specify "should handle result of nil" do
+    get '/' do
+      nil
+    end
+    
+    get_it '/'
+    should.be.ok
+    body.should == ''
+  end
+  
   specify "handles events" do
     get '/:name' do
       'Hello ' + params[:name]
