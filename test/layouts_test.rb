@@ -49,7 +49,7 @@ context "Layouts (in general)" do
     get '/foo' do
       @title = 'Welcome to the Hello Program'
       render 'Blake', :layout => :foo_layout, 
-                      :views_directory => File.dirname(__FILE__) + "/views"
+                            :views_directory => File.dirname(__FILE__) + "/views"
     end
     
     get_it '/foo'

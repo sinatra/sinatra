@@ -153,16 +153,17 @@ module Sinatra
   module RenderingHelpers
     
     def render(content, options={})
+      renderer = options.delete(:renderer) || :text
       template = resolve_template(content, options)
-      @content = _evaluate_render(template)
+      @content = send(renderer, template)
       layout = resolve_layout(options[:layout], options)
-      @content = _evaluate_render(layout) if layout
+      @content = send(renderer, layout) if layout
       @content
     end
     
     private
       
-      def _evaluate_render(content, options={})
+      def text(content, options={})
         case content
         when String
           instance_eval(%Q{"#{content}"})
@@ -288,7 +289,7 @@ module Sinatra
       OptionParser.new do |op|
         op.on('-p port') { |port| default_options[:port] = port }
         op.on('-e env') { |env| default_options[:env] = env }
-      end.parse!(ARGV.dup)
+      end.parse!(ARGV.dup.select { |o| o !~ /--name/ })
     end
         
     def initialize
