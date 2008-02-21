@@ -134,12 +134,14 @@ module Sinatra
   
   module ResponseHelpers
 
-    def redirect(path)
-      throw :halt, Redirect.new(path)
+    def redirect(path, *args)
+      status(302)
+      headers 'Location' => path
+      throw :halt, *args
     end
     
     def send_file(filename)
-      throw :halt, SendFile.new(filename)
+      throw :halt, File.read(filename)
     end
 
     def headers(header = nil)
@@ -258,28 +260,6 @@ module Sinatra
     
   end
   
-  class Redirect
-    def initialize(path)
-      @path = path
-    end
-    
-    def to_result(cx, *args)
-      cx.status(302)
-      cx.header.merge!('Location' => @path)
-      cx.body = ''
-    end
-  end
-    
-  class SendFile
-    def initialize(filename)
-      @filename = filename
-    end
-    
-    def to_result(cx, *args)
-      cx.body = File.read(@filename)
-    end
-  end
-    
   class Application
     
     attr_reader :events, :layouts, :default_options, :filters

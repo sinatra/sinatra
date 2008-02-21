@@ -45,6 +45,17 @@ context "Sinatra" do
     body.should.equal 'Mizerany'
   end
   
+  specify "renders a body with a redirect" do
+    Sinatra::EventContext.any_instance.expects(:foo).returns('blah')
+    get "/" do
+      redirect 'foo', :foo
+    end
+    get_it '/'
+    should.be.redirection
+    headers['Location'].should.equal 'foo'
+    body.should.equal 'blah'
+  end
+  
   specify "body sets content and ends event" do
     
     Sinatra::EventContext.any_instance.expects(:foo).never
