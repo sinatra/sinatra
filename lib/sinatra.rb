@@ -152,26 +152,45 @@ module Sinatra
   
   module RenderingHelpers
     
+    def text(content, options={})
+      render(content, options.merge(:renderer => :text, :ext => :html))
+    end
+
+    def erb(content, options={})
+      render(content, options.merge(:renderer => :erb, :ext => :erb))
+    end
+
     def render(content, options={})
-      renderer = options.delete(:renderer) || :text
+      options[:layout] ||= :layout
       template = resolve_template(content, options)
-      @content = send(renderer, template)
+      @content = evaluate_renderer(template, options)
       layout = resolve_layout(options[:layout], options)
-      @content = send(renderer, layout) if layout
+      @content = evaluate_renderer(layout, options) if layout
       @content
     end
     
     private
       
-      def text(content, options={})
-        case content
+      def evaluate_text(content, options={})
+        instance_eval(%Q{"#{content}"})
+      end
+      
+      def evaluate_erb(content, options={})
+        require 'erb'
+        ERB.new(content).result(binding)
+      end
+      
+      def evaluate_renderer(content, options={})
+        renderer = "evaluate_#{options[:renderer] || :text}"
+        result = case content
         when String
-          instance_eval(%Q{"#{content}"})
+          content
         when Proc
-          instance_eval(&content)
+          content.call
         when File
-          instance_eval(%Q{"#{content.read}"})
+          content.read
         end
+        send(renderer, result, options)
       end
       
       def resolve_template(content, options={})
@@ -194,11 +213,7 @@ module Sinatra
       end
       
       def filename_for(name, options={})
-        (options[:views_directory] || 'views') + "/#{name}.#{ext}"
-      end
-              
-      def ext
-        :html
+        (options[:views_directory] || 'views') + "/#{name}.#{options[:ext]}"
       end
 
       def layouts
