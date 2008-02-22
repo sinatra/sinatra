@@ -262,7 +262,7 @@ module Sinatra
   
   class Application
     
-    attr_reader :events, :layouts, :default_options, :filters
+    attr_reader :events, :errors, :layouts, :default_options, :filters
     attr_writer :options
     
     def self.default_options
@@ -289,6 +289,7 @@ module Sinatra
         
     def initialize
       @events = Hash.new { |hash, key| hash[key] = [] }
+      @errors = Hash.new
       @filters = Hash.new { |hash, key| hash[key] = [] }
       @layouts = Hash.new
       load_options!
@@ -304,7 +305,7 @@ module Sinatra
     end
     
     def define_error(code, options = {}, &b)
-      events[:errors][code] = Error.new(code, &b)
+      errors[code] = Error.new(code, &b)
     end
     
     def define_filter(type, &b)
@@ -319,7 +320,7 @@ module Sinatra
       method = env['REQUEST_METHOD'].downcase.to_sym
       e = static.invoke(env) 
       e ||= events[method].eject(&[:invoke, env])
-      e ||= (events[:errors][404] || basic_not_found).invoke(env)
+      e ||= (errors[404] || basic_not_found).invoke(env)
       e
     end
     
@@ -359,7 +360,7 @@ module Sinatra
       rescue => e
         raise e if options.raise_errors
         env['sinatra.error'] = e
-        result = (events[:errors][500] || basic_error).invoke(env)
+        result = (errors[500] || basic_error).invoke(env)
         returned = catch(:halt) do
           [:complete, context.instance_eval(&result.block)]
         end
