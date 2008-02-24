@@ -262,7 +262,7 @@ module Sinatra
   
   class Application
     
-    attr_reader :events, :errors, :layouts, :default_options, :filters
+    attr_reader :events, :errors, :layouts, :default_options, :filters, :clearables
     attr_writer :options
     
     def self.default_options
@@ -288,10 +288,12 @@ module Sinatra
     end
         
     def initialize
-      @events = Hash.new { |hash, key| hash[key] = [] }
-      @errors = Hash.new
-      @filters = Hash.new { |hash, key| hash[key] = [] }
-      @layouts = Hash.new
+      @clearables = [
+        @events = Hash.new { |hash, key| hash[key] = [] },
+        @errors = Hash.new,
+        @filters = Hash.new { |hash, key| hash[key] = [] },
+        @layouts = Hash.new,
+      ]
       load_options!
     end
     
@@ -339,8 +341,20 @@ module Sinatra
     def options
       @options ||= OpenStruct.new(default_options)
     end
+    
+    def development?
+      options.env == :development
+    end
+
+    def reload!
+      reloading = true
+      clearables.each(&:clear)
+      Kernel.load $0
+      reloading = false
+    end
         
     def call(env)
+      reload! if development?
       result = lookup(env)
       context = EventContext.new(
         Rack::Request.new(env), 
