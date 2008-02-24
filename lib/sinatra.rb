@@ -361,16 +361,13 @@ module Sinatra
         Rack::Response.new,
         result.params
       )
+      context.status(result.status)
       begin
-        context.status(result.status)
         returned = catch(:halt) do
           filters[:before].each { |f| context.instance_eval(&f) }
           [:complete, context.instance_eval(&result.block)]
         end
         body = returned.to_result(context)
-        body = '' unless body.respond_to?(:each)
-        context.body = body.kind_of?(String) ? [*body] : body
-        context.finish
       rescue => e
         raise e if options.raise_errors
         env['sinatra.error'] = e
@@ -380,10 +377,10 @@ module Sinatra
           [:complete, context.instance_eval(&result.block)]
         end
         body = returned.to_result(context)
-        body = '' unless body.respond_to?(:each)
-        context.body = body.kind_of?(String) ? [*body] : body
-        context.finish
       end
+      body = '' unless body.respond_to?(:each)
+      context.body = body.kind_of?(String) ? [*body] : body
+      context.finish
     end
     
   end
