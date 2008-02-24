@@ -154,10 +154,6 @@ module Sinatra
   
   module RenderingHelpers
 
-    def erb(content, options={})
-      render(content, options.merge(:renderer => :erb, :ext => :erb))
-    end
-
     def render(content, options={})
       options[:layout] ||= :layout
       template = resolve_template(content, options)
@@ -167,13 +163,12 @@ module Sinatra
       @content
     end
     
+    def partial(content, options={})
+      renderer(content, options.merge(:layout => nil))
+    end
+      
     private
-      
-      def evaluate_erb(content, options={})
-        require 'erb'
-        ERB.new(content).result(binding)
-      end
-      
+          
       def evaluate_renderer(content, options={})
         renderer = "evaluate_#{options[:renderer]}"
         result = case content
@@ -184,7 +179,7 @@ module Sinatra
         when File
           content.read
         end
-        send(renderer, result, options)
+        send(renderer, result)
       end
       
       def resolve_template(content, options={})
@@ -192,7 +187,7 @@ module Sinatra
         when String
           content
         when Symbol
-          File.new(filename_for(content, options))
+          File.new(path_to(content, options))
         end
       end
     
@@ -201,12 +196,12 @@ module Sinatra
         if layout = layouts[name || :layout]
           return layout
         end
-        if File.file?(filename = filename_for(name, options))
+        if File.file?(filename = path_to(name, options))
           File.new(filename)
         end
       end
       
-      def filename_for(name, options={})
+      def path_to(name, options={})
         (options[:views_directory] || 'views') + "/#{name}.#{options[:ext]}"
       end
 
@@ -216,10 +211,42 @@ module Sinatra
     
   end
 
+  module Erb
+    
+    def erb(content, options={})
+      render(content, options.merge(:renderer => :erb, :ext => :erb))
+    end
+    
+    private
+
+      def evaluate_erb(content)
+        require 'erb'
+        ::ERB.new(content).result(binding)
+      end
+    
+  end
+
+  module Haml
+    
+    def haml(content, options={})
+      render(content, options.merge(:renderer => :haml, :ext => :haml))
+    end
+    
+    private
+
+      def evaluate_haml(content)
+        require 'haml'
+        ::Haml::Engine.new(content).render(self)
+      end
+    
+  end
+  
   class EventContext
     
     include ResponseHelpers
     include RenderingHelpers
+    include Erb
+    include Haml
     
     attr_accessor :request, :response
     
