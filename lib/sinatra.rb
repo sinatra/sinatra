@@ -360,13 +360,14 @@ module Sinatra
       rescue => e
         raise e if options.raise_errors
         env['sinatra.error'] = e
-        result = (errors[500] || basic_error).invoke(env)
+        context.status(500)
+        result = (errors[e.class] || errors[500] || basic_error).invoke(env)
         returned = catch(:halt) do
           [:complete, context.instance_eval(&result.block)]
         end
         body = returned.to_result(context)
-        context.status(500)
-        context.body = String === body ? [*body] : body
+        body = '' unless body.respond_to?(:each)
+        context.body = body.kind_of?(String) ? [*body] : body
         context.finish
       end
     end
