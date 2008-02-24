@@ -292,7 +292,7 @@ module Sinatra
         @events = Hash.new { |hash, key| hash[key] = [] },
         @errors = Hash.new,
         @filters = Hash.new { |hash, key| hash[key] = [] },
-        @layouts = Hash.new,
+        @layouts = Hash.new
       ]
       load_options!
     end
