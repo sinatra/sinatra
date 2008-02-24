@@ -153,10 +153,6 @@ module Sinatra
   end
   
   module RenderingHelpers
-    
-    def text(content, options={})
-      render(content, options.merge(:renderer => :text, :ext => :html))
-    end
 
     def erb(content, options={})
       render(content, options.merge(:renderer => :erb, :ext => :erb))
@@ -173,17 +169,13 @@ module Sinatra
     
     private
       
-      def evaluate_text(content, options={})
-        instance_eval(%Q{"#{content}"})
-      end
-      
       def evaluate_erb(content, options={})
         require 'erb'
         ERB.new(content).result(binding)
       end
       
       def evaluate_renderer(content, options={})
-        renderer = "evaluate_#{options[:renderer] || :text}"
+        renderer = "evaluate_#{options[:renderer]}"
         result = case content
         when String
           content
