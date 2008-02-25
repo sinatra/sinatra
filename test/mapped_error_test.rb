@@ -4,9 +4,13 @@ class FooError < RuntimeError; end
 
 context "Mapped errors" do
   
-  before(:each) do
+  setup do
     Sinatra.application = nil
     Sinatra.application.options.raise_errors = false
+  end
+  
+  teardown do
+    Sinatra.application.options.raise_errors = true
   end
   
   

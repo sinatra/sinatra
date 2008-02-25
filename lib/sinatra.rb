@@ -28,6 +28,9 @@ end
 module Sinatra
   extend self
 
+  class NotFound < RuntimeError; end
+  class ServerError < RuntimeError; end
+
   Result = Struct.new(:block, :params, :status) unless defined?(Result)
   
   def application
@@ -483,7 +486,7 @@ module Sinatra
       method = env['REQUEST_METHOD'].downcase.to_sym
       e = static.invoke(env) 
       e ||= events[method].eject(&[:invoke, env])
-      e ||= (errors[404] || basic_not_found).invoke(env)
+      e ||= (errors[NotFound] || basic_not_found).invoke(env)
       e
     end
     
@@ -533,7 +536,7 @@ module Sinatra
         raise e if options.raise_errors
         env['sinatra.error'] = e
         context.status(500)
-        result = (errors[e.class] || errors[500] || basic_error).invoke(env)
+        result = (errors[e.class] || errors[ServerError] || basic_error).invoke(env)
         returned = catch(:halt) do
           [:complete, context.instance_eval(&result.block)]
         end
@@ -572,8 +575,8 @@ def helpers(&b)
   Sinatra::EventContext.class_eval(&b)
 end
 
-def error(code, options = {}, &b)
-  Sinatra.application.define_error(code, options, &b)
+def error(type = Sinatra::ServerError, options = {}, &b)
+  Sinatra.application.define_error(type, options, &b)
 end
 
 def layout(name = :layout, &b)
