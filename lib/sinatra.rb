@@ -34,7 +34,11 @@ module Sinatra
   Result = Struct.new(:block, :params, :status) unless defined?(Result)
   
   def application
-    @app ||= Application.new
+    unless @app 
+      @app = Application.new
+      Sinatra::Environment.setup!
+    end
+    @app
   end
   
   def application=(app)
@@ -780,7 +784,6 @@ end
 at_exit do
   raise $! if $!
   if Sinatra.application.options.run
-    Sinatra::Environment.setup!
     Sinatra.run 
   end
 end
