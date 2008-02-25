@@ -132,6 +132,154 @@ module Sinatra
     
   end
   
+  # Adapted from actionpack
+  # Methods for sending files and streams to the browser instead of rendering.
+  module Streaming
+    DEFAULT_SEND_FILE_OPTIONS = {
+      :type         => 'application/octet-stream'.freeze,
+      :disposition  => 'attachment'.freeze,
+      :stream       => true, 
+      :buffer_size  => 4096
+    }.freeze
+
+    class FileStreamer
+      
+      attr_reader :path, :options
+      
+      def initialize(path, options)
+        @path, @options = path, options
+      end
+      
+      def to_result(cx)
+        cx.body = self
+      end
+      
+      def each
+        File.open(path, 'rb') do |file|
+          while buf = file.read(options[:buffer_size])
+            yield buf
+          end
+        end
+      end
+      
+    end
+
+    protected
+      # Sends the file by streaming it 4096 bytes at a time. This way the
+      # whole file doesn't need to be read into memory at once.  This makes
+      # it feasible to send even large files.
+      #
+      # Be careful to sanitize the path parameter if it coming from a web
+      # page.  send_file(params[:path]) allows a malicious user to
+      # download any file on your server.
+      #
+      # Options:
+      # * <tt>:filename</tt> - suggests a filename for the browser to use.
+      #   Defaults to File.basename(path).
+      # * <tt>:type</tt> - specifies an HTTP content type.
+      #   Defaults to 'application/octet-stream'.
+      # * <tt>:disposition</tt> - specifies whether the file will be shown inline or downloaded.  
+      #   Valid values are 'inline' and 'attachment' (default).
+      # * <tt>:stream</tt> - whether to send the file to the user agent as it is read (true)
+      #   or to read the entire file before sending (false). Defaults to true.
+      # * <tt>:buffer_size</tt> - specifies size (in bytes) of the buffer used to stream the file.
+      #   Defaults to 4096.
+      # * <tt>:status</tt> - specifies the status code to send with the response. Defaults to '200 OK'.
+      #
+      # The default Content-Type and Content-Disposition headers are
+      # set to download arbitrary binary files in as many browsers as
+      # possible.  IE versions 4, 5, 5.5, and 6 are all known to have
+      # a variety of quirks (especially when downloading over SSL).
+      #
+      # Simple download:
+      #   send_file '/path/to.zip'
+      #
+      # Show a JPEG in the browser:
+      #   send_file '/path/to.jpeg', :type => 'image/jpeg', :disposition => 'inline'
+      #
+      # Show a 404 page in the browser:
+      #   send_file '/path/to/404.html, :type => 'text/html; charset=utf-8', :status => 404
+      #
+      # Read about the other Content-* HTTP headers if you'd like to
+      # provide the user with more information (such as Content-Description).
+      # http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11
+      #
+      # Also be aware that the document may be cached by proxies and browsers.
+      # The Pragma and Cache-Control headers declare how the file may be cached
+      # by intermediaries.  They default to require clients to validate with
+      # the server before releasing cached responses.  See
+      # http://www.mnot.net/cache_docs/ for an overview of web caching and
+      # http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9
+      # for the Cache-Control header spec.
+      def send_file(path, options = {}) #:doc:
+        raise MissingFile, "Cannot read file #{path}" unless File.file?(path) and File.readable?(path)
+
+        options[:length]   ||= File.size(path)
+        options[:filename] ||= File.basename(path)
+        options[:type] ||= Rack::File::MIME_TYPES[File.extname(options[:filename])[1..-1]] || 'text/plain'
+        send_file_headers! options
+
+        if options[:stream]
+          throw :halt, [options[:status] || 200, FileStreamer.new(path, options)]
+        else
+          File.open(path, 'rb') { |file| throw :halt, [options[:status] || 200, file.read] }
+        end
+      end
+
+      # Send binary data to the user as a file download.  May set content type, apparent file name,
+      # and specify whether to show data inline or download as an attachment.
+      #
+      # Options:
+      # * <tt>:filename</tt> - Suggests a filename for the browser to use.
+      # * <tt>:type</tt> - specifies an HTTP content type.
+      #   Defaults to 'application/octet-stream'.
+      # * <tt>:disposition</tt> - specifies whether the file will be shown inline or downloaded.  
+      #   Valid values are 'inline' and 'attachment' (default).
+      # * <tt>:status</tt> - specifies the status code to send with the response. Defaults to '200 OK'.
+      #
+      # Generic data download:
+      #   send_data buffer
+      #
+      # Download a dynamically-generated tarball:
+      #   send_data generate_tgz('dir'), :filename => 'dir.tgz'
+      #
+      # Display an image Active Record in the browser:
+      #   send_data image.data, :type => image.content_type, :disposition => 'inline'
+      #
+      # See +send_file+ for more information on HTTP Content-* headers and caching.
+      def send_data(data, options = {}) #:doc:
+        send_file_headers! options.merge(:length => data.size)
+        throw :halt, [options[:status] || 200, data]
+      end
+
+    private
+      def send_file_headers!(options)
+        options.update(DEFAULT_SEND_FILE_OPTIONS.merge(options))
+        [:length, :type, :disposition].each do |arg|
+          raise ArgumentError, ":#{arg} option required" if options[arg].nil?
+        end
+
+        disposition = options[:disposition].dup || 'attachment'
+
+        disposition <<= %(; filename="#{options[:filename]}") if options[:filename]
+
+        headers(
+          'Content-Length'            => options[:length].to_s,
+          'Content-Type'              => options[:type].strip,  # fixes a problem with extra '\r' with some browsers
+          'Content-Disposition'       => disposition,
+          'Content-Transfer-Encoding' => 'binary'
+        )
+
+        # Fix a problem with IE 6.0 on opening downloaded files:
+        # If Cache-Control: no-cache is set (which Rails does by default), 
+        # IE removes the file it just downloaded from its cache immediately 
+        # after it displays the "open/save" dialog, which means that if you 
+        # hit "open" the file isn't there anymore when the application that 
+        # is called for handling the download is run, so let's workaround that
+        header('Cache-Control' => 'private') if headers['Cache-Control'] == 'no-cache'
+      end
+  end
+  
   module ResponseHelpers
 
     def redirect(path, *args)
@@ -140,10 +288,6 @@ module Sinatra
       throw :halt, *args
     end
     
-    def send_file(filename)
-      throw :halt, File.read(filename)
-    end
-
     def headers(header = nil)
       @response.headers.merge!(header) if header
       @response.headers
@@ -156,8 +300,7 @@ module Sinatra
 
     def render(content, options={})
       options[:layout] ||= :layout
-      template = resolve_template(content, options)
-      @content = evaluate_renderer(template, options)
+      @content = evaluate_renderer(content, options)
       layout = resolve_layout(options[:layout], options)
       @content = evaluate_renderer(layout, options) if layout
       @content
@@ -172,25 +315,23 @@ module Sinatra
       def evaluate_renderer(content, options={})
         renderer = "evaluate_#{options[:renderer]}"
         result = case content
+        when nil
+          ''
         when String
           content
         when Proc
           content.call
         when File
           content.read
+        when Symbol
+          evaluate_renderer(
+            File.new(path_to(content, options)),
+            options
+          )
         end
         send(renderer, result)
       end
       
-      def resolve_template(content, options={})
-        case content
-        when String
-          content
-        when Symbol
-          File.new(path_to(content, options))
-        end
-      end
-    
       def resolve_layout(name, options={})
         return if name == false
         if layout = layouts[name || :layout]
@@ -244,6 +385,7 @@ module Sinatra
   class EventContext
     
     include ResponseHelpers
+    include Streaming
     include RenderingHelpers
     include Erb
     include Haml
@@ -444,6 +586,10 @@ def configures(*envs, &b)
 end
 alias :configure :configures
 
+def mime(ext, type)
+  Rack::File::MIME_TYPES[ext.to_s] = type
+end
+
 ### Misc Core Extensions
 
 module Kernel
@@ -561,6 +707,9 @@ at_exit do
   raise $! if $!
   Sinatra.run if Sinatra.application.options.run
 end
+
+mime :xml,  'application/xml'
+mime :js,  'application/javascript'
 
 configures :development do
   
