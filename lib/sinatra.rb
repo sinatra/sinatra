@@ -426,7 +426,7 @@ module Sinatra
   
   class Application
     
-    attr_reader :events, :errors, :layouts, :default_options, :filters, :clearables
+    attr_reader :events, :errors, :layouts, :default_options, :filters, :clearables, :reloading
     attr_writer :options
     
     def self.default_options
@@ -486,20 +486,8 @@ module Sinatra
       method = env['REQUEST_METHOD'].downcase.to_sym
       e = static.invoke(env) 
       e ||= events[method].eject(&[:invoke, env])
-      e ||= (errors[NotFound] || basic_not_found).invoke(env)
+      e ||= (errors[NotFound]).invoke(env)
       e
-    end
-    
-    def basic_not_found
-      Error.new(404) do
-        '<h1>Not Found</h1>'
-      end
-    end
-    
-    def basic_error
-      Error.new(500) do
-        '<h1>Internal Server Error</h1>'
-      end
     end
 
     def options
@@ -511,10 +499,11 @@ module Sinatra
     end
 
     def reload!
-      reloading = true
+      @reloading = true
       clearables.each(&:clear)
       Kernel.load $0
-      reloading = false
+      @reloading = false
+      Environment.setup!
     end
         
     def call(env)
@@ -536,7 +525,7 @@ module Sinatra
         raise e if options.raise_errors
         env['sinatra.error'] = e
         context.status(500)
-        result = (errors[e.class] || errors[ServerError] || basic_error).invoke(env)
+        result = (errors[e.class] || errors[ServerError]).invoke(env)
         returned = catch(:halt) do
           [:complete, context.instance_eval(&result.block)]
         end
@@ -547,6 +536,83 @@ module Sinatra
       context.finish
     end
     
+  end
+  
+  
+  module Environment
+    extend self
+    
+    def setup!
+      configure do
+        error { '<h1>Internal Server Error</h1>'}
+        not_found { '<h1>Not Found</h1>'}
+      end
+      
+      configures :development do
+
+        get '/sinatra_custom_images/:image.png' do
+          File.read(File.dirname(__FILE__) + "/../images/#{params[:image]}.png")
+        end
+
+        not_found do
+          %Q(
+          <html>
+            <body style='text-align: center; color: #888; font-family: Arial; font-size: 22px; margin: 20px'>
+            <h2>Sinatra doesn't know this diddy.</h2>
+            <img src='/sinatra_custom_images/404.png'></img>
+            </body>
+          </html>
+          )
+        end
+
+        error do
+          @error = request.env['sinatra.error']
+          %Q(
+          <html>
+          	<body>
+          		<style type="text/css" media="screen">
+          			body {
+          				font-family: Verdana;
+          				color: #333;
+          			}
+
+          			#content {
+          				width: 700px;
+          				margin-left: 20px;
+          			}
+
+          			#content h1 {
+          				width: 99%;
+          				color: #1D6B8D;
+          				font-weight: bold;
+          			}
+
+          			#stacktrace {
+          			  margin-top: -20px;
+          			}
+
+          			#stacktrace pre {
+          				font-size: 12px;
+          				border-left: 2px solid #ddd;
+          				padding-left: 10px;
+          			}
+
+          			#stacktrace img {
+          				margin-top: 10px;
+          			}
+          		</style>
+          		<div id="content">
+            		<img src="/sinatra_custom_images/500.png" />
+          			<div id="stacktrace">
+          				<h1>#{@error.message}</h1>
+          				<pre><code>#{@error.backtrace.join("\n")}</code></pre>
+          		</div>
+          	</body>
+          </html>
+          )
+        end
+      end
+    end
   end
   
 end
@@ -579,13 +645,18 @@ def error(type = Sinatra::ServerError, options = {}, &b)
   Sinatra.application.define_error(type, options, &b)
 end
 
+def not_found(options = {}, &b)
+  Sinatra.application.define_error(Sinatra::NotFound, options, &b)
+end
+
 def layout(name = :layout, &b)
   Sinatra.application.define_layout(name, &b)
 end
 
 def configures(*envs, &b)
-  yield if  envs.include?(Sinatra.application.options.env) ||
-            envs.empty?
+  yield if  !Sinatra.application.reloading && 
+            (envs.include?(Sinatra.application.options.env) ||
+            envs.empty?)
 end
 alias :configure :configures
 
@@ -708,74 +779,11 @@ end
 
 at_exit do
   raise $! if $!
-  Sinatra.run if Sinatra.application.options.run
+  if Sinatra.application.options.run
+    Sinatra::Environment.setup!
+    Sinatra.run 
+  end
 end
 
 mime :xml,  'application/xml'
 mime :js,  'application/javascript'
-
-configures :development do
-  
-  get '/sinatra_custom_images/:image.png' do
-    File.read(File.dirname(__FILE__) + "/../images/#{params[:image]}.png")
-  end
-  
-  error 404 do
-    %Q(
-    <html>
-      <body style='text-align: center; color: #888; font-family: Arial; font-size: 22px; margin: 20px'>
-      <h2>Sinatra doesn't know this diddy.</h2>
-      <img src='/sinatra_custom_images/404.png'></img>
-      </body>
-    </html>
-    )
-  end
-  
-  error 500 do
-    @error = request.env['sinatra.error']
-    %Q(
-    <html>
-    	<body>
-    		<style type="text/css" media="screen">
-    			body {
-    				font-family: Verdana;
-    				color: #333;
-    			}
-
-    			#content {
-    				width: 700px;
-    				margin-left: 20px;
-    			}
-
-    			#content h1 {
-    				width: 99%;
-    				color: #1D6B8D;
-    				font-weight: bold;
-    			}
-    			
-    			#stacktrace {
-    			  margin-top: -20px;
-    			}
-
-    			#stacktrace pre {
-    				font-size: 12px;
-    				border-left: 2px solid #ddd;
-    				padding-left: 10px;
-    			}
-
-    			#stacktrace img {
-    				margin-top: 10px;
-    			}
-    		</style>
-    		<div id="content">
-      		<img src="/sinatra_custom_images/500.png" />
-    			<div id="stacktrace">
-    				<h1>#{@error.message}</h1>
-    				<pre><code>#{@error.backtrace.join("\n")}</code></pre>
-    		</div>
-    	</body>
-    </html>
-    )
-  end
-  
-end
