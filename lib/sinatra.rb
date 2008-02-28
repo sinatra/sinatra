@@ -305,54 +305,45 @@ module Sinatra
   
   module RenderingHelpers
 
-    def render(content, options={})
-      options[:layout] ||= :layout
-      @content = evaluate_renderer(content, options)
-      layout = resolve_layout(options[:layout], options)
-      @content = evaluate_renderer(layout, options) if layout
-      @content
+    def render(renderer, template, options={})
+      m = method("render_#{renderer}")
+      result = m.call(resolve_template(renderer, template, options))
+      if layout = determine_layout(renderer, template, options)
+        result = m.call(resolve_template(renderer, layout, options)) { result }
+      end
+      result
     end
     
-    def partial(content, options={})
-      renderer(content, options.merge(:layout => nil))
+    def determine_layout(renderer, template, options)
+      layout_from_options = options[:layout] || :layout
+      layout = layouts[layout_from_options] 
+      layout ||= resolve_template(renderer, layout_from_options, options)
+      layout
     end
-      
-    private
-          
-      def evaluate_renderer(content, options={})
-        renderer = "evaluate_#{options[:renderer]}"
-        result = case content
-        when nil
-          ''
-        when String
-          content
-        when Proc
-          content.call
-        when File
-          content.read
-        when Symbol
-          evaluate_renderer(
-            File.new(path_to(content, options)),
-            options
-          )
-        end
-        send(renderer, result)
-      end
-      
-      def resolve_layout(name, options={})
-        return if name == false
-        if layout = layouts[name || :layout]
-          return layout
-        end
-        if File.file?(filename = path_to(name, options))
-          File.new(filename)
-        end
-      end
-      
-      def path_to(name, options={})
-        (options[:views_directory] || 'views') + "/#{name}.#{options[:ext]}"
-      end
 
+    private
+        
+      def resolve_template(renderer, template, options)
+        case template
+        when String
+          template
+        when Proc
+          template.call
+        when Symbol
+          template_file(renderer, template, options)
+        else
+          nil
+        end
+      end
+      
+      def template_file(renderer, name, options={})
+        path = File.join(
+          options[:views_directory] || Sinatra.application.options.public,
+          "#{name}.#{renderer}"
+        )
+        File.exists?(path) ? File.read(path) : nil
+      end
+    
       def layouts
         Sinatra.application.layouts
       end
@@ -362,31 +353,31 @@ module Sinatra
   module Erb
     
     def erb(content, options={})
-      render(content, options.merge(:renderer => :erb, :ext => :erb))
+      require 'erb'
+      render(:erb, content, options)
     end
     
-    private
-
-      def evaluate_erb(content)
-        require 'erb'
+    private 
+    
+      def render_erb(content)
         ::ERB.new(content).result(binding)
       end
-    
+      
   end
 
   module Haml
     
     def haml(content, options={})
-      render(content, options.merge(:renderer => :haml, :ext => :haml))
+      require 'haml'
+      render(:haml, content, options)
     end
     
     private
-
-      def evaluate_haml(content)
-        require 'haml'
-        ::Haml::Engine.new(content).render(self)
-      end
     
+      def render_haml(content, &b)
+        ::Haml::Engine.new(content).render(self, &b)
+      end
+        
   end
   
   class EventContext

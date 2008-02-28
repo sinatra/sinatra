@@ -34,7 +34,7 @@ context "Haml" do
     specify "can be inline" do
     
       layout do
-        '== This is #{@content}!'
+        '== This is #{yield}!'
       end
     
       get '/lay' do
@@ -50,7 +50,7 @@ context "Haml" do
     specify "can use named layouts" do
     
       layout :pretty do
-        "%h1== \#{@content}"
+        '%h1== #{yield}'
       end
         
       get '/pretty' do
@@ -81,8 +81,46 @@ context "Haml" do
       body.should.equal "Welcome to the Hello Program\nHi Blake\n"
     
     end
+    
+    specify "can be read from file and layout from text" do
+      get '/foo' do
+        haml 'Test', :layout => '== Foo #{yield}'
+      end
+      
+      get_it '/foo'
+      
+      body.should.equal "Foo Test\n"
+    end
 
   end
   
-  
+  context "Templates (in general)" do
+
+    specify "are read from files if Symbols" do
+
+      get '/from_file' do
+        @name = 'Alena'
+        haml :foo, :views_directory => File.dirname(__FILE__) + "/views"
+      end
+
+      get_it '/from_file'
+
+      body.should.equal "You rock Alena!\n"
+
+    end
+
+    specify "use layout.ext by default if available" do
+
+      get '/layout_from_file' do
+        haml :foo, :views_directory => File.dirname(__FILE__) + "/views/layout_test"
+      end
+
+      get_it '/layout_from_file'
+      should.be.ok
+      body.should.equal "x This is foo!\n x\n"
+
+    end
+
+  end
+
 end

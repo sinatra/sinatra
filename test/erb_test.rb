@@ -34,7 +34,7 @@ context "Erb" do
     specify "can be inline" do
     
       layout do
-        %Q{This is <%= @content %>!}
+        %Q{This is <%= yield %>!}
       end
     
       get '/lay' do
@@ -50,7 +50,7 @@ context "Erb" do
     specify "can use named layouts" do
     
       layout :pretty do
-        %Q{<h1><%= @content %></h1>}
+        %Q{<h1><%= yield %></h1>}
       end
         
       get '/pretty' do
@@ -83,6 +83,34 @@ context "Erb" do
     end
 
   end
-  
+
+  context "Templates (in general)" do
+
+    specify "are read from files if Symbols" do
+
+      get '/from_file' do
+        @name = 'Alena'
+        erb :foo, :views_directory => File.dirname(__FILE__) + "/views"
+      end
+
+      get_it '/from_file'
+
+      body.should.equal 'You rock Alena!'
+
+    end
+
+    specify "use layout.ext by default if available" do
+
+      get '/layout_from_file' do
+        erb :foo, :views_directory => File.dirname(__FILE__) + "/views/layout_test"
+      end
+
+      get_it '/layout_from_file'
+      should.be.ok
+      body.should.equal "x This is foo! x \n"
+
+    end
+
+  end
   
 end
