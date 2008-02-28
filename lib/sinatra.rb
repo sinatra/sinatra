@@ -316,34 +316,35 @@ module Sinatra
     
     def determine_layout(renderer, template, options)
       layout_from_options = options[:layout] || :layout
-      layout = layouts[layout_from_options] 
-      layout ||= resolve_template(renderer, layout_from_options, options)
+      layout = layouts[layout_from_options]
+      layout ||= resolve_template(renderer, layout_from_options, options, false)
       layout
     end
 
     private
         
-      def resolve_template(renderer, template, options)
+      def resolve_template(renderer, template, options, scream = true)
         case template
         when String
           template
         when Proc
           template.call
         when Symbol
-          template_file(renderer, template, options)
+          path = File.join(
+            options[:views_directory] || Sinatra.application.options.views,
+            "#{template}.#{renderer}"
+          )
+          unless File.exists?(path)
+            raise Errno::ENOENT.new(path) if scream
+            nil
+          else  
+            File.read(path)
+          end
         else
           nil
         end
       end
       
-      def template_file(renderer, name, options={})
-        path = File.join(
-          options[:views_directory] || Sinatra.application.options.public,
-          "#{name}.#{renderer}"
-        )
-        File.exists?(path) ? File.read(path) : nil
-      end
-    
       def layouts
         Sinatra.application.layouts
       end
@@ -430,6 +431,7 @@ module Sinatra
         :port => 4567,
         :env => :development,
         :root => Dir.pwd,
+        :views => Dir.pwd + '/views',
         :public => Dir.pwd + '/public'
       }
     end

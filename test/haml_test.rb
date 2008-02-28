@@ -96,6 +96,10 @@ context "Haml" do
   
   context "Templates (in general)" do
 
+    setup do
+      Sinatra.application = nil
+    end
+
     specify "are read from files if Symbols" do
 
       get '/from_file' do
@@ -111,14 +115,34 @@ context "Haml" do
 
     specify "use layout.ext by default if available" do
 
-      get '/layout_from_file' do
+      get '/' do
         haml :foo, :views_directory => File.dirname(__FILE__) + "/views/layout_test"
       end
 
-      get_it '/layout_from_file'
+      get_it '/'
       should.be.ok
       body.should.equal "x This is foo!\n x\n"
 
+    end
+
+    specify "renders without layout" do
+
+      get '/' do
+        haml :no_layout, :views_directory => File.dirname(__FILE__) + "/views/no_layout"
+      end
+
+      get_it '/'
+      should.be.ok
+      body.should.equal "<h1>No Layout!</h1>\n"
+
+    end
+    
+    specify "raises error if template not found" do
+      get '/' do
+        haml :not_found
+      end
+
+      lambda { get_it '/' }.should.raise(Errno::ENOENT)
     end
 
   end
