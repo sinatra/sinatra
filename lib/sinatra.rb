@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'metaid'
+require 'uri'
 
 if ENV['SWIFT']
  require 'swiftcore/swiftiplied_mongrel'
@@ -23,6 +24,26 @@ class Class
       end_eval
     end
   end
+end
+
+module Rack #:nodoc:
+  
+  class Request #:nodoc:
+    
+    def request_method
+      if @env['REQUEST_METHOD'] == 'POST' && %w(PUT DELETE).include?(params['_method'])
+        params['_method'].upcase
+      else
+        @env['REQUEST_METHOD']
+      end
+    end
+    
+    def user_agent
+      env['HTTP_USER_AGENT']
+    end
+    
+  end
+  
 end
 
 module Sinatra
@@ -96,11 +117,11 @@ module Sinatra
       @pattern = /^#{regex}$/
     end
         
-    def invoke(env)
+    def invoke(request)
       if options[:agent] 
-        return unless env['HTTP_USER_AGENT'] =~ options[:agent]
+        return unless request.user_agent =~ options[:agent]
       end
-      return unless pattern =~ env['PATH_INFO'].squeeze('/')
+      return unless pattern =~ request.path_info.squeeze('/')
       params = param_keys.zip($~.captures.map(&:from_param)).to_hash
       Result.new(block, params, 200)
     end
@@ -115,7 +136,7 @@ module Sinatra
       @code, @block = code, b
     end
     
-    def invoke(env)
+    def invoke(request)
       Result.new(block, {}, 404)
     end
     
@@ -123,9 +144,9 @@ module Sinatra
   
   class Static
             
-    def invoke(env)
+    def invoke(request)
       return unless File.file?(
-        Sinatra.application.options.public + env['PATH_INFO']
+        Sinatra.application.options.public + request.path_info
       )
       Result.new(block, {}, 200)
     end
@@ -133,7 +154,7 @@ module Sinatra
     def block
       Proc.new do
         send_file Sinatra.application.options.public + 
-          request.env['PATH_INFO']
+          request.path_info
       end
     end
     
@@ -479,11 +500,11 @@ module Sinatra
       @static ||= Static.new
     end
     
-    def lookup(env)
-      method = env['REQUEST_METHOD'].downcase.to_sym
-      e = static.invoke(env) 
-      e ||= events[method].eject(&[:invoke, env])
-      e ||= (errors[NotFound]).invoke(env)
+    def lookup(request)
+      method = request.request_method.downcase.to_sym
+      e = static.invoke(request)
+      e ||= events[method].eject(&[:invoke, request])
+      e ||= (errors[NotFound]).invoke(request)
       e
     end
 
@@ -505,9 +526,10 @@ module Sinatra
         
     def call(env)
       reload! if development?
-      result = lookup(env)
+      request = Rack::Request.new(env)
+      result = lookup(request)
       context = EventContext.new(
-        Rack::Request.new(env), 
+        request, 
         Rack::Response.new,
         result.params
       )
@@ -520,9 +542,9 @@ module Sinatra
         body = returned.to_result(context)
       rescue => e
         raise e if options.raise_errors
-        env['sinatra.error'] = e
+        request.env['sinatra.error'] = e
         context.status(500)
-        result = (errors[e.class] || errors[ServerError]).invoke(env)
+        result = (errors[e.class] || errors[ServerError]).invoke(request)
         returned = catch(:halt) do
           [:complete, context.instance_eval(&result.block)]
         end

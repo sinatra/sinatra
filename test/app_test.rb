@@ -72,5 +72,22 @@ context "Sinatra" do
     body.should.equal 'Hello!'
     
   end
+  
+  specify "put'n with POST" do
+    put '/' do
+      'puted'
+    end
+    post_it '/', :_method => 'PUT'
+    assert_equal 'puted', body
+  end
+
+  specify "put'n wth PUT" do
+    put '/' do
+      'puted'
+    end
+    put_it '/'
+    assert_equal 'puted', body
+  end
+  
       
 end

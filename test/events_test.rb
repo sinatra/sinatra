@@ -6,10 +6,10 @@ require 'test/spec'
 context "Simple Events" do
 
   def simple_request_hash(method, path)
-    {
+    Rack::Request.new({
       'REQUEST_METHOD' => method.to_s.upcase,
       'PATH_INFO' => path
-    }
+    })
   end
 
   def invoke_simple(path, request_path, &b)

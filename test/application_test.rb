@@ -19,8 +19,10 @@ context "Looking up a request" do
     get '/', &block
     
     result = Sinatra.application.lookup(
-      'REQUEST_METHOD' => 'GET',
-      'PATH_INFO' => '/'
+      Rack::Request.new(
+        'REQUEST_METHOD' => 'GET',
+        'PATH_INFO' => '/'
+      )
     )
     
     result.should.not.be.nil
@@ -32,8 +34,10 @@ context "Looking up a request" do
     get '/:foo', &block
     
     result = Sinatra.application.lookup(
-      'REQUEST_METHOD' => 'GET',
-      'PATH_INFO' => '/bar'
+      Rack::Request.new(
+        'REQUEST_METHOD' => 'GET',
+        'PATH_INFO' => '/bar'
+      )
     )
     
     result.should.not.be.nil
