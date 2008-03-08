@@ -44,6 +44,10 @@ module Rack #:nodoc:
     
   end
   
+  module Utils
+    extend self
+  end
+
 end
 
 module Sinatra
@@ -623,8 +627,8 @@ module Sinatra
           		<div id="content">
             		<img src="/sinatra_custom_images/500.png" />
           			<div id="stacktrace">
-          				<h1>#{@error.message}</h1>
-          				<pre><code>#{@error.backtrace.join("\n")}</code></pre>
+          				<h1>#{Rack::Utils.escape_html(@error.message)}</h1>
+          				<pre><code>#{Rack::Utils.escape_html(@error.backtrace.join("\n"))}</code></pre>
           		</div>
           	</body>
           </html>
