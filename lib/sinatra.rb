@@ -586,7 +586,14 @@ module Sinatra
         op.on('-e env') { |env| default_options[:env] = env }
       end.parse!(ARGV.dup.select { |o| o !~ /--name/ })
     end
-        
+
+    # Called immediately after the application is initialized or reloaded to
+    # register default events. Events added here have dibs on requests since
+    # they appear first in the list.
+    def load_default_events!
+      events[:get] << Static.new
+    end
+
     def initialize
       @clearables = [
         @events = Hash.new { |hash, key| hash[key] = [] },
@@ -595,8 +602,9 @@ module Sinatra
         @layouts = Hash.new
       ]
       load_options!
+      load_default_events!
     end
-    
+
     def define_event(method, path, options = {}, &b)
       events[method] << event = Event.new(path, options, &b)
       event
@@ -613,17 +621,20 @@ module Sinatra
     def define_filter(type, &b)
       filters[:before] << b
     end
-    
-    def static
-      @static ||= Static.new
-    end
-    
+
+    # Visits and invokes each handler registered for the +request_method+ in
+    # definition order until a Result response is produced. If no handler
+    # responds with a Result, the NotFound error handler is invoked.
+    #
+    # When the request_method is "HEAD" and no valid Result is produced by
+    # the set of handlers registered for HEAD requests, an attempt is made to
+    # invoke the GET handlers to generate the response before resorting to the
+    # default error handler.
     def lookup(request)
       method = request.request_method.downcase.to_sym
-      e = static.invoke(request)
-      e ||= events[method].eject(&[:invoke, request])
-      e ||= (errors[NotFound]).invoke(request)
-      e
+      events[method].eject(&[:invoke, request]) ||
+        (events[:get].eject(&[:invoke, request]) if method == :head) ||
+        errors[NotFound].invoke(request)
     end
 
     def options
@@ -637,6 +648,7 @@ module Sinatra
     def reload!
       @reloading = true
       clearables.each(&:clear)
+      load_default_events!
       Kernel.load $0
       @reloading = false
       Environment.setup!
@@ -669,6 +681,7 @@ module Sinatra
         body = returned.to_result(context)
       end
       body = '' unless body.respond_to?(:each)
+      body = '' if request.request_method.upcase == 'HEAD'
       context.body = body.kind_of?(String) ? [*body] : body
       context.finish
     end

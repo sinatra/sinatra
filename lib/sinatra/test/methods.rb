@@ -20,6 +20,12 @@ module Sinatra
         @response = @request.get(path, :input => params.to_params, :agent => agent)
       end
 
+      def head_it(path, params = {})
+        agent = params.delete(:agent)
+        @request = Rack::MockRequest.new(Sinatra.application)
+        @response = @request.request('HEAD', path, :input => params.to_params, :agent => agent)
+      end
+
       def post_it(path, params = {})
         agent = params.delete(:agent)
         @request = Rack::MockRequest.new(Sinatra.application)

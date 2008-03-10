@@ -72,6 +72,18 @@ context "Sinatra" do
     body.should.equal 'Hello!'
     
   end
+
+  specify "delegates HEAD requests to GET handlers" do
+    get '/invisible' do
+      "I am invisible to the world"
+    end
+
+    head_it '/invisible'
+    should.be.ok
+    body.should.not.equal "I am invisible to the world"
+    body.should.equal ''
+  end
+
   
   specify "put'n with POST" do
     put '/' do
@@ -99,8 +111,7 @@ context "Sinatra" do
     body.should.equal 'puted'
   end
 
-  # We want to make sure we ignore any _method parameters specified in GET
-  # requests or on the query string in POST requests.
+  # Ignore any _method parameters specified in GET requests or on the query string in POST requests.
   specify "not put'n with GET" do
     get '/' do
       'getted'
