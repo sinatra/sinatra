@@ -88,6 +88,38 @@ context "Sinatra" do
     put_it '/'
     assert_equal 'puted', body
   end
-  
-      
+
+  # Some Ajax libraries downcase the _method parameter value. Make 
+  # sure we can handle that.
+  specify "put'n with POST and lowercase _method param" do
+    put '/' do
+      'puted'
+    end
+    post_it '/', :_method => 'put'
+    body.should.equal 'puted'
+  end
+
+  # We want to make sure we ignore any _method parameters specified in GET
+  # requests or on the query string in POST requests.
+  specify "not put'n with GET" do
+    get '/' do
+      'getted'
+    end
+    get_it '/', :_method => 'put'
+    should.be.ok
+    body.should.equal 'getted'
+  end
+
+  specify "_method query string parameter ignored on POST" do
+    post '/' do
+      'posted'
+    end
+    put '/' do
+      'booo'
+    end
+    post_it "/?_method=PUT"
+    should.be.ok
+    body.should.equal 'posted'
+  end
+
 end
