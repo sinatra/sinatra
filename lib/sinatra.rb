@@ -791,8 +791,11 @@ end<pre>
           		</style>
           		<div id="content">
             		<img src="/sinatra_custom_images/500.png" />
+            		<div class="info">
+                  Params: <pre>#{params.inspect}
+            		</div>
           			<div id="stacktrace">
-          				<h1>#{Rack::Utils.escape_html(@error.message)}</h1>
+          				<h1>#{Rack::Utils.escape_html(@error.class.name + ' - ' + @error.message)}</h1>
           				<pre><code>#{Rack::Utils.escape_html(@error.backtrace.join("\n"))}</code></pre>
           		</div>
           	</body>
