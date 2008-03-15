@@ -724,10 +724,30 @@ module Sinatra
 
         not_found do
           %Q(
+          <style>
+          body {
+            text-align: center; 
+            color: #888;
+            font-family: Arial; 
+            font-size: 22px; 
+            margin: 20px;
+          }
+          #content {
+            margin: 0 auto;
+            width: 500px;
+            text-align: left;
+          }
+          </style>
           <html>
-            <body style='text-align: center; color: #888; font-family: Arial; font-size: 22px; margin: 20px'>
-            <h2>Sinatra doesn't know this diddy.</h2>
-            <img src='/sinatra_custom_images/404.png'></img>
+            <body>
+              <h2>Sinatra doesn't know this diddy.</h2>
+              <img src='/sinatra_custom_images/404.png'></img>
+              <div id="content">
+                Try this:
+<pre>#{request.request_method.downcase} "#{request.path_info}" do
+  .. do something ..
+end<pre>
+              </div>
             </body>
           </html>
           )
