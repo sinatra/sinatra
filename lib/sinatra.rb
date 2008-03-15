@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'metaid'
 require 'uri'
+require 'thread'
 
 if ENV['SWIFT']
  require 'swiftcore/swiftiplied_mongrel'
@@ -584,6 +585,7 @@ module Sinatra
       OptionParser.new do |op|
         op.on('-p port') { |port| default_options[:port] = port }
         op.on('-e env') { |env| default_options[:env] = env }
+        op.on('-x') { |env| default_options[:mutex] = true }
       end.parse!(ARGV.dup.select { |o| o !~ /--name/ })
     end
 
@@ -653,7 +655,19 @@ module Sinatra
       @reloading = false
       Environment.setup!
     end
-        
+    
+    def mutex
+      @@mutex ||= Mutex.new
+    end
+    
+    def run_safely
+      if options.mutex
+        mutex.synchronize { yield }
+      else
+        yield
+      end
+    end
+    
     def call(env)
       reload! if development?
       request = Rack::Request.new(env)
@@ -665,9 +679,11 @@ module Sinatra
       )
       context.status(result.status)
       begin
-        returned = catch(:halt) do
-          filters[:before].each { |f| context.instance_eval(&f) }
-          [:complete, context.instance_eval(&result.block)]
+        returned = run_safely do
+          catch(:halt) do
+            filters[:before].each { |f| context.instance_eval(&f) }
+            [:complete, context.instance_eval(&result.block)]
+          end
         end
         body = returned.to_result(context)
       rescue => e
@@ -675,8 +691,10 @@ module Sinatra
         request.env['sinatra.error'] = e
         context.status(500)
         result = (errors[e.class] || errors[ServerError]).invoke(request)
-        returned = catch(:halt) do
-          [:complete, context.instance_eval(&result.block)]
+        returned = run_safely do
+          catch(:halt) do
+            [:complete, context.instance_eval(&result.block)]
+          end
         end
         body = returned.to_result(context)
       end
