@@ -137,6 +137,20 @@ context "Haml" do
 
     end
     
+    specify "can render with no layout" do
+      layout do
+        "X\n= yield\nX"
+      end
+      
+      get '/' do
+        haml 'blake', :layout => false
+      end
+      
+      get_it '/'
+      
+      body.should.equal "blake\n"
+    end
+    
     specify "raises error if template not found" do
       get '/' do
         haml :not_found
