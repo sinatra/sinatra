@@ -387,9 +387,9 @@ module Sinatra
 
     def render(renderer, template, options={})
       m = method("render_#{renderer}")
-      result = m.call(resolve_template(renderer, template, options))
+      result = m.call(resolve_template(renderer, template, options), options)
       if layout = determine_layout(renderer, template, options)
-        result = m.call(resolve_template(renderer, layout, options)) { result }
+        result = m.call(resolve_template(renderer, layout, options), options) { result }
       end
       result
     end
@@ -441,7 +441,7 @@ module Sinatra
     
     private 
     
-      def render_erb(content)
+      def render_erb(content, options = {})
         ::ERB.new(content).result(binding)
       end
       
@@ -456,8 +456,8 @@ module Sinatra
     
     private
     
-      def render_haml(content, &b)
-        ::Haml::Engine.new(content).render(self, &b)
+      def render_haml(content, options = {}, &b)
+        ::Haml::Engine.new(content).render(options[:scope] || self, options[:locals] || {}, &b)
       end
         
   end
@@ -539,7 +539,7 @@ module Sinatra
 
     private
 
-      def render_builder(content, &b)
+      def render_builder(content, options = {}, &b)
         require 'builder'
         xml = ::Builder::XmlMarkup.new(:indent => 2)
         case content
