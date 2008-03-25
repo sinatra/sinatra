@@ -76,6 +76,15 @@ end
 module Sinatra
   extend self
 
+  module Version
+    MAJOR = '0'
+    MINOR = '2'
+    REVISION = '0'
+    def self.combined
+      [MAJOR, MINOR, REVISION].join('.')
+    end
+  end
+
   class NotFound < RuntimeError; end
   class ServerError < RuntimeError; end
 

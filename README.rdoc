@@ -32,6 +32,44 @@ Ruby this as <tt>ruby myapp.rb</tt> and view at <tt>http://localhost:4567</tt>
   delete '/' do
     .. annihilate something ..
   end
+  
+  head '/' do
+  
+  end
+
+NOTE:  <tt>put</tt> and <tt>delete</tt> are triggered when a <tt>_method</tt> param is set to PUT or DELETE and the HTTP_REQUEST_METHOD is a POST
+
+= Routes
+
+NOTE: Routes are looked up in order of declaration
+
+Simple
+
+  get '/hi' do
+    ...
+  end
+  
+With params
+
+  get '/:name' do
+    # matches /sinatra and the like and sets params[:name]
+  end
+  
+Splat'n
+
+  get '/message/*' do
+    # matches /message/1/2/3/4/5
+  end
+  
+Get an agent!
+  
+  get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
+    "You're using Songbird version #{params[:agent][0]}"
+  end
+
+  get '/foo' do
+    # matches non-songbird browsers
+  end
 
 = Views (if you need MVC)
 
@@ -98,8 +136,14 @@ Example:
     end
     
   end
+  
+  get '/:name' do
+    bar(params[:name])
+  end
 
 = Before filters
+
+These are run in Sinatra::EventContext
 
   before do
     .. this code will run before each event ..
@@ -150,6 +194,147 @@ Create you own to_result
   end
 
 Get the gist?  If you want more fun with this then checkout <tt>to_result</tt> on Array, Symbol, Fixnum, NilClass.
+
+= Configuration & Re-loading
+
+Sinatra supports multiple environments and re-loading.  Re-loading happens on every request when in :development.  Wrap your configurations in <tt>configure</tt> (i.e. Database connections, Constants, etc.) to protect them from re-loading and to only work in certain environments.
+
+All environments:
+
+  configure do
+  
+  end
+  
+Production
+
+  configure :production do
+  
+  end
+  
+Two at a time:
+
+  configure :production, :test do
+  
+  end
+  
+This is also really nifty for error handling.
+
+= Error handling
+
+=== Not Found
+
+Remember:  These are run inside the Sinatra::EventContext which means you get all the goodies is has to offer (i.e. haml, erb, :halt, etc.)
+
+Whenever NotFound is raised this will be called
+
+  not_found do
+    'This is nowhere to be found'
+  end
+  
+=== Error
+  
+  error do
+    # this is where the error is stored for you to grab
+    name = env['sinatra.error'].class.name  
+    'ah shizzle! ' + name
+  end
+  
+Because Sinatra give you a default <tt>not_found</tt> and <tt>error</tt> do :production that are secure.  If you want to customize only for :production but want to keep the friendly helper screens for :development then do this:
+
+  configure :production do
+
+    not_found do
+      "We're so sorry, but we don't what this is"
+    end
+    
+    error do
+      "Something really nasty happened.  We're on it!"
+    end
+  
+  end
+
+= Testing
+
+=== Test/Unit
+
+  require 'my_sinatra_app'
+  require 'sinatra/test/unit'
+  
+  class MyAppTest < Test::Unit::TestCase
+    
+    def test_my_default
+      get_it '/'
+      assert_equal 'My Default Page!', @response.body
+    end
+    
+    def test_with_agent
+      get_it '/', :agent => 'Songbird'
+      assert_equal 'You're in Songbird!', @response.body
+    end
+    
+    ...
+    
+  end
+  
+=== Test/Spec
+
+  require 'my_sinatra_app'
+  require 'sinatra/test/spec'
+
+  context 'My app'
+  
+    should "show a default page" do
+      get_it '/'
+      should.be.ok
+      @response.body.should.equal 'My Default Page!'
+    end
+    ...
+  
+  end
+  
+== Test helpers
+
+See Sinatra::Test::Methods
+
+= Irb
+
+This will be back in soon
+
+= Command line
+
+Run your sinatra file like:
+  
+  ruby myapp.rb [options]
+
+Options are:
+
+  -h # help
+  -p # set the port (default is 4567)
+  -e # set the environment (default is development)
+  -x # turn on the mutext lock (default is off)
+
+= Contribute
+
+  cd where/you/keep/your/projects
+  git clone git://github.com/bmizerany/sinatra.git
+  cd your_project
+  ln -s ../sinatra/
+
+at the top of your sinatra.rb file
+
+  $:.unshift File.dirname(__FILE__) + '/sinatra/lib'
+  require 'sinatra'
+
+  get '/about' do
+    "I'm running on Version " + Sinatra::Version.combined
+  end
+  
+
+
+
+
+
+
 
 
 
