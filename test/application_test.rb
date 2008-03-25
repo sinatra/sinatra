@@ -142,6 +142,18 @@ context "Events in an app" do
     should.not.be.ok
 
   end
+
+  specify "can filters by agent" do
+    
+    get '/', :agent => /Windows (NT)/ do
+      params[:agent].first
+    end
+    
+    get_it '/', :agent => 'Windows NT'
+
+    body.should.equal 'NT'
+
+  end
   
 end
 
