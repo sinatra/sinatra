@@ -81,6 +81,10 @@ This is more ideal for rendering templates as partials from within templates
 
 This works like Haml except you use <tt>erb</tt> instead of <tt>haml</tt>
 
+=== Builder
+
+See Sinatra::Builder
+
 = Helpers
 
 It is ill-advised to create helpers on (main).  Use the handy <tt>helpers</tt> to install helper methods on Sinatra::EventContext for use inside events and templates.

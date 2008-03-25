@@ -205,8 +205,8 @@ module Sinatra
         @path, @options = path, options
       end
       
-      def to_result(cx)
-        cx.body = self
+      def to_result(cx, *args)
+        self
       end
       
       def each
@@ -545,8 +545,8 @@ module Sinatra
       @params ||= @route_params.merge(@request.params).symbolize_keys
     end
     
-    def stop(content)
-      throw :halt, content
+    def stop(*args)
+      throw :halt, args
     end
     
     def complete(returned)
@@ -934,12 +934,14 @@ end
 class Proc
   def to_result(cx, *args)
     cx.instance_eval(&self)
+    args.shift.to_result(cx, *args)
   end
 end
 
 class String
   def to_result(cx, *args)
-    cx.body = self
+    args.shift.to_result(cx, *args)
+    self
   end
 end
 
@@ -958,14 +960,13 @@ end
 class Fixnum
   def to_result(cx, *args)
     cx.status self
-    cx.body args.first
+    args.shift.to_result(cx, *args)
   end
 end
 
 class NilClass
   def to_result(cx, *args)
-    cx.body = ''
-    # log warning here
+    ''
   end
 end
 

@@ -72,6 +72,20 @@ context "Sinatra" do
     body.should.equal 'Hello!'
     
   end
+  
+  specify "should set status then call helper with a var" do
+    Sinatra::EventContext.any_instance.expects(:foo).once.with(1).returns('bah!')
+    
+    get '/set_body' do
+      stop [404, [:foo, 1]]
+    end
+    
+    get_it '/set_body'
+    
+    should.be.not_found
+    body.should.equal 'bah!'
+    
+  end
 
   specify "delegates HEAD requests to GET handlers" do
     get '/invisible' do
