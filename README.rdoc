@@ -1,0 +1,151 @@
+= Sinatra
+
+Sinatra a DSL for quickly creating web-applications in Ruby with minimal effort.
+
+= Sample app:
+
+  # myapp.rb
+
+  require 'rubygems'
+  require 'sinatra'
+
+  get '/' do
+    'Hello world!'
+  end
+
+Ruby this as <tt>ruby myapp.rb</tt> and view at <tt>http://localhost:4567</tt>
+
+= RESTful
+
+  get '/' do
+    .. show things ..
+  end
+  
+  post '/' do
+    .. create something ..
+  end
+  
+  put '/' do
+    .. update something ..
+  end
+  
+  delete '/' do
+    .. annihilate something ..
+  end
+
+= Views (if you need MVC)
+
+All views are looked up in:
+
+  root
+    | - views/
+    
+
+== Templates
+  
+=== Haml/Sass
+
+  get '/' do
+    haml :index
+  end
+  
+This will render <tt>./views/index.haml</tt>
+
+=== Inline
+
+  get '/' do
+    haml '%div.title Hello World'
+  end
+  
+This will render the inlined template string
+
+=== Accessing Variables
+
+Templates are rendered in the context the current Sinatra::EventContext.  This means you get all instance/class variables and methods it has access to.
+
+  get '/:id' do
+    @foo = Foo.find(params[:id])
+    haml '%h1== @foo.name'
+  end
+
+Send local objects like:
+
+  get '/:id' do
+    localvar = Foo.find(params[:id])
+    haml '%h1== localvar.name', :locals => { :localvar => localvar }
+  end
+  
+This is more ideal for rendering templates as partials from within templates
+
+=== Erb
+
+This works like Haml except you use <tt>erb</tt> instead of <tt>haml</tt>
+
+= Helpers
+
+It is ill-advised to create helpers on (main).  Use the handy <tt>helpers</tt> to install helper methods on Sinatra::EventContext for use inside events and templates.
+
+Example:
+
+  helpers do
+    
+    def bar(name)
+      "#{name}bar"
+    end
+    
+  end
+
+= Before filters
+
+  before do
+    .. this code will run before each event ..
+  end
+  
+= Halt!
+
+To immediately stop a request during a before filter or event use:
+  
+  throw :halt
+  
+=== Variations
+
+Set the body to the result of a helper method
+
+  throw :halt, :helper_method
+  
+Set the body to the result of a helper method after sending it parameters from the local scope
+  
+  throw :halt, [:helper_method, foo, bar]
+    
+Set the body to a simple string
+
+  throw :halt, 'this will be the body'
+  
+Set status then the body
+
+  throw :halt, [401, 'go away!']
+  
+Set the status then call a helper method with params from local scope
+
+  throw :halt, [401, [:helper_method, foo, bar]]
+
+Run a proc inside the Sinatra::EventContext instance and set the body to the result
+
+  throw :halt, lambda { puts 'In a proc!'; 'I just wrote to $stdout!' }
+
+Create you own to_result
+
+  class MyResultObject
+    def to_result(event_context, *args)
+      event_context.body = 'This will be the body!
+    end
+  end
+  
+  get '/' do
+    throw :halt, MyResultObject.new
+  end
+
+Get the gist?  If you want more fun with this then checkout <tt>to_result</tt> on Array, Symbol, Fixnum, NilClass.
+
+
+
