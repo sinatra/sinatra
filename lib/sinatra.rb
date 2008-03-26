@@ -2,6 +2,7 @@ require 'rubygems'
 require 'metaid'
 require 'uri'
 require 'thread'
+require 'time'
 
 if ENV['SWIFT']
  require 'swiftcore/swiftiplied_mongrel'
@@ -251,6 +252,11 @@ module Sinatra
       # * <tt>:buffer_size</tt> - specifies size (in bytes) of the buffer used to stream the file.
       #   Defaults to 4096.
       # * <tt>:status</tt> - specifies the status code to send with the response. Defaults to '200 OK'.
+      # * <tt>:last_modified</tt> - an optional RFC 2616 formatted date value (See Time#httpdate)
+      #   indicating the last modified time of the file. If the request includes an
+      #   If-Modified-Since header that matches this value exactly, a 304 Not Modified response
+      #   is sent instead of the file. Defaults to the file's last modified
+      #   time.
       #
       # The default Content-Type and Content-Disposition headers are
       # set to download arbitrary binary files in as many browsers as
@@ -283,6 +289,7 @@ module Sinatra
         options[:length]   ||= File.size(path)
         options[:filename] ||= File.basename(path)
         options[:type] ||= Rack::File::MIME_TYPES[File.extname(options[:filename])[1..-1]] || 'text/plain'
+        options[:last_modified] ||= File.mtime(path).httpdate
         send_file_headers! options
 
         if options[:stream]
@@ -302,6 +309,10 @@ module Sinatra
       # * <tt>:disposition</tt> - specifies whether the file will be shown inline or downloaded.  
       #   Valid values are 'inline' and 'attachment' (default).
       # * <tt>:status</tt> - specifies the status code to send with the response. Defaults to '200 OK'.
+      # * <tt>:last_modified</tt> - an optional RFC 2616 formatted date value (See Time#httpdate)
+      #   indicating the last modified time of the response entity. If the request includes an
+      #   If-Modified-Since header that matches this value exactly, a 304 Not Modified response
+      #   is sent instead of the data.
       #
       # Generic data download:
       #   send_data buffer
@@ -323,6 +334,13 @@ module Sinatra
         options.update(DEFAULT_SEND_FILE_OPTIONS.merge(options))
         [:length, :type, :disposition].each do |arg|
           raise ArgumentError, ":#{arg} option required" if options[arg].nil?
+        end
+
+        # Send a "304 Not Modified" if the last_modified option is provided and matches
+        # the If-Modified-Since request header value.
+        if last_modified = options[:last_modified]
+          header 'Last-Modified' => last_modified
+          throw :halt, [ 304, '' ] if last_modified == request.env['HTTP_IF_MODIFIED_SINCE']
         end
 
         disposition = options[:disposition].dup || 'attachment'

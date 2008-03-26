@@ -54,6 +54,22 @@ context "Static files (by default)" do
     body.should.equal "<foo></foo>\n"
   end
 
+  specify "include a Last-Modified header" do
+    last_modified = File.mtime(Sinatra.application.options.public + '/foo.xml')
+    get_it('/foo.xml')
+    should.be.ok
+    body.should.not.be.empty
+    headers['Last-Modified'].should.equal last_modified.httpdate
+  end
+
+  specify "are not served when If-Modified-Since matches" do
+    last_modified = File.mtime(Sinatra.application.options.public + '/foo.xml')
+    @request = Rack::MockRequest.new(Sinatra.application)
+    @response = @request.get('/foo.xml', 'HTTP_IF_MODIFIED_SINCE' => last_modified.httpdate)
+    status.should.equal 304
+    body.should.be.empty
+  end
+
 end
 
 context "SendData" do
