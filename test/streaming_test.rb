@@ -70,6 +70,13 @@ context "Static files (by default)" do
     body.should.be.empty
   end
 
+  specify "should omit Content-Disposition headers" do
+    get_it('/foo.xml')
+    should.be.ok
+    headers['Content-Disposition'].should.be.nil
+    headers['Content-Transfer-Encoding'].should.be.nil
+  end
+
 end
 
 context "SendData" do
@@ -89,4 +96,17 @@ context "SendData" do
     body.should.equal 'asdf'
   end
   
+  specify "should include a Content-Disposition header" do
+    get '/' do
+      send_file File.dirname(__FILE__) + '/public/foo.xml'
+    end
+
+    get_it '/'
+
+    should.be.ok
+    headers['Content-Disposition'].should.not.be.nil
+    headers['Content-Disposition'].should.equal 'attachment; filename="foo.xml"'
+    headers['Content-Transfer-Encoding'].should.equal 'binary'
+  end
+
 end

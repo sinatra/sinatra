@@ -192,8 +192,8 @@ module Sinatra
     
     def block
       Proc.new do
-        send_file Sinatra.application.options.public + 
-          request.path_info
+        send_file Sinatra.application.options.public + request.path_info,
+          :disposition => nil
       end
     end
     
@@ -246,7 +246,8 @@ module Sinatra
       # * <tt>:type</tt> - specifies an HTTP content type.
       #   Defaults to 'application/octet-stream'.
       # * <tt>:disposition</tt> - specifies whether the file will be shown inline or downloaded.  
-      #   Valid values are 'inline' and 'attachment' (default).
+      #   Valid values are 'inline' and 'attachment' (default). When set to nil, the
+      #   Content-Disposition and Content-Transfer-Encoding headers are omitted entirely.
       # * <tt>:stream</tt> - whether to send the file to the user agent as it is read (true)
       #   or to read the entire file before sending (false). Defaults to true.
       # * <tt>:buffer_size</tt> - specifies size (in bytes) of the buffer used to stream the file.
@@ -331,9 +332,9 @@ module Sinatra
 
     private
       def send_file_headers!(options)
-        options.update(DEFAULT_SEND_FILE_OPTIONS.merge(options))
+        options = DEFAULT_SEND_FILE_OPTIONS.merge(options)
         [:length, :type, :disposition].each do |arg|
-          raise ArgumentError, ":#{arg} option required" if options[arg].nil?
+          raise ArgumentError, ":#{arg} option required" unless options.key?(arg)
         end
 
         # Send a "304 Not Modified" if the last_modified option is provided and matches
@@ -343,16 +344,18 @@ module Sinatra
           throw :halt, [ 304, '' ] if last_modified == request.env['HTTP_IF_MODIFIED_SINCE']
         end
 
-        disposition = options[:disposition].dup || 'attachment'
-
-        disposition <<= %(; filename="#{options[:filename]}") if options[:filename]
-
         headers(
           'Content-Length'            => options[:length].to_s,
-          'Content-Type'              => options[:type].strip,  # fixes a problem with extra '\r' with some browsers
-          'Content-Disposition'       => disposition,
-          'Content-Transfer-Encoding' => 'binary'
+          'Content-Type'              => options[:type].strip  # fixes a problem with extra '\r' with some browsers
         )
+
+        # Omit Content-Disposition and Content-Transfer-Encoding headers if
+        # the :disposition option set to nil.
+        if !options[:disposition].nil?
+          disposition = options[:disposition].dup || 'attachment'
+          disposition <<= %(; filename="#{options[:filename]}") if options[:filename]
+          headers 'Content-Disposition' => disposition, 'Content-Transfer-Encoding' => 'binary'
+        end
 
         # Fix a problem with IE 6.0 on opening downloaded files:
         # If Cache-Control: no-cache is set (which Rails does by default), 
