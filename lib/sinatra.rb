@@ -90,6 +90,10 @@ module Sinatra
   class ServerError < RuntimeError; end
 
   Result = Struct.new(:block, :params, :status) unless defined?(Result)
+
+  def options
+    application.options
+  end
   
   def application
     unless @app 
