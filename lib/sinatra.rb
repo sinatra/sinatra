@@ -412,21 +412,25 @@ module Sinatra
           template.call
         when Symbol
           if proc = templates[template]
-            proc.call
+            resolve_template(renderer, proc, options, scream)
           else
-            path = File.join(
-              options[:views_directory] || Sinatra.application.options.views,
-              "#{template}.#{renderer}"
-            )
-            unless File.exists?(path)
-              raise Errno::ENOENT.new(path) if scream
-              nil
-            else  
-              File.read(path)
-            end
+            read_template_file(renderer, template, options, scream)
           end
         else
           nil
+        end
+      end
+      
+      def read_template_file(renderer, template, options, scream = true)
+        path = File.join(
+          options[:views_directory] || Sinatra.application.options.views,
+          "#{template}.#{renderer}"
+        )
+        unless File.exists?(path)
+          raise Errno::ENOENT.new(path) if scream
+          nil
+        else  
+          File.read(path)
         end
       end
       
@@ -885,6 +889,21 @@ end
 
 def template(name, &b)
   Sinatra.application.define_template(name, &b)
+end
+
+def use_in_file_templates!
+  require 'stringio'
+  templates = IO.read(caller.first.split(':').first).split('__FILE__').last
+  data = StringIO.new(templates)
+  current_template = nil
+  data.each do |line|
+    if line =~ /^##\s?(.*)/
+      current_template = $1.to_sym
+      Sinatra.application.templates[current_template] = ''
+    elsif current_template
+      Sinatra.application.templates[current_template] << line
+    end
+  end
 end
 
 def configures(*envs, &b)
