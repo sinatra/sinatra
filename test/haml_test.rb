@@ -159,6 +159,23 @@ context "Haml" do
       lambda { get_it '/' }.should.raise(Errno::ENOENT)
     end
 
+    specify "use layout.ext by default if available" do
+
+      template :foo do
+        'asdf'
+      end
+
+      get '/' do
+        haml :foo, :layout => false,
+                   :views_directory => File.dirname(__FILE__) + "/views/layout_test"
+      end
+
+      get_it '/'
+      should.be.ok
+      body.should.equal "asdf\n"
+
+    end
+    
   end
 
 end

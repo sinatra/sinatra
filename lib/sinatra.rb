@@ -397,7 +397,7 @@ module Sinatra
     def determine_layout(renderer, template, options)
       return if options[:layout] == false
       layout_from_options = options[:layout] || :layout
-      layout = layouts[layout_from_options]
+      layout = templates[layout_from_options]
       layout ||= resolve_template(renderer, layout_from_options, options, false)
       layout
     end
@@ -411,23 +411,27 @@ module Sinatra
         when Proc
           template.call
         when Symbol
-          path = File.join(
-            options[:views_directory] || Sinatra.application.options.views,
-            "#{template}.#{renderer}"
-          )
-          unless File.exists?(path)
-            raise Errno::ENOENT.new(path) if scream
-            nil
-          else  
-            File.read(path)
+          if proc = templates[template]
+            proc.call
+          else
+            path = File.join(
+              options[:views_directory] || Sinatra.application.options.views,
+              "#{template}.#{renderer}"
+            )
+            unless File.exists?(path)
+              raise Errno::ENOENT.new(path) if scream
+              nil
+            else  
+              File.read(path)
+            end
           end
         else
           nil
         end
       end
       
-      def layouts
-        Sinatra.application.layouts
+      def templates
+        Sinatra.application.templates
       end
     
   end
@@ -595,7 +599,9 @@ module Sinatra
   
   class Application
     
-    attr_reader :events, :errors, :layouts, :default_options, :filters, :clearables, :reloading
+    attr_reader :events, :errors, :templates, :filters
+    attr_reader :default_options, :clearables, :reloading
+    
     attr_writer :options
     
     def self.default_options
@@ -634,7 +640,7 @@ module Sinatra
         @events = Hash.new { |hash, key| hash[key] = [] },
         @errors = Hash.new,
         @filters = Hash.new { |hash, key| hash[key] = [] },
-        @layouts = Hash.new
+        @templates = Hash.new
       ]
       load_options!
       load_default_events!
@@ -645,8 +651,8 @@ module Sinatra
       event
     end
     
-    def define_layout(name=:layout, &b)
-      layouts[name] = b
+    def define_template(name=:layout, &b)
+      templates[name] = b
     end
     
     def define_error(code, options = {}, &b)
@@ -874,7 +880,11 @@ def not_found(options = {}, &b)
 end
 
 def layout(name = :layout, &b)
-  Sinatra.application.define_layout(name, &b)
+  Sinatra.application.define_template(name, &b)
+end
+
+def template(name, &b)
+  Sinatra.application.define_template(name, &b)
 end
 
 def configures(*envs, &b)
