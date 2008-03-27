@@ -71,6 +71,15 @@ Get an agent!
     # matches non-songbird browsers
   end
 
+= Static files
+
+Put all of your static content in the ./public directory
+
+  root
+    \ public
+    
+If a file exists that maps to the REQUEST_PATH then it is served and the request end; Sinatra will look for and event that matches the path otherwise
+
 = Views (if you need MVC)
 
 All views are looked up in:
