@@ -625,6 +625,10 @@ module Sinatra
       self.class.default_options
     end
 
+    
+    ##
+    # Load all options given on the command line
+    # NOTE:  Ignores --name so unit/spec tests can run individually
     def load_options!
       require 'optparse'
       OptionParser.new do |op|
