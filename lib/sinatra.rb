@@ -401,9 +401,7 @@ module Sinatra
     def determine_layout(renderer, template, options)
       return if options[:layout] == false
       layout_from_options = options[:layout] || :layout
-      layout = templates[layout_from_options]
-      layout ||= resolve_template(renderer, layout_from_options, options, false)
-      layout
+      resolve_template(renderer, layout_from_options, options, false)
     end
 
     private
