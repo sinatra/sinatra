@@ -124,6 +124,42 @@ Send local objects like:
   
 This is more ideal for rendering templates as partials from within templates
 
+== In file templates
+
+This one is cool:
+
+  get '/' do
+    haml :index
+  end
+  
+  use_in_file_templates!
+  
+  __END__
+  
+  ## layout
+  X
+  = yield
+  X
+  
+  ## index
+  %div.title Hello world!!!!!
+  
+Try it!
+
+= You can do this too but it's not as cool
+
+  template :layout do
+    "X\n=yield\nX"
+  end
+
+  template :index do
+    '%div.title Hello World!'
+  end
+
+  get '/' do
+    haml :index
+  end
+
 === Erb
 
 This works like Haml except you use <tt>erb</tt> instead of <tt>haml</tt>
@@ -241,12 +277,39 @@ Whenever NotFound is raised this will be called
   end
   
 === Error
-  
+
+By default +error+ will catch Sinatra::ServerError
+
+Sinatra will pass you the error via the 'sinatra.error' in request.env
+
   error do
-    # this is where the error is stored for you to grab
-    name = env['sinatra.error'].class.name  
-    'ah shizzle! ' + name
+    'Sorry there was a nasty error - ' + request.env['sinatra.error'].name
   end
+
+Custom error mapping:
+
+  error MyCustomError do
+    'So what happened was...' + request.env['sinatra.env'].message
+  end
+
+then if this happens:
+
+  get '/' do
+    raise MyCustomError, 'something bad'
+  end
+
+you gets this:
+
+  So what happened was... something bad
+  
+one guess what this does ;)
+
+  not_found do
+    'I have no clue what you're looking for'
+  end
+
+Try it!
+
   
 Because Sinatra give you a default <tt>not_found</tt> and <tt>error</tt> do :production that are secure.  If you want to customize only for :production but want to keep the friendly helper screens for :development then do this:
 
@@ -261,6 +324,12 @@ Because Sinatra give you a default <tt>not_found</tt> and <tt>error</tt> do :pro
     end
   
   end
+  
+= Mime types
+
+When using send_file or static files you may have mime types Sinatra doesn't understand.  Use +mime+ in those cases.
+
+  mime :foo, 'text/foo'
 
 = Testing
 
@@ -295,7 +364,7 @@ Because Sinatra give you a default <tt>not_found</tt> and <tt>error</tt> do :pro
     should "show a default page" do
       get_it '/'
       should.be.ok
-      @response.body.should.equal 'My Default Page!'
+      body.should.equal 'My Default Page!'
     end
     ...
   
