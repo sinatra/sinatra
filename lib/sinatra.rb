@@ -440,6 +440,25 @@ module Sinatra
       response.header['Content-Type'] = type
     end
 
+    # Set the last modified time of the resource (HTTP 'Last-Modified' header)
+    # and halt if conditional GET matches. The +time+ argument is a Time,
+    # DateTime, or other object that responds to +to_time+.
+    #
+    # When the current request includes an 'If-Modified-Since' header that
+    # matches the time specified, execution is immediately halted with a
+    # '304 Not Modified' response.
+    #
+    # Calling this method before perfoming heavy processing (e.g., lengthy
+    # database queries, template rendering, complex logic) can dramatically
+    # increase overall throughput with caching clients.
+    def last_modified(time)
+      time = time.to_time if time.respond_to?(:to_time)
+      time = time.httpdate if time.respond_to?(:httpdate)
+      response.header['Last-Modified'] = time
+      throw :halt, 304 if time == request.env['HTTP_IF_MODIFIED_SINCE']
+      time
+    end
+
   end
 
   module RenderingHelpers

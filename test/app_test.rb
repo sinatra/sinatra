@@ -135,6 +135,23 @@ context "Sinatra" do
     body.should.equal '<feed></feed>'
   end
 
+  specify "supports conditional GETs with last_modified" do
+    modified_at = Time.now
+    get '/maybe' do
+      last_modified modified_at
+      'response body, maybe'
+    end
+
+    get_it '/maybe'
+    should.be.ok
+    body.should.equal 'response body, maybe'
+
+    get_it '/maybe', {},
+      'HTTP_IF_MODIFIED_SINCE' => modified_at.httpdate
+    status.should.equal 304
+    body.should.equal ''
+  end
+
   specify "delegates HEAD requests to GET handlers" do
     get '/invisible' do
       "I am invisible to the world"
