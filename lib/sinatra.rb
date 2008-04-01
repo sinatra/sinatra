@@ -738,7 +738,6 @@ module Sinatra
         end
         body = returned.to_result(context)
       rescue => e
-        raise e if options.raise_errors
         request.env['sinatra.error'] = e
         context.status(500)
         result = (errors[e.class] || errors[ServerError]).invoke(request)
@@ -763,7 +762,10 @@ module Sinatra
     
     def setup!
       configure do
-        error { '<h1>Internal Server Error</h1>'}
+        error do
+          raise request.env['sinatra.error'] if Sinatra.options.raise_errors
+          '<h1>Internal Server Error</h1>'
+        end
         not_found { '<h1>Not Found</h1>'}
       end
       

@@ -46,6 +46,18 @@ context "Custom Errors (in general)" do
     
     Sinatra.application.options.raise_errors = true
   end
+  
+  class UnmappedError < RuntimeError; end
+  
+  specify "should bring unmapped error back to the top" do
+    get '/' do
+      raise UnmappedError, 'test'
+    end
+    
+    assert_raises(UnmappedError) do
+      get_it '/'
+    end
+  end
 
 end
 
