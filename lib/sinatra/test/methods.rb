@@ -14,34 +14,34 @@ module Sinatra
     
     module Methods
   
-      def get_it(path, params = {})
+      def get_it(path, params = {}, options = {})
         agent = params.delete(:agent)
         @request = Rack::MockRequest.new(Sinatra.application)
-        @response = @request.get(path, :input => params.to_params, :agent => agent)
+        @response = @request.get(path, options.merge(:input => params.to_params, :agent => agent))
       end
 
-      def head_it(path, params = {})
+      def head_it(path, params = {}, options = {})
         agent = params.delete(:agent)
         @request = Rack::MockRequest.new(Sinatra.application)
-        @response = @request.request('HEAD', path, :input => params.to_params, :agent => agent)
+        @response = @request.request('HEAD', path, options.merge(:input => params.to_params, :agent => agent))
       end
 
-      def post_it(path, params = {})
+      def post_it(path, params = {}, options = {})
         agent = params.delete(:agent)
         @request = Rack::MockRequest.new(Sinatra.application)
-        @response = @request.post(path, :input => params.to_params, :agent => agent)
+        @response = @request.post(path, options.merge(:input => params.to_params, :agent => agent))
       end
 
-      def put_it(path, params = {})
+      def put_it(path, params = {}, options = {})
         agent = params.delete(:agent)
         @request = Rack::MockRequest.new(Sinatra.application)
-        @response = @request.put(path, :input => params.to_params, :agent => agent)
+        @response = @request.put(path, options.merge(:input => params.to_params, :agent => agent))
       end
 
-      def delete_it(path, params = {})
+      def delete_it(path, params = {}, options = {})
         agent = params.delete(:agent)
         @request = Rack::MockRequest.new(Sinatra.application)
-        @response = @request.delete(path, :input => params.to_params, :agent => agent)
+        @response = @request.delete(path, options.merge(:input => params.to_params, :agent => agent))
       end
       
       def follow!

@@ -213,6 +213,8 @@ module Sinatra
       :buffer_size  => 4096
     }.freeze
 
+    class MissingFile < RuntimeError; end
+
     class FileStreamer
       
       attr_reader :path, :options
@@ -918,6 +920,10 @@ def configures(*envs, &b)
             envs.empty?)
 end
 alias :configure :configures
+
+def set_options(opts)
+  Sinatra.application.default_options.merge!(opts)
+end
 
 def mime(ext, type)
   Rack::File::MIME_TYPES[ext.to_s] = type
