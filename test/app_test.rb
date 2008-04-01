@@ -18,7 +18,7 @@ context "Sinatra" do
   
   specify "handles events" do
     get '/:name' do
-      'Hello ' + params[:name]
+      'Hello ' + params["name"]
     end
     
     get_it '/Blake'

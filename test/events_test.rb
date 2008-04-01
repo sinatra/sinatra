@@ -28,12 +28,12 @@ context "Simple Events" do
   specify "takes params in path" do
     result = invoke_simple('/:foo/:bar', '/a/b')
     result.should.not.be.nil
-    result.params.should.equal :foo => 'a', :bar => 'b'
+    result.params.should.equal "foo" => 'a', "bar" => 'b'
     
     # unscapes
     result = invoke_simple('/:foo/:bar', '/a/blake%20mizerany')
     result.should.not.be.nil
-    result.params.should.equal :foo => 'a', :bar => 'blake mizerany'
+    result.params.should.equal "foo" => 'a', "bar" => 'blake mizerany'
   end
   
   specify "ignores to many /'s" do

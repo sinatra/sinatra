@@ -42,7 +42,7 @@ context "Looking up a request" do
     
     result.should.not.be.nil
     result.block.should.be block
-    result.params.should.equal :foo => 'bar'
+    result.params.should.equal "foo" => 'bar'
   end
               
 end
@@ -120,7 +120,7 @@ context "Events in an app" do
   
   specify "get access to request, response, and params" do
     get '/:foo' do
-      params[:foo] + params[:bar]
+      params["foo"] + params["bar"]
     end
     
     get_it '/foo?bar=baz'

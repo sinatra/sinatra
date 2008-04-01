@@ -149,7 +149,7 @@ module Sinatra
       @param_keys = []
       @options = options
       regex = @path.to_s.gsub(PARAM) do
-        @param_keys << $1.intern
+        @param_keys << $1
         "(#{URI_CHAR}+)"
       end
       
@@ -586,9 +586,9 @@ module Sinatra
     end
     
     def params
-      @params ||= @route_params.merge(@request.params).symbolize_keys
+      @params = @route_params.merge(@request.params)
     end
-    
+        
     def stop(*args)
       throw :halt, args
     end
