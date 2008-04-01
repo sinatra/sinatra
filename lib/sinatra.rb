@@ -608,7 +608,7 @@ module Sinatra
   class Application
     
     attr_reader :events, :errors, :templates, :filters
-    attr_reader :default_options, :clearables, :reloading
+    attr_reader :clearables, :reloading
     
     attr_writer :options
     
@@ -924,7 +924,8 @@ end
 alias :configure :configures
 
 def set_options(opts)
-  Sinatra.application.default_options.merge!(opts)
+  Sinatra::Application.default_options.merge!(opts)
+  Sinatra.application.options = nil
 end
 
 def mime(ext, type)
