@@ -160,9 +160,12 @@ module Sinatra
         
     def invoke(request)
       params = {}
-      if options[:agent] 
-        return unless request.user_agent =~ options[:agent]
+      if agent = options[:agent] 
+        return unless request.user_agent =~ agent
         params[:agent] = $~[1..-1]
+      end
+      if host = options[:host] 
+        return unless host === request.host
       end
       return unless pattern =~ request.path_info.squeeze('/')
       params.merge!(param_keys.zip($~.captures.map(&:from_param)).to_hash)
