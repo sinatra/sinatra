@@ -117,6 +117,7 @@ module Sinatra
     app = application
     app = Rack::Session::Cookie.new(app) if Sinatra.options.sessions == true
     app = Rack::CommonLogger.new(app) if Sinatra.options.logging == true
+    app
   end
   
   def run
