@@ -1,7 +1,5 @@
 require 'rubygems'
-require 'metaid'
 require 'uri'
-require 'thread'
 require 'time'
 
 if ENV['SWIFT']
