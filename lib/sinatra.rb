@@ -114,13 +114,9 @@ module Sinatra
   end
   
   def build_application
-    app = if Sinatra.options.sessions == true
-      Rack::Session::Cookie.new(application)
-    else
-      application
-    end
-
-    Rack::CommonLogger.new(app)
+    app = application
+    app = Rack::Session::Cookie.new(app) if Sinatra.options.sessions == true
+    app = Rack::CommonLogger.new(app) if Sinatra.options.logging == true
   end
   
   def run
@@ -632,6 +628,7 @@ module Sinatra
         :views => Dir.pwd + '/views',
         :public => Dir.pwd + '/public',
         :sessions => false,
+        :logging => true,
       }
     end
     
