@@ -14,7 +14,7 @@ require 'rack'
 require 'ostruct'
 
 class Class
-  def dslify_writter(*syms)
+  def dslify_writer(*syms)
     syms.each do |sym|
       class_eval <<-end_eval
         def #{sym}(v=nil)
@@ -577,7 +577,7 @@ module Sinatra
     
     attr_accessor :request, :response
     
-    dslify_writter :status, :body
+    dslify_writer :status, :body
     
     def initialize(request, response, route_params)
       @request = request
