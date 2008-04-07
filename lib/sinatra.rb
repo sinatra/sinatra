@@ -114,7 +114,13 @@ module Sinatra
   end
   
   def build_application
-    Rack::CommonLogger.new(application)
+    app = if Sinatra.options[:session] == true
+      Rack::Session::Cookie.new(application)
+    else
+      application
+    end
+
+    Rack::CommonLogger.new(app)
   end
   
   def run
@@ -587,7 +593,7 @@ module Sinatra
     end
     
     def params
-      @params = @route_params.merge(@request.params)
+      @params = @route_params.merge(@request.params).symbolize_keys
     end
         
     def stop(*args)
@@ -596,6 +602,10 @@ module Sinatra
     
     def complete(returned)
       @response.body || returned
+    end
+    
+    def session
+      @request.env['rack.session']
     end
     
     private
@@ -620,7 +630,8 @@ module Sinatra
         :env => :development,
         :root => Dir.pwd,
         :views => Dir.pwd + '/views',
-        :public => Dir.pwd + '/public'
+        :public => Dir.pwd + '/public',
+        :sessions => false,
       }
     end
     
