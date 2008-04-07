@@ -602,7 +602,7 @@ module Sinatra
     end
     
     def session
-      @request.env['rack.session']
+      @request.env['rack.session'] || {}
     end
     
     private
