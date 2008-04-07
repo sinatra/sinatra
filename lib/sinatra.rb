@@ -114,7 +114,7 @@ module Sinatra
   end
   
   def build_application
-    app = if Sinatra.options[:session] == true
+    app = if Sinatra.options.sessions == true
       Rack::Session::Cookie.new(application)
     else
       application
