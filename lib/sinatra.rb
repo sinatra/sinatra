@@ -587,9 +587,12 @@ module Sinatra
     end
     
     def params
-      @params = @route_params.merge(@request.params)
+      @params ||= begin 
+        h = Hash.new {|h,k| h[k.to_s] if Symbol === k}
+        h.merge(@route_params.merge(@request.params))
+      end
     end
-        
+    
     def stop(*args)
       throw :halt, args
     end
