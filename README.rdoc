@@ -90,13 +90,21 @@ All views are looked up in:
 
 == Templates
   
-=== Haml/Sass
+=== Haml
 
   get '/' do
     haml :index
   end
   
 This will render <tt>./views/index.haml</tt>
+
+=== Sass
+  get '/stylesheet.css' do
+    header 'Content-Type' => 'text/css; charset=utf-8'
+    sass :stylesheet
+  end
+  
+This will render <tt>./views/stylesheet.sass</tt>
 
 === Inline
 
@@ -163,6 +171,10 @@ Try it!
 === Erb
 
 This works like Haml except you use <tt>erb</tt> instead of <tt>haml</tt>
+
+=== Sass
+
+This works like Haml except you use <tt>sass</tt> instead of <tt>haml</tt>. It's also a good idea to add <tt>header 'Content-Type' => 'text/css; charset=utf-8'</tt> before your call to <tt>sass</tt> so Sinatra returns the proper content type header with the file.
 
 === Builder
 
