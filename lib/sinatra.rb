@@ -14,7 +14,7 @@ require 'rack'
 require 'ostruct'
 
 class Class
-  def dslify_writter(*syms)
+  def dslify_writer(*syms)
     syms.each do |sym|
       class_eval <<-end_eval
         def #{sym}(v=nil)
@@ -114,7 +114,10 @@ module Sinatra
   end
   
   def build_application
-    Rack::CommonLogger.new(application)
+    app = application
+    app = Rack::Session::Cookie.new(app) if Sinatra.options.sessions == true
+    app = Rack::CommonLogger.new(app) if Sinatra.options.logging == true
+    app
   end
   
   def run
@@ -646,7 +649,7 @@ module Sinatra
     
     attr_accessor :request, :response
     
-    dslify_writter :status, :body
+    dslify_writer :status, :body
     
     def initialize(request, response, route_params)
       @request = request
@@ -668,6 +671,10 @@ module Sinatra
     
     def complete(returned)
       @response.body || returned
+    end
+    
+    def session
+      @request.env['rack.session'] || {}
     end
     
     private
@@ -692,7 +699,9 @@ module Sinatra
         :env => :development,
         :root => Dir.pwd,
         :views => Dir.pwd + '/views',
-        :public => Dir.pwd + '/public'
+        :public => Dir.pwd + '/public',
+        :sessions => false,
+        :logging => true,
       }
     end
     
@@ -999,6 +1008,10 @@ alias :configure :configures
 def set_options(opts)
   Sinatra::Application.default_options.merge!(opts)
   Sinatra.application.options = nil
+end
+
+def set_option(key, value)
+  set_options(key => value)
 end
 
 def mime(ext, type)

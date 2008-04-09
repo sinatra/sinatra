@@ -16,31 +16,31 @@ module Sinatra
   
       def get_it(path, params = {}, options = {})
         agent = params.delete(:agent)
-        @request = Rack::MockRequest.new(Sinatra.application)
+        @request = Rack::MockRequest.new(Sinatra.build_application)
         @response = @request.get(path, options.merge(:input => params.to_params, :agent => agent))
       end
 
       def head_it(path, params = {}, options = {})
         agent = params.delete(:agent)
-        @request = Rack::MockRequest.new(Sinatra.application)
+        @request = Rack::MockRequest.new(Sinatra.build_application)
         @response = @request.request('HEAD', path, options.merge(:input => params.to_params, :agent => agent))
       end
 
       def post_it(path, params = {}, options = {})
         agent = params.delete(:agent)
-        @request = Rack::MockRequest.new(Sinatra.application)
+        @request = Rack::MockRequest.new(Sinatra.build_application)
         @response = @request.post(path, options.merge(:input => params.to_params, :agent => agent))
       end
 
       def put_it(path, params = {}, options = {})
         agent = params.delete(:agent)
-        @request = Rack::MockRequest.new(Sinatra.application)
+        @request = Rack::MockRequest.new(Sinatra.build_application)
         @response = @request.put(path, options.merge(:input => params.to_params, :agent => agent))
       end
 
       def delete_it(path, params = {}, options = {})
         agent = params.delete(:agent)
-        @request = Rack::MockRequest.new(Sinatra.application)
+        @request = Rack::MockRequest.new(Sinatra.build_application)
         @response = @request.delete(path, options.merge(:input => params.to_params, :agent => agent))
       end
       
