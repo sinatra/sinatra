@@ -6,7 +6,8 @@ Test::Unit::TestCase.send(:include, Sinatra::Test::Methods)
 Sinatra::Application.default_options.merge!(
   :env => :test,
   :run => false,
-  :raise_errors => true
+  :raise_errors => true,
+  :logging => false
 )
 
 Sinatra.application.options = nil
