@@ -477,13 +477,17 @@ module Sinatra
 
   # Generate valid CSS using Sass (part of Haml)
   #
-  # Sass templates can be in external files with +.sass+ extension or can use Sinatra's
+  # Sass templates can be in external files with <tt>.sass</tt> extension or can use Sinatra's
   # in_file_templates.  In either case, the file can be rendered by passing the name of
   # the template to the +sass+ method as a symbol.
   #
+  # Unlike Haml, Sass does not support a layout file, so the +sass+ method will ignore both
+  # the default <tt>layout.sass</tt> file and any parameters passed in as <tt>:layout</tt> in
+  # the options hash.
+  #
   # === Sass Template Files
   #
-  # Sass templates can be stored in separate files with a +.sass+ 
+  # Sass templates can be stored in separate files with a <tt>.sass</tt>
   # extension under the view path.
   #
   # Example:
@@ -523,9 +527,13 @@ module Sinatra
   
   module Sass
     
-    def sass(content)
+    def sass(content, options = {})
       require 'sass'
-      render(:sass, content)
+      
+      # Sass doesn't support a layout, so we override any possible layout here
+      options[:layout] = false
+      
+      render(:sass, content, options)
     end
     
     private
