@@ -941,6 +941,10 @@ def set_options(opts)
   Sinatra.application.options = nil
 end
 
+def set_option(key, value)
+  set_options(key => value)
+end
+
 def mime(ext, type)
   Rack::File::MIME_TYPES[ext.to_s] = type
 end
