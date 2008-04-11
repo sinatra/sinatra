@@ -32,7 +32,7 @@ context "Sessions" do
       session[:test] == true ? "true" : "false"
     end
 
-    get_it '/foo', {}, 'HTTP_HOST' => 'foo.sinatrarb.com'
+    get_it '/foo', :env => { :host => 'foo.sinatrarb.com' }
     assert ok?
     assert include?('Set-Cookie')    
   end

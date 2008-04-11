@@ -13,35 +13,32 @@ module Sinatra
   module Test
     
     module Methods
-  
-      def get_it(path, params = {}, options = {})
-        agent = params.delete(:agent)
-        @request = Rack::MockRequest.new(Sinatra.build_application)
-        @response = @request.get(path, options.merge(:input => params.to_params, :agent => agent))
+
+      def easy_env_map
+        {
+          :accept => 'HTTP_ACCEPT',
+          :agent => 'HTTP_AGENT',
+          :host => 'HTTP_POST'
+        }
+      end
+    
+      def map_easys(params)
+        easy_env_map.inject(params.dup) do |m, (from, to)|
+          m[to] = m.delete(from) if m.has_key?(from); m
+        end
       end
 
-      def head_it(path, params = {}, options = {})
-        agent = params.delete(:agent)
-        @request = Rack::MockRequest.new(Sinatra.build_application)
-        @response = @request.request('HEAD', path, options.merge(:input => params.to_params, :agent => agent))
-      end
-
-      def post_it(path, params = {}, options = {})
-        agent = params.delete(:agent)
-        @request = Rack::MockRequest.new(Sinatra.build_application)
-        @response = @request.post(path, options.merge(:input => params.to_params, :agent => agent))
-      end
-
-      def put_it(path, params = {}, options = {})
-        agent = params.delete(:agent)
-        @request = Rack::MockRequest.new(Sinatra.build_application)
-        @response = @request.put(path, options.merge(:input => params.to_params, :agent => agent))
-      end
-
-      def delete_it(path, params = {}, options = {})
-        agent = params.delete(:agent)
-        @request = Rack::MockRequest.new(Sinatra.build_application)
-        @response = @request.delete(path, options.merge(:input => params.to_params, :agent => agent))
+      %w(get head post put delete).each do |m|
+        define_method("#{m}_it") do |path, *args|
+          request = Rack::MockRequest.new(Sinatra.build_application)
+          env, input = if args.size == 2
+            [args.last, args.first]
+          elsif args.size == 1
+            data = args.first
+            data.is_a?(Hash) ? [data.delete(:env), data.to_params] : [nil, data]
+          end
+          @response = request.request(m.upcase, path, {:input => input}.merge(env || {}))
+        end
       end
       
       def follow!

@@ -136,7 +136,7 @@ context "Events in an app" do
       request.env['HTTP_USER_AGENT']
     end
     
-    get_it '/', :agent => 'Windows'
+    get_it '/', :env => { :agent => 'Windows' }
     should.be.ok
     body.should.equal 'Windows'
 
@@ -151,7 +151,7 @@ context "Events in an app" do
       params[:agent].first
     end
     
-    get_it '/', :agent => 'Windows NT'
+    get_it '/', :env => { :agent => 'Windows NT' }
 
     body.should.equal 'NT'
 
