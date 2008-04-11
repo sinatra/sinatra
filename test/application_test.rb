@@ -1,5 +1,7 @@
 require File.dirname(__FILE__) + '/helper'
 
+require 'uri'
+
 class TesterWithEach
   def each
     yield 'foo'
@@ -153,6 +155,19 @@ context "Events in an app" do
 
     body.should.equal 'NT'
 
+  end
+  
+  specify "can deal with spaces in paths" do
+    
+    path = '/path with spaces'
+    
+    get path do
+      "Look ma, a path with spaces!"
+    end
+    
+    get_it URI.encode(path)
+    
+    body.should.equal "Look ma, a path with spaces!"
   end
   
 end
