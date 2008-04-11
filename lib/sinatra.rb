@@ -145,7 +145,7 @@ module Sinatra
     attr_reader :path, :block, :param_keys, :pattern, :options
     
     def initialize(path, options = {}, &b)
-      @path = path
+      @path = URI.encode(path)
       @block = b
       @param_keys = []
       @options = options
