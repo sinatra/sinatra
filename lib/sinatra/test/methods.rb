@@ -30,7 +30,7 @@ module Sinatra
 
       %w(get head post put delete).each do |m|
         define_method("#{m}_it") do |path, *args|
-          request = Rack::MockRequest.new(Sinatra.application)
+          request = Rack::MockRequest.new(Sinatra.build_application)
           env, input = if args.size == 2
             [args.last, args.first]
           elsif args.size == 1
