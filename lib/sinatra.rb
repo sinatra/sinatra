@@ -405,7 +405,7 @@ module Sinatra
     # underlying headers Hash. With a Hash argument, add or overwrite
     # existing response headers with the values provided:
     #
-    #    headers 'Content-Type' => "text/html; charset=utf-8",
+    #    headers 'Content-Type' => "text/html;charset=utf-8",
     #      'Last-Modified' => Time.now.httpdate,
     #      'X-UA-Compatible' => 'IE=edge'
     #
@@ -416,8 +416,32 @@ module Sinatra
     end
     alias :header :headers
 
+    # Set the content type of the response body (HTTP 'Content-Type' header).
+    #
+    # The +type+ argument may be an internet media type (e.g., 'text/html',
+    # 'application/xml+atom', 'image/png') or a Symbol key into the
+    # Rack::File::MIME_TYPES table.
+    #
+    # Media type parameters, such as "charset", may also be specified using the
+    # optional hash argument:
+    #
+    #   get '/foo.html' do
+    #     content_type 'text/html', :charset => 'utf-8'
+    #     "<h1>Hello World</h1>"
+    #   end
+    #
+    def content_type(type, params={})
+      type = Rack::File::MIME_TYPES[type.to_s] if type.kind_of?(Symbol)
+      fail "Invalid or undefined media_type: #{type}" if type.nil?
+      if params.any?
+        params = params.collect { |kv| "%s=%s" % kv }.join(', ')
+        type = [ type, params ].join(";")
+      end
+      response.header['Content-Type'] = type
+    end
+
   end
-  
+
   module RenderingHelpers
 
     def render(renderer, template, options={})

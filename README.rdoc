@@ -100,7 +100,7 @@ This will render <tt>./views/index.haml</tt>
 
 === Sass
   get '/stylesheet.css' do
-    header 'Content-Type' => 'text/css; charset=utf-8'
+    content_type 'text/css', :charset => 'utf-8'
     sass :stylesheet
   end
   
@@ -174,7 +174,7 @@ This works like Haml except you use <tt>erb</tt> instead of <tt>haml</tt>
 
 === Sass
 
-This works like Haml except you use <tt>sass</tt> instead of <tt>haml</tt>. It's also a good idea to add <tt>header 'Content-Type' => 'text/css; charset=utf-8'</tt> before your call to <tt>sass</tt> so Sinatra returns the proper content type header with the file.
+This works like Haml except you use <tt>sass</tt> instead of <tt>haml</tt>. It's also a good idea to add <tt>content_type 'text/css', :charset => 'utf-8'</tt> before your call to <tt>sass</tt> so Sinatra returns the proper content type header with the file.
 
 === Builder
 

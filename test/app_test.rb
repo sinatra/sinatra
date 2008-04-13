@@ -113,6 +113,28 @@ context "Sinatra" do
     
   end
 
+  specify "should easily set response Content-Type" do
+    get '/foo.html' do
+      content_type 'text/html', :charset => 'utf-8'
+      "<h1>Hello, World</h1>"
+    end
+
+    get_it '/foo.html'
+    should.be.ok
+    headers['Content-Type'].should.equal 'text/html;charset=utf-8'
+    body.should.equal '<h1>Hello, World</h1>'
+
+    get '/foo.xml' do
+      content_type :xml
+      "<feed></feed>"
+    end
+
+    get_it '/foo.xml'
+    should.be.ok
+    headers['Content-Type'].should.equal 'application/xml'
+    body.should.equal '<feed></feed>'
+  end
+
   specify "delegates HEAD requests to GET handlers" do
     get '/invisible' do
       "I am invisible to the world"
