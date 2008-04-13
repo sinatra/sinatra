@@ -152,6 +152,32 @@ context "Sinatra" do
     body.should.equal ''
   end
 
+  specify "supports conditional GETs with entity_tag" do
+    get '/strong' do
+      entity_tag 'FOO'
+      'foo response'
+    end
+
+    get_it '/strong'
+    should.be.ok
+    body.should.equal 'foo response'
+
+    get_it '/strong', {},
+      'HTTP_IF_NONE_MATCH' => '"BAR"'
+    should.be.ok
+    body.should.equal 'foo response'
+
+    get_it '/strong', {},
+      'HTTP_IF_NONE_MATCH' => '"FOO"'
+    status.should.equal 304
+    body.should.equal ''
+
+    get_it '/strong', {},
+      'HTTP_IF_NONE_MATCH' => '"BAR", *'
+    status.should.equal 304
+    body.should.equal ''
+  end
+
   specify "delegates HEAD requests to GET handlers" do
     get '/invisible' do
       "I am invisible to the world"

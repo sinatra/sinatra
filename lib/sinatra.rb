@@ -459,6 +459,45 @@ module Sinatra
       time
     end
 
+    # Set the response entity tag (HTTP 'ETag' header) and halt if conditional
+    # GET matches. The +value+ argument is an identifier that uniquely
+    # identifies the current version of the resource. The +strength+ argument
+    # indicates whether the etag should be used as a :strong (default) or :weak
+    # cache validator.
+    #
+    # When the current request includes an 'If-None-Match' header with a
+    # matching etag, execution is immediately halted. If the request method is
+    # GET or HEAD, a '304 Not Modified' response is sent. For all other request
+    # methods, a '412 Precondition Failed' response is sent.
+    #
+    # Calling this method before perfoming heavy processing (e.g., lengthy
+    # database queries, template rendering, complex logic) can dramatically
+    # increase overall throughput with caching clients.
+    #
+    # === See Also
+    # http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19[RFC2616: ETag],
+    # ResponseHelpers#last_modified
+    def entity_tag(value, strength=:strong)
+      value =
+        case strength
+        when :strong then '"%s"' % value
+        when :weak   then 'W/"%s"' % value
+        else         raise TypeError, "strength must be one of :strong or :weak"
+        end
+      response.header['ETag'] = value
+
+      # Check for If-None-Match request header and halt if match is found.
+      etags = (request.env['HTTP_IF_NONE_MATCH'] || '').split(/\s*,\s*/)
+      if etags.include?(value) || etags.include?('*')
+        # GET/HEAD requests: send Not Modified response
+        throw :halt, 304 if request.get? || request.head?
+        # Other requests: send Precondition Failed response
+        throw :halt, 412
+      end
+    end
+
+    alias :etag :entity_tag
+
   end
 
   module RenderingHelpers
