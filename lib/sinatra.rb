@@ -376,15 +376,40 @@ module Sinatra
         header('Cache-Control' => 'private') if headers['Cache-Control'] == 'no-cache'
       end
   end
-  
+
+
+  # Helper methods for building various aspects of the HTTP response.
   module ResponseHelpers
 
+    # Immediately halt response execution by redirecting to the resource
+    # specified. The +path+ argument may be an absolute URL or a path
+    # relative to the site root. Additional arguments are passed to the
+    # halt.
+    #
+    # With no integer status code, a '302 Temporary Redirect' response is
+    # sent. To send a permanent redirect, pass an explicit status code of
+    # 301:
+    #
+    #   redirect '/somewhere/else', 301
+    #
+    # NOTE: No attempt is made to rewrite the path based on application
+    # context. The 'Location' response header is set verbatim to the value
+    # provided.
     def redirect(path, *args)
       status(302)
-      headers 'Location' => path
+      header 'Location' => path
       throw :halt, *args
     end
-    
+
+    # Access or modify response headers. With no argument, return the
+    # underlying headers Hash. With a Hash argument, add or overwrite
+    # existing response headers with the values provided:
+    #
+    #    headers 'Content-Type' => "text/html; charset=utf-8",
+    #      'Last-Modified' => Time.now.httpdate,
+    #      'X-UA-Compatible' => 'IE=edge'
+    #
+    # This method also available in singular form (#header).
     def headers(header = nil)
       @response.headers.merge!(header) if header
       @response.headers

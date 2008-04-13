@@ -26,7 +26,22 @@ context "Sinatra" do
     should.be.ok
     body.should.equal 'Hello Blake'
   end
-  
+
+  specify "gives access to underlying response header Hash" do
+    get '/' do
+      header['X-Test'] = 'Is this thing on?'
+      headers 'X-Test2' => 'Foo', 'X-Test3' => 'Bar'
+      ''
+    end
+
+    get_it '/'
+    should.be.ok
+    headers.should.include 'X-Test'
+    headers['X-Test'].should.equal 'Is this thing on?'
+    headers.should.include 'X-Test3'
+    headers['X-Test3'].should.equal 'Bar'
+  end
+
   specify "follows redirects" do
     get '/' do
       redirect '/blake'
@@ -55,7 +70,18 @@ context "Sinatra" do
     headers['Location'].should.equal 'foo'
     body.should.equal 'blah'
   end
-  
+
+  specify "redirects permanently with 301 status code" do
+    get "/" do
+      redirect 'foo', 301
+    end
+    get_it '/'
+    should.be.redirection
+    headers['Location'].should.equal 'foo'
+    status.should.equal 301
+    body.should.be.empty
+  end
+
   specify "body sets content and ends event" do
     
     Sinatra::EventContext.any_instance.expects(:foo).never
