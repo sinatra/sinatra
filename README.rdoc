@@ -301,7 +301,7 @@ Sinatra will pass you the error via the 'sinatra.error' in request.env
 Custom error mapping:
 
   error MyCustomError do
-    'So what happened was...' + request.env['sinatra.env'].message
+    'So what happened was...' + request.env['sinatra.error'].message
   end
 
 then if this happens:
@@ -401,7 +401,7 @@ Options are:
   -h # help
   -p # set the port (default is 4567)
   -e # set the environment (default is development)
-  -x # turn on the mutext lock (default is off)
+  -x # turn on the mutex lock (default is off)
 
 = Contribute
 
@@ -418,13 +418,3 @@ at the top of your sinatra.rb file
   get '/about' do
     "I'm running on Version " + Sinatra::Version.combined
   end
-  
-
-
-
-
-
-
-
-
-
