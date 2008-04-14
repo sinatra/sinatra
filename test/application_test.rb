@@ -97,7 +97,38 @@ context "An app returns" do
   end
   
 end
-  
+
+context "Application#configure blocks" do
+
+  setup do
+    Sinatra.application = nil
+  end
+
+  specify "run when no environment specified" do
+    ref = false
+    configure { ref = true }
+    ref.should.equal true
+  end
+
+  specify "run when matching environment specified" do
+    ref = false
+    configure(:test) { ref = true }
+    ref.should.equal true
+  end
+
+  specify "do not run when no matching environment specified" do
+    configure(:foo) { flunk "block should not have been executed" }
+    configure(:development, :production, :foo) { flunk "block should not have been executed" }
+  end
+
+  specify "accept multiple environments" do
+    ref = false
+    configure(:foo, :test, :bar) { ref = true }
+    ref.should.equal true
+  end
+
+end
+
 context "Events in an app" do
   
   setup do

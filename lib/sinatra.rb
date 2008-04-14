@@ -849,15 +849,13 @@ module Sinatra
     # handlers as values.
     attr_reader :filters
 
-    # Truthful when the application is in the process of being reloaded.
-    attr_reader :reloading
-
     # Array of objects to clear during reload. The objects in this array
     # must respond to :clear.
     attr_reader :clearables
 
-    # Application options.
-    attr_accessor :options
+    # Object including open attribute methods for modifying Application
+    # configuration.
+    attr_reader :options
 
     # List of methods available from top-level scope. When invoked from
     # top-level the method is forwarded to the default application
@@ -865,11 +863,21 @@ module Sinatra
     FORWARD_METHODS = %w[
       get put post delete head
       template layout before error not_found
+      configures configure
     ]
 
+    # Hash of default application configuration options. When a new
+    # Application is created, the #options object takes its initial values
+    # from here.
+    #
+    # Changes to the default_options Hash effect only Application objects
+    # created after the changes are made. For this reason, modifications to
+    # the default_options Hash typically occur at the very beginning of a
+    # file, before any DSL related functions are invoked.
     def self.default_options
+      return @default_options unless @default_options.nil?
       root = File.expand_path(File.dirname($0))
-      @@default_options ||= {
+      @default_options = {
         :run => true,
         :port => 4567,
         :env => :development,
@@ -879,17 +887,15 @@ module Sinatra
         :sessions => false,
         :logging => true
       }
-    end
-    
-    def default_options
-      self.class.default_options
+      load_default_options_from_command_line!
+      @default_options
     end
 
-    
-    ##
-    # Load all options given on the command line
+    # Search ARGV for command line arguments and update the
+    # Sinatra::default_options Hash accordingly. This method is
+    # invoked the first time the default_options Hash is accessed.
     # NOTE:  Ignores --name so unit/spec tests can run individually
-    def load_options!
+    def self.load_default_options_from_command_line! #:nodoc:
       require 'optparse'
       OptionParser.new do |op|
         op.on('-p port') { |port| default_options[:port] = port }
@@ -907,15 +913,36 @@ module Sinatra
     end
 
     def initialize
+      @reloading = false
       @clearables = [
         @events = Hash.new { |hash, key| hash[key] = [] },
         @errors = Hash.new,
         @filters = Hash.new { |hash, key| hash[key] = [] },
         @templates = Hash.new
       ]
-      load_options!
+      @options = OpenStruct.new(self.class.default_options)
       load_default_events!
     end
+
+    # Determine whether the application is in the process of being
+    # reloaded.
+    def reloading?
+      @reloading == true
+    end
+
+    # Yield to the block for configuration if the current environment
+    # matches any included in the +envs+ list. Always yield to the block
+    # when no environment is specified.
+    #
+    # NOTE: configuration blocks are not executed during reloads.
+    def configures(*envs, &b)
+      return if reloading?
+      return unless envs.empty? || envs.include?(options.env)
+      yield self
+    end
+
+    alias :configure :configures
+
 
     # Define an event handler for the given request method and path
     # spec. The block is executed when a request matches the method
@@ -1036,10 +1063,6 @@ module Sinatra
         errors[NotFound].invoke(request)
     end
 
-    def options
-      @options ||= OpenStruct.new(default_options)
-    end
-    
     def development?
       options.env == :development
     end
@@ -1052,7 +1075,7 @@ module Sinatra
       @reloading = false
       Environment.setup!
     end
-    
+
     def mutex
       @@mutex ||= Mutex.new
     end
@@ -1236,16 +1259,8 @@ def use_in_file_templates!
   end
 end
 
-def configures(*envs, &b)
-  yield if  !Sinatra.application.reloading && 
-            (envs.include?(Sinatra.application.options.env) ||
-            envs.empty?)
-end
-alias :configure :configures
-
 def set_options(opts)
   Sinatra::Application.default_options.merge!(opts)
-  Sinatra.application.options = nil
 end
 
 def set_option(key, value)
