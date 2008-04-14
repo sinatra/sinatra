@@ -830,14 +830,43 @@ module Sinatra
       end
     
   end
-  
+
+
   class Application
-    
-    attr_reader :events, :errors, :templates, :filters
-    attr_reader :clearables, :reloading
-    
-    attr_writer :options
-    
+
+    # Hash of event handlers with request method keys and
+    # arrays of potential handlers as values.
+    attr_reader :events
+
+    # Hash of error handlers with error status codes as keys and
+    # handlers as values.
+    attr_reader :errors
+
+    # Hash of template name mappings.
+    attr_reader :templates
+
+    # Hash of filters with event name keys (:before) and arrays of
+    # handlers as values.
+    attr_reader :filters
+
+    # Truthful when the application is in the process of being reloaded.
+    attr_reader :reloading
+
+    # Array of objects to clear during reload. The objects in this array
+    # must respond to :clear.
+    attr_reader :clearables
+
+    # Application options.
+    attr_accessor :options
+
+    # List of methods available from top-level scope. When invoked from
+    # top-level the method is forwarded to the default application
+    # (Sinatra::application).
+    FORWARD_METHODS = %w[
+      get put post delete head
+      template layout before error not_found
+    ]
+
     def self.default_options
       root = File.expand_path(File.dirname($0))
       @@default_options ||= {
@@ -888,21 +917,108 @@ module Sinatra
       load_default_events!
     end
 
-    def define_event(method, path, options = {}, &b)
-      events[method] << event = Event.new(path, options, &b)
-      event
+    # Define an event handler for the given request method and path
+    # spec. The block is executed when a request matches the method
+    # and spec.
+    #
+    # NOTE: The #get, #post, #put, and #delete helper methods should
+    # be used to define events when possible.
+    def event(method, path, options = {}, &b)
+      events[method].push(Event.new(path, options, &b)).last
     end
-    
-    def define_template(name=:layout, &b)
+
+    # Define an event handler for GET requests.
+    def get(path, options={}, &b)
+      event(:get, path, options, &b)
+    end
+
+    # Define an event handler for POST requests.
+    def post(path, options={}, &b)
+      event(:post, path, options, &b)
+    end
+
+    # Define an event handler for HEAD requests.
+    def head(path, options={}, &b)
+      event(:head, path, options, &b)
+    end
+
+    # Define an event handler for PUT requests.
+    #
+    # NOTE: PUT events are triggered when the HTTP request method is
+    # PUT and also when the request method is POST and the body includes a
+    # "_method" parameter set to "PUT".
+    def put(path, options={}, &b)
+      event(:put, path, options, &b)
+    end
+
+    # Define an event handler for DELETE requests.
+    #
+    # NOTE: DELETE events are triggered when the HTTP request method is
+    # DELETE and also when the request method is POST and the body includes a
+    # "_method" parameter set to "DELETE".
+    def delete(path, options={}, &b)
+      event(:delete, path, options, &b)
+    end
+
+    # Define a named template. The template may be referenced from
+    # event handlers by passing the name as a Symbol to rendering
+    # methods. The block is executed each time the template is rendered
+    # and the resulting object is passed to the template handler.
+    #
+    # The following example defines a HAML template named hello and
+    # invokes it from an event handler:
+    #
+    #   template :hello do
+    #     "h1 Hello World!"
+    #   end
+    #
+    #   get '/' do
+    #     haml :foo
+    #   end
+    #
+    def template(name, &b)
       templates[name] = b
     end
-    
-    def define_error(code, options = {}, &b)
-      errors[code] = Error.new(code, &b)
+
+    # Define a layout template.
+    def layout(name=:layout, &b)
+      template(name, &b)
     end
-    
-    def define_filter(type, &b)
-      filters[:before] << b
+
+    # Define a custom error handler for the exception class +type+. The block
+    # is invoked when the specified exception type is raised from an error
+    # handler and can manipulate the response as needed:
+    #
+    #   error MyCustomError do
+    #     status 500
+    #     'So what happened was...' + request.env['sinatra.error'].message
+    #   end
+    #
+    # The Sinatra::ServerError handler is used by default when an exception
+    # occurs and no matching error handler is found.
+    def error(type=ServerError, options = {}, &b)
+      errors[type] = Error.new(type, &b)
+    end
+
+    # Define a custom error handler for '404 Not Found' responses. This is a
+    # shorthand for:
+    #   error NotFound do
+    #     ..
+    #   end
+    def not_found(options={}, &b)
+      error NotFound, options, &b
+    end
+
+    # Define a request filter. When +type+ is +:before+, execute the block
+    # in the context of each request before matching event handlers.
+    def filter(type, &b)
+      filters[type] << b
+    end
+
+    # Invoke the block in the context of each request before invoking
+    # matching event handlers.
+    def before(&b)
+      filter :before, &b
     end
 
     # Visits and invokes each handler registered for the +request_method+ in
@@ -1091,44 +1207,18 @@ end<pre>
   
 end
 
-def get(path, options ={}, &b)
-  Sinatra.application.define_event(:get, path, options, &b)
-end
-
-def post(path, options ={}, &b)
-  Sinatra.application.define_event(:post, path, options, &b)
-end
-
-def put(path, options ={}, &b)
-  Sinatra.application.define_event(:put, path, options, &b)
-end
-
-def delete(path, options ={}, &b)
-  Sinatra.application.define_event(:delete, path, options, &b)
-end
-
-def before(&b)
-  Sinatra.application.define_filter(:before, &b)
+# Delegate DSLish methods to the currently active Sinatra::Application
+# instance.
+Sinatra::Application::FORWARD_METHODS.each do |method|
+  eval(<<-EOS, binding, '(__DSL__)', 1)
+    def #{method}(*args, &b)
+      Sinatra.application.#{method}(*args, &b)
+    end
+  EOS
 end
 
 def helpers(&b)
   Sinatra::EventContext.class_eval(&b)
-end
-
-def error(type = Sinatra::ServerError, options = {}, &b)
-  Sinatra.application.define_error(type, options, &b)
-end
-
-def not_found(options = {}, &b)
-  Sinatra.application.define_error(Sinatra::NotFound, options, &b)
-end
-
-def layout(name = :layout, &b)
-  Sinatra.application.define_template(name, &b)
-end
-
-def template(name, &b)
-  Sinatra.application.define_template(name, &b)
 end
 
 def use_in_file_templates!
