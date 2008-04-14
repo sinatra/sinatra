@@ -120,12 +120,32 @@ module Sinatra
     app
   end
   
+  def server
+    @server ||= case options.server
+    when "mongrel"
+      Rack::Handler::Mongrel
+    when "webrick"
+      Rack::Handler::WEBrick
+    when "cgi"
+      Rack::Handler::CGI
+    when "fastcgi"
+      Rack::Handler::FastCGI
+    else
+      if defined?(Rack::Handler::Thin)
+        Rack::Handler::Thin
+      else
+        options.server ||= "mongrel"
+        eval("Rack::Handler::#{options.server.capitalize}")
+      end
+    end
+  end
+  
   def run
     
     begin
-      puts "== Sinatra has taken the stage on port #{port} for #{env}"
+      puts "== Sinatra has taken the stage on port #{port} for #{env} with backup by #{server.name}"
       require 'pp'
-      Rack::Handler::Mongrel.run(build_application, :Port => port) do |server|
+      server.run(build_application, :Port => port) do |server|
         trap(:INT) do
           server.stop
           puts "\n== Sinatra has ended his set (crowd applauds)"
@@ -722,7 +742,8 @@ module Sinatra
       OptionParser.new do |op|
         op.on('-p port') { |port| default_options[:port] = port }
         op.on('-e env') { |env| default_options[:env] = env }
-        op.on('-x') { |env| default_options[:mutex] = true }
+        op.on('-x') { default_options[:mutex] = true }
+        op.on('-s server') { |server| default_options[:server] = server }
       end.parse!(ARGV.dup.select { |o| o !~ /--name/ })
     end
 

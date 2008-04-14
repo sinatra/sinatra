@@ -2,3 +2,4 @@ doc
 pkg
 *.log
 .DS_Store
+rack*
