@@ -1,20 +1,18 @@
 require 'rubygems'
-require 'rake/testtask'
 require 'rake/rdoctask'
 require 'echoe'
 
 task :default => :test
+
+task :test do
+  ENV['SINATRA_ENV'] = 'test'
+end
 
 Rake::RDocTask.new do |rd|
   rd.main = "README.rdoc"
   rd.rdoc_files += ["README.rdoc"]
   rd.rdoc_files += Dir.glob("lib/**/*.rb")
   rd.rdoc_dir = 'doc'
-end
-
-Rake::TestTask.new do |t|
-  ENV['SINATRA_ENV'] = 'test'
-  t.pattern = File.dirname(__FILE__) + "/test/*_test.rb"
 end
 
 Echoe.new("sinatra") do |p|
@@ -26,4 +24,3 @@ Echoe.new("sinatra") do |p|
   p.install_message = "*** Be sure to checkout the site for helpful tips!  sinatrarb.com ***"
   p.include_rakefile = true
 end
-
