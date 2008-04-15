@@ -832,6 +832,16 @@ module Sinatra
   end
 
 
+  # The Application class represents the top-level working area of a
+  # Sinatra app. It provides the DSL for defining various aspects of the
+  # application and implements a Rack compatible interface for dispatching
+  # requests.
+  #
+  # Many of the instance methods defined in this class (#get, #post,
+  # #put, #delete, #layout, #before, #error, #not_found, etc.) are
+  # available at top-level scope. When invoked from top-level, the
+  # messages are forwarded to the "default application" (accessible
+  # at Sinatra::application).
   class Application
 
     # Hash of event handlers with request method keys and
@@ -865,6 +875,25 @@ module Sinatra
       template layout before error not_found
       configures configure
     ]
+
+    # Create a new Application with a default configuration taken
+    # from the default_options Hash.
+    #
+    # NOTE: A default Application is automatically created the first
+    # time any of Sinatra's DSL related methods is invoked so there
+    # is typically no need to create an instance explicitly. See
+    # Sinatra::application for more information.
+    def initialize
+      @reloading = false
+      @clearables = [
+        @events = Hash.new { |hash, key| hash[key] = [] },
+        @errors = Hash.new,
+        @filters = Hash.new { |hash, key| hash[key] = [] },
+        @templates = Hash.new
+      ]
+      @options = OpenStruct.new(self.class.default_options)
+      load_default_events!
+    end
 
     # Hash of default application configuration options. When a new
     # Application is created, the #options object takes its initial values
@@ -910,18 +939,6 @@ module Sinatra
     # they appear first in the list.
     def load_default_events!
       events[:get] << Static.new
-    end
-
-    def initialize
-      @reloading = false
-      @clearables = [
-        @events = Hash.new { |hash, key| hash[key] = [] },
-        @errors = Hash.new,
-        @filters = Hash.new { |hash, key| hash[key] = [] },
-        @templates = Hash.new
-      ]
-      @options = OpenStruct.new(self.class.default_options)
-      load_default_events!
     end
 
     # Determine whether the application is in the process of being
@@ -987,6 +1004,22 @@ module Sinatra
       event(:delete, path, options, &b)
     end
 
+    # Visits and invokes each handler registered for the +request_method+ in
+    # definition order until a Result response is produced. If no handler
+    # responds with a Result, the NotFound error handler is invoked.
+    #
+    # When the request_method is "HEAD" and no valid Result is produced by
+    # the set of handlers registered for HEAD requests, an attempt is made to
+    # invoke the GET handlers to generate the response before resorting to the
+    # default error handler.
+    def lookup(request)
+      method = request.request_method.downcase.to_sym
+      events[method].eject(&[:invoke, request]) ||
+        (events[:get].eject(&[:invoke, request]) if method == :head) ||
+        errors[NotFound].invoke(request)
+    end
+
+
     # Define a named template. The template may be referenced from
     # event handlers by passing the name as a Symbol to rendering
     # methods. The block is executed each time the template is rendered
@@ -1000,7 +1033,7 @@ module Sinatra
     #   end
     #
     #   get '/' do
-    #     haml :foo
+    #     haml :hello
     #   end
     #
     def template(name, &b)
@@ -1048,25 +1081,13 @@ module Sinatra
       filter :before, &b
     end
 
-    # Visits and invokes each handler registered for the +request_method+ in
-    # definition order until a Result response is produced. If no handler
-    # responds with a Result, the NotFound error handler is invoked.
-    #
-    # When the request_method is "HEAD" and no valid Result is produced by
-    # the set of handlers registered for HEAD requests, an attempt is made to
-    # invoke the GET handlers to generate the response before resorting to the
-    # default error handler.
-    def lookup(request)
-      method = request.request_method.downcase.to_sym
-      events[method].eject(&[:invoke, request]) ||
-        (events[:get].eject(&[:invoke, request]) if method == :head) ||
-        errors[NotFound].invoke(request)
-    end
-
     def development?
       options.env == :development
     end
 
+    # Clear all events, templates, filters, and error handlers
+    # and then reload the application source file. This occurs
+    # automatically before each request is processed in development.
     def reload!
       @reloading = true
       clearables.each(&:clear)
@@ -1076,10 +1097,18 @@ module Sinatra
       Environment.setup!
     end
 
+    # Determine whether the application is in the process of being
+    # reloaded.
+    def reloading?
+      @reloading == true
+    end
+
+    # Mutex instance used for thread synchronization.
     def mutex
       @@mutex ||= Mutex.new
     end
-    
+
+    # Yield to the block with thread synchronization
     def run_safely
       if options.mutex
         mutex.synchronize { yield }
@@ -1087,16 +1116,24 @@ module Sinatra
         yield
       end
     end
-    
+
+    # Rack compatible request invocation interface. Requests are processed
+    # as follows:
+    #
+    # 1. Create Rack::Request, Rack::Response helper objects.
+    # 2. Lookup event handler based on request method and path.
+    # 3. Create new EventContext to house event handler evaluation.
+    # 4. Invoke each #before filter in context of EventContext object.
+    # 5. Invoke event handler in context of EventContext object.
+    # 6. Return response to Rack.
+    #
+    # See the Rack specification for detailed information on the
+    # +env+ argument and return value.
     def call(env)
       reload! if development?
       request = Rack::Request.new(env)
       result = lookup(request)
-      context = EventContext.new(
-        request, 
-        Rack::Response.new,
-        result.params
-      )
+      context = EventContext.new(request, Rack::Response.new, result.params)
       context.status(result.status)
       begin
         returned = run_safely do
@@ -1122,10 +1159,10 @@ module Sinatra
       context.body = body.kind_of?(String) ? [*body] : body
       context.finish
     end
-    
+
   end
-  
-  
+
+
   module Environment
     extend self
     
