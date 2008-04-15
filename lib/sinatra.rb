@@ -112,14 +112,10 @@ module Sinatra
   def env
     application.options.env
   end
-  
-  def build_application
-    app = application
-    app = Rack::Session::Cookie.new(app) if Sinatra.options.sessions == true
-    app = Rack::CommonLogger.new(app) if Sinatra.options.logging == true
-    app
-  end
-  
+
+  # Deprecated: use application instead of build_application.
+  alias :build_application :application
+
   def server
     @server ||= case options.server
     when "mongrel"
@@ -141,11 +137,10 @@ module Sinatra
   end
   
   def run
-    
     begin
       puts "== Sinatra has taken the stage on port #{port} for #{env} with backup by #{server.name}"
       require 'pp'
-      server.run(build_application, :Port => port) do |server|
+      server.run(application, :Port => port) do |server|
         trap(:INT) do
           server.stop
           puts "\n== Sinatra has ended his set (crowd applauds)"
@@ -154,9 +149,8 @@ module Sinatra
     rescue Errno::EADDRINUSE => e
       puts "== Someone is already performing on port #{port}!"
     end
-    
   end
-      
+
   class Event
 
     URI_CHAR = '[^/?:,&#\.]'.freeze unless defined?(URI_CHAR)
@@ -868,7 +862,7 @@ module Sinatra
     # (Sinatra::application).
     FORWARD_METHODS = %w[
       get put post delete head template layout before error not_found
-      configures configure set_options set_option enable disable
+      configures configure set_options set_option enable disable use
     ]
 
     # Create a new Application with a default configuration taken
@@ -884,7 +878,8 @@ module Sinatra
         @events = Hash.new { |hash, key| hash[key] = [] },
         @errors = Hash.new,
         @filters = Hash.new { |hash, key| hash[key] = [] },
-        @templates = Hash.new
+        @templates = Hash.new,
+        @middleware = []
       ]
       @options = OpenStruct.new(self.class.default_options)
       load_default_configuration!
@@ -1116,6 +1111,7 @@ module Sinatra
     # automatically before each request is processed in development.
     def reload!
       @reloading = true
+      @pipeline = nil
       clearables.each(&:clear)
       load_default_configuration!
       Kernel.load $0
@@ -1142,8 +1138,59 @@ module Sinatra
       end
     end
 
-    # Rack compatible request invocation interface. Requests are processed
-    # as follows:
+    # Add a piece of Rack middleware to the pipeline leading to the
+    # application.
+    def use(klass, *args, &block)
+      fail "#{klass} must respond to 'new'" unless klass.respond_to?(:new)
+      @pipeline = nil
+      @middleware.push([ klass, args, block ]).last
+    end
+
+  private
+
+    # Rack middleware derived from current state of application options.
+    # These components are plumbed in at the very beginning of the
+    # pipeline.
+    def optional_middleware
+      [
+        ([ Rack::CommonLogger,    [], nil ] if options.logging),
+        ([ Rack::Session::Cookie, [], nil ] if options.sessions)
+      ].compact
+    end
+
+    # Rack middleware explicitly added to the application with #use. These
+    # components are plumbed into the pipeline downstream from
+    # #optional_middle.
+    def explicit_middleware
+      @middleware
+    end
+
+    # All Rack middleware used to construct the pipeline.
+    def middleware
+      optional_middleware + explicit_middleware
+    end
+
+  public
+
+    # An assembled pipeline of Rack middleware that leads eventually to
+    # the Application#invoke method. The pipeline is built upon first
+    # access. Defining new middleware with Application#use or manipulating
+    # application options may cause the pipeline to be rebuilt.
+    def pipeline
+      @pipeline ||=
+        middleware.inject(method(:dispatch)) do |app,(klass,args,block)|
+          klass.new(app, *args, &block)
+        end
+    end
+
+    # Rack compatible request invocation interface.
+    def call(env)
+      reload! if development?
+      pipeline.call(env)
+    end
+
+    # Request invocation handler - called at the end of the Rack pipeline
+    # for each request.
     #
     # 1. Create Rack::Request, Rack::Response helper objects.
     # 2. Lookup event handler based on request method and path.
@@ -1154,8 +1201,7 @@ module Sinatra
     #
     # See the Rack specification for detailed information on the
     # +env+ argument and return value.
-    def call(env)
-      reload! if development?
+    def dispatch(env)
       request = Rack::Request.new(env)
       result = lookup(request)
       context = EventContext.new(request, Rack::Response.new, result.params)
