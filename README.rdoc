@@ -100,7 +100,7 @@ This will render <tt>./views/index.haml</tt>
 
 === Sass
   get '/stylesheet.css' do
-    header 'Content-Type' => 'text/css; charset=utf-8'
+    content_type 'text/css', :charset => 'utf-8'
     sass :stylesheet
   end
   
@@ -174,7 +174,7 @@ This works like Haml except you use <tt>erb</tt> instead of <tt>haml</tt>
 
 === Sass
 
-This works like Haml except you use <tt>sass</tt> instead of <tt>haml</tt>. It's also a good idea to add <tt>header 'Content-Type' => 'text/css; charset=utf-8'</tt> before your call to <tt>sass</tt> so Sinatra returns the proper content type header with the file.
+This works like Haml except you use <tt>sass</tt> instead of <tt>haml</tt>. It's also a good idea to add <tt>content_type 'text/css', :charset => 'utf-8'</tt> before your call to <tt>sass</tt> so Sinatra returns the proper content type header with the file.
 
 === Builder
 
@@ -301,7 +301,7 @@ Sinatra will pass you the error via the 'sinatra.error' in request.env
 Custom error mapping:
 
   error MyCustomError do
-    'So what happened was...' + request.env['sinatra.env'].message
+    'So what happened was...' + request.env['sinatra.error'].message
   end
 
 then if this happens:
@@ -401,7 +401,7 @@ Options are:
   -h # help
   -p # set the port (default is 4567)
   -e # set the environment (default is development)
-  -x # turn on the mutext lock (default is off)
+  -x # turn on the mutex lock (default is off)
 
 = Contribute
 
@@ -418,13 +418,3 @@ at the top of your sinatra.rb file
   get '/about' do
     "I'm running on Version " + Sinatra::Version.combined
   end
-  
-
-
-
-
-
-
-
-
-

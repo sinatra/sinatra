@@ -26,7 +26,22 @@ context "Sinatra" do
     should.be.ok
     body.should.equal 'Hello Blake'
   end
-  
+
+  specify "gives access to underlying response header Hash" do
+    get '/' do
+      header['X-Test'] = 'Is this thing on?'
+      headers 'X-Test2' => 'Foo', 'X-Test3' => 'Bar'
+      ''
+    end
+
+    get_it '/'
+    should.be.ok
+    headers.should.include 'X-Test'
+    headers['X-Test'].should.equal 'Is this thing on?'
+    headers.should.include 'X-Test3'
+    headers['X-Test3'].should.equal 'Bar'
+  end
+
   specify "follows redirects" do
     get '/' do
       redirect '/blake'
@@ -55,7 +70,18 @@ context "Sinatra" do
     headers['Location'].should.equal 'foo'
     body.should.equal 'blah'
   end
-  
+
+  specify "redirects permanently with 301 status code" do
+    get "/" do
+      redirect 'foo', 301
+    end
+    get_it '/'
+    should.be.redirection
+    headers['Location'].should.equal 'foo'
+    status.should.equal 301
+    body.should.be.empty
+  end
+
   specify "body sets content and ends event" do
     
     Sinatra::EventContext.any_instance.expects(:foo).never
@@ -85,6 +111,71 @@ context "Sinatra" do
     should.be.not_found
     body.should.equal 'bah!'
     
+  end
+
+  specify "should easily set response Content-Type" do
+    get '/foo.html' do
+      content_type 'text/html', :charset => 'utf-8'
+      "<h1>Hello, World</h1>"
+    end
+
+    get_it '/foo.html'
+    should.be.ok
+    headers['Content-Type'].should.equal 'text/html;charset=utf-8'
+    body.should.equal '<h1>Hello, World</h1>'
+
+    get '/foo.xml' do
+      content_type :xml
+      "<feed></feed>"
+    end
+
+    get_it '/foo.xml'
+    should.be.ok
+    headers['Content-Type'].should.equal 'application/xml'
+    body.should.equal '<feed></feed>'
+  end
+
+  specify "supports conditional GETs with last_modified" do
+    modified_at = Time.now
+    get '/maybe' do
+      last_modified modified_at
+      'response body, maybe'
+    end
+
+    get_it '/maybe'
+    should.be.ok
+    body.should.equal 'response body, maybe'
+
+    get_it '/maybe', {},
+      'HTTP_IF_MODIFIED_SINCE' => modified_at.httpdate
+    status.should.equal 304
+    body.should.equal ''
+  end
+
+  specify "supports conditional GETs with entity_tag" do
+    get '/strong' do
+      entity_tag 'FOO'
+      'foo response'
+    end
+
+    get_it '/strong'
+    should.be.ok
+    body.should.equal 'foo response'
+
+    get_it '/strong', {},
+      'HTTP_IF_NONE_MATCH' => '"BAR"'
+    should.be.ok
+    body.should.equal 'foo response'
+
+    get_it '/strong', {},
+      'HTTP_IF_NONE_MATCH' => '"FOO"'
+    status.should.equal 304
+    body.should.equal ''
+
+    get_it '/strong', {},
+      'HTTP_IF_NONE_MATCH' => '"BAR", *'
+    status.should.equal 304
+    body.should.equal ''
   end
 
   specify "delegates HEAD requests to GET handlers" do
