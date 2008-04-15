@@ -873,7 +873,7 @@ module Sinatra
     FORWARD_METHODS = %w[
       get put post delete head
       template layout before error not_found
-      configures configure
+      configures configure set_options set_option
     ]
 
     # Create a new Application with a default configuration taken
@@ -959,6 +959,31 @@ module Sinatra
     end
 
     alias :configure :configures
+
+    # When both +option+ and +value+ arguments are provided, set the option
+    # specified. With a single Hash argument, set all options specified in
+    # Hash. Options are available via the Application#options object.
+    #
+    # Setting individual options:
+    #   set :port, 80
+    #   set :env, :production
+    #   set :views, '/path/to/views'
+    #
+    # Setting multiple options:
+    #   set :port  => 80,
+    #       :env   => :production,
+    #       :views => '/path/to/views'
+    #
+    def set(option, value=self)
+      if value == self && option.kind_of?(Hash)
+        option.each { |key,val| set(key, val) }
+      else
+        options.send("#{option}=", value)
+      end
+    end
+
+    alias :set_option :set
+    alias :set_options :set
 
 
     # Define an event handler for the given request method and path
@@ -1294,14 +1319,6 @@ def use_in_file_templates!
       Sinatra.application.templates[current_template] << line
     end
   end
-end
-
-def set_options(opts)
-  Sinatra::Application.default_options.merge!(opts)
-end
-
-def set_option(key, value)
-  set_options(key => value)
 end
 
 def mime(ext, type)

@@ -1,10 +1,10 @@
 require File.dirname(__FILE__) + '/helper'
 
 context "Sessions" do
-  
-  specify "should be off by default" do
-    Sinatra.application = nil
 
+  setup { Sinatra.application = nil }
+
+  specify "should be off by default" do
     get '/asdf' do
       session[:test] = true
       "asdf"
@@ -18,10 +18,9 @@ context "Sessions" do
     assert ok?
     assert !include?('Set-Cookie')
   end
-  
+
   specify "should be able to store data accross requests" do
-    set_options(:sessions => true)
-    Sinatra.application = nil
+    set_option :sessions, true
 
     get '/foo' do
       session[:test] = true

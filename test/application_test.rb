@@ -204,3 +204,37 @@ context "Events in an app" do
 end
 
 
+context "Options in an app" do
+
+  setup do
+    Sinatra.application = nil
+    @app = Sinatra::application
+  end
+
+  specify "can be set singly on app" do
+    @app.set :foo, 1234
+    @app.options.foo.should.equal 1234
+  end
+
+  specify "can be set singly from top-level" do
+    set_option :foo, 1234
+    @app.options.foo.should.equal 1234
+  end
+
+  specify "can be set multiply on app" do
+    @app.options.foo.should.be.nil
+    @app.set :foo => 1234,
+      :bar => 'hello, world'
+    @app.options.foo.should.equal 1234
+    @app.options.bar.should.equal 'hello, world'
+  end
+
+  specify "can be set multiply from top-level" do
+    @app.options.foo.should.be.nil
+    set_options :foo => 1234,
+      :bar => 'hello, world'
+    @app.options.foo.should.equal 1234
+    @app.options.bar.should.equal 'hello, world'
+  end
+
+end
