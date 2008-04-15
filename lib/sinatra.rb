@@ -454,7 +454,7 @@ module Sinatra
       type = Rack::File::MIME_TYPES[type.to_s] if type.kind_of?(Symbol)
       fail "Invalid or undefined media_type: #{type}" if type.nil?
       if params.any?
-        params = params.to_params
+        params = params.collect { |kv| "%s=%s" % kv }.join(', ')
         type = [ type, params ].join(";")
       end
       response.header['Content-Type'] = type
