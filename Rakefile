@@ -1,19 +1,7 @@
 require 'rubygems'
-require 'rake/rdoctask'
 require 'echoe'
 
 task :default => :test
-
-task :test do
-  ENV['SINATRA_ENV'] = 'test'
-end
-
-Rake::RDocTask.new do |rd|
-  rd.main = "README.rdoc"
-  rd.rdoc_files += ["README.rdoc"]
-  rd.rdoc_files += Dir.glob("lib/**/*.rb")
-  rd.rdoc_dir = 'doc'
-end
 
 Echoe.new("sinatra") do |p|
   p.author = "Blake Mizerany"
