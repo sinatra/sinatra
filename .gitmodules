@@ -1,0 +1,3 @@
+[submodule "vendor/rack"]
+	path = vendor/rack
+	url = git://github.com/chneukirchen/rack-mirror.git

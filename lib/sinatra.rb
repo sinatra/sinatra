@@ -1,6 +1,13 @@
+Dir[File.dirname(__FILE__) + "/../vendor/*"].each do |l|
+  $:.unshift "#{File.expand_path(l)}/lib"
+end
+
+require 'rack'
+
 require 'rubygems'
 require 'uri'
 require 'time'
+require 'ostruct'
 
 if ENV['SWIFT']
  require 'swiftcore/swiftiplied_mongrel'
@@ -9,9 +16,6 @@ elsif ENV['EVENT']
   require 'swiftcore/evented_mongrel' 
   puts "Using Evented Mongrel"
 end
-
-require 'rack'
-require 'ostruct'
 
 class Class
   def dslify_writer(*syms)
