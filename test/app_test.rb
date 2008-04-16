@@ -124,12 +124,12 @@ context "Sinatra" do
     headers['Content-Type'].should.equal 'text/html;charset=utf-8'
     body.should.equal '<h1>Hello, World</h1>'
 
-    get '/foo.xml' do
+    get '/foo_test.xml' do
       content_type :xml
       "<feed></feed>"
     end
 
-    get_it '/foo.xml'
+    get_it '/foo_test.xml'
     should.be.ok
     headers['Content-Type'].should.equal 'application/xml'
     body.should.equal '<feed></feed>'
