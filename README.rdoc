@@ -345,6 +345,20 @@ When using send_file or static files you may have mime types Sinatra doesn't und
 
 = Testing
 
+=== Methods
+
+  get_it path, params
+  get_it path, params.merge(:env => { 'HTTP_HOST' => 'www.sinatrarb.com' }) or
+  get_it path, params.merge(:env => { :host => 'www.sinatrarb.com' })
+  
+RESTful:
+
+  post_it '/foo', '<myxml></myxml>', 'HTTP_ACCEPT' => 'application/xml'
+
+also works with:
+
+  get_it, post_it, put_it, delete_it, head_it
+
 === Test/Unit
 
   require 'my_sinatra_app'
