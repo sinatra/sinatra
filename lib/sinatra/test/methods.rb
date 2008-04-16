@@ -46,7 +46,7 @@ module Sinatra
       end
 
       def method_missing(name, *args)
-        @response.send(name, *args)
+        @response.send(name, *args) rescue super
       end
       
     end
