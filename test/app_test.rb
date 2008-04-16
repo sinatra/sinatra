@@ -146,8 +146,7 @@ context "Sinatra" do
     should.be.ok
     body.should.equal 'response body, maybe'
 
-    get_it '/maybe', {},
-      'HTTP_IF_MODIFIED_SINCE' => modified_at.httpdate
+    get_it '/maybe', :env => { 'HTTP_IF_MODIFIED_SINCE' => modified_at.httpdate }
     status.should.equal 304
     body.should.equal ''
   end
