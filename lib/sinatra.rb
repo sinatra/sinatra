@@ -96,19 +96,15 @@ module Sinatra
   def options
     application.options
   end
-  
+
   def application
-    unless @app 
-      @app = Application.new
-      Sinatra::Environment.setup!
-    end
-    @app
+    @app ||= Application.new
   end
-  
+
   def application=(app)
     @app = app
   end
-  
+
   def port
     application.options.port
   end
@@ -892,7 +888,7 @@ module Sinatra
         @templates = Hash.new
       ]
       @options = OpenStruct.new(self.class.default_options)
-      load_default_events!
+      load_default_configuration!
     end
 
     # Hash of default application configuration options. When a new
@@ -914,7 +910,8 @@ module Sinatra
         :views => root + '/views',
         :public => root + '/public',
         :sessions => false,
-        :logging => true
+        :logging => true,
+        :raise_errors => false
       }
       load_default_options_from_command_line!
       @default_options
@@ -934,13 +931,6 @@ module Sinatra
       end.parse!(ARGV.dup.select { |o| o !~ /--name/ })
     end
 
-    # Called immediately after the application is initialized or reloaded to
-    # register default events. Events added here have dibs on requests since
-    # they appear first in the list.
-    def load_default_events!
-      events[:get] << Static.new
-    end
-
     # Determine whether the application is in the process of being
     # reloaded.
     def reloading?
@@ -954,8 +944,7 @@ module Sinatra
     # NOTE: configuration blocks are not executed during reloads.
     def configures(*envs, &b)
       return if reloading?
-      return unless envs.empty? || envs.include?(options.env)
-      yield self
+      yield self if envs.empty? || envs.include?(options.env)
     end
 
     alias :configure :configures
@@ -1116,10 +1105,9 @@ module Sinatra
     def reload!
       @reloading = true
       clearables.each(&:clear)
-      load_default_events!
+      load_default_configuration!
       Kernel.load $0
       @reloading = false
-      Environment.setup!
     end
 
     # Determine whether the application is in the process of being
@@ -1185,13 +1173,14 @@ module Sinatra
       context.finish
     end
 
-  end
+    # Called immediately after the application is initialized or reloaded to
+    # register default events, templates, and error handlers.
+    def load_default_configuration!
 
+      # The static event is always executed first.
+      events[:get] << Static.new
 
-  module Environment
-    extend self
-    
-    def setup!
+      # Default configuration for all environments.
       configure do
         error do
           raise request.env['sinatra.error'] if Sinatra.options.raise_errors
@@ -1288,8 +1277,11 @@ end<pre>
         end
       end
     end
+
+    private :load_default_configuration!
+
   end
-  
+
 end
 
 # Delegate DSLish methods to the currently active Sinatra::Application

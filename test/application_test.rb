@@ -129,6 +129,21 @@ context "Application#configure blocks" do
 
 end
 
+context "Default Application Configuration" do
+
+  specify "includes 404 and 500 error handlers" do
+    Sinatra.application.errors.should.include(Sinatra::ServerError)
+    Sinatra.application.errors[Sinatra::ServerError].should.not.be.nil
+    Sinatra.application.errors.should.include(Sinatra::NotFound)
+    Sinatra.application.errors[Sinatra::NotFound].should.not.be.nil
+  end
+
+  specify "includes Static event" do
+    assert Sinatra.application.events[:get].any? { |e| Sinatra::Static === e }
+  end
+
+end
+
 context "Events in an app" do
   
   setup do
