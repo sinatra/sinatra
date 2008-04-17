@@ -867,9 +867,8 @@ module Sinatra
     # top-level the method is forwarded to the default application
     # (Sinatra::application).
     FORWARD_METHODS = %w[
-      get put post delete head
-      template layout before error not_found
-      configures configure set_options set_option
+      get put post delete head template layout before error not_found
+      configures configure set_options set_option enable disable
     ]
 
     # Create a new Application with a default configuration taken
@@ -974,6 +973,19 @@ module Sinatra
     alias :set_option :set
     alias :set_options :set
 
+    # Enable the options specified by setting their values to true. For
+    # example, to enable sessions and logging:
+    #   enable :sessions, :logging
+    def enable(*opts)
+      opts.each { |key| set(key, true) }
+    end
+
+    # Disable the options specified by setting their values to false. For
+    # example, to disable logging and automatic run:
+    #   disable :logging, :run
+    def disable(*opts)
+      opts.each { |key| set(key, false) }
+    end
 
     # Define an event handler for the given request method and path
     # spec. The block is executed when a request matches the method

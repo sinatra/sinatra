@@ -252,4 +252,36 @@ context "Options in an app" do
     @app.options.bar.should.equal 'hello, world'
   end
 
+  specify "can be enabled on app" do
+    @app.options.foo.should.be.nil
+    @app.enable :sessions, :foo, :bar
+    @app.options.sessions.should.equal true
+    @app.options.foo.should.equal true
+    @app.options.bar.should.equal true
+  end
+
+  specify "can be enabled from top-level" do
+    @app.options.foo.should.be.nil
+    enable :sessions, :foo, :bar
+    @app.options.sessions.should.equal true
+    @app.options.foo.should.equal true
+    @app.options.bar.should.equal true
+  end
+
+  specify "can be disabled on app" do
+    @app.options.foo.should.be.nil
+    @app.disable :sessions, :foo, :bar
+    @app.options.sessions.should.equal false
+    @app.options.foo.should.equal false
+    @app.options.bar.should.equal false
+  end
+
+  specify "can be enabled from top-level" do
+    @app.options.foo.should.be.nil
+    disable :sessions, :foo, :bar
+    @app.options.sessions.should.equal false
+    @app.options.foo.should.equal false
+    @app.options.bar.should.equal false
+  end
+
 end
