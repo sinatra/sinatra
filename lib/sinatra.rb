@@ -828,13 +828,14 @@ module Sinatra
     attr_writer :options
     
     def self.default_options
+      root = File.expand_path(File.dirname($0))
       @@default_options ||= {
         :run => true,
         :port => 4567,
         :env => :development,
-        :root => Dir.pwd,
-        :views => Dir.pwd + '/views',
-        :public => Dir.pwd + '/public',
+        :root => root,
+        :views => root + '/views',
+        :public => root + '/public',
         :sessions => false,
         :logging => true,
       }
