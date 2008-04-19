@@ -604,7 +604,8 @@ module Sinatra
     private
     
       def render_haml(content, options = {}, &b)
-        ::Haml::Engine.new(content).render(options[:scope] || self, options[:locals] || {}, &b)
+        haml_options = (options[:options] || {}).merge(Sinatra.options.haml)
+        ::Haml::Engine.new(content, haml_options).render(options[:scope] || self, options[:locals] || {}, &b)
       end
         
   end
@@ -838,6 +839,7 @@ module Sinatra
         :public => root + '/public',
         :sessions => false,
         :logging => true,
+        :haml => {}
       }
     end
     
