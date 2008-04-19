@@ -178,4 +178,56 @@ context "Haml" do
     
   end
 
+  describe 'Options passed to the HAML interpreter' do
+    setup do
+      Sinatra.application = nil
+    end
+
+    specify 'are empty be default' do
+
+      get '/' do
+        haml 'foo'
+      end
+
+      Haml::Engine.expects(:new).with('foo', {}).returns(stub(:render => 'foo'))
+
+      get_it '/'
+      should.be.ok
+
+    end
+
+    specify 'can be configured by passing :options to haml' do
+
+      get '/' do
+        haml 'foo', :options => {:format => :html4}
+      end
+
+      Haml::Engine.expects(:new).with('foo', {:format => :html4}).returns(stub(:render => 'foo'))
+
+      get_it '/'
+      should.be.ok
+
+    end
+
+    specify 'can be configured using set_option :haml' do
+
+      configure do
+        set_option :haml, :format       => :html4,
+                          :escape_html  => true
+      end
+
+      get '/' do
+        haml 'foo'
+      end
+
+      Haml::Engine.expects(:new).with('foo', {:format => :html4,
+        :escape_html => true}).returns(stub(:render => 'foo'))
+
+      get_it '/'
+      should.be.ok
+
+    end
+
+  end
+
 end
