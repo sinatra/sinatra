@@ -52,7 +52,7 @@ module Rack #:nodoc:
     end
 
     def user_agent
-      env['HTTP_USER_AGENT']
+      @env['HTTP_USER_AGENT']
     end
 
     private
@@ -810,7 +810,7 @@ module Sinatra
     end
     
     def session
-      @request.env['rack.session'] || {}
+      request.env['rack.session'] ||= {}
     end
     
     private
