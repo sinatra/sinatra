@@ -27,6 +27,46 @@ context "Sinatra" do
     body.should.equal 'Hello Blake'
   end
 
+  
+  specify "handles splats" do
+    get '/hi/*' do
+      params["splat"].kind_of?(Array).should.equal true
+      params["splat"].first
+    end
+    
+    get_it '/hi/Blake'
+    
+    should.be.ok
+    body.should.equal 'Blake'
+  end
+
+  specify "handles multiple splats" do
+    get '/say/*/to/*' do
+      params["splat"].join(' ')
+    end
+    
+    get_it '/say/hello/to/world'
+    
+    should.be.ok
+    body.should.equal 'hello world'
+  end
+
+  specify "allow empty splats" do
+    get '/say/*/to*/*' do
+      params["splat"].join(' ')
+    end
+    
+    get_it '/say/hello/to/world'
+    
+    should.be.ok
+    body.should.equal 'hello  world' # second splat is empty
+
+    get_it '/say/hello/tomy/world'
+    
+    should.be.ok
+    body.should.equal 'hello my world'
+  end
+
   specify "gives access to underlying response header Hash" do
     get '/' do
       header['X-Test'] = 'Is this thing on?'

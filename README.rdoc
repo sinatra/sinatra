@@ -57,8 +57,14 @@ With params
   
 Splat'n
 
-  get '/message/*' do
-    # matches /message/1/2/3/4/5
+  get '/say/*/to/*' do
+    # matches /say/hello/to/world
+    params["splat"] # => ["hello", "world"]
+  end
+
+  get '/download/*.*' do
+    # matches /download/path/to/file.xml
+    params["splat"] # => ["path/to/file", "xml"]
   end
   
 Get an agent!

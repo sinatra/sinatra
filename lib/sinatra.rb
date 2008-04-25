@@ -164,7 +164,7 @@ module Sinatra
   class Event
 
     URI_CHAR = '[^/?:,&#\.]'.freeze unless defined?(URI_CHAR)
-    PARAM = /:(#{URI_CHAR}+)/.freeze unless defined?(PARAM)
+    PARAM = /(:(#{URI_CHAR}+)|\*)/.freeze unless defined?(PARAM)
     SPLAT = /(.*?)/
     attr_reader :path, :block, :param_keys, :pattern, :options
     
@@ -173,13 +173,18 @@ module Sinatra
       @block = b
       @param_keys = []
       @options = options
-      regex = @path.to_s.gsub(PARAM) do
-        @param_keys << $1
-        "(#{URI_CHAR}+)"
+      splats = 0
+      regex = @path.to_s.gsub(PARAM) do |match|
+        if match == "*"
+          @param_keys << "_splat_#{splats}"
+          splats += 1
+          SPLAT.to_s
+        else
+          @param_keys << $2
+          "(#{URI_CHAR}+)"
+        end
       end
-      
-      regex.gsub!('*', SPLAT.to_s)
-      
+
       @pattern = /^#{regex}$/
     end
         
@@ -194,6 +199,11 @@ module Sinatra
       end
       return unless pattern =~ request.path_info.squeeze('/')
       params.merge!(param_keys.zip($~.captures.map(&:from_param)).to_hash)
+      splats = params.select { |k, v| k =~ /^_splat_\d+$/ }.sort.map(&:last)
+      unless splats.empty?
+        params.delete_if { |k, v| k =~ /^_splat_\d+$/ }
+        params["splat"] = splats
+      end
       Result.new(block, params, 200)
     end
     
