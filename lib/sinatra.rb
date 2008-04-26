@@ -5,9 +5,9 @@ end
 require 'rack'
 
 require 'rubygems'
-require 'uri'
 require 'time'
 require 'ostruct'
+require "uri"
 
 if ENV['SWIFT']
  require 'swiftcore/swiftiplied_mongrel'
@@ -217,14 +217,14 @@ module Sinatra
             
     def invoke(request)
       return unless File.file?(
-        Sinatra.application.options.public + request.path_info
+        Sinatra.application.options.public + request.path_info.http_unescape
       )
       Result.new(block, {}, 200)
     end
     
     def block
       Proc.new do
-        send_file Sinatra.application.options.public + request.path_info,
+        send_file Sinatra.application.options.public + request.path_info.http_unescape,
           :disposition => nil
       end
     end
@@ -1174,14 +1174,16 @@ class String
   # Converts +self+ to an escaped URI parameter value
   #   'Foo Bar'.to_param # => 'Foo%20Bar'
   def to_param
-    URI.escape(self)
+    Rack::Utils.escape(self)
   end
+  alias :http_escape :to_param
   
   # Converts +self+ from an escaped URI parameter value
   #   'Foo%20Bar'.from_param # => 'Foo Bar'
   def from_param
-    URI.unescape(self)
+    Rack::Utils.unescape(self)
   end
+  alias :http_unescape :from_param
   
 end
 
