@@ -38,10 +38,10 @@ end
 
 __END__
 
-## foo
+@@ foo
 this is foo
 
-## layout
+@@ layout
 X
 = yield
 X

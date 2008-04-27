@@ -1127,7 +1127,7 @@ def use_in_file_templates!
   data = StringIO.new(templates)
   current_template = nil
   data.each do |line|
-    if line =~ /^##\s?(.*)/
+    if line =~ /^@@\s?(.*)/
       current_template = $1.to_sym
       Sinatra.application.templates[current_template] = ''
     elsif current_template
