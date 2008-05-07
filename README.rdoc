@@ -88,7 +88,7 @@ If a file exists that maps to the REQUEST_PATH then it is served and the request
 
 = Views (if you need MVC)
 
-All views are looked up in:
+All file-based views are looked up in:
 
   root
     | - views/
@@ -150,12 +150,12 @@ This one is cool:
   
   __END__
   
-  ## layout
+  @@ layout
   X
   = yield
   X
   
-  ## index
+  @@ index
   %div.title Hello world!!!!!
   
 Try it!
