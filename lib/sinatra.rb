@@ -82,7 +82,7 @@ module Sinatra
   module Version
     MAJOR = '0'
     MINOR = '2'
-    REVISION = '1'
+    REVISION = '3'
     def self.combined
       [MAJOR, MINOR, REVISION].join('.')
     end
