@@ -57,8 +57,14 @@ With params
   
 Splat'n
 
-  get '/message/*' do
-    # matches /message/1/2/3/4/5
+  get '/say/*/to/*' do
+    # matches /say/hello/to/world
+    params["splat"] # => ["hello", "world"]
+  end
+
+  get '/download/*.*' do
+    # matches /download/path/to/file.xml
+    params["splat"] # => ["path/to/file", "xml"]
   end
   
 Get an agent!
@@ -82,7 +88,7 @@ If a file exists that maps to the REQUEST_PATH then it is served and the request
 
 = Views (if you need MVC)
 
-All views are looked up in:
+All file-based views are looked up in:
 
   root
     | - views/
@@ -100,7 +106,7 @@ This will render <tt>./views/index.haml</tt>
 
 === Sass
   get '/stylesheet.css' do
-    header 'Content-Type' => 'text/css; charset=utf-8'
+    content_type 'text/css', :charset => 'utf-8'
     sass :stylesheet
   end
   
@@ -144,12 +150,12 @@ This one is cool:
   
   __END__
   
-  ## layout
+  @@ layout
   X
   = yield
   X
   
-  ## index
+  @@ index
   %div.title Hello world!!!!!
   
 Try it!
@@ -174,7 +180,7 @@ This works like Haml except you use <tt>erb</tt> instead of <tt>haml</tt>
 
 === Sass
 
-This works like Haml except you use <tt>sass</tt> instead of <tt>haml</tt>. It's also a good idea to add <tt>header 'Content-Type' => 'text/css; charset=utf-8'</tt> before your call to <tt>sass</tt> so Sinatra returns the proper content type header with the file.
+This works like Haml except you use <tt>sass</tt> instead of <tt>haml</tt>. It's also a good idea to add <tt>content_type 'text/css', :charset => 'utf-8'</tt> before your call to <tt>sass</tt> so Sinatra returns the proper content type header with the file.
 
 === Builder
 
@@ -301,7 +307,7 @@ Sinatra will pass you the error via the 'sinatra.error' in request.env
 Custom error mapping:
 
   error MyCustomError do
-    'So what happened was...' + request.env['sinatra.env'].message
+    'So what happened was...' + request.env['sinatra.error'].message
   end
 
 then if this happens:
@@ -344,6 +350,20 @@ When using send_file or static files you may have mime types Sinatra doesn't und
   mime :foo, 'text/foo'
 
 = Testing
+
+=== Methods
+
+  get_it path, params
+  get_it path, params.merge(:env => { 'HTTP_HOST' => 'www.sinatrarb.com' }) or
+  get_it path, params.merge(:env => { :host => 'www.sinatrarb.com' })
+  
+RESTful:
+
+  post_it '/foo', '<myxml></myxml>', 'HTTP_ACCEPT' => 'application/xml'
+
+also works with:
+
+  get_it, post_it, put_it, delete_it, head_it
 
 === Test/Unit
 
@@ -401,7 +421,7 @@ Options are:
   -h # help
   -p # set the port (default is 4567)
   -e # set the environment (default is development)
-  -x # turn on the mutext lock (default is off)
+  -x # turn on the mutex lock (default is off)
 
 = Contribute
 
@@ -418,13 +438,3 @@ at the top of your sinatra.rb file
   get '/about' do
     "I'm running on Version " + Sinatra::Version.combined
   end
-  
-
-
-
-
-
-
-
-
-

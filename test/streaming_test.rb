@@ -77,6 +77,12 @@ context "Static files (by default)" do
     headers['Content-Transfer-Encoding'].should.be.nil
   end
 
+  specify "should be served even if their path is url escaped" do
+	get_it('/fo%6f.xml')
+	should.be.ok
+    body.should.equal "<foo></foo>\n"
+  end
+
 end
 
 context "SendData" do

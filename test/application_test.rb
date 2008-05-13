@@ -135,17 +135,17 @@ context "Events in an app" do
     get '/', :agent => /Windows/ do
       request.env['HTTP_USER_AGENT']
     end
-    
+        
     get_it '/', :env => { :agent => 'Windows' }
     should.be.ok
     body.should.equal 'Windows'
 
-    get_it '/', :agent => 'Mac'
+    get_it '/', :env => { :agent => 'Mac' }
     should.not.be.ok
 
   end
 
-  specify "can filters by agent" do
+  specify "can use regex to get parts of user-agent" do
     
     get '/', :agent => /Windows (NT)/ do
       params[:agent].first

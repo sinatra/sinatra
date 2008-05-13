@@ -1,6 +1,13 @@
+Dir[File.dirname(__FILE__) + "/../vendor/*"].each do |l|
+  $:.unshift "#{File.expand_path(l)}/lib"
+end
+
+require 'rack'
+
 require 'rubygems'
-require 'uri'
 require 'time'
+require 'ostruct'
+require "uri"
 
 if ENV['SWIFT']
  require 'swiftcore/swiftiplied_mongrel'
@@ -9,9 +16,6 @@ elsif ENV['EVENT']
   require 'swiftcore/evented_mongrel' 
   puts "Using Evented Mongrel"
 end
-
-require 'rack'
-require 'ostruct'
 
 class Class
   def dslify_writer(*syms)
@@ -48,7 +52,7 @@ module Rack #:nodoc:
     end
 
     def user_agent
-      env['HTTP_USER_AGENT']
+      @env['HTTP_USER_AGENT']
     end
 
     private
@@ -78,7 +82,7 @@ module Sinatra
   module Version
     MAJOR = '0'
     MINOR = '2'
-    REVISION = '0'
+    REVISION = '1'
     def self.combined
       [MAJOR, MINOR, REVISION].join('.')
     end
@@ -120,12 +124,32 @@ module Sinatra
     app
   end
   
+  def server
+    @server ||= case options.server
+    when "mongrel"
+      Rack::Handler::Mongrel
+    when "webrick"
+      Rack::Handler::WEBrick
+    when "cgi"
+      Rack::Handler::CGI
+    when "fastcgi"
+      Rack::Handler::FastCGI
+    else
+      if defined?(Rack::Handler::Thin)
+        Rack::Handler::Thin
+      else
+        options.server ||= "mongrel"
+        eval("Rack::Handler::#{options.server.capitalize}")
+      end
+    end
+  end
+  
   def run
     
     begin
-      puts "== Sinatra has taken the stage on port #{port} for #{env}"
+      puts "== Sinatra has taken the stage on port #{port} for #{env} with backup by #{server.name}"
       require 'pp'
-      Rack::Handler::Mongrel.run(build_application, :Port => port) do |server|
+      server.run(build_application, :Port => port) do |server|
         trap(:INT) do
           server.stop
           puts "\n== Sinatra has ended his set (crowd applauds)"
@@ -140,7 +164,7 @@ module Sinatra
   class Event
 
     URI_CHAR = '[^/?:,&#\.]'.freeze unless defined?(URI_CHAR)
-    PARAM = /:(#{URI_CHAR}+)/.freeze unless defined?(PARAM)
+    PARAM = /(:(#{URI_CHAR}+)|\*)/.freeze unless defined?(PARAM)
     SPLAT = /(.*?)/
     attr_reader :path, :block, :param_keys, :pattern, :options
     
@@ -149,13 +173,18 @@ module Sinatra
       @block = b
       @param_keys = []
       @options = options
-      regex = @path.to_s.gsub(PARAM) do
-        @param_keys << $1
-        "(#{URI_CHAR}+)"
+      splats = 0
+      regex = @path.to_s.gsub(PARAM) do |match|
+        if match == "*"
+          @param_keys << "_splat_#{splats}"
+          splats += 1
+          SPLAT.to_s
+        else
+          @param_keys << $2
+          "(#{URI_CHAR}+)"
+        end
       end
-      
-      regex.gsub!('*', SPLAT.to_s)
-      
+
       @pattern = /^#{regex}$/
     end
         
@@ -170,6 +199,11 @@ module Sinatra
       end
       return unless pattern =~ request.path_info.squeeze('/')
       params.merge!(param_keys.zip($~.captures.map(&:from_param)).to_hash)
+      splats = params.select { |k, v| k =~ /^_splat_\d+$/ }.sort.map(&:last)
+      unless splats.empty?
+        params.delete_if { |k, v| k =~ /^_splat_\d+$/ }
+        params["splat"] = splats
+      end
       Result.new(block, params, 200)
     end
     
@@ -193,14 +227,14 @@ module Sinatra
             
     def invoke(request)
       return unless File.file?(
-        Sinatra.application.options.public + request.path_info
+        Sinatra.application.options.public + request.path_info.http_unescape
       )
       Result.new(block, {}, 200)
     end
     
     def block
       Proc.new do
-        send_file Sinatra.application.options.public + request.path_info,
+        send_file Sinatra.application.options.public + request.path_info.http_unescape,
           :disposition => nil
       end
     end
@@ -376,23 +410,130 @@ module Sinatra
         header('Cache-Control' => 'private') if headers['Cache-Control'] == 'no-cache'
       end
   end
-  
+
+
+  # Helper methods for building various aspects of the HTTP response.
   module ResponseHelpers
 
+    # Immediately halt response execution by redirecting to the resource
+    # specified. The +path+ argument may be an absolute URL or a path
+    # relative to the site root. Additional arguments are passed to the
+    # halt.
+    #
+    # With no integer status code, a '302 Temporary Redirect' response is
+    # sent. To send a permanent redirect, pass an explicit status code of
+    # 301:
+    #
+    #   redirect '/somewhere/else', 301
+    #
+    # NOTE: No attempt is made to rewrite the path based on application
+    # context. The 'Location' response header is set verbatim to the value
+    # provided.
     def redirect(path, *args)
       status(302)
-      headers 'Location' => path
+      header 'Location' => path
       throw :halt, *args
     end
-    
+
+    # Access or modify response headers. With no argument, return the
+    # underlying headers Hash. With a Hash argument, add or overwrite
+    # existing response headers with the values provided:
+    #
+    #    headers 'Content-Type' => "text/html;charset=utf-8",
+    #      'Last-Modified' => Time.now.httpdate,
+    #      'X-UA-Compatible' => 'IE=edge'
+    #
+    # This method also available in singular form (#header).
     def headers(header = nil)
       @response.headers.merge!(header) if header
       @response.headers
     end
     alias :header :headers
 
+    # Set the content type of the response body (HTTP 'Content-Type' header).
+    #
+    # The +type+ argument may be an internet media type (e.g., 'text/html',
+    # 'application/xml+atom', 'image/png') or a Symbol key into the
+    # Rack::File::MIME_TYPES table.
+    #
+    # Media type parameters, such as "charset", may also be specified using the
+    # optional hash argument:
+    #
+    #   get '/foo.html' do
+    #     content_type 'text/html', :charset => 'utf-8'
+    #     "<h1>Hello World</h1>"
+    #   end
+    #
+    def content_type(type, params={})
+      type = Rack::File::MIME_TYPES[type.to_s] if type.kind_of?(Symbol)
+      fail "Invalid or undefined media_type: #{type}" if type.nil?
+      if params.any?
+        params = params.collect { |kv| "%s=%s" % kv }.join(', ')
+        type = [ type, params ].join(";")
+      end
+      response.header['Content-Type'] = type
+    end
+
+    # Set the last modified time of the resource (HTTP 'Last-Modified' header)
+    # and halt if conditional GET matches. The +time+ argument is a Time,
+    # DateTime, or other object that responds to +to_time+.
+    #
+    # When the current request includes an 'If-Modified-Since' header that
+    # matches the time specified, execution is immediately halted with a
+    # '304 Not Modified' response.
+    #
+    # Calling this method before perfoming heavy processing (e.g., lengthy
+    # database queries, template rendering, complex logic) can dramatically
+    # increase overall throughput with caching clients.
+    def last_modified(time)
+      time = time.to_time if time.respond_to?(:to_time)
+      time = time.httpdate if time.respond_to?(:httpdate)
+      response.header['Last-Modified'] = time
+      throw :halt, 304 if time == request.env['HTTP_IF_MODIFIED_SINCE']
+      time
+    end
+
+    # Set the response entity tag (HTTP 'ETag' header) and halt if conditional
+    # GET matches. The +value+ argument is an identifier that uniquely
+    # identifies the current version of the resource. The +strength+ argument
+    # indicates whether the etag should be used as a :strong (default) or :weak
+    # cache validator.
+    #
+    # When the current request includes an 'If-None-Match' header with a
+    # matching etag, execution is immediately halted. If the request method is
+    # GET or HEAD, a '304 Not Modified' response is sent. For all other request
+    # methods, a '412 Precondition Failed' response is sent.
+    #
+    # Calling this method before perfoming heavy processing (e.g., lengthy
+    # database queries, template rendering, complex logic) can dramatically
+    # increase overall throughput with caching clients.
+    #
+    # === See Also
+    # http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19[RFC2616: ETag],
+    # ResponseHelpers#last_modified
+    def entity_tag(value, strength=:strong)
+      value =
+        case strength
+        when :strong then '"%s"' % value
+        when :weak   then 'W/"%s"' % value
+        else         raise TypeError, "strength must be one of :strong or :weak"
+        end
+      response.header['ETag'] = value
+
+      # Check for If-None-Match request header and halt if match is found.
+      etags = (request.env['HTTP_IF_NONE_MATCH'] || '').split(/\s*,\s*/)
+      if etags.include?(value) || etags.include?('*')
+        # GET/HEAD requests: send Not Modified response
+        throw :halt, 304 if request.get? || request.head?
+        # Other requests: send Precondition Failed response
+        throw :halt, 412
+      end
+    end
+
+    alias :etag :entity_tag
+
   end
-  
+
   module RenderingHelpers
 
     def render(renderer, template, options={})
@@ -473,7 +614,8 @@ module Sinatra
     private
     
       def render_haml(content, options = {}, &b)
-        ::Haml::Engine.new(content).render(options[:scope] || self, options[:locals] || {}, &b)
+        haml_options = (options[:options] || {}).merge(Sinatra.options.haml || {})
+        ::Haml::Engine.new(content, haml_options).render(options[:scope] || self, options[:locals] || {}, &b)
       end
         
   end
@@ -678,7 +820,7 @@ module Sinatra
     end
     
     def session
-      @request.env['rack.session'] || {}
+      request.env['rack.session'] ||= {}
     end
     
     private
@@ -697,15 +839,16 @@ module Sinatra
     attr_writer :options
     
     def self.default_options
+      root = File.expand_path(File.dirname($0))
       @@default_options ||= {
         :run => true,
         :port => 4567,
         :env => :development,
-        :root => Dir.pwd,
-        :views => Dir.pwd + '/views',
-        :public => Dir.pwd + '/public',
+        :root => root,
+        :views => root + '/views',
+        :public => root + '/public',
         :sessions => false,
-        :logging => true,
+        :logging => true
       }
     end
     
@@ -722,7 +865,8 @@ module Sinatra
       OptionParser.new do |op|
         op.on('-p port') { |port| default_options[:port] = port }
         op.on('-e env') { |env| default_options[:env] = env }
-        op.on('-x') { |env| default_options[:mutex] = true }
+        op.on('-x') { default_options[:mutex] = true }
+        op.on('-s server') { |server| default_options[:server] = server }
       end.parse!(ARGV.dup.select { |o| o !~ /--name/ })
     end
 
@@ -993,7 +1137,7 @@ def use_in_file_templates!
   data = StringIO.new(templates)
   current_template = nil
   data.each do |line|
-    if line =~ /^##\s?(.*)/
+    if line =~ /^@@\s?(.*)/
       current_template = $1.to_sym
       Sinatra.application.templates[current_template] = ''
     elsif current_template
@@ -1040,14 +1184,16 @@ class String
   # Converts +self+ to an escaped URI parameter value
   #   'Foo Bar'.to_param # => 'Foo%20Bar'
   def to_param
-    URI.escape(self)
+    Rack::Utils.escape(self)
   end
+  alias :http_escape :to_param
   
   # Converts +self+ from an escaped URI parameter value
   #   'Foo%20Bar'.from_param # => 'Foo Bar'
   def from_param
-    URI.unescape(self)
+    Rack::Utils.unescape(self)
   end
+  alias :http_unescape :from_param
   
 end
 
