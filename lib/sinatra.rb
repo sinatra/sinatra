@@ -848,7 +848,8 @@ module Sinatra
         :views => root + '/views',
         :public => root + '/public',
         :sessions => false,
-        :logging => true
+        :logging => true,
+        :app_file => $0
       }
     end
     
@@ -932,7 +933,7 @@ module Sinatra
       @reloading = true
       clearables.each(&:clear)
       load_default_events!
-      Kernel.load $0
+      Kernel.load Sinatra.options.app_file
       @reloading = false
       Environment.setup!
     end
