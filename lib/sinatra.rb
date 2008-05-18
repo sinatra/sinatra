@@ -929,12 +929,12 @@ module Sinatra
     end
 
     def reload!
-      @reloading = true
       clearables.each(&:clear)
+      Environment.setup!
+      @reloading = true
       load_default_events!
       Kernel.load $0
       @reloading = false
-      Environment.setup!
     end
     
     def mutex
