@@ -1110,10 +1110,10 @@ module Sinatra
     # and then reload the application source file. This occurs
     # automatically before each request is processed in development.
     def reload!
-      @reloading = true
-      @pipeline = nil
       clearables.each(&:clear)
       load_default_configuration!
+      @pipeline = nil
+      @reloading = true
       Kernel.load $0
       @reloading = false
     end
