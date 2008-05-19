@@ -97,7 +97,53 @@ context "An app returns" do
   end
   
 end
-  
+
+context "Application#configure blocks" do
+
+  setup do
+    Sinatra.application = nil
+  end
+
+  specify "run when no environment specified" do
+    ref = false
+    configure { ref = true }
+    ref.should.equal true
+  end
+
+  specify "run when matching environment specified" do
+    ref = false
+    configure(:test) { ref = true }
+    ref.should.equal true
+  end
+
+  specify "do not run when no matching environment specified" do
+    configure(:foo) { flunk "block should not have been executed" }
+    configure(:development, :production, :foo) { flunk "block should not have been executed" }
+  end
+
+  specify "accept multiple environments" do
+    ref = false
+    configure(:foo, :test, :bar) { ref = true }
+    ref.should.equal true
+  end
+
+end
+
+context "Default Application Configuration" do
+
+  specify "includes 404 and 500 error handlers" do
+    Sinatra.application.errors.should.include(Sinatra::ServerError)
+    Sinatra.application.errors[Sinatra::ServerError].should.not.be.nil
+    Sinatra.application.errors.should.include(Sinatra::NotFound)
+    Sinatra.application.errors[Sinatra::NotFound].should.not.be.nil
+  end
+
+  specify "includes Static event" do
+    assert Sinatra.application.events[:get].any? { |e| Sinatra::Static === e }
+  end
+
+end
+
 context "Events in an app" do
   
   setup do
@@ -173,3 +219,69 @@ context "Events in an app" do
 end
 
 
+context "Options in an app" do
+
+  setup do
+    Sinatra.application = nil
+    @app = Sinatra::application
+  end
+
+  specify "can be set singly on app" do
+    @app.set :foo, 1234
+    @app.options.foo.should.equal 1234
+  end
+
+  specify "can be set singly from top-level" do
+    set_option :foo, 1234
+    @app.options.foo.should.equal 1234
+  end
+
+  specify "can be set multiply on app" do
+    @app.options.foo.should.be.nil
+    @app.set :foo => 1234,
+      :bar => 'hello, world'
+    @app.options.foo.should.equal 1234
+    @app.options.bar.should.equal 'hello, world'
+  end
+
+  specify "can be set multiply from top-level" do
+    @app.options.foo.should.be.nil
+    set_options :foo => 1234,
+      :bar => 'hello, world'
+    @app.options.foo.should.equal 1234
+    @app.options.bar.should.equal 'hello, world'
+  end
+
+  specify "can be enabled on app" do
+    @app.options.foo.should.be.nil
+    @app.enable :sessions, :foo, :bar
+    @app.options.sessions.should.equal true
+    @app.options.foo.should.equal true
+    @app.options.bar.should.equal true
+  end
+
+  specify "can be enabled from top-level" do
+    @app.options.foo.should.be.nil
+    enable :sessions, :foo, :bar
+    @app.options.sessions.should.equal true
+    @app.options.foo.should.equal true
+    @app.options.bar.should.equal true
+  end
+
+  specify "can be disabled on app" do
+    @app.options.foo.should.be.nil
+    @app.disable :sessions, :foo, :bar
+    @app.options.sessions.should.equal false
+    @app.options.foo.should.equal false
+    @app.options.bar.should.equal false
+  end
+
+  specify "can be enabled from top-level" do
+    @app.options.foo.should.be.nil
+    disable :sessions, :foo, :bar
+    @app.options.sessions.should.equal false
+    @app.options.foo.should.equal false
+    @app.options.bar.should.equal false
+  end
+
+end

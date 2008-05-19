@@ -10,4 +10,4 @@ Sinatra::Application.default_options.merge!(
   :logging => false
 )
 
-Sinatra.application.options = nil
+Sinatra.application = nil
