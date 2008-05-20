@@ -117,23 +117,10 @@ module Sinatra
   alias :build_application :application
 
   def server
-    @server ||= case options.server
-    when "mongrel"
-      Rack::Handler::Mongrel
-    when "webrick"
-      Rack::Handler::WEBrick
-    when "cgi"
-      Rack::Handler::CGI
-    when "fastcgi"
-      Rack::Handler::FastCGI
-    else
-      if defined?(Rack::Handler::Thin)
-        Rack::Handler::Thin
-      else
-        options.server ||= "mongrel"
-        eval("Rack::Handler::#{options.server.capitalize}")
-      end
-    end
+    options.server ||= defined?(Rack::Handler::Thin) ? "thin" : "mongrel"
+    # Convert the server into the actual handler name
+    handler = options.server.capitalize.sub(/cgi$/, 'CGI')
+    @server ||= eval("Rack::Handler::#{handler}")
   end
   
   def run
