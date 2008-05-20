@@ -485,8 +485,8 @@ module Sinatra
     # database queries, template rendering, complex logic) can dramatically
     # increase overall throughput with caching clients.
     #
-    # === See Also
-    # http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19[RFC2616: ETag],
+    # ==== See Also
+    # {RFC2616: ETag}[http://w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19],
     # ResponseHelpers#last_modified
     def entity_tag(value, strength=:strong)
       value =
@@ -1078,8 +1078,8 @@ module Sinatra
       error NotFound, options, &b
     end
 
-    # Define a request filter. When +type+ is +:before+, execute the block
-    # in the context of each request before matching event handlers.
+    # Define a request filter. When <tt>type</tt> is <tt>:before</tt>, execute the
+    # block in the context of each request before matching event handlers.
     def filter(type, &b)
       filters[type] << b
     end
