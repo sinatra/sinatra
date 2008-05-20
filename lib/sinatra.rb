@@ -862,7 +862,7 @@ module Sinatra
     # (Sinatra::application).
     FORWARD_METHODS = %w[
       get put post delete head template layout before error not_found
-      configures configure set_options set_option enable disable use
+      configures configure set set_options set_option enable disable use
     ]
 
     # Create a new Application with a default configuration taken
