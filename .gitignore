@@ -2,3 +2,5 @@ doc
 pkg
 *.log
 .DS_Store
+Manifest
+x.rb

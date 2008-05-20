@@ -82,7 +82,7 @@ module Sinatra
   module Version
     MAJOR = '0'
     MINOR = '2'
-    REVISION = '1'
+    REVISION = '3'
     def self.combined
       [MAJOR, MINOR, REVISION].join('.')
     end
@@ -96,19 +96,15 @@ module Sinatra
   def options
     application.options
   end
-  
+
   def application
-    unless @app 
-      @app = Application.new
-      Sinatra::Environment.setup!
-    end
-    @app
+    @app ||= Application.new
   end
-  
+
   def application=(app)
     @app = app
   end
-  
+
   def port
     application.options.port
   end
@@ -116,14 +112,10 @@ module Sinatra
   def env
     application.options.env
   end
-  
-  def build_application
-    app = application
-    app = Rack::Session::Cookie.new(app) if Sinatra.options.sessions == true
-    app = Rack::CommonLogger.new(app) if Sinatra.options.logging == true
-    app
-  end
-  
+
+  # Deprecated: use application instead of build_application.
+  alias :build_application :application
+
   def server
     @server ||= case options.server
     when "mongrel"
@@ -145,11 +137,10 @@ module Sinatra
   end
   
   def run
-    
     begin
       puts "== Sinatra has taken the stage on port #{port} for #{env} with backup by #{server.name}"
       require 'pp'
-      server.run(build_application, :Port => port) do |server|
+      server.run(application, :Port => port) do |server|
         trap(:INT) do
           server.stop
           puts "\n== Sinatra has ended his set (crowd applauds)"
@@ -158,9 +149,8 @@ module Sinatra
     rescue Errno::EADDRINUSE => e
       puts "== Someone is already performing on port #{port}!"
     end
-    
   end
-      
+
   class Event
 
     URI_CHAR = '[^/?:,&#\.]'.freeze unless defined?(URI_CHAR)
@@ -830,17 +820,83 @@ module Sinatra
       end
     
   end
-  
+
+
+  # The Application class represents the top-level working area of a
+  # Sinatra app. It provides the DSL for defining various aspects of the
+  # application and implements a Rack compatible interface for dispatching
+  # requests.
+  #
+  # Many of the instance methods defined in this class (#get, #post,
+  # #put, #delete, #layout, #before, #error, #not_found, etc.) are
+  # available at top-level scope. When invoked from top-level, the
+  # messages are forwarded to the "default application" (accessible
+  # at Sinatra::application).
   class Application
-    
-    attr_reader :events, :errors, :templates, :filters
-    attr_reader :clearables, :reloading
-    
-    attr_writer :options
-    
+
+    # Hash of event handlers with request method keys and
+    # arrays of potential handlers as values.
+    attr_reader :events
+
+    # Hash of error handlers with error status codes as keys and
+    # handlers as values.
+    attr_reader :errors
+
+    # Hash of template name mappings.
+    attr_reader :templates
+
+    # Hash of filters with event name keys (:before) and arrays of
+    # handlers as values.
+    attr_reader :filters
+
+    # Array of objects to clear during reload. The objects in this array
+    # must respond to :clear.
+    attr_reader :clearables
+
+    # Object including open attribute methods for modifying Application
+    # configuration.
+    attr_reader :options
+
+    # List of methods available from top-level scope. When invoked from
+    # top-level the method is forwarded to the default application
+    # (Sinatra::application).
+    FORWARD_METHODS = %w[
+      get put post delete head template layout before error not_found
+      configures configure set_options set_option enable disable use
+    ]
+
+    # Create a new Application with a default configuration taken
+    # from the default_options Hash.
+    #
+    # NOTE: A default Application is automatically created the first
+    # time any of Sinatra's DSL related methods is invoked so there
+    # is typically no need to create an instance explicitly. See
+    # Sinatra::application for more information.
+    def initialize
+      @reloading = false
+      @clearables = [
+        @events = Hash.new { |hash, key| hash[key] = [] },
+        @errors = Hash.new,
+        @filters = Hash.new { |hash, key| hash[key] = [] },
+        @templates = Hash.new,
+        @middleware = []
+      ]
+      @options = OpenStruct.new(self.class.default_options)
+      load_default_configuration!
+    end
+
+    # Hash of default application configuration options. When a new
+    # Application is created, the #options object takes its initial values
+    # from here.
+    #
+    # Changes to the default_options Hash effect only Application objects
+    # created after the changes are made. For this reason, modifications to
+    # the default_options Hash typically occur at the very beginning of a
+    # file, before any DSL related functions are invoked.
     def self.default_options
+      return @default_options unless @default_options.nil?
       root = File.expand_path(File.dirname($0))
-      @@default_options ||= {
+      @default_options = {
         :run => true,
         :port => 4567,
         :env => :development,
@@ -849,19 +905,18 @@ module Sinatra
         :public => root + '/public',
         :sessions => false,
         :logging => true,
-        :app_file => $0
+        :app_file => $0,
+        :raise_errors => false
       }
-    end
-    
-    def default_options
-      self.class.default_options
+      load_default_options_from_command_line!
+      @default_options
     end
 
-    
-    ##
-    # Load all options given on the command line
+    # Search ARGV for command line arguments and update the
+    # Sinatra::default_options Hash accordingly. This method is
+    # invoked the first time the default_options Hash is accessed.
     # NOTE:  Ignores --name so unit/spec tests can run individually
-    def load_options!
+    def self.load_default_options_from_command_line! #:nodoc:
       require 'optparse'
       OptionParser.new do |op|
         op.on('-p port') { |port| default_options[:port] = port }
@@ -871,39 +926,104 @@ module Sinatra
       end.parse!(ARGV.dup.select { |o| o !~ /--name/ })
     end
 
-    # Called immediately after the application is initialized or reloaded to
-    # register default events. Events added here have dibs on requests since
-    # they appear first in the list.
-    def load_default_events!
-      events[:get] << Static.new
+    # Determine whether the application is in the process of being
+    # reloaded.
+    def reloading?
+      @reloading == true
     end
 
-    def initialize
-      @clearables = [
-        @events = Hash.new { |hash, key| hash[key] = [] },
-        @errors = Hash.new,
-        @filters = Hash.new { |hash, key| hash[key] = [] },
-        @templates = Hash.new
-      ]
-      load_options!
-      load_default_events!
+    # Yield to the block for configuration if the current environment
+    # matches any included in the +envs+ list. Always yield to the block
+    # when no environment is specified.
+    #
+    # NOTE: configuration blocks are not executed during reloads.
+    def configures(*envs, &b)
+      return if reloading?
+      yield self if envs.empty? || envs.include?(options.env)
     end
 
-    def define_event(method, path, options = {}, &b)
-      events[method] << event = Event.new(path, options, &b)
-      event
+    alias :configure :configures
+
+    # When both +option+ and +value+ arguments are provided, set the option
+    # specified. With a single Hash argument, set all options specified in
+    # Hash. Options are available via the Application#options object.
+    #
+    # Setting individual options:
+    #   set :port, 80
+    #   set :env, :production
+    #   set :views, '/path/to/views'
+    #
+    # Setting multiple options:
+    #   set :port  => 80,
+    #       :env   => :production,
+    #       :views => '/path/to/views'
+    #
+    def set(option, value=self)
+      if value == self && option.kind_of?(Hash)
+        option.each { |key,val| set(key, val) }
+      else
+        options.send("#{option}=", value)
+      end
     end
-    
-    def define_template(name=:layout, &b)
-      templates[name] = b
+
+    alias :set_option :set
+    alias :set_options :set
+
+    # Enable the options specified by setting their values to true. For
+    # example, to enable sessions and logging:
+    #   enable :sessions, :logging
+    def enable(*opts)
+      opts.each { |key| set(key, true) }
     end
-    
-    def define_error(code, options = {}, &b)
-      errors[code] = Error.new(code, &b)
+
+    # Disable the options specified by setting their values to false. For
+    # example, to disable logging and automatic run:
+    #   disable :logging, :run
+    def disable(*opts)
+      opts.each { |key| set(key, false) }
     end
-    
-    def define_filter(type, &b)
-      filters[:before] << b
+
+    # Define an event handler for the given request method and path
+    # spec. The block is executed when a request matches the method
+    # and spec.
+    #
+    # NOTE: The #get, #post, #put, and #delete helper methods should
+    # be used to define events when possible.
+    def event(method, path, options = {}, &b)
+      events[method].push(Event.new(path, options, &b)).last
+    end
+
+    # Define an event handler for GET requests.
+    def get(path, options={}, &b)
+      event(:get, path, options, &b)
+    end
+
+    # Define an event handler for POST requests.
+    def post(path, options={}, &b)
+      event(:post, path, options, &b)
+    end
+
+    # Define an event handler for HEAD requests.
+    def head(path, options={}, &b)
+      event(:head, path, options, &b)
+    end
+
+    # Define an event handler for PUT requests.
+    #
+    # NOTE: PUT events are triggered when the HTTP request method is
+    # PUT and also when the request method is POST and the body includes a
+    # "_method" parameter set to "PUT".
+    def put(path, options={}, &b)
+      event(:put, path, options, &b)
+    end
+
+    # Define an event handler for DELETE requests.
+    #
+    # NOTE: DELETE events are triggered when the HTTP request method is
+    # DELETE and also when the request method is POST and the body includes a
+    # "_method" parameter set to "DELETE".
+    def delete(path, options={}, &b)
+      event(:delete, path, options, &b)
     end
 
     # Visits and invokes each handler registered for the +request_method+ in
@@ -921,27 +1041,96 @@ module Sinatra
         errors[NotFound].invoke(request)
     end
 
-    def options
-      @options ||= OpenStruct.new(default_options)
+
+    # Define a named template. The template may be referenced from
+    # event handlers by passing the name as a Symbol to rendering
+    # methods. The block is executed each time the template is rendered
+    # and the resulting object is passed to the template handler.
+    #
+    # The following example defines a HAML template named hello and
+    # invokes it from an event handler:
+    #
+    #   template :hello do
+    #     "h1 Hello World!"
+    #   end
+    #
+    #   get '/' do
+    #     haml :hello
+    #   end
+    #
+    def template(name, &b)
+      templates[name] = b
     end
-    
+
+    # Define a layout template.
+    def layout(name=:layout, &b)
+      template(name, &b)
+    end
+
+    # Define a custom error handler for the exception class +type+. The block
+    # is invoked when the specified exception type is raised from an error
+    # handler and can manipulate the response as needed:
+    #
+    #   error MyCustomError do
+    #     status 500
+    #     'So what happened was...' + request.env['sinatra.error'].message
+    #   end
+    #
+    # The Sinatra::ServerError handler is used by default when an exception
+    # occurs and no matching error handler is found.
+    def error(type=ServerError, options = {}, &b)
+      errors[type] = Error.new(type, &b)
+    end
+
+    # Define a custom error handler for '404 Not Found' responses. This is a
+    # shorthand for:
+    #   error NotFound do
+    #     ..
+    #   end
+    def not_found(options={}, &b)
+      error NotFound, options, &b
+    end
+
+    # Define a request filter. When +type+ is +:before+, execute the block
+    # in the context of each request before matching event handlers.
+    def filter(type, &b)
+      filters[type] << b
+    end
+
+    # Invoke the block in the context of each request before invoking
+    # matching event handlers.
+    def before(&b)
+      filter :before, &b
+    end
+
     def development?
       options.env == :development
     end
 
+    # Clear all events, templates, filters, and error handlers
+    # and then reload the application source file. This occurs
+    # automatically before each request is processed in development.
     def reload!
-      @reloading = true
       clearables.each(&:clear)
-      load_default_events!
+      load_default_configuration!
+      @pipeline = nil
+      @reloading = true
       Kernel.load Sinatra.options.app_file
       @reloading = false
-      Environment.setup!
     end
-    
+
+    # Determine whether the application is in the process of being
+    # reloaded.
+    def reloading?
+      @reloading == true
+    end
+
+    # Mutex instance used for thread synchronization.
     def mutex
       @@mutex ||= Mutex.new
     end
-    
+
+    # Yield to the block with thread synchronization
     def run_safely
       if options.mutex
         mutex.synchronize { yield }
@@ -949,16 +1138,74 @@ module Sinatra
         yield
       end
     end
-    
+
+    # Add a piece of Rack middleware to the pipeline leading to the
+    # application.
+    def use(klass, *args, &block)
+      fail "#{klass} must respond to 'new'" unless klass.respond_to?(:new)
+      @pipeline = nil
+      @middleware.push([ klass, args, block ]).last
+    end
+
+  private
+
+    # Rack middleware derived from current state of application options.
+    # These components are plumbed in at the very beginning of the
+    # pipeline.
+    def optional_middleware
+      [
+        ([ Rack::CommonLogger,    [], nil ] if options.logging),
+        ([ Rack::Session::Cookie, [], nil ] if options.sessions)
+      ].compact
+    end
+
+    # Rack middleware explicitly added to the application with #use. These
+    # components are plumbed into the pipeline downstream from
+    # #optional_middle.
+    def explicit_middleware
+      @middleware
+    end
+
+    # All Rack middleware used to construct the pipeline.
+    def middleware
+      optional_middleware + explicit_middleware
+    end
+
+  public
+
+    # An assembled pipeline of Rack middleware that leads eventually to
+    # the Application#invoke method. The pipeline is built upon first
+    # access. Defining new middleware with Application#use or manipulating
+    # application options may cause the pipeline to be rebuilt.
+    def pipeline
+      @pipeline ||=
+        middleware.inject(method(:dispatch)) do |app,(klass,args,block)|
+          klass.new(app, *args, &block)
+        end
+    end
+
+    # Rack compatible request invocation interface.
     def call(env)
       reload! if development?
+      pipeline.call(env)
+    end
+
+    # Request invocation handler - called at the end of the Rack pipeline
+    # for each request.
+    #
+    # 1. Create Rack::Request, Rack::Response helper objects.
+    # 2. Lookup event handler based on request method and path.
+    # 3. Create new EventContext to house event handler evaluation.
+    # 4. Invoke each #before filter in context of EventContext object.
+    # 5. Invoke event handler in context of EventContext object.
+    # 6. Return response to Rack.
+    #
+    # See the Rack specification for detailed information on the
+    # +env+ argument and return value.
+    def dispatch(env)
       request = Rack::Request.new(env)
       result = lookup(request)
-      context = EventContext.new(
-        request, 
-        Rack::Response.new,
-        result.params
-      )
+      context = EventContext.new(request, Rack::Response.new, result.params)
       context.status(result.status)
       begin
         returned = run_safely do
@@ -984,14 +1231,15 @@ module Sinatra
       context.body = body.kind_of?(String) ? [*body] : body
       context.finish
     end
-    
-  end
-  
-  
-  module Environment
-    extend self
-    
-    def setup!
+
+    # Called immediately after the application is initialized or reloaded to
+    # register default events, templates, and error handlers.
+    def load_default_configuration!
+
+      # The static event is always executed first.
+      events[:get] << Static.new
+
+      # Default configuration for all environments.
       configure do
         error do
           raise request.env['sinatra.error'] if Sinatra.options.raise_errors
@@ -1088,48 +1336,25 @@ end<pre>
         end
       end
     end
+
+    private :load_default_configuration!
+
   end
-  
+
 end
 
-def get(path, options ={}, &b)
-  Sinatra.application.define_event(:get, path, options, &b)
-end
-
-def post(path, options ={}, &b)
-  Sinatra.application.define_event(:post, path, options, &b)
-end
-
-def put(path, options ={}, &b)
-  Sinatra.application.define_event(:put, path, options, &b)
-end
-
-def delete(path, options ={}, &b)
-  Sinatra.application.define_event(:delete, path, options, &b)
-end
-
-def before(&b)
-  Sinatra.application.define_filter(:before, &b)
+# Delegate DSLish methods to the currently active Sinatra::Application
+# instance.
+Sinatra::Application::FORWARD_METHODS.each do |method|
+  eval(<<-EOS, binding, '(__DSL__)', 1)
+    def #{method}(*args, &b)
+      Sinatra.application.#{method}(*args, &b)
+    end
+  EOS
 end
 
 def helpers(&b)
   Sinatra::EventContext.class_eval(&b)
-end
-
-def error(type = Sinatra::ServerError, options = {}, &b)
-  Sinatra.application.define_error(type, options, &b)
-end
-
-def not_found(options = {}, &b)
-  Sinatra.application.define_error(Sinatra::NotFound, options, &b)
-end
-
-def layout(name = :layout, &b)
-  Sinatra.application.define_template(name, &b)
-end
-
-def template(name, &b)
-  Sinatra.application.define_template(name, &b)
 end
 
 def use_in_file_templates!
@@ -1145,22 +1370,6 @@ def use_in_file_templates!
       Sinatra.application.templates[current_template] << line
     end
   end
-end
-
-def configures(*envs, &b)
-  yield if  !Sinatra.application.reloading && 
-            (envs.include?(Sinatra.application.options.env) ||
-            envs.empty?)
-end
-alias :configure :configures
-
-def set_options(opts)
-  Sinatra::Application.default_options.merge!(opts)
-  Sinatra.application.options = nil
-end
-
-def set_option(key, value)
-  set_options(key => value)
 end
 
 def mime(ext, type)

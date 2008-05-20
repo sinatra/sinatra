@@ -5,7 +5,14 @@ context "Sinatra" do
   setup do
     Sinatra.application = nil
   end
-  
+
+  specify "should put all DSL methods on (main)" do
+    object = Object.new
+    Sinatra::Application::FORWARD_METHODS.each do |method|
+      object.private_methods.should.include(method)
+    end
+  end
+
   specify "should handle result of nil" do
     get '/' do
       nil
