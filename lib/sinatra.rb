@@ -892,7 +892,8 @@ module Sinatra
         :public => root + '/public',
         :sessions => false,
         :logging => true,
-        :raise_errors => false
+        :raise_errors => false,
+        :app_file => $0
       }
       load_default_options_from_command_line!
       @default_options
@@ -1101,7 +1102,7 @@ module Sinatra
       load_default_configuration!
       @pipeline = nil
       @reloading = true
-      Kernel.load $0
+      Kernel.load options.app_file
       @reloading = false
     end
 
