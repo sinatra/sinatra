@@ -1313,7 +1313,7 @@ end<pre>
                   Params: <pre>#{params.inspect}
             		</div>
           			<div id="stacktrace">
-          				<h1>#{Rack::Utils.escape_html(@error.class.name + ' - ' + @error.message)}</h1>
+          				<h1>#{Rack::Utils.escape_html(@error.class.name + ' - ' + @error.message.to_s)}</h1>
           				<pre><code>#{Rack::Utils.escape_html(@error.backtrace.join("\n"))}</code></pre>
           		</div>
           	</body>
