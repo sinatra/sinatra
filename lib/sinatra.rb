@@ -1118,7 +1118,7 @@ module Sinatra
 
     # Yield to the block with thread synchronization
     def run_safely
-      if options.mutex
+      if development? || options.mutex
         mutex.synchronize { yield }
       else
         yield
@@ -1172,8 +1172,10 @@ module Sinatra
 
     # Rack compatible request invocation interface.
     def call(env)
-      reload! if development?
-      pipeline.call(env)
+      run_safely do
+        reload! if development?
+        pipeline.call(env)
+      end
     end
 
     # Request invocation handler - called at the end of the Rack pipeline
@@ -1194,22 +1196,20 @@ module Sinatra
       context = EventContext.new(request, Rack::Response.new, result.params)
       context.status(result.status)
       begin
-        returned = run_safely do
+        returned =
           catch(:halt) do
             filters[:before].each { |f| context.instance_eval(&f) }
             [:complete, context.instance_eval(&result.block)]
           end
-        end
         body = returned.to_result(context)
       rescue => e
         request.env['sinatra.error'] = e
         context.status(500)
         result = (errors[e.class] || errors[ServerError]).invoke(request)
-        returned = run_safely do
+        returned =
           catch(:halt) do
             [:complete, context.instance_eval(&result.block)]
           end
-        end
         body = returned.to_result(context)
       end
       body = '' unless body.respond_to?(:each)
