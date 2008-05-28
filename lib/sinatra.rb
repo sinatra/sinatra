@@ -485,8 +485,8 @@ module Sinatra
     # database queries, template rendering, complex logic) can dramatically
     # increase overall throughput with caching clients.
     #
-    # === See Also
-    # http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19[RFC2616: ETag],
+    # ==== See Also
+    # {RFC2616: ETag}[http://w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19],
     # ResponseHelpers#last_modified
     def entity_tag(value, strength=:strong)
       value =
@@ -902,6 +902,7 @@ module Sinatra
         :public => root + '/public',
         :sessions => false,
         :logging => true,
+        :app_file => $0,
         :raise_errors => false
       }
       load_default_options_from_command_line!
@@ -1087,8 +1088,8 @@ module Sinatra
       error NotFound, options, &b
     end
 
-    # Define a request filter. When +type+ is +:before+, execute the block
-    # in the context of each request before matching event handlers.
+    # Define a request filter. When <tt>type</tt> is <tt>:before</tt>, execute the
+    # block in the context of each request before matching event handlers.
     def filter(type, &b)
       filters[type] << b
     end
@@ -1111,7 +1112,7 @@ module Sinatra
       load_default_configuration!
       @pipeline = nil
       @reloading = true
-      Kernel.load $0
+      Kernel.load Sinatra.options.app_file
       @reloading = false
     end
 
