@@ -108,6 +108,10 @@ module Sinatra
   def port
     application.options.port
   end
+
+  def host
+    application.options.host
+  end
   
   def env
     application.options.env
@@ -127,7 +131,7 @@ module Sinatra
     begin
       puts "== Sinatra has taken the stage on port #{port} for #{env} with backup by #{server.name}"
       require 'pp'
-      server.run(application, :Port => port) do |server|
+      server.run(application, {:Port => port, :Host => host}) do |server|
         trap(:INT) do
           server.stop
           puts "\n== Sinatra has ended his set (crowd applauds)"
@@ -896,6 +900,7 @@ module Sinatra
       @default_options = {
         :run => true,
         :port => 4567,
+        :host => '0.0.0.0',
         :env => :development,
         :root => root,
         :views => root + '/views',
