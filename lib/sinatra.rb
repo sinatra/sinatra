@@ -119,7 +119,8 @@ module Sinatra
   def server
     options.server ||= defined?(Rack::Handler::Thin) ? "thin" : "mongrel"
     # Convert the server into the actual handler name
-    handler = options.server.capitalize.sub(/cgi$/, 'CGI')
+    # Special cases for [Fast]CGI and WEBrick
+    handler = options.server.capitalize.sub(/cgi$/, 'CGI').sub(/^Webrick$/, 'WEBrick')
     @server ||= eval("Rack::Handler::#{handler}")
   end
   
