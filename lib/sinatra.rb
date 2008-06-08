@@ -1297,48 +1297,48 @@ end<pre>
           @error = request.env['sinatra.error']
           %Q(
           <html>
-          	<body>
-          		<style type="text/css" media="screen">
-          			body {
-          				font-family: Verdana;
-          				color: #333;
-          			}
+            <body>
+              <style type="text/css" media="screen">
+                body {
+                  font-family: Verdana;
+                  color: #333;
+                }
 
-          			#content {
-          				width: 700px;
-          				margin-left: 20px;
-          			}
+                #content {
+                  width: 700px;
+                  margin-left: 20px;
+                }
 
-          			#content h1 {
-          				width: 99%;
-          				color: #1D6B8D;
-          				font-weight: bold;
-          			}
+                #content h1 {
+                  width: 99%;
+                  color: #1D6B8D;
+                  font-weight: bold;
+                }
 
-          			#stacktrace {
-          			  margin-top: -20px;
-          			}
+                #stacktrace {
+                  margin-top: -20px;
+                }
 
-          			#stacktrace pre {
-          				font-size: 12px;
-          				border-left: 2px solid #ddd;
-          				padding-left: 10px;
-          			}
+                #stacktrace pre {
+                  font-size: 12px;
+                  border-left: 2px solid #ddd;
+                  padding-left: 10px;
+                }
 
-          			#stacktrace img {
-          				margin-top: 10px;
-          			}
-          		</style>
-          		<div id="content">
-            		<img src="/sinatra_custom_images/500.png" />
-            		<div class="info">
+                #stacktrace img {
+                  margin-top: 10px;
+                }
+              </style>
+              <div id="content">
+                <img src="/sinatra_custom_images/500.png" />
+                <div class="info">
                   Params: <pre>#{params.inspect}
-            		</div>
-          			<div id="stacktrace">
-          				<h1>#{Rack::Utils.escape_html(@error.class.name + ' - ' + @error.message)}</h1>
-          				<pre><code>#{Rack::Utils.escape_html(@error.backtrace.join("\n"))}</code></pre>
-          		</div>
-          	</body>
+                </div>
+                <div id="stacktrace">
+                  <h1>#{Rack::Utils.escape_html(@error.class.name + ' - ' + @error.message)}</h1>
+                  <pre><code>#{Rack::Utils.escape_html(@error.backtrace.join("\n"))}</code></pre>
+              </div>
+            </body>
           </html>
           )
         end
