@@ -23,6 +23,26 @@ context "Erb" do
       body.should == '2'
 
     end
+
+    specify "should take an options hash with :locals set with a string" do
+      get '/locals' do
+        erb '<%= foo %>', :locals => {:foo => "Bar"}
+      end
+
+      get_it '/locals'
+      should.be.ok
+      body.should == 'Bar'
+    end
+
+    specify "should take an options hash with :locals set with a complex object" do
+      get '/locals-complex' do
+        erb '<%= foo[0] %>', :locals => {:foo => ["foo", "bar", "baz"]}
+      end
+
+      get_it '/locals-complex'
+      should.be.ok
+      body.should == 'foo'
+    end
   end
   
   context "with layouts" do
