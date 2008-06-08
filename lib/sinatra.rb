@@ -118,8 +118,14 @@ module Sinatra
 
   def server
     options.server ||= defined?(Rack::Handler::Thin) ? "thin" : "mongrel"
+
     # Convert the server into the actual handler name
-    handler = options.server.capitalize.sub(/cgi$/, 'CGI')
+    handler = options.server.capitalize
+
+    # If the convenience conversion didn't get us anything, 
+    # fall back to what the user actually set.
+    handler = options.server unless Rack::Handler.const_defined?(handler)
+
     @server ||= eval("Rack::Handler::#{handler}")
   end
   
