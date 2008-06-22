@@ -1123,7 +1123,7 @@ module Sinatra
       load_default_configuration!
       @pipeline = nil
       @reloading = true
-      Kernel.load Sinatra.options.app_file
+      Kernel.load options.app_file
       @reloading = false
     end
 
