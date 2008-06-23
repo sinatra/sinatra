@@ -928,7 +928,7 @@ module Sinatra
       require 'optparse'
       OptionParser.new do |op|
         op.on('-p port') { |port| default_options[:port] = port }
-        op.on('-e env') { |env| default_options[:env] = env }
+        op.on('-e env') { |env| default_options[:env] = env.to_sym }
         op.on('-x') { default_options[:mutex] = true }
         op.on('-s server') { |server| default_options[:server] = server }
       end.parse!(ARGV.dup.select { |o| o !~ /--name/ })
