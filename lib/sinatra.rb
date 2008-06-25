@@ -108,6 +108,10 @@ module Sinatra
   def port
     application.options.port
   end
+
+  def host
+    application.options.host
+  end
   
   def env
     application.options.env
@@ -118,9 +122,14 @@ module Sinatra
 
   def server
     options.server ||= defined?(Rack::Handler::Thin) ? "thin" : "mongrel"
+
     # Convert the server into the actual handler name
-    # Special cases for [Fast]CGI and WEBrick
-    handler = options.server.capitalize.sub(/cgi$/, 'CGI').sub(/^Webrick$/, 'WEBrick')
+    handler = options.server.capitalize
+
+    # If the convenience conversion didn't get us anything, 
+    # fall back to what the user actually set.
+    handler = options.server unless Rack::Handler.const_defined?(handler)
+
     @server ||= eval("Rack::Handler::#{handler}")
   end
   
@@ -128,7 +137,7 @@ module Sinatra
     begin
       puts "== Sinatra has taken the stage on port #{port} for #{env} with backup by #{server.name}"
       require 'pp'
-      server.run(application, :Port => port) do |server|
+      server.run(application, {:Port => port, :Host => host}) do |server|
         trap(:INT) do
           server.stop
           puts "\n== Sinatra has ended his set (crowd applauds)"
@@ -897,6 +906,7 @@ module Sinatra
       @default_options = {
         :run => true,
         :port => 4567,
+        :host => '0.0.0.0',
         :env => :development,
         :root => root,
         :views => root + '/views',
@@ -918,7 +928,7 @@ module Sinatra
       require 'optparse'
       OptionParser.new do |op|
         op.on('-p port') { |port| default_options[:port] = port }
-        op.on('-e env') { |env| default_options[:env] = env }
+        op.on('-e env') { |env| default_options[:env] = env.to_sym }
         op.on('-x') { default_options[:mutex] = true }
         op.on('-s server') { |server| default_options[:server] = server }
       end.parse!(ARGV.dup.select { |o| o !~ /--name/ })
@@ -1113,7 +1123,7 @@ module Sinatra
       load_default_configuration!
       @pipeline = nil
       @reloading = true
-      Kernel.load Sinatra.options.app_file
+      Kernel.load options.app_file
       @reloading = false
     end
 
