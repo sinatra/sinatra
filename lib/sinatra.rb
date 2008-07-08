@@ -1295,6 +1295,7 @@ module Sinatra
     # Called before reloading to perform development specific configuration.
     def load_development_configuration!
       get '/sinatra_custom_images/:image.png' do
+        content_type :png
         File.read(File.dirname(__FILE__) + "/../images/#{params[:image]}.png")
       end
 
@@ -1467,5 +1468,6 @@ at_exit do
   end
 end
 
-mime :xml,  'application/xml'
+mime :xml, 'application/xml'
 mime :js,  'application/javascript'
+mime :png, 'image/png'
