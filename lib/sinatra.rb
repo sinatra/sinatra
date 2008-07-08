@@ -1338,7 +1338,7 @@ module Sinatra
             <div id="content">
               <img src="/sinatra_custom_images/500.png" />
               <div class="info">
-                Params: <pre>#{params.inspect}
+                Params: <pre>#{params.inspect}</pre>
               </div>
               <div id="stacktrace">
                 <h1>#{escape_html(@error.class.name + ' - ' + @error.message.to_s)}</h1>
