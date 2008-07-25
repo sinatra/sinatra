@@ -2,12 +2,18 @@ Dir[File.dirname(__FILE__) + "/../vendor/*"].each do |l|
   $:.unshift "#{File.expand_path(l)}/lib"
 end
 
-require 'rack'
+module Rack
+  module Handler
+    autoload :Mongrel, ::File.dirname(__FILE__) + "/sinatra/rack/handler/mongrel"
+  end
+end
 
+require 'rack'
 require 'rubygems'
 require 'time'
 require 'ostruct'
 require "uri"
+
 
 if ENV['SWIFT']
  require 'swiftcore/swiftiplied_mongrel'
