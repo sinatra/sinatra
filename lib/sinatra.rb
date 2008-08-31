@@ -862,6 +862,7 @@ module Sinatra
     FORWARD_METHODS = %w[
       get put post delete head template layout before error not_found
       configures configure set set_options set_option enable disable use
+      development? test? production?
     ]
 
     # Create a new Application with a default configuration taken
@@ -1102,9 +1103,14 @@ module Sinatra
       filter :before, &b
     end
 
-    def development?
-      options.env == :development
-    end
+    # True when environment is :development.
+    def development? ; options.env == :development ; end
+
+    # True when environment is :test.
+    def test? ; options.env == :test ; end
+
+    # True when environment is :production.
+    def production? ; options.env == :production ; end
 
     # Clear all events, templates, filters, and error handlers
     # and then reload the application source file. This occurs
