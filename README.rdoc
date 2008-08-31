@@ -462,12 +462,35 @@ Options are:
 
 == Contribute
 
+== Tools
+
+Besides Ruby itself, you only need a text editor, preferably one that supports Ruby
+syntax hilighting. VIM and Emacs are a fine choice on any platform, but feel free to
+use whatever you're familiar with.
+
+Sinatra uses the Git source code management system. If you're unfamiliar with Git,
+you can find more information and tutorials on http://git.or.cz/ as well as http://git-scm.com/.
+Scott Chacon created a great series of introductory screencasts about Git,
+which you can find here: http://www.gitcasts.com/
+
+== First Time: Cloning the sinatra repo
+
   cd where/you/keep/your/projects
   git clone git://github.com/bmizerany/sinatra.git
-  cd your_project
+  cd sinatra
+  git submodule update --init
+  cd path/to/your_project
   ln -s ../sinatra/
+  
+== Updating your existing Sinatra clone
+  
+  cd where/you/keep/sinatra
+  git pull
+  git submodule update --init
+  
+== Using edge Sinatra in your app
 
-At the top of your sinatra.rb file:
+at the top of your sinatra_app.rb file:
 
   $:.unshift File.dirname(__FILE__) + '/sinatra/lib'
   require 'sinatra'
@@ -475,3 +498,33 @@ At the top of your sinatra.rb file:
   get '/about' do
     "I'm running on Version " + Sinatra::VERSION
   end
+
+== Contributing a patch
+
+There are several ways to do this. Probably the easiest (and preferred) way is to
+fork Sinatra on GitHub (http://github.com/bmizerany/sinatra), push your changes
+to your Sinatra repo, and then send Blake Mizerany (bmizerany on GitHub) a pull request.
+
+You can also create a patch file and attach it to a feature request or bug fix on the issue
+tracker (see below) or send it to the mailing list (see Community section).
+
+== Issue tracking & feature requests
+
+http://sinatra.lighthouseapp.com/
+
+= Community
+
+== Mailing List
+
+http://groups.google.com/group/sinatrarb
+
+If you have a problem or question, please make sure to include all the relevant
+information in your mail, like the Sinatra version you're using, what version of Ruby
+you have, and so on.
+
+== IRC Channel
+
+You can find us on the Freenode network in the channel #sinatra (irc://chat.freenode.net/#sinatra)
+
+There's usually someone online at any given time, but we cannot pay attention to the
+channel all the time, so please stick around for a while after asking a question.
