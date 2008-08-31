@@ -449,12 +449,24 @@ Options are:
 
 = Contribute
 
+== First Time: Cloning the sinatra repo
+
   cd where/you/keep/your/projects
   git clone git://github.com/bmizerany/sinatra.git
-  cd your_project
+  cd sinatra
+  git submodule update --init
+  cd path/to/your_project
   ln -s ../sinatra/
+  
+== Updating your existing Sinatra clone
+  
+  cd where/you/keep/sinatra
+  git pull
+  git submodule update --init
+  
+== Using edge Sinatra in your app
 
-at the top of your sinatra.rb file
+at the top of your sinatra_app.rb file:
 
   $:.unshift File.dirname(__FILE__) + '/sinatra/lib'
   require 'sinatra'
