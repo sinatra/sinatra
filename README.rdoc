@@ -474,3 +474,20 @@ at the top of your sinatra_app.rb file:
   get '/about' do
     "I'm running on Version " + Sinatra::Version.combined
   end
+
+= Community
+
+== Mailing List
+
+http://groups.google.com/group/sinatrarb
+
+If you have a problem or question, please make sure to include all the relevant
+information in your mail, like the Sinatra version you're using, what version of Ruby
+you have, and so on.
+
+== IRC Channel
+
+You can find us on the Freenode network in the channel #sinatra (irc://chat.freenode.net/#sinatra)
+
+There's usually someone online at any given time, but since we cannot pay attention to the
+channel all the time, so please stick around for a while after asking a question.
