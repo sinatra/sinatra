@@ -513,5 +513,5 @@ you have, and so on.
 
 You can find us on the Freenode network in the channel #sinatra (irc://chat.freenode.net/#sinatra)
 
-There's usually someone online at any given time, but since we cannot pay attention to the
+There's usually someone online at any given time, but we cannot pay attention to the
 channel all the time, so please stick around for a while after asking a question.
