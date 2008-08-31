@@ -1,4 +1,7 @@
-require File.dirname(__FILE__) + "/../lib/sinatra"
-require File.dirname(__FILE__) + "/../lib/sinatra/test/spec"
+require 'rubygems'
+require 'mocha'
 
-require "mocha"
+$:.unshift File.dirname(File.dirname(__FILE__)) + "/lib"
+
+require 'sinatra'
+require 'sinatra/test/spec'

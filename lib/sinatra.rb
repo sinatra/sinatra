@@ -1,13 +1,7 @@
-Dir[File.dirname(__FILE__) + "/../vendor/*"].each do |l|
-  $:.unshift "#{File.expand_path(l)}/lib"
-end
-
-require 'rack'
-
-require 'rubygems'
 require 'time'
 require 'ostruct'
-require "uri"
+require 'uri'
+require 'rack'
 
 if ENV['SWIFT']
  require 'swiftcore/swiftiplied_mongrel'

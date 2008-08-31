@@ -1,7 +1,4 @@
-require File.dirname(__FILE__) + '/../lib/sinatra'
-
-require 'rubygems'
-require 'test/spec'
+require File.dirname(__FILE__) + '/helper'
 
 context "Simple Events" do
 
