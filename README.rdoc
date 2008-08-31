@@ -486,6 +486,19 @@ at the top of your sinatra_app.rb file:
     "I'm running on Version " + Sinatra::Version.combined
   end
 
+== Contributing a patch
+
+There are several ways to do this. Probably the easiest (and preferred) way is to
+fork Sinatra on GitHub (http://github.com/bmizerany/sinatra), push your changes
+to your Sinatra repo, and then send Blake Mizerany (bmizerany on GitHub) a pull request.
+
+You can also create a patch file and attach it to a feature request or bug fix on the issue
+tracker (see below) or send it to the mailing list (see Community section).
+
+== Issue tracking & feature requests
+
+http://sinatra.lighthouseapp.com/
+
 = Community
 
 == Mailing List
