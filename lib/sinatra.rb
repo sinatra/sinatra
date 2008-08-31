@@ -1186,7 +1186,7 @@ module Sinatra
     # Rack compatible request invocation interface.
     def call(env)
       run_safely do
-        reload! if development?
+        reload! if development? && (options.reload != false)
         pipeline.call(env)
       end
     end
