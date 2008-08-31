@@ -11,19 +11,6 @@ elsif ENV['EVENT']
   puts "Using Evented Mongrel"
 end
 
-class Class
-  def dslify_writer(*syms)
-    syms.each do |sym|
-      class_eval <<-end_eval
-        def #{sym}(v=nil)
-          self.send "#{sym}=", v if v
-          v
-        end
-      end_eval
-    end
-  end
-end
-
 module Rack #:nodoc:
 
   class Request #:nodoc:
@@ -785,13 +772,21 @@ module Sinatra
 
     attr_accessor :request, :response
 
-    dslify_writer :status, :body
-
     def initialize(request, response, route_params)
       @request = request
       @response = response
       @route_params = route_params
       @response.body = nil
+    end
+
+    def status(value=nil)
+      response.status = value if value
+      response.status
+    end
+
+    def body(value=nil)
+      response.body = value if value
+      response.body
     end
 
     def params
