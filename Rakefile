@@ -17,9 +17,16 @@ end
 
 # PACKAGING ============================================================
 
+# Load the gemspec using the same limitations as github
 def spec
   @spec ||=
-    eval(File.read('sinatra.gemspec'))
+    begin
+      require 'rubygems/specification'
+      data = File.read('sinatra.gemspec')
+      spec = nil
+      Thread.new { spec = eval("$SAFE = 3\n#{data}") }.join
+      spec
+    end
 end
 
 def package(ext='')
