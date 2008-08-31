@@ -66,7 +66,7 @@ Gem::Specification.new do |s|
 
   s.has_rdoc = true
   s.homepage = "http://www.sinatrarb.com"
-  s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Rack::Cache", "--main", "Rack::Cache"]
+  s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Sinatra", "--main", "README.rdoc"]
   s.require_paths = %w[lib]
   s.rubyforge_project = 'sinatra'
   s.rubygems_version = '1.1.1'
