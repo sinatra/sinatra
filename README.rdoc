@@ -479,7 +479,6 @@ screencasts about Git, which you can find here: http://www.gitcasts.com/
   cd where/you/keep/your/projects
   git clone git://github.com/bmizerany/sinatra.git
   cd sinatra
-  git submodule update --init
   cd path/to/your_project
   ln -s ../sinatra/
 
@@ -487,7 +486,6 @@ screencasts about Git, which you can find here: http://www.gitcasts.com/
 
   cd where/you/keep/sinatra
   git pull
-  git submodule update --init
 
 === Using Edge Sinatra in Your App
 
