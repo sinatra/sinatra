@@ -1,7 +1,7 @@
 module Sinatra
-  
+
   module Test
-    
+
     module Methods
 
       def easy_env_map
@@ -13,12 +13,12 @@ module Sinatra
           :cookies => "HTTP_COOKIE"
         }
       end
-      
+
       def session(data, key = 'rack.session')
         data = data.from_params if data.respond_to?(:from_params)
         "#{Rack::Utils.escape(key)}=#{[Marshal.dump(data)].pack("m*")}"
       end
-          
+
       def map_easys(params)
         easy_env_map.inject(params.dup) do |m, (from, to)|
           m[to] = m.delete(from) if m.has_key?(from); m
@@ -37,7 +37,7 @@ module Sinatra
           @response = @request.request(m.upcase, path, {:input => input}.merge(env || {}))
         end
       end
-      
+
       def follow!
         get_it(@response.location)
       end
@@ -45,9 +45,9 @@ module Sinatra
       def method_missing(name, *args)
         @response.send(name, *args) rescue super
       end
-      
+
     end
 
   end
-  
+
 end

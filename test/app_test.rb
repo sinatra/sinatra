@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/helper'
 
 context "Sinatra" do
-  
+
   setup do
     Sinatra.application = nil
   end
@@ -17,32 +17,32 @@ context "Sinatra" do
     get '/' do
       nil
     end
-    
+
     get_it '/'
     should.be.ok
     body.should == ''
   end
-  
+
   specify "handles events" do
     get '/:name' do
       'Hello ' + params["name"]
     end
-    
+
     get_it '/Blake'
-    
+
     should.be.ok
     body.should.equal 'Hello Blake'
   end
 
-  
+
   specify "handles splats" do
     get '/hi/*' do
       params["splat"].kind_of?(Array).should.equal true
       params["splat"].first
     end
-    
+
     get_it '/hi/Blake'
-    
+
     should.be.ok
     body.should.equal 'Blake'
   end
@@ -51,9 +51,9 @@ context "Sinatra" do
     get '/say/*/to/*' do
       params["splat"].join(' ')
     end
-    
+
     get_it '/say/hello/to/world'
-    
+
     should.be.ok
     body.should.equal 'hello world'
   end
@@ -62,14 +62,14 @@ context "Sinatra" do
     get '/say/*/to*/*' do
       params["splat"].join(' ')
     end
-    
+
     get_it '/say/hello/to/world'
-    
+
     should.be.ok
     body.should.equal 'hello  world' # second splat is empty
 
     get_it '/say/hello/tomy/world'
-    
+
     should.be.ok
     body.should.equal 'hello my world'
   end
@@ -93,20 +93,20 @@ context "Sinatra" do
     get '/' do
       redirect '/blake'
     end
-    
+
     get '/blake' do
       'Mizerany'
     end
-    
+
     get_it '/'
     should.be.redirection
     body.should.equal ''
-    
+
     follow!
     should.be.ok
     body.should.equal 'Mizerany'
   end
-  
+
   specify "renders a body with a redirect" do
     Sinatra::EventContext.any_instance.expects(:foo).returns('blah')
     get "/" do
@@ -130,34 +130,34 @@ context "Sinatra" do
   end
 
   specify "body sets content and ends event" do
-    
+
     Sinatra::EventContext.any_instance.expects(:foo).never
-    
+
     get '/set_body' do
       stop 'Hello!'
       stop 'World!'
       foo
     end
-    
+
     get_it '/set_body'
-    
+
     should.be.ok
     body.should.equal 'Hello!'
-    
+
   end
-  
+
   specify "should set status then call helper with a var" do
     Sinatra::EventContext.any_instance.expects(:foo).once.with(1).returns('bah!')
-    
+
     get '/set_body' do
       stop [404, [:foo, 1]]
     end
-    
+
     get_it '/set_body'
-    
+
     should.be.not_found
     body.should.equal 'bah!'
-    
+
   end
 
   specify "should easily set response Content-Type" do
@@ -235,7 +235,7 @@ context "Sinatra" do
     body.should.equal ''
   end
 
-  
+
   specify "put'n with POST" do
     put '/' do
       'puted'
@@ -252,7 +252,7 @@ context "Sinatra" do
     assert_equal 'puted', body
   end
 
-  # Some Ajax libraries downcase the _method parameter value. Make 
+  # Some Ajax libraries downcase the _method parameter value. Make
   # sure we can handle that.
   specify "put'n with POST and lowercase _method param" do
     put '/' do

@@ -5,95 +5,95 @@ context "Haml" do
   setup do
     Sinatra.application = nil
   end
-  
+
   context "without layouts" do
-    
+
     setup do
       Sinatra.application = nil
     end
-    
+
     specify "should render" do
-    
+
       get '/no_layout' do
         haml '== #{1+1}'
       end
-    
+
       get_it '/no_layout'
       should.be.ok
       body.should == "2\n"
 
     end
   end
-  
+
   context "with layouts" do
 
     setup do
       Sinatra.application = nil
     end
-    
+
     specify "can be inline" do
-    
+
       layout do
         '== This is #{yield}!'
       end
-    
+
       get '/lay' do
         haml 'Blake'
       end
-    
+
       get_it '/lay'
       should.be.ok
       body.should.equal "This is Blake\n!\n"
 
     end
-  
+
     specify "can use named layouts" do
-    
+
       layout :pretty do
         '%h1== #{yield}'
       end
-        
+
       get '/pretty' do
         haml 'Foo', :layout => :pretty
       end
-    
+
       get '/not_pretty' do
         haml 'Bar'
       end
-    
+
       get_it '/pretty'
       body.should.equal "<h1>Foo</h1>\n"
-    
+
       get_it '/not_pretty'
       body.should.equal "Bar\n"
-    
+
     end
-  
+
     specify "can be read from a file if they're not inlined" do
-    
+
       get '/foo' do
         @title = 'Welcome to the Hello Program'
         haml 'Blake', :layout => :foo_layout,
                       :views_directory => File.dirname(__FILE__) + "/views"
       end
-    
+
       get_it '/foo'
       body.should.equal "Welcome to the Hello Program\nHi Blake\n"
-    
+
     end
-    
+
     specify "can be read from file and layout from text" do
       get '/foo' do
         haml 'Test', :layout => '== Foo #{yield}'
       end
-      
+
       get_it '/foo'
-      
+
       body.should.equal "Foo Test\n"
     end
 
   end
-  
+
   context "Templates (in general)" do
 
     setup do
@@ -136,21 +136,21 @@ context "Haml" do
       body.should.equal "<h1>No Layout!</h1>\n"
 
     end
-    
+
     specify "can render with no layout" do
       layout do
         "X\n= yield\nX"
       end
-      
+
       get '/' do
         haml 'blake', :layout => false
       end
-      
+
       get_it '/'
-      
+
       body.should.equal "blake\n"
     end
-    
+
     specify "raises error if template not found" do
       get '/' do
         haml :not_found
@@ -175,7 +175,7 @@ context "Haml" do
       body.should.equal "asdf\n"
 
     end
-    
+
   end
 
   describe 'Options passed to the HAML interpreter' do

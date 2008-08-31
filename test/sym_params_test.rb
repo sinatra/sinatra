@@ -10,7 +10,7 @@ context "Symbol Params" do
     get '/' do
       params[:foo] + params['foo']
     end
-    
+
     get_it '/', :foo => "X"
     assert_equal('XX', body)
   end

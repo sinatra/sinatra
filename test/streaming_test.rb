@@ -86,7 +86,7 @@ context "Static files (by default)" do
 end
 
 context "SendData" do
-  
+
   setup do
     Sinatra.application = nil
   end
@@ -95,13 +95,13 @@ context "SendData" do
     get '/' do
       send_data 'asdf', :status => 500
     end
-  
+
     get_it '/'
-  
+
     should.be.server_error
     body.should.equal 'asdf'
   end
-  
+
   specify "should include a Content-Disposition header" do
     get '/' do
       send_file File.dirname(__FILE__) + '/public/foo.xml'

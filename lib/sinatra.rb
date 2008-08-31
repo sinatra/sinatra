@@ -7,7 +7,7 @@ if ENV['SWIFT']
  require 'swiftcore/swiftiplied_mongrel'
  puts "Using Swiftiplied Mongrel"
 elsif ENV['EVENT']
-  require 'swiftcore/evented_mongrel' 
+  require 'swiftcore/evented_mongrel'
   puts "Using Evented Mongrel"
 end
 
@@ -25,18 +25,19 @@ class Class
 end
 
 module Rack #:nodoc:
-  
+
   class Request #:nodoc:
 
-    # Set of request method names allowed via the _method parameter hack. By default,
-    # all request methods defined in RFC2616 are included, with the exception of
-    # TRACE and CONNECT.
+    # Set of request method names allowed via the _method parameter hack. By
+    # default, all request methods defined in RFC2616 are included, with the
+    # exception of TRACE and CONNECT.
     POST_TUNNEL_METHODS_ALLOWED = %w( PUT DELETE OPTIONS HEAD )
 
-    # Return the HTTP request method with support for method tunneling using the POST
-    # _method parameter hack.  If the real request method is POST and a _method param is
-    # given and the value is one defined in +POST_TUNNEL_METHODS_ALLOWED+, return the value
-    # of the _method param instead.
+    # Return the HTTP request method with support for method tunneling using
+    # the POST _method parameter hack. If the real request method is POST and
+    # a _method param is given and the value is one defined in
+    # +POST_TUNNEL_METHODS_ALLOWED+, return the value of the _method param
+    # instead.
     def request_method
       if post_tunnel_method_hack?
         params['_method'].upcase
@@ -49,38 +50,26 @@ module Rack #:nodoc:
       @env['HTTP_USER_AGENT']
     end
 
-    private
+  private
 
-      # Return truthfully if and only if the following conditions are met: 1.) the
-      # *actual* request method is POST, 2.) the request content-type is one of
-      # 'application/x-www-form-urlencoded' or 'multipart/form-data', 3.) there is a 
-      # "_method" parameter in the POST body (not in the query string), and 4.) the 
-      # method parameter is one of the verbs listed in the POST_TUNNEL_METHODS_ALLOWED
-      # list.
-      def post_tunnel_method_hack?
-        @env['REQUEST_METHOD'] == 'POST' &&
-          POST_TUNNEL_METHODS_ALLOWED.include?(self.POST.fetch('_method', '').upcase)
-      end
-
+    # Return truthfully if the request is a valid verb-over-post hack.
+    def post_tunnel_method_hack?
+      @env['REQUEST_METHOD'] == 'POST' &&
+        POST_TUNNEL_METHODS_ALLOWED.include?(self.POST.fetch('_method', '').upcase)
+    end
   end
-  
+
   module Utils
     extend self
   end
 
 end
 
+
 module Sinatra
   extend self
 
-  module Version
-    MAJOR = '0'
-    MINOR = '2'
-    REVISION = '3'
-    def self.combined
-      [MAJOR, MINOR, REVISION].join('.')
-    end
-  end
+  VERSION = '0.3.0'
 
   class NotFound < RuntimeError; end
   class ServerError < RuntimeError; end
@@ -106,7 +95,7 @@ module Sinatra
   def host
     application.options.host
   end
-  
+
   def env
     application.options.env
   end
@@ -120,17 +109,16 @@ module Sinatra
     # Convert the server into the actual handler name
     handler = options.server.capitalize
 
-    # If the convenience conversion didn't get us anything, 
+    # If the convenience conversion didn't get us anything,
     # fall back to what the user actually set.
     handler = options.server unless Rack::Handler.const_defined?(handler)
 
     @server ||= eval("Rack::Handler::#{handler}")
   end
-  
+
   def run
     begin
       puts "== Sinatra has taken the stage on port #{port} for #{env} with backup by #{server.name}"
-      require 'pp'
       server.run(application, {:Port => port, :Host => host}) do |server|
         trap(:INT) do
           server.stop
@@ -148,7 +136,7 @@ module Sinatra
     PARAM = /(:(#{URI_CHAR}+)|\*)/.freeze unless defined?(PARAM)
     SPLAT = /(.*?)/
     attr_reader :path, :block, :param_keys, :pattern, :options
-    
+
     def initialize(path, options = {}, &b)
       @path = URI.encode(path)
       @block = b
@@ -168,14 +156,14 @@ module Sinatra
 
       @pattern = /^#{regex}$/
     end
-        
+
     def invoke(request)
       params = {}
-      if agent = options[:agent] 
+      if agent = options[:agent]
         return unless request.user_agent =~ agent
         params[:agent] = $~[1..-1]
       end
-      if host = options[:host] 
+      if host = options[:host]
         return unless host === request.host
       end
       return unless pattern =~ request.path_info.squeeze('/')
@@ -187,65 +175,64 @@ module Sinatra
       end
       Result.new(block, params, 200)
     end
-    
+
   end
-  
+
   class Error
-    
+
     attr_reader :code, :block
-    
+
     def initialize(code, &b)
       @code, @block = code, b
     end
-    
+
     def invoke(request)
       Result.new(block, {}, 404)
     end
-    
+
   end
-  
+
   class Static
-            
+
     def invoke(request)
       return unless File.file?(
         Sinatra.application.options.public + request.path_info.http_unescape
       )
       Result.new(block, {}, 200)
     end
-    
+
     def block
       Proc.new do
-        send_file Sinatra.application.options.public + request.path_info.http_unescape,
-          :disposition => nil
+        send_file Sinatra.application.options.public +
+          request.path_info.http_unescape, :disposition => nil
       end
     end
-    
+
   end
-  
-  # Adapted from actionpack
+
   # Methods for sending files and streams to the browser instead of rendering.
   module Streaming
     DEFAULT_SEND_FILE_OPTIONS = {
       :type         => 'application/octet-stream'.freeze,
       :disposition  => 'attachment'.freeze,
-      :stream       => true, 
+      :stream       => true,
       :buffer_size  => 4096
     }.freeze
 
     class MissingFile < RuntimeError; end
 
     class FileStreamer
-      
+
       attr_reader :path, :options
-      
+
       def initialize(path, options)
         @path, @options = path, options
       end
-      
+
       def to_result(cx, *args)
         self
       end
-      
+
       def each
         File.open(path, 'rb') do |file|
           while buf = file.read(options[:buffer_size])
@@ -253,143 +240,156 @@ module Sinatra
           end
         end
       end
-      
+
     end
 
-    protected
-      # Sends the file by streaming it 4096 bytes at a time. This way the
-      # whole file doesn't need to be read into memory at once.  This makes
-      # it feasible to send even large files.
-      #
-      # Be careful to sanitize the path parameter if it coming from a web
-      # page.  send_file(params[:path]) allows a malicious user to
-      # download any file on your server.
-      #
-      # Options:
-      # * <tt>:filename</tt> - suggests a filename for the browser to use.
-      #   Defaults to File.basename(path).
-      # * <tt>:type</tt> - specifies an HTTP content type.
-      #   Defaults to 'application/octet-stream'.
-      # * <tt>:disposition</tt> - specifies whether the file will be shown inline or downloaded.  
-      #   Valid values are 'inline' and 'attachment' (default). When set to nil, the
-      #   Content-Disposition and Content-Transfer-Encoding headers are omitted entirely.
-      # * <tt>:stream</tt> - whether to send the file to the user agent as it is read (true)
-      #   or to read the entire file before sending (false). Defaults to true.
-      # * <tt>:buffer_size</tt> - specifies size (in bytes) of the buffer used to stream the file.
-      #   Defaults to 4096.
-      # * <tt>:status</tt> - specifies the status code to send with the response. Defaults to '200 OK'.
-      # * <tt>:last_modified</tt> - an optional RFC 2616 formatted date value (See Time#httpdate)
-      #   indicating the last modified time of the file. If the request includes an
-      #   If-Modified-Since header that matches this value exactly, a 304 Not Modified response
-      #   is sent instead of the file. Defaults to the file's last modified
-      #   time.
-      #
-      # The default Content-Type and Content-Disposition headers are
-      # set to download arbitrary binary files in as many browsers as
-      # possible.  IE versions 4, 5, 5.5, and 6 are all known to have
-      # a variety of quirks (especially when downloading over SSL).
-      #
-      # Simple download:
-      #   send_file '/path/to.zip'
-      #
-      # Show a JPEG in the browser:
-      #   send_file '/path/to.jpeg', :type => 'image/jpeg', :disposition => 'inline'
-      #
-      # Show a 404 page in the browser:
-      #   send_file '/path/to/404.html, :type => 'text/html; charset=utf-8', :status => 404
-      #
-      # Read about the other Content-* HTTP headers if you'd like to
-      # provide the user with more information (such as Content-Description).
-      # http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11
-      #
-      # Also be aware that the document may be cached by proxies and browsers.
-      # The Pragma and Cache-Control headers declare how the file may be cached
-      # by intermediaries.  They default to require clients to validate with
-      # the server before releasing cached responses.  See
-      # http://www.mnot.net/cache_docs/ for an overview of web caching and
-      # http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9
-      # for the Cache-Control header spec.
-      def send_file(path, options = {}) #:doc:
-        raise MissingFile, "Cannot read file #{path}" unless File.file?(path) and File.readable?(path)
+  protected
 
-        options[:length]   ||= File.size(path)
-        options[:filename] ||= File.basename(path)
-        options[:type] ||= Rack::File::MIME_TYPES[File.extname(options[:filename])[1..-1]] || 'text/plain'
-        options[:last_modified] ||= File.mtime(path).httpdate
-        send_file_headers! options
+    # Sends the file by streaming it 4096 bytes at a time. This way the
+    # whole file doesn't need to be read into memory at once.  This makes
+    # it feasible to send even large files.
+    #
+    # Be careful to sanitize the path parameter if it coming from a web
+    # page.  send_file(params[:path]) allows a malicious user to
+    # download any file on your server.
+    #
+    # Options:
+    # * <tt>:filename</tt> - suggests a filename for the browser to use.
+    #   Defaults to File.basename(path).
+    # * <tt>:type</tt> - specifies an HTTP content type.
+    #   Defaults to 'application/octet-stream'.
+    # * <tt>:disposition</tt> - specifies whether the file will be shown
+    #   inline or downloaded. Valid values are 'inline' and 'attachment'
+    #   (default). When set to nil, the Content-Disposition and
+    #   Content-Transfer-Encoding headers are omitted entirely.
+    # * <tt>:stream</tt> - whether to send the file to the user agent as it
+    #   is read (true) or to read the entire file before sending (false).
+    #   Defaults to true.
+    # * <tt>:buffer_size</tt> - specifies size (in bytes) of the buffer used
+    #   to stream the file. Defaults to 4096.
+    # * <tt>:status</tt> - specifies the status code to send with the
+    #   response. Defaults to '200 OK'.
+    # * <tt>:last_modified</tt> - an optional RFC 2616 formatted date value
+    #   (See Time#httpdate) indicating the last modified time of the file.
+    #   If the request includes an If-Modified-Since header that matches this
+    #   value exactly, a 304 Not Modified response is sent instead of the file.
+    #   Defaults to the file's last modified time.
+    #
+    # The default Content-Type and Content-Disposition headers are
+    # set to download arbitrary binary files in as many browsers as
+    # possible.  IE versions 4, 5, 5.5, and 6 are all known to have
+    # a variety of quirks (especially when downloading over SSL).
+    #
+    # Simple download:
+    #   send_file '/path/to.zip'
+    #
+    # Show a JPEG in the browser:
+    #   send_file '/path/to.jpeg',
+    #     :type => 'image/jpeg',
+    #     :disposition => 'inline'
+    #
+    # Show a 404 page in the browser:
+    #   send_file '/path/to/404.html,
+    #     :type => 'text/html; charset=utf-8',
+    #     :status => 404
+    #
+    # Read about the other Content-* HTTP headers if you'd like to
+    # provide the user with more information (such as Content-Description).
+    # http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11
+    #
+    # Also be aware that the document may be cached by proxies and browsers.
+    # The Pragma and Cache-Control headers declare how the file may be cached
+    # by intermediaries.  They default to require clients to validate with
+    # the server before releasing cached responses.  See
+    # http://www.mnot.net/cache_docs/ for an overview of web caching and
+    # http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9
+    # for the Cache-Control header spec.
+    def send_file(path, options = {}) #:doc:
+      raise MissingFile, "Cannot read file #{path}" unless File.file?(path) and File.readable?(path)
 
-        if options[:stream]
-          throw :halt, [options[:status] || 200, FileStreamer.new(path, options)]
-        else
-          File.open(path, 'rb') { |file| throw :halt, [options[:status] || 200, file.read] }
-        end
+      options[:length]   ||= File.size(path)
+      options[:filename] ||= File.basename(path)
+      options[:type] ||= Rack::File::MIME_TYPES[File.extname(options[:filename])[1..-1]] || 'text/plain'
+      options[:last_modified] ||= File.mtime(path).httpdate
+      send_file_headers! options
+
+      if options[:stream]
+        throw :halt, [options[:status] || 200, FileStreamer.new(path, options)]
+      else
+        File.open(path, 'rb') { |file| throw :halt, [options[:status] || 200, file.read] }
+      end
+    end
+
+    # Send binary data to the user as a file download. May set content type,
+    # apparent file name, and specify whether to show data inline or download
+    # as an attachment.
+    #
+    # Options:
+    # * <tt>:filename</tt> - Suggests a filename for the browser to use.
+    # * <tt>:type</tt> - specifies an HTTP content type.
+    #   Defaults to 'application/octet-stream'.
+    # * <tt>:disposition</tt> - specifies whether the file will be shown inline
+    #   or downloaded. Valid values are 'inline' and 'attachment' (default).
+    # * <tt>:status</tt> - specifies the status code to send with the response.
+    #   Defaults to '200 OK'.
+    # * <tt>:last_modified</tt> - an optional RFC 2616 formatted date value (See
+    #   Time#httpdate) indicating the last modified time of the response entity.
+    #   If the request includes an If-Modified-Since header that matches this
+    #   value exactly, a 304 Not Modified response is sent instead of the data.
+    #
+    # Generic data download:
+    #   send_data buffer
+    #
+    # Download a dynamically-generated tarball:
+    #   send_data generate_tgz('dir'), :filename => 'dir.tgz'
+    #
+    # Display an image Active Record in the browser:
+    #   send_data image.data,
+    #     :type => image.content_type,
+    #     :disposition => 'inline'
+    #
+    # See +send_file+ for more information on HTTP Content-* headers and caching.
+    def send_data(data, options = {}) #:doc:
+      send_file_headers! options.merge(:length => data.size)
+      throw :halt, [options[:status] || 200, data]
+    end
+
+  private
+
+    def send_file_headers!(options)
+      options = DEFAULT_SEND_FILE_OPTIONS.merge(options)
+      [:length, :type, :disposition].each do |arg|
+        raise ArgumentError, ":#{arg} option required" unless options.key?(arg)
       end
 
-      # Send binary data to the user as a file download.  May set content type, apparent file name,
-      # and specify whether to show data inline or download as an attachment.
-      #
-      # Options:
-      # * <tt>:filename</tt> - Suggests a filename for the browser to use.
-      # * <tt>:type</tt> - specifies an HTTP content type.
-      #   Defaults to 'application/octet-stream'.
-      # * <tt>:disposition</tt> - specifies whether the file will be shown inline or downloaded.  
-      #   Valid values are 'inline' and 'attachment' (default).
-      # * <tt>:status</tt> - specifies the status code to send with the response. Defaults to '200 OK'.
-      # * <tt>:last_modified</tt> - an optional RFC 2616 formatted date value (See Time#httpdate)
-      #   indicating the last modified time of the response entity. If the request includes an
-      #   If-Modified-Since header that matches this value exactly, a 304 Not Modified response
-      #   is sent instead of the data.
-      #
-      # Generic data download:
-      #   send_data buffer
-      #
-      # Download a dynamically-generated tarball:
-      #   send_data generate_tgz('dir'), :filename => 'dir.tgz'
-      #
-      # Display an image Active Record in the browser:
-      #   send_data image.data, :type => image.content_type, :disposition => 'inline'
-      #
-      # See +send_file+ for more information on HTTP Content-* headers and caching.
-      def send_data(data, options = {}) #:doc:
-        send_file_headers! options.merge(:length => data.size)
-        throw :halt, [options[:status] || 200, data]
+      # Send a "304 Not Modified" if the last_modified option is provided and
+      # matches the If-Modified-Since request header value.
+      if last_modified = options[:last_modified]
+        header 'Last-Modified' => last_modified
+        throw :halt, [ 304, '' ] if last_modified == request.env['HTTP_IF_MODIFIED_SINCE']
       end
 
-    private
-      def send_file_headers!(options)
-        options = DEFAULT_SEND_FILE_OPTIONS.merge(options)
-        [:length, :type, :disposition].each do |arg|
-          raise ArgumentError, ":#{arg} option required" unless options.key?(arg)
-        end
+      headers(
+        'Content-Length'            => options[:length].to_s,
+        'Content-Type'              => options[:type].strip  # fixes a problem with extra '\r' with some browsers
+      )
 
-        # Send a "304 Not Modified" if the last_modified option is provided and matches
-        # the If-Modified-Since request header value.
-        if last_modified = options[:last_modified]
-          header 'Last-Modified' => last_modified
-          throw :halt, [ 304, '' ] if last_modified == request.env['HTTP_IF_MODIFIED_SINCE']
-        end
-
-        headers(
-          'Content-Length'            => options[:length].to_s,
-          'Content-Type'              => options[:type].strip  # fixes a problem with extra '\r' with some browsers
-        )
-
-        # Omit Content-Disposition and Content-Transfer-Encoding headers if
-        # the :disposition option set to nil.
-        if !options[:disposition].nil?
-          disposition = options[:disposition].dup || 'attachment'
-          disposition <<= %(; filename="#{options[:filename]}") if options[:filename]
-          headers 'Content-Disposition' => disposition, 'Content-Transfer-Encoding' => 'binary'
-        end
-
-        # Fix a problem with IE 6.0 on opening downloaded files:
-        # If Cache-Control: no-cache is set (which Rails does by default), 
-        # IE removes the file it just downloaded from its cache immediately 
-        # after it displays the "open/save" dialog, which means that if you 
-        # hit "open" the file isn't there anymore when the application that 
-        # is called for handling the download is run, so let's workaround that
-        header('Cache-Control' => 'private') if headers['Cache-Control'] == 'no-cache'
+      # Omit Content-Disposition and Content-Transfer-Encoding headers if
+      # the :disposition option set to nil.
+      if !options[:disposition].nil?
+        disposition = options[:disposition].dup || 'attachment'
+        disposition <<= %(; filename="#{options[:filename]}") if options[:filename]
+        headers 'Content-Disposition' => disposition, 'Content-Transfer-Encoding' => 'binary'
       end
+
+      # Fix a problem with IE 6.0 on opening downloaded files:
+      # If Cache-Control: no-cache is set (which Rails does by default),
+      # IE removes the file it just downloaded from its cache immediately
+      # after it displays the "open/save" dialog, which means that if you
+      # hit "open" the file isn't there anymore when the application that
+      # is called for handling the download is run, so let's workaround that
+      header('Cache-Control' => 'private') if headers['Cache-Control'] == 'no-cache'
+    end
   end
 
 
@@ -525,101 +525,104 @@ module Sinatra
       end
       result
     end
-    
+
     def determine_layout(renderer, template, options)
       return if options[:layout] == false
       layout_from_options = options[:layout] || :layout
       resolve_template(renderer, layout_from_options, options, false)
     end
 
-    private
-        
-      def resolve_template(renderer, template, options, scream = true)
-        case template
-        when String
-          template
-        when Proc
-          template.call
-        when Symbol
-          if proc = templates[template]
-            resolve_template(renderer, proc, options, scream)
-          else
-            read_template_file(renderer, template, options, scream)
-          end
+  private
+
+    def resolve_template(renderer, template, options, scream = true)
+      case template
+      when String
+        template
+      when Proc
+        template.call
+      when Symbol
+        if proc = templates[template]
+          resolve_template(renderer, proc, options, scream)
         else
-          nil
+          read_template_file(renderer, template, options, scream)
         end
+      else
+        nil
       end
-      
-      def read_template_file(renderer, template, options, scream = true)
-        path = File.join(
-          options[:views_directory] || Sinatra.application.options.views,
-          "#{template}.#{renderer}"
-        )
-        unless File.exists?(path)
-          raise Errno::ENOENT.new(path) if scream
-          nil
-        else  
-          File.read(path)
-        end
+    end
+
+    def read_template_file(renderer, template, options, scream = true)
+      path = File.join(
+        options[:views_directory] || Sinatra.application.options.views,
+        "#{template}.#{renderer}"
+      )
+      unless File.exists?(path)
+        raise Errno::ENOENT.new(path) if scream
+        nil
+      else
+        File.read(path)
       end
-      
-      def templates
-        Sinatra.application.templates
-      end
-    
+    end
+
+    def templates
+      Sinatra.application.templates
+    end
+
   end
 
   module Erb
-    
+
     def erb(content, options={})
       require 'erb'
       render(:erb, content, options)
     end
-    
-    private 
-    
-      def render_erb(content, options = {})
-        locals_opt = options.delete(:locals) || {}
 
-        locals_code = ""
-        locals_hash = {} 
-        locals_opt.each do |key, value|
-          locals_code << "#{key} = locals_hash[:#{key}]\n"
-          locals_hash[:"#{key}"] = value
-        end
- 
-        body = ::ERB.new(content).src
-        eval("#{locals_code}#{body}", binding)
+  private
+
+    def render_erb(content, options = {})
+      locals_opt = options.delete(:locals) || {}
+
+      locals_code = ""
+      locals_hash = {}
+      locals_opt.each do |key, value|
+        locals_code << "#{key} = locals_hash[:#{key}]\n"
+        locals_hash[:"#{key}"] = value
       end
+
+      body = ::ERB.new(content).src
+      eval("#{locals_code}#{body}", binding)
+    end
 
   end
 
   module Haml
-    
+
     def haml(content, options={})
       require 'haml'
       render(:haml, content, options)
     end
-    
-    private
-    
-      def render_haml(content, options = {}, &b)
-        haml_options = (options[:options] || {}).merge(Sinatra.options.haml || {})
-        ::Haml::Engine.new(content, haml_options).render(options[:scope] || self, options[:locals] || {}, &b)
-      end
-        
+
+  private
+
+    def render_haml(content, options = {}, &b)
+      haml_options = (options[:options] || {}).
+        merge(Sinatra.options.haml || {})
+      ::Haml::Engine.new(content, haml_options).
+        render(options[:scope] || self, options[:locals] || {}, &b)
+    end
+
   end
 
   # Generate valid CSS using Sass (part of Haml)
   #
-  # Sass templates can be in external files with <tt>.sass</tt> extension or can use Sinatra's
-  # in_file_templates.  In either case, the file can be rendered by passing the name of
-  # the template to the +sass+ method as a symbol.
+  # Sass templates can be in external files with <tt>.sass</tt> extension
+  # or can use Sinatra's in_file_templates.  In either case, the file can
+  # be rendered by passing the name of the template to the +sass+ method
+  # as a symbol.
   #
-  # Unlike Haml, Sass does not support a layout file, so the +sass+ method will ignore both
-  # the default <tt>layout.sass</tt> file and any parameters passed in as <tt>:layout</tt> in
-  # the options hash.
+  # Unlike Haml, Sass does not support a layout file, so the +sass+ method
+  # will ignore both the default <tt>layout.sass</tt> file and any parameters
+  # passed in as <tt>:layout</tt> in the options hash.
   #
   # === Sass Template Files
   #
@@ -633,7 +636,7 @@ module Sinatra
   #   end
   #
   # The "views/stylesheet.sass" file might contain the following:
-  #  
+  #
   #  body
   #    #admin
   #      :background-color #CCC
@@ -649,51 +652,50 @@ module Sinatra
   #     background-color: #CCC; }
   #   body #main {
   #     background-color: #000; }
-  #   
+  #
   #   #form {
   #     border-color: #AAA;
   #     border-width: 10px; }
-  #   
+  #
   #
   # NOTE: Haml must be installed or a LoadError will be raised the first time an
   # attempt is made to render a Sass template.
   #
   # See http://haml.hamptoncatlin.com/docs/rdoc/classes/Sass.html for comprehensive documentation on Sass.
-
-  
   module Sass
-    
+
     def sass(content, options = {})
       require 'sass'
-      
+
       # Sass doesn't support a layout, so we override any possible layout here
       options[:layout] = false
-      
+
       render(:sass, content, options)
     end
-    
-    private
-      
-      def render_sass(content, options = {})
-        ::Sass::Engine.new(content).render
-      end
+
+  private
+
+    def render_sass(content, options = {})
+      ::Sass::Engine.new(content).render
+    end
+
   end
 
   # Generating conservative XML content using Builder templates.
   #
-  # Builder templates can be inline by passing a block to the builder method, or in
-  # external files with +.builder+ extension by passing the name of the template
-  # to the +builder+ method as a Symbol.
+  # Builder templates can be inline by passing a block to the builder method,
+  # or in external files with +.builder+ extension by passing the name of the
+  # template to the +builder+ method as a Symbol.
   #
   # === Inline Rendering
   #
-  # If the builder method is given a block, the block is called directly with an 
-  # +XmlMarkup+ instance and the result is returned as String:
+  # If the builder method is given a block, the block is called directly with
+  # an +XmlMarkup+ instance and the result is returned as String:
   #   get '/who.xml' do
   #     builder do |xml|
   #       xml.instruct!
   #       xml.person do
-  #         xml.name "Francis Albert Sinatra", 
+  #         xml.name "Francis Albert Sinatra",
   #           :aka => "Frank Sinatra"
   #         xml.email 'frank@capitolrecords.com'
   #       end
@@ -709,9 +711,9 @@ module Sinatra
   #
   # === Builder Template Files
   #
-  # Builder templates can be stored in separate files with a +.builder+ 
-  # extension under the view path. An +XmlMarkup+ object named +xml+ is automatically
-  # made available to template.
+  # Builder templates can be stored in separate files with a +.builder+
+  # extension under the view path. An +XmlMarkup+ object named +xml+ is
+  # automatically made available to template.
   #
   # Example:
   #   get '/bio.xml' do
@@ -742,10 +744,11 @@ module Sinatra
   #     <died age='82' />
   #   </person>
   #
-  # NOTE: Builder must be installed or a LoadError will be raised the first time an
-  # attempt is made to render a builder template.
+  # NOTE: Builder must be installed or a LoadError will be raised the first
+  # time an attempt is made to render a builder template.
   #
-  # See http://builder.rubyforge.org/ for comprehensive documentation on Builder.
+  # See http://builder.rubyforge.org/ for comprehensive documentation on
+  # Builder.
   module Builder
 
     def builder(content=nil, options={}, &block)
@@ -754,24 +757,24 @@ module Sinatra
       render(:builder, content, options)
     end
 
-    private
+  private
 
-      def render_builder(content, options = {}, &b)
-        require 'builder'
-        xml = ::Builder::XmlMarkup.new(:indent => 2)
-        case content
-        when String
-          eval(content, binding, '<BUILDER>', 1)
-        when Proc
-          content.call(xml)
-        end
-        xml.target!
+    def render_builder(content, options = {}, &b)
+      require 'builder'
+      xml = ::Builder::XmlMarkup.new(:indent => 2)
+      case content
+      when String
+        eval(content, binding, '<BUILDER>', 1)
+      when Proc
+        content.call(xml)
       end
+      xml.target!
+    end
 
   end
 
   class EventContext
-    
+
     include ResponseHelpers
     include Streaming
     include RenderingHelpers
@@ -779,20 +782,20 @@ module Sinatra
     include Haml
     include Builder
     include Sass
-    
+
     attr_accessor :request, :response
-    
+
     dslify_writer :status, :body
-    
+
     def initialize(request, response, route_params)
       @request = request
       @response = response
       @route_params = route_params
       @response.body = nil
     end
-    
+
     def params
-      @params ||= begin 
+      @params ||= begin
         h = Hash.new {|h,k| h[k.to_s] if Symbol === k}
         h.merge(@route_params.merge(@request.params))
       end
@@ -801,25 +804,25 @@ module Sinatra
     def data
       @data ||= params.keys.first
     end
-    
+
     def stop(*args)
       throw :halt, args
     end
-    
+
     def complete(returned)
       @response.body || returned
     end
-    
+
     def session
       request.env['rack.session'] ||= {}
     end
-    
-    private
 
-      def method_missing(name, *args, &b)
-        @response.send(name, *args, &b)
-      end
-    
+  private
+
+    def method_missing(name, *args, &b)
+      @response.send(name, *args, &b)
+    end
+
   end
 
 
@@ -1043,7 +1046,6 @@ module Sinatra
         errors[NotFound].invoke(request)
     end
 
-
     # Define a named template. The template may be referenced from
     # event handlers by passing the name as a Symbol to rendering
     # methods. The block is executed each time the template is rendered
@@ -1249,7 +1251,7 @@ module Sinatra
         end
         not_found { '<h1>Not Found</h1>'}
       end
-      
+
       configures :development do
 
         get '/sinatra_custom_images/:image.png' do
@@ -1259,18 +1261,8 @@ module Sinatra
         not_found do
           %Q(
           <style>
-          body {
-            text-align: center; 
-            color: #888;
-            font-family: Arial; 
-            font-size: 22px; 
-            margin: 20px;
-          }
-          #content {
-            margin: 0 auto;
-            width: 500px;
-            text-align: left;
-          }
+          body { text-align:center;color:#888;font-family:arial;font-size:22px;margin:20px; }
+          #content { margin:0 auto;width:500px;text-align:left}
           </style>
           <html>
             <body>
@@ -1278,9 +1270,7 @@ module Sinatra
               <img src='/sinatra_custom_images/404.png'></img>
               <div id="content">
                 Try this:
-<pre>#{request.request_method.downcase} "#{request.path_info}" do
-  .. do something ..
-end<pre>
+                <pre>#{request.request_method.downcase} "#{request.path_info}" do\n  .. do something ..\n  end<pre>
               </div>
             </body>
           </html>
@@ -1289,52 +1279,29 @@ end<pre>
 
         error do
           @error = request.env['sinatra.error']
-          %Q(
+          (<<-HTML).sub(/ {12}/, '')
           <html>
-          	<body>
-          		<style type="text/css" media="screen">
-          			body {
-          				font-family: Verdana;
-          				color: #333;
-          			}
-
-          			#content {
-          				width: 700px;
-          				margin-left: 20px;
-          			}
-
-          			#content h1 {
-          				width: 99%;
-          				color: #1D6B8D;
-          				font-weight: bold;
-          			}
-
-          			#stacktrace {
-          			  margin-top: -20px;
-          			}
-
-          			#stacktrace pre {
-          				font-size: 12px;
-          				border-left: 2px solid #ddd;
-          				padding-left: 10px;
-          			}
-
-          			#stacktrace img {
-          				margin-top: 10px;
-          			}
-          		</style>
-          		<div id="content">
-            		<img src="/sinatra_custom_images/500.png" />
-            		<div class="info">
+            <body>
+              <style type="text/css" media="screen">
+                body {font-family:verdana;color: #333}
+                #content {width:700px;margin-left:20px}
+                #content h1 {width:99%;color:#1D6B8D;font-weight:bold}
+                #stacktrace {margin-top:-20px}
+                #stacktrace pre {font-size:12px;border-left:2px solid #ddd;padding-left: 10px}
+                #stacktrace img {margin-top: 10px}
+              </style>
+              <div id="content">
+                <img src="/sinatra_custom_images/500.png" />
+                <div class="info">
                   Params: <pre>#{params.inspect}
-            		</div>
-          			<div id="stacktrace">
-          				<h1>#{Rack::Utils.escape_html(@error.class.name + ' - ' + @error.message.to_s)}</h1>
-          				<pre><code>#{Rack::Utils.escape_html(@error.backtrace.join("\n"))}</code></pre>
-          		</div>
-          	</body>
+                </div>
+                <div id="stacktrace">
+                  <h1>#{Rack::Utils.escape_html(@error.class.name + ' - ' + @error.message.to_s)}</h1>
+                  <pre><code>#{Rack::Utils.escape_html(@error.backtrace.join("\n"))}</code></pre>
+              </div>
+            </body>
           </html>
-          )
+          HTML
         end
       end
     end
@@ -1381,14 +1348,12 @@ end
 ### Misc Core Extensions
 
 module Kernel
-
   def silence_warnings
     old_verbose, $VERBOSE = $VERBOSE, nil
     yield
   ensure
     $VERBOSE = old_verbose
   end
-
 end
 
 class String
@@ -1399,58 +1364,47 @@ class String
     Rack::Utils.escape(self)
   end
   alias :http_escape :to_param
-  
+
   # Converts +self+ from an escaped URI parameter value
   #   'Foo%20Bar'.from_param # => 'Foo Bar'
   def from_param
     Rack::Utils.unescape(self)
   end
   alias :http_unescape :from_param
-  
+
 end
 
 class Hash
-  
   def to_params
     map { |k,v| "#{k}=#{URI.escape(v)}" }.join('&')
   end
-  
   def symbolize_keys
     self.inject({}) { |h,(k,v)| h[k.to_sym] = v; h }
   end
-  
   def pass(*keys)
     reject { |k,v| !keys.include?(k) }
   end
-  
 end
 
 class Symbol
-  
-  def to_proc 
+  def to_proc
     Proc.new { |*args| args.shift.__send__(self, *args) }
   end
-  
 end
 
 class Array
-  
   def to_hash
     self.inject({}) { |h, (k, v)|  h[k] = v; h }
   end
-  
   def to_proc
     Proc.new { |*args| args.shift.__send__(self[0], *(args + self[1..-1])) }
   end
-  
 end
 
 module Enumerable
-  
   def eject(&block)
     find { |e| result = block[e] and break result }
   end
-  
 end
 
 ### Core Extension results for throw :halt
@@ -1497,7 +1451,7 @@ end
 at_exit do
   raise $! if $!
   if Sinatra.application.options.run
-    Sinatra.run 
+    Sinatra.run
   end
 end
 
