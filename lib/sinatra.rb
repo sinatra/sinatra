@@ -50,6 +50,10 @@ module Rack #:nodoc:
     extend self
   end
 
+  module Handler
+    autoload :Mongrel, ::File.dirname(__FILE__) + "/sinatra/rack/handler/mongrel"
+  end
+
 end
 
 
@@ -1299,6 +1303,7 @@ module Sinatra
                 <div id="stacktrace">
                   <h1>#{Rack::Utils.escape_html(@error.class.name + ' - ' + @error.message.to_s)}</h1>
                   <pre><code>#{Rack::Utils.escape_html(@error.backtrace.join("\n"))}</code></pre>
+                </div>
               </div>
             </body>
           </html>
