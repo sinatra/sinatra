@@ -1301,6 +1301,7 @@ module Sinatra
 
       not_found do
         (<<-HTML).gsub(/^ {8}/, '')
+        <!DOCTYPE html>
         <html>
           <head>
             <style type="text/css">
@@ -1310,7 +1311,7 @@ module Sinatra
           </head>
           <body>
             <h2>Sinatra doesn't know this diddy.</h2>
-            <img src='/sinatra_custom_images/404.png'></img>
+            <img src='/sinatra_custom_images/404.png'>
             <div id="content">
               Try this:
               <pre>#{request.request_method.downcase} "#{request.path_info}" do\n  .. do something ..\nend<pre>
@@ -1323,6 +1324,7 @@ module Sinatra
       error do
         @error = request.env['sinatra.error']
         (<<-HTML).gsub(/^ {8}/, '')
+        <!DOCTYPE html>
         <html>
           <head>
             <style type="text/css" media="screen">
@@ -1336,7 +1338,7 @@ module Sinatra
           </head>
           <body>
             <div id="content">
-              <img src="/sinatra_custom_images/500.png" />
+              <img src="/sinatra_custom_images/500.png">
               <div class="info">
                 Params: <pre>#{params.inspect}</pre>
               </div>
