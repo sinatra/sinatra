@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-context "Templates (in general)" do
+context "Templates" do
 
   specify "are read from files if Symbols" do
 

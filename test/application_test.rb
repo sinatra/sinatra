@@ -216,6 +216,37 @@ context "Events in an app" do
     body.should.equal "Look ma, a path with spaces!"
   end
 
+  specify "route based on host" do
+
+    get '/' do
+      'asdf'
+    end
+
+    get_it '/'
+    assert ok?
+    assert_equal('asdf', body)
+
+    get '/foo', :host => 'foo.sinatrarb.com' do
+      'in foo!'
+    end
+
+    get '/foo', :host => 'bar.sinatrarb.com'  do
+      'in bar!'
+    end
+
+    get_it '/foo', {}, 'HTTP_HOST' => 'foo.sinatrarb.com'
+    assert ok?
+    assert_equal 'in foo!', body
+
+    get_it '/foo', {}, 'HTTP_HOST' => 'bar.sinatrarb.com'
+    assert ok?
+    assert_equal 'in bar!', body
+
+    get_it '/foo'
+    assert not_found?
+
+  end
+
 end
 
 

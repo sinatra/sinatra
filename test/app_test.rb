@@ -129,7 +129,7 @@ context "Sinatra" do
     body.should.be.empty
   end
 
-  specify "body sets content and ends event" do
+  specify "stop sets content and ends event" do
 
     Sinatra::EventContext.any_instance.expects(:foo).never
 
@@ -236,15 +236,7 @@ context "Sinatra" do
   end
 
 
-  specify "put'n with POST" do
-    put '/' do
-      'puted'
-    end
-    post_it '/', :_method => 'PUT'
-    assert_equal 'puted', body
-  end
-
-  specify "put'n wth PUT" do
+  specify "supports PUT" do
     put '/' do
       'puted'
     end
@@ -252,9 +244,17 @@ context "Sinatra" do
     assert_equal 'puted', body
   end
 
+  specify "rewrites POSTs with _method param to PUT" do
+    put '/' do
+      'puted'
+    end
+    post_it '/', :_method => 'PUT'
+    assert_equal 'puted', body
+  end
+
   # Some Ajax libraries downcase the _method parameter value. Make
   # sure we can handle that.
-  specify "put'n with POST and lowercase _method param" do
+  specify "rewrites POSTs with lowercase _method param to PUT" do
     put '/' do
       'puted'
     end
@@ -263,7 +263,7 @@ context "Sinatra" do
   end
 
   # Ignore any _method parameters specified in GET requests or on the query string in POST requests.
-  specify "not put'n with GET" do
+  specify "does not rewrite GETs with _method param to PUT" do
     get '/' do
       'getted'
     end
@@ -272,7 +272,7 @@ context "Sinatra" do
     body.should.equal 'getted'
   end
 
-  specify "_method query string parameter ignored on POST" do
+  specify "ignores _method query string parameter on non-POST requests" do
     post '/' do
       'posted'
     end
@@ -282,6 +282,18 @@ context "Sinatra" do
     post_it "/?_method=PUT"
     should.be.ok
     body.should.equal 'posted'
+  end
+
+  specify "does not read body if content type is not url encoded" do
+    post '/foo.xml' do
+      request.env['CONTENT_TYPE'].should.be == 'application/xml'
+      request.content_type.should.be == 'application/xml'
+      request.body.read
+    end
+
+    post_it '/foo.xml', '<foo></foo>', :content_type => 'application/xml'
+    @response.should.be.ok
+    @response.body.should.be == '<foo></foo>'
   end
 
 end

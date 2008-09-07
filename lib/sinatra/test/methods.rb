@@ -4,37 +4,51 @@ module Sinatra
 
     module Methods
 
-      def easy_env_map
-        {
-          :accept => "HTTP_ACCEPT",
-          :agent => "HTTP_USER_AGENT",
-          :host => "HTTP_HOST",
-          :session => "HTTP_COOKIE",
-          :cookies => "HTTP_COOKIE"
-        }
-      end
+      ENV_KEY_NAMES = {
+        :accept => "HTTP_ACCEPT",
+        :agent => "HTTP_USER_AGENT",
+        :host => "HTTP_HOST",
+        :session => "HTTP_COOKIE",
+        :cookies => "HTTP_COOKIE",
+        :content_type => "CONTENT_TYPE"
+      }
 
       def session(data, key = 'rack.session')
         data = data.from_params if data.respond_to?(:from_params)
         "#{Rack::Utils.escape(key)}=#{[Marshal.dump(data)].pack("m*")}"
       end
 
-      def map_easys(params)
-        easy_env_map.inject(params.dup) do |m, (from, to)|
-          m[to] = m.delete(from) if m.has_key?(from); m
+      def normalize_rack_environment(env)
+        env.inject({}) do |hash,(k,v)|
+          hash[ENV_KEY_NAMES[k] || k] = v
+          hash
         end
       end
 
-      %w(get head post put delete).each do |m|
-        define_method("#{m}_it") do |path, *args|
-          env, input = if args.size == 2
-            [args.last, args.first]
-          elsif args.size == 1
-            data = args.first
-            data.is_a?(Hash) ? [map_easys(data.delete(:env) || {}), data.to_params] : [nil, data]
-          end
+      %w(get head post put delete).each do |verb|
+        http_method = verb.upcase
+        define_method("#{verb}_it") do |path, *args|
           @request = Rack::MockRequest.new(Sinatra.build_application)
-          @response = @request.request(m.upcase, path, {:input => input}.merge(env || {}))
+          opts, input =
+            case args.size
+            when 2 # input, env
+              input, env = args
+              [env, input]
+            when 1 # params
+              if (data = args.first).kind_of?(Hash)
+                env = (data.delete(:env) || {})
+                [env, data.to_params]
+              else
+                [{}, data]
+              end
+            when 0
+              [{}, '']
+            else
+              raise ArgumentError, "zero, one, or two arguments expected"
+            end
+          opts = normalize_rack_environment(opts)
+          opts[:input] ||= input
+          @response = @request.request(http_method, path, opts)
         end
       end
 
@@ -43,7 +57,11 @@ module Sinatra
       end
 
       def method_missing(name, *args)
-        @response.send(name, *args) rescue super
+        if @response.respond_to?(name)
+          @response.send(name, *args)
+        else
+          super
+        end
       end
 
     end

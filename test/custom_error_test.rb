@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-context "Custom Errors (in general)" do
+context "Custom Errors" do
 
   setup do
     Sinatra.application = nil
