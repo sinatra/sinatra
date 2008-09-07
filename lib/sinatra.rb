@@ -126,6 +126,7 @@ module Sinatra
   end
 
   class Event
+    include Rack::Utils
 
     URI_CHAR = '[^/?:,&#\.]'.freeze unless defined?(URI_CHAR)
     PARAM = /(:(#{URI_CHAR}+)|\*)/.freeze unless defined?(PARAM)
@@ -162,7 +163,8 @@ module Sinatra
         return unless host === request.host
       end
       return unless pattern =~ request.path_info.squeeze('/')
-      params.merge!(param_keys.zip($~.captures.map(&:from_param)).to_hash)
+      path_params = param_keys.zip($~.captures.map{|s| unescape(s)}).to_hash
+      params.merge!(path_params)
       splats = params.select { |k, v| k =~ /^_splat_\d+$/ }.sort.map(&:last)
       unless splats.empty?
         params.delete_if { |k, v| k =~ /^_splat_\d+$/ }
@@ -198,10 +200,11 @@ module Sinatra
   end
 
   class Static
+    include Rack::Utils
 
     def invoke(request)
       return unless File.file?(
-        Sinatra.application.options.public + request.path_info.http_unescape
+        Sinatra.application.options.public + unescape(request.path_info)
       )
       Result.new(block, {}, 200)
     end
@@ -209,7 +212,7 @@ module Sinatra
     def block
       Proc.new do
         send_file Sinatra.application.options.public +
-          request.path_info.http_unescape, :disposition => nil
+          unescape(request.path_info), :disposition => nil
       end
     end
 
@@ -779,7 +782,7 @@ module Sinatra
   end
 
   class EventContext
-
+    include Rack::Utils
     include ResponseHelpers
     include Streaming
     include RenderingHelpers
@@ -1393,24 +1396,6 @@ module Kernel
   ensure
     $VERBOSE = old_verbose
   end
-end
-
-class String
-
-  # Converts +self+ to an escaped URI parameter value
-  #   'Foo Bar'.to_param # => 'Foo%20Bar'
-  def to_param
-    Rack::Utils.escape(self)
-  end
-  alias :http_escape :to_param
-
-  # Converts +self+ from an escaped URI parameter value
-  #   'Foo%20Bar'.from_param # => 'Foo Bar'
-  def from_param
-    Rack::Utils.unescape(self)
-  end
-  alias :http_unescape :from_param
-
 end
 
 class Hash
