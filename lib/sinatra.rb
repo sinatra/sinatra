@@ -845,7 +845,11 @@ module Sinatra
   private
 
     def method_missing(name, *args, &b)
-      @response.send(name, *args, &b)
+      if @response.respond_to?(name)
+        @response.send(name, *args, &b)
+      else
+        super
+      end
     end
 
   end
