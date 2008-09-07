@@ -1264,7 +1264,7 @@ module Sinatra
         end
 
         not_found do
-          %Q(
+          (<<-HTML).sub(/^ {10}/, '')
           <style>
           body { text-align:center;color:#888;font-family:arial;font-size:22px;margin:20px; }
           #content { margin:0 auto;width:500px;text-align:left}
@@ -1279,12 +1279,12 @@ module Sinatra
               </div>
             </body>
           </html>
-          )
+          HTML
         end
 
         error do
           @error = request.env['sinatra.error']
-          (<<-HTML).sub(/ {12}/, '')
+          (<<-HTML).sub(/^ {10}/, '')
           <html>
             <body>
               <style type="text/css" media="screen">
