@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
     images/500.png
     lib/sinatra/test/methods.rb
     lib/sinatra/test/spec.rb
+    lib/sinatra/test/rspec.rb
     lib/sinatra/test/unit.rb
     lib/sinatra.rb
     LICENSE
@@ -26,15 +27,14 @@ Gem::Specification.new do |s|
     test/application_test.rb
     test/builder_test.rb
     test/custom_error_test.rb
-    test/diddy_test.rb
     test/erb_test.rb
     test/event_context_test.rb
     test/events_test.rb
+    test/filter_test.rb
     test/haml_test.rb
     test/helper.rb
     test/mapped_error_test.rb
     test/public/foo.xml
-    test/rest_test.rb
     test/sass_test.rb
     test/sessions_test.rb
     test/streaming_test.rb
