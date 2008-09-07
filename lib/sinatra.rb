@@ -790,7 +790,11 @@ module Sinatra
 
     attr_accessor :request, :response
 
+    attr_accessor :route_params
+
     def initialize(request, response, route_params)
+      @params = nil
+      @data = nil
       @request = request
       @response = response
       @route_params = route_params
@@ -808,10 +812,13 @@ module Sinatra
     end
 
     def params
-      @params ||= begin
-        h = Hash.new {|h,k| h[k.to_s] if Symbol === k}
-        h.merge(@route_params.merge(@request.params))
-      end
+      @params ||=
+        begin
+          hash = Hash.new {|h,k| h[k.to_s] if Symbol === k}
+          hash.merge! @request.params
+          hash.merge! @route_params
+          hash
+        end
     end
 
     def data
@@ -828,6 +835,11 @@ module Sinatra
 
     def session
       request.env['rack.session'] ||= {}
+    end
+
+    def reset!
+      @params = nil
+      @data = nil
     end
 
   private
@@ -1230,13 +1242,15 @@ module Sinatra
     # +env+ argument and return value.
     def dispatch(env)
       request = Rack::Request.new(env)
-      result = lookup(request)
-      context = EventContext.new(request, Rack::Response.new, result.params)
-      context.status(result.status)
+      context = EventContext.new(request, Rack::Response.new([], 200), {})
       begin
         returned =
           catch(:halt) do
             filters[:before].each { |f| context.instance_eval(&f) }
+            result = lookup(context.request)
+            context.route_params = result.params
+            context.response.status = result.status
+            context.reset!
             [:complete, context.instance_eval(&result.block)]
           end
         body = returned.to_result(context)
