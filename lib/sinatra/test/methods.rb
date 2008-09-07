@@ -3,6 +3,7 @@ module Sinatra
   module Test
 
     module Methods
+      include Rack::Utils
 
       ENV_KEY_NAMES = {
         :accept => "HTTP_ACCEPT",
@@ -15,7 +16,7 @@ module Sinatra
 
       def session(data, key = 'rack.session')
         data = data.from_params if data.respond_to?(:from_params)
-        "#{Rack::Utils.escape(key)}=#{[Marshal.dump(data)].pack("m*")}"
+        "#{escape(key)}=#{[Marshal.dump(data)].pack("m*")}"
       end
 
       def normalize_rack_environment(env)
@@ -23,6 +24,10 @@ module Sinatra
           hash[ENV_KEY_NAMES[k] || k] = v
           hash
         end
+      end
+
+      def hash_to_param_string(hash)
+        hash.map { |pair| pair.map{|v|escape(v)}.join('=') }.join('&')
       end
 
       %w(get head post put delete).each do |verb|
@@ -37,7 +42,7 @@ module Sinatra
             when 1 # params
               if (data = args.first).kind_of?(Hash)
                 env = (data.delete(:env) || {})
-                [env, data.to_params]
+                [env, hash_to_param_string(data)]
               else
                 [{}, data]
               end

@@ -1340,8 +1340,8 @@ module Sinatra
                 Params: <pre>#{params.inspect}
               </div>
               <div id="stacktrace">
-                <h1>#{Rack::Utils.escape_html(@error.class.name + ' - ' + @error.message.to_s)}</h1>
-                <pre><code>#{Rack::Utils.escape_html(@error.backtrace.join("\n"))}</code></pre>
+                <h1>#{escape_html(@error.class.name + ' - ' + @error.message.to_s)}</h1>
+                <pre><code>#{escape_html(@error.backtrace.join("\n"))}</code></pre>
               </div>
             </div>
           </body>
@@ -1395,18 +1395,6 @@ module Kernel
     yield
   ensure
     $VERBOSE = old_verbose
-  end
-end
-
-class Hash
-  def to_params
-    map { |k,v| "#{k}=#{URI.escape(v)}" }.join('&')
-  end
-  def symbolize_keys
-    self.inject({}) { |h,(k,v)| h[k.to_sym] = v; h }
-  end
-  def pass(*keys)
-    reject { |k,v| !keys.include?(k) }
   end
 end
 
