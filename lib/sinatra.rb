@@ -62,8 +62,12 @@ module Sinatra
 
   VERSION = '0.3.0'
 
-  class NotFound < RuntimeError; end
-  class ServerError < RuntimeError; end
+  class NotFound < RuntimeError
+    def self.code ; 404 ; end
+  end
+  class ServerError < RuntimeError
+    def self.code ; 500 ; end
+  end
 
   Result = Struct.new(:block, :params, :status) unless defined?(Result)
 
@@ -171,14 +175,24 @@ module Sinatra
 
   class Error
 
-    attr_reader :code, :block
+    attr_reader :type, :block, :options
 
-    def initialize(code, &b)
-      @code, @block = code, b
+    def initialize(type, options={}, &block)
+      @type = type
+      @block = block
+      @options = options
     end
 
     def invoke(request)
-      Result.new(block, {}, 404)
+      Result.new(block, options, code)
+    end
+
+    def code
+      if type.respond_to?(:code)
+        type.code
+      else
+        500
+      end
     end
 
   end
@@ -1083,7 +1097,7 @@ module Sinatra
     # The Sinatra::ServerError handler is used by default when an exception
     # occurs and no matching error handler is found.
     def error(type=ServerError, options = {}, &b)
-      errors[type] = Error.new(type, &b)
+      errors[type] = Error.new(type, options, &b)
     end
 
     # Define a custom error handler for '404 Not Found' responses. This is a
@@ -1229,6 +1243,7 @@ module Sinatra
       rescue => e
         request.env['sinatra.error'] = e
         context.status(500)
+        raise if options.raise_errors && e.class != NotFound
         result = (errors[e.class] || errors[ServerError]).invoke(request)
         returned =
           catch(:halt) do
@@ -1250,7 +1265,6 @@ module Sinatra
       events[:get] << Static.new
       configure do
         error do
-          raise request.env['sinatra.error'] if Sinatra.options.raise_errors
           '<h1>Internal Server Error</h1>'
         end
         not_found { '<h1>Not Found</h1>'}

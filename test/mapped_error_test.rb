@@ -6,6 +6,7 @@ context "Mapped errors" do
 
   setup do
     Sinatra.application = nil
+    Sinatra.application.options.raise_errors = false
   end
 
   specify "are rescued and run in context" do
@@ -15,7 +16,7 @@ context "Mapped errors" do
     end
 
     get '/' do
-      raise FooError.new
+      raise FooError
     end
 
     get_it '/'
@@ -32,7 +33,7 @@ context "Mapped errors" do
     end
 
     get '/' do
-      raise FooError.new
+      raise FooError
     end
 
     get_it '/'
@@ -49,13 +50,23 @@ context "Mapped errors" do
     end
 
     get '/' do
-      raise FooError.new
+      raise FooError
     end
 
     get_it '/'
 
     should.be.ok
 
+  end
+
+  specify "raises errors when the raise_errors option is set" do
+    Sinatra.application.options.raise_errors = true
+    error FooError do
+    end
+    get '/' do
+      raise FooError
+    end
+    assert_raises(FooError) { get_it('/') }
   end
 
 end
