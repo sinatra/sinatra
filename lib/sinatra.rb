@@ -1122,6 +1122,7 @@ module Sinatra
     def reload!
       clearables.each(&:clear)
       load_default_configuration!
+      load_development_configuration! if development?
       @pipeline = nil
       @reloading = true
       Kernel.load options.app_file
@@ -1241,14 +1242,12 @@ module Sinatra
       context.finish
     end
 
+  private
+
     # Called immediately after the application is initialized or reloaded to
     # register default events, templates, and error handlers.
     def load_default_configuration!
-
-      # The static event is always executed first.
       events[:get] << Static.new
-
-      # Default configuration for all environments.
       configure do
         error do
           raise request.env['sinatra.error'] if Sinatra.options.raise_errors
@@ -1256,63 +1255,65 @@ module Sinatra
         end
         not_found { '<h1>Not Found</h1>'}
       end
-
-      configures :development do
-
-        get '/sinatra_custom_images/:image.png' do
-          File.read(File.dirname(__FILE__) + "/../images/#{params[:image]}.png")
-        end
-
-        not_found do
-          (<<-HTML).sub(/^ {10}/, '')
-          <style>
-          body { text-align:center;color:#888;font-family:arial;font-size:22px;margin:20px; }
-          #content { margin:0 auto;width:500px;text-align:left}
-          </style>
-          <html>
-            <body>
-              <h2>Sinatra doesn't know this diddy.</h2>
-              <img src='/sinatra_custom_images/404.png'></img>
-              <div id="content">
-                Try this:
-                <pre>#{request.request_method.downcase} "#{request.path_info}" do\n  .. do something ..\n  end<pre>
-              </div>
-            </body>
-          </html>
-          HTML
-        end
-
-        error do
-          @error = request.env['sinatra.error']
-          (<<-HTML).sub(/^ {10}/, '')
-          <html>
-            <body>
-              <style type="text/css" media="screen">
-                body {font-family:verdana;color: #333}
-                #content {width:700px;margin-left:20px}
-                #content h1 {width:99%;color:#1D6B8D;font-weight:bold}
-                #stacktrace {margin-top:-20px}
-                #stacktrace pre {font-size:12px;border-left:2px solid #ddd;padding-left: 10px}
-                #stacktrace img {margin-top: 10px}
-              </style>
-              <div id="content">
-                <img src="/sinatra_custom_images/500.png" />
-                <div class="info">
-                  Params: <pre>#{params.inspect}
-                </div>
-                <div id="stacktrace">
-                  <h1>#{Rack::Utils.escape_html(@error.class.name + ' - ' + @error.message.to_s)}</h1>
-                  <pre><code>#{Rack::Utils.escape_html(@error.backtrace.join("\n"))}</code></pre>
-                </div>
-              </div>
-            </body>
-          </html>
-          HTML
-        end
-      end
     end
 
-    private :load_default_configuration!
+    # Called before reloading to perform development specific configuration.
+    def load_development_configuration!
+      get '/sinatra_custom_images/:image.png' do
+        File.read(File.dirname(__FILE__) + "/../images/#{params[:image]}.png")
+      end
+
+      not_found do
+        (<<-HTML).gsub(/^ {8}/, '')
+        <html>
+          <head>
+            <style type="text/css">
+            body {text-align:center;color:#888;font-family:arial;font-size:22px;margin:20px;}
+            #content {margin:0 auto;width:500px;text-align:left}
+            </style>
+          </head>
+          <body>
+            <h2>Sinatra doesn't know this diddy.</h2>
+            <img src='/sinatra_custom_images/404.png'></img>
+            <div id="content">
+              Try this:
+              <pre>#{request.request_method.downcase} "#{request.path_info}" do\n  .. do something ..\nend<pre>
+            </div>
+          </body>
+        </html>
+        HTML
+      end
+
+      error do
+        @error = request.env['sinatra.error']
+        (<<-HTML).gsub(/^ {8}/, '')
+        <html>
+          <head>
+            <style type="text/css" media="screen">
+              body {font-family:verdana;color:#333}
+              #content {width:700px;margin-left:20px}
+              #content h1 {width:99%;color:#1D6B8D;font-weight:bold}
+              #stacktrace {margin-top:-20px}
+              #stacktrace pre {font-size:12px;border-left:2px solid #ddd;padding-left:10px}
+              #stacktrace img {margin-top:10px}
+            </style>
+          </head>
+          <body>
+            <div id="content">
+              <img src="/sinatra_custom_images/500.png" />
+              <div class="info">
+                Params: <pre>#{params.inspect}
+              </div>
+              <div id="stacktrace">
+                <h1>#{Rack::Utils.escape_html(@error.class.name + ' - ' + @error.message.to_s)}</h1>
+                <pre><code>#{Rack::Utils.escape_html(@error.backtrace.join("\n"))}</code></pre>
+              </div>
+            </div>
+          </body>
+        </html>
+        HTML
+      end
+    end
 
   end
 
