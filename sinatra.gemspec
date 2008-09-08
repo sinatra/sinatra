@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
 
   # = MANIFEST =
   s.files = %w[
+    ChangeLog
     LICENSE
     README.rdoc
     Rakefile
