@@ -33,6 +33,24 @@ context "Simple Events" do
     result.params.should.equal "foo" => 'a', "bar" => 'blake mizerany'
   end
 
+  specify "takes optional params in path" do
+    result = invoke_simple('/?:foo?/?:bar?', '/a/b')
+    result.should.not.be.nil
+    result.params.should.equal "foo" => 'a', "bar" => 'b'
+
+    result = invoke_simple('/?:foo?/?:bar?', '/a/')
+    result.should.not.be.nil
+    result.params.should.equal "foo" => 'a', "bar" => nil
+
+    result = invoke_simple('/?:foo?/?:bar?', '/a')
+    result.should.not.be.nil
+    result.params.should.equal "foo" => 'a', "bar" => nil
+
+    result = invoke_simple('/:foo?/?:bar?', '/')
+    result.should.not.be.nil
+    result.params.should.equal "foo" => nil, "bar" => nil
+  end
+
   specify "ignores to many /'s" do
     result = invoke_simple('/x/y', '/x//y')
     result.should.not.be.nil

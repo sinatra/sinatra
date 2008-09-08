@@ -163,7 +163,7 @@ module Sinatra
         return unless host === request.host
       end
       return unless pattern =~ request.path_info.squeeze('/')
-      path_params = param_keys.zip($~.captures.map{|s| unescape(s)}).to_hash
+      path_params = param_keys.zip($~.captures.map{|s| unescape(s) if s}).to_hash
       params.merge!(path_params)
       splats = params.select { |k, v| k =~ /^_splat_\d+$/ }.sort.map(&:last)
       unless splats.empty?
