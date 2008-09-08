@@ -13,16 +13,18 @@ Gem::Specification.new do |s|
 
   # = MANIFEST =
   s.files = %w[
+    LICENSE
+    README.rdoc
+    Rakefile
     images/404.png
     images/500.png
-    lib/sinatra/test/methods.rb
-    lib/sinatra/test/spec.rb
-    lib/sinatra/test/rspec.rb
-    lib/sinatra/test/unit.rb
     lib/sinatra.rb
-    LICENSE
-    Rakefile
-    README.rdoc
+    lib/sinatra/rack/handler/mongrel.rb
+    lib/sinatra/test/methods.rb
+    lib/sinatra/test/rspec.rb
+    lib/sinatra/test/spec.rb
+    lib/sinatra/test/unit.rb
+    sinatra.gemspec
     test/app_test.rb
     test/application_test.rb
     test/builder_test.rb
@@ -34,6 +36,7 @@ Gem::Specification.new do |s|
     test/haml_test.rb
     test/helper.rb
     test/mapped_error_test.rb
+    test/pipeline_test.rb
     test/public/foo.xml
     test/sass_test.rb
     test/sessions_test.rb
@@ -66,7 +69,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rack', '>= 0.4.0'
 
   s.has_rdoc = true
-  s.homepage = "http://www.sinatrarb.com"
+  s.homepage = "http://sinatrarb.com"
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Sinatra", "--main", "README.rdoc"]
   s.require_paths = %w[lib]
   s.rubyforge_project = 'sinatra'
