@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
 
   s.authors = ["Blake Mizerany"]
 
-  # git ls-files | grep -v '^\.'
+  # = MANIFEST =
   s.files = %w[
     images/404.png
     images/500.png
@@ -58,6 +58,7 @@ Gem::Specification.new do |s|
     test/views/no_layout/no_layout.builder
     test/views/no_layout/no_layout.haml
   ]
+  # = MANIFEST =
 
   s.test_files = s.files.select {|path| path =~ /^test\/.*_test.rb/}
 
