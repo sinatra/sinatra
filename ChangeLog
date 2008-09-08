@@ -1,0 +1,64 @@
+= 0.3.0
+
+  * Add sinatra.gemspec w/ support for github gem builds. Forks can now
+    enable the build gem option in github to get free username-sinatra.gem
+    builds: gem install username-sinatra.gem --source=http://gems.github.com/
+
+  * Require rack-0.4 gem; removes frozen rack dir.
+
+  * Basic RSpec support; require 'sinatra/test/rspec' instead of
+    'sinatra/test/spec' to use. [avdi]
+
+  * before filters can modify request environment vars used for
+    routing (e.g., PATH_INFO, REQUEST_METHOD, etc.) for URL rewriting
+    type functionality.
+
+  * In-file templates now uses @@ instead of ## as template separator.
+
+  * Top-level environment test predicates: development?, test?, production?
+
+  * Top-level "set", "enable", and "disable" methods for tweaking
+    app options. [rtomayko]
+
+  * Top-level "use" method for building Rack middleware pipelines
+    leading to app. See README for usage. [rtomayko]
+
+  * New "reload" option - set false to disable reloading in development.
+
+  * New "host" option - host/ip to bind to [cschneid]
+
+  * New "app_file" option - override the file to reload in development
+    mode [cschneid]
+
+  * Development error/not_found page cleanup [sr, adamwiggins]
+
+  * Remove a bunch of core extensions (String#to_param, String#from_param,
+    Hash#from_params, Hash#to_params, Hash#symbolize_keys, Hash#pass)
+
+  * Various grammar and formatting fixes to README; additions on
+    community and contributing [cypher]
+
+  * Build RDoc using Hanna template: http://sinatrarb.rubyforge.org/api
+
+  * Specs, documentation and fixes for splat'n routes [vic]
+
+  * Fix whitespace errors across all source files. [rtomayko]
+
+  * Fix streaming issues with Mongrel (body not closed). [bmizerany]
+
+  * Fix various issues with environment not being set properly (configure
+    blocks not running, error pages not registering, etc.) [cypher]
+
+  * Fix to allow locals to be passed to ERB templates [cschneid]
+
+  * Fix locking issues causing random errors during reload in development.
+
+  * Fix for escaped paths not resolving static files [Matthew Walker]
+
+= 0.2.1
+
+  * File upload fix and minor tweaks.
+
+= 0.2.0
+
+  * Initial gem release of 0.2 coebase.
