@@ -52,6 +52,20 @@ file package('.tar.gz') => %w[dist/] + spec.files do |f|
   sh "git archive --format=tar HEAD | gzip > #{f.name}"
 end
 
+# Rubyforge Release / Publish Tasks ==================================
+
+desc 'Publish API docs to rubyforge'
+task 'publish:doc' => 'doc/api/index.html' do
+  sh 'scp -rp doc/* rubyforge.org:/var/www/gforge-projects/sinatra/'
+end
+
+task 'publish:gem' => [package('.gem'), package('.tar.gz')] do |t|
+  sh <<-end
+    rubyforge add_release sinatra sinatra #{spec.version} #{package('.gem')} &&
+    rubyforge add_file    sinatra sinatra #{spec.version} #{package('.tar.gz')}
+  end
+end
+
 # Gemspec Helpers ====================================================
 
 file 'sinatra.gemspec' => FileList['{lib,test,images}/**','Rakefile'] do |f|
