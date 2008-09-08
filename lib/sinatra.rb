@@ -113,7 +113,7 @@ module Sinatra
 
   def run
     begin
-      puts "== Sinatra has taken the stage on port #{port} for #{env} with backup by #{server.name}"
+      puts "== Sinatra/#{Sinatra::VERSION} has taken the stage on port #{port} for #{env} with backup by #{server.name}"
       server.run(application, {:Port => port, :Host => host}) do |server|
         trap(:INT) do
           server.stop
