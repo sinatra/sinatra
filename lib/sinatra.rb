@@ -955,6 +955,8 @@ module Sinatra
     # invoked the first time the default_options Hash is accessed.
     # NOTE:  Ignores --name so unit/spec tests can run individually
     def self.load_default_options_from_command_line! #:nodoc:
+      # fixes issue with: gem install --test sinatra
+      return if ARGV.empty? || File.basename($0) =~ /gem/
       require 'optparse'
       OptionParser.new do |op|
         op.on('-p port') { |port| default_options[:port] = port }
