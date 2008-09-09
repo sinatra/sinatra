@@ -1,3 +1,7 @@
+= 0.3.1
+
+ * Unbreak optional path parameters [jeremyevans]
+
 = 0.3.0
 
   * Add sinatra.gemspec w/ support for github gem builds. Forks can now
