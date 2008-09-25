@@ -376,8 +376,10 @@ typically don't have to +use+ them explicitly.
 
 === Test/Unit
 
-  require 'my_sinatra_app'
+  require 'rubygems'
+  require 'sinatra'
   require 'sinatra/test/unit'
+  require 'my_sinatra_app'
 
   class MyAppTest < Test::Unit::TestCase
 
@@ -397,12 +399,14 @@ typically don't have to +use+ them explicitly.
 
 === Specs
 
-  require 'my_sinatra_app'
+  require 'rubygems'
+  require 'sinatra'
   require 'sinatra/test/spec'
+  require 'my_sinatra_app'
 
-  context 'My app'
+  describe 'My app' do
 
-    should "show a default page" do
+    it "should show a default page" do
       get_it '/'
       should.be.ok
       body.should.equal 'My Default Page!'
