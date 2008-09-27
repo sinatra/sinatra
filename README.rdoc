@@ -397,7 +397,7 @@ typically don't have to +use+ them explicitly.
 
   end
 
-=== Specs
+=== Test/Spec
 
   require 'rubygems'
   require 'sinatra'
@@ -411,6 +411,26 @@ typically don't have to +use+ them explicitly.
       should.be.ok
       body.should.equal 'My Default Page!'
     end
+
+    ...
+
+  end
+
+=== RSpec
+
+  require 'rubygems'
+  require 'spec'
+  require 'sinatra'
+  require 'sinatra/test/rspec'
+  require 'my_sinatra_app'
+
+  describe 'My app' do
+    it 'should show a default page' do
+      get_it '/'
+      @response.should be_ok
+      @response.body.should == 'My Default Page!'
+    end
+
     ...
 
   end
