@@ -1,4 +1,7 @@
+require 'rubygems'
 require 'rake/clean'
+require 'fileutils'
+require 'hpricot'
 
 task :default => :test
 
@@ -98,7 +101,7 @@ task :doc => ['doc/api/index.html']
 file 'doc/api/index.html' => FileList['lib/**/*.rb','README.rdoc'] do |f|
   rb_files = f.prerequisites
   sh((<<-end).gsub(/\s+/, ' '))
-    hanna --charset utf8 \
+    rdoc --charset utf8 \
           --fmt html \
           --inline-source \
           --line-numbers \
@@ -109,3 +112,13 @@ file 'doc/api/index.html' => FileList['lib/**/*.rb','README.rdoc'] do |f|
   end
 end
 CLEAN.include 'doc/api'
+
+desc "Generate simple website"
+task :website do
+  `rdoc --force-update -o doc/website/tmp README.rdoc`
+  readme = Hpricot( open("doc/website/tmp/files/README_rdoc.html") ).at('#bodyContent').inner_html
+  # Replace placeholder with Readme content
+  html = File.read("doc/website/index.tpl").sub(Regexp.new(Regexp.escape("{{REPLACE}}")), readme)
+  # TODO: Fix RDoc links
+  File.open( "doc/website/index.html", 'w+' ) { |f| f << html }
+end
