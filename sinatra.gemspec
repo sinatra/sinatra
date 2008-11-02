@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
     images/404.png
     images/500.png
     lib/sinatra.rb
-    lib/sinatra/rack/handler/mongrel.rb
     lib/sinatra/test/methods.rb
     lib/sinatra/test/rspec.rb
     lib/sinatra/test/spec.rb
