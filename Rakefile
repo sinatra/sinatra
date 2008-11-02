@@ -1,7 +1,6 @@
 require 'rubygems'
 require 'rake/clean'
 require 'fileutils'
-require 'hpricot'
 
 task :default => :test
 
@@ -70,6 +69,29 @@ task 'publish:gem' => [package('.gem'), package('.tar.gz')] do |t|
 end
 
 # Website ============================================================
+# Building docs requires HAML and the hanna gem:
+#   gem install mislav-hanna --source=http://gems.github.com
+
+task 'doc'     => ['doc:api','doc:site']
+
+desc 'Generate Hanna RDoc under doc/api'
+task 'doc:api' => ['doc/api/index.html']
+
+file 'doc/api/index.html' => FileList['lib/**/*.rb','README.rdoc'] do |f|
+  rb_files = f.prerequisites
+  sh((<<-end).gsub(/\s+/, ' '))
+    hanna --charset utf8 \
+          --fmt html \
+          --inline-source \
+          --line-numbers \
+          --main README.rdoc \
+          --op doc/api \
+          --title 'Sinatra API Documentation' \
+          #{rb_files.join(' ')}
+  end
+end
+CLEAN.include 'doc/api'
+
 def rdoc_to_html(file_name)
   require 'rdoc/markup/to_html'
   rdoc = RDoc::Markup::ToHtml.new
@@ -83,31 +105,39 @@ def haml(locals={})
   haml.render(Object.new, locals)
 end
 
-directory 'doc/website'
+desc 'Build website HTML and stuff'
+task 'doc:site' => ['doc/index.html', 'doc/book.html']
 
-desc 'Build website'
-task :website => ['doc/website/book.html', 'doc/website/index.html', :doc]
-
-file 'doc/website/index.html' => 'doc/website' do |file|
+file 'doc/index.html' => %w[README.rdoc doc/template.haml] do |file|
   File.open(file.name, 'w') do |file|
     file << haml(:title => 'Sinatra', :content => rdoc_to_html('README.rdoc'))
   end
 end
+CLEAN.include 'doc/index.html'
 
-file 'doc/website/book.html' => ['doc/website', :build_book] do |file|
+file 'doc/book.html' => ['book/output/sinatra-book.html'] do |file|
   File.open(file.name, 'w') do |file|
-    book_content = File.read('doc/book/output/sinatra-book.html')
+    book_content = File.read('book/output/sinatra-book.html')
     file << haml(:title => 'Sinatra Book', :content => book_content)
   end
 end
+CLEAN.include 'doc/book.html'
 
-task :build_book do
-  unless File.directory?('doc/book')
-    sh 'git clone git://github.com/cschneid/sinatra-book.git doc/book'
+file 'book/output/sinatra-book.html' => FileList['book/**'] do |f|
+  unless File.directory?('book')
+    sh 'git clone git://github.com/cschneid/sinatra-book.git book'
   end
-  sh 'cd doc/book && git fetch origin && git rebase origin/master'
-  sh 'cd doc/book && thor book:build'
+  sh((<<-SH).strip.gsub(/\s+/, ' '))
+    cd book &&
+    git fetch origin &&
+    git rebase origin/master &&
+    thor book:build
+  SH
 end
+CLEAN.include 'book/output/sinatra-book.html'
+
+desc 'Build the Sinatra book'
+task 'doc:book' => ['book/output/sinatra-book.html']
 
 # Gemspec Helpers ====================================================
 
@@ -130,27 +160,3 @@ file 'sinatra.gemspec' => FileList['{lib,test,images}/**','Rakefile'] do |f|
   File.open(f.name, 'w') { |io| io.write(spec) }
   puts "updated #{f.name}"
 end
-
-# Hanna RDoc =========================================================
-#
-# Building docs requires the hanna gem:
-#   gem install mislav-hanna --source=http://gems.github.com
-
-desc 'Generate Hanna RDoc under doc/api'
-task :doc => ['doc/website/api/index.html']
-
-file 'doc/website/api/index.html' => FileList['lib/**/*.rb','README.rdoc'] do |f|
-  rb_files = f.prerequisites
-  sh((<<-end).gsub(/\s+/, ' '))
-    rdoc --charset utf8 \
-          --fmt html \
-          --inline-source \
-          --line-numbers \
-          --main README.rdoc \
-          --op doc/website/api \
-          --title 'Sinatra API Documentation' \
-          #{rb_files.join(' ')}
-  end
-end
-
-CLEAN.include 'doc/website'
