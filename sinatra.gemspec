@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'sinatra'
-  s.version = '0.3.1'
-  s.date = "2008-09-08"
+  s.version = '0.3.2'
+  s.date = "2008-11-02"
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
@@ -70,7 +70,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rack', '>= 0.4.0'
 
   s.has_rdoc = true
-  s.homepage = "http://sinatrarb.com"
+  s.homepage = "http://sinatra.rubyforge.org"
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Sinatra", "--main", "README.rdoc"]
   s.require_paths = %w[lib]
   s.rubyforge_project = 'sinatra'
