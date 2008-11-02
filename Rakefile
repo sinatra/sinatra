@@ -57,7 +57,7 @@ end
 
 # Rubyforge Release / Publish Tasks ==================================
 
-desc 'Publish API docs to rubyforge'
+desc 'Publish website to rubyforge'
 task 'publish:doc' => 'doc/api/index.html' do
   sh 'scp -rp doc/* rubyforge.org:/var/www/gforge-projects/sinatra/'
 end
@@ -67,6 +67,46 @@ task 'publish:gem' => [package('.gem'), package('.tar.gz')] do |t|
     rubyforge add_release sinatra sinatra #{spec.version} #{package('.gem')} &&
     rubyforge add_file    sinatra sinatra #{spec.version} #{package('.tar.gz')}
   end
+end
+
+# Website ============================================================
+def rdoc_to_html(file_name)
+  require 'rdoc/markup/to_html'
+  rdoc = RDoc::Markup::ToHtml.new
+  rdoc.convert(File.read(file_name))
+end
+
+def haml(locals={})
+  require 'haml'
+  template = File.read('doc/template.haml')
+  haml = Haml::Engine.new(template, :format => :html4, :attr_wrapper => '"')
+  haml.render(Object.new, locals)
+end
+
+directory 'doc/website'
+
+desc 'Build website'
+task :website => ['doc/website/book.html', 'doc/website/index.html', :doc]
+
+file 'doc/website/index.html' => 'doc/website' do |file|
+  File.open(file.name, 'w') do |file|
+    file << haml(:title => 'Sinatra', :content => rdoc_to_html('README.rdoc'))
+  end
+end
+
+file 'doc/website/book.html' => ['doc/website', :build_book] do |file|
+  File.open(file.name, 'w') do |file|
+    book_content = File.read('doc/book/output/sinatra-book.html')
+    file << haml(:title => 'Sinatra Book', :content => book_content)
+  end
+end
+
+task :build_book do
+  unless File.directory?('doc/book')
+    sh 'git clone git://github.com/cschneid/sinatra-book.git doc/book'
+  end
+  sh 'cd doc/book && git fetch origin && git rebase origin/master'
+  sh 'cd doc/book && thor book:build'
 end
 
 # Gemspec Helpers ====================================================
@@ -81,6 +121,7 @@ file 'sinatra.gemspec' => FileList['{lib,test,images}/**','Rakefile'] do |f|
     split("\n").
     sort.
     reject{ |file| file =~ /^\./ }.
+    reject { |file| file =~ /^doc/ }.
     map{ |file| "    #{file}" }.
     join("\n")
   # piece file back together and write...
@@ -96,9 +137,9 @@ end
 #   gem install mislav-hanna --source=http://gems.github.com
 
 desc 'Generate Hanna RDoc under doc/api'
-task :doc => ['doc/api/index.html']
+task :doc => ['doc/website/api/index.html']
 
-file 'doc/api/index.html' => FileList['lib/**/*.rb','README.rdoc'] do |f|
+file 'doc/website/api/index.html' => FileList['lib/**/*.rb','README.rdoc'] do |f|
   rb_files = f.prerequisites
   sh((<<-end).gsub(/\s+/, ' '))
     rdoc --charset utf8 \
@@ -106,19 +147,10 @@ file 'doc/api/index.html' => FileList['lib/**/*.rb','README.rdoc'] do |f|
           --inline-source \
           --line-numbers \
           --main README.rdoc \
-          --op doc/api \
+          --op doc/website/api \
           --title 'Sinatra API Documentation' \
           #{rb_files.join(' ')}
   end
 end
-CLEAN.include 'doc/api'
 
-desc "Generate simple website"
-task :website do
-  `rdoc --force-update -o doc/website/tmp README.rdoc`
-  readme = Hpricot( open("doc/website/tmp/files/README_rdoc.html") ).at('#bodyContent').inner_html
-  # Replace placeholder with Readme content
-  html = File.read("doc/website/index.tpl").sub(Regexp.new(Regexp.escape("{{REPLACE}}")), readme)
-  # TODO: Fix RDoc links
-  File.open( "doc/website/index.html", 'w+' ) { |f| f << html }
-end
+CLEAN.include 'doc/website'

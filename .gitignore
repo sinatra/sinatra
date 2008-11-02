@@ -1,6 +1,6 @@
-doc/api
-doc/website/index.html
-doc/website/tmp/*
 *.log
 .DS_Store
 /dist
+/doc/website
+/doc/book
+/doc/api
