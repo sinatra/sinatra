@@ -49,11 +49,6 @@ module Rack #:nodoc:
   module Utils
     extend self
   end
-
-  module Handler
-    autoload :Mongrel, ::File.dirname(__FILE__) + "/sinatra/rack/handler/mongrel"
-  end
-
 end
 
 
