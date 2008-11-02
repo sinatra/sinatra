@@ -230,7 +230,6 @@ module Sinatra
     class MissingFile < RuntimeError; end
 
     class FileStreamer
-
       attr_reader :path, :options
 
       def initialize(path, options)
@@ -242,17 +241,16 @@ module Sinatra
       end
 
       def each
+        size = options[:buffer_size]
         File.open(path, 'rb') do |file|
-          while buf = file.read(options[:buffer_size])
+          while buf = file.read(size)
             yield buf
           end
         end
       end
-
     end
 
   protected
-
     # Sends the file by streaming it 4096 bytes at a time. This way the
     # whole file doesn't need to be read into memory at once.  This makes
     # it feasible to send even large files.
@@ -319,12 +317,14 @@ module Sinatra
       options[:filename] ||= File.basename(path)
       options[:type] ||= Rack::File::MIME_TYPES[File.extname(options[:filename])[1..-1]] || 'text/plain'
       options[:last_modified] ||= File.mtime(path).httpdate
+      options[:stream] = true unless options.key?(:stream)
+      options[:buffer_size] ||= DEFAULT_SEND_FILE_OPTIONS[:buffer_size]
       send_file_headers! options
 
       if options[:stream]
         throw :halt, [options[:status] || 200, FileStreamer.new(path, options)]
       else
-        File.open(path, 'rb') { |file| throw :halt, [options[:status] || 200, file.read] }
+        File.open(path, 'rb') { |file| throw :halt, [options[:status] || 200, [file.read]] }
       end
     end
 
@@ -359,7 +359,7 @@ module Sinatra
     # See +send_file+ for more information on HTTP Content-* headers and caching.
     def send_data(data, options = {}) #:doc:
       send_file_headers! options.merge(:length => data.size)
-      throw :halt, [options[:status] || 200, data]
+      throw :halt, [options[:status] || 200, [data]]
     end
 
   private
