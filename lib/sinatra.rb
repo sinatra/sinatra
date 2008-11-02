@@ -197,20 +197,16 @@ module Sinatra
   class Static
     include Rack::Utils
 
+    def initialize(app)
+      @app = app
+    end
+
     def invoke(request)
-      return unless File.file?(
-        Sinatra.application.options.public + unescape(request.path_info)
-      )
+      path = @app.options.public + unescape(request.path_info)
+      return unless File.file?(path)
+      block = Proc.new { send_file path, :disposition => nil }
       Result.new(block, {}, 200)
     end
-
-    def block
-      Proc.new do
-        send_file Sinatra.application.options.public +
-          unescape(request.path_info), :disposition => nil
-      end
-    end
-
   end
 
   # Methods for sending files and streams to the browser instead of rendering.
@@ -219,7 +215,7 @@ module Sinatra
       :type         => 'application/octet-stream'.freeze,
       :disposition  => 'attachment'.freeze,
       :stream       => true,
-      :buffer_size  => 4096
+      :buffer_size  => 8192
     }.freeze
 
     class MissingFile < RuntimeError; end
@@ -246,7 +242,7 @@ module Sinatra
     end
 
   protected
-    # Sends the file by streaming it 4096 bytes at a time. This way the
+    # Sends the file by streaming it 8192 bytes at a time. This way the
     # whole file doesn't need to be read into memory at once.  This makes
     # it feasible to send even large files.
     #
@@ -267,7 +263,7 @@ module Sinatra
     #   is read (true) or to read the entire file before sending (false).
     #   Defaults to true.
     # * <tt>:buffer_size</tt> - specifies size (in bytes) of the buffer used
-    #   to stream the file. Defaults to 4096.
+    #   to stream the file. Defaults to 8192.
     # * <tt>:status</tt> - specifies the status code to send with the
     #   response. Defaults to '200 OK'.
     # * <tt>:last_modified</tt> - an optional RFC 2616 formatted date value
@@ -1280,7 +1276,7 @@ module Sinatra
     # Called immediately after the application is initialized or reloaded to
     # register default events, templates, and error handlers.
     def load_default_configuration!
-      events[:get] << Static.new
+      events[:get] << Static.new(self)
       configure do
         error do
           '<h1>Internal Server Error</h1>'
@@ -1462,9 +1458,7 @@ end
 
 at_exit do
   raise $! if $!
-  if Sinatra.application.options.run
-    Sinatra.run
-  end
+  Sinatra.run if Sinatra.application.options.run
 end
 
 mime :xml, 'application/xml'
