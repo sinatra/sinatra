@@ -923,7 +923,8 @@ module Sinatra
     # file, before any DSL related functions are invoked.
     def self.default_options
       return @default_options unless @default_options.nil?
-      root = File.expand_path(File.dirname($0))
+      app_file = locate_app_file
+      root = File.expand_path(File.dirname(app_file))
       @default_options = {
         :run => true,
         :port => 4567,
@@ -934,7 +935,7 @@ module Sinatra
         :public => root + '/public',
         :sessions => false,
         :logging => true,
-        :app_file => $0,
+        :app_file => app_file,
         :raise_errors => false
       }
       load_default_options_from_command_line!
@@ -955,6 +956,16 @@ module Sinatra
         op.on('-x') { default_options[:mutex] = true }
         op.on('-s server') { |server| default_options[:server] = server }
       end.parse!(ARGV.dup.select { |o| o !~ /--name/ })
+    end
+
+    # Use heuristics to locate the application file.
+    def self.locate_app_file
+      caller[1..-1].reverse.each do |path|
+        path = path.split(':', 2)[0]
+        next if path =~ /sinatra\.rb$/ || path == '(__DSL__)'
+        return path
+      end
+      $0
     end
 
     # Determine whether the application is in the process of being
