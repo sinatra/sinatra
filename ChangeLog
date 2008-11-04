@@ -1,6 +1,16 @@
+= 0.3.2
+
+  * BUG: Static and send_file read entire file into String before
+    sending. Updated to stream with 8K chunks instead.
+
+  * Rake tasks and assets for building basic documentation website.
+    See http://sinatra.rubyforge.org
+
+  * Various minor doc fixes.
+
 = 0.3.1
 
- * Unbreak optional path parameters [jeremyevans]
+  * Unbreak optional path parameters [jeremyevans]
 
 = 0.3.0
 
