@@ -1365,11 +1365,10 @@ def helpers(&b)
 end
 
 def use_in_file_templates!
-  require 'stringio'
-  templates = IO.read(caller.first.split(':').first).split('__FILE__').last
-  data = StringIO.new(templates)
+  data = IO.read(caller.first.split(':').first).split('__FILE__').last
+  data.gsub! /\r\n/, "\n"
   current_template = nil
-  data.each do |line|
+  data.each_line do |line|
     if line =~ /^@@\s?(.*)/
       current_template = $1.to_sym
       Sinatra.application.templates[current_template] = ''

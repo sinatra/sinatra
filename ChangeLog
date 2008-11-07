@@ -1,3 +1,7 @@
+= 0.3.3
+
+  * BUG: use_in_file_templates! failes with CR/LF (#45)
+
 = 0.3.2
 
   * BUG: Static and send_file read entire file into String before
