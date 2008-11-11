@@ -1366,7 +1366,7 @@ end
 
 def use_in_file_templates!
   require 'stringio'
-  templates = IO.read(caller.first.split(':').first).split('__FILE__').last
+  templates = IO.read(caller.first.split(':').first).split('__END__').last
   data = StringIO.new(templates)
   current_template = nil
   data.each do |line|
