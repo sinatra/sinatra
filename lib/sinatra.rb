@@ -1376,7 +1376,8 @@ def helpers(&b)
 end
 
 def use_in_file_templates!
-  data = IO.read(caller.first.split(':').first).split('__END__').last
+  file = caller.first.sub(/:\d+$/, '')
+  data = IO.read(file).split('__END__').last
   data.gsub! /\r\n/, "\n"
   current_template = nil
   data.each_line do |line|
