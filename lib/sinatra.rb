@@ -1255,6 +1255,10 @@ module Sinatra
           end
         body = returned.to_result(context)
       rescue => e
+        msg  = "#{e.class.name} - #{e.message}:"
+        msg << "\n  #{e.backtrace.join("\n  ")}"
+        request.env['rack.errors'] << msg
+
         request.env['sinatra.error'] = e
         context.status(500)
         raise if options.raise_errors && e.class != NotFound
