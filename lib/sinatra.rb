@@ -928,7 +928,7 @@ module Sinatra
         :run => true,
         :port => 4567,
         :host => '0.0.0.0',
-        :env => (ENV['RACK_ENV'].to_sym rescue :development),
+        :env => (ENV['RACK_ENV'] || :development).to_sym,
         :root => root,
         :views => root + '/views',
         :public => root + '/public',
