@@ -1,4 +1,10 @@
-= 0.3.3
+= 0.3.3 (Unreleased)
+
+  * Log unhandled exception backtraces to rack.errors.
+
+  * Use RACK_ENV environment variable to establish Sinatra
+    environment when given. Thin sets this when started with
+    the -e argument.
 
   * BUG: use_in_file_templates! failes with CR/LF (#45)
 

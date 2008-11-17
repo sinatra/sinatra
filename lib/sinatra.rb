@@ -929,7 +929,7 @@ module Sinatra
         :run => true,
         :port => 4567,
         :host => '0.0.0.0',
-        :env => :development,
+        :env => (ENV['RACK_ENV'] || :development).to_sym,
         :root => root,
         :views => root + '/views',
         :public => root + '/public',
@@ -1266,6 +1266,10 @@ module Sinatra
           end
         body = returned.to_result(context)
       rescue => e
+        msg  = "#{e.class.name} - #{e.message}:"
+        msg << "\n  #{e.backtrace.join("\n  ")}"
+        request.env['rack.errors'] << msg
+
         request.env['sinatra.error'] = e
         context.status(500)
         raise if options.raise_errors && e.class != NotFound
