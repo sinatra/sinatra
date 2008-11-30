@@ -140,14 +140,14 @@ blocks can be accessed direcly in views:
 
   get '/:id' do
     @foo = Foo.find(params[:id])
-    haml '%h1== @foo.name'
+    haml '%h1= @foo.name'
   end
 
 Or, specify an explicit Hash of local variables:
 
   get '/:id' do
     foo = Foo.find(params[:id])
-    haml '%h1== foo.name', :locals => { :foo => foo }
+    haml '%h1= foo.name', :locals => { :foo => foo }
   end
 
 This is typically used when rendering templates as partials from within
