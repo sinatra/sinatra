@@ -6,6 +6,9 @@
     environment when given. Thin sets this when started with
     the -e argument.
 
+  * BUG: raising Sinatra::NotFound resulted in a 500 response
+    code instead of 404.
+
   * BUG: use_in_file_templates! failes with CR/LF (#45)
 
   * BUG: Sinatra detects the app file and root path when run under

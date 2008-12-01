@@ -96,6 +96,17 @@ context "An app returns" do
 
   end
 
+  specify "404 if NotFound is raised" do
+
+    get '/' do
+      raise Sinatra::NotFound
+    end
+
+    get_it '/'
+    should.be.not_found
+
+  end
+
 end
 
 context "Application#configure blocks" do

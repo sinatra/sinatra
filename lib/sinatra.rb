@@ -1271,7 +1271,8 @@ module Sinatra
         request.env['rack.errors'] << msg
 
         request.env['sinatra.error'] = e
-        context.status(500)
+        status = e.class.code rescue 500
+        context.status(status)
         raise if options.raise_errors && e.class != NotFound
         result = (errors[e.class] || errors[ServerError]).invoke(request)
         returned =
