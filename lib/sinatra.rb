@@ -11,6 +11,10 @@ elsif ENV['EVENT']
   puts "Using Evented Mongrel"
 end
 
+unless defined?(Rack::File::MIME_TYPES)
+  class Rack::File; MIME_TYPES = Rack::Mime::MIME_TYPES; end
+end
+
 module Rack #:nodoc:
 
   class Request #:nodoc:
