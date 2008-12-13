@@ -16,7 +16,8 @@ context "Looking up a request" do
     Sinatra.application = nil
   end
 
-  specify "returns what's at the end" do
+  # Deprecated. The lookup method is no longer used.
+  xspecify "returns what's at the end" do
     block = Proc.new { 'Hello' }
     get '/', &block
 
@@ -31,7 +32,8 @@ context "Looking up a request" do
     result.block.should.be block
   end
 
-  specify "takes params in path" do
+  # Deprecated. The lookup method is no longer used.
+  xspecify "takes params in path" do
     block = Proc.new { 'Hello' }
     get '/:foo', &block
 
@@ -83,7 +85,8 @@ context "An app returns" do
 
   end
 
-  specify "the body set if set before the last" do
+  # Deprecated. The body method no longer halts.
+  xspecify "the body set if set before the last" do
 
     get '/' do
       body 'Blake'
@@ -142,14 +145,16 @@ end
 
 context "Default Application Configuration" do
 
-  specify "includes 404 and 500 error handlers" do
+  # Sinatra::ServerError is no longer used
+  xspecify "includes 404 and 500 error handlers" do
     Sinatra.application.errors.should.include(Sinatra::ServerError)
     Sinatra.application.errors[Sinatra::ServerError].should.not.be.nil
     Sinatra.application.errors.should.include(Sinatra::NotFound)
     Sinatra.application.errors[Sinatra::NotFound].should.not.be.nil
   end
 
-  specify "includes Static event" do
+  # Deprecated. No such thing as a Static event anymore.
+  xspecify "includes Static event" do
     assert Sinatra.application.events[:get].any? { |e| Sinatra::Static === e }
   end
 

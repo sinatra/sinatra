@@ -1,10 +1,2 @@
-require File.dirname(__FILE__) + '/unit'
+require 'sinatra/test'
 require 'spec/interop/test'
-
-class Test::Unit::TestCase
-
-  def should
-    @response.should
-  end
-
-end

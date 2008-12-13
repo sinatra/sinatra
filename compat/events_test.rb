@@ -9,9 +9,19 @@ context "Simple Events" do
     })
   end
 
+  class MockResult < Struct.new(:block, :params)
+  end
+
   def invoke_simple(path, request_path, &b)
-    event = Sinatra::Event.new(path, &b)
-    event.invoke(simple_request_hash(:get, request_path))
+    params = nil
+    mock_app {
+      get path do
+        params = self.params
+        b.call if b
+      end
+    }
+    get_it request_path
+    MockResult.new(b, params)
   end
 
   specify "return last value" do

@@ -1,30 +1,39 @@
-require File.dirname(__FILE__) + '/helper'
+require 'test/spec'
+require 'sinatra/base'
+require 'sinatra/test'
 
-context "before filters" do
+describe "Filters" do
+  include Sinatra::Test
 
-  setup do
-    Sinatra.application = nil
-    @app = Sinatra.application
-  end
+  it "executes filters in the order defined" do
+    count = 0
+    mock_app do
+      get('/') { 'Hello World' }
+      before {
+        count.should.be 0
+        count = 1
+      }
+      before {
+        count.should.be 1
+        count = 2
+      }
+    end
 
-  specify "should be executed in the order defined" do
-    invoked = 0x0
-    @app.before { invoked = 0x01 }
-    @app.before { invoked |= 0x02 }
-    @app.get('/') { 'Hello World' }
-    get_it '/'
+    get '/'
     should.be.ok
-    body.should.be == 'Hello World'
-    invoked.should.be == 0x03
+    count.should.be 2
+    body.should.equal 'Hello World'
   end
 
-  specify "should be capable of modifying the request" do
-    @app.get('/foo') { 'foo' }
-    @app.get('/bar') { 'bar' }
-    @app.before { request.path_info = '/bar' }
-    get_it '/foo'
+  it "allows filters to modify the request" do
+    mock_app {
+      get('/foo') { 'foo' }
+      get('/bar') { 'bar' }
+      before { request.path_info = '/bar' }
+    }
+
+    get '/foo'
     should.be.ok
     body.should.be == 'bar'
   end
-
 end

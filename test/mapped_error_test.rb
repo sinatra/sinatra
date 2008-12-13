@@ -1,72 +1,124 @@
-require File.dirname(__FILE__) + '/helper'
+require 'test/spec'
+require 'sinatra/base'
+require 'sinatra/test'
 
-class FooError < RuntimeError; end
+describe 'Exception Mappings' do
+  include Sinatra::Test
 
-context "Mapped errors" do
-
-  setup do
-    Sinatra.application = nil
-    Sinatra.application.options.raise_errors = false
+  class FooError < RuntimeError
   end
 
-  specify "are rescued and run in context" do
-
-    error FooError do
-      'MAPPED ERROR!'
-    end
-
-    get '/' do
-      raise FooError
-    end
-
-    get_it '/'
-
-    should.be.server_error
-    body.should.equal 'MAPPED ERROR!'
-
+  it 'invokes handlers registered with ::error when raised' do
+    mock_app {
+      set :raise_errors, false
+      error(FooError) { 'Foo!' }
+      get '/' do
+        raise FooError
+      end
+    }
+    get '/'
+    status.should.equal 500
+    body.should.equal 'Foo!'
   end
 
-  specify "renders empty if no each method on result" do
-
-    error FooError do
-      nil
-    end
-
-    get '/' do
-      raise FooError
-    end
-
-    get_it '/'
-
-    should.be.server_error
-    body.should.be.empty
-
+  it 'uses the Exception handler if no matching handler found' do
+    mock_app {
+      set :raise_errors, false
+      error(Exception) { 'Exception!' }
+      get '/' do
+        raise FooError
+      end
+    }
+    get '/'
+    status.should.equal 500
+    body.should.equal 'Exception!'
   end
 
-  specify "doesn't override status if set" do
-
-    error FooError do
-      status(200)
-    end
-
-    get '/' do
-      raise FooError
-    end
-
-    get_it '/'
-
-    should.be.ok
-
+  it "sets env['sinatra.error'] to the rescued exception" do
+    mock_app {
+      set :raise_errors, false
+      error(FooError) {
+        env.should.include 'sinatra.error'
+        env['sinatra.error'].should.be.kind_of FooError
+        'looks good'
+      }
+      get '/' do
+        raise FooError
+      end
+    }
+    get '/'
+    body.should.equal 'looks good'
   end
 
-  specify "raises errors when the raise_errors option is set" do
-    Sinatra.application.options.raise_errors = true
-    error FooError do
-    end
-    get '/' do
-      raise FooError
-    end
-    assert_raises(FooError) { get_it('/') }
+  it "raises without calling the handler when the raise_errors options is set" do
+    mock_app {
+      set :raise_errors, true
+      error(FooError) { "she's not there." }
+      get '/' do
+        raise FooError
+      end
+    }
+    lambda { get '/' }.should.raise FooError
   end
 
+  it "never raises Sinatra::NotFound beyond the application" do
+    mock_app {
+      set :raise_errors, true
+      get '/' do
+        raise Sinatra::NotFound
+      end
+    }
+    lambda { get '/' }.should.not.raise Sinatra::NotFound
+    status.should.equal 404
+  end
+end
+
+describe 'Custom Error Pages' do
+  it 'allows numeric status code mappings to be registered with ::error' do
+    mock_app {
+      set :raise_errors, false
+      error(500) { 'Foo!' }
+      get '/' do
+        [500, {}, 'Internal Foo Error']
+      end
+    }
+    get '/'
+    status.should.equal 500
+    body.should.equal 'Foo!'
+  end
+
+  it 'allows ranges of status code mappings to be registered with :error' do
+    mock_app {
+      set :raise_errors, false
+      error(500..550) { "Error: #{response.status}" }
+      get '/' do
+        [507, {}, 'A very special error']
+      end
+    }
+    get '/'
+    status.should.equal 507
+    body.should.equal 'Error: 507'
+  end
+
+  class FooError < RuntimeError
+  end
+
+  it 'runs after exception mappings and overwrites body' do
+    mock_app {
+      set :raise_errors, false
+      error FooError do
+        response.status = 502
+        'from exception mapping'
+      end
+      error(500) { 'from 500 handler' }
+      error(502) { 'from custom error page' }
+
+      get '/' do
+        raise FooError
+      end
+    }
+    get '/'
+    status.should.equal 502
+    body.should.equal 'from custom error page'
+  end
 end
