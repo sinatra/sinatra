@@ -35,7 +35,6 @@ module Sinatra
       else
         response.body = value
       end
-      response.body
     end
 
     # Halt processing and redirect to the URI provided.
@@ -136,22 +135,16 @@ module Sinatra
     # When the current request includes an 'If-None-Match' header with a
     # matching etag, execution is immediately halted. If the request method is
     # GET or HEAD, a '304 Not Modified' response is sent.
-    def etag(value, strength=:strong)
-      value =
-        case strength
-        when :strong then '"%s"' % value
-        when :weak   then 'W/"%s"' % value
-        else         raise TypeError, "strength must be one of :strong or :weak"
-        end
+    def etag(value, kind=:strong)
+      raise TypeError, ":strong or :weak expected" if ![:strong,:weak].include?(kind)
+      value = '"%s"' % value
+      value = 'W/' + value if kind == :weak
       response['ETag'] = value
 
-      # Check for If-None-Match request header and halt if match is found.
-      etags = (request.env['HTTP_IF_NONE_MATCH'] || '').split(/\s*,\s*/)
-      if etags.include?(value) || etags.include?('*')
-        # GET/HEAD requests: send Not Modified response
-        halt 304 if request.get? || request.head?
-        # Other requests: send Precondition Failed response
-        halt 412
+      # Conditional GET check
+      if etags = env['HTTP_IF_NONE_MATCH']
+        etags = etags.split(/\s*,\s*/)
+        halt 304 if etags.include?(value) || etags.include?('*')
       end
     end
   end
@@ -377,7 +370,8 @@ module Sinatra
       @env['sinatra.error'] = boom
       @response.status = 404
       @response.body = ['<h1>Not Found</h1>']
-      invoke errmap[NotFound] if errmap.key?(NotFound)
+      handler = errmap[boom.class] || errmap[NotFound]
+      invoke handler unless handler.nil?
     rescue ::Exception => boom
       @env['sinatra.error'] = boom
       raise boom if options.raise_errors?

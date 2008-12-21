@@ -92,4 +92,12 @@ describe 'Options' do
     @app.foo.should.be false
     @app.bar.should.be false
   end
+
+  it 'enables MethodOverride middleware when :methodoverride is enabled' do
+    @app.set :methodoverride, true
+    @app.put('/') { 'okay' }
+    post '/', {'_method'=>'PUT'}, {}
+    status.should.equal 200
+    body.should.equal 'okay'
+  end
 end

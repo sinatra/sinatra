@@ -68,6 +68,18 @@ describe 'Result Handling' do
     body.should.equal 'Hello World'
   end
 
+  it "sets status and body when result is a two-tuple" do
+    mock_app {
+      get '/' do
+        [409, 'formula of']
+      end
+    }
+
+    get '/'
+    status.should.equal 409
+    body.should.equal 'formula of'
+  end
+
   it "sets status when result is a Fixnum status code" do
     mock_app {
       get('/') { 205 }

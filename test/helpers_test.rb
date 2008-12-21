@@ -322,5 +322,17 @@ describe 'Sinatra::Helpers' do
       status.should.be 304
       body.should.be.empty
     end
+
+    it 'uses a weak etag with the :weak option' do
+      mock_app {
+        get '/' do
+          etag 'FOO', :weak
+          "that's weak, dude."
+        end
+      }
+      get '/'
+      response['ETag'].should.equal 'W/"FOO"'
+    end
+
   end
 end

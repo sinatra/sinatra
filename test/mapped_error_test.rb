@@ -71,6 +71,23 @@ describe 'Exception Mappings' do
     lambda { get '/' }.should.not.raise Sinatra::NotFound
     status.should.equal 404
   end
+
+  class FooNotFound < Sinatra::NotFound
+  end
+
+  it "cascades for subclasses of Sinatra::NotFound" do
+    mock_app {
+      set :raise_errors, true
+      error(FooNotFound) { "foo! not found." }
+      get '/' do
+        raise FooNotFound
+      end
+    }
+    lambda { get '/' }.should.not.raise FooNotFound
+    status.should.equal 404
+    body.should.equal 'foo! not found.'
+  end
+
 end
 
 describe 'Custom Error Pages' do
