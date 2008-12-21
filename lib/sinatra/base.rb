@@ -3,12 +3,6 @@ require 'rack'
 require 'rack/builder'
 require 'sinatra/rack/methodoverride'
 
-module Rack
-  class File
-    MIME_TYPES = Rack::Mime::MIME_TYPES unless defined? MIME_TYPES
-  end
-end
-
 module Sinatra
   VERSION = '0.9.0'
 
@@ -754,5 +748,14 @@ module Sinatra
     base = Class.new(base)
     base.send :class_eval, &block if block_given?
     base
+  end
+end
+
+# Make Rack 0.5.0 backward compatibile with 0.4.0 mime types
+require 'rack/file'
+class Rack::File
+  unless defined? MIME_TYPES
+    MIME_TYPES = Hash.new {|hash,key|
+      Rack::Mime::MIME_TYPES[".#{key}"] }
   end
 end
