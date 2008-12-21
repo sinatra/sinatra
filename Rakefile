@@ -147,11 +147,18 @@ task 'doc:book' => ['book/output/sinatra-book.html']
 
 # Gemspec Helpers ====================================================
 
+def source_version
+  line = File.read('lib/sinatra/base.rb')[/^\s*VERSION = .*/]
+  line.match(/.*VERSION = '(.*)'/)[1]
+end
+
 file 'sinatra.gemspec' => FileList['{lib,test,images}/**','Rakefile'] do |f|
   # read spec file and split out manifest section
   spec = File.read(f.name)
-  parts = spec.split("  # = MANIFEST =\n")
-  fail 'bad spec' if parts.length != 3
+  head, manifest, tail = spec.split("  # = MANIFEST =\n")
+  # replace version and date
+  head.sub!(/\.version = '.*'/, ".version = '#{source_version}'")
+  head.sub!(/\.date = '.*'/, ".date = '#{Date.today.to_s}'")
   # determine file list from git ls-files
   files = `git ls-files`.
     split("\n").
@@ -161,8 +168,8 @@ file 'sinatra.gemspec' => FileList['{lib,test,images}/**','Rakefile'] do |f|
     map{ |file| "    #{file}" }.
     join("\n")
   # piece file back together and write...
-  parts[1] = "  s.files = %w[\n#{files}\n  ]\n"
-  spec = parts.join("  # = MANIFEST =\n")
+  manifest = "  s.files = %w[\n#{files}\n  ]\n"
+  spec = [head,manifest,tail].join("  # = MANIFEST =\n")
   File.open(f.name, 'w') { |io| io.write(spec) }
   puts "updated #{f.name}"
 end
