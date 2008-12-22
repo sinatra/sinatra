@@ -297,9 +297,17 @@ filters are accessible by routes and templates:
     params[:splat] #=> 'bar/baz'
   end
 
+After filter are evaluated after each request within the context of the
+require and can also modify the request and response. Instance variables
+set in before filters and routes are accessible by after filters:
+
+  after do
+    puts response.status
+  end
+
 == Halting
 
-To immediately stop a request during a before filter or route use:
+To immediately stop a request within a filter or route use:
 
   halt
 

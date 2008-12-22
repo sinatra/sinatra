@@ -65,7 +65,7 @@ module Sinatra
     def code ; 404 ; end
   end
 
-  # Methods available to routes, before filters, and views.
+  # Methods available to routes, before/after filters, and views.
   module Helpers
     # Set or retrieve the response status code.
     def status(value=nil)
@@ -432,9 +432,15 @@ module Sinatra
 
   private
     # Run before filters defined on the class and all superclasses.
-    def filter!(base=self.class)
-      filter!(base.superclass) if base.superclass.respond_to?(:filters)
-      base.filters.each { |block| instance_eval(&block) }
+    def before_filter!(base=self.class)
+      before_filter!(base.superclass) if base.superclass.respond_to?(:before_filters)
+      base.before_filters.each { |block| instance_eval(&block) }
+    end
+
+    # Run after filters defined on the class and all superclasses.
+    def after_filter!(base=self.class)
+      after_filter!(base.superclass) if base.superclass.respond_to?(:after_filters)
+      base.after_filters.each { |block| instance_eval(&block) }
     end
 
     # Run routes defined on the class and all superclasses.
@@ -564,12 +570,14 @@ module Sinatra
     # Dispatch a request with error handling.
     def dispatch!
       static! if settings.static? && (request.get? || request.head?)
-      filter!
+      before_filter!
       route!
     rescue NotFound => boom
       handle_not_found!(boom)
     rescue ::Exception => boom
       handle_exception!(boom)
+    ensure
+      after_filter!
     end
 
     def handle_not_found!(boom)
@@ -623,16 +631,17 @@ module Sinatra
     end
 
     class << self
-      attr_reader :routes, :filters, :templates, :errors
+      attr_reader :routes, :before_filters, :after_filters, :templates, :errors
 
       def reset!
-        @conditions = []
-        @routes     = {}
-        @filters    = []
-        @errors     = {}
-        @middleware = []
-        @prototype  = nil
-        @extensions = []
+        @conditions     = []
+        @routes         = {}
+        @before_filters = []
+        @after_filters  = []
+        @errors         = {}
+        @middleware     = []
+        @prototype      = nil
+        @extensions     = []
 
         if superclass.respond_to?(:templates)
           @templates = Hash.new { |hash,key| superclass.templates[key] }
@@ -748,11 +757,18 @@ module Sinatra
         Rack::Mime::MIME_TYPES[type] = value
       end
 
-      # Define a before filter. Filters are run before all requests
-      # within the same context as route handlers and may access/modify the
-      # request and response.
+      # Define a before filter; runs before all requests within the same
+      # context as route handlers and may access/modify the request and
+      # response.
       def before(&block)
-        @filters << block
+        @before_filters << block
+      end
+
+      # Define an after filter; runs after all requests within the same
+      # context as route handlers and may access/modify the request and
+      # response.
+      def after(&block)
+        @after_filters << block
       end
 
       # Add a route condition. The route is considered non-matching when the
@@ -1098,8 +1114,8 @@ module Sinatra
       end
     end
 
-    delegate :get, :put, :post, :delete, :head, :template, :layout, :before,
-             :error, :not_found, :configure, :set, :mime_type,
+    delegate :get, :put, :post, :delete, :head, :template, :layout,
+             :before, :after, :error, :not_found, :configure, :set, :mime_type,
              :enable, :disable, :use, :development?, :test?,
              :production?, :use_in_file_templates!, :helpers
   end
