@@ -61,43 +61,45 @@ module Sinatra
       env['rack.session'] ||= {}
     end
 
-    # Set the content type of the response body (HTTP 'Content-Type' header).
-    #
-    # The +type+ argument may be a media type (e.g., 'text/html',
-    # 'application/xml+atom', 'image/png') or a Symbol key into the
-    # Rack::File::MIME_TYPES table.
-    #
-    # Media type parameters, such as "charset", may also be specified using the
-    # optional hash argument:
-    #   get '/foo.html' do
-    #     content_type 'text/html', :charset => 'utf-8'
-    #     "<h1>Hello World</h1>"
-    #   end
+    # Look up a media type by file extension in Rack's mime registry.
+    def media_type(type)
+      return type if type.nil? || type.to_s.include?('/')
+      Rack::File::MIME_TYPES[type.to_s.sub(/^\./, '')]
+    end
+
+    # Set the Content-Type of the response body given a media type or file
+    # extension.
     def content_type(type, params={})
-      mediatype =
-        if type.kind_of?(Symbol)
-          Rack::File::MIME_TYPES[type.to_s]
-        else
-          type
-        end
-      fail "Invalid or undefined media type: #{type.inspect}" if mediatype.nil?
+      media_type = self.media_type(type)
+      fail "Unknown media type: %p" % type if media_type.nil?
       if params.any?
         params = params.collect { |kv| "%s=%s" % kv }.join(', ')
-        response['Content-Type'] = [mediatype, params].join(";")
+        response['Content-Type'] = [media_type, params].join(";")
       else
-        response['Content-Type'] = mediatype
+        response['Content-Type'] = media_type
       end
     end
 
-    def send_file(path)
+    # Set the Content-Disposition to "attachment" with the specified filename,
+    # instructing the user agents to prompt to save.
+    def attachment(filename=nil)
+      response['Content-Disposition'] = 'attachment'
+      if filename
+        params = '; filename="%s"' % File.basename(filename)
+        response['Content-Disposition'] << params
+      end
+    end
+
+    # Use the contents of the file as the response body and attempt to
+    def send_file(path, opts={})
       stat = File.stat(path)
       last_modified stat.mtime
-      response['Content-Length'] ||= stat.size.to_s
-      response['Content-Type'] =
-        Rack::File::MIME_TYPES[File.extname(path)[1..-1]] ||
+      content_type media_type(opts[:type]) ||
+        media_type(File.extname(path)) ||
         response['Content-Type'] ||
         'application/octet-stream'
-      throw :halt, StaticFile.open(path, 'rb')
+      response['Content-Length'] ||= (opts[:length] || stat.size).to_s
+      halt StaticFile.open(path, 'rb')
     rescue Errno::ENOENT
       not_found
     end
@@ -614,7 +616,7 @@ module Sinatra
       pass unless options.static? && options.public?
       path = options.public + unescape(request.path_info)
       pass unless File.file?(path)
-      send_file path
+      send_file path, :disposition => nil
     end
 
     error ::Exception do

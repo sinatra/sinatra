@@ -105,7 +105,7 @@ context "SendData" do
   end
 
   # Deprecated. The Content-Disposition is no longer handled by sendfile.
-  xspecify "should include a Content-Disposition header" do
+  specify "should include a Content-Disposition header" do
     get '/' do
       send_file File.dirname(__FILE__) + '/public/foo.xml'
     end

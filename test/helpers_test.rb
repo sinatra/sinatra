@@ -159,6 +159,25 @@ describe 'Sinatra::Helpers' do
     end
   end
 
+  describe '#media_type' do
+    include Sinatra::Helpers
+    it "looks up media types in Rack's MIME registry" do
+      Rack::File::MIME_TYPES['foo'] = 'application/foo'
+      media_type('foo').should.equal 'application/foo'
+      media_type('.foo').should.equal 'application/foo'
+      media_type(:foo).should.equal 'application/foo'
+    end
+    it 'returns nil when given nil' do
+      media_type(nil).should.be.nil
+    end
+    it 'returns nil when media type not registered' do
+      media_type(:bizzle).should.be.nil
+    end
+    it 'returns the argument when given a media type string' do
+      media_type('text/plain').should.equal 'text/plain'
+    end
+  end
+
   describe '#content_type' do
     it 'sets the Content-Type header' do
       mock_app {
@@ -200,6 +219,17 @@ describe 'Sinatra::Helpers' do
       should.be.ok
       response['Content-Type'].should.equal 'application/foo'
       body.should.equal 'I AM FOO'
+    end
+
+    it 'fails when no mime type is registered for the argument provided' do
+      mock_app {
+        get '/foo.xml' do
+          content_type :bizzle
+          "I AM FOO"
+        end
+      }
+
+      lambda { get '/foo.xml' }.should.raise RuntimeError
     end
   end
 

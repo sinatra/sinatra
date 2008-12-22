@@ -41,6 +41,15 @@ module Sinatra
     # Deprecated. Use: etag
     alias :entity_tag :etag
 
+    # The :disposition option is deprecated; use: #attachment. This method
+    # setting the Content-Transfer-Encoding header is deprecated.
+    def send_file(path, opts={})
+      opts[:disposition] = 'attachment' if !opts.key?(:disposition)
+      attachment opts[:filename] || path if opts[:filename] || opts[:disposition]
+      response['Content-Transfer-Encoding'] = 'binary' if opts[:disposition]
+      super(path, opts)
+    end
+
     def options ; self.class.options ; end
 
     class << self
