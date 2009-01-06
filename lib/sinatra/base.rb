@@ -411,13 +411,13 @@ module Sinatra
       end
     end
 
-    @routes = {}
-    @filters = []
+    @routes     = {}
+    @filters    = []
     @conditions = []
-    @templates = {}
+    @templates  = {}
     @middleware = []
-    @callsite = nil
-    @errors = {}
+    @callsite   = nil
+    @errors     = {}
 
     class << self
       attr_accessor :routes, :filters, :conditions, :templates,
