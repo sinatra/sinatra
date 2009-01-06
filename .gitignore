@@ -4,3 +4,6 @@
 /book
 /doc/api
 /doc/*.html
+.#*
+\#*
+.emacs*
