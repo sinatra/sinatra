@@ -38,14 +38,11 @@ def helpers(&block)
 end
 
 def mime(ext, type)
-  Rack::File::MIME_TYPES[ext.to_s] = type
+  ext = ".#{ext}" unless ext.to_s[0] == ?.
+  Rack::Mime::MIME_TYPES[ext.to_s] = type
 end
 
 at_exit do
   raise $! if $!
   Sinatra::Application.run! if Sinatra::Application.run?
 end
-
-mime :xml, 'application/xml'
-mime :js,  'application/javascript'
-mime :png, 'image/png'

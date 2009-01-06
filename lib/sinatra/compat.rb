@@ -11,6 +11,16 @@ elsif ENV['EVENT']
   puts "Using Evented Mongrel"
 end
 
+# Deprecated. Make Rack 0.9.0 backward compatibile with 0.4.0
+# mime types
+require 'rack/file'
+class Rack::File
+  unless defined? MIME_TYPES
+    MIME_TYPES = Hash.new {|hash,key|
+      Rack::Mime::MIME_TYPES[".#{key}"] }
+  end
+end
+
 # Deprecated. Rack::Utils will not extend itself in the future. Sinatra::Base
 # includes Rack::Utils, however.
 module Rack::Utils ; extend self ; end

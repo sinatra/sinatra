@@ -1,7 +1,7 @@
+require 'time'
 require 'uri'
 require 'rack'
 require 'rack/builder'
-require 'sinatra/rack/methodoverride'
 
 module Sinatra
   VERSION = '0.9.0'
@@ -89,7 +89,8 @@ module Sinatra
     # Look up a media type by file extension in Rack's mime registry.
     def media_type(type)
       return type if type.nil? || type.to_s.include?('/')
-      Rack::File::MIME_TYPES[type.to_s.sub(/^\./, '')]
+      type = ".#{type}" unless type.to_s[0] == ?.
+      Rack::Mime.mime_type(type, nil)
     end
 
     # Set the Content-Type of the response body given a media type or file
@@ -769,14 +770,5 @@ module Sinatra
     base = Class.new(base)
     base.send :class_eval, &block if block_given?
     base
-  end
-end
-
-# Make Rack 0.5.0 backward compatibile with 0.4.0 mime types
-require 'rack/file'
-class Rack::File
-  unless defined? MIME_TYPES
-    MIME_TYPES = Hash.new {|hash,key|
-      Rack::Mime::MIME_TYPES[".#{key}"] }
   end
 end

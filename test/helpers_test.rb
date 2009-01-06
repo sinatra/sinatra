@@ -162,7 +162,7 @@ describe 'Sinatra::Helpers' do
   describe '#media_type' do
     include Sinatra::Helpers
     it "looks up media types in Rack's MIME registry" do
-      Rack::File::MIME_TYPES['foo'] = 'application/foo'
+      Rack::Mime::MIME_TYPES['.foo'] = 'application/foo'
       media_type('foo').should.equal 'application/foo'
       media_type('.foo').should.equal 'application/foo'
       media_type(:foo).should.equal 'application/foo'
@@ -207,7 +207,7 @@ describe 'Sinatra::Helpers' do
     end
 
     it "looks up symbols in Rack's mime types dictionary" do
-      Rack::File::MIME_TYPES['foo'] = 'application/foo'
+      Rack::Mime::MIME_TYPES['.foo'] = 'application/foo'
       mock_app {
         get '/foo.xml' do
           content_type :foo
