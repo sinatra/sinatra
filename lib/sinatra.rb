@@ -59,7 +59,7 @@ end
 module Sinatra
   extend self
 
-  VERSION = '0.3.2'
+  VERSION = '0.3.3'
 
   class NotFound < RuntimeError
     def self.code ; 404 ; end

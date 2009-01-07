@@ -1,4 +1,6 @@
-= 0.3.3 (Unreleased)
+= 0.3.3 / 2009-01-06
+
+  * Pin to Rack 0.4.0 (this is the last release on Rack 0.4)
 
   * Log unhandled exception backtraces to rack.errors.
 
