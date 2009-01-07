@@ -722,29 +722,26 @@ module Sinatra
     set :run, false
     set :reload, Proc.new { app_file? && development? }
 
-    @reloading = false
-
-    class << self
-      def reloading?
-        @reloading
-      end
-
-      def configure(*envs)
-        super unless reloading?
-      end
-
-      def call(env)
-        reload! if reload?
-        super
-      end
-
-      def reload!
-        @reloading = true
-        superclass.send :inherited, self
-        ::Kernel.load app_file
-        @reloading = false
-      end
+    def self.reloading?
+      @reloading ||= false
     end
+
+    def self.configure(*envs)
+      super unless reloading?
+    end
+
+    def self.call(env)
+      reload! if reload?
+      super
+    end
+
+    def self.reload!
+      @reloading = true
+      superclass.send :inherited, self
+      ::Kernel.load app_file
+      @reloading = false
+    end
+
   end
 
   class Application < Default
