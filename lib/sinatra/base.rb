@@ -10,6 +10,10 @@ module Sinatra
     def user_agent
       @env['HTTP_USER_AGENT']
     end
+
+    def accept
+      @env['HTTP_ACCEPT'].split(',').map { |a| a.strip }
+    end
   end
 
   class Response < Rack::Response
@@ -88,9 +92,7 @@ module Sinatra
 
     # Look up a media type by file extension in Rack's mime registry.
     def media_type(type)
-      return type if type.nil? || type.to_s.include?('/')
-      type = ".#{type}" unless type.to_s[0] == ?.
-      Rack::Mime.mime_type(type, nil)
+      Base.media_type(type)
     end
 
     # Set the Content-Type of the response body given a media type or file
@@ -479,6 +481,13 @@ module Sinatra
         end
       end
 
+      # Look up a media type by file extension in Rack's mime registry.
+      def media_type(type)
+        return type if type.nil? || type.to_s.include?('/')
+        type = ".#{type}" unless type.to_s[0] == ?.
+        Rack::Mime.mime_type(type, nil)
+      end
+
       def before(&block)
         @filters << block
       end
@@ -495,6 +504,21 @@ module Sinatra
         condition {
           if request.user_agent =~ pattern
             @params[:agent] = $~[1..-1]
+            true
+          else
+            false
+          end
+        }
+      end
+
+      def accept_mime_types(types)
+        types = [types] unless types.kind_of? Array
+        types.map!{|t| media_type(t)}
+
+        condition {
+          matching_types = (request.accept & types)
+          unless matching_types.empty?
+            response.headers['Content-Type'] = matching_types.first
             true
           else
             false
@@ -519,6 +543,7 @@ module Sinatra
       def route(method, path, opts={}, &block)
         host_name  opts[:host]  if opts.key?(:host)
         user_agent opts[:agent] if opts.key?(:agent)
+        accept_mime_types opts[:provides] if opts.key?(:provides)
 
         pattern, keys = compile(path)
         conditions, @conditions = @conditions, []

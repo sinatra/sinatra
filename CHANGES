@@ -1,5 +1,9 @@
 = 0.9.0 (unreleased)
 
+ * New ":provides" route condition takes an array of mime types and
+   matches only when an Accept request header is present with a
+   corresponding type. [cypher]
+
  * Work with and require Rack >= 0.9
 
  * Regular expressions may now be used in route pattens; captures are

@@ -302,4 +302,37 @@ describe "Routing" do
     status.should.equal 200
     body.should.equal 'Hello Bar'
   end
+
+  it "filters by accept header" do
+    mock_app {
+      get '/', :provides => :xml do
+        request.env['HTTP_ACCEPT']
+      end
+    }
+
+    get '/', :env => { :accept => 'application/xml' }
+    should.be.ok
+    body.should.equal 'application/xml'
+    response.headers['Content-Type'].should.equal 'application/xml'
+
+    get '/', :env => { :accept => 'text/html' }
+    should.not.be.ok
+  end
+
+  it "allows multiple mime types for accept header" do
+    types = ['image/jpeg', 'image/pjpeg']
+
+    mock_app {
+      get '/', :provides => types do
+        request.env['HTTP_ACCEPT']
+      end
+    }
+
+    types.each do |type|
+      get '/', :env => { :accept => type }
+      should.be.ok
+      body.should.equal type
+      response.headers['Content-Type'].should.equal type
+    end
+  end
 end
