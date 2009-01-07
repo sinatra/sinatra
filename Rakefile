@@ -152,7 +152,12 @@ def source_version
   line.match(/.*VERSION = '(.*)'/)[1]
 end
 
-file 'sinatra.gemspec' => FileList['{lib,test,images}/**','Rakefile'] do |f|
+project_files =
+  FileList[
+    '{lib,test,compat,images}/**',
+    'Rakefile', 'CHANGES', 'README.rdoc'
+  ]
+file 'sinatra.gemspec' => project_files do |f|
   # read spec file and split out manifest section
   spec = File.read(f.name)
   head, manifest, tail = spec.split("  # = MANIFEST =\n")

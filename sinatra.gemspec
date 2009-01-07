@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
 
   # = MANIFEST =
   s.files = %w[
-    ChangeLog
+    CHANGES
     LICENSE
     README.rdoc
     Rakefile
@@ -57,7 +57,6 @@ Gem::Specification.new do |s|
     lib/sinatra/images/404.png
     lib/sinatra/images/500.png
     lib/sinatra/main.rb
-    lib/sinatra/rack/methodoverride.rb
     lib/sinatra/test.rb
     lib/sinatra/test/rspec.rb
     lib/sinatra/test/spec.rb
