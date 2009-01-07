@@ -8,13 +8,19 @@ task :default => :test
 
 desc 'Run specs with story style output'
 task :spec do
-  sh 'specrb --specdox -Ilib:test test/*_test.rb'
+  pattern = ENV['TEST'] || '.*'
+  sh "specrb --testcase '#{pattern}' --specdox -Ilib:test test/*_test.rb"
 end
 
 desc 'Run specs with unit test style output'
-task :test => FileList['test/*_test.rb'] do |t|
-  suite = t.prerequisites.map{|f| "-r#{f.chomp('.rb')}"}.join(' ')
-  sh "ruby -Ilib:test #{suite} -e ''", :verbose => false
+task :test do |t|
+  sh "specrb -Ilib:test test/*_test.rb"
+end
+
+desc 'Run compatibility specs'
+task :compat do |t|
+  pattern = ENV['TEST'] || '.*'
+  sh "specrb --testcase '#{pattern}' -Ilib:test compat/*_test.rb"
 end
 
 # PACKAGING ============================================================
@@ -141,11 +147,18 @@ task 'doc:book' => ['book/output/sinatra-book.html']
 
 # Gemspec Helpers ====================================================
 
+def source_version
+  line = File.read('lib/sinatra/base.rb')[/^\s*VERSION = .*/]
+  line.match(/.*VERSION = '(.*)'/)[1]
+end
+
 file 'sinatra.gemspec' => FileList['{lib,test,images}/**','Rakefile'] do |f|
   # read spec file and split out manifest section
   spec = File.read(f.name)
-  parts = spec.split("  # = MANIFEST =\n")
-  fail 'bad spec' if parts.length != 3
+  head, manifest, tail = spec.split("  # = MANIFEST =\n")
+  # replace version and date
+  head.sub!(/\.version = '.*'/, ".version = '#{source_version}'")
+  head.sub!(/\.date = '.*'/, ".date = '#{Date.today.to_s}'")
   # determine file list from git ls-files
   files = `git ls-files`.
     split("\n").
@@ -155,8 +168,8 @@ file 'sinatra.gemspec' => FileList['{lib,test,images}/**','Rakefile'] do |f|
     map{ |file| "    #{file}" }.
     join("\n")
   # piece file back together and write...
-  parts[1] = "  s.files = %w[\n#{files}\n  ]\n"
-  spec = parts.join("  # = MANIFEST =\n")
+  manifest = "  s.files = %w[\n#{files}\n  ]\n"
+  spec = [head,manifest,tail].join("  # = MANIFEST =\n")
   File.open(f.name, 'w') { |io| io.write(spec) }
   puts "updated #{f.name}"
 end

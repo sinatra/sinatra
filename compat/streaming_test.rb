@@ -62,6 +62,7 @@ context "Static files (by default)" do
     headers['Last-Modified'].should.equal last_modified.httpdate
   end
 
+  # Deprecated. Use: ConditionalGet middleware.
   specify "are not served when If-Modified-Since matches" do
     last_modified = File.mtime(Sinatra.application.options.public + '/foo.xml')
     @request = Rack::MockRequest.new(Sinatra.application)
@@ -91,7 +92,8 @@ context "SendData" do
     Sinatra.application = nil
   end
 
-  specify "should send the data with options" do
+  # Deprecated. send_data is going away.
+  xspecify "should send the data with options" do
     get '/' do
       send_data 'asdf', :status => 500
     end
@@ -102,6 +104,7 @@ context "SendData" do
     body.should.equal 'asdf'
   end
 
+  # Deprecated. The Content-Disposition is no longer handled by sendfile.
   specify "should include a Content-Disposition header" do
     get '/' do
       send_file File.dirname(__FILE__) + '/public/foo.xml'

@@ -36,16 +36,12 @@ Run with <tt>ruby myapp.rb</tt> and view at <tt>http://localhost:4567</tt>
 
   end
 
-NOTE: <tt>put</tt> and <tt>delete</tt> are also triggered when a
-<tt>_method</tt> parameter is set to PUT or DELETE and the HTTP request method
-is POST
-
 == Routes
 
 Routes are matched based on the order of declaration. The first route that
 matches the request is invoked.
 
-Simple:
+Basic routes:
 
   get '/hi' do
     ...
@@ -54,19 +50,20 @@ Simple:
 Named parameters:
 
   get '/:name' do
-    # matches /sinatra and the like and sets params[:name]
+    # matches "GET /foo" and "GET /bar"
+    # params[:name] is 'foo' or 'bar'
   end
 
 Splat parameters:
 
   get '/say/*/to/*' do
     # matches /say/hello/to/world
-    params["splat"] # => ["hello", "world"]
+    params[:splat] # => ["hello", "world"]
   end
 
   get '/download/*.*' do
     # matches /download/path/to/file.xml
-    params["splat"] # => ["path/to/file", "xml"]
+    params[:splat] # => ["path/to/file", "xml"]
   end
 
 User agent matching:
@@ -76,24 +73,28 @@ User agent matching:
   end
 
   get '/foo' do
-    # matches non-songbird browsers
+    # Matches non-songbird browsers
   end
 
-== Static files
+== Static Files
 
 Put all of your static content in the ./public directory
 
   root
     \ public
 
-If a file exists that maps to the REQUEST_PATH then it is served and the
-request ends. Otherwise, Sinatra will look for an event that matches the
-path.
+To use a different static directory:
+
+  set :public, File.dirname(__FILE__) + '/static'
 
 == Views
 
-Views are searched for in a "views" directory in the same location as
+Views are searched for in a ./views directory in the same location as
 your main application.
+
+To use a different views directory:
+
+  set :views, File.dirname(__FILE__) + '/templates'
 
 === Haml Templates
 
@@ -190,8 +191,7 @@ method:
 
 == Helpers
 
-The top-level <tt>helpers</tt> method takes a block and extends all
-EventContext instances with the methods defined:
+The top-level <tt>helpers</tt> method
 
   helpers do
     def bar(name)
@@ -205,26 +205,26 @@ EventContext instances with the methods defined:
 
 == Filters
 
-These are run in Sinatra::EventContext before every event.
+Before filters are evaluated in request context before routing is performed:
 
   before do
-    .. this code will run before each event ..
+    @note = 'Hi!'
+    request.path_info = '/foo/bar/baz'
   end
+
+  get '/foo/*' do
+    @note #=> 'Hi!'
+    params[:splat] #=> 'bar/baz'
+  end
+
+Before filters can modify the request and response; instance variables are
+available to routes.
 
 == Halt!
 
 To immediately stop a request during a before filter or event use:
 
   throw :halt
-
-Set the body to the result of a helper method
-
-  throw :halt, :helper_method
-
-Set the body to the result of a helper method after sending it parameters from
-the local scope
-
-  throw :halt, [:helper_method, foo, bar]
 
 Set the body to a simple string
 
@@ -234,29 +234,10 @@ Set status then the body
 
   throw :halt, [401, 'go away!']
 
-Set the status then call a helper method with params from local scope
-
-  throw :halt, [401, [:helper_method, foo, bar]]
-
 Run a proc inside the Sinatra::EventContext instance and set the body to the
 result
 
   throw :halt, lambda { puts 'In a proc!'; 'I just wrote to $stdout!' }
-
-Create you own to_result
-
-  class MyResultObject
-    def to_result(event_context, *args)
-      event_context.body = 'This will be the body!
-    end
-  end
-
-  get '/' do
-    throw :halt, MyResultObject.new
-  end
-
-Get the gist?  If you want more fun with this then checkout <tt>to_result</tt>
-on Array, Symbol, Fixnum, NilClass.
 
 == Configuration and Reloading
 

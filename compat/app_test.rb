@@ -108,7 +108,9 @@ context "Sinatra" do
   end
 
   specify "renders a body with a redirect" do
-    Sinatra::EventContext.any_instance.expects(:foo).returns('blah')
+    helpers do
+      def foo ; 'blah' ; end
+    end
     get "/" do
       redirect 'foo', :foo
     end
@@ -130,13 +132,10 @@ context "Sinatra" do
   end
 
   specify "stop sets content and ends event" do
-
-    Sinatra::EventContext.any_instance.expects(:foo).never
-
     get '/set_body' do
       stop 'Hello!'
       stop 'World!'
-      foo
+      fail 'stop should have halted'
     end
 
     get_it '/set_body'
@@ -146,8 +145,13 @@ context "Sinatra" do
 
   end
 
-  specify "should set status then call helper with a var" do
-    Sinatra::EventContext.any_instance.expects(:foo).once.with(1).returns('bah!')
+  # Deprecated. WTF was going on here? What's the 1 in [:foo, 1] do?
+  xspecify "should set status then call helper with a var" do
+    helpers do
+      def foo
+        'bah!'
+      end
+    end
 
     get '/set_body' do
       stop [404, [:foo, 1]]
@@ -252,8 +256,6 @@ context "Sinatra" do
     assert_equal 'puted', body
   end
 
-  # Some Ajax libraries downcase the _method parameter value. Make
-  # sure we can handle that.
   specify "rewrites POSTs with lowercase _method param to PUT" do
     put '/' do
       'puted'
@@ -262,7 +264,6 @@ context "Sinatra" do
     body.should.equal 'puted'
   end
 
-  # Ignore any _method parameters specified in GET requests or on the query string in POST requests.
   specify "does not rewrite GETs with _method param to PUT" do
     get '/' do
       'getted'
