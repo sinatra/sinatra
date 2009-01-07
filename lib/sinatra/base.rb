@@ -569,7 +569,8 @@ module Sinatra
           "on #{port} for #{environment} with backup from #{handler_name}"
         handler.run self, :Host => host, :Port => port do |server|
           trap(:INT) do
-            server.stop
+            ## Use thins' hard #stop! if available, otherwise just #stop
+            server.respond_to?(:stop!) ? server.stop! : server.stop
             puts "\n== Sinatra has ended his set (crowd applauds)"
           end
         end
