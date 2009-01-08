@@ -326,7 +326,7 @@ module Sinatra
         original_params = Hash.new{ |hash,k| hash[k.to_s] if Symbol === k }
         original_params.merge! @request.params
 
-        routes.each do |pattern, keys, conditions, block|
+        routes.each do |pattern, keys, conditions, method_name|
           if pattern =~ path
             values = $~.captures.map{|val| val && unescape(val) }
             params =
@@ -350,7 +350,7 @@ module Sinatra
             catch(:pass) {
               conditions.each { |cond|
                 throw :pass if instance_eval(&cond) == false }
-              return invoke(block)
+              return invoke(method_name)
             }
           end
         end
@@ -358,8 +358,14 @@ module Sinatra
       raise NotFound
     end
 
-    def invoke(block)
-      res = catch(:halt) { instance_eval(&block) }
+    def invoke(handler)
+      res = catch(:halt) {
+        if handler.respond_to?(:call)
+          instance_eval(&handler)
+        else
+          send(handler)
+        end
+      }
       case
       when res.respond_to?(:to_str)
         @response.body = [res]
@@ -528,10 +534,10 @@ module Sinatra
 
       def get(path, opts={}, &block)
         conditions = @conditions.dup
-        route 'GET', path, opts, &block
+        _, _, _, method_name = route('GET', path, opts, &block)
 
         @conditions = conditions
-        head(path, opts) { invoke(block) ; [] }
+        head(path, opts) { invoke(method_name) ; [] }
       end
 
       def put(path, opts={}, &bk); route 'PUT', path, opts, &bk; end
@@ -547,8 +553,12 @@ module Sinatra
 
         pattern, keys = compile(path)
         conditions, @conditions = @conditions, []
+        method_name = "route { #{method} #{path} }"
+
+        define_method(method_name, &block)
+
         (routes[method] ||= []).
-          push [pattern, keys, conditions, block]
+          push([pattern, keys, conditions, method_name]).last
       end
 
       def compile(path)
