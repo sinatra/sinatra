@@ -298,10 +298,10 @@ module Sinatra
     attr_accessor :env, :request, :response, :params
 
     def call!(env)
-      @env = env
-      @request = Request.new(env)
+      @env      = env
+      @request  = Request.new(env)
       @response = Response.new
-      @params = nil
+      @params   = nil
       error_detection { dispatch! }
       @response.finish
     end
