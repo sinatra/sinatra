@@ -52,6 +52,14 @@ describe 'Templating' do
     end
   end
 
+  it 'uses the default layout template if not really overriden' do
+    with_default_layout do
+      render_app { render :test, :hello, :layout => true }
+      should.be.ok
+      body.should.equal "Layout!\nHello World!\n"
+    end
+  end
+
   it 'uses the layout template specified' do
     render_app { render :test, :hello, :layout => :layout2 }
     should.be.ok
