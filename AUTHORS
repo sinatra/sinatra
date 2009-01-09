@@ -1,7 +1,7 @@
 Sinatra was designed and developed by Blake Mizerany (bmizerany) in
 California. Continued development would not be possible without the ongoing
 financial support provided by Heroku <heroku.com> and the emotional support
-provided by Adam Wiggins (adamwiggins), Chris Wanstrath (defunkt), and PJ Hyett (pjhyett), and
+provided by Adam Wiggins (adamwiggins), Chris Wanstrath (defunkt), PJ Hyett (pjhyett), and
 the rest of the Github crew.
 
 Special thanks to the following extraordinary individuals, who-out which
@@ -32,6 +32,7 @@ Sinatra would not be possible:
 * Millions of Us for having the problem that led to Sinatra's conception.
 * Songbird for the problems that helped Sinatra's future become realized.
 * Rick Olsen (technoweenie) for the killer plug at RailsConf '08.
+* Steven Garcia for the amazing custom artwork you see on 404's and 500's
 
 and last but not least:
 
