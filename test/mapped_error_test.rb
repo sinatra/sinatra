@@ -50,6 +50,18 @@ describe 'Exception Mappings' do
     body.should.equal 'looks good'
   end
 
+  it 'dumps errors to rack.errors when dump_errors is enabled' do
+    mock_app {
+      set :raise_errors, false
+      set :dump_errors, true
+      get('/') { raise FooError, 'BOOM!' }
+    }
+
+    get '/'
+    status.should.equal 500
+    @response.errors.should.match(/FooError - BOOM!:/)
+  end
+
   it "raises without calling the handler when the raise_errors options is set" do
     mock_app {
       set :raise_errors, true

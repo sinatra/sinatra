@@ -1,5 +1,9 @@
 = 0.9.0 (unreleased)
 
+ * New "dump_errors" option controls whether the backtrace is dumped to
+   rack.errors when an exception is raised from a route. The option is
+   enabled by default for top-level apps.
+
  * New ":provides" route condition takes an array of mime types and
    matches only when an Accept request header is present with a
    corresponding type. [cypher]

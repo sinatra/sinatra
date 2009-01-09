@@ -411,6 +411,12 @@ module Sinatra
       invoke handler unless handler.nil?
     rescue ::Exception => boom
       @env['sinatra.error'] = boom
+
+      if options.dump_errors?
+        msg = ["#{boom.class} - #{boom.message}:", *boom.backtrace].join("\n ")
+        @env['rack.errors'] << msg
+      end
+
       raise boom if options.raise_errors?
       @response.status = 500
       invoke errmap[boom.class] || errmap[Exception]
@@ -660,6 +666,7 @@ module Sinatra
     end
 
     set :raise_errors, true
+    set :dump_errors, false
     set :sessions, false
     set :logging, false
     set :methodoverride, false
@@ -753,6 +760,7 @@ module Sinatra
 
   class Default < Base
     set :raise_errors, false
+    set :dump_errors, true
     set :sessions, false
     set :logging, true
     set :methodoverride, true
