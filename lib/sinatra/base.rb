@@ -70,7 +70,7 @@ module Sinatra
     def redirect(uri, *args)
       status 302
       response['Location'] = uri
-      halt *args
+      halt(*args)
     end
 
     # Halt processing and return the error status provided.
@@ -476,7 +476,7 @@ module Sinatra
           s !~ /\(.*\)/ }
         file = line.sub(/:\d+.*$/, '')
         if data = ::IO.read(file).split('__END__')[1]
-          data.gsub! /\r\n/, "\n"
+          data.gsub!(/\r\n/, "\n")
           template = nil
           data.each_line do |line|
             if line =~ /^@@\s*(.*)/

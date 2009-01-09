@@ -278,7 +278,7 @@ describe "Routing" do
 
   it "passes to the next route when user_agent does not match" do
     mock_app {
-      user_agent /Foo/
+      user_agent(/Foo/)
       get '/foo' do
         'Hello World'
       end
@@ -293,7 +293,7 @@ describe "Routing" do
 
   it "makes captures in user agent pattern available in params[:agent]" do
     mock_app {
-      user_agent /Foo (.*)/
+      user_agent(/Foo (.*)/)
       get '/foo' do
         'Hello ' + params[:agent].first
       end

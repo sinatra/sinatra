@@ -49,7 +49,7 @@ describe 'Sinatra::Base' do
 
   it 'can take multiple definitions of a route' do
     app = mock_app {
-      user_agent /Foo/
+      user_agent(/Foo/)
       get '/foo' do
         'foo'
       end

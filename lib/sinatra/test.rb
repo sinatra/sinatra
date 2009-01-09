@@ -10,6 +10,8 @@ module Sinatra::Test
     @app = Sinatra.new(base, &block)
   end
 
+  undef request if method_defined?(:request)
+
   def request(verb, path, *args)
     fail "@app not set - cannot make request" if @app.nil?
     @request = Rack::MockRequest.new(@app)
