@@ -46,4 +46,27 @@ describe 'Sinatra::Base' do
     response.should.be.ok
     response.body.should.equal 'Goodbye World'
   end
+
+  it 'can take multiple definitions of a route' do
+    app = mock_app {
+      user_agent /Foo/
+      get '/foo' do
+        'foo'
+      end
+
+      get '/foo' do
+        'not foo'
+      end
+    }
+
+    request = Rack::MockRequest.new(app)
+    response = request.get('/foo', 'HTTP_USER_AGENT' => 'Foo')
+    response.should.be.ok
+    response.body.should.equal 'foo'
+
+    request = Rack::MockRequest.new(app)
+    response = request.get('/foo')
+    response.should.be.ok
+    response.body.should.equal 'not foo'
+  end
 end

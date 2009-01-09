@@ -554,6 +554,8 @@ module Sinatra
         pattern, keys = compile(path)
         conditions, @conditions = @conditions, []
         method_name = "route { #{method} #{path} }"
+        nmethods = instance_methods.grep(rx = /#{Regexp.escape(method_name)}/).size
+        method_name += " [#{nmethods}]"
 
         define_method(method_name, &block)
 
