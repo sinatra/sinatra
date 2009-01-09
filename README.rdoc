@@ -443,8 +443,22 @@ your app:
 
   end
 
-See Sinatra::Test::Methods for more information on +get_it+, +post_it+,
-+put_it+, and friends.
+=== Bacon
+
+  require 'sinatra'
+  require 'sinatra/test/bacon'
+  require 'my_sinatra_app'
+
+  describe 'My app' do
+    it 'should be ok' do
+      get '/'
+      should.be.ok
+      body.should == 'Im OK'
+    end
+  end
+
+See Sinatra::Test for more information on +get+, +post+, +put+, and
+friends.
 
 == Command line
 

@@ -41,6 +41,9 @@
    has the status code specified. It's also possible to register an error
    page for a range of status codes: "error(500..599)".
 
+ * Added support for Bacon (test framework). The 'sinatra/test/bacon' file
+   can be required to setup Sinatra test helpers on Bacon::Context.
+
  * Deprecated "set_option" and "set_options"; use "set" instead.
 
  * Deprecated the "env" option ("options.env"); use "environment" instead.
