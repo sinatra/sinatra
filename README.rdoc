@@ -190,7 +190,7 @@ method:
   end
 
 Some times you'll want to render a specific template with or without a
-layout based on whether the request is Ajax or not:
+layout (i.e. if a request is Ajax or not).
 
   get '/' do
     haml :index, :layout => !request.xhr?
