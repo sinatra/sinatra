@@ -386,16 +386,12 @@ module Sinatra
         else
           @response.body = res
         end
-      when res.kind_of?(Symbol)  # TODO: deprecate this.
-        @response.body = __send__(res)
       when res.respond_to?(:each)
         @response.body = res
       when (100...599) === res
         @response.status = res
       when res.nil?
         @response.body = []
-      else
-        raise TypeError, "#{res.inspect} not supported"
       end
       res
     end

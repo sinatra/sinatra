@@ -102,6 +102,23 @@ module Sinatra
       super(path, opts)
     end
 
+    # Throwing halt with a Symbol and the to_result convention are
+    # deprecated. Override the invoke method to detect those types of return
+    # values.
+    def invoke(handler)
+      res = super
+      case
+      when res.kind_of?(Symbol)
+        sinatra_warn "Invoking the :#{res} helper by returning a Symbol is deprecated;",
+          "call the helper directly instead."
+        @response.body = __send__(res)
+      when res.respond_to?(:to_result)
+        sinatra_warn "The to_result convention is deprecated."
+        @response.body = res.to_result(self)
+      end
+      res
+    end
+
     def options
       Options.new(self.class)
     end
