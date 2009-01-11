@@ -1,31 +1,37 @@
 = 0.9.0 (unreleased)
 
- * New "dump_errors" option controls whether the backtrace is dumped to
-   rack.errors when an exception is raised from a route. The option is
-   enabled by default for top-level apps.
+ * Works with and requires Rack >= 0.9.1
+
+ * Multiple Sinatra applications can now co-exist peacefully within a
+   single process. The new "Sinatra::Base" class can be subclassed to
+   establish a blank-slate Rack application or middleware component.
+   Documentation on using these features is forth-coming; the following
+   provides the basic gist: http://gist.github.com/38605
+
+ * Regular expressions may now be used in route pattens; captures are
+   available at "params[:captures]".
 
  * New ":provides" route condition takes an array of mime types and
    matches only when an Accept request header is present with a
    corresponding type. [cypher]
 
- * Work with and require Rack >= 0.9
-
- * Regular expressions may now be used in route pattens; captures are
-   available at "params[:captures]".
+ * New request-level "pass" method; immediately exits the current block
+   and passes control to the next matching route.
 
  * The request-level "body" method now takes a block; evaluation is
    deferred until an attempt is made to read the body. The block must
    return a String or Array.
 
- * Better default "app_file", "root", "public", and "views" location
-   detection; changes to "root" and "app_file" automatically cascade to
-   other options that depend on them.
-
  * New "route conditions" system for attaching rules for when a route
    matches. The :agent and :host route options now use this system.
 
- * New request-level "pass" method; immediately exits the current block
-   and passes control to the next matching route.
+ * New "dump_errors" option controls whether the backtrace is dumped to
+   rack.errors when an exception is raised from a route. The option is
+   enabled by default for top-level apps.
+
+ * Better default "app_file", "root", "public", and "views" location
+   detection; changes to "root" and "app_file" automatically cascade to
+   other options that depend on them.
 
  * Error mappings are now split into two distinct layers: exception
    mappings and custom error pages. Exception mappings are registered
