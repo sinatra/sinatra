@@ -469,6 +469,10 @@ module Sinatra
         end
       end
 
+      def not_found(&block)
+        error 404, &block
+      end
+
       def template(name, &block)
         templates[name] = block
       end

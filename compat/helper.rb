@@ -1,6 +1,9 @@
 require 'rubygems'
 require 'mocha'
 
+# disable warnings in compat specs.
+$VERBOSE = nil
+
 $:.unshift File.dirname(File.dirname(__FILE__)) + "/lib"
 
 ENV['RACK_ENV'] ||= 'test'
