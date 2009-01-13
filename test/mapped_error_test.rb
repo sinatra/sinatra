@@ -100,6 +100,17 @@ describe 'Exception Mappings' do
     body.should.equal 'foo! not found.'
   end
 
+  it 'has a not_found method for backwards compatibility' do
+    mock_app {
+      not_found do
+        "Lost, are we?"
+      end
+    }
+
+    get '/test'
+    status.should.equal 404
+    body.should.equal "Lost, are we?"
+  end
 end
 
 describe 'Custom Error Pages' do
