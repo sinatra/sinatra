@@ -85,13 +85,19 @@ module Sinatra
     if defined? Sinatra::Compat
       # Deprecated. Use: "get" instead of "get_it".
       %w(get head post put delete).each do |verb|
-        alias_method "#{verb}_it", verb
+        eval <<-RUBY, binding, __FILE__, __LINE__
+        def #{verb}_it(*args, &block)
+          sinatra_warn "The #{verb}_it method is deprecated; use #{verb} instead."
+          test_request('#{verb.upcase}', *args, &block)
+        end
+        RUBY
       end
 
       # Deprecated. Tests no longer delegate missing methods to the
       # mock response. Use: @response
       def method_missing(name, *args, &block)
         if @response && @response.respond_to?(name)
+          sinatra_warn "The #{name} method is deprecated; use @response.#{name} instead."
           @response.send(name, *args, &block)
         else
           super

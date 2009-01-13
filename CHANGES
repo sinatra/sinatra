@@ -68,6 +68,10 @@
    treated as internal server errors and result in a 500 response
    status.
 
+ * Deprecated the "get_it", "post_it", "put_it", "delete_it", and "head_it"
+   test helper methods. Use "get", "post", "put", "delete", and "head",
+   respectively, instead.
+
  * Removed Event and EventContext classes. Applications are defined in a
    subclass of Sinatra::Base; each request is processed within an
    instance.
