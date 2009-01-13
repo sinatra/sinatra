@@ -10,7 +10,9 @@ require 'sinatra/main'
 
 # Like Kernel#warn but outputs the location that triggered the warning.
 def sinatra_warn(*message)
-  line = caller[1].sub(/:in .*/, '')
+  line = caller.
+    detect { |line| line !~ /(?:lib\/sinatra\/|__DELEGATE__)/ }.
+    sub(/:in .*/, '')
   warn "#{line}: warning: #{message.join(' ')}"
 end
 
