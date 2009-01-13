@@ -1,10 +1,6 @@
-require 'test/spec'
-require 'sinatra/base'
-require 'sinatra/test'
+require File.dirname(__FILE__) + '/helper'
 
 describe 'Templating' do
-  include Sinatra::Test
-
   def render_app(&block)
     mock_app {
       def render_test(template, data, options, &block)

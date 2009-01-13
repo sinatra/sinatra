@@ -1,10 +1,6 @@
-require 'test/spec'
-require 'sinatra/base'
-require 'sinatra/test'
+require File.dirname(__FILE__) + '/helper'
 
 describe "ERB Templates" do
-  include Sinatra::Test
-
   def erb_app(&block)
     mock_app {
       set :views, File.dirname(__FILE__) + '/views'

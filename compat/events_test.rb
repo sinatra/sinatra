@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
 context "Simple Events" do
-
   def simple_request_hash(method, path)
     Rack::Request.new({
       'REQUEST_METHOD' => method.to_s.upcase,
@@ -14,15 +13,15 @@ context "Simple Events" do
 
   def invoke_simple(path, request_path, &b)
     params = nil
-    mock_app {
-      get path do
-        params = self.params
-        b.call if b
-      end
-    }
+    get path do
+      params = self.params
+      b.call if b
+    end
     get_it request_path
     MockResult.new(b, params)
   end
+
+  setup { Sinatra.application = nil }
 
   specify "return last value" do
     block = Proc.new { 'Simple' }
@@ -38,6 +37,7 @@ context "Simple Events" do
     result.params.should.equal "foo" => 'a', "bar" => 'b'
 
     # unscapes
+    Sinatra.application = nil
     result = invoke_simple('/:foo/:bar', '/a/blake%20mizerany')
     result.should.not.be.nil
     result.params.should.equal "foo" => 'a', "bar" => 'blake mizerany'
@@ -48,14 +48,17 @@ context "Simple Events" do
     result.should.not.be.nil
     result.params.should.equal "foo" => 'a', "bar" => 'b'
 
+    Sinatra.application = nil
     result = invoke_simple('/?:foo?/?:bar?', '/a/')
     result.should.not.be.nil
     result.params.should.equal "foo" => 'a', "bar" => nil
 
+    Sinatra.application = nil
     result = invoke_simple('/?:foo?/?:bar?', '/a')
     result.should.not.be.nil
     result.params.should.equal "foo" => 'a', "bar" => nil
 
+    Sinatra.application = nil
     result = invoke_simple('/:foo?/?:bar?', '/')
     result.should.not.be.nil
     result.params.should.equal "foo" => nil, "bar" => nil

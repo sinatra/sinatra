@@ -1,5 +1,5 @@
-require 'test/unit'
 require 'sinatra/test'
+require 'test/unit'
 
 Test::Unit::TestCase.send :include, Sinatra::Test
 

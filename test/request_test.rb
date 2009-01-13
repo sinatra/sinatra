@@ -1,6 +1,4 @@
-require 'test/spec'
-require 'sinatra/base'
-require 'sinatra/test'
+require File.dirname(__FILE__) + '/helper'
 
 describe 'Sinatra::Request' do
   it 'responds to #user_agent' do

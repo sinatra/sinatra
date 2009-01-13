@@ -1,13 +1,7 @@
-require 'test/spec'
-require 'sinatra/base'
-require 'sinatra/test'
+require File.dirname(__FILE__) + '/helper'
 
 describe 'Options' do
-  include Sinatra::Test
-
-  before do
-    @app = Class.new(Sinatra::Base)
-  end
+  before { @app = Class.new(Sinatra::Base) }
 
   it 'sets options to literal values' do
     @app.set(:foo, 'bar')

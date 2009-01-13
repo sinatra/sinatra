@@ -1,10 +1,6 @@
-require 'test/spec'
-require 'sinatra/base'
-require 'sinatra/test'
+require File.dirname(__FILE__) + '/helper'
 
 describe "Middleware" do
-  include Sinatra::Test
-
   before do
     @app = mock_app(Sinatra::Default) {
       get '/*' do

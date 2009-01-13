@@ -1,10 +1,4 @@
-require 'test/spec'
-require 'sinatra/base'
-require 'sinatra/test'
-
-class Test::Unit::TestCase
-  include Sinatra::Test
-end
+require File.dirname(__FILE__) + '/helper'
 
 describe 'Sinatra::Helpers' do
   describe '#status' do

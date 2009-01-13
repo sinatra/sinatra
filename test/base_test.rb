@@ -1,10 +1,6 @@
-require 'test/spec'
-require 'sinatra/base'
-require 'sinatra/test'
+require File.dirname(__FILE__) + '/helper'
 
 describe 'Sinatra::Base' do
-  include Sinatra::Test
-
   it 'includes Rack::Utils' do
     Sinatra::Base.should.include Rack::Utils
   end

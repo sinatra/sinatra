@@ -1,6 +1,4 @@
-require 'test/spec'
-require 'sinatra/base'
-require 'sinatra/test'
+require File.dirname(__FILE__) + '/helper'
 
 describe 'Sinatra' do
   it 'creates a new Sinatra::Base subclass on new' do

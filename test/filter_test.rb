@@ -1,10 +1,6 @@
-require 'test/spec'
-require 'sinatra/base'
-require 'sinatra/test'
+require File.dirname(__FILE__) + '/helper'
 
 describe "Filters" do
-  include Sinatra::Test
-
   it "executes filters in the order defined" do
     count = 0
     mock_app do

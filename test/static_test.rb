@@ -1,13 +1,10 @@
-require 'test/spec'
-require 'sinatra/base'
-require 'sinatra/test'
+require File.dirname(__FILE__) + '/helper'
 
 describe 'Static' do
-  include Sinatra::Test
   F = ::File
 
   before do
-    @app = mock_app {
+    mock_app {
       set :static, true
       set :public, F.dirname(__FILE__)
     }

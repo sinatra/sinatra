@@ -1,10 +1,6 @@
-require 'test/spec'
-require 'sinatra/base'
-require 'sinatra/test'
+require File.dirname(__FILE__) + '/helper'
 
 describe "Routing" do
-  include Sinatra::Test
-
   %w[get put post delete head].each do |verb|
     it "defines #{verb.upcase} request handlers with #{verb}" do
       mock_app {

@@ -1,10 +1,6 @@
-require 'test/spec'
-require 'sinatra/base'
-require 'sinatra/test'
+require File.dirname(__FILE__) + '/helper'
 
 describe 'Exception Mappings' do
-  include Sinatra::Test
-
   class FooError < RuntimeError
   end
 

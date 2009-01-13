@@ -1,10 +1,6 @@
-require 'test/spec'
-require 'sinatra/base'
-require 'sinatra/test'
+require File.dirname(__FILE__) + '/helper'
 
 describe "Builder Templates" do
-  include Sinatra::Test
-
   def builder_app(&block)
     mock_app {
       set :views, File.dirname(__FILE__) + '/views'

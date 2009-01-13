@@ -1,10 +1,6 @@
-require 'test/spec'
-require 'sinatra/base'
-require 'sinatra/test'
+require File.dirname(__FILE__) + '/helper'
 
 describe 'Result Handling' do
-  include Sinatra::Test
-
   it "sets response.body when result is a String" do
     mock_app {
       get '/' do

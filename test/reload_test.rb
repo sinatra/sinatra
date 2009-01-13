@@ -1,13 +1,9 @@
-require 'test/spec'
-require 'sinatra/base'
-require 'sinatra/test'
+require File.dirname(__FILE__) + '/helper'
 
 $reload_count = 0
 $reload_app = nil
 
 describe "Reloading" do
-  include Sinatra::Test
-
   before {
     @app = mock_app(Sinatra::Default)
     $reload_app = @app
