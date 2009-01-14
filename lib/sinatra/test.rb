@@ -48,12 +48,16 @@ module Sinatra
       test_request 'GET', @response.location
     end
 
-    def body
-      @response.body
-    end
+    def body ; @response.body ; end
+    def status ; @response.status ; end
 
-    def status
-      @response.status
+    # Delegate other missing methods to @response.
+    def method_missing(name, *args, &block)
+      if @response && @response.respond_to?(name)
+        @response.send(name, *args, &block)
+      else
+        super
+      end
     end
 
     RACK_OPT_NAMES = {
@@ -91,17 +95,6 @@ module Sinatra
           test_request('#{verb.upcase}', *args, &block)
         end
         RUBY
-      end
-
-      # Deprecated. Tests no longer delegate missing methods to the
-      # mock response. Use: @response
-      def method_missing(name, *args, &block)
-        if @response && @response.respond_to?(name)
-          sinatra_warn "The #{name} method is deprecated; use @response.#{name} instead."
-          @response.send(name, *args, &block)
-        else
-          super
-        end
       end
     end
   end
