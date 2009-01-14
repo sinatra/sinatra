@@ -6,19 +6,19 @@ describe "Filters" do
     mock_app do
       get('/') { 'Hello World' }
       before {
-        count.should.be 0
+        fail 'count != 0' if count != 0
         count = 1
       }
       before {
-        count.should.be 1
+        fail 'count != 1' if count != 1
         count = 2
       }
     end
 
     get '/'
-    should.be.ok
-    count.should.be 2
-    body.should.equal 'Hello World'
+    assert ok?
+    assert_equal 2, count
+    assert_equal 'Hello World', body
   end
 
   it "allows filters to modify the request" do
@@ -29,7 +29,7 @@ describe "Filters" do
     }
 
     get '/foo'
-    should.be.ok
-    body.should.be == 'bar'
+    assert ok?
+    assert_equal 'bar', body
   end
 end

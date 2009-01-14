@@ -27,8 +27,8 @@ describe "Middleware" do
   it "is added with Sinatra::Application.use" do
     @app.use UpcaseMiddleware
     get '/hello-world'
-    response.should.be.ok
-    body.should.equal '/HELLO-WORLD'
+    assert ok?
+    assert_equal '/HELLO-WORLD', body
   end
 
   class DowncaseMiddleware < MockMiddleware
@@ -42,18 +42,17 @@ describe "Middleware" do
     @app.use UpcaseMiddleware
     @app.use DowncaseMiddleware
     get '/Foo'
-    body.should.equal "/foo"
-    response['X-Tests'].should.equal "UpcaseMiddleware, DowncaseMiddleware"
+    assert_equal "/foo", body
+    assert_equal "UpcaseMiddleware, DowncaseMiddleware", response['X-Tests']
   end
 
   specify "resets the prebuilt pipeline when new middleware is added" do
     @app.use UpcaseMiddleware
     get '/Foo'
-    body.should.equal "/FOO"
+    assert_equal "/FOO", body
     @app.use DowncaseMiddleware
     get '/Foo'
-    body.should.equal '/foo'
-    response['X-Tests'].should.equal "UpcaseMiddleware, DowncaseMiddleware"
+    assert_equal '/foo', body
+    assert_equal "UpcaseMiddleware, DowncaseMiddleware", response['X-Tests']
   end
-
 end

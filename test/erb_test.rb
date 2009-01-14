@@ -11,14 +11,14 @@ describe "ERB Templates" do
 
   it 'renders inline ERB strings' do
     erb_app { erb '<%= 1 + 1 %>' }
-    should.be.ok
-    body.should.equal '2'
+    assert ok?
+    assert_equal '2', body
   end
 
   it 'renders .erb files in views path' do
     erb_app { erb :hello }
-    should.be.ok
-    body.should.equal "Hello World\n"
+    assert ok?
+    assert_equal "Hello World\n", body
   end
 
   it 'takes a :locals option' do
@@ -26,8 +26,8 @@ describe "ERB Templates" do
       locals = {:foo => 'Bar'}
       erb '<%= foo %>', :locals => locals
     }
-    should.be.ok
-    body.should.equal 'Bar'
+    assert ok?
+    assert_equal 'Bar', body
   end
 
   it "renders with inline layouts" do
@@ -36,16 +36,15 @@ describe "ERB Templates" do
       get('/') { erb 'Sparta' }
     }
     get '/'
-    should.be.ok
-    body.should.equal 'THIS. IS. SPARTA!'
+    assert ok?
+    assert_equal 'THIS. IS. SPARTA!', body
   end
 
   it "renders with file layouts" do
     erb_app {
       erb 'Hello World', :layout => :layout2
     }
-    should.be.ok
-    body.should.equal "ERB Layout!\nHello World\n"
+    assert ok?
+    assert_equal "ERB Layout!\nHello World\n", body
   end
-
 end

@@ -11,8 +11,8 @@ describe "Builder Templates" do
 
   it 'renders inline Builder strings' do
     builder_app { builder 'xml.instruct!' }
-    should.be.ok
-    body.should.equal %{<?xml version="1.0" encoding="UTF-8"?>\n}
+    assert ok?
+    assert_equal %{<?xml version="1.0" encoding="UTF-8"?>\n}, body
   end
 
   it 'renders inline blocks' do
@@ -22,8 +22,8 @@ describe "Builder Templates" do
         xml.couple @name
       end
     }
-    should.be.ok
-    body.should.equal "<couple>Frank &amp; Mary</couple>\n"
+    assert ok?
+    assert_equal "<couple>Frank &amp; Mary</couple>\n", body
   end
 
   it 'renders .builder files in views path' do
@@ -31,8 +31,8 @@ describe "Builder Templates" do
       @name = "Blue"
       builder :hello
     }
-    should.be.ok
-    body.should.equal %(<exclaim>You're my boy, Blue!</exclaim>\n)
+    assert ok?
+    assert_equal %(<exclaim>You're my boy, Blue!</exclaim>\n), body
   end
 
   it "renders with inline layouts" do
@@ -43,22 +43,22 @@ describe "Builder Templates" do
       get('/') { builder %(xml.em 'Hello World') }
     }
     get '/'
-    should.be.ok
-    body.should.equal "<layout>\n<em>Hello World</em>\n</layout>\n"
+    assert ok?
+    assert_equal "<layout>\n<em>Hello World</em>\n</layout>\n", body
   end
 
   it "renders with file layouts" do
     builder_app {
       builder %(xml.em 'Hello World'), :layout => :layout2
     }
-    should.be.ok
-    body.should.equal "<layout>\n<em>Hello World</em>\n</layout>\n"
+    assert ok?
+    assert_equal "<layout>\n<em>Hello World</em>\n</layout>\n", body
   end
 
   it "raises error if template not found" do
     mock_app {
       get('/') { builder :no_such_template }
     }
-    lambda { get('/') }.should.raise(Errno::ENOENT)
+    assert_raise(Errno::ENOENT) { get('/') }
   end
 end

@@ -9,8 +9,8 @@ describe 'Result Handling' do
     }
 
     get '/'
-    should.be.ok
-    body.should.equal 'Hello World'
+    assert ok?
+    assert_equal 'Hello World', body
   end
 
   it "sets response.body when result is an Array of Strings" do
@@ -21,8 +21,8 @@ describe 'Result Handling' do
     }
 
     get '/'
-    should.be.ok
-    body.should.equal 'HelloWorld'
+    assert ok?
+    assert_equal 'HelloWorld', body
   end
 
   it "sets response.body when result responds to #each" do
@@ -35,8 +35,8 @@ describe 'Result Handling' do
     }
 
     get '/'
-    should.be.ok
-    body.should.equal 'Hello World'
+    assert ok?
+    assert_equal 'Hello World', body
   end
 
   it "sets response.body to [] when result is nil" do
@@ -47,8 +47,8 @@ describe 'Result Handling' do
     }
 
     get '/'
-    should.be.ok
-    body.should.equal ''
+    assert ok?
+    assert_equal '', body
   end
 
   it "sets status, headers, and body when result is a Rack response tuple" do
@@ -59,9 +59,9 @@ describe 'Result Handling' do
     }
 
     get '/'
-    status.should.equal 205
-    response['Content-Type'].should.equal 'foo/bar'
-    body.should.equal 'Hello World'
+    assert_equal 205, status
+    assert_equal 'foo/bar', response['Content-Type']
+    assert_equal 'Hello World', body
   end
 
   it "sets status and body when result is a two-tuple" do
@@ -72,8 +72,8 @@ describe 'Result Handling' do
     }
 
     get '/'
-    status.should.equal 409
-    body.should.equal 'formula of'
+    assert_equal 409, status
+    assert_equal 'formula of', body
   end
 
   it "sets status when result is a Fixnum status code" do
@@ -82,7 +82,7 @@ describe 'Result Handling' do
     }
 
     get '/'
-    status.should.equal 205
-    body.should.be.empty
+    assert_equal 205, status
+    assert_equal '', body
   end
 end

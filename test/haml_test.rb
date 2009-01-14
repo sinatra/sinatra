@@ -11,14 +11,14 @@ describe "HAML Templates" do
 
   it 'renders inline HAML strings' do
     haml_app { haml '%h1 Hiya' }
-    should.be.ok
-    body.should.equal "<h1>Hiya</h1>\n"
+    assert ok?
+    assert_equal "<h1>Hiya</h1>\n", body
   end
 
   it 'renders .haml files in views path' do
     haml_app { haml :hello }
-    should.be.ok
-    body.should.equal "<h1>Hello From Haml</h1>\n"
+    assert ok?
+    assert_equal "<h1>Hello From Haml</h1>\n", body
   end
 
   it "renders with inline layouts" do
@@ -27,31 +27,31 @@ describe "HAML Templates" do
       get('/') { haml '%em Sparta' }
     }
     get '/'
-    should.be.ok
-    body.should.equal "<h1>THIS. IS. <EM>SPARTA</EM></h1>\n"
+    assert ok?
+    assert_equal "<h1>THIS. IS. <EM>SPARTA</EM></h1>\n", body
   end
 
   it "renders with file layouts" do
     haml_app {
       haml 'Hello World', :layout => :layout2
     }
-    should.be.ok
-    body.should.equal "<h1>HAML Layout!</h1>\n<p>Hello World</p>\n"
+    assert ok?
+    assert_equal "<h1>HAML Layout!</h1>\n<p>Hello World</p>\n", body
   end
 
   it "raises error if template not found" do
     mock_app {
       get('/') { haml :no_such_template }
     }
-    lambda { get('/') }.should.raise(Errno::ENOENT)
+    assert_raise(Errno::ENOENT) { get('/') }
   end
 
   it "passes HAML options to the Haml engine" do
     haml_app {
       haml "!!!\n%h1 Hello World", :options => {:format => :html5}
     }
-    should.be.ok
-    body.should.equal "<!DOCTYPE html>\n<h1>Hello World</h1>\n"
+    assert ok?
+    assert_equal "<!DOCTYPE html>\n<h1>Hello World</h1>\n", body
   end
 
   it "passes default HAML options to the Haml engine" do
@@ -62,7 +62,7 @@ describe "HAML Templates" do
       end
     }
     get '/'
-    should.be.ok
-    body.should.equal "<!DOCTYPE html>\n<h1>Hello World</h1>\n"
+    assert ok?
+    assert_equal "<!DOCTYPE html>\n<h1>Hello World</h1>\n", body
   end
 end

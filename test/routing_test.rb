@@ -11,8 +11,8 @@ describe "Routing" do
 
       request = Rack::MockRequest.new(@app)
       response = request.request(verb.upcase, '/hello', {})
-      response.should.be.ok
-      response.body.should.equal 'Hello World'
+      assert response.ok?
+      assert_equal 'Hello World', response.body
     end
   end
 
@@ -21,30 +21,30 @@ describe "Routing" do
       get('/foo') { }
     }
     get '/bar'
-    status.should.equal 404
+    assert_equal 404, status
   end
 
   it "exposes params with indifferent hash" do
     mock_app {
       get '/:foo' do
-        params['foo'].should.equal 'bar'
-        params[:foo].should.equal 'bar'
+        fail unless params['foo'] == 'bar'
+        fail unless params[:foo] == 'bar'
         'well, alright'
       end
     }
     get '/bar'
-    body.should.equal 'well, alright'
+    assert_equal 'well, alright', body
   end
 
   it "merges named params and query string params in params" do
     mock_app {
       get '/:foo' do
-        params['foo'].should.equal 'bar'
-        params['baz'].should.equal 'biz'
+        fail unless params['foo'] == 'bar'
+        fail unless params['baz'] == 'biz'
       end
     }
     get '/bar?baz=biz'
-    should.be.ok
+    assert ok?
   end
 
   it "supports named params like /hello/:person" do
@@ -54,7 +54,7 @@ describe "Routing" do
       end
     }
     get '/hello/Frank'
-    body.should.equal 'Hello Frank'
+    assert_equal 'Hello Frank', body
   end
 
   it "supports optional named params like /?:foo?/?:bar?" do
@@ -65,58 +65,58 @@ describe "Routing" do
     }
 
     get '/hello/world'
-    should.be.ok
-    body.should.equal "foo=hello;bar=world"
+    assert ok?
+    assert_equal "foo=hello;bar=world", body
 
     get '/hello'
-    should.be.ok
-    body.should.equal "foo=hello;bar="
+    assert ok?
+    assert_equal "foo=hello;bar=", body
 
     get '/'
-    should.be.ok
-    body.should.equal "foo=;bar="
+    assert ok?
+    assert_equal "foo=;bar=", body
   end
 
   it "supports single splat params like /*" do
     mock_app {
       get '/*' do
-        params['splat'].should.be.kind_of Array
+        fail unless params['splat'].kind_of?(Array)
         params['splat'].join "\n"
       end
     }
 
     get '/foo'
-    body.should.equal "foo"
+    assert_equal "foo", body
 
     get '/foo/bar/baz'
-    body.should.equal "foo/bar/baz"
+    assert_equal "foo/bar/baz", body
   end
 
   it "supports mixing multiple splat params like /*/foo/*/*" do
     mock_app {
       get '/*/foo/*/*' do
-        params['splat'].should.be.kind_of Array
+        fail unless params['splat'].kind_of?(Array)
         params['splat'].join "\n"
       end
     }
 
     get '/bar/foo/bling/baz/boom'
-    body.should.equal "bar\nbling\nbaz/boom"
+    assert_equal "bar\nbling\nbaz/boom", body
 
     get '/bar/foo/baz'
-    should.be.not_found
+    assert not_found?
   end
 
   it "supports mixing named and splat params like /:foo/*" do
     mock_app {
       get '/:foo/*' do
-        params['foo'].should.equal 'foo'
-        params['splat'].should.equal ['bar/baz']
+        fail unless params['foo'] == 'foo'
+        fail unless params['splat'] == ['bar/baz']
       end
     }
 
     get '/foo/bar/baz'
-    should.be.ok
+    assert ok?
   end
 
   it "supports paths that include spaces" do
@@ -127,21 +127,21 @@ describe "Routing" do
     }
 
     get '/path%20with%20spaces'
-    should.be.ok
-    body.should.equal 'looks good'
+    assert ok?
+    assert_equal 'looks good', body
   end
 
   it "URL decodes named parameters and splats" do
     mock_app {
       get '/:foo/*' do
-        params['foo'].should.equal 'hello world'
-        params['splat'].should.equal ['how are you']
+        fail unless params['foo'] == 'hello world'
+        fail unless params['splat'] == ['how are you']
         nil
       end
     }
 
     get '/hello%20world/how%20are%20you'
-    should.be.ok
+    assert ok?
   end
 
   it 'supports regular expressions' do
@@ -152,21 +152,21 @@ describe "Routing" do
     }
 
     get '/foooom/bar'
-    should.be.ok
-    body.should.equal 'Hello World'
+    assert ok?
+    assert_equal 'Hello World', body
   end
 
   it 'makes regular expression captures available in params[:captures]' do
     mock_app {
       get(/^\/fo(.*)\/ba(.*)/) do
-        params[:captures].should.equal ['orooomma', 'f']
+        fail unless params[:captures] == ['orooomma', 'f']
         'right on'
       end
     }
 
     get '/foorooomma/baf'
-    should.be.ok
-    body.should.equal 'right on'
+    assert ok?
+    assert_equal 'right on', body
   end
 
   it "returns response immediately on halt" do
@@ -178,8 +178,8 @@ describe "Routing" do
     }
 
     get '/'
-    should.be.ok
-    body.should.equal 'Hello World'
+    assert ok?
+    assert_equal 'Hello World', body
   end
 
   it "transitions to the next matching route on pass" do
@@ -190,14 +190,14 @@ describe "Routing" do
       end
 
       get '/*' do
-        params.should.not.include 'foo'
+        fail if params.include?('foo')
         'Hello World'
       end
     }
 
     get '/bar'
-    should.be.ok
-    body.should.equal 'Hello World'
+    assert ok?
+    assert_equal 'Hello World', body
   end
 
   it "transitions to 404 when passed and no subsequent route matches" do
@@ -209,7 +209,7 @@ describe "Routing" do
     }
 
     get '/bar'
-    should.be.not_found
+    assert not_found?
   end
 
   it "passes when matching condition returns false" do
@@ -221,11 +221,11 @@ describe "Routing" do
     }
 
     get '/bar'
-    should.be.ok
-    body.should.equal 'Hello World'
+    assert ok?
+    assert_equal 'Hello World', body
 
     get '/foo'
-    should.be.not_found
+    assert not_found?
   end
 
   it "does not pass when matching condition returns nil" do
@@ -237,8 +237,8 @@ describe "Routing" do
     }
 
     get '/bar'
-    should.be.ok
-    body.should.equal 'Hello World'
+    assert ok?
+    assert_equal 'Hello World', body
   end
 
   it "passes to next route when condition calls pass explicitly" do
@@ -250,11 +250,11 @@ describe "Routing" do
     }
 
     get '/bar'
-    should.be.ok
-    body.should.equal 'Hello World'
+    assert ok?
+    assert_equal 'Hello World', body
 
     get '/foo'
-    should.be.not_found
+    assert not_found?
   end
 
   it "passes to the next route when host_name does not match" do
@@ -265,11 +265,11 @@ describe "Routing" do
       end
     }
     get '/foo'
-    should.be.not_found
+    assert not_found?
 
     get '/foo', :env => { 'HTTP_HOST' => 'example.com' }
-    status.should.equal 200
-    body.should.equal 'Hello World'
+    assert_equal 200, status
+    assert_equal 'Hello World', body
   end
 
   it "passes to the next route when user_agent does not match" do
@@ -280,11 +280,11 @@ describe "Routing" do
       end
     }
     get '/foo'
-    should.be.not_found
+    assert not_found?
 
     get '/foo', :env => { 'HTTP_USER_AGENT' => 'Foo Bar' }
-    status.should.equal 200
-    body.should.equal 'Hello World'
+    assert_equal 200, status
+    assert_equal 'Hello World', body
   end
 
   it "makes captures in user agent pattern available in params[:agent]" do
@@ -295,8 +295,8 @@ describe "Routing" do
       end
     }
     get '/foo', :env => { 'HTTP_USER_AGENT' => 'Foo Bar' }
-    status.should.equal 200
-    body.should.equal 'Hello Bar'
+    assert_equal 200, status
+    assert_equal 'Hello Bar', body
   end
 
   it "filters by accept header" do
@@ -307,12 +307,12 @@ describe "Routing" do
     }
 
     get '/', :env => { :accept => 'application/xml' }
-    should.be.ok
-    body.should.equal 'application/xml'
-    response.headers['Content-Type'].should.equal 'application/xml'
+    assert ok?
+    assert_equal 'application/xml', body
+    assert_equal 'application/xml', response.headers['Content-Type']
 
     get '/', :env => { :accept => 'text/html' }
-    should.not.be.ok
+    assert !ok?
   end
 
   it "allows multiple mime types for accept header" do
@@ -326,9 +326,9 @@ describe "Routing" do
 
     types.each do |type|
       get '/', :env => { :accept => type }
-      should.be.ok
-      body.should.equal type
-      response.headers['Content-Type'].should.equal type
+      assert ok?
+      assert_equal type, body
+      assert_equal type, response.headers['Content-Type']
     end
   end
 end

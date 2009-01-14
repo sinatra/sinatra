@@ -13,7 +13,7 @@ describe 'Sinatra::Helpers' do
 
     it 'sets the response status code' do
       get '/'
-      response.status.should.equal 207
+      assert_equal 207, response.status
     end
   end
 
@@ -26,7 +26,7 @@ describe 'Sinatra::Helpers' do
       }
 
       get '/'
-      body.should.equal 'Hello World'
+      assert_equal 'Hello World', body
     end
 
     it 'takes a String, Array, or other object responding to #each' do
@@ -37,7 +37,7 @@ describe 'Sinatra::Helpers' do
       }
 
       get '/'
-      body.should.equal 'Hello World'
+      assert_equal 'Hello World', body
     end
   end
 
@@ -51,9 +51,9 @@ describe 'Sinatra::Helpers' do
       }
 
       get '/'
-      status.should.equal 302
-      body.should.be.empty
-      response['Location'].should.equal '/foo'
+      assert_equal 302, status
+      assert_equal '', body
+      assert_equal '/foo', response['Location']
     end
 
     it 'uses the code given when specified' do
@@ -65,9 +65,9 @@ describe 'Sinatra::Helpers' do
       }
 
       get '/'
-      status.should.equal 301
-      body.should.be.empty
-      response['Location'].should.equal '/foo'
+      assert_equal 301, status
+      assert_equal '', body
+      assert_equal '/foo', response['Location']
     end
   end
 
@@ -81,8 +81,8 @@ describe 'Sinatra::Helpers' do
       }
 
       get '/'
-      status.should.equal 501
-      body.should.be.empty
+      assert_equal 501, status
+      assert_equal '', body
     end
 
     it 'takes an optional body' do
@@ -94,8 +94,8 @@ describe 'Sinatra::Helpers' do
       }
 
       get '/'
-      status.should.equal 501
-      body.should.equal 'FAIL'
+      assert_equal 501, status
+      assert_equal 'FAIL', body
     end
 
     it 'uses a 500 status code when first argument is a body' do
@@ -107,8 +107,8 @@ describe 'Sinatra::Helpers' do
       }
 
       get '/'
-      status.should.equal 500
-      body.should.equal 'FAIL'
+      assert_equal 500, status
+      assert_equal 'FAIL', body
     end
   end
 
@@ -122,8 +122,8 @@ describe 'Sinatra::Helpers' do
       }
 
       get '/'
-      status.should.equal 404
-      body.should.be.empty
+      assert_equal 404, status
+      assert_equal '', body
     end
   end
 
@@ -136,20 +136,20 @@ describe 'Sinatra::Helpers' do
       }
 
       get '/', :env => { 'rack.session' => { :foo => 'bar' } }
-      body.should.equal 'bar'
+      assert_equal 'bar', body
     end
 
     it 'creates a new session when none provided' do
       mock_app {
         get '/' do
-          session.should.be.empty
+          fail "session != {}" unless session.empty?
           session[:foo] = 'bar'
           'Hi'
         end
       }
 
       get '/'
-      body.should.equal 'Hi'
+      assert_equal 'Hi', body
     end
   end
 
@@ -157,18 +157,18 @@ describe 'Sinatra::Helpers' do
     include Sinatra::Helpers
     it "looks up media types in Rack's MIME registry" do
       Rack::Mime::MIME_TYPES['.foo'] = 'application/foo'
-      media_type('foo').should.equal 'application/foo'
-      media_type('.foo').should.equal 'application/foo'
-      media_type(:foo).should.equal 'application/foo'
+      assert_equal 'application/foo', media_type('foo')
+      assert_equal 'application/foo', media_type('.foo')
+      assert_equal 'application/foo', media_type(:foo)
     end
     it 'returns nil when given nil' do
-      media_type(nil).should.be.nil
+      assert media_type(nil).nil?
     end
     it 'returns nil when media type not registered' do
-      media_type(:bizzle).should.be.nil
+      assert media_type(:bizzle).nil?
     end
     it 'returns the argument when given a media type string' do
-      media_type('text/plain').should.equal 'text/plain'
+      assert_equal 'text/plain', media_type('text/plain')
     end
   end
 
@@ -182,8 +182,8 @@ describe 'Sinatra::Helpers' do
       }
 
       get '/'
-      response['Content-Type'].should.equal 'text/plain'
-      body.should.equal 'Hello World'
+      assert_equal 'text/plain', response['Content-Type']
+      assert_equal 'Hello World', body
     end
 
     it 'takes media type parameters (like charset=)' do
@@ -195,9 +195,9 @@ describe 'Sinatra::Helpers' do
       }
 
       get '/'
-      should.be.ok
-      response['Content-Type'].should.equal 'text/html;charset=utf-8'
-      body.should.equal "<h1>Hello, World</h1>"
+      assert ok?
+      assert_equal 'text/html;charset=utf-8', response['Content-Type']
+      assert_equal "<h1>Hello, World</h1>", body
     end
 
     it "looks up symbols in Rack's mime types dictionary" do
@@ -210,9 +210,9 @@ describe 'Sinatra::Helpers' do
       }
 
       get '/foo.xml'
-      should.be.ok
-      response['Content-Type'].should.equal 'application/foo'
-      body.should.equal 'I AM FOO'
+      assert ok?
+      assert_equal 'application/foo', response['Content-Type']
+      assert_equal 'I AM FOO', body
     end
 
     it 'fails when no mime type is registered for the argument provided' do
@@ -222,8 +222,7 @@ describe 'Sinatra::Helpers' do
           "I AM FOO"
         end
       }
-
-      lambda { get '/foo.xml' }.should.raise RuntimeError
+      assert_raise(RuntimeError) { get '/foo.xml' }
     end
   end
 
@@ -249,26 +248,26 @@ describe 'Sinatra::Helpers' do
     it "sends the contents of the file" do
       send_file_app
       get '/file.txt'
-      should.be.ok
-      body.should.equal 'Hello World'
+      assert ok?
+      assert_equal 'Hello World', body
     end
 
     it 'sets the Content-Type response header if a mime-type can be located' do
       send_file_app
       get '/file.txt'
-      response['Content-Type'].should.equal 'text/plain'
+      assert_equal 'text/plain', response['Content-Type']
     end
 
     it 'sets the Content-Length response header' do
       send_file_app
       get '/file.txt'
-      response['Content-Length'].should.equal 'Hello World'.length.to_s
+      assert_equal 'Hello World'.length.to_s, response['Content-Length']
     end
 
     it 'sets the Last-Modified response header' do
       send_file_app
       get '/file.txt'
-      response['Last-Modified'].should.equal File.mtime(@file).httpdate
+      assert_equal File.mtime(@file).httpdate, response['Last-Modified']
     end
 
     it "returns a 404 when not found" do
@@ -278,7 +277,7 @@ describe 'Sinatra::Helpers' do
         end
       }
       get '/'
-      should.be.not_found
+      assert not_found?
     end
   end
 
@@ -297,19 +296,19 @@ describe 'Sinatra::Helpers' do
 
     it 'sets the Last-Modified header to a valid RFC 2616 date value' do
       get '/'
-      response['Last-Modified'].should.equal @now.httpdate
+      assert_equal @now.httpdate, response['Last-Modified']
     end
 
     it 'returns a body when conditional get misses' do
       get '/'
-      status.should.be 200
-      body.should.equal 'Boo!'
+      assert_equal 200, status
+      assert_equal 'Boo!', body
     end
 
     it 'halts when a conditional GET matches' do
       get '/', :env => { 'HTTP_IF_MODIFIED_SINCE' => @now.httpdate }
-      status.should.be 304
-      body.should.be.empty
+      assert_equal 304, status
+      assert_equal '', body
     end
   end
 
@@ -326,25 +325,25 @@ describe 'Sinatra::Helpers' do
 
     it 'sets the ETag header' do
       get '/'
-      response['ETag'].should.equal '"FOO"'
+      assert_equal '"FOO"', response['ETag']
     end
 
     it 'returns a body when conditional get misses' do
       get '/'
-      status.should.be 200
-      body.should.equal 'Boo!'
+      assert_equal 200, status
+      assert_equal 'Boo!', body
     end
 
     it 'halts when a conditional GET matches' do
       get '/', :env => { 'HTTP_IF_NONE_MATCH' => '"FOO"' }
-      status.should.be 304
-      body.should.be.empty
+      assert_equal 304, status
+      assert_equal '', body
     end
 
     it 'should handle multiple ETag values in If-None-Match header' do
       get '/', :env => { 'HTTP_IF_NONE_MATCH' => '"BAR", *' }
-      status.should.be 304
-      body.should.be.empty
+      assert_equal 304, status
+      assert_equal '', body
     end
 
     it 'uses a weak etag with the :weak option' do
@@ -355,7 +354,7 @@ describe 'Sinatra::Helpers' do
         end
       }
       get '/'
-      response['ETag'].should.equal 'W/"FOO"'
+      assert_equal 'W/"FOO"', response['ETag']
     end
 
   end

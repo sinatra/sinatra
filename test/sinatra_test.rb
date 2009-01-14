@@ -8,6 +8,6 @@ describe 'Sinatra' do
           'Hello World'
         end
       end
-    app.superclass.should.be Sinatra::Base
+    assert_same Sinatra::Base, app.superclass
   end
 end

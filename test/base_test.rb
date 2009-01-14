@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/helper'
 
 describe 'Sinatra::Base' do
   it 'includes Rack::Utils' do
-    Sinatra::Base.should.include Rack::Utils
+    assert Sinatra::Base.included_modules.include?(Rack::Utils)
   end
 
   it 'can be used as a Rack application' do
@@ -11,12 +11,12 @@ describe 'Sinatra::Base' do
         'Hello World'
       end
     }
-    @app.should.respond_to :call
+    assert @app.respond_to?(:call)
 
     request = Rack::MockRequest.new(@app)
     response = request.get('/')
-    response.should.be.ok
-    response.body.should.equal 'Hello World'
+    assert response.ok?
+    assert_equal 'Hello World', response.body
   end
 
   it 'can be used as Rack middleware' do
@@ -31,16 +31,16 @@ describe 'Sinatra::Base' do
         end
       }
     middleware = mock_middleware.new(app)
-    middleware.app.should.be app
+    assert_same app, middleware.app
 
     request = Rack::MockRequest.new(middleware)
     response = request.get('/')
-    response.should.be.ok
-    response.body.should.equal 'Hello World'
+    assert response.ok?
+    assert_equal 'Hello World', response.body
 
     response = request.get('/goodbye')
-    response.should.be.ok
-    response.body.should.equal 'Goodbye World'
+    assert response.ok?
+    assert_equal 'Goodbye World', response.body
   end
 
   it 'can take multiple definitions of a route' do
@@ -57,12 +57,12 @@ describe 'Sinatra::Base' do
 
     request = Rack::MockRequest.new(app)
     response = request.get('/foo', 'HTTP_USER_AGENT' => 'Foo')
-    response.should.be.ok
-    response.body.should.equal 'foo'
+    assert response.ok?
+    assert_equal 'foo', response.body
 
     request = Rack::MockRequest.new(app)
     response = request.get('/foo')
-    response.should.be.ok
-    response.body.should.equal 'not foo'
+    assert response.ok?
+    assert_equal 'not foo', response.body
   end
 end
