@@ -41,6 +41,13 @@
    has the status code specified. It's also possible to register an error
    page for a range of status codes: "error(500..599)".
 
+ * Sinatra's testing support is no longer dependent on Test::Unit. Requiring
+   'sinatra/test' adds the Sinatra::Test module and Sinatra::TestHarness
+   class, which can be used with any test framework. The 'sinatra/test/unit',
+   'sinatra/test/spec', 'sinatra/test/rspec', or 'sinatra/test/bacon' files
+   can be required to setup a framework-specific testing environment. See the
+   README for more information.
+
  * Added support for Bacon (test framework). The 'sinatra/test/bacon' file
    can be required to setup Sinatra test helpers on Bacon::Context.
 
