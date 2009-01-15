@@ -464,13 +464,14 @@ friends.
 
 Sinatra applications can be run directly:
 
-  ruby myapp.rb [-h] [-x] [-p PORT] [-e ENVIRONMENT]
+  ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-s HANDLER]
 
 Options are:
 
   -h # help
   -p # set the port (default is 4567)
   -e # set the environment (default is development)
+  -s # specify rack server/handler (default is thin)
   -x # turn on the mutex lock (default is off)
 
 == Contributing
