@@ -18,3 +18,8 @@ module Sinatra::Test
     @app = Sinatra.new(base, &block)
   end
 end
+
+class Sinatra::Base
+  # Allow assertions in request context
+  include Test::Unit::Assertions
+end

@@ -142,7 +142,7 @@ describe 'Sinatra::Helpers' do
     it 'creates a new session when none provided' do
       mock_app {
         get '/' do
-          fail "session != {}" unless session.empty?
+          assert session.empty?
           session[:foo] = 'bar'
           'Hi'
         end

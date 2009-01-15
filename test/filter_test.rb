@@ -6,11 +6,11 @@ describe "Filters" do
     mock_app do
       get('/') { 'Hello World' }
       before {
-        fail 'count != 0' if count != 0
+        assert_equal 0, count
         count = 1
       }
       before {
-        fail 'count != 1' if count != 1
+        assert_equal 1, count
         count = 2
       }
     end

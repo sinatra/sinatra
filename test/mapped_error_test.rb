@@ -34,8 +34,8 @@ describe 'Exception Mappings' do
     mock_app {
       set :raise_errors, false
       error(FooError) {
-        fail "!env.include?('sinatra.error')" if !env.include?('sinatra.error')
-        fail unless env['sinatra.error'].kind_of?(FooError)
+        assert env.include?('sinatra.error')
+        assert env['sinatra.error'].kind_of?(FooError)
         'looks good'
       }
       get '/' do

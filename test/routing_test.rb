@@ -27,8 +27,8 @@ describe "Routing" do
   it "exposes params with indifferent hash" do
     mock_app {
       get '/:foo' do
-        fail unless params['foo'] == 'bar'
-        fail unless params[:foo] == 'bar'
+        assert_equal 'bar', params['foo']
+        assert_equal 'bar', params[:foo]
         'well, alright'
       end
     }
@@ -39,8 +39,8 @@ describe "Routing" do
   it "merges named params and query string params in params" do
     mock_app {
       get '/:foo' do
-        fail unless params['foo'] == 'bar'
-        fail unless params['baz'] == 'biz'
+        assert_equal 'bar', params['foo']
+        assert_equal 'biz', params['baz']
       end
     }
     get '/bar?baz=biz'
@@ -80,7 +80,7 @@ describe "Routing" do
   it "supports single splat params like /*" do
     mock_app {
       get '/*' do
-        fail unless params['splat'].kind_of?(Array)
+        assert params['splat'].kind_of?(Array)
         params['splat'].join "\n"
       end
     }
@@ -95,7 +95,7 @@ describe "Routing" do
   it "supports mixing multiple splat params like /*/foo/*/*" do
     mock_app {
       get '/*/foo/*/*' do
-        fail unless params['splat'].kind_of?(Array)
+        assert params['splat'].kind_of?(Array)
         params['splat'].join "\n"
       end
     }
@@ -110,8 +110,8 @@ describe "Routing" do
   it "supports mixing named and splat params like /:foo/*" do
     mock_app {
       get '/:foo/*' do
-        fail unless params['foo'] == 'foo'
-        fail unless params['splat'] == ['bar/baz']
+        assert_equal 'foo', params['foo']
+        assert_equal ['bar/baz'], params['splat']
       end
     }
 
@@ -134,8 +134,8 @@ describe "Routing" do
   it "URL decodes named parameters and splats" do
     mock_app {
       get '/:foo/*' do
-        fail unless params['foo'] == 'hello world'
-        fail unless params['splat'] == ['how are you']
+        assert_equal 'hello world', params['foo']
+        assert_equal ['how are you'], params['splat']
         nil
       end
     }
@@ -159,7 +159,7 @@ describe "Routing" do
   it 'makes regular expression captures available in params[:captures]' do
     mock_app {
       get(/^\/fo(.*)\/ba(.*)/) do
-        fail unless params[:captures] == ['orooomma', 'f']
+        assert_equal ['orooomma', 'f'], params[:captures]
         'right on'
       end
     }
@@ -190,7 +190,7 @@ describe "Routing" do
       end
 
       get '/*' do
-        fail if params.include?('foo')
+        assert !params.include?('foo')
         'Hello World'
       end
     }
