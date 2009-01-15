@@ -60,6 +60,11 @@ module Sinatra
       end
     end
 
+    # Also check @response since we delegate there.
+    def respond_to?(symbol, include_private=false)
+      super || (@response && @response.respond_to?(symbol, include_private))
+    end
+
     RACK_OPT_NAMES = {
       :accept => "HTTP_ACCEPT",
       :agent => "HTTP_USER_AGENT",
