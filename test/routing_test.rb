@@ -119,6 +119,63 @@ describe "Routing" do
     assert ok?
   end
 
+  it "supports basic nested params" do
+    mock_app {
+      get '/hi' do
+        params["person"]["name"]
+      end
+    }
+
+    get "/hi?person[name]=John+Doe"
+    assert ok?
+    assert_equal "John Doe", body
+  end
+
+  it "exposes nested params with indifferent hash" do
+    mock_app {
+      get '/testme' do
+        assert_equal 'baz', params['bar']['foo']
+        assert_equal 'baz', params['bar'][:foo]
+        'well, alright'
+      end
+    }
+    get '/testme?bar[foo]=baz'
+    assert_equal 'well, alright', body
+  end
+
+  it "supports deeply nested params" do
+    input = {
+      'browser[chrome][engine][name]' => 'V8',
+      'browser[chrome][engine][version]' => '1.0',
+      'browser[firefox][engine][name]' => 'spidermonkey',
+      'browser[firefox][engine][version]' => '1.7.0',
+      'emacs[map][goto-line]' => 'M-g g',
+      'emacs[version]' => '22.3.1',
+      'paste[name]' => 'hello world',
+      'paste[syntax]' => 'ruby'
+    }
+    expected = {
+      "emacs" => {
+        "map"     => { "goto-line" => "M-g g" },
+        "version" => "22.3.1"
+      },
+      "browser" => {
+        "firefox" => {"engine" => {"name"=>"spidermonkey", "version"=>"1.7.0"}},
+        "chrome"  => {"engine" => {"name"=>"V8", "version"=>"1.0"}}
+      },
+      "paste" => {"name"=>"hello world", "syntax"=>"ruby"}
+    }
+    mock_app {
+      get '/foo' do
+        assert_equal expected, params
+        'looks good'
+      end
+    }
+    get "/foo?#{param_string(input)}"
+    assert ok?
+    assert_equal 'looks good', body
+  end
+
   it "supports paths that include spaces" do
     mock_app {
       get '/path with spaces' do

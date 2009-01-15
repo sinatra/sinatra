@@ -8,6 +8,10 @@
    Documentation on using these features is forth-coming; the following
    provides the basic gist: http://gist.github.com/38605
 
+ * Parameters with subscripts are now parsed into a nested/recursive
+   Hash structure. e.g., "post[title]=Hello&post[body]=World" yields
+   params: {'post' => {'title' => 'Hello', 'body' => 'World'}}.
+
  * Regular expressions may now be used in route pattens; captures are
    available at "params[:captures]".
 

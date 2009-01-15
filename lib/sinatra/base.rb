@@ -331,8 +331,7 @@ module Sinatra
       self.class.filters.each {|block| instance_eval(&block)}
       if routes = self.class.routes[@request.request_method]
         path = @request.path_info
-        original_params = Hash.new{ |hash,k| hash[k.to_s] if Symbol === k }
-        original_params.merge! @request.params
+        original_params = nested_params(@request.params)
 
         routes.each do |pattern, keys, conditions, method_name|
           if pattern =~ path
@@ -352,8 +351,7 @@ module Sinatra
               else
                 {}
               end
-            @params = original_params.dup
-            @params.merge!(params)
+            @params = original_params.merge(params)
 
             catch(:pass) {
               conditions.each { |cond|
@@ -364,6 +362,22 @@ module Sinatra
         end
       end
       raise NotFound
+    end
+
+    def nested_params(params)
+      return indifferent_hash.merge(params) if !params.keys.join.include?('[')
+      params.inject indifferent_hash do |res, (key,val)|
+        if key =~ /\[.*\]/
+          splat = key.scan(/(^[^\[]+)|\[([^\]]+)\]/).flatten.compact
+          head, last = splat[0..-2], splat[-1]
+          head.inject(res){ |s,v| s[v] ||= indifferent_hash }[last] = val
+        end
+        res
+      end
+    end
+
+    def indifferent_hash
+      Hash.new {|hash,key| hash[key.to_s] if Symbol === key }
     end
 
     def invoke(handler)
