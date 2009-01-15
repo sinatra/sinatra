@@ -3,13 +3,14 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'sinatra'
-  s.version = '0.8.9'
-  s.date = '2009-01-14'
+  s.version = '0.8.10'
+  s.date = '2009-01-16'
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
 
   s.authors = ["Blake Mizerany"]
+  s.email = "sinatrarb@googlegroups.com"
 
   # = MANIFEST =
   s.files = %w[
@@ -98,7 +99,7 @@ Gem::Specification.new do |s|
   s.test_files = s.files.select {|path| path =~ /^test\/.*_test.rb/}
 
   s.extra_rdoc_files = %w[README.rdoc LICENSE]
-  s.add_dependency 'rack', '>= 0.9.0'
+  s.add_dependency 'rack', '>= 0.9.1'
 
   s.has_rdoc = true
   s.homepage = "http://sinatra.rubyforge.org"
