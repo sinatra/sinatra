@@ -14,6 +14,13 @@ module Sinatra
     def accept
       @env['HTTP_ACCEPT'].split(',').map { |a| a.strip }
     end
+
+    # Override Rack 0.9.x's #params implementation (see #72 in lighthouse)
+    def params
+      self.GET.update(self.POST)
+    rescue EOFError => boom
+      self.GET
+    end
   end
 
   class Response < Rack::Response
