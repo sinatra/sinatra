@@ -802,6 +802,7 @@ module Sinatra
     set :static, true
     set :run, false
     set :reload, Proc.new { app_file? && development? }
+    set :lock, Proc.new { reload? }
 
     def self.reloading?
       @reloading ||= false
@@ -812,8 +813,10 @@ module Sinatra
     end
 
     def self.call(env)
-      reload! if reload?
-      super
+      synchronize do
+        reload! if reload?
+        super
+      end
     end
 
     def self.reload!
@@ -824,6 +827,15 @@ module Sinatra
       @reloading = false
     end
 
+  private
+    @@mutex = Mutex.new
+    def self.synchronize(&block)
+      if lock?
+        @@mutex.synchronize(&block)
+      else
+        yield
+      end
+    end
   end
 
   class Application < Default
