@@ -630,8 +630,8 @@ module Sinatra
       end
 
       def run!(options={})
-        set(options)
-        handler = Rack::Handler.get(server)
+        set options
+        handler = detect_rack_handler
         handler_name = handler.name.gsub(/.*::/, '')
         puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
           "on #{port} for #{environment} with backup from #{handler_name}"
@@ -652,6 +652,17 @@ module Sinatra
       end
 
     private
+      def detect_rack_handler
+        servers = Array(self.server)
+        servers.each do |server_name|
+          begin
+            return Rack::Handler.get(server_name)
+          rescue LoadError
+          end
+        end
+        fail "Server handler (#{servers.join(',')}) not found."
+      end
+
       def construct_middleware(builder=Rack::Builder.new)
         builder.use Rack::Session::Cookie if sessions?
         builder.use Rack::CommonLogger if logging?
@@ -698,7 +709,7 @@ module Sinatra
     set :environment, (ENV['RACK_ENV'] || :development).to_sym
 
     set :run, false
-    set :server, (defined?(Rack::Handler::Thin) ? "thin" : "mongrel")
+    set :server, %w[thin mongrel webrick]
     set :host, '0.0.0.0'
     set :port, 4567
 
