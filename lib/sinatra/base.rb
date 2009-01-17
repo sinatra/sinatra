@@ -380,12 +380,12 @@ module Sinatra
       Hash.new {|hash,key| hash[key.to_s] if Symbol === key }
     end
 
-    def invoke(handler)
+    def invoke(block)
       res = catch(:halt) {
-        if handler.respond_to?(:call)
-          instance_eval(&handler)
+        if block.is_a?(UnboundMethod)
+          block.bind(self).call
         else
-          send(handler)
+          instance_eval(&block)
         end
       }
       case
@@ -562,10 +562,10 @@ module Sinatra
 
       def get(path, opts={}, &block)
         conditions = @conditions.dup
-        _, _, _, method_name = route('GET', path, opts, &block)
+        route('GET', path, opts, &block)
 
         @conditions = conditions
-        head(path, opts) { invoke(method_name) ; [] }
+        head(path, opts) { invoke(block) ; [] }
       end
 
       def put(path, opts={}, &bk); route 'PUT', path, opts, &bk; end
@@ -574,21 +574,19 @@ module Sinatra
       def head(path, opts={}, &bk); route 'HEAD', path, opts, &bk; end
 
     private
-      def route(method, path, opts={}, &block)
+      def route(verb, path, opts={}, &block)
         host_name  opts[:host]  if opts.key?(:host)
         user_agent opts[:agent] if opts.key?(:agent)
         accept_mime_types opts[:provides] if opts.key?(:provides)
 
         pattern, keys = compile(path)
         conditions, @conditions = @conditions, []
-        method_name = "route { #{method} #{path} }"
-        nmethods = instance_methods.grep(rx = /#{Regexp.escape(method_name)}/).size
-        method_name += " [#{nmethods}]"
 
-        define_method(method_name, &block)
+        define_method "#{verb} #{path}", &block
+        unbound_method = instance_method("#{verb} #{path}")
 
-        (routes[method] ||= []).
-          push([pattern, keys, conditions, method_name]).last
+        (routes[verb] ||= []).
+          push([pattern, keys, conditions, unbound_method]).last
       end
 
       def compile(path)
