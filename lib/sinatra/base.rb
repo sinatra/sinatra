@@ -493,8 +493,13 @@ module Sinatra
       end
 
       def use_in_file_templates!
-        line = caller.detect { |s| s !~ /lib\/sinatra.*\.rb/ &&
-          s !~ /\(.*\)/ }
+        line = caller.detect do |s|
+          [
+           /lib\/sinatra.*\.rb/,
+           /\(.*\)/,
+           /rubygems\/custom_require\.rb/
+          ].all? { |x| s !~ x }
+        end
         file = line.sub(/:\d+.*$/, '')
         if data = ::IO.read(file).split('__END__')[1]
           data.gsub!(/\r\n/, "\n")
@@ -791,6 +796,7 @@ module Sinatra
     end
 
     def self.call(env)
+      $LOADED_FEATURES.delete("sinatra.rb")
       reload! if reload?
       super
     end

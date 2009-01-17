@@ -165,11 +165,12 @@ other templates.
 
 Templates may be defined at the end of the source file:
 
+  require 'rubygems'
+  require 'sinatra'
+
   get '/' do
     haml :index
   end
-
-  use_in_file_templates!
 
   __END__
 
@@ -179,6 +180,11 @@ Templates may be defined at the end of the source file:
 
   @@ index
   %div.title Hello world!!!!!
+
+NOTE:  Sinatra will automaticly load any in-file-templates in the
+source file that first required sinatra.  If you have in-file-templates
+in another source file you will need to explicitly call
++use_in_file_templates! on main in that file.
 
 It's also possible to define named templates using the top-level template
 method:
