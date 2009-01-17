@@ -381,13 +381,7 @@ module Sinatra
     end
 
     def invoke(block)
-      res = catch(:halt) {
-        if block.is_a?(UnboundMethod)
-          block.bind(self).call
-        else
-          instance_eval(&block)
-        end
-      }
+      res = catch(:halt) { instance_eval(&block) }
       case
       when res.respond_to?(:to_str)
         @response.body = [res]
@@ -584,9 +578,10 @@ module Sinatra
 
         define_method "#{verb} #{path}", &block
         unbound_method = instance_method("#{verb} #{path}")
+        block = lambda { unbound_method.bind(self).call }
 
         (routes[verb] ||= []).
-          push([pattern, keys, conditions, unbound_method]).last
+          push([pattern, keys, conditions, block]).last
       end
 
       def compile(path)
