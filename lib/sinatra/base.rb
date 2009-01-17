@@ -796,7 +796,6 @@ module Sinatra
     end
 
     def self.call(env)
-      $LOADED_FEATURES.delete("sinatra.rb")
       reload! if reload?
       super
     end
@@ -804,6 +803,7 @@ module Sinatra
     def self.reload!
       @reloading = true
       superclass.send :inherited, self
+      $LOADED_FEATURES.delete("sinatra.rb")
       ::Kernel.load app_file
       @reloading = false
     end
