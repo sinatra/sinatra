@@ -32,4 +32,29 @@ describe "Filters" do
     assert ok?
     assert_equal 'bar', body
   end
+
+  it "allows redirects in filters" do
+    mock_app {
+      before { redirect '/bar' }
+      get('/foo') { 'ORLY?!' }
+    }
+
+    get '/foo'
+    assert redirect?
+    assert_equal '/bar', response['Location']
+  end
+
+  it "does not modify the response with its return value" do
+    mock_app {
+      before { 'Hello World!' }
+      get '/foo' do
+        assert_equal [], response.body
+        'cool'
+      end
+    }
+
+    get '/foo'
+    assert ok?
+    assert_equal 'cool', body
+  end
 end

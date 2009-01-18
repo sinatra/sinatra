@@ -328,7 +328,7 @@ module Sinatra
 
   private
     def dispatch!
-      self.class.filters.each {|block| instance_eval(&block)}
+      self.class.filters.each { |block| invoke(block) }
       if routes = self.class.routes[@request.request_method]
         path = @request.path_info
         original_params = nested_params(@request.params)
@@ -382,6 +382,8 @@ module Sinatra
 
     def invoke(block)
       res = catch(:halt) { instance_eval(&block) }
+      return if res.nil?
+
       case
       when res.respond_to?(:to_str)
         @response.body = [res]
@@ -405,8 +407,6 @@ module Sinatra
         @response.body = res
       when (100...599) === res
         @response.status = res
-      when res.nil?
-        @response.body = []
       end
       res
     end
@@ -522,7 +522,7 @@ module Sinatra
       end
 
       def before(&block)
-        @filters << block
+        @filters << lambda { instance_eval(&block) ; nil }
       end
 
       def condition(&block)
