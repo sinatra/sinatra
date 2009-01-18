@@ -72,6 +72,7 @@ task 'publish:doc' => 'doc/api/index.html' do
   sh 'scp -rp doc/* rubyforge.org:/var/www/gforge-projects/sinatra/'
 end
 
+desc 'Publish gem and tarball to rubyforge'
 task 'publish:gem' => [package('.gem'), package('.tar.gz')] do |t|
   sh <<-end
     rubyforge add_release sinatra sinatra #{spec.version} #{package('.gem')} &&
