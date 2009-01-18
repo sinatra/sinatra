@@ -1,4 +1,4 @@
-= 0.9.0 (unreleased)
+= 0.9.0 / 2009-01-18
 
  * Works with and requires Rack >= 0.9.1
 
@@ -44,6 +44,10 @@
    where "status_code" is an integer, and are run any time the response
    has the status code specified. It's also possible to register an error
    page for a range of status codes: "error(500..599)".
+
+ * In-file templates are now automatically imported from the file that
+   requires 'sinatra'. The use_in_file_templates! method is still available
+   for loading templates from other files.
 
  * Sinatra's testing support is no longer dependent on Test::Unit. Requiring
    'sinatra/test' adds the Sinatra::Test module and Sinatra::TestHarness
