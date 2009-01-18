@@ -16,14 +16,14 @@ module Sinatra
         when 2 # input, env
           input, env = args
           if input.kind_of?(Hash) # params, env
-            [env, build_query(input)]
+            [env, param_string(input)]
           else
             [env, input]
           end
         when 1 # params
           if (data = args.first).kind_of?(Hash)
             env = (data.delete(:env) || {})
-            [env, build_query(data)]
+            [env, param_string(data)]
           else
             [{}, data]
           end
@@ -82,6 +82,21 @@ module Sinatra
       end
     end
 
+    def param_string(value, prefix = nil)
+      case value
+      when Array
+        value.map { |v|
+          param_string(v, "#{prefix}[]")
+        } * "&"
+      when Hash
+        value.map { |k, v|
+          param_string(v, prefix ? "#{prefix}[#{escape(k)}]" : escape(k))
+        } * "&"
+      else
+        "#{prefix}=#{escape(value)}"
+      end
+    end
+
     if defined? Sinatra::Compat
       # Deprecated. Use: "get" instead of "get_it".
       %w(get head post put delete).each do |verb|
@@ -91,12 +106,6 @@ module Sinatra
           test_request('#{verb.upcase}', *args, &block)
         end
         RUBY
-      end
-
-      # Deprecated. Use: build_query instead.
-      def param_string(hash)
-        sinatra_warn "The param_string method is deprecated; use build_query instead."
-        build_query(hash)
       end
     end
   end
