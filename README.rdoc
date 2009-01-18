@@ -496,7 +496,7 @@ screencasts about Git, which you can find here: http://www.gitcasts.com/
 === First Time: Cloning The Sinatra Repo
 
   cd where/you/keep/your/projects
-  git clone git://github.com/bmizerany/sinatra.git
+  git clone git://github.com/sinatra/sinatra.git
   cd sinatra
   cd path/to/your_project
   ln -s ../sinatra/
@@ -520,9 +520,8 @@ at the top of your sinatra_app.rb file:
 === Contributing a Patch
 
 There are several ways to do this. Probably the easiest (and preferred) way is
-to fork Sinatra on GitHub (http://github.com/bmizerany/sinatra), push your
-changes to your Sinatra repo, and then send Blake Mizerany (bmizerany on
-GitHub) a pull request.
+to fork Sinatra on GitHub (http://github.com/sinatra/sinatra), push your
+changes to your Sinatra repo and file a ticket in lighthouse (sinatra.lighthouseapp.com) where we can discuss it.
 
 You can also create a patch file and attach it to a feature request or bug fix
 on the issue tracker (see below) or send it to the mailing list (see Community
