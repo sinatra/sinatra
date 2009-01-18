@@ -57,7 +57,12 @@ file package('.gem') => %w[dist/ sinatra.gemspec] + spec.files do |f|
 end
 
 file package('.tar.gz') => %w[dist/] + spec.files do |f|
-  sh "git archive --format=tar HEAD | gzip > #{f.name}"
+  sh <<-SH
+    git archive \
+      --prefix=sinatra-#{source_version}/ \
+      --format=tar \
+      HEAD | gzip > #{f.name}
+  SH
 end
 
 # Rubyforge Release / Publish Tasks ==================================

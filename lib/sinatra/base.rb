@@ -4,7 +4,7 @@ require 'rack'
 require 'rack/builder'
 
 module Sinatra
-  VERSION = '0.8.10'
+  VERSION = '0.9.0'
 
   class Request < Rack::Request
     def user_agent
