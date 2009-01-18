@@ -33,15 +33,30 @@ describe "Filters" do
     assert_equal 'bar', body
   end
 
+  it "can modify instance variables available to routes" do
+    mock_app {
+      before { @foo = 'bar' }
+      get('/foo') { @foo }
+    }
+
+    get '/foo'
+    assert ok?
+    assert_equal 'bar', body
+  end
+
   it "allows redirects in filters" do
     mock_app {
       before { redirect '/bar' }
-      get('/foo') { 'ORLY?!' }
+      get('/foo') do
+        fail 'before block should have halted processing'
+        'ORLY?!'
+      end
     }
 
     get '/foo'
     assert redirect?
     assert_equal '/bar', response['Location']
+    assert_equal '', body
   end
 
   it "does not modify the response with its return value" do
