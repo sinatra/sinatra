@@ -171,7 +171,7 @@ describe "Routing" do
         'looks good'
       end
     }
-    get "/foo?#{param_string(input)}"
+    get "/foo?#{build_query(input)}"
     assert ok?
     assert_equal 'looks good', body
   end
