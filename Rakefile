@@ -67,11 +67,6 @@ end
 
 # Rubyforge Release / Publish Tasks ==================================
 
-desc 'Publish website to rubyforge'
-task 'publish:doc' => 'doc/api/index.html' do
-  sh 'scp -rp doc/* rubyforge.org:/var/www/gforge-projects/sinatra/'
-end
-
 desc 'Publish gem and tarball to rubyforge'
 task 'publish:gem' => [package('.gem'), package('.tar.gz')] do |t|
   sh <<-end
@@ -84,7 +79,7 @@ end
 # Building docs requires HAML and the hanna gem:
 #   gem install mislav-hanna --source=http://gems.github.com
 
-task 'doc'     => ['doc:api','doc:site']
+task 'doc'     => ['doc:api']
 
 desc 'Generate Hanna RDoc under doc/api'
 task 'doc:api' => ['doc/api/index.html']
@@ -109,47 +104,6 @@ def rdoc_to_html(file_name)
   rdoc = RDoc::Markup::ToHtml.new
   rdoc.convert(File.read(file_name))
 end
-
-def haml(locals={})
-  require 'haml'
-  template = File.read('doc/template.haml')
-  haml = Haml::Engine.new(template, :format => :html4, :attr_wrapper => '"')
-  haml.render(Object.new, locals)
-end
-
-desc 'Build website HTML and stuff'
-task 'doc:site' => ['doc/index.html', 'doc/book.html']
-
-file 'doc/index.html' => %w[README.rdoc doc/template.haml] do |file|
-  File.open(file.name, 'w') do |file|
-    file << haml(:title => 'Sinatra', :content => rdoc_to_html('README.rdoc'))
-  end
-end
-CLEAN.include 'doc/index.html'
-
-file 'doc/book.html' => ['book/output/sinatra-book.html'] do |file|
-  File.open(file.name, 'w') do |file|
-    book_content = File.read('book/output/sinatra-book.html')
-    file << haml(:title => 'Sinatra Book', :content => book_content)
-  end
-end
-CLEAN.include 'doc/book.html'
-
-file 'book/output/sinatra-book.html' => FileList['book/**'] do |f|
-  unless File.directory?('book')
-    sh 'git clone git://github.com/cschneid/sinatra-book.git book'
-  end
-  sh((<<-SH).strip.gsub(/\s+/, ' '))
-    cd book &&
-    git fetch origin &&
-    git rebase origin/master &&
-    thor book:build
-  SH
-end
-CLEAN.include 'book/output/sinatra-book.html'
-
-desc 'Build the Sinatra book'
-task 'doc:book' => ['book/output/sinatra-book.html']
 
 # Gemspec Helpers ====================================================
 
