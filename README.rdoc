@@ -489,9 +489,9 @@ Ruby syntax hilighting. VIM and Emacs are a fine choice on any platform, but
 feel free to use whatever you're familiar with.
 
 Sinatra uses the Git source code management system. If you're unfamiliar with
-Git, you can find more information and tutorials on http://git.or.cz/ as well
-as http://git-scm.com/.  Scott Chacon created a great series of introductory
-screencasts about Git, which you can find here: http://www.gitcasts.com/
+Git, you can find more information and tutorials on http://git.or.cz as well
+as http://git-scm.com.  Scott Chacon created a great series of introductory
+screencasts about Git, which you can find here: http://www.gitcasts.com
 
 === First Time: Cloning The Sinatra Repo
 
@@ -529,7 +529,7 @@ section).
 
 === Issue Tracking and Feature Requests
 
-http://sinatra.lighthouseapp.com/
+http://sinatra.lighthouseapp.com
 
 == Community
 
