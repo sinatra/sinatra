@@ -9,7 +9,7 @@ module Sinatra
         /custom_require\.rb$/  # rubygems require hacks
       ]
       path =
-        caller.map{ |line| line.split(':', 2).first }.find do |file|
+        caller.map{ |line| line.split(/:\d/, 2).first }.find do |file|
           next if ignore.any? { |pattern| file =~ pattern }
           file
         end
