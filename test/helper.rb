@@ -1,5 +1,13 @@
-require 'rubygems' # required so that sinatra/base can require rack
-$:.unshift File.dirname(File.dirname(__FILE__)) + '/lib'
+begin
+  require 'rack'
+rescue LoadError
+  require 'rubygems'
+  require 'rack'
+end
+
+libdir = File.dirname(File.dirname(__FILE__)) + '/lib'
+$LOAD_PATH.unshift libdir unless $LOAD_PATH.include?(libdir)
+
 require 'sinatra/base'
 require 'sinatra/test/unit'
 
