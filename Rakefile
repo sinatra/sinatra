@@ -1,23 +1,17 @@
-require 'rubygems'
 require 'rake/clean'
+require 'rake/testtask'
 require 'fileutils'
 
 task :default => :test
+task :spec => :test
 
 # SPECS ===============================================================
 
-desc 'Run specs with story style output'
-task :spec do
-  pattern = ENV['TEST'] || '.*'
-  sh "specrb --testcase '#{pattern}' --specdox -Ilib:test test/*_test.rb"
+Rake::TestTask.new(:test) do |t|
+  t.test_files = FileList['test/*_test.rb']
 end
 
-desc 'Run specs with unit test style output'
-task :test do |t|
-  sh "specrb -Ilib:test test/*_test.rb"
-end
-
-desc 'Run compatibility specs'
+desc 'Run compatibility specs (requires test/spec)'
 task :compat do |t|
   pattern = ENV['TEST'] || '.*'
   sh "specrb --testcase '#{pattern}' -Ilib:test compat/*_test.rb"

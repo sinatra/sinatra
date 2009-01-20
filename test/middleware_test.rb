@@ -38,7 +38,7 @@ describe "Middleware" do
     end
   end
 
-  specify "runs in the order defined" do
+  it "runs in the order defined" do
     @app.use UpcaseMiddleware
     @app.use DowncaseMiddleware
     get '/Foo'
@@ -46,7 +46,7 @@ describe "Middleware" do
     assert_equal "UpcaseMiddleware, DowncaseMiddleware", response['X-Tests']
   end
 
-  specify "resets the prebuilt pipeline when new middleware is added" do
+  it "resets the prebuilt pipeline when new middleware is added" do
     @app.use UpcaseMiddleware
     get '/Foo'
     assert_equal "/FOO", body
