@@ -76,6 +76,16 @@ describe 'Result Handling' do
     assert_equal 'formula of', body
   end
 
+  it "raises a TypeError when result is a non two or three tuple Array" do
+    mock_app {
+      get '/' do
+        [409, 'formula of', 'something else', 'even more']
+      end
+    }
+
+    assert_raise(TypeError) { get '/' }
+  end
+
   it "sets status when result is a Fixnum status code" do
     mock_app {
       get('/') { 205 }

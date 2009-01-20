@@ -226,6 +226,11 @@ describe "Routing" do
     assert_equal 'right on', body
   end
 
+  it 'raises a TypeError when pattern is not a String or Regexp' do
+    @app = mock_app
+    assert_raise(TypeError) { @app.get(42){} }
+  end
+
   it "returns response immediately on halt" do
     mock_app {
       get '/' do

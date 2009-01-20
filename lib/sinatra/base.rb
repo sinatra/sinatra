@@ -338,8 +338,8 @@ module Sinatra
         original_params = nested_params(@request.params)
 
         routes.each do |pattern, keys, conditions, method_name|
-          if pattern =~ path
-            values = $~.captures.map{|val| val && unescape(val) }
+          if match = pattern.match(path)
+            values = match.captures.map{|val| val && unescape(val) }
             params =
               if keys.any?
                 keys.zip(values).inject({}) do |hash,(k,v)|
@@ -608,7 +608,7 @@ module Sinatra
               end
             end
           [/^#{pattern}$/, keys]
-        elsif path.respond_to? :=~
+        elsif path.respond_to? :match
           [path, keys]
         else
           raise TypeError, path
@@ -658,6 +658,7 @@ module Sinatra
           begin
             return Rack::Handler.get(server_name)
           rescue LoadError
+          rescue NameError
           end
         end
         fail "Server handler (#{servers.join(',')}) not found."
