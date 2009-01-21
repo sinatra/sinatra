@@ -431,7 +431,7 @@ module Sinatra
 
       if options.dump_errors?
         msg = ["#{boom.class} - #{boom.message}:", *boom.backtrace].join("\n ")
-        @env['rack.errors'] << msg
+        @env['rack.errors'].write msg
       end
 
       raise boom if options.raise_errors?
