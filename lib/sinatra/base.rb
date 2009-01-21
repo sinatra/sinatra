@@ -142,6 +142,7 @@ module Sinatra
     class StaticFile < ::File #:nodoc:
       alias_method :to_path, :path
       def each
+        rewind
         while buf = read(8192)
           yield buf
         end

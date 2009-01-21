@@ -18,6 +18,16 @@ describe 'Static' do
     assert response.headers.include?('Last-Modified')
   end
 
+  it 'produces a body that can be iterated over multiple times' do
+    env = Rack::MockRequest.env_for("/#{F.basename(__FILE__)}")
+    status, headers, body = @app.call(env)
+    buf1, buf2 = [], []
+    body.each { |part| buf1 << part }
+    body.each { |part| buf2 << part }
+    assert_equal buf1.join, buf2.join
+    assert_equal File.read(__FILE__), buf1.join
+  end
+
   it 'serves HEAD requests for files in the public directory' do
     head "/#{F.basename(__FILE__)}"
     assert ok?
