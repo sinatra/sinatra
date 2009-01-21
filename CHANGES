@@ -1,3 +1,17 @@
+= 0.9.0.3 / 2009-01-21
+
+ * Fall back on mongrel then webrick when thin not found. [#75]
+ * Use :environment instead of :env in test helpers to
+   fix deprecation warnings coming from framework.
+ * Make sinatra/test/rspec work again [#113]
+ * Fix app_file detection on windows [#118]
+ * Fix static files with Rack::Lint in pipeline [#121]
+
+= 0.9.0.2 / 2009-01-18
+
+ * Halting a before block should stop processing of routes [#85]
+ * Fix redirect/halt in before filters [#85]
+
 = 0.9.0 / 2009-01-18
 
  * Works with and requires Rack >= 0.9.1
