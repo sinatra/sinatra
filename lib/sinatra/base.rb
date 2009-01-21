@@ -432,8 +432,9 @@ module Sinatra
       @env['sinatra.error'] = boom
 
       if options.dump_errors?
-        msg = ["#{boom.class} - #{boom.message}:", *boom.backtrace].join("\n ")
-        @env['rack.errors'].write msg
+        backtrace = clean_backtrace(boom.backtrace)
+        msg = ["#{boom.class} - #{boom.message}:", *backtrace].join("\n ")
+        @env['rack.errors'].write(msg)
       end
 
       raise boom if options.raise_errors?
@@ -443,6 +444,15 @@ module Sinatra
       if @response.status >= 400 && errmap.key?(response.status)
         invoke errmap[response.status]
       end
+    end
+
+    def clean_backtrace(trace)
+      return trace unless options.clean_trace?
+
+      trace.reject { |line|
+        line =~ /lib\/sinatra.*\.rb/ ||
+          (defined?(Gem) && line.include?(Gem.dir))
+      }.map! { |line| line.gsub(/^\.\//, '') }
     end
 
     @routes     = {}
@@ -710,6 +720,7 @@ module Sinatra
 
     set :raise_errors, true
     set :dump_errors, false
+    set :clean_trace, true
     set :sessions, false
     set :logging, false
     set :methodoverride, false
@@ -790,7 +801,7 @@ module Sinatra
           <div id="c">
             <img src="/__sinatra__/500.png">
             <h1>#{escape_html(heading)}</h1>
-            <pre class='trace'>#{escape_html(err.backtrace.join("\n"))}</pre>
+            <pre>#{escape_html(clean_backtrace(err.backtrace) * "\n")}</pre>
             <h2>Params</h2>
             <pre>#{escape_html(params.inspect)}</pre>
           </div>

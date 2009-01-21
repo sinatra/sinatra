@@ -95,3 +95,46 @@ describe 'Options' do
     assert_equal 'okay', body
   end
 end
+
+describe 'Backtrace Cleaning (clean_trace option)' do
+  before do
+    @app = Class.new(Sinatra::Base)
+  end
+
+  def clean_backtrace(trace)
+    @app.new.send(:clean_backtrace, trace)
+  end
+
+  it 'is enabled by default' do
+    assert @app.clean_trace
+  end
+
+  it 'does nothing when disabled' do
+    backtrace = [
+      "./lib/sinatra/base.rb",
+      "./myapp:42",
+      ("#{Gem.dir}/some/lib.rb" if defined?(Gem))
+    ].compact
+    @app.set :clean_trace, false
+    assert_equal backtrace, clean_backtrace(backtrace)
+  end
+
+  it 'removes sinatra lib paths from backtrace when enabled' do
+    backtrace = [
+      "./lib/sinatra/base.rb",
+      "./lib/sinatra/compat.rb:42",
+      "./lib/sinatra/main.rb:55 in `foo'"
+    ]
+    assert clean_backtrace(backtrace).empty?
+  end
+
+  it 'removes ./ prefix from backtrace paths when enabled' do
+    assert_equal ['myapp.rb:42'], clean_backtrace(['./myapp.rb:42'])
+  end
+
+  if defined?(Gem)
+    it 'removes gem lib paths from backtrace when enabled' do
+      assert clean_backtrace(["#{Gem.dir}/some/lib"]).empty?
+    end
+  end
+end
