@@ -75,7 +75,7 @@ module Sinatra
     }
 
     def rack_opts(opts)
-      opts.inject({}) do |hash,(key,val)|
+      opts.merge(:lint => true).inject({}) do |hash,(key,val)|
         key = RACK_OPT_NAMES[key] || key
         hash[key] = val
         hash
