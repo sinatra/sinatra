@@ -600,11 +600,15 @@ module Sinatra
       def compile(path)
         keys = []
         if path.respond_to? :to_str
+          special_chars = %w{. + ( )}
           pattern =
-            URI.encode(path).gsub(/((:\w+)|\*)/) do |match|
-              if match == "*"
+            URI.encode(path).gsub(/((:\w+)|[\*#{special_chars.join}])/) do |match|
+              case match
+              when "*"
                 keys << 'splat'
                 "(.*?)"
+              when *special_chars
+                Regexp.escape(match)
               else
                 keys << $2[1..-1]
                 "([^/?&#\.]+)"

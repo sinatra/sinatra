@@ -1,5 +1,10 @@
 require File.dirname(__FILE__) + '/helper'
 
+# Helper method for easy route pattern matching testing
+def route_def(pattern)
+  mock_app { get(pattern) { } }
+end
+
 describe "Routing" do
   %w[get put post delete head].each do |verb|
     it "defines #{verb.upcase} request handlers with #{verb}" do
@@ -116,6 +121,38 @@ describe "Routing" do
     }
 
     get '/foo/bar/baz'
+    assert ok?
+  end
+
+  it "literally matches . in paths" do
+    route_def '/test.bar'
+
+    get '/test.bar'
+    assert ok?
+    get 'test0bar'
+    assert not_found?
+  end
+
+  it "literally matches $ in paths" do
+    route_def '/test$/'
+
+    get '/test$/'
+    assert ok?
+  end
+
+  it "literally matches + in paths" do
+    route_def '/te+st/'
+
+    get '/te+st/'
+    assert ok?
+    get '/teeeeeeest/'
+    assert not_found?
+  end
+
+  it "literally matches () in paths" do
+    route_def '/test(bar)/'
+
+    get '/test(bar)/'
     assert ok?
   end
 
