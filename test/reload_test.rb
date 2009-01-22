@@ -34,6 +34,13 @@ describe "Reloading" do
     assert_same false, @app.reload?
   end
 
+  it 'is disabled when app_file is a rackup (.ru) file' do
+    @app.set :app_file, __FILE__.sub(/\.rb$/, '.ru')
+    @app.set :environment, :development
+    assert !@app.reload
+    assert_same false, @app.reload?
+  end
+
   it 'can be turned off explicitly' do
     @app.set :app_file, __FILE__
     @app.set :environment, :development

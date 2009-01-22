@@ -17,7 +17,6 @@ module Sinatra
     }.call
 
     set :run, Proc.new { $0 == app_file }
-    set :reload, Proc.new{ app_file? && development? }
 
     if run? && ARGV.any?
       require 'optparse'

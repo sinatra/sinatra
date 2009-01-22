@@ -805,7 +805,7 @@ module Sinatra
     set :methodoverride, true
     set :static, true
     set :run, false
-    set :reload, Proc.new { app_file? && development? }
+    set :reload, Proc.new { app_file? && app_file !~ /\.ru$/i && development? }
     set :lock, Proc.new { reload? }
 
     def self.reloading?
