@@ -376,6 +376,8 @@ module Sinatra
           splat = key.scan(/(^[^\[]+)|\[([^\]]+)\]/).flatten.compact
           head, last = splat[0..-2], splat[-1]
           head.inject(res){ |s,v| s[v] ||= indifferent_hash }[last] = val
+        else
+          res[key] = val
         end
         res
       end

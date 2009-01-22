@@ -176,6 +176,21 @@ describe "Routing" do
     assert_equal 'looks good', body
   end
 
+  it "preserves non-nested params" do
+    mock_app {
+      get '/foo' do
+        assert_equal "2", params["article_id"]
+        assert_equal "awesome", params['comment']['body']
+        assert_nil params['comment[body]']
+        'looks good'
+      end
+    }
+
+    get '/foo?article_id=2&comment[body]=awesome'
+    assert ok?
+    assert_equal 'looks good', body
+  end
+
   it "supports paths that include spaces" do
     mock_app {
       get '/path with spaces' do
