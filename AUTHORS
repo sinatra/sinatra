@@ -1,8 +1,8 @@
 Sinatra was designed and developed by Blake Mizerany (bmizerany) in
 California. Continued development would not be possible without the ongoing
-financial support provided by Heroku <heroku.com> and the emotional support
-provided by Adam Wiggins (adamwiggins), Chris Wanstrath (defunkt), PJ Hyett (pjhyett), and
-the rest of the Github crew.
+financial support provided by [Heroku](http://heroku.com) and the emotional
+support provided by Adam Wiggins (adamwiggins), Chris Wanstrath (defunkt),
+PJ Hyett (pjhyett), and the rest of the GitHub crew.
 
 Special thanks to the following extraordinary individuals, who-out which
 Sinatra would not be possible:
@@ -27,12 +27,13 @@ Sinatra would not be possible:
 * Victor Hugo Borja (vic) for splat'n routes specs and doco.
 * Avdi Grimm (avdi) for basic RSpec support.
 * Jack Danger Canty for a more accurate root directory and for making me
-  watch this just now: http://www.youtube.com/watch?v=ueaHLHgskkw.
+  watch [this](http://www.youtube.com/watch?v=ueaHLHgskkw) just now.
 * Mathew Walker for making escaped paths work with static files.
 * Millions of Us for having the problem that led to Sinatra's conception.
 * Songbird for the problems that helped Sinatra's future become realized.
 * Rick Olsen (technoweenie) for the killer plug at RailsConf '08.
 * Steven Garcia for the amazing custom artwork you see on 404's and 500's
+* Pat Nakajima (nakajima) for fixing non-nested params in nested params Hash's.
 
 and last but not least:
 
