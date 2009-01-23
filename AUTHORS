@@ -16,7 +16,7 @@ Sinatra would not be possible:
   the README, and hanging in there when times were rough.
 * Simon Rozet (sr) for a ton of doc patches, HAML options, and all that
   advocacy stuff he's going to do for 1.0.
-* Erik Kastner (kastner) for fixing MIME_TYPES under Rack 0.5.
+* Erik Kastner (kastner) for fixing `MIME_TYPES` under Rack 0.5.
 * Ben Bleything (bleything) for caring about HTTP status codes and doc fixes.
 * Igal Koshevoy (igal) for root path detection under Thin/Passenger.
 * Jon Crosby (jcrosby) for coffee breaks, doc fixes, and just because, man.
