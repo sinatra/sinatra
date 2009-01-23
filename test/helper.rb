@@ -19,6 +19,10 @@ end
 class Test::Unit::TestCase
   include Sinatra::Test
 
+  def setup
+    Sinatra::Base.set :environment, :test
+  end
+
   # Sets up a Sinatra::Base subclass defined with the block
   # given. Used in setup or individual spec methods to establish
   # the application.
@@ -30,6 +34,7 @@ class Test::Unit::TestCase
     Sinatra::Default.set(
       :environment => :development,
       :raise_errors => Proc.new { test? },
+      :show_exceptions => Proc.new { development? },
       :dump_errors => true,
       :sessions => false,
       :logging => Proc.new { ! test? },

@@ -3,6 +3,7 @@ require 'time'
 require 'uri'
 require 'rack'
 require 'rack/builder'
+require 'sinatra/show_exceptions'
 
 module Sinatra
   VERSION = '0.9.1.1'
@@ -838,6 +839,11 @@ module Sinatra
         builder.use Rack::Session::Cookie if sessions? && !test?
         builder.use Rack::CommonLogger if logging?
         builder.use Rack::MethodOverride if methodoverride?
+        if show_exceptions?
+          enable :raise_errors
+          builder.use ShowExceptions
+        end
+
         @middleware.each { |c,a,b| builder.use(c, *a, &b) }
         builder.run super
         builder.to_app
@@ -916,6 +922,7 @@ module Sinatra
     set :raise_errors, true
     set :dump_errors, false
     set :clean_trace, true
+    set :show_exceptions, Proc.new { development? }
     set :sessions, false
     set :logging, false
     set :methodoverride, false

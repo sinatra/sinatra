@@ -176,6 +176,39 @@ describe_option 'raise_errors' do
   end
 end
 
+describe_option 'show_exceptions' do
+  it 'is enabled on Default only in development' do
+    @base.set(:environment, :development)
+    assert @base.show_exceptions?
+
+    assert @default.development?
+    assert @default.show_exceptions?
+
+    @default.set(:environment, :test)
+    assert ! @default.show_exceptions?
+
+    @base.set(:environment, :production)
+    assert ! @base.show_exceptions?
+  end
+
+  it 'returns a friendly 500' do
+    mock_app {
+      disable :raise_errors
+      enable :show_exceptions
+
+      get '/' do
+        raise StandardError
+      end
+    }
+
+    get '/'
+    assert @app.raise_errors? # it enables raise_errors when enabled
+    assert_equal 500, status
+    assert body.include?("StandardError")
+    assert body.include?("<code>show_exceptions</code> option")
+  end
+end
+
 describe_option 'dump_errors' do
   it 'is disabled on Base' do
     assert ! @base.dump_errors?
