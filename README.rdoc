@@ -87,8 +87,8 @@ a different location by setting the <tt>:public</tt> option:
   set :public, File.dirname(__FILE__) + '/static'
 
 Note that the public directory name is not included in the URL. A file
-<tt>./public/images/logo.png</tt> is made available as
-<tt>http://example.com/images/logo.png</tt>.
+<tt>./public/css/style.css</tt> is made available as
+<tt>http://example.com/css/style.css</tt>.
 
 == Views / Templates
 
