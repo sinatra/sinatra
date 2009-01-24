@@ -10,12 +10,20 @@ effort:
     'Hello world!'
   end
 
-Run with <tt>ruby myapp.rb</tt> and view at <tt>http://localhost:4567</tt>
+Install the gem and run with:
 
-== HTTP Methods
+  sudo gem install sinatra
+  ruby myapp.rb
+
+View at: http://localhost:4567
+
+== Routes
+
+In Sinatra, a route is an HTTP method paired with an URL matching pattern.
+Each route is associated with a block:
 
   get '/' do
-    .. show things ..
+    .. show something ..
   end
 
   post '/' do
@@ -30,21 +38,13 @@ Run with <tt>ruby myapp.rb</tt> and view at <tt>http://localhost:4567</tt>
     .. annihilate something ..
   end
 
-== Routes
-
-Routes are matched based on the order of declaration. The first route that
+Routes are matched in the order they are defined. The first route that
 matches the request is invoked.
-
-Basic routes:
-
-  get '/hi' do
-    ...
-  end
 
 Route patterns may include named parameters, accessible via the
 <tt>params</tt> hash:
 
-  get '/:name' do
+  get '/hello/:name' do
     # matches "GET /foo" and "GET /bar"
     # params[:name] is 'foo' or 'bar'
     "Hello #{params[:name]}!"
@@ -86,9 +86,13 @@ a different location by setting the <tt>:public</tt> option:
 
   set :public, File.dirname(__FILE__) + '/static'
 
+Note that the public directory name is not included in the URL. A file
+<tt>./public/images/logo.png</tt> is made available as
+<tt>http://example.com/images/logo.png</tt>.
+
 == Views / Templates
 
-Templates are assumed to be located directly under a <tt>./views</tt>
+Templates are assumed to be located directly under the <tt>./views</tt>
 directory. To use a different views directory:
 
   set :views, File.dirname(__FILE__) + '/templates'
@@ -141,7 +145,7 @@ Renders <tt>./views/stylesheet.sass</tt>.
 
 Renders the inlined template string.
 
-=== Accessing Variables
+=== Accessing Variables in Templates
 
 Templates are evaluated within the same context as the route blocks. Instance
 variables set in route blocks are available in templates:
@@ -181,12 +185,13 @@ Templates may be defined at the end of the source file:
   @@ index
   %div.title Hello world!!!!!
 
-NOTE:  Sinatra will automaticly load any in-file-templates in the
-source file that first required sinatra.  If you have in-file-templates
-in another source file you will need to explicitly call
-+use_in_file_templates! on main in that file.
+NOTE: In-file templates defined in the source file that requires sinatra
+are automatically loaded. Call the <tt>use_in_file_templates!</tt>
+method explicitly if you have in-file templates in another source file.
 
-It's also possible to define named templates using the top-level template
+=== Named Templates
+
+It's possible to define named templates using the top-level <tt>template</tt>
 method:
 
   template :layout do
@@ -249,7 +254,7 @@ You can also specify a body when halting ...
 
   halt 'this will be the body'
 
-Set the status and body ...
+Or set the status and body ...
 
   halt 401, 'go away!'
 
@@ -317,7 +322,7 @@ code is 404, the <tt>not_found</tt> handler is invoked:
 
 The +error+ handler is invoked any time an exception is raised from a route
 block or before filter. The exception object can be obtained from the
-'sinatra.error' Rack variable:
+<tt>sinatra.error</tt> Rack variable:
 
   error do
     'Sorry there was a nasty error - ' + env['sinatra.error'].name
@@ -339,8 +344,8 @@ You get this:
 
   So what happened was... something bad
 
-Sinatra installs special not_found and error handlers when running under
-the development environment.
+Sinatra installs special <tt>not_found</tt> and <tt>error</tt> handlers when
+running under the development environment.
 
 == Mime types
 
@@ -480,72 +485,39 @@ Options are:
   -s # specify rack server/handler (default is thin)
   -x # turn on the mutex lock (default is off)
 
-== Contributing
+== The Bleeding Edge
 
-=== Tools
+If you would like to use Sinatra's latest bleeding code, create a local
+clone and run your app with the <tt>sinatra/lib</tt> directory on the
+<tt>LOAD_PATH</tt>:
 
-Besides Ruby itself, you only need a text editor, preferably one that supports
-Ruby syntax hilighting. VIM and Emacs are a fine choice on any platform, but
-feel free to use whatever you're familiar with.
-
-Sinatra uses the Git source code management system. If you're unfamiliar with
-Git, you can find more information and tutorials on http://git.or.cz as well
-as http://git-scm.com.  Scott Chacon created a great series of introductory
-screencasts about Git, which you can find here: http://www.gitcasts.com
-
-=== First Time: Cloning The Sinatra Repo
-
-  cd where/you/keep/your/projects
+  cd myapp
   git clone git://github.com/sinatra/sinatra.git
-  cd sinatra
-  cd path/to/your_project
-  ln -s ../sinatra/
+  ruby -Isinatra/lib myapp.rb
 
-=== Updating Your Existing Sinatra Clone
-
-  cd where/you/keep/sinatra
-  git pull
-
-=== Using Edge Sinatra in Your App
-
-at the top of your sinatra_app.rb file:
+Alternatively, you can add the <tt>sinatra/lib<tt> directory to the
+<tt>LOAD_PATH</tt> in your application:
 
   $LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
+  require 'rubygems'
   require 'sinatra'
 
   get '/about' do
-    "I'm running on Version " + Sinatra::VERSION
+    "I'm running version " + Sinatra::VERSION
   end
 
-=== Contributing a Patch
+To update the Sinatra sources in the future:
 
-There are several ways to do this. Probably the easiest (and preferred) way is
-to fork Sinatra on GitHub (http://github.com/sinatra/sinatra), push your
-changes to your Sinatra repo and file a ticket in lighthouse (sinatra.lighthouseapp.com) where we can discuss it.
+  cd myproject/sinatra
+  git pull
 
-You can also create a patch file and attach it to a feature request or bug fix
-on the issue tracker (see below) or send it to the mailing list (see Community
-section).
+== More
 
-=== Issue Tracking and Feature Requests
-
-http://sinatra.lighthouseapp.com
-
-== Community
-
-=== Mailing List
-
-http://groups.google.com/group/sinatrarb
-
-If you have a problem or question, please make sure to include all the
-relevant information in your mail, like the Sinatra version you're using, what
-version of Ruby you have, and so on.
-
-=== IRC Channel
-
-You can find us on the Freenode network in the channel #sinatra
-(irc://chat.freenode.net/#sinatra)
-
-There's usually someone online at any given time, but we cannot pay attention
-to the channel all the time, so please stick around for a while after asking a
-question.
+* {Project Website}[http://sinatra.github.com/] - Additional documentation,
+  news, and links to other resources.
+* {Contributing}[http://sinatra.github.com/contribute.html] - Find a bug? Need
+  help? Have a patch?
+* {Lighthouse}[http://sinatra.lighthouseapp.com] - Issue tracking and release
+  planning.
+* {Mailing List}[http://groups.google.com/group/sinatrarb]
+* {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] on http://freenode.net
