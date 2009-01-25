@@ -389,10 +389,10 @@ module Sinatra
     def nested_params(params)
       return indifferent_hash.merge(params) if !params.keys.join.include?('[')
       params.inject indifferent_hash do |res, (key,val)|
-        if key =~ /\[.*\]/
-          splat = key.scan(/(^[^\[]+)|\[([^\]]+)\]/).flatten.compact
-          head, last = splat[0..-2], splat[-1]
-          head.inject(res){ |s,v| s[v] ||= indifferent_hash }[last] = val
+        if key.include?('[')
+          head = key.split(/[\]\[]+/)
+          last = head.pop
+          head.inject(res){ |hash,k| hash[k] ||= indifferent_hash }[last] = val
         else
           res[key] = val
         end
