@@ -72,4 +72,15 @@ describe "Filters" do
     assert ok?
     assert_equal 'cool', body
   end
+
+  it "gives you access to params" do
+    mock_app {
+      before { @foo = params['foo'] }
+      get('/foo') { @foo }
+    }
+
+    get '/foo?foo=cool'
+    assert ok?
+    assert_equal 'cool', body
+  end
 end
