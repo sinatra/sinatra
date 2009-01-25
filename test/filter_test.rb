@@ -73,6 +73,19 @@ describe "Filters" do
     assert_equal 'cool', body
   end
 
+  it "does modify the response with halt" do
+    mock_app {
+      before { halt 302, 'Hi' }
+      get '/foo' do
+        "should not happen"
+      end
+    }
+
+    get '/foo'
+    assert_equal 302, response.status
+    assert_equal 'Hi', body
+  end
+
   it "gives you access to params" do
     mock_app {
       before { @foo = params['foo'] }
