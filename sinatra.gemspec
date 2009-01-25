@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'sinatra'
-  s.version = '0.9.0.3'
-  s.date = '2009-01-21'
+  s.version = '0.9.0.4'
+  s.date = '2009-01-25'
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
     compat/app_test.rb
     compat/application_test.rb
     compat/builder_test.rb
+    compat/compat_test.rb
     compat/custom_error_test.rb
     compat/erb_test.rb
     compat/events_test.rb
