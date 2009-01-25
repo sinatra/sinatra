@@ -7,7 +7,7 @@ PJ Hyett (pjhyett), and the rest of the GitHub crew.
 Special thanks to the following extraordinary individuals, who-out which
 Sinatra would not be possible:
 
-* Ryan Tomayko (rtomayko) for constantly fixing whitespace errors 60d5006
+* Ryan Tomayko (rtomayko) for constantly fixing whitespace errors 60d5006   
 * Ezra Zygmuntowicz (ezmobius) for initial help and letting Blake steal
   some of merbs internal code.
 * Christopher Schneid (cschneid) for The Book, the blog (gittr.com),
@@ -31,7 +31,7 @@ Sinatra would not be possible:
 * Mathew Walker for making escaped paths work with static files.
 * Millions of Us for having the problem that led to Sinatra's conception.
 * Songbird for the problems that helped Sinatra's future become realized.
-* Rick Olsen (technoweenie) for the killer plug at RailsConf '08.
+* Rick Olson (technoweenie) for the killer plug at RailsConf '08.
 * Steven Garcia for the amazing custom artwork you see on 404's and 500's
 * Pat Nakajima (nakajima) for fixing non-nested params in nested params Hash's.
 
