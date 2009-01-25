@@ -6,7 +6,7 @@ def route_def(pattern)
 end
 
 describe "Routing" do
-  %w[get put post delete head].each do |verb|
+  %w[get put post delete].each do |verb|
     it "defines #{verb.upcase} request handlers with #{verb}" do
       mock_app {
         send verb, '/hello' do
@@ -19,6 +19,21 @@ describe "Routing" do
       assert response.ok?
       assert_equal 'Hello World', response.body
     end
+  end
+
+  it "defines HEAD request handlers with HEAD" do
+    mock_app {
+      head '/hello' do
+        response['X-Hello'] = 'World!'
+        'remove me'
+      end
+    }
+
+    request = Rack::MockRequest.new(@app)
+    response = request.request('HEAD', '/hello', {})
+    assert response.ok?
+    assert_equal 'World!', response['X-Hello']
+    assert_equal '', response.body
   end
 
   it "404s when no route satisfies the request" do
@@ -294,6 +309,30 @@ describe "Routing" do
     get '/'
     assert ok?
     assert_equal 'Hello World', body
+  end
+
+  it "halts with a response tuple" do
+    mock_app {
+      get '/' do
+        halt 295, {'Content-Type' => 'text/plain'}, 'Hello World'
+      end
+    }
+
+    get '/'
+    assert_equal 295, status
+    assert_equal 'text/plain', response['Content-Type']
+    assert_equal 'Hello World', body
+  end
+
+  it "halts with an array of strings" do
+    mock_app {
+      get '/' do
+        halt %w[Hello World How Are You]
+      end
+    }
+
+    get '/'
+    assert_equal 'HelloWorldHowAreYou', body
   end
 
   it "transitions to the next matching route on pass" do

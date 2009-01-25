@@ -320,7 +320,11 @@ module Sinatra
       @request  = Request.new(env)
       @response = Response.new
       @params   = nil
-      error_detection { dispatch! }
+
+      invoke { dispatch! }
+      invoke { error_block!(response.status) }
+
+      @response.body = [] if @env['REQUEST_METHOD'] == 'HEAD'
       @response.finish
     end
 
@@ -329,7 +333,8 @@ module Sinatra
     end
 
     def halt(*response)
-      throw :halt, *response
+      response = response.first if response.length == 1
+      throw :halt, response
     end
 
     def pass
@@ -337,18 +342,19 @@ module Sinatra
     end
 
   private
-    def dispatch!
-      @params = original_params = nested_params(@request.params)
+    # Run before filters and then locate and run a matching route.
+    def route!
+      @params = nested_params(@request.params)
 
-      self.class.filters.each do |block|
-        res = catch(:halt) { instance_eval(&block) ; :continue }
-        return unless res == :continue
-      end
+      # before filters
+      self.class.filters.each { |block| instance_eval(&block) }
 
+      # routes
       if routes = self.class.routes[@request.request_method]
+        original_params = @params
         path = @request.path_info
 
-        routes.each do |pattern, keys, conditions, method_name|
+        routes.each do |pattern, keys, conditions, block|
           if match = pattern.match(path)
             values = match.captures.map{|val| val && unescape(val) }
             params =
@@ -368,14 +374,15 @@ module Sinatra
               end
             @params = original_params.merge(params)
 
-            catch(:pass) {
+            catch(:pass) do
               conditions.each { |cond|
                 throw :pass if instance_eval(&cond) == false }
-              return invoke(method_name)
-            }
+              throw :halt, instance_eval(&block)
+            end
           end
         end
       end
+
       raise NotFound
     end
 
@@ -397,7 +404,8 @@ module Sinatra
       Hash.new {|hash,key| hash[key.to_s] if Symbol === key }
     end
 
-    def invoke(block)
+    # Run the block with 'throw :halt' support and apply result to the response.
+    def invoke(&block)
       res = catch(:halt) { instance_eval(&block) }
       return if res.nil?
 
@@ -429,15 +437,15 @@ module Sinatra
       res
     end
 
-    def error_detection
-      errmap = self.class.errors
-      yield
+    # Dispatch a request with error handling.
+    def dispatch!
+      route!
     rescue NotFound => boom
       @env['sinatra.error'] = boom
       @response.status = 404
       @response.body = ['<h1>Not Found</h1>']
-      handler = errmap[boom.class] || errmap[NotFound]
-      invoke handler unless handler.nil?
+      error_block! boom.class, NotFound
+
     rescue ::Exception => boom
       @env['sinatra.error'] = boom
 
@@ -449,11 +457,19 @@ module Sinatra
 
       raise boom if options.raise_errors?
       @response.status = 500
-      invoke errmap[boom.class] || errmap[Exception]
-    ensure
-      if @response.status >= 400 && errmap.key?(response.status)
-        invoke errmap[response.status]
+      error_block! boom.class, Exception
+    end
+
+    # Find an custom error block for the key(s) specified.
+    def error_block!(*keys)
+      errmap = self.class.errors
+      keys.each do |key|
+        if block = errmap[key]
+          res = instance_eval(&block)
+          return res
+        end
       end
+      nil
     end
 
     def clean_backtrace(trace)
@@ -592,7 +608,7 @@ module Sinatra
         route('GET', path, opts, &block)
 
         @conditions = conditions
-        head(path, opts) { invoke(block) ; [] }
+        route('HEAD', path, opts, &block)
       end
 
       def put(path, opts={}, &bk); route 'PUT', path, opts, &bk; end

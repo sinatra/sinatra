@@ -107,7 +107,7 @@ module Sinatra
     # Throwing halt with a Symbol and the to_result convention are
     # deprecated. Override the invoke method to detect those types of return
     # values.
-    def invoke(handler)
+    def invoke(&block)
       res = super
       case
       when res.kind_of?(Symbol)
