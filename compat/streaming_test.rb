@@ -105,7 +105,7 @@ context "SendData" do
   end
 
   # Deprecated. The Content-Disposition is no longer handled by sendfile.
-  specify "should include a Content-Disposition header" do
+  xspecify "should include a Content-Disposition header" do
     get '/' do
       send_file File.dirname(__FILE__) + '/public/foo.xml'
     end
@@ -118,4 +118,16 @@ context "SendData" do
     headers['Content-Transfer-Encoding'].should.equal 'binary'
   end
 
+  specify "should include a Content-Disposition header when :disposition set to attachment" do
+    get '/' do
+      send_file File.dirname(__FILE__) + '/public/foo.xml',
+        :disposition => 'attachment'
+    end
+
+    get_it '/'
+
+    should.be.ok
+    headers['Content-Disposition'].should.not.be.nil
+    headers['Content-Disposition'].should.equal 'attachment; filename="foo.xml"'
+  end
 end

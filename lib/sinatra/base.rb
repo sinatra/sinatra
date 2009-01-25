@@ -125,15 +125,24 @@ module Sinatra
       end
     end
 
-    # Use the contents of the file as the response body and attempt to
+    # Use the contents of the file at +path+ as the response body.
     def send_file(path, opts={})
       stat = File.stat(path)
       last_modified stat.mtime
+
       content_type media_type(opts[:type]) ||
         media_type(File.extname(path)) ||
         response['Content-Type'] ||
         'application/octet-stream'
+
       response['Content-Length'] ||= (opts[:length] || stat.size).to_s
+
+      if opts[:disposition] == 'attachment' || opts[:filename]
+        attachment opts[:filename] || path
+      elsif opts[:disposition] == 'inline'
+        response['Content-Disposition'] = 'inline'
+      end
+
       halt StaticFile.open(path, 'rb')
     rescue Errno::ENOENT
       not_found

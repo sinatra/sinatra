@@ -104,17 +104,6 @@ module Sinatra
       etag(*args, &block)
     end
 
-    # The :disposition option is deprecated; use: #attachment. This method
-    # setting the Content-Transfer-Encoding header is deprecated.
-    #--
-    # TODO deprecation warning for :disposition argument.
-    def send_file(path, opts={})
-      opts[:disposition] = 'attachment' if !opts.key?(:disposition)
-      attachment opts[:filename] || path if opts[:filename] || opts[:disposition]
-      response['Content-Transfer-Encoding'] = 'binary' if opts[:disposition]
-      super(path, opts)
-    end
-
     # Throwing halt with a Symbol and the to_result convention are
     # deprecated. Override the invoke method to detect those types of return
     # values.

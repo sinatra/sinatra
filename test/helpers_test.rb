@@ -240,11 +240,11 @@ describe 'Helpers#send_file' do
     @file = nil
   end
 
-  def send_file_app
+  def send_file_app(opts={})
     path = @file
     mock_app {
       get '/file.txt' do
-        send_file path
+        send_file path, opts
       end
     }
   end
@@ -282,6 +282,24 @@ describe 'Helpers#send_file' do
     }
     get '/'
     assert not_found?
+  end
+
+  it "does not set the Content-Disposition header by default" do
+    send_file_app
+    get '/file.txt'
+    assert_nil response['Content-Disposition']
+  end
+
+  it "sets the Content-Disposition header when :disposition set to 'attachment'" do
+    send_file_app :disposition => 'attachment'
+    get '/file.txt'
+    assert_equal 'attachment; filename="file.txt"', response['Content-Disposition']
+  end
+
+  it "sets the Content-Disposition header when :filename provided" do
+    send_file_app :filename => 'foo.txt'
+    get '/file.txt'
+    assert_equal 'attachment; filename="foo.txt"', response['Content-Disposition']
   end
 end
 
