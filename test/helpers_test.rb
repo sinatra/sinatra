@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-describe '#status' do
+describe 'Helpers#status' do
   before do
     mock_app {
       get '/' do
@@ -16,7 +16,7 @@ describe '#status' do
   end
 end
 
-describe '#body' do
+describe 'Helpers#body' do
   it 'takes a block for defered body generation' do
     mock_app {
       get '/' do
@@ -40,7 +40,7 @@ describe '#body' do
   end
 end
 
-describe '#redirect' do
+describe 'Helpers#redirect' do
   it 'uses a 302 when only a path is given' do
     mock_app {
       get '/' do
@@ -70,7 +70,7 @@ describe '#redirect' do
   end
 end
 
-describe '#error' do
+describe 'Helpers#error' do
   it 'sets a status code and halts' do
     mock_app {
       get '/' do
@@ -111,7 +111,7 @@ describe '#error' do
   end
 end
 
-describe '#not_found' do
+describe 'Helpers#not_found' do
   it 'halts with a 404 status' do
     mock_app {
       get '/' do
@@ -126,7 +126,7 @@ describe '#not_found' do
   end
 end
 
-describe '#session' do
+describe 'Helpers#session' do
   it 'uses the existing rack.session' do
     mock_app {
       get '/' do
@@ -152,7 +152,7 @@ describe '#session' do
   end
 end
 
-describe '#media_type' do
+describe 'Helpers#media_type' do
   include Sinatra::Helpers
 
   it "looks up media types in Rack's MIME registry" do
@@ -175,7 +175,7 @@ describe '#media_type' do
   end
 end
 
-describe '#content_type' do
+describe 'Helpers#content_type' do
   it 'sets the Content-Type header' do
     mock_app {
       get '/' do
@@ -229,7 +229,7 @@ describe '#content_type' do
   end
 end
 
-describe '#send_file' do
+describe 'Helpers#send_file' do
   before do
     @file = File.dirname(__FILE__) + '/file.txt'
     File.open(@file, 'wb') { |io| io.write('Hello World') }
@@ -285,7 +285,7 @@ describe '#send_file' do
   end
 end
 
-describe '#last_modified' do
+describe 'Helpers#last_modified' do
   before do
     now = Time.now
     mock_app {
@@ -316,7 +316,7 @@ describe '#last_modified' do
   end
 end
 
-describe '#etag' do
+describe 'Helpers#etag' do
   before do
     mock_app {
       get '/' do
