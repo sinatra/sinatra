@@ -51,6 +51,17 @@ module Sinatra
   module Compat
   end
 
+  # Make Sinatra::EventContext an alias for Sinatra::Default to unbreak plugins.
+  def self.const_missing(const_name)
+    if const_name == :EventContext
+      const_set :EventContext, Sinatra::Default
+      sinatra_warn 'Sinatra::EventContext is deprecated; use Sinatra::Default instead.'
+      Sinatra::Default
+    else
+      super
+    end
+  end
+
   # The ServerError exception is deprecated. Any exception is considered an
   # internal server error.
   class ServerError < RuntimeError
