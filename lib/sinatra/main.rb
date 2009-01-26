@@ -32,13 +32,6 @@ end
 
 include Sinatra::Delegator
 
-def helpers(*modules, &block)
-  Sinatra::Application.class_eval do
-    modules.each {|m| include m }
-  end
-  Sinatra::Application.class_eval(&block)
-end
-
 def mime(ext, type)
   ext = ".#{ext}" unless ext.to_s[0] == ?.
   Rack::Mime::MIME_TYPES[ext.to_s] = type

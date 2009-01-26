@@ -379,3 +379,45 @@ describe 'Helpers#etag' do
     assert_equal 'W/"FOO"', response['ETag']
   end
 end
+
+describe 'Adding new helpers' do
+  module HelperOne; def one; '1'; end; end
+  module HelperTwo; def two; '2'; end; end
+
+  it 'should allow passing a list of modules' do
+    mock_app {
+      helpers HelperOne, HelperTwo
+
+      get '/one' do
+        one
+      end
+
+      get '/two' do
+        two
+      end
+    }
+
+    get '/one'
+    assert_equal '1', body
+
+    get '/two'
+    assert_equal '2', body
+  end
+
+  it 'should take a block and mix it into the app' do
+    mock_app {
+      helpers do
+        def foo
+          'foo'
+        end
+      end
+
+      get '/' do
+        foo
+      end
+    }
+
+    get '/'
+    assert_equal 'foo', body
+  end
+end
