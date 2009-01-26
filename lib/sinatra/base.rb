@@ -253,7 +253,6 @@ module Sinatra
       locals_assigns = locals.to_a.collect { |k,v| "#{k} = locals[:#{k}]" }
       src = "#{locals_assigns.join("\n")}\n#{instance.src}"
       eval src, binding, '(__ERB__)', locals_assigns.length + 1
-      instance.result(binding)
     end
 
     def haml(template, options={})
