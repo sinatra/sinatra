@@ -8,7 +8,8 @@ context "Sinatra" do
 
   specify "should put all DSL methods on (main)" do
     object = Object.new
-    Sinatra::Application::FORWARD_METHODS.each do |method|
+    methods = %w[get put post head delete configure template helpers set]
+    methods.each do |method|
       object.private_methods.should.include(method)
     end
   end
