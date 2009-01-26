@@ -32,8 +32,11 @@ end
 
 include Sinatra::Delegator
 
-def helpers(&block)
-  Sinatra::Application.send :class_eval, &block
+def helpers(*modules, &block)
+  Sinatra::Application.class_eval do
+    modules.each {|m| include m }
+  end
+  Sinatra::Application.class_eval(&block)
 end
 
 def mime(ext, type)
