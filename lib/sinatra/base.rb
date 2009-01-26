@@ -440,21 +440,25 @@ module Sinatra
     def dispatch!
       route!
     rescue NotFound => boom
+      handle_not_found!(boom)
+    rescue ::Exception => boom
+      handle_exception!(boom)
+    end
+
+    def handle_not_found!(boom)
       @env['sinatra.error'] = boom
+
       @response.status = 404
       @response.body = ['<h1>Not Found</h1>']
       error_block! boom.class, NotFound
+    end
 
-    rescue ::Exception => boom
+    def handle_exception!(boom)
       @env['sinatra.error'] = boom
 
-      if options.dump_errors?
-        backtrace = clean_backtrace(boom.backtrace)
-        msg = ["#{boom.class} - #{boom.message}:", *backtrace].join("\n ")
-        @env['rack.errors'].write(msg)
-      end
+      dump_errors!(boom) if options.dump_errors?
+      raise boom         if options.raise_errors?
 
-      raise boom if options.raise_errors?
       @response.status = 500
       error_block! boom.class, Exception
     end
@@ -469,6 +473,13 @@ module Sinatra
         end
       end
       nil
+    end
+
+    def dump_errors!(boom)
+      backtrace = clean_backtrace(boom.backtrace)
+      msg = ["#{boom.class} - #{boom.message}:",
+        *backtrace].join("\n ")
+      @env['rack.errors'].write(msg)
     end
 
     def clean_backtrace(trace)
