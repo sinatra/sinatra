@@ -1,3 +1,26 @@
+= 0.9.0.4 / 2009-01-25
+
+ * Using halt with more than 1 args causes ArgumentError [#131]
+ * using halt in a before filter doesn't modify response [#127]
+ * Add deprecated Sinatra::EventContext to unbreak plugins [#130]
+ * Give access to GET/POST params in filters [#129]
+ * Preserve non-nested params in nested params hash [#117]
+ * Fix backtrace dump with Rack::Lint [#116]
+
+= 0.9.0.3 / 2009-01-21
+
+ * Fall back on mongrel then webrick when thin not found. [#75]
+ * Use :environment instead of :env in test helpers to
+   fix deprecation warnings coming from framework.
+ * Make sinatra/test/rspec work again [#113]
+ * Fix app_file detection on windows [#118]
+ * Fix static files with Rack::Lint in pipeline [#121]
+
+= 0.9.0.2 / 2009-01-18
+
+ * Halting a before block should stop processing of routes [#85]
+ * Fix redirect/halt in before filters [#85]
+
 = 0.9.0 / 2009-01-18
 
  * Works with and requires Rack >= 0.9.1

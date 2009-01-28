@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
     compat/app_test.rb
     compat/application_test.rb
     compat/builder_test.rb
+    compat/compat_test.rb
     compat/custom_error_test.rb
     compat/erb_test.rb
     compat/events_test.rb
@@ -78,12 +79,15 @@ Gem::Specification.new do |s|
     test/options_test.rb
     test/reload_test.rb
     test/request_test.rb
+    test/response_test.rb
     test/result_test.rb
     test/routing_test.rb
     test/sass_test.rb
+    test/server_test.rb
     test/sinatra_test.rb
     test/static_test.rb
     test/templates_test.rb
+    test/test_test.rb
     test/views/hello.builder
     test/views/hello.erb
     test/views/hello.haml
