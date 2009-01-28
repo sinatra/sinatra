@@ -377,6 +377,7 @@ module Sinatra
                 {}
               end
             @params = original_params.merge(params)
+            @block_params = values
 
             catch(:pass) do
               conditions.each { |cond|
@@ -641,7 +642,7 @@ module Sinatra
 
         define_method "#{verb} #{path}", &block
         unbound_method = instance_method("#{verb} #{path}")
-        block          = lambda { unbound_method.bind(self).call }
+        block = lambda { unbound_method.bind(self).call(*@block_params) }
 
         (routes[verb] ||= []).
           push([pattern, keys, conditions, block]).last

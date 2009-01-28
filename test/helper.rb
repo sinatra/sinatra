@@ -42,3 +42,11 @@ def describe(*args, &block)
   end
   klass.class_eval &block
 end
+
+# Do not output warnings for the duration of the block.
+def silence_warnings
+  $VERBOSE, v = nil, $VERBOSE
+  yield
+ensure
+  $VERBOSE = v
+end

@@ -498,4 +498,104 @@ describe "Routing" do
     assert ok?
     assert_equal 'default', body
   end
+
+  it 'passes a single url param as block parameters when one param is specified' do
+    mock_app {
+      get '/:foo' do |foo|
+        assert_equal 'bar', foo
+      end
+    }
+
+    get '/bar'
+  end
+
+  it 'passes multiple params as block parameters when many are specified' do
+    mock_app {
+      get '/:foo/:bar/:baz' do |foo, bar, baz|
+        assert_equal 'abc', foo
+        assert_equal 'def', bar
+        assert_equal 'ghi', baz
+      end
+    }
+
+    get '/abc/def/ghi'
+  end
+
+  it 'passes regular expression captures as block parameters' do
+    mock_app {
+      get(/^\/fo(.*)\/ba(.*)/) do |foo, bar|
+        assert_equal 'orooomma', foo
+        assert_equal 'f', bar
+      end
+    }
+
+    get '/foorooomma/baf'
+  end
+
+  it "supports mixing multiple splat params like /*/foo/*/* as block parameters" do
+    mock_app {
+      get '/*/foo/*/*' do |foo, bar, baz|
+        assert_equal 'bar', foo
+        assert_equal 'bling', bar
+        assert_equal 'baz/boom', baz
+      end
+    }
+
+    get '/bar/foo/bling/baz/boom'
+  end
+
+  it 'raises an ArgumentError if there are too few block parameters' do
+    mock_app {
+      get '/:foo/:bar/:baz' do |foo, bar|
+        'quux'
+      end
+    }
+
+    assert_raise(ArgumentError) { get '/a/b/c' }
+  end
+
+  it 'does not raise an ArgumentError with fewer block params defined then given in route' do
+    mock_app {
+      get '/:foo/:bar/:baz' do |foo|
+        'quux'
+      end
+    }
+
+    silence_warnings do
+      assert_nothing_raised { get '/a/b/c' }
+    end
+  end
+
+  it 'raises an ArgumentError with more block params defined then given' do
+    mock_app {
+      get '/:foo/:bar' do |foo, bar, baz|
+        'quux'
+      end
+    }
+
+    assert_raise(ArgumentError) { get '/a/b' }
+  end
+
+  it 'raises an ArgumentError if there are too many block parameters when there are no captures' do
+    mock_app {
+      get '/foo' do |foo|
+        'quux'
+      end
+    }
+
+    silence_warnings do
+      assert_nothing_raised { get '/foo' }
+    end
+  end
+
+  it 'succeeds if no block parameters are specified' do
+    mock_app {
+      get '/:foo/:bar' do
+        'quux'
+      end
+    }
+
+    assert_nothing_raised { get '/a/b' }
+    assert_equal 'quux', body
+  end
 end
