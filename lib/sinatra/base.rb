@@ -12,7 +12,7 @@ module Sinatra
     end
 
     def accept
-      @env['HTTP_ACCEPT'].split(',').map { |a| a.strip }
+      @env['HTTP_ACCEPT'].to_s.split(',').map { |a| a.strip }
     end
 
     # Override Rack 0.9.x's #params implementation (see #72 in lighthouse)

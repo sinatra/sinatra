@@ -484,4 +484,18 @@ describe "Routing" do
       assert_equal type, response.headers['Content-Type']
     end
   end
+
+  it 'degrades gracefully when optional accept header is not provided' do
+    mock_app {
+      get '/', :provides => :xml do
+        request.env['HTTP_ACCEPT']
+      end
+      get '/' do
+        'default'
+      end
+    }
+    get '/'
+    assert ok?
+    assert_equal 'default', body
+  end
 end
