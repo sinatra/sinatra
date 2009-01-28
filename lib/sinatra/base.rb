@@ -673,9 +673,14 @@ module Sinatra
       end
 
     public
-      def helpers(*modules, &block)
-        include *modules unless modules.empty?
-        class_eval(&block) if block
+      def helpers(*extensions, &block)
+        extensions << Module.new(&block) if block
+        include *extensions
+      end
+
+      def register(*extensions, &block)
+        extensions << Module.new(&block) if block
+        extend *extensions
       end
 
       def development? ; environment == :development ; end
@@ -891,6 +896,12 @@ module Sinatra
       @reloading = false
     end
 
+    def self.register(*extensions, &block)
+      added_methods = extensions.map {|m| m.public_instance_methods }.flatten
+      Delegator.delegate *added_methods
+      super(*extensions, &block)
+    end
+
     @@mutex = Mutex.new
     def self.synchronize(&block)
       if lock?
@@ -926,5 +937,13 @@ module Sinatra
     base = Class.new(base)
     base.send :class_eval, &block if block_given?
     base
+  end
+
+  def self.register(*extensions, &block)
+    Default.register(*extensions, &block)
+  end
+
+  def self.helpers(*extensions, &block)
+    Default.helpers(*extensions, &block)
   end
 end
