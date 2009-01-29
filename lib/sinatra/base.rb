@@ -293,7 +293,6 @@ module Sinatra
       end
       xml.target!
     end
-
   end
 
   class Base
@@ -323,7 +322,9 @@ module Sinatra
       invoke { dispatch! }
       invoke { error_block!(response.status) }
 
+      # never respond with a body on HEAD requests
       @response.body = [] if @env['REQUEST_METHOD'] == 'HEAD'
+
       @response.finish
     end
 
@@ -887,7 +888,6 @@ module Sinatra
       @reloading = false
     end
 
-  private
     @@mutex = Mutex.new
     def self.synchronize(&block)
       if lock?

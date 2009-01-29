@@ -2,6 +2,10 @@ require 'sinatra/base'
 
 module Sinatra
   class Default < Base
+
+    # we assume that the first file that requires 'sinatra' is the
+    # app_file. all other path related options are calculated based
+    # on this path by default.
     set :app_file, lambda {
       ignore = [
         /lib\/sinatra.*\.rb$/, # all sinatra code
