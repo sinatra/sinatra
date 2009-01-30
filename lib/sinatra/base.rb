@@ -82,7 +82,7 @@ module Sinatra
 
     # Halt processing and return the error status provided.
     def error(code, body=nil)
-      code, body = 500, code.to_str if code.respond_to? :to_str
+      code, body    = 500, code.to_str if code.respond_to? :to_str
       response.body = body unless body.nil?
       halt code
     end
@@ -198,7 +198,7 @@ module Sinatra
 
   module Templates
     def render(engine, template, options={})
-      data = lookup_template(engine, template, options)
+      data   = lookup_template(engine, template, options)
       output = __send__("render_#{engine}", template, data, options)
       layout, data = lookup_layout(engine, options)
       if layout
@@ -229,7 +229,7 @@ module Sinatra
       return if options[:layout] == false
       options.delete(:layout) if options[:layout] == true
       template = options[:layout] || :layout
-      data = lookup_template(engine, template, options)
+      data     = lookup_template(engine, template, options)
       [template, data]
     rescue Errno::ENOENT
       nil
@@ -352,7 +352,7 @@ module Sinatra
       # routes
       if routes = self.class.routes[@request.request_method]
         original_params = @params
-        path = @request.path_info
+        path            = @request.path_info
 
         routes.each do |pattern, keys, conditions, block|
           if match = pattern.match(path)
@@ -421,7 +421,7 @@ module Sinatra
             headers.each { |k, v| @response.headers[k] = v } if headers
           elsif res.length == 2
             @response.status = res.first
-            @response.body = res.last
+            @response.body   = res.last
           else
             raise TypeError, "#{res.inspect} not supported"
           end
@@ -448,9 +448,8 @@ module Sinatra
 
     def handle_not_found!(boom)
       @env['sinatra.error'] = boom
-
-      @response.status = 404
-      @response.body = ['<h1>Not Found</h1>']
+      @response.status      = 404
+      @response.body        = ['<h1>Not Found</h1>']
       error_block! boom.class, NotFound
     end
 
@@ -638,7 +637,7 @@ module Sinatra
 
         define_method "#{verb} #{path}", &block
         unbound_method = instance_method("#{verb} #{path}")
-        block = lambda { unbound_method.bind(self).call }
+        block          = lambda { unbound_method.bind(self).call }
 
         (routes[verb] ||= []).
           push([pattern, keys, conditions, block]).last
@@ -690,7 +689,7 @@ module Sinatra
 
       def run!(options={})
         set options
-        handler = detect_rack_handler
+        handler      = detect_rack_handler
         handler_name = handler.name.gsub(/.*::/, '')
         puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
           "on #{port} for #{environment} with backup from #{handler_name}"
@@ -737,11 +736,11 @@ module Sinatra
       end
 
       def inherited(subclass)
-        subclass.routes = dupe_routes
-        subclass.templates = templates.dup
+        subclass.routes     = dupe_routes
+        subclass.templates  = templates.dup
         subclass.conditions = []
-        subclass.filters = filters.dup
-        subclass.errors = errors.dup
+        subclass.filters    = filters.dup
+        subclass.errors     = errors.dup
         subclass.middleware = middleware.dup
         subclass.send :reset_middleware
         super
