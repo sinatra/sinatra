@@ -194,6 +194,10 @@ module Sinatra
         halt 304 if etags.include?(value) || etags.include?('*')
       end
     end
+
+    ## Sugar for redirect (example:  redirect back)
+    def back ; request.referer ; end
+
   end
 
   module Templates

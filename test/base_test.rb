@@ -65,4 +65,17 @@ describe 'Sinatra::Base' do
     assert response.ok?
     assert_equal 'not foo', response.body
   end
+
+  it "makes redirecting back pretty" do
+    app = mock_app {
+      get '/foo' do
+        redirect back
+      end
+    }
+
+    request  = Rack::MockRequest.new(app)
+    response = request.get('/foo', 'HTTP_REFERER' => 'http://github.com')
+    assert response.redirect?
+    assert_equal "http://github.com", response.location
+  end
 end
