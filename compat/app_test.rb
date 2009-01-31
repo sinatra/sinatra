@@ -10,7 +10,7 @@ context "Sinatra" do
     object = Object.new
     methods = %w[get put post head delete configure template helpers set]
     methods.each do |method|
-      object.private_methods.should.include(method)
+      object.private_methods.map { |m| m.to_sym }.should.include(method.to_sym)
     end
   end
 
