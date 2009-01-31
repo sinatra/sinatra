@@ -1,9 +1,12 @@
 require File.dirname(__FILE__) + '/helper'
 
-describe 'Exception Mappings' do
-  class FooError < RuntimeError
-  end
+class FooError < RuntimeError
+end
 
+class FooNotFound < Sinatra::NotFound
+end
+
+describe 'Exception Mappings' do
   it 'invokes handlers registered with ::error when raised' do
     mock_app {
       set :raise_errors, false
@@ -78,9 +81,6 @@ describe 'Exception Mappings' do
     }
     assert_nothing_raised { get '/' }
     assert_equal 404, status
-  end
-
-  class FooNotFound < Sinatra::NotFound
   end
 
   it "cascades for subclasses of Sinatra::NotFound" do

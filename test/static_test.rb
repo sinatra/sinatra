@@ -1,17 +1,15 @@
 require File.dirname(__FILE__) + '/helper'
 
 describe 'Static' do
-  F = ::File
-
   before do
     mock_app {
       set :static, true
-      set :public, F.dirname(__FILE__)
+      set :public, File.dirname(__FILE__)
     }
   end
 
   it 'serves GET requests for files in the public directory' do
-    get "/#{F.basename(__FILE__)}"
+    get "/#{File.basename(__FILE__)}"
     assert ok?
     assert_equal File.read(__FILE__), body
     assert_equal File.size(__FILE__).to_s, response['Content-Length']
@@ -19,7 +17,7 @@ describe 'Static' do
   end
 
   it 'produces a body that can be iterated over multiple times' do
-    env = Rack::MockRequest.env_for("/#{F.basename(__FILE__)}")
+    env = Rack::MockRequest.env_for("/#{File.basename(__FILE__)}")
     status, headers, body = @app.call(env)
     buf1, buf2 = [], []
     body.each { |part| buf1 << part }
@@ -29,7 +27,7 @@ describe 'Static' do
   end
 
   it 'serves HEAD requests for files in the public directory' do
-    head "/#{F.basename(__FILE__)}"
+    head "/#{File.basename(__FILE__)}"
     assert ok?
     assert_equal '', body
     assert_equal File.size(__FILE__).to_s, response['Content-Length']
@@ -37,8 +35,8 @@ describe 'Static' do
   end
 
   it 'serves files in preference to custom routes' do
-    @app.get("/#{F.basename(__FILE__)}") { 'Hello World' }
-    get "/#{F.basename(__FILE__)}"
+    @app.get("/#{File.basename(__FILE__)}") { 'Hello World' }
+    get "/#{File.basename(__FILE__)}"
     assert ok?
     assert body != 'Hello World'
   end
@@ -50,13 +48,13 @@ describe 'Static' do
 
   it 'passes to the next handler when the static option is disabled' do
     @app.set :static, false
-    get "/#{F.basename(__FILE__)}"
+    get "/#{File.basename(__FILE__)}"
     assert not_found?
   end
 
   it 'passes to the next handler when the public option is nil' do
     @app.set :public, nil
-    get "/#{F.basename(__FILE__)}"
+    get "/#{File.basename(__FILE__)}"
     assert not_found?
   end
 

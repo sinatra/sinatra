@@ -380,10 +380,10 @@ describe 'Helpers#etag' do
   end
 end
 
-describe 'Adding new helpers' do
-  module HelperOne; def one; '1'; end; end
-  module HelperTwo; def two; '2'; end; end
+module HelperOne; def one; '1'; end; end
+module HelperTwo; def two; '2'; end; end
 
+describe 'Adding new helpers' do
   it 'should allow passing a list of modules' do
     mock_app {
       helpers HelperOne, HelperTwo

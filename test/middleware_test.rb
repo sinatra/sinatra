@@ -4,7 +4,9 @@ describe "Middleware" do
   before do
     @app = mock_app(Sinatra::Default) {
       get '/*' do
-        response.headers['X-Tests'] = env['test.ran'].join(', ')
+        response.headers['X-Tests'] = env['test.ran'].
+          map { |n| n.split('::').last }.
+          join(', ')
         env['PATH_INFO']
       end
     }
