@@ -948,3 +948,9 @@ module Sinatra
     Default.helpers(*extensions, &block)
   end
 end
+
+# Define String#each under 1.9 for Rack compatibility. This should be
+# removed once Rack is fully 1.9 compatible.
+class String
+  alias_method :each, :each_line unless ''.respond_to? :each
+end
