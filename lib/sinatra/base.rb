@@ -552,14 +552,10 @@ module Sinatra
       end
 
       def use_in_file_templates!
-        line = caller.detect do |s|
-          [
-           /lib\/sinatra.*\.rb/,
-           /\(.*\)/,
-           /rubygems\/custom_require\.rb/
-          ].all? { |x| s !~ x }
-        end
-        file = line.sub(/:\d+.*$/, '')
+        ignore = [/lib\/sinatra.*\.rb/, /\(.*\)/, /rubygems\/custom_require\.rb/]
+        file = caller.
+          map  { |line| line.sub(/:\d+.*$/, '') }.
+          find { |line| ignore.all? { |pattern| line !~ pattern } }
         if data = ::IO.read(file).split('__END__')[1]
           data.gsub!(/\r\n/, "\n")
           template = nil
