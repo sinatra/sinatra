@@ -507,6 +507,7 @@ describe "Routing" do
     }
 
     get '/bar'
+    assert ok?
   end
 
   it 'passes multiple params as block parameters when many are specified' do
@@ -519,6 +520,7 @@ describe "Routing" do
     }
 
     get '/abc/def/ghi'
+    assert ok?
   end
 
   it 'passes regular expression captures as block parameters' do
@@ -530,6 +532,7 @@ describe "Routing" do
     }
 
     get '/foorooomma/baf'
+    assert ok?
   end
 
   it "supports mixing multiple splat params like /*/foo/*/* as block parameters" do
@@ -542,6 +545,7 @@ describe "Routing" do
     }
 
     get '/bar/foo/bling/baz/boom'
+    assert ok?
   end
 
   it 'raises an ArgumentError if there are too few block parameters' do
