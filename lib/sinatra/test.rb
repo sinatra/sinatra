@@ -7,7 +7,7 @@ module Sinatra
 
     attr_reader :app, :request, :response
 
-    def test_request(verb, path, *args)
+    def make_request(verb, path, *args)
       @app = Sinatra::Application if @app.nil? && defined?(Sinatra::Application)
       fail "@app not set - cannot make request" if @app.nil?
       @request = Rack::MockRequest.new(@app)
@@ -38,14 +38,14 @@ module Sinatra
       @response = @request.request(verb, path, opts)
     end
 
-    def get(path, *args, &b)  ; test_request('GET', path, *args, &b) ; end
-    def head(path, *args, &b) ; test_request('HEAD', path, *args, &b) ; end
-    def post(path, *args, &b) ; test_request('POST', path, *args, &b) ; end
-    def put(path, *args, &b)  ; test_request('PUT', path, *args, &b) ; end
-    def delete(path, *args, &b) ; test_request('DELETE', path, *args, &b) ; end
+    def get(path, *args, &b)  ; make_request('GET', path, *args, &b) ; end
+    def head(path, *args, &b) ; make_request('HEAD', path, *args, &b) ; end
+    def post(path, *args, &b) ; make_request('POST', path, *args, &b) ; end
+    def put(path, *args, &b)  ; make_request('PUT', path, *args, &b) ; end
+    def delete(path, *args, &b) ; make_request('DELETE', path, *args, &b) ; end
 
     def follow!
-      test_request 'GET', @response.location
+      make_request 'GET', @response.location
     end
 
     def body ; @response.body ; end
@@ -103,7 +103,7 @@ module Sinatra
         eval <<-RUBY, binding, __FILE__, __LINE__
         def #{verb}_it(*args, &block)
           sinatra_warn "The #{verb}_it method is deprecated; use #{verb} instead."
-          test_request('#{verb.upcase}', *args, &block)
+          make_request('#{verb.upcase}', *args, &block)
         end
         RUBY
       end

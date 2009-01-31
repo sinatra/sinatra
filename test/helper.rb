@@ -32,9 +32,12 @@ end
 #
 def describe(*args, &block)
   return super unless (name = args.first) && block
-  klass = Class.new(Test::Unit::TestCase) do
+  name = "#{name.gsub(/\W/, '')}Test"
+  Object.send :const_set, name, Class.new(Test::Unit::TestCase)
+  klass = Object.const_get(name)
+  klass.class_eval do
     def self.it(name, &block)
-      define_method("test_#{name.gsub(/\W/,'_')}", &block)
+      define_method("test_#{name.gsub(/\W/,'_').downcase}", &block)
     end
     def self.xspecify(*args) end
     def self.before(&block) define_method(:setup, &block)    end
