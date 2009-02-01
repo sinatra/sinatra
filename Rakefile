@@ -2,7 +2,7 @@ require 'rake/clean'
 require 'rake/testtask'
 require 'fileutils'
 
-task :default => [:compat, :test]
+task :default => [:test]
 task :spec => :test
 
 # SPECS ===============================================================
