@@ -528,11 +528,13 @@ describe "Routing" do
       get(/^\/fo(.*)\/ba(.*)/) do |foo, bar|
         assert_equal 'orooomma', foo
         assert_equal 'f', bar
+        'looks good'
       end
     }
 
     get '/foorooomma/baf'
     assert ok?
+    assert_equal 'looks good', body
   end
 
   it "supports mixing multiple splat params like /*/foo/*/* as block parameters" do
@@ -541,14 +543,16 @@ describe "Routing" do
         assert_equal 'bar', foo
         assert_equal 'bling', bar
         assert_equal 'baz/boom', baz
+        'looks good'
       end
     }
 
     get '/bar/foo/bling/baz/boom'
     assert ok?
+    assert_equal 'looks good', body
   end
 
-  it 'raises an ArgumentError if there are too few block parameters' do
+  it 'raises an ArgumentError with block arity > 1 and too many values' do
     mock_app {
       get '/:foo/:bar/:baz' do |foo, bar|
         'quux'
@@ -558,19 +562,7 @@ describe "Routing" do
     assert_raise(ArgumentError) { get '/a/b/c' }
   end
 
-  it 'does not raise an ArgumentError with fewer block params defined then given in route' do
-    mock_app {
-      get '/:foo/:bar/:baz' do |foo|
-        'quux'
-      end
-    }
-
-    silence_warnings do
-      assert_nothing_raised { get '/a/b/c' }
-    end
-  end
-
-  it 'raises an ArgumentError with more block params defined then given' do
+  it 'raises an ArgumentError with block param arity > 1 and too few values' do
     mock_app {
       get '/:foo/:bar' do |foo, bar, baz|
         'quux'
@@ -580,18 +572,6 @@ describe "Routing" do
     assert_raise(ArgumentError) { get '/a/b' }
   end
 
-  it 'raises an ArgumentError if there are too many block parameters when there are no captures' do
-    mock_app {
-      get '/foo' do |foo|
-        'quux'
-      end
-    }
-
-    silence_warnings do
-      assert_nothing_raised { get '/foo' }
-    end
-  end
-
   it 'succeeds if no block parameters are specified' do
     mock_app {
       get '/:foo/:bar' do
@@ -599,7 +579,75 @@ describe "Routing" do
       end
     }
 
-    assert_nothing_raised { get '/a/b' }
+    get '/a/b'
+    assert ok?
     assert_equal 'quux', body
+  end
+
+  it 'passes all params with block param arity -1 (splat args)' do
+    mock_app {
+      get '/:foo/:bar' do |*args|
+        args.join
+      end
+    }
+
+    get '/a/b'
+    assert ok?
+    assert_equal 'ab', body
+  end
+
+  # NOTE Block params behaves differently under 1.8 and 1.9. Under 1.8, block
+  # param arity is lax: declaring a mismatched number of block params results
+  # in a warning. Under 1.9, block param arity is strict: mismatched block
+  # arity raises an ArgumentError.
+
+  if RUBY_VERSION >= '1.9'
+
+    it 'raises an ArgumentError with block param arity 1 and no values' do
+      mock_app {
+        get '/foo' do |foo|
+          'quux'
+        end
+      }
+
+      assert_raise(ArgumentError) { get '/foo' }
+    end
+
+    it 'does not raise an ArgumentError with block param arity 1 and too many values' do
+      mock_app {
+        get '/:foo/:bar/:baz' do |foo|
+          'quux'
+        end
+      }
+
+      assert_raise { get '/a/b/c' }
+    end
+
+  else
+
+    it 'does not raise an ArgumentError with block param arity 1 and no values' do
+      mock_app {
+        get '/foo' do |foo|
+          'quux'
+        end
+      }
+
+      silence_warnings { get '/foo' }
+      assert ok?
+      assert_equal 'quux', body
+    end
+
+    it 'does not raise an ArgumentError with block param arity 1 and too many values' do
+      mock_app {
+        get '/:foo/:bar/:baz' do |foo|
+          'quux'
+        end
+      }
+
+      silence_warnings { get '/a/b/c' }
+      assert ok?
+      assert_equal 'quux', body
+    end
+
   end
 end

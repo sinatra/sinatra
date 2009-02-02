@@ -638,7 +638,12 @@ module Sinatra
 
         define_method "#{verb} #{path}", &block
         unbound_method = instance_method("#{verb} #{path}")
-        block = lambda { unbound_method.bind(self).call(*@block_params) }
+        block =
+          if block.arity != 0
+            lambda { unbound_method.bind(self).call(*@block_params) }
+          else
+            lambda { unbound_method.bind(self).call }
+          end
 
         (routes[verb] ||= []).
           push([pattern, keys, conditions, block]).last
