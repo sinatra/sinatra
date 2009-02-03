@@ -1,3 +1,24 @@
+= 0.9.1 / unreleased
+
+ * Sinatra now runs under Ruby 1.9.1 [#61]
+ * Route patterns (splats, :named, or Regexp captures) are now
+   passed as arguments to the block. [#140]
+ * The "helpers" method now takes a variable number of modules
+   along with the normal block syntax. [#133]
+ * New simple API for extensions/plugins to add DSL-level and
+   request-level methods. Use Sinatra.register(mixin) to extend
+   the DSL with all public methods defined in the mixin module;
+   use Sinatra.helpers(mixin) to make all public methods defined
+   in the mixin module available at the request level. [#138]
+ * Added "redirect back" to redirect to the referring URL.
+ * Added a new "clean_trace" option that causes backtraces dumped
+   to rack.errors and displayed on the development error page to
+   omit framework and core library backtrace lines. The option is
+   enabled by default. [#77]
+ * Fix :provides causing crash on any request when request has no
+   Accept header [#139]
+ * Fix that ERB templates were evaluated twice per "erb" call.
+
 = 0.9.0.4 / 2009-01-25
 
  * Using halt with more than 1 args causes ArgumentError [#131]
