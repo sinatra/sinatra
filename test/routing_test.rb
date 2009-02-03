@@ -613,14 +613,14 @@ describe "Routing" do
       assert_raise(ArgumentError) { get '/foo' }
     end
 
-    it 'does not raise an ArgumentError with block param arity 1 and too many values' do
+    it 'raises an ArgumentError with block param arity 1 and too many values' do
       mock_app {
         get '/:foo/:bar/:baz' do |foo|
           'quux'
         end
       }
 
-      assert_raise { get '/a/b/c' }
+      assert_raise(ArgumentError) { get '/a/b/c' }
     end
 
   else
