@@ -1,3 +1,4 @@
+require 'thread'
 require 'time'
 require 'uri'
 require 'rack'
