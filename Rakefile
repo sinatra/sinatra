@@ -45,6 +45,7 @@ task :install => package('.gem') do
 end
 
 directory 'dist/'
+CLOBBER.include('dist')
 
 file package('.gem') => %w[dist/ sinatra.gemspec] + spec.files do |f|
   sh "gem build sinatra.gemspec"
