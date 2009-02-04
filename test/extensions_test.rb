@@ -44,8 +44,10 @@ describe 'Registering extensions' do
 
   it 'will make sure any public methods added via Default#register are delegated to Sinatra::Delegator' do
     Sinatra::Default.register FooExtensions
-    assert Sinatra::Delegator.private_instance_methods.map(&:to_sym).include?(:foo)
-    assert !Sinatra::Delegator.private_instance_methods.map(&:to_sym).include?(:im_hiding_in_ur_foos)
+    assert Sinatra::Delegator.private_instance_methods.
+      map { |m| m.to_sym }.include?(:foo)
+    assert !Sinatra::Delegator.private_instance_methods.
+      map { |m| m.to_sym }.include?(:im_hiding_in_ur_foos)
   end
 
   it 'will not delegate methods on Base#register' do
