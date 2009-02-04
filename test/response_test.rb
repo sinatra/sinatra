@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require File.dirname(__FILE__) + '/helper'
 
 describe 'Sinatra::Response' do
@@ -29,5 +31,12 @@ describe 'Sinatra::Response' do
       @response.body = ['Hello World']
       assert_equal [status_code, {}, []], @response.finish
     end
+  end
+
+  it 'Calculates the Content-Length using the bytesize of the body' do
+    @response.body = ['Hello', 'World!', '✈']
+    status, headers, body = @response.finish
+    assert_equal '14', headers['Content-Length']
+    assert_equal @response.body, body
   end
 end

@@ -44,7 +44,7 @@ module Sinatra
         body = [body] if body.respond_to? :to_str
         if header["Content-Length"].nil? && body.respond_to?(:to_ary)
           header["Content-Length"] = body.to_ary.
-            inject(0) { |len, part| len + part.length }.to_s
+            inject(0) { |len, part| len + part.bytesize }.to_s
         end
         [status.to_i, header.to_hash, body]
       end
@@ -950,8 +950,12 @@ module Sinatra
   end
 end
 
-# Define String#each under 1.9 for Rack compatibility. This should be
-# removed once Rack is fully 1.9 compatible.
 class String
-  alias_method :each, :each_line unless ''.respond_to? :each
+  # Define String#each under 1.9 for Rack compatibility. This should be
+  # removed once Rack is fully 1.9 compatible.
+  alias_method :each, :each_line  unless ''.respond_to? :each
+
+  # Define String#bytesize as an alias to String#length for Ruby 1.8.6 and
+  # earlier.
+  alias_method :bytesize, :length unless ''.respond_to? :bytesize
 end
