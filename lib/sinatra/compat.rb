@@ -9,7 +9,7 @@ require 'sinatra/base'
 require 'sinatra/main'
 
 # Like Kernel#warn but outputs the location that triggered the warning.
-def sinatra_warn(*message)
+def sinatra_warn(*message) #:nodoc:
   line = caller.
     detect { |line| line !~ /(?:lib\/sinatra\/|__DELEGATE__)/ }.
     sub(/:in .*/, '')
@@ -34,25 +34,27 @@ end
 # technically a Sinatra issue but many Sinatra apps access the old
 # MIME_TYPES constants due to Sinatra example code.
 require 'rack/file'
-class Rack::File
-  def self.const_missing(const_name)
-    if const_name == :MIME_TYPES
-      hash = Hash.new { |hash,key| Rack::Mime::MIME_TYPES[".#{key}"] }
-      const_set :MIME_TYPES, hash
-      sinatra_warn 'Rack::File::MIME_TYPES is deprecated; use Rack::Mime instead.'
-      hash
-    else
-      super
+module Rack #:nodoc:
+  class File #:nodoc:
+    def self.const_missing(const_name)
+      if const_name == :MIME_TYPES
+        hash = Hash.new { |hash,key| Rack::Mime::MIME_TYPES[".#{key}"] }
+        const_set :MIME_TYPES, hash
+        sinatra_warn 'Rack::File::MIME_TYPES is deprecated; use Rack::Mime instead.'
+        hash
+      else
+        super
+      end
     end
   end
 end
 
 module Sinatra
-  module Compat
+  module Compat #:nodoc:
   end
 
   # Make Sinatra::EventContext an alias for Sinatra::Default to unbreak plugins.
-  def self.const_missing(const_name)
+  def self.const_missing(const_name) #:nodoc:
     if const_name == :EventContext
       const_set :EventContext, Sinatra::Default
       sinatra_warn 'Sinatra::EventContext is deprecated; use Sinatra::Default instead.'
@@ -73,7 +75,7 @@ module Sinatra
   end
 
   class Default < Base
-    def self.const_missing(const_name)
+    def self.const_missing(const_name) #:nodoc:
       if const_name == :FORWARD_METHODS
         sinatra_warn 'Sinatra::Application::FORWARD_METHODS is deprecated;',
           'use Sinatra::Delegator::METHODS instead.'
@@ -107,7 +109,7 @@ module Sinatra
     # Throwing halt with a Symbol and the to_result convention are
     # deprecated. Override the invoke method to detect those types of return
     # values.
-    def invoke(&block)
+    def invoke(&block) #:nodoc:
       res = super
       case
       when res.kind_of?(Symbol)
@@ -121,7 +123,7 @@ module Sinatra
       res
     end
 
-    def options
+    def options #:nodoc:
       Options.new(self.class)
     end
 
@@ -184,7 +186,7 @@ module Sinatra
     end
 
     # Deprecated. Missing messages are no longer delegated to @response.
-    def method_missing(name, *args, &b)
+    def method_missing(name, *args, &b) #:nodoc:
       if @response.respond_to?(name)
         sinatra_warn "The '#{name}' method is deprecated; use 'response.#{name}' instead."
         @response.send(name, *args, &b)

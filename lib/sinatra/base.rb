@@ -7,6 +7,8 @@ require 'rack/builder'
 module Sinatra
   VERSION = '0.9.0.4'
 
+  # The request object. See Rack::Request for more info:
+  # http://rack.rubyforge.org/doc/classes/Rack/Request.html
   class Request < Rack::Request
     def user_agent
       @env['HTTP_USER_AGENT']
@@ -24,6 +26,10 @@ module Sinatra
     end
   end
 
+  # The response object. See Rack::Response and Rack::ResponseHelpers for
+  # more info:
+  # http://rack.rubyforge.org/doc/classes/Rack/Response.html
+  # http://rack.rubyforge.org/doc/classes/Rack/Response/Helpers.html
   class Response < Rack::Response
     def initialize
       @status, @body = 200, []
@@ -52,10 +58,11 @@ module Sinatra
     end
   end
 
-  class NotFound < NameError # :)
+  class NotFound < NameError #:nodoc:
     def code ; 404 ; end
   end
 
+  # Methods available to routes, before filters, and views.
   module Helpers
     # Set or retrieve the response status code.
     def status(value=nil)
@@ -201,8 +208,35 @@ module Sinatra
 
   end
 
+  # Template rendering methods. Each method takes a the name of a template
+  # to render as a Symbol and returns a String with the rendered output.
   module Templates
-    def render(engine, template, options={})
+    def erb(template, options={})
+      require 'erb' unless defined? ::ERB
+      render :erb, template, options
+    end
+
+    def haml(template, options={})
+      require 'haml' unless defined? ::Haml
+      options[:options] ||= self.class.haml if self.class.respond_to? :haml
+      render :haml, template, options
+    end
+
+    def sass(template, options={}, &block)
+      require 'sass' unless defined? ::Sass
+      options[:layout] = false
+      render :sass, template, options
+    end
+
+    def builder(template=nil, options={}, &block)
+      require 'builder' unless defined? ::Builder
+      options, template = template, nil if template.is_a?(Hash)
+      template = lambda { block } if template.nil?
+      render :builder, template, options
+    end
+
+  private
+    def render(engine, template, options={}) #:nodoc:
       data   = lookup_template(engine, template, options)
       output = __send__("render_#{engine}", template, data, options)
       layout, data = lookup_layout(engine, options)
@@ -246,11 +280,6 @@ module Sinatra
       "#{views_dir}/#{template}.#{engine}"
     end
 
-    def erb(template, options={})
-      require 'erb' unless defined? ::ERB
-      render :erb, template, options
-    end
-
     def render_erb(template, data, options, &block)
       data = data.call if data.kind_of? Proc
       instance = ::ERB.new(data)
@@ -260,33 +289,14 @@ module Sinatra
       eval src, binding, '(__ERB__)', locals_assigns.length + 1
     end
 
-    def haml(template, options={})
-      require 'haml' unless defined? ::Haml
-      options[:options] ||= self.class.haml if self.class.respond_to? :haml
-      render :haml, template, options
-    end
-
     def render_haml(template, data, options, &block)
       engine = ::Haml::Engine.new(data, options[:options] || {})
       engine.render(self, options[:locals] || {}, &block)
     end
 
-    def sass(template, options={}, &block)
-      require 'sass' unless defined? ::Sass
-      options[:layout] = false
-      render :sass, template, options
-    end
-
     def render_sass(template, data, options, &block)
       engine = ::Sass::Engine.new(data, options[:sass] || {})
       engine.render
-    end
-
-    def builder(template=nil, options={}, &block)
-      require 'builder' unless defined? ::Builder
-      options, template = template, nil if template.is_a?(Hash)
-      template = lambda { block } if template.nil?
-      render :builder, template, options
     end
 
     def render_builder(template, data, options, &block)
@@ -300,6 +310,7 @@ module Sinatra
     end
   end
 
+  # Base class for all Sinatra applications and middleware.
   class Base
     include Rack::Utils
     include Helpers
@@ -312,6 +323,7 @@ module Sinatra
       yield self if block_given?
     end
 
+    # Rack call interface.
     def call(env)
       dup.call!(env)
     end
@@ -333,15 +345,18 @@ module Sinatra
       @response.finish
     end
 
+    # Access options defined with Base.set.
     def options
       self.class
     end
 
+    # Exit the current block and halt the response.
     def halt(*response)
       response = response.first if response.length == 1
       throw :halt, response
     end
 
+    # Pass control to the next matching route.
     def pass
       throw :pass
     end
@@ -509,6 +524,7 @@ module Sinatra
       attr_accessor :routes, :filters, :conditions, :templates,
         :middleware, :errors
 
+    public
       def set(option, value=self)
         if value.kind_of?(Proc)
           metadef(option, &value)
@@ -585,6 +601,7 @@ module Sinatra
         @conditions << block
       end
 
+   private
       def host_name(pattern)
         condition { pattern === request.host }
       end
@@ -615,6 +632,7 @@ module Sinatra
         }
       end
 
+    public
       def get(path, opts={}, &block)
         conditions = @conditions.dup
         route('GET', path, opts, &block)
@@ -896,6 +914,7 @@ module Sinatra
     end
   end
 
+  # Base class for classic style (top-level) applications.
   class Default < Base
     set :raise_errors, false
     set :dump_errors, true
@@ -905,17 +924,19 @@ module Sinatra
     set :static, true
     set :run, false
 
-    def self.register(*extensions, &block)
+    def self.register(*extensions, &block) #:nodoc:
       added_methods = extensions.map {|m| m.public_instance_methods }.flatten
       Delegator.delegate *added_methods
       super(*extensions, &block)
     end
   end
 
+  # The top-level Application. All DSL methods executed on main are delegated
+  # to this class.
   class Application < Default
   end
 
-  module Delegator
+  module Delegator #:nodoc:
     def self.delegate(*methods)
       methods.each do |method_name|
         eval <<-RUBY, binding, '(__DELEGATE__)', 1
@@ -939,16 +960,18 @@ module Sinatra
     base
   end
 
+  # Extend the top-level DSL with the modules provided.
   def self.register(*extensions, &block)
     Default.register(*extensions, &block)
   end
 
+  # Include the helper modules provided in Sinatra's request context.
   def self.helpers(*extensions, &block)
     Default.helpers(*extensions, &block)
   end
 end
 
-class String
+class String #:nodoc:
   # Define String#each under 1.9 for Rack compatibility. This should be
   # removed once Rack is fully 1.9 compatible.
   alias_method :each, :each_line  unless ''.respond_to? :each

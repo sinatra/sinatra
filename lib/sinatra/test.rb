@@ -65,6 +65,8 @@ module Sinatra
       super || (@response && @response.respond_to?(symbol, include_private))
     end
 
+  private
+
     RACK_OPT_NAMES = {
       :accept => "HTTP_ACCEPT",
       :agent => "HTTP_USER_AGENT",
