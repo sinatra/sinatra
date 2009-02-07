@@ -695,7 +695,7 @@ module Sinatra
 
     public
       def helpers(*extensions, &block)
-        extensions << Module.new(&block) if block
+        class_eval(&block) if block_given?
         include *extensions
       end
 

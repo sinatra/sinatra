@@ -384,7 +384,7 @@ module HelperOne; def one; '1'; end; end
 module HelperTwo; def two; '2'; end; end
 
 describe 'Adding new helpers' do
-  it 'should allow passing a list of modules' do
+  it 'takes a list of modules to mix into the app' do
     mock_app {
       helpers HelperOne, HelperTwo
 
@@ -404,7 +404,7 @@ describe 'Adding new helpers' do
     assert_equal '2', body
   end
 
-  it 'should take a block and mix it into the app' do
+  it 'takes a block to mix into the app' do
     mock_app {
       helpers do
         def foo
@@ -419,5 +419,21 @@ describe 'Adding new helpers' do
 
     get '/'
     assert_equal 'foo', body
+  end
+
+  it 'evaluates the block in class context so that methods can be aliased' do
+    mock_app {
+      helpers do
+        alias_method :h, :escape_html
+      end
+
+      get '/' do
+        h('42 < 43')
+      end
+    }
+
+    get '/'
+    assert ok?
+    assert_equal '42 &lt; 43', body
   end
 end
