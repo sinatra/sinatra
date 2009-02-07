@@ -980,3 +980,24 @@ class String #:nodoc:
   # earlier.
   alias_method :bytesize, :length unless ''.respond_to? :bytesize
 end
+
+class Rack::Builder
+  ## Sugar to include a classic style app in a rackup.
+  ##
+  ## This will eval the source into a Sinatra::Default class
+  ## Example:
+  ##
+  ## require 'sinatra/base'
+  ##
+  ## map '/foo' do
+  ##    run Sinatra("foo.rb")
+  ## end
+  ##
+  ## run Sinatra("bar.rb")
+  ##
+  def Sinatra(file, base=Sinatra::Default)
+    Sinatra.new(base) {
+      expanded = File.expand_path(file)
+      self.class_eval(File.read(expanded), expanded) }
+  end
+end
