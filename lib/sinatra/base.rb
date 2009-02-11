@@ -996,9 +996,10 @@ class Rack::Builder
   ## run Sinatra("bar.rb")
   ##
   def Sinatra(file, base=Sinatra::Default)
-    Sinatra.new(base) {
+    Sinatra.new(base) do
       expanded = File.expand_path(file)
       self.class_eval { set :app_file, expanded }
-      self.class_eval(File.read(expanded), expanded) }
+      self.class_eval(File.read(expanded), expanded)
+    end
   end
 end
