@@ -96,7 +96,7 @@ describe 'Options' do
   end
 end
 
-describe 'Backtrace Cleaning (clean_trace option)' do
+describe 'clean_trace' do
   before do
     @app = Class.new(Sinatra::Base)
   end

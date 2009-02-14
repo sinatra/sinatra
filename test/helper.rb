@@ -40,7 +40,7 @@ end
 # chris@ozmm.org
 #
 def describe(*args, &block)
-  return super unless (name = args.first) && block
+  return super unless (name = args.first.capitalize) && block
   name = "#{name.gsub(/\W/, '')}Test"
   Object.send :const_set, name, Class.new(Test::Unit::TestCase)
   klass = Object.const_get(name)
