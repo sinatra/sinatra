@@ -11,13 +11,6 @@ $LOAD_PATH.unshift libdir unless $LOAD_PATH.include?(libdir)
 require 'test/unit'
 require 'sinatra/test'
 
-Sinatra::Default.set(
-  :environment => :test,
-  :run => false,
-  :raise_errors => true,
-  :logging => false
-)
-
 class Sinatra::Base
   # Allow assertions in request context
   include Test::Unit::Assertions
@@ -26,11 +19,32 @@ end
 class Test::Unit::TestCase
   include Sinatra::Test
 
+  def setup
+    Sinatra::Default.set(
+      :environment => :test,
+      :run => false,
+      :raise_errors => true,
+      :logging => false
+    )
+  end
+
   # Sets up a Sinatra::Base subclass defined with the block
   # given. Used in setup or individual spec methods to establish
   # the application.
   def mock_app(base=Sinatra::Base, &block)
     @app = Sinatra.new(base, &block)
+  end
+
+  def restore_default_options
+    Sinatra::Default.set(
+      :raise_errors => Proc.new { test? },
+      :dump_errors => true,
+      :sessions => false,
+      :logging => true,
+      :methodoverride => true,
+      :static => true,
+      :run  => false
+    )
   end
 end
 
@@ -53,6 +67,17 @@ def describe(*args, &block)
     def self.after(&block)  define_method(:teardown, &block) end
   end
   klass.class_eval &block
+  klass
+end
+
+def describe_option(name, &block)
+  klass = describe("Option #{name}", &block)
+  klass.before do
+    restore_default_options
+    @base    = Sinatra.new
+    @default = Class.new(Sinatra::Default)
+  end
+  klass
 end
 
 # Do not output warnings for the duration of the block.

@@ -916,7 +916,7 @@ module Sinatra
 
   # Base class for classic style (top-level) applications.
   class Default < Base
-    set :raise_errors, false
+    set :raise_errors, Proc.new { test? }
     set :dump_errors, true
     set :sessions, false
     set :logging, true
