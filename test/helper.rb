@@ -8,21 +8,30 @@ end
 libdir = File.dirname(File.dirname(__FILE__)) + '/lib'
 $LOAD_PATH.unshift libdir unless $LOAD_PATH.include?(libdir)
 
-require 'sinatra/base'
-require 'sinatra/test/unit'
+require 'test/unit'
+require 'sinatra/test'
 
-module Sinatra::Test
+Sinatra::Default.set(
+  :environment => :test,
+  :run => false,
+  :raise_errors => true,
+  :logging => false
+)
+
+class Sinatra::Base
+  # Allow assertions in request context
+  include Test::Unit::Assertions
+end
+
+class Test::Unit::TestCase
+  include Sinatra::Test
+
   # Sets up a Sinatra::Base subclass defined with the block
   # given. Used in setup or individual spec methods to establish
   # the application.
   def mock_app(base=Sinatra::Base, &block)
     @app = Sinatra.new(base, &block)
   end
-end
-
-class Sinatra::Base
-  # Allow assertions in request context
-  include Test::Unit::Assertions
 end
 
 ##
