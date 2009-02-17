@@ -682,7 +682,7 @@ module Sinatra
                 Regexp.escape(match)
               else
                 keys << $2[1..-1]
-                "([^/?&#\.]+)"
+                "([^/?&#]+)"
               end
             end
           [/^#{pattern}$/, keys]

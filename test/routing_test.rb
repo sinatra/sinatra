@@ -139,6 +139,32 @@ describe "Routing" do
     assert ok?
   end
 
+  it "matches a dot ('.') as part of a named param" do
+    mock_app {
+      get '/:foo/:bar' do
+        params[:foo]
+      end
+    }
+
+    get '/user@example.com/name'
+    assert_equal 200, response.status
+    assert_equal 'user@example.com', body
+  end
+
+  it "matches a literal dot ('.') outside of named params" do
+    mock_app {
+      get '/:file.:ext' do
+        assert_equal 'pony', params[:file]
+        assert_equal 'jpg', params[:ext]
+        'right on'
+      end
+    }
+
+    get '/pony.jpg'
+    assert_equal 200, response.status
+    assert_equal 'right on', body
+  end
+
   it "literally matches . in paths" do
     route_def '/test.bar'
 
