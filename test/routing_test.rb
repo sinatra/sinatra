@@ -158,7 +158,7 @@ describe "Routing" do
   it "literally matches + in paths" do
     route_def '/te+st/'
 
-    get '/te+st/'
+    get '/te%2Bst/'
     assert ok?
     get '/teeeeeeest/'
     assert not_found?
@@ -243,7 +243,7 @@ describe "Routing" do
     assert_equal 'looks good', body
   end
 
-  it "supports paths that include spaces" do
+  it "matches paths that include spaces encoded with %20" do
     mock_app {
       get '/path with spaces' do
         'looks good'
@@ -251,6 +251,18 @@ describe "Routing" do
     }
 
     get '/path%20with%20spaces'
+    assert ok?
+    assert_equal 'looks good', body
+  end
+
+  it "matches paths that include spaces encoded with +" do
+    mock_app {
+      get '/path with spaces' do
+        'looks good'
+      end
+    }
+
+    get '/path+with+spaces'
     assert ok?
     assert_equal 'looks good', body
   end

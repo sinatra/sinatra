@@ -372,11 +372,11 @@ module Sinatra
       # routes
       if routes = self.class.routes[@request.request_method]
         original_params = @params
-        path            = @request.path_info
+        path            = unescape(@request.path_info)
 
         routes.each do |pattern, keys, conditions, block|
           if match = pattern.match(path)
-            values = match.captures.map{|val| val && unescape(val) }
+            values = match.captures.to_a
             params =
               if keys.any?
                 keys.zip(values).inject({}) do |hash,(k,v)|
@@ -673,7 +673,7 @@ module Sinatra
         if path.respond_to? :to_str
           special_chars = %w{. + ( )}
           pattern =
-            URI.encode(path).gsub(/((:\w+)|[\*#{special_chars.join}])/) do |match|
+            path.gsub(/((:\w+)|[\*#{special_chars.join}])/) do |match|
               case match
               when "*"
                 keys << 'splat'
