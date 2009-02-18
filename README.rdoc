@@ -527,7 +527,7 @@ To update the Sinatra sources in the future:
 
 * {Project Website}[http://sinatra.github.com/] - Additional documentation,
   news, and links to other resources.
-* {Contributing}[http://sinatra.github.com/contribute.html] - Find a bug? Need
+* {Contributing}[http://sinatra.github.com/contributing.html] - Find a bug? Need
   help? Have a patch?
 * {Lighthouse}[http://sinatra.lighthouseapp.com] - Issue tracking and release
   planning.
