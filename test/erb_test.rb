@@ -47,4 +47,21 @@ describe "ERB Templates" do
     assert ok?
     assert_equal "ERB Layout!\nHello World\n", body
   end
+
+  it "renders erb with blocks" do
+    mock_app {
+      def container
+        @_out_buf << "THIS."
+        yield
+        @_out_buf << "SPARTA!"
+      end
+      def is; "IS." end
+      get '/' do
+        erb '<% container do %> <%= is %> <% end %>'
+      end
+    }
+    get '/'
+    assert ok?
+    assert_equal 'THIS. IS. SPARTA!', body
+  end
 end

@@ -282,7 +282,7 @@ module Sinatra
 
     def render_erb(template, data, options, &block)
       data = data.call if data.kind_of? Proc
-      instance = ::ERB.new(data)
+      instance = ::ERB.new(data, nil, nil, '@_out_buf')
       locals = options[:locals] || {}
       locals_assigns = locals.to_a.collect { |k,v| "#{k} = locals[:#{k}]" }
       src = "#{locals_assigns.join("\n")}\n#{instance.src}"
