@@ -420,7 +420,7 @@ and Bacon through separate source files.
     end
 
     def test_with_agent
-      get '/', :agent => 'Songbird'
+      get '/', :env => { :agent => 'Songbird' }
       assert_equal "You're in Songbird!", @response.body
     end
 
