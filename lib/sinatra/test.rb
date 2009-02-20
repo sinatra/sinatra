@@ -7,35 +7,27 @@ module Sinatra
 
     attr_reader :app, :request, :response
 
-    def make_request(verb, path, *args)
+    def make_request(verb, path, data=nil, h=nil)
       @app = Sinatra::Application if @app.nil? && defined?(Sinatra::Application)
       fail "@app not set - cannot make request" if @app.nil?
+
       @request = Rack::MockRequest.new(@app)
-      opts, input =
-        case args.size
-        when 2 # input, env
-          input, env = args
-          if input.kind_of?(Hash) # params, env
-            [env, param_string(input)]
-          else
-            [env, input]
-          end
-        when 1 # params
-          if (data = args.first).kind_of?(Hash)
-            env = (data.delete(:env) || {})
-            [env, param_string(data)]
-          else
-            [{}, data]
-          end
-        when 0
-          [{}, '']
-        else
-          raise ArgumentError, "zero, one, or two arguments expected"
+      options  = { :lint => true }
+
+      case data
+      when Hash
+        if env = data.delete(:env)
+          options = rack_options(env)
         end
-      opts = rack_opts(opts)
-      opts[:input] ||= input
-      yield @request if block_given?
-      @response = @request.request(verb, path, opts)
+        options.merge!(h) if h.is_a?(Hash)
+        options[:input] = param_string(data)
+      when String
+        options = rack_options(h) if h.is_a?(Hash)
+        options[:input] = data
+      end
+
+      # TODO: yield @request if block_given?
+      @response = @request.request(verb, path, options)
     end
 
     def get(path, *args, &b)  ; make_request('GET', path, *args, &b) ; end
@@ -67,7 +59,7 @@ module Sinatra
 
   private
 
-    RACK_OPT_NAMES = {
+    RACK_OPTIONS = {
       :accept => "HTTP_ACCEPT",
       :agent => "HTTP_USER_AGENT",
       :host => "HTTP_HOST",
@@ -76,9 +68,9 @@ module Sinatra
       :content_type => "CONTENT_TYPE"
     }
 
-    def rack_opts(opts)
+    def rack_options(opts)
       opts.merge(:lint => true).inject({}) do |hash,(key,val)|
-        key = RACK_OPT_NAMES[key] || key
+        key = RACK_OPTIONS[key] || key
         hash[key] = val
         hash
       end
