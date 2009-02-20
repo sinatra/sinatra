@@ -68,6 +68,20 @@ describe 'Helpers#redirect' do
     assert_equal '', body
     assert_equal '/foo', response['Location']
   end
+
+  it 'redirects back to request.referer when passed back' do
+    mock_app {
+      get '/try_redirect' do
+        redirect back
+      end
+    }
+
+    request = Rack::MockRequest.new(@app)
+    response = request.get('/try_redirect', 'HTTP_REFERER' => '/foo')
+    assert_equal 302, response.status
+    assert_equal '/foo', response['Location']
+  end
+
 end
 
 describe 'Helpers#error' do
