@@ -1,11 +1,18 @@
 require 'sinatra/base'
 
 module Sinatra
-
   module Test
     include Rack::Utils
 
     attr_reader :app, :request, :response
+
+    def self.deprecate(framework)
+      warn <<-EOF
+Warning: support for the #{framework} testing framework is deprecated and
+will be dropped in Sinatra 1.0. See <http://sinatra.github.com/testing.html>
+for more information.
+      EOF
+    end
 
     def make_request(verb, path, data=nil, h=nil)
       @app = Sinatra::Application if @app.nil? && defined?(Sinatra::Application)

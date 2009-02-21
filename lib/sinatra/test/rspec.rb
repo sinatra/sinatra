@@ -3,6 +3,8 @@ require 'sinatra/test/unit'
 require 'spec'
 require 'spec/interop/test'
 
+Sinatra::Test.deprecate('RSpec')
+
 Sinatra::Default.set(
   :environment => :test,
   :run => false,

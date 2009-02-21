@@ -1,6 +1,8 @@
 require 'bacon'
 require 'sinatra/test'
 
+Sinatra::Test.deprecate('Bacon')
+
 Sinatra::Default.set(
   :environment => :test,
   :run => false,
