@@ -31,7 +31,7 @@ describe 'Sinatra::Test' do
     }
   end
 
-  it 'allows GET/POST/PUT/DELETE' do
+  it 'allows GET/HEAD/POST/PUT/DELETE' do
     get '/'
     assert_equal('GET', request['REQUEST_METHOD'])
 
@@ -43,6 +43,9 @@ describe 'Sinatra::Test' do
 
     delete '/'
     assert_equal('DELETE', request['REQUEST_METHOD'])
+
+    head '/'
+    assert_equal('0', headers['Content-Length'])
   end
 
   it 'allows to specify a body' do
