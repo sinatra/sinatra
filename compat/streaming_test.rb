@@ -93,7 +93,7 @@ context "SendData" do
   end
 
   # Deprecated. send_data is going away.
-  xspecify "should send the data with options" do
+  specify "should send the data with options" do
     get '/' do
       send_data 'asdf', :status => 500
     end

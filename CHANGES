@@ -20,6 +20,8 @@
  * Fix that ERB templates were evaluated twice per "erb" call.
  * The ERB output buffer is now available to helpers via the @_out_buf
    instance variable.
+ * The request-level #send_data method from Sinatra 0.3.3 has been added
+   for compatibility but is deprecated.
 
 = 0.9.0.4 / 2009-01-25
 

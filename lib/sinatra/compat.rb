@@ -106,6 +106,17 @@ module Sinatra
       etag(*args, &block)
     end
 
+    # Deprecated. Use the #attachment helper and return the data as a String or
+    # Array.
+    def send_data(data, options={})
+      sinatra_warn "The 'send_data' method is deprecated. use attachment, status, content_type, etc. helpers instead."
+
+      status       options[:status]   if options[:status]
+      attachment   options[:filename] if options[:disposition] == 'attachment'
+      content_type options[:type]     if options[:type]
+      halt data
+    end
+
     # Throwing halt with a Symbol and the to_result convention are
     # deprecated. Override the invoke method to detect those types of return
     # values.
