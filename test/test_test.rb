@@ -1,3 +1,4 @@
+require 'yaml'
 require File.dirname(__FILE__) + '/helper'
 
 describe 'Sinatra::Test' do
