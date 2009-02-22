@@ -20,12 +20,7 @@ class Test::Unit::TestCase
   include Sinatra::Test
 
   def setup
-    Sinatra::Default.set(
-      :environment => :test,
-      :run => false,
-      :raise_errors => true,
-      :logging => false
-    )
+    Sinatra::Default.set :environment, :test
   end
 
   # Sets up a Sinatra::Base subclass defined with the block
@@ -37,13 +32,14 @@ class Test::Unit::TestCase
 
   def restore_default_options
     Sinatra::Default.set(
+      :environment => :development,
       :raise_errors => Proc.new { test? },
       :dump_errors => true,
       :sessions => false,
-      :logging => true,
+      :logging => Proc.new { ! test? },
       :methodoverride => true,
       :static => true,
-      :run  => false
+      :run => Proc.new { ! test? }
     )
   end
 end

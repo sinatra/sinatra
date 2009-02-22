@@ -940,10 +940,10 @@ module Sinatra
     set :raise_errors, Proc.new { test? }
     set :dump_errors, true
     set :sessions, false
-    set :logging, true
+    set :logging, Proc.new { ! test? }
     set :methodoverride, true
     set :static, true
-    set :run, false
+    set :run, Proc.new { ! test? }
 
     def self.register(*extensions, &block) #:nodoc:
       added_methods = extensions.map {|m| m.public_instance_methods }.flatten

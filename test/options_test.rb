@@ -147,8 +147,12 @@ describe_option 'run' do
     assert ! @base.run?
   end
 
-  it 'is disabled on Default' do
-    assert ! @default.run?
+  it 'is enabled on Default when not in test environment' do
+    assert @default.development?
+    assert @default.run?
+
+    @default.set :environment, :development
+    assert @default.run?
   end
 
   # TODO: it 'is enabled when $0 == app_file'
@@ -219,8 +223,11 @@ describe_option 'logging' do
     assert ! @base.logging?
   end
 
-  it 'is enabled on Default' do
+  it 'is enabled on Default when not in test environment' do
     assert @default.logging?
+
+    @default.set :environment, :test
+    assert ! @default.logging
   end
 
   # TODO: it 'uses Rack::CommonLogger when enabled' do
