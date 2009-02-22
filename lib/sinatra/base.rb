@@ -366,6 +366,16 @@ module Sinatra
       throw :pass
     end
 
+    # Forward the request to the downstream app -- middleware only.
+    def forward
+      fail "downstream app not set" unless @app.respond_to? :call
+      status, headers, body = @app.call(@request.env)
+      @response.status = status
+      @response.body = body
+      headers.each { |k, v| @response[k] = v }
+      nil
+    end
+
   private
     # Run before filters and then locate and run a matching route.
     def route!
@@ -409,7 +419,13 @@ module Sinatra
         end
       end
 
-      raise NotFound
+      # No matching route found or all routes passed -- forward downstream
+      # when running as middleware; 404 when running as normal app.
+      if @app
+        forward
+      else
+        raise NotFound
+      end
     end
 
     def nested_params(params)

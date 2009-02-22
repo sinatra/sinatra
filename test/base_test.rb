@@ -1,45 +1,112 @@
 require File.dirname(__FILE__) + '/helper'
 
-describe 'Sinatra::Base' do
-  it 'includes Rack::Utils' do
-    assert Sinatra::Base.included_modules.include?(Rack::Utils)
+describe 'Sinatra::Base subclasses' do
+
+  class TestApp < Sinatra::Base
+    get '/' do
+      'Hello World'
+    end
   end
 
-  it 'can be used as a Rack application' do
-    mock_app {
-      get '/' do
-        'Hello World'
-      end
-    }
-    assert @app.respond_to?(:call)
+  it 'include Rack::Utils' do
+    assert TestApp.included_modules.include?(Rack::Utils)
+  end
 
-    request = Rack::MockRequest.new(@app)
+  it 'processes requests with #call' do
+    assert TestApp.respond_to?(:call)
+
+    request = Rack::MockRequest.new(TestApp)
     response = request.get('/')
     assert response.ok?
     assert_equal 'Hello World', response.body
   end
 
-  it 'can be used as Rack middleware' do
-    app = lambda { |env| [200, {}, ['Goodbye World']] }
-    mock_middleware =
-      mock_app {
-        get '/' do
-          'Hello World'
-        end
-        get '/goodbye' do
-          @app.call(request.env)
-        end
-      }
-    middleware = mock_middleware.new(app)
+  class TestApp < Sinatra::Base
+    get '/state' do
+      body = "Foo: #{@foo}"
+      @foo = 'discard'
+      body
+    end
+  end
+
+  it 'does not maintain state between requests' do
+    request = Rack::MockRequest.new(TestApp)
+    2.times do
+      response = request.get('/state')
+      assert response.ok?
+      assert_equal 'Foo: ', response.body
+    end
+  end
+end
+
+describe "Sinatra::Base as Rack middleware" do
+
+  app = lambda { |env|
+    [210, {'X-Downstream' => 'true'}, ['Hello from downstream']] }
+
+  class TestMiddleware < Sinatra::Base
+  end
+
+  it 'creates a middleware that responds to #call with .new' do
+    middleware = TestMiddleware.new(app)
+    assert middleware.respond_to?(:call)
+  end
+
+  it 'exposes the downstream app' do
+    middleware = TestMiddleware.new(app)
     assert_same app, middleware.app
+  end
 
-    request = Rack::MockRequest.new(middleware)
+  class TestMiddleware < Sinatra::Base
+    get '/' do
+      'Hello from middleware'
+    end
+  end
+
+  middleware = TestMiddleware.new(app)
+  request = Rack::MockRequest.new(middleware)
+
+  it 'intercepts requests' do
     response = request.get('/')
     assert response.ok?
-    assert_equal 'Hello World', response.body
+    assert_equal 'Hello from middleware', response.body
+  end
 
-    response = request.get('/goodbye')
-    assert response.ok?
-    assert_equal 'Goodbye World', response.body
+  it 'automatically forwards requests downstream when no matching route found' do
+    response = request.get('/missing')
+    assert_equal 210, response.status
+    assert_equal 'Hello from downstream', response.body
+  end
+
+  class TestMiddleware < Sinatra::Base
+    get '/low-level-forward' do
+      app.call(env)
+    end
+  end
+
+  it 'can call the downstream app directly and return result' do
+    response = request.get('/low-level-forward')
+    assert_equal 210, response.status
+    assert_equal 'true', response['X-Downstream']
+    assert_equal 'Hello from downstream', response.body
+  end
+
+  class TestMiddleware < Sinatra::Base
+    get '/explicit-forward' do
+      response['X-Middleware'] = 'true'
+      res = forward
+      assert_nil res
+      assert_equal 210, response.status
+      assert_equal 'true', response['X-Downstream']
+      assert_equal ['Hello from downstream'], response.body
+      'Hello after explicit forward'
+    end
+  end
+
+  it 'forwards the request downstream and integrates the response into the current context' do
+    response = request.get('/explicit-forward')
+    assert_equal 210, response.status
+    assert_equal 'true', response['X-Downstream']
+    assert_equal 'Hello after explicit forward', response.body
   end
 end
