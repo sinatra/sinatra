@@ -18,17 +18,14 @@ describe 'Sinatra::Test' do
     mock_app {
       %w[get head post put delete].each { |verb|
         send(verb, '/') do
+          redirect '/redirected' if params[:redirect]
           env.update('test.body'   => request.body.read)
           env.update('test.params' => params.to_yaml)
           env.to_yaml
         end
       }
 
-      get '/redirect_me' do
-        redirect '/there'
-      end
-
-      get '/there' do
+      get '/redirected' do
         "you've been redirected"
       end
     }
@@ -76,7 +73,7 @@ describe 'Sinatra::Test' do
   end
 
   it 'follows redirect' do
-    get '/redirect_me'
+    get '/', :redirect => true
     follow!
     assert_equal "you've been redirected", body
   end
