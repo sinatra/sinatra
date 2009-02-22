@@ -60,4 +60,25 @@ describe 'Registering extensions' do
     assert !Sinatra::Base.respond_to?(:baz)
     assert Sinatra::Default.respond_to?(:baz)
   end
+
+  module BizzleExtension
+    def bizzle
+      bizzle_option
+    end
+
+    def self.registered(base)
+      fail "base should be BizzleApp" unless base == BizzleApp
+      fail "base should have already extended BizzleExtension" unless base.respond_to?(:bizzle)
+      base.set :bizzle_option, 'bizzle!'
+    end
+  end
+
+  class BizzleApp < Sinatra::Base
+  end
+
+  it 'sends .registered to the extension module after extending the class' do
+    BizzleApp.register BizzleExtension
+    assert_equal 'bizzle!', BizzleApp.bizzle_option
+    assert_equal 'bizzle!', BizzleApp.bizzle
+  end
 end

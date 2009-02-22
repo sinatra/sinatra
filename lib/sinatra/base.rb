@@ -716,13 +716,16 @@ module Sinatra
 
     public
       def helpers(*extensions, &block)
-        class_eval(&block) if block_given?
-        include *extensions
+        class_eval(&block)  if block_given?
+        include *extensions if extensions.any?
       end
 
       def register(*extensions, &block)
-        extensions << Module.new(&block) if block
-        extend *extensions
+        extensions << Module.new(&block) if block_given?
+        extensions.each do |extension|
+          extend extension
+          extension.registered(self) if extension.respond_to?(:registered)
+        end
       end
 
       def development? ; environment == :development ; end
