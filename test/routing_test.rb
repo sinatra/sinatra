@@ -44,6 +44,27 @@ describe "Routing" do
     assert_equal 404, status
   end
 
+  it 'takes multiple definitions of a route' do
+    mock_app {
+      user_agent(/Foo/)
+      get '/foo' do
+        'foo'
+      end
+
+      get '/foo' do
+        'not foo'
+      end
+    }
+
+    get '/foo', {}, 'HTTP_USER_AGENT' => 'Foo'
+    assert ok?
+    assert_equal 'foo', body
+
+    get '/foo'
+    assert ok?
+    assert_equal 'not foo', body
+  end
+
   it "exposes params with indifferent hash" do
     mock_app {
       get '/:foo' do

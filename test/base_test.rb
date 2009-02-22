@@ -42,40 +42,4 @@ describe 'Sinatra::Base' do
     assert response.ok?
     assert_equal 'Goodbye World', response.body
   end
-
-  it 'can take multiple definitions of a route' do
-    app = mock_app {
-      user_agent(/Foo/)
-      get '/foo' do
-        'foo'
-      end
-
-      get '/foo' do
-        'not foo'
-      end
-    }
-
-    request = Rack::MockRequest.new(app)
-    response = request.get('/foo', 'HTTP_USER_AGENT' => 'Foo')
-    assert response.ok?
-    assert_equal 'foo', response.body
-
-    request = Rack::MockRequest.new(app)
-    response = request.get('/foo')
-    assert response.ok?
-    assert_equal 'not foo', response.body
-  end
-
-  it "makes redirecting back pretty" do
-    app = mock_app {
-      get '/foo' do
-        redirect back
-      end
-    }
-
-    request  = Rack::MockRequest.new(app)
-    response = request.get('/foo', 'HTTP_REFERER' => 'http://github.com')
-    assert response.redirect?
-    assert_equal "http://github.com", response.location
-  end
 end

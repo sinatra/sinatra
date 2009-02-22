@@ -394,6 +394,20 @@ describe 'Helpers#etag' do
   end
 end
 
+describe 'Helpers#back' do
+  it "makes redirecting back pretty" do
+    mock_app {
+      get '/foo' do
+        redirect back
+      end
+    }
+
+    get '/foo', {}, 'HTTP_REFERER' => 'http://github.com'
+    assert redirect?
+    assert_equal "http://github.com", response.location
+  end
+end
+
 module HelperOne; def one; '1'; end; end
 module HelperTwo; def two; '2'; end; end
 
