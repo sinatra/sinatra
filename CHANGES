@@ -18,6 +18,8 @@
  * Fix :provides causing crash on any request when request has no
    Accept header [#139]
  * Fix that ERB templates were evaluated twice per "erb" call.
+ * The ERB output buffer is now available to helpers via the @_out_buf
+   instance variable.
 
 = 0.9.0.4 / 2009-01-25
 
