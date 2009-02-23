@@ -10,47 +10,6 @@ class TesterWithEach
   end
 end
 
-context "Looking up a request" do
-
-  setup do
-    Sinatra.application = nil
-  end
-
-  # Deprecated. The lookup method is no longer used.
-  xspecify "returns what's at the end" do
-    block = Proc.new { 'Hello' }
-    get '/', &block
-
-    result = Sinatra.application.lookup(
-      Rack::Request.new(
-        'REQUEST_METHOD' => 'GET',
-        'PATH_INFO' => '/'
-      )
-    )
-
-    result.should.not.be.nil
-    result.block.should.be block
-  end
-
-  # Deprecated. The lookup method is no longer used.
-  xspecify "takes params in path" do
-    block = Proc.new { 'Hello' }
-    get '/:foo', &block
-
-    result = Sinatra.application.lookup(
-      Rack::Request.new(
-        'REQUEST_METHOD' => 'GET',
-        'PATH_INFO' => '/bar'
-      )
-    )
-
-    result.should.not.be.nil
-    result.block.should.be block
-    result.params.should.equal "foo" => 'bar'
-  end
-
-end
-
 context "An app returns" do
 
   setup do
@@ -82,20 +41,6 @@ context "An app returns" do
     get_it '/'
     should.be.ok
     body.should.equal 'foobarbaz'
-
-  end
-
-  # Deprecated. The body method no longer halts.
-  xspecify "the body set if set before the last" do
-
-    get '/' do
-      body 'Blake'
-      'Mizerany'
-    end
-
-    get_it '/'
-    should.be.ok
-    body.should.equal 'Blake'
 
   end
 
@@ -139,23 +84,6 @@ context "Application#configure blocks" do
     ref = false
     configure(:foo, :test, :bar) { ref = true }
     ref.should.equal true
-  end
-
-end
-
-context "Default Application Configuration" do
-
-  # Sinatra::ServerError is no longer used
-  xspecify "includes 404 and 500 error handlers" do
-    Sinatra.application.errors.should.include(Sinatra::ServerError)
-    Sinatra.application.errors[Sinatra::ServerError].should.not.be.nil
-    Sinatra.application.errors.should.include(Sinatra::NotFound)
-    Sinatra.application.errors[Sinatra::NotFound].should.not.be.nil
-  end
-
-  # Deprecated. No such thing as a Static event anymore.
-  xspecify "includes Static event" do
-    assert Sinatra.application.events[:get].any? { |e| Sinatra::Static === e }
   end
 
 end

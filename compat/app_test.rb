@@ -146,25 +146,6 @@ context "Sinatra" do
 
   end
 
-  # Deprecated. WTF was going on here? What's the 1 in [:foo, 1] do?
-  xspecify "should set status then call helper with a var" do
-    helpers do
-      def foo
-        'bah!'
-      end
-    end
-
-    get '/set_body' do
-      stop [404, [:foo, 1]]
-    end
-
-    get_it '/set_body'
-
-    should.be.not_found
-    body.should.equal 'bah!'
-
-  end
-
   specify "should easily set response Content-Type" do
     get '/foo.html' do
       content_type 'text/html', :charset => 'utf-8'
