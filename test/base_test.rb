@@ -108,5 +108,23 @@ describe "Sinatra::Base as Rack middleware" do
     assert_equal 210, response.status
     assert_equal 'true', response['X-Downstream']
     assert_equal 'Hello after explicit forward', response.body
+    assert_equal '28', response['Content-Length']
+  end
+
+  app_content_length = lambda {|env|
+    [200, {'Content-Length' => '16'}, 'From downstream!']}
+  class TestMiddlewareContentLength < Sinatra::Base
+    get '/forward' do
+      res = forward
+      'From after explicit forward!'
+    end
+  end
+
+  middleware_content_length = TestMiddlewareContentLength.new(app_content_length)
+  request_content_length = Rack::MockRequest.new(middleware_content_length)
+
+  it "sets content length for last response" do
+    response = request_content_length.get('/forward')
+    assert_equal '28', response['Content-Length']
   end
 end

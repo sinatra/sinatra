@@ -49,7 +49,7 @@ module Sinatra
       else
         body = @body || []
         body = [body] if body.respond_to? :to_str
-        if header["Content-Length"].nil? && body.respond_to?(:to_ary)
+        if body.respond_to?(:to_ary)
           header["Content-Length"] = body.to_ary.
             inject(0) { |len, part| len + part.bytesize }.to_s
         end
@@ -345,9 +345,9 @@ module Sinatra
       invoke { error_block!(response.status) }
 
       # never respond with a body on HEAD requests
-      @response.body = [] if @env['REQUEST_METHOD'] == 'HEAD'
-
-      @response.finish
+      status, header, body = @response.finish
+      body = [] if @env['REQUEST_METHOD'] == 'HEAD'
+      [status, header, body]
     end
 
     # Access options defined with Base.set.
