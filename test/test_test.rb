@@ -101,6 +101,15 @@ describe 'Sinatra::Test' do
     assert_equal 'text/plain', request['CONTENT_TYPE']
   end
 
+  it 'yields the request object to the block before invoking the application' do
+    called = false
+    get '/' do |req|
+      called = true
+      assert req.kind_of?(Rack::MockRequest)
+    end
+    assert called
+  end
+
   def test_TestHarness
     session  = Sinatra::TestHarness.new(@app)
     response = session.get('/')

@@ -33,7 +33,7 @@ for more information.
         options[:input] = data
       end
 
-      # TODO: yield @request if block_given?
+      yield @request if block_given?
       @response = @request.request(verb, path, options)
     end
 
