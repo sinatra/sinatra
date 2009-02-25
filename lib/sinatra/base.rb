@@ -344,9 +344,16 @@ module Sinatra
       invoke { dispatch! }
       invoke { error_block!(response.status) }
 
-      # never respond with a body on HEAD requests
       status, header, body = @response.finish
-      body = [] if @env['REQUEST_METHOD'] == 'HEAD'
+
+      # Never produce a body on HEAD requests. Do retain the Content-Length
+      # unless it's "0", in which case we assume it was calculated erroneously
+      # for a manual HEAD response and remove it entirely.
+      if @env['REQUEST_METHOD'] == 'HEAD'
+        body = []
+        header.delete('Content-Length') if header['Content-Length'] == '0'
+      end
+
       [status, header, body]
     end
 

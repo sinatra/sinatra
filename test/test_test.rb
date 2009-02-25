@@ -45,7 +45,8 @@ describe 'Sinatra::Test' do
     assert_equal('DELETE', request['REQUEST_METHOD'])
 
     head '/'
-    assert_equal('0', headers['Content-Length'])
+    assert_equal('596', response.headers['Content-Length'])
+    assert_equal('', response.body)
   end
 
   it 'allows to specify a body' do
