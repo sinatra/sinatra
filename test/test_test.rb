@@ -102,6 +102,25 @@ describe 'Sinatra::Test' do
     assert_equal 'text/plain', request['CONTENT_TYPE']
   end
 
+  it 'allow to test session easily' do
+    app = mock_app(Sinatra::Default) {
+      get '/' do
+        session['foo'] = 'bar'
+        200
+      end
+
+      post '/' do
+        assert_equal 'bar', session['foo']
+        session['foo'] || "blah"
+      end
+    }
+
+    browser = Sinatra::TestHarness.new(app)
+    browser.get '/'
+    browser.post '/', :session => { 'foo' => 'bar' }
+    assert_equal 'bar', browser.response.body
+  end
+
   it 'yields the request object to the block before invoking the application' do
     called = false
     get '/' do |req|

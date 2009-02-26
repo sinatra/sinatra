@@ -14,12 +14,16 @@ for more information.
       EOF
     end
 
-    def make_request(verb, path, data=nil, h=nil)
+    def make_request(verb, path, data={}, h=nil)
       @app = Sinatra::Application if @app.nil? && defined?(Sinatra::Application)
       fail "@app not set - cannot make request" if @app.nil?
 
       @request = Rack::MockRequest.new(@app)
       options  = { :lint => true }
+
+      session = data[:session]
+      session = data[:env][:session] if data[:env]
+      options['rack.session'] = session unless session.nil?
 
       case data
       when Hash
@@ -67,12 +71,12 @@ for more information.
   private
 
     RACK_OPTIONS = {
-      :accept => "HTTP_ACCEPT",
-      :agent => "HTTP_USER_AGENT",
-      :host => "HTTP_HOST",
-      :session => "HTTP_COOKIE",
-      :cookies => "HTTP_COOKIE",
-      :content_type => "CONTENT_TYPE"
+      :accept       => 'HTTP_ACCEPT',
+      :agent        => 'HTTP_USER_AGENT',
+      :host         => 'HTTP_HOST',
+      :session      => 'HTTP_COOKIE',
+      :cookies      => 'HTTP_COOKIE',
+      :content_type => 'CONTENT_TYPE'
     }
 
     def rack_options(opts)
