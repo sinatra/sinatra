@@ -21,6 +21,7 @@ context "Sessions" do
 
   specify "should be able to store data accross requests" do
     set_option :sessions, true
+    set_option :environment, :not_test # necessary because sessions are disabled
 
     get '/foo' do
       session[:test] = true
@@ -34,6 +35,8 @@ context "Sessions" do
     get_it '/foo', :env => { :host => 'foo.sinatrarb.com' }
     assert ok?
     assert include?('Set-Cookie')
+
+    set_option :environment, :test
   end
 
 end
