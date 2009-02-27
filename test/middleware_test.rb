@@ -57,4 +57,12 @@ describe "Middleware" do
     assert_equal '/foo', body
     assert_equal "UpcaseMiddleware, DowncaseMiddleware", response['X-Tests']
   end
+
+  it "works when app is used as middleware" do
+    @app.use UpcaseMiddleware
+    @app = @app.new
+    get '/Foo'
+    assert_equal "/FOO", body
+    assert_equal "UpcaseMiddleware", response['X-Tests']
+  end
 end

@@ -545,8 +545,8 @@ module Sinatra
     @conditions = []
     @templates  = {}
     @middleware = []
-    @callsite   = nil
     @errors     = {}
+    @prototype  = nil
 
     class << self
       attr_accessor :routes, :filters, :conditions, :templates,
@@ -745,7 +745,7 @@ module Sinatra
       end
 
       def use(middleware, *args, &block)
-        reset_middleware
+        @prototype = nil
         @middleware << [middleware, args, block]
       end
 
@@ -766,20 +766,59 @@ module Sinatra
         puts "== Someone is already performing on port #{port}!"
       end
 
+      # The prototype instance used to process requests.
+      def prototype
+        @prototype ||= new
+      end
+
+      # Create a new instance of the class fronted by its middleware
+      # pipeline. The object is guaranteed to respond to #call but may not be
+      # an instance of the class new was called on.
+      def new(*args, &bk)
+        builder = Rack::Builder.new
+        builder.use Rack::Session::Cookie if sessions?
+        builder.use Rack::CommonLogger if logging?
+        builder.use Rack::MethodOverride if methodoverride?
+        @middleware.each { |c, args, bk| builder.use(c, *args, &bk) }
+        builder.run super
+        builder.to_app
+      end
+
       def call(env)
         synchronize do
           reload! if reload?
-          construct_middleware if @callsite.nil?
-          @callsite.call(env)
+          prototype.call(env)
         end
+      end
+
+      def reloading?
+        @reloading
       end
 
       def reload!
         @reloading = true
-        superclass.send :reset!, self
+        reset!
         $LOADED_FEATURES.delete("sinatra.rb")
         ::Kernel.load app_file
         @reloading = false
+      end
+
+      def reset!(base=superclass)
+        @routes     = base.dupe_routes
+        @templates  = base.templates.dup
+        @conditions = []
+        @filters    = base.filters.dup
+        @errors     = base.errors.dup
+        @middleware = base.middleware.dup
+        @prototype  = nil
+      end
+
+    protected
+      def dupe_routes
+        routes.inject({}) do |hash,(request_method,routes)|
+          hash[request_method] = routes.dup
+          hash
+        end
       end
 
     private
@@ -795,36 +834,9 @@ module Sinatra
         fail "Server handler (#{servers.join(',')}) not found."
       end
 
-      def construct_middleware(builder=Rack::Builder.new)
-        builder.use Rack::Session::Cookie if sessions?
-        builder.use Rack::CommonLogger if logging?
-        builder.use Rack::MethodOverride if methodoverride?
-        @middleware.each { |c, args, bk| builder.use(c, *args, &bk) }
-        builder.run new
-        @callsite = builder.to_app
-      end
-
-      def reset_middleware
-        @callsite = nil
-      end
-
-      def reset!(subclass = self)
-        subclass.routes     = dupe_routes
-        subclass.templates  = templates.dup
-        subclass.conditions = []
-        subclass.filters    = filters.dup
-        subclass.errors     = errors.dup
-        subclass.middleware = middleware.dup
-        subclass.send :reset_middleware
-      end
-
       def inherited(subclass)
-        reset!(subclass)
+        subclass.reset! self
         super
-      end
-
-      def reloading?
-        @reloading ||= false
       end
 
       @@mutex = Mutex.new
@@ -833,13 +845,6 @@ module Sinatra
           @@mutex.synchronize(&block)
         else
           yield
-        end
-      end
-
-      def dupe_routes
-        routes.inject({}) do |hash,(request_method,routes)|
-          hash[request_method] = routes.dup
-          hash
         end
       end
 
