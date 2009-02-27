@@ -14,31 +14,27 @@ for more information.
       EOF
     end
 
-    def make_request(verb, path, data={}, h=nil)
+    def make_request(verb, path, body=nil, options={})
       @app = Sinatra::Application if @app.nil? && defined?(Sinatra::Application)
       fail "@app not set - cannot make request" if @app.nil?
 
       @request = Rack::MockRequest.new(@app)
-      options  = { :lint => true }
+      options = { :lint => true }.merge(options || {})
 
-      session = data[:session]
-      session = data[:env][:session] if data[:env]
-      options['rack.session'] = session unless session.nil?
-
-      case data
-      when Hash
-        if env = data.delete(:env)
-          options = rack_options(env)
-        end
-        options.merge!(h) if h.is_a?(Hash)
-        options[:input] = param_string(data)
-      when String
-        options = rack_options(h) if h.is_a?(Hash)
-        options[:input] = data
+      case
+      when body.respond_to?(:to_hash)
+        options.merge! body.delete(:env) if body.key?(:env)
+        options[:input] = param_string(body)
+      when body.respond_to?(:to_str)
+        options[:input] = body
+      when body.nil?
+        options[:input] = ''
+      else
+        raise ArgumentError, "body must be a Hash, String, or nil"
       end
 
       yield @request if block_given?
-      @response = @request.request(verb, path, options)
+      @response = @request.request(verb, path, rack_options(options))
     end
 
     def get(path, *args, &b)  ; make_request('GET', path, *args, &b) ; end
@@ -74,7 +70,7 @@ for more information.
       :accept       => 'HTTP_ACCEPT',
       :agent        => 'HTTP_USER_AGENT',
       :host         => 'HTTP_HOST',
-      :session      => 'HTTP_COOKIE',
+      :session      => 'rack.session',
       :cookies      => 'HTTP_COOKIE',
       :content_type => 'CONTENT_TYPE'
     }

@@ -93,7 +93,7 @@ describe 'Sinatra::Test' do
     assert_equal '1.2.3.4', request['HTTP_HOST']
 
     get '/', :env => { :session => 'foo' }
-    assert_equal 'foo', request['HTTP_COOKIE']
+    assert_equal 'foo', request['rack.session']
 
     get '/', :env => { :cookies => 'foo' }
     assert_equal 'foo', request['HTTP_COOKIE']
@@ -117,7 +117,7 @@ describe 'Sinatra::Test' do
 
     browser = Sinatra::TestHarness.new(app)
     browser.get '/'
-    browser.post '/', :session => { 'foo' => 'bar' }
+    browser.post '/', {}, :session => { 'foo' => 'bar' }
     assert_equal 'bar', browser.response.body
   end
 
