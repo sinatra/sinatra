@@ -422,7 +422,7 @@ helper methods for testing your Sinatra app:
     end
 
     def test_with_rack_env
-      get '/', {}, 'HTTP_USER_AGENT => 'Songbird'
+      get '/', {}, :agent => 'Songbird'
       assert_equal "You're using Songbird!", @response.body
     end
   end
