@@ -100,6 +100,12 @@ module Sinatra
       error 404, body
     end
 
+    # Set multiple response headers with Hash.
+    def headers(hash=nil)
+      response.headers.merge! hash if hash
+      response.headers
+    end
+
     # Access the underlying Rack session.
     def session
       env['rack.session'] ||= {}
@@ -379,7 +385,7 @@ module Sinatra
       status, headers, body = @app.call(@request.env)
       @response.status = status
       @response.body = body
-      headers.each { |k, v| @response[k] = v }
+      @response.headers.merge! headers
       nil
     end
 

@@ -87,12 +87,10 @@ module Sinatra
     end
 
     # Deprecated. Use: response['Header-Name']
-    def headers(header=nil)
-      sinatra_warn "The 'headers' method is deprecated; use 'response' instead."
-      response.headers.merge!(header) if header
-      response.headers
+    def header(header=nil)
+      sinatra_warn "The 'header' method is deprecated; use 'headers' instead."
+      headers(header)
     end
-    alias :header :headers
 
     # Deprecated. Use: halt
     def stop(*args, &block)

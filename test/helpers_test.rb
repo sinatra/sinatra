@@ -140,6 +140,36 @@ describe 'Helpers#not_found' do
   end
 end
 
+describe 'Helpers#headers' do
+  it 'sets headers on the response object when given a Hash' do
+    mock_app {
+      get '/' do
+        headers 'X-Foo' => 'bar', 'X-Baz' => 'bling'
+        'kthx'
+      end
+    }
+
+    get '/'
+    assert ok?
+    assert_equal 'bar', response['X-Foo']
+    assert_equal 'bling', response['X-Baz']
+    assert_equal 'kthx', body
+  end
+
+  it 'returns the response headers hash when no hash provided' do
+    mock_app {
+      get '/' do
+        headers['X-Foo'] = 'bar'
+        'kthx'
+      end
+    }
+
+    get '/'
+    assert ok?
+    assert_equal 'bar', response['X-Foo']
+  end
+end
+
 describe 'Helpers#session' do
   it 'uses the existing rack.session' do
     mock_app {
