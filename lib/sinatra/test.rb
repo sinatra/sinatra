@@ -120,6 +120,7 @@ for more information.
 
     def initialize(app=nil)
       @app = app || Sinatra::Application
+      @app.set(:environment, :test)
     end
   end
 end
