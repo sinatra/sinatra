@@ -19,10 +19,6 @@ end
 class Test::Unit::TestCase
   include Sinatra::Test
 
-  def setup
-    Sinatra::Default.set :environment, :test
-  end
-
   # Sets up a Sinatra::Base subclass defined with the block
   # given. Used in setup or individual spec methods to establish
   # the application.

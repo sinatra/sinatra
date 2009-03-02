@@ -130,6 +130,12 @@ describe 'Sinatra::Test' do
     assert called
   end
 
+  it 'sets the environment to :test on include' do
+    Sinatra::Default.set(:environment, :production)
+    Class.new { include Sinatra::Test }
+    assert_equal :test, Sinatra::Default.environment
+  end
+
   def test_TestHarness
     session  = Sinatra::TestHarness.new(@app)
     response = session.get('/')

@@ -4,6 +4,10 @@ module Sinatra
   module Test
     include Rack::Utils
 
+    def self.included(base)
+      Sinatra::Default.set(:environment, :test)
+    end
+
     attr_reader :app, :request, :response
 
     def self.deprecate(framework)
