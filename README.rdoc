@@ -159,8 +159,8 @@ Renders the inlined template string.
 
 === Accessing Variables in Templates
 
-Templates are evaluated within the same context as the route blocks. Instance
-variables set in route blocks are available in templates:
+Templates are evaluated within the same context as route handlers. Instance
+variables set in route handlers are direcly accessible by templates:
 
   get '/:id' do
     @foo = Foo.find(params[:id])
@@ -199,12 +199,11 @@ Templates may be defined at the end of the source file:
 
 NOTE: In-file templates defined in the source file that requires sinatra
 are automatically loaded. Call the <tt>use_in_file_templates!</tt>
-method explicitly if you have in-file templates in another source file.
+method explicitly if you have in-file templates in other source files.
 
 === Named Templates
 
-It's possible to define named templates using the top-level <tt>template</tt>
-method:
+Templates may also be defined using the top-level <tt>template</tt> method:
 
   template :layout do
     "%html\n  =yield\n"
@@ -228,7 +227,7 @@ is rendered. You can disable layouts by passing <tt>:layout => false</tt>.
 == Helpers
 
 Use the top-level <tt>helpers</tt> method to define helper methods for use in
-route blocks and templates:
+route handlers and templates:
 
   helpers do
     def bar(name)
@@ -244,7 +243,7 @@ route blocks and templates:
 
 Before filters are evaluated before each request within the context of the
 request and can modify the request and response. Instance variables set in
-filters are accessible by routes and templates.
+filters are accessible by routes and templates:
 
   before do
     @note = 'Hi!'
@@ -272,8 +271,7 @@ Or set the status and body ...
 
 == Passing
 
-A route can punt processing to the next matching route using the <tt>pass</tt>
-statement:
+A route can punt processing to the next matching route using <tt>pass</tt>:
 
   get '/guess/:who' do
     pass unless params[:who] == 'Frank'
@@ -480,5 +478,6 @@ To update the Sinatra sources in the future:
   help? Have a patch?
 * {Lighthouse}[http://sinatra.lighthouseapp.com] - Issue tracking and release
   planning.
+* {Twitter}[http://twitter.com/sinatra]
 * {Mailing List}[http://groups.google.com/group/sinatrarb]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] on http://freenode.net
