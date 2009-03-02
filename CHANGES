@@ -43,6 +43,11 @@
    ":session" option to any of the mock request methods. e.g.,
        get '/', {}, :session => { 'foo' => 'bar' }
 
+ * The testing framework specific files ('sinatra/test/spec',
+   'sinatra/test/bacon', 'sinatra/test/rspec', etc.) have been deprecated.
+   See http://sinatrarb.com/testing.html for instructions on setting up
+   a testing environment with these frameworks.
+
  * The request-level #send_data method from Sinatra 0.3.3 has been added
    for compatibility but is deprecated.
 

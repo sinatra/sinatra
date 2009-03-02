@@ -403,85 +403,34 @@ typically don't have to +use+ them explicitly.
 
 == Testing
 
-The Sinatra::Test module includes a variety of helper methods for testing
-your Sinatra app. Sinatra includes support for Test::Unit, test-spec, RSpec,
-and Bacon through separate source files.
+The Sinatra::Test mixin and Sinatra::TestHarness class include a variety of
+helper methods for testing your Sinatra app:
 
-=== Test::Unit
-
-  require 'sinatra'
-  require 'sinatra/test/unit'
   require 'my_sinatra_app'
+  require 'test/unit'
+  require 'sinatra/test'
 
   class MyAppTest < Test::Unit::TestCase
+    include Sinatra::Test
+
     def test_my_default
       get '/'
-      assert_equal 'My Default Page!', @response.body
+      assert_equal 'Hello World!', @response.body
     end
 
-    def test_with_agent
-      get '/', :env => { :agent => 'Songbird' }
-      assert_equal "You're in Songbird!", @response.body
+    def test_with_params
+      get '/meet', {:name => 'Frank'}
+      assert_equal 'Hello Frank!', @response.body
     end
 
-    ...
-  end
-
-=== Test::Spec
-
-Install the test-spec gem and require <tt>'sinatra/test/spec'</tt> before
-your app:
-
-  require 'sinatra'
-  require 'sinatra/test/spec'
-  require 'my_sinatra_app'
-
-  describe 'My app' do
-    it "should show a default page" do
-      get '/'
-      should.be.ok
-      body.should.equal 'My Default Page!'
-    end
-
-    ...
-  end
-
-=== RSpec
-
-Install the rspec gem and require <tt>'sinatra/test/rspec'</tt> before
-your app:
-
-  require 'sinatra'
-  require 'sinatra/test/rspec'
-  require 'my_sinatra_app'
-
-  describe 'My app' do
-    it 'should show a default page' do
-      get '/'
-      @response.should be_ok
-      @response.body.should == 'My Default Page!'
-    end
-
-    ...
-
-  end
-
-=== Bacon
-
-  require 'sinatra'
-  require 'sinatra/test/bacon'
-  require 'my_sinatra_app'
-
-  describe 'My app' do
-    it 'should be ok' do
-      get '/'
-      should.be.ok
-      body.should == 'Im OK'
+    def test_with_rack_env
+      get '/', {}, 'HTTP_USER_AGENT => 'Songbird'
+      assert_equal "You're using Songbird!", @response.body
     end
   end
 
-See Sinatra::Test for more information on +get+, +post+, +put+, and
-friends.
+See http://sinatrarb.com/testing.html for more on Sinatra::Test and using it
+with other test frameworks such as RSpec, Bacon, and test/spec.
 
 == Command line
 
