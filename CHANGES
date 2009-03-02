@@ -10,7 +10,7 @@
 
  * New request-level #forward method for middleware components: passes
    the env to the downstream app and merges the response status, headers,
-   and body into the current context.
+   and body into the current context. [#126]
 
  * Requests are now automatically forwarded to the downstream app when
    running as middleware and no matching route is found or all routes
@@ -61,6 +61,12 @@
 
  * Fixed some issues with running under Rack's CGI handler caused by
    writing informational stuff to stdout.
+
+ * Fixed that reloading was sometimes enabled when starting from a
+   rackup file [#110]
+
+ * Fixed that "." in route patterns erroneously matched any character
+   instead of a literal ".". [#124]
 
 = 0.9.0.4 / 2009-01-25
 
