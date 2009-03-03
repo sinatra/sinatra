@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
 
   s.name = 'sinatra'
   s.version = '0.9.1'
-  s.date = '2009-03-01'
+  s.date = '2009-03-02'
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
