@@ -427,7 +427,7 @@ helper methods for testing your Sinatra app:
     end
   end
 
-See http://sinatrarb.com/testing.html for more on Sinatra::Test and using it
+See http://www.sinatrarb.com/testing.html for more on Sinatra::Test and using it
 with other test frameworks such as RSpec, Bacon, and test/spec.
 
 == Command line
