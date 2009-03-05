@@ -25,6 +25,12 @@ describe 'Registering extensions' do
     end
   end
 
+  module PainExtensions
+    def foo=(name); end
+    def bar?(name); end
+    def fizz!(name); end
+  end
+
   it 'will add the methods to the DSL for the class in which you register them and its subclasses' do
     Sinatra::Base.register FooExtensions
     assert Sinatra::Base.respond_to?(:foo)
@@ -48,6 +54,16 @@ describe 'Registering extensions' do
       map { |m| m.to_sym }.include?(:foo)
     assert !Sinatra::Delegator.private_instance_methods.
       map { |m| m.to_sym }.include?(:im_hiding_in_ur_foos)
+  end
+
+  it 'will handle special method names' do
+    Sinatra::Default.register PainExtensions
+    assert Sinatra::Delegator.private_instance_methods.
+      map { |m| m.to_sym }.include?(:foo=)
+    assert Sinatra::Delegator.private_instance_methods.
+      map { |m| m.to_sym }.include?(:bar?)
+    assert Sinatra::Delegator.private_instance_methods.
+      map { |m| m.to_sym }.include?(:fizz!)
   end
 
   it 'will not delegate methods on Base#register' do

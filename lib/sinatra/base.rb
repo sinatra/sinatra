@@ -1011,9 +1011,9 @@ module Sinatra
       methods.each do |method_name|
         eval <<-RUBY, binding, '(__DELEGATE__)', 1
           def #{method_name}(*args, &b)
-            ::Sinatra::Application.#{method_name}(*args, &b)
+            ::Sinatra::Application.send(#{method_name.inspect}, *args, &b)
           end
-          private :#{method_name}
+          private #{method_name.inspect}
         RUBY
       end
     end
