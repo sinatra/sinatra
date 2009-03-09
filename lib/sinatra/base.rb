@@ -741,7 +741,9 @@ module Sinatra
     # static files route
     get(/.*[^\/]$/) do
       pass unless options.static? && options.public?
-      path = options.public + unescape(request.path_info)
+      public_dir = File.expand_path(options.public)
+      path = File.expand_path(public_dir + unescape(request.path_info))
+      pass if path[0, public_dir.length] != public_dir
       pass unless File.file?(path)
       send_file path, :disposition => nil
     end
