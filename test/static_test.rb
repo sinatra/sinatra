@@ -62,4 +62,19 @@ describe 'Static' do
     get "/foobarbaz.txt"
     assert not_found?
   end
+
+  it 'serves files when .. path traverses within public directory' do
+    get "/data/../#{File.basename(__FILE__)}"
+    assert ok?
+    assert_equal File.read(__FILE__), body
+  end
+
+  it '404s when .. path traverses outside of public directory' do
+    mock_app {
+      set :static, true
+      set :public, File.dirname(__FILE__) + '/data'
+    }
+    get "/../#{File.basename(__FILE__)}"
+    assert not_found?
+  end
 end
