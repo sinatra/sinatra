@@ -5,7 +5,7 @@ require 'rack'
 require 'rack/builder'
 
 module Sinatra
-  VERSION = '0.9.1'
+  VERSION = '0.9.1.1'
 
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html

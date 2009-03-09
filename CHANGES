@@ -1,3 +1,8 @@
+= 0.9.1.1 / 2009-03-09
+
+ * Fix directory traversal vulnerability in default static files
+   route. See [#177] for more info.
+
 = 0.9.1 / 2009-03-01
 
  * Sinatra now runs under Ruby 1.9.1 [#61]
