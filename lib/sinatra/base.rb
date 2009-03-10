@@ -553,6 +553,7 @@ module Sinatra
     @middleware = []
     @errors     = {}
     @prototype  = nil
+    @extensions = []
 
     class << self
       attr_accessor :routes, :filters, :conditions, :templates,
@@ -698,8 +699,14 @@ module Sinatra
             lambda { unbound_method.bind(self).call }
           end
 
+        invoke_hook(:route_added, verb, path)
+
         (routes[verb] ||= []).
           push([pattern, keys, conditions, block]).last
+      end
+
+      def invoke_hook(name, *args)
+        extensions.each { |e| e.send(name, *args) if e.respond_to?(name) }
       end
 
       def compile(path)
@@ -733,8 +740,13 @@ module Sinatra
         include *extensions if extensions.any?
       end
 
+      def extensions
+        (@extensions + (superclass.extensions rescue [])).uniq
+      end
+
       def register(*extensions, &block)
         extensions << Module.new(&block) if block_given?
+        @extensions += extensions
         extensions.each do |extension|
           extend extension
           extension.registered(self) if extension.respond_to?(:registered)
@@ -817,6 +829,7 @@ module Sinatra
         @errors     = base.errors.dup
         @middleware = base.middleware.dup
         @prototype  = nil
+        @extensions = []
       end
 
     protected
