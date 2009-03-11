@@ -559,7 +559,6 @@ module Sinatra
       attr_accessor :routes, :filters, :conditions, :templates,
         :middleware, :errors
 
-    public
       def set(option, value=self)
         if value.kind_of?(Proc)
           metadef(option, &value)
@@ -603,11 +602,8 @@ module Sinatra
         template name, &block
       end
 
-      def use_in_file_templates!
-        ignore = [/lib\/sinatra.*\.rb/, /\(.*\)/, /rubygems\/custom_require\.rb/]
-        file = caller.
-          map  { |line| line.sub(/:\d+.*$/, '') }.
-          find { |line| ignore.all? { |pattern| line !~ pattern } }
+      def use_in_file_templates!(file=nil)
+        file ||= caller_files.first
         if data = ::IO.read(file).split('__END__')[1]
           data.gsub!(/\r\n/, "\n")
           template = nil
@@ -870,6 +866,20 @@ module Sinatra
       def metadef(message, &block)
         (class << self; self; end).
           send :define_method, message, &block
+      end
+
+      # Like Kernel#caller but excluding certain magic entries and without
+      # line / method information; the resulting array contains filenames only.
+      def caller_files
+        ignore = [
+          /lib\/sinatra.*\.rb$/, # all sinatra code
+          /\(.*\)/,              # generated code
+          /custom_require\.rb$/, # rubygems require hacks
+          /active_support/,      # active_support require hacks
+        ]
+        caller(1).
+          map    { |line| line.split(/:\d/, 2).first }.
+          reject { |file| ignore.any? { |pattern| file =~ pattern } }
       end
     end
 

@@ -6,19 +6,7 @@ module Sinatra
     # we assume that the first file that requires 'sinatra' is the
     # app_file. all other path related options are calculated based
     # on this path by default.
-    set :app_file, lambda {
-      ignore = [
-        /lib\/sinatra.*\.rb$/, # all sinatra code
-        /\(.*\)/,              # generated code
-        /custom_require\.rb$/  # rubygems require hacks
-      ]
-      path =
-        caller.map{ |line| line.split(/:\d/, 2).first }.find do |file|
-          next if ignore.any? { |pattern| file =~ pattern }
-          file
-        end
-      path || $0
-    }.call
+    set :app_file, lambda { caller_files.first || $0 }.call
 
     set :run, Proc.new { $0 == app_file }
 
