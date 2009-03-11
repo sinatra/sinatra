@@ -435,6 +435,9 @@ module Sinatra
       # No matching route found or all routes passed -- forward downstream
       # when running as middleware; 404 when running as normal app.
       if @app
+        # Call bypassed method before forward to catch behavior that should
+        # happen even if no routes are hit.
+        bypassed if respond_to?(:bypassed)
         forward
       else
         raise NotFound

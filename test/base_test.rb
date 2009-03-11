@@ -42,7 +42,7 @@ end
 describe "Sinatra::Base as Rack middleware" do
 
   app = lambda { |env|
-    [210, {'X-Downstream' => 'true'}, ['Hello from downstream']] }
+    [210, {'X-Downstream' => 'true', 'X-Bypass-Test' => '1' || ''}, ['Hello from downstream']] }
 
   class TestMiddleware < Sinatra::Base
   end
@@ -58,6 +58,10 @@ describe "Sinatra::Base as Rack middleware" do
   end
 
   class TestMiddleware < Sinatra::Base
+    def bypassed
+      env['X-Bypass-Test'] = '1'
+    end
+
     get '/' do
       'Hello from middleware'
     end
@@ -76,6 +80,11 @@ describe "Sinatra::Base as Rack middleware" do
     response = request.get('/missing')
     assert_equal 210, response.status
     assert_equal 'Hello from downstream', response.body
+  end
+
+  it 'calls #bypassed before forwarding downstream' do
+    response = request.get('/missing')
+    assert_equal '1', response['X-Bypass-Test']
   end
 
   class TestMiddleware < Sinatra::Base
