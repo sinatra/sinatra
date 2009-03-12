@@ -6,7 +6,7 @@ module Sinatra
     # we assume that the first file that requires 'sinatra' is the
     # app_file. all other path related options are calculated based
     # on this path by default.
-    set :app_file, lambda { caller_files.first || $0 }.call
+    set :app_file, caller_files.first || $0
 
     set :run, Proc.new { $0 == app_file }
 
