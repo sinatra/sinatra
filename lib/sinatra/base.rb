@@ -962,6 +962,12 @@ module Sinatra
         content_type :png
         send_file filename
       end
+      
+      get '/__sinatra__/:image.jpg' do
+        filename = File.dirname(__FILE__) + "/images/#{params[:image]}.jpg"
+        content_type :jpg
+        send_file filename
+      end
 
       error NotFound do
         (<<-HTML).gsub(/^ {8}/, '')

@@ -4,5 +4,6 @@ $LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
 require 'sinatra/base'
 require 'sinatra/main'
 require 'sinatra/compat'
+require 'sinatra/show_exceptions'
 
 use_in_file_templates!
