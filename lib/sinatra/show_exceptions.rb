@@ -78,7 +78,7 @@ TEMPLATE = <<HTML
   #rack               {width: 860px; margin: 0 auto 10px auto;}
   p#nav               {float: right; font-size: 14px;}
 /* BACKTRACE */
-  a#hide              {float: left; padding-left: 5px; color: #666666; font-size: 14px; text-decoration: none;}
+  a#hide              {float: left; padding-left: 5px; color: #666666; font-size: 14px; text-decoration: none; cursor: pointer;}
   a#hide:hover        {text-decoration: underline;}
   h3                  {float: left; width: 100px; margin-bottom: 10px; color: #981919; font-size: 14px; font-weight: bold;}
   #nav a              {color: #666666; text-decoration: none; padding: 0 5px;}
@@ -117,7 +117,8 @@ TEMPLATE = <<HTML
 
     <div id="backtrace">
       <h3>BACKTRACE</h3>
-      <p><a href="#" id="hide" onclick="toggleBacktrace()">(hide)</a></p>
+      <p><a href="#" id="hide"
+            onclick="toggleBacktrace(); return false">(hide)</a></p>
       <p id="nav"><strong>JUMP TO:</strong>
          <a href="#get-info">GET</a>
          <a href="#post-info">POST</a>
