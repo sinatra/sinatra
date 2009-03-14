@@ -50,13 +50,13 @@ TEMPLATE = <<HTML
 <style type="text/css" media="screen">
   *                   {margin: 0; padding: 0; border: 0; outline: 0;}
   div.clear           {clear: both;}
-  body                {background: #EEEEEE; margin: 0; padding: 0; font-family: 'Lucida Grande', 'Lucida Sans Unicode';}
+  body                {background: #EEEEEE; margin: 0; padding: 0; font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Garuda';}
   code                {font-family: 'Lucida Console', monospace; font-size: 12px;}
   li                  {height: 18px;}
   ul                  {list-style: none; margin: 0; padding: 0;}
   ol:hover            {cursor: pointer;}
   ol li               {white-space: pre;}
-  #explanation        {font-size: 12px; color: #666666;}
+  #explanation        {font-size: 12px; color: #666666; margin: 20px 0 0 100px;}
 /* WRAP */
   #wrap               {width: 860px; background: #FFFFFF; margin: 0 auto; padding: 30px 50px 20px 50px; border-left: 1px solid #DDDDDD; border-right: 1px solid #DDDDDD;}
 /* HEADER */
@@ -76,7 +76,7 @@ TEMPLATE = <<HTML
   #post,
   #cookies,
   #rack               {width: 860px; margin: 0 auto 10px auto;}
-  p#nav               {float: right;}
+  p#nav               {float: right; font-size: 14px;}
 /* BACKTRACE */
   a#hide              {float: left; padding-left: 5px; color: #666666; font-size: 14px; text-decoration: none;}
   a#hide:hover        {text-decoration: underline;}
