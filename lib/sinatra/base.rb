@@ -239,13 +239,17 @@ module Sinatra
 
     def haml(template, options={})
       require 'haml' unless defined? ::Haml::Engine
-      options[:options] ||= self.class.haml if self.class.respond_to? :haml
+      opts = options[:haml_options] || options.delete(:options) || {}
+      opts = self.class.haml.merge(opts) if self.class.respond_to?(:haml)
+      options[:haml_options] = opts
       render :haml, template, options
     end
 
     def sass(template, options={}, &block)
       require 'sass' unless defined? ::Sass::Engine
-      options[:layout] = false
+      opts = options[:sass_options] || options.delete(:options) || {}
+      opts = self.class.sass.merge(opts) if self.class.respond_to?(:sass)
+      options.merge! :layout => false, :sass_options => opts
       render :sass, template, options
     end
 
@@ -316,12 +320,12 @@ module Sinatra
     end
 
     def render_haml(template, data, options, &block)
-      engine = ::Haml::Engine.new(data, options[:options] || {})
+      engine = ::Haml::Engine.new(data, options[:haml_options] || {})
       engine.render(self, options[:locals] || {}, &block)
     end
 
     def render_sass(template, data, options, &block)
-      engine = ::Sass::Engine.new(data, options[:sass] || {})
+      engine = ::Sass::Engine.new(data, options[:sass_options] || {})
       engine.render
     end
 

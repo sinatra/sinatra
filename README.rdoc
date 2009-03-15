@@ -124,6 +124,18 @@ The haml gem/library is required to render HAML templates:
 
 Renders <tt>./views/index.haml</tt>.
 
+{Haml's options}[http://haml.hamptoncatlin.com/docs/rdoc/classes/Haml.html]
+can be set globally through Sinatra's configurations,
+see {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
+and overridden on an individual basis.
+
+  set :haml, {:format => :html5 } # default Haml format is :xhtml
+
+  get '/' do
+    haml :index, :haml_options => {:format => :html4 } # overridden
+  end
+
+
 === Erb Templates
 
   get '/' do
@@ -153,6 +165,19 @@ The sass gem/library is required to render Sass templates:
   end
 
 Renders <tt>./views/stylesheet.sass</tt>.
+
+{Sass' options}[http://haml.hamptoncatlin.com/docs/rdoc/classes/Sass.html]
+can be set globally through Sinatra's configurations,
+see {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
+and overridden on an individual basis.
+
+  set :sass, {:style => :compact } # default Sass style is :nested
+
+  get '/stylesheet.css' do
+    content_type 'text/css', :charset => 'utf-8'
+    sass :stylesheet, :sass_options => {:style => :expanded } # overridden
+  end
+
 
 === Inline Templates
 
