@@ -124,7 +124,7 @@ TEMPLATE = <<HTML
 <body>
   <div id="wrap">
     <div id="header">
-      <img src="/__sinatra__/500.jpg" alt="application error" />
+      <img src="/__sinatra__/500.png" alt="application error" />
       <div id="summary">
         <h1><strong><%=h exception.class %></strong> at <strong><%=h path %>
           </strong></h1>
