@@ -223,13 +223,13 @@ module Sinatra
     end
 
     def haml(template, options={})
-      require 'haml' unless defined? ::Haml
+      require 'haml' unless defined? ::Haml::Engine
       options[:options] ||= self.class.haml if self.class.respond_to? :haml
       render :haml, template, options
     end
 
     def sass(template, options={}, &block)
-      require 'sass' unless defined? ::Sass
+      require 'sass' unless defined? ::Sass::Engine
       options[:layout] = false
       render :sass, template, options
     end
