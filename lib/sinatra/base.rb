@@ -796,7 +796,7 @@ module Sinatra
         builder.use Rack::Session::Cookie if sessions? && !test?
         builder.use Rack::CommonLogger if logging?
         builder.use Rack::MethodOverride if methodoverride?
-        @middleware.each { |c, args, bk| builder.use(c, *args, &bk) }
+        @middleware.each { |c,a,b| builder.use(c, *a, &b) }
         builder.run super
         builder.to_app
       end
