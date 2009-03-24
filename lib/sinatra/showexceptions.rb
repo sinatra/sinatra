@@ -80,7 +80,7 @@ TEMPLATE = <<HTML
 /* HEADER */
   #header             {margin: 0 auto 25px auto;}
   #header img         {float: left;}
-  #header #summary    {float: left; margin: 12px 0 0 20px;
+  #header #summary    {float: left; margin: 12px 0 0 20px; width:520px;
                        font-family: 'Lucida Grande', 'Lucida Sans Unicode';}
   h1                  {margin: 0; font-size: 36px; color: #981919;}
   h2                  {margin: 0; font-size: 22px; color: #333333;}
