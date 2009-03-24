@@ -14,6 +14,7 @@ module Sinatra
       @env['HTTP_USER_AGENT']
     end
 
+    # Returns an array of acceptable media types for the response
     def accept
       @env['HTTP_ACCEPT'].to_s.split(',').map { |a| a.strip }
     end
@@ -215,7 +216,18 @@ module Sinatra
   end
 
   # Template rendering methods. Each method takes a the name of a template
-  # to render as a Symbol and returns a String with the rendered output.
+  # to render as a Symbol and returns a String with the rendered output,
+  # as well as an optional hash with additional options.
+  #
+  # `template` is either the name or path of the template as symbol
+  # (Use `:'subdir/myview'` for views in subdirectories), or a string
+  # that will be rendered.
+  #
+  # Possible options are:
+  #   :layout       If set to false, no layout is rendered, otherwise
+  #                 the specified layout is used (Ignored for `sass`)
+  #   :locals       A hash with local variables that should be available
+  #                 in the template
   module Templates
     def erb(template, options={})
       require 'erb' unless defined? ::ERB
@@ -368,13 +380,16 @@ module Sinatra
       self.class
     end
 
-    # Exit the current block and halt the response.
+    # Exit the current block, halts any further processing
+    # of the request, and returns the specified response.
     def halt(*response)
       response = response.first if response.length == 1
       throw :halt, response
     end
 
     # Pass control to the next matching route.
+    # If there are no more matching routes, Sinatra will
+    # return a 404 response.
     def pass
       throw :pass
     end
@@ -562,6 +577,8 @@ module Sinatra
       attr_accessor :routes, :filters, :conditions, :templates,
         :middleware, :errors
 
+      # Sets an option to the given value.  If the value is a proc,
+      # the proc will be called every time the option is accessed.
       def set(option, value=self)
         if value.kind_of?(Proc)
           metadef(option, &value)
@@ -577,14 +594,19 @@ module Sinatra
         self
       end
 
+      # Same as calling `set :option, true` for each of the given options.
       def enable(*opts)
         opts.each { |key| set(key, true) }
       end
 
+      # Same as calling `set :option, false` for each of the given options.
       def disable(*opts)
         opts.each { |key| set(key, false) }
       end
 
+      # Define a custom error handler. Optionally takes either an Exception
+      # class, or an HTTP status code to specify which errors should be
+      # handled.
       def error(codes=Exception, &block)
         if codes.respond_to? :each
           codes.each { |err| error(err, &block) }
@@ -593,6 +615,7 @@ module Sinatra
         end
       end
 
+      # Sugar for `error(404) { ... }`
       def not_found(&block)
         error 404, &block
       end
@@ -667,6 +690,8 @@ module Sinatra
       end
 
     public
+      # Defining a `GET` handler also automatically defines
+      # a `HEAD` handler.
       def get(path, opts={}, &block)
         conditions = @conditions.dup
         route('GET', path, opts, &block)
@@ -734,6 +759,8 @@ module Sinatra
       end
 
     public
+      # Makes the methods defined in the block and in the Modules given
+      # in `extensions` available to the handlers and templates
       def helpers(*extensions, &block)
         class_eval(&block)  if block_given?
         include *extensions if extensions.any?
@@ -756,16 +783,21 @@ module Sinatra
       def test? ; environment == :test ; end
       def production? ; environment == :production ; end
 
+      # Set configuration options for Sinatra and/or the app.
+      # Allows scoping of settings for certain environments.
       def configure(*envs, &block)
         return if reloading?
         yield if envs.empty? || envs.include?(environment.to_sym)
       end
 
+      # Use the specified Rack middleware
       def use(middleware, *args, &block)
         @prototype = nil
         @middleware << [middleware, args, block]
       end
 
+      # Run the Sinatra app as a self-hosted server using
+      # Thin, Mongrel or WEBrick (in that order)
       def run!(options={})
         set options
         handler      = detect_rack_handler
