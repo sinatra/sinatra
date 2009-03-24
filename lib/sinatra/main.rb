@@ -13,7 +13,7 @@ module Sinatra
     if run? && ARGV.any?
       require 'optparse'
       OptionParser.new { |op|
-        op.on('-x')        {       set :mutex, true }
+        op.on('-x')        {       set :lock, true }
         op.on('-e env')    { |val| set :environment, val.to_sym }
         op.on('-s server') { |val| set :server, val }
         op.on('-p port')   { |val| set :port, val.to_i }
