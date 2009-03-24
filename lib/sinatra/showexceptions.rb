@@ -7,6 +7,17 @@ module Sinatra
       @template = ERB.new(TEMPLATE)
     end
 
+    def frame_class(frame)
+      if frame.filename =~ /lib\/sinatra.*\.rb/
+        "framework"
+      elsif (defined?(Gem) && frame.filename.include?(Gem.dir)) ||
+            frame.filename =~ /\/bin\/(\w+)$/
+        "system"
+      else
+        "app"
+      end
+    end
+
 TEMPLATE = <<HTML
 <!DOCTYPE html>
 <html>
@@ -33,15 +44,15 @@ TEMPLATE = <<HTML
   }
 
   function toggleBacktrace(){
-    var bt = document.getElementById("backtrace-ul");
-    var toggler = document.getElementById("hide");
+    var bt = document.getElementById("backtrace");
+    var toggler = document.getElementById("expando");
 
-    if (bt.style.display == 'none') {
-      bt.style.display = 'block';
-      toggler.innerHTML = "(hide)";
+    if (bt.className == 'condensed') {
+      bt.className = 'expanded';
+      toggler.innerHTML = "(condense)";
     } else {
-      bt.style.display = 'none'
-      toggler.innerHTML = "(show)";
+      bt.className = 'condensed';
+      toggler.innerHTML = "(expand)";
     }
   }
   //-->
@@ -86,9 +97,9 @@ TEMPLATE = <<HTML
   #rack               {width: 860px; margin: 0 auto 10px auto;}
   p#nav               {float: right; font-size: 14px;}
 /* BACKTRACE */
-  a#hide              {float: left; padding-left: 5px; color: #666666;
+  a#expando           {float: left; padding-left: 5px; color: #666666;
                       font-size: 14px; text-decoration: none; cursor: pointer;}
-  a#hide:hover        {text-decoration: underline;}
+  a#expando:hover     {text-decoration: underline;}
   h3                  {float: left; width: 100px; margin-bottom: 10px;
                        color: #981919; font-size: 14px; font-weight: bold;}
   #nav a              {color: #666666; text-decoration: none; padding: 0 5px;}
@@ -104,6 +115,8 @@ TEMPLATE = <<HTML
   #backtrace-ul li    {border-bottom: 1px solid #E9E9E9; height: auto;
                        padding: 3px 0;}
   #backtrace-ul .code {padding: 6px 0 4px 0;}
+  #backtrace.condensed .system,
+  #backtrace.condensed .framework {display:none;}
 /* REQUEST DATA */
   p.no-data           {padding-top: 2px; font-size: 12px; color: #666666;}
   table.req           {width: 760px; text-align: left; font-size: 12px;
@@ -141,10 +154,10 @@ TEMPLATE = <<HTML
       <div class="clear"></div>
     </div>
 
-    <div id="backtrace">
+    <div id="backtrace" class='condensed'>
       <h3>BACKTRACE</h3>
-      <p><a href="#" id="hide"
-            onclick="toggleBacktrace(); return false">(hide)</a></p>
+      <p><a href="#" id="expando"
+            onclick="toggleBacktrace(); return false">(expand)</a></p>
       <p id="nav"><strong>JUMP TO:</strong>
          <a href="#get-info">GET</a>
          <a href="#post-info">POST</a>
@@ -159,12 +172,12 @@ TEMPLATE = <<HTML
       <% frames.each do |frame| %>
           <% if frame.context_line && frame.context_line != "#" %>
 
-            <li class="frame-info">
+            <li class="frame-info <%= frame_class(frame) %>">
               <code><%=h frame.filename %></code> in
                 <code><strong><%=h frame.function %></strong></code>
             </li>
 
-            <li class="code">
+            <li class="code <%= frame_class(frame) %>">
               <% if frame.pre_context %>
               <ol start="<%=h frame.pre_context_lineno + 1 %>"
                   class="pre-context" id="pre-<%= id %>"
