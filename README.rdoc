@@ -285,13 +285,7 @@ A route can punt processing to the next matching route using <tt>pass</tt>:
 The route block is immediately exited and control continues with the next
 matching route. If no matching route is found, a 404 is returned.
 
-== Configuration and Reloading
-
-Sinatra supports multiple environments and reloading. Reloading happens
-before each request when running under the <tt>:development</tt>
-environment. Wrap your configurations (e.g., database connections, constants,
-etc.) in <tt>configure</tt> blocks to protect them from reloading or to
-target specific environments.
+== Configuration
 
 Run once, at startup, in any environment:
 
@@ -300,14 +294,14 @@ Run once, at startup, in any environment:
   end
 
 Run only when the environment (RACK_ENV environment variable) is set to
-<tt>:production</tt>.
+<tt>:production</tt>:
 
   configure :production do
     ...
   end
 
-Run when the environment (RACK_ENV environment variable) is set to
-either <tt>:production</tt> or <tt>:test</tt>.
+Run when the environment is set to either <tt>:production</tt> or
+<tt>:test</tt>:
 
   configure :production, :test do
     ...

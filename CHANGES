@@ -1,3 +1,11 @@
+= 0.9.2 / unreleased
+
+ * Development mode source file reloading has been removed. The
+   "shotgun" (http://rtomayko.github.com/shotgun/) program can be
+   used to achieve the same basic functionality in most situations.
+   Passenger users should use the "tmp/always_restart.txt"
+   file (http://tinyurl.com/c67o4h). [#166]
+
 = 0.9.1.1 / 2009-03-09
 
  * Fix directory traversal vulnerability in default static files

@@ -797,7 +797,6 @@ module Sinatra
       # Set configuration options for Sinatra and/or the app.
       # Allows scoping of settings for certain environments.
       def configure(*envs, &block)
-        return if reloading?
         yield if envs.empty? || envs.include?(environment.to_sym)
       end
 
@@ -845,22 +844,7 @@ module Sinatra
       end
 
       def call(env)
-        synchronize do
-          reload! if reload?
-          prototype.call(env)
-        end
-      end
-
-      def reloading?
-        @reloading
-      end
-
-      def reload!
-        @reloading = true
-        reset!
-        $LOADED_FEATURES.delete("sinatra.rb")
-        ::Kernel.load app_file
-        @reloading = false
+        synchronize { prototype.call(env) }
       end
 
       def reset!(base=superclass)
@@ -947,8 +931,7 @@ module Sinatra
     set :root, Proc.new { app_file && File.expand_path(File.dirname(app_file)) }
     set :views, Proc.new { root && File.join(root, 'views') }
     set :public, Proc.new { root && File.join(root, 'public') }
-    set :reload, Proc.new { app_file? && app_file !~ /\.ru$/i && development? }
-    set :lock, Proc.new { reload? }
+    set :lock, false
 
     # static files route
     get(/.*[^\/]$/) do

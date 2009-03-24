@@ -319,56 +319,8 @@ describe_option 'public' do
   end
 end
 
-describe_option 'reload' do
-  it 'is enabled when
-        app_file is set,
-        is not a rackup file,
-        and we are in development' do
-    @base.app_file = __FILE__
-    @base.set(:environment, :development)
-    assert @base.reload?
-
-    @default.app_file = __FILE__
-    @default.set(:environment, :development)
-    assert @default.reload?
-  end
-
-  it 'is disabled if app_file is not set' do
-    assert ! @base.reload?
-    assert ! @default.reload?
-  end
-
-  it 'is disabled if app_file is a rackup file' do
-    @base.app_file = 'config.ru'
-    assert ! @base.reload?
-
-    @default.app_file = 'config.ru'
-    assert ! @base.reload?
-  end
-
-  it 'is disabled if we are not in development' do
-    @base.set(:environment, :foo)
-    assert ! @base.reload
-
-    @default.set(:environment, :bar)
-    assert ! @default.reload
-  end
-end
-
 describe_option 'lock' do
-  it 'is enabled when reload is enabled' do
-    @base.enable(:reload)
-    assert @base.lock?
-
-    @default.enable(:reload)
-    assert @default.lock?
-  end
-
-  it 'is disabled when reload is disabled' do
-    @base.disable(:reload)
+  it 'is disabled by default' do
     assert ! @base.lock?
-
-    @default.disable(:reload)
-    assert ! @default.lock?
   end
 end
