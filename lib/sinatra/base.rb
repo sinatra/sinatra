@@ -3,7 +3,7 @@ require 'time'
 require 'uri'
 require 'rack'
 require 'rack/builder'
-require 'sinatra/show_exceptions'
+require 'sinatra/showexceptions'
 
 module Sinatra
   VERSION = '0.9.1.1'
