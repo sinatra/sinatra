@@ -988,35 +988,6 @@ module Sinatra
         </html>
         HTML
       end
-
-      error do
-        next unless err = request.env['sinatra.error']
-        heading = err.class.name + ' - ' + err.message.to_s
-        (<<-HTML).gsub(/^ {8}/, '')
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <style type="text/css">
-            body {font-family:verdana;color:#333}
-            #c {margin-left:20px}
-            h1 {color:#1D6B8D;margin:0;margin-top:-30px}
-            h2 {color:#1D6B8D;font-size:18px}
-            pre {border-left:2px solid #ddd;padding-left:10px;color:#000}
-            img {margin-top:10px}
-          </style>
-        </head>
-        <body>
-          <div id="c">
-            <img src="/__sinatra__/500.png">
-            <h1>#{escape_html(heading)}</h1>
-            <pre>#{escape_html(clean_backtrace(err.backtrace) * "\n")}</pre>
-            <h2>Params</h2>
-            <pre>#{escape_html(params.inspect)}</pre>
-          </div>
-        </body>
-        </html>
-        HTML
-      end
     end
   end
 
