@@ -163,6 +163,8 @@ module Sinatra
       not_found
     end
 
+    # Rack response body used to deliver static files. The file contents are
+    # generated iteratively in 8K chunks.
     class StaticFile < ::File #:nodoc:
       alias_method :to_path, :path
       def each
@@ -620,14 +622,18 @@ module Sinatra
         error 404, &block
       end
 
+      # Define a named template. The block must return the template source.
       def template(name, &block)
         templates[name] = block
       end
 
+      # Define the layout template. The block must return the template source.
       def layout(name=:layout, &block)
         template name, &block
       end
 
+      # Load embeded templates from the file; uses the caller's __FILE__
+      # when no file is specified.
       def use_in_file_templates!(file=nil)
         file ||= caller_files.first
         if data = ::IO.read(file).split('__END__')[1]
@@ -650,10 +656,15 @@ module Sinatra
         Rack::Mime.mime_type(type, nil)
       end
 
+      # Define a before filter. Filters are run before all requests
+      # within the same context as route handlers and may access/modify the
+      # request and response.
       def before(&block)
         @filters << block
       end
 
+      # Add a route condition. The route is considered non-matching when the
+      # block returns false.
       def condition(&block)
         @conditions << block
       end
@@ -1038,6 +1049,9 @@ module Sinatra
   class Application < Default
   end
 
+  # Sinatra delegation mixin. Mixing this module into an object causes all
+  # methods to be delegated to the Sinatra::Application class. Used primarily
+  # at the top-level.
   module Delegator #:nodoc:
     def self.delegate(*methods)
       methods.each do |method_name|
@@ -1056,6 +1070,8 @@ module Sinatra
              :production?, :use_in_file_templates!, :helpers
   end
 
+  # Create a new Sinatra application. The block is evaluated in the new app's
+  # class scope.
   def self.new(base=Base, options={}, &block)
     base = Class.new(base)
     base.send :class_eval, &block if block_given?
