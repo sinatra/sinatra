@@ -533,7 +533,7 @@ module Sinatra
       @env['sinatra.error'] = boom
 
       dump_errors!(boom) if options.dump_errors?
-      raise boom         if options.raise_errors?
+      raise boom         if options.raise_errors? || options.show_exceptions?
 
       @response.status = 500
       error_block! boom.class, Exception
@@ -837,12 +837,9 @@ module Sinatra
       def new(*args, &bk)
         builder = Rack::Builder.new
         builder.use Rack::Session::Cookie if sessions? && !test?
-        builder.use Rack::CommonLogger if logging?
-        builder.use Rack::MethodOverride if methodoverride?
-        if show_exceptions?
-          enable :raise_errors
-          builder.use ShowExceptions
-        end
+        builder.use Rack::CommonLogger    if logging?
+        builder.use Rack::MethodOverride  if methodoverride?
+        builder.use ShowExceptions        if show_exceptions?
 
         @middleware.each { |c,a,b| builder.use(c, *a, &b) }
         builder.run super

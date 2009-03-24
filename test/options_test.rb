@@ -202,7 +202,6 @@ describe_option 'show_exceptions' do
     }
 
     get '/'
-    assert @app.raise_errors? # it enables raise_errors when enabled
     assert_equal 500, status
     assert body.include?("StandardError")
     assert body.include?("<code>show_exceptions</code> option")
