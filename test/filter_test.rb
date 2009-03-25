@@ -96,4 +96,16 @@ class FilterTest < Test::Unit::TestCase
     assert ok?
     assert_equal 'cool', body
   end
+
+  it "runs filters defined in superclasses" do
+    base = Class.new(Sinatra::Base)
+    base.before { @foo = 'hello from superclass' }
+
+    mock_app(base) {
+      get('/foo') { @foo }
+    }
+
+    get '/foo'
+    assert_equal 'hello from superclass', body
+  end
 end

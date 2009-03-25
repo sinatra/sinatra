@@ -781,4 +781,39 @@ class RoutingTest < Test::Unit::TestCase
     end
 
   end
+
+  it "matches routes defined in superclasses" do
+    base = Class.new(Sinatra::Base)
+    base.get('/foo') { 'foo in baseclass' }
+
+    mock_app(base) {
+      get('/bar') { 'bar in subclass' }
+    }
+
+    get '/foo'
+    assert ok?
+    assert_equal 'foo in baseclass', body
+
+    get '/bar'
+    assert ok?
+    assert_equal 'bar in subclass', body
+  end
+
+  it "matches routes in subclasses before superclasses" do
+    base = Class.new(Sinatra::Base)
+    base.get('/foo') { 'foo in baseclass' }
+    base.get('/bar') { 'bar in baseclass' }
+
+    mock_app(base) {
+      get('/foo') { 'foo in subclass' }
+    }
+
+    get '/foo'
+    assert ok?
+    assert_equal 'foo in subclass', body
+
+    get '/bar'
+    assert ok?
+    assert_equal 'bar in baseclass', body
+  end
 end

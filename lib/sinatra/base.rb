@@ -357,7 +357,7 @@ module Sinatra
       @env      = env
       @request  = Request.new(env)
       @response = Response.new
-      @params   = nil
+      @params   = indifferent_params(@request.params)
 
       invoke { dispatch! }
       invoke { error_block!(response.status) }
@@ -405,15 +405,15 @@ module Sinatra
     end
 
   private
-    # Run before filters and then locate and run a matching route.
-    def route!
-      @params = indifferent_params(@request.params)
+    # Run before filters defined on the class and all superclasses.
+    def filter!(base=self.class)
+      filter!(base.superclass) if base.superclass.respond_to?(:filters)
+      base.filters.each { |block| instance_eval(&block) }
+    end
 
-      # before filters
-      self.class.filters.each { |block| instance_eval(&block) }
-
-      # routes
-      if routes = self.class.routes[@request.request_method]
+    # Run routes defined on the class and all superclasses.
+    def route!(base=self.class)
+      if routes = base.routes[@request.request_method]
         original_params = @params
         path            = unescape(@request.path_info)
 
@@ -445,6 +445,14 @@ module Sinatra
             end
           end
         end
+
+        @params = original_params
+      end
+
+      # Run routes defined in superclass.
+      if base.superclass.respond_to?(:routes)
+        route! base.superclass
+        return
       end
 
       route_missing
@@ -466,6 +474,19 @@ module Sinatra
       else
         raise NotFound
       end
+    end
+
+    # Attempt to serve static files from public directory. Throws :halt when
+    # a matching file is found, returns nil otherwise.
+    def static!
+      return if (public_dir = options.public).nil?
+      public_dir = File.expand_path(public_dir)
+
+      path = File.expand_path(public_dir + unescape(request.path_info))
+      return if path[0, public_dir.length] != public_dir
+      return unless File.file?(path)
+
+      send_file path, :disposition => nil
     end
 
     # Enable string or symbol key access to the nested params hash.
@@ -516,6 +537,8 @@ module Sinatra
 
     # Dispatch a request with error handling.
     def dispatch!
+      filter!
+      static! if options.static? && (request.get? || request.head?)
       route!
     rescue NotFound => boom
       handle_not_found!(boom)
@@ -863,22 +886,14 @@ module Sinatra
       end
 
       def reset!(base=superclass)
-        @routes     = base.dupe_routes
+        @routes     = {}
         @templates  = base.templates.dup
         @conditions = []
-        @filters    = base.filters.dup
+        @filters    = []
         @errors     = base.errors.dup
         @middleware = base.middleware.dup
         @prototype  = nil
         @extensions = []
-      end
-
-    protected
-      def dupe_routes
-        routes.inject({}) do |hash,(request_method,routes)|
-          hash[request_method] = routes.dup
-          hash
-        end
       end
 
     private
@@ -958,16 +973,6 @@ module Sinatra
     set :views, Proc.new { root && File.join(root, 'views') }
     set :public, Proc.new { root && File.join(root, 'public') }
     set :lock, false
-
-    # static files route
-    get(/.*[^\/]$/) do
-      pass unless options.static? && options.public?
-      public_dir = File.expand_path(options.public)
-      path = File.expand_path(public_dir + unescape(request.path_info))
-      pass if path[0, public_dir.length] != public_dir
-      pass unless File.file?(path)
-      send_file path, :disposition => nil
-    end
 
     error ::Exception do
       response.status = 500

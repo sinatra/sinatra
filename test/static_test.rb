@@ -34,6 +34,13 @@ class StaticTest < Test::Unit::TestCase
     assert response.headers.include?('Last-Modified')
   end
 
+  %w[POST PUT DELETE].each do |verb|
+    it "does not serve #{verb} requests" do
+      send verb.downcase, "/#{File.basename(__FILE__)}"
+      assert_equal 404, status
+    end
+  end
+
   it 'serves files in preference to custom routes' do
     @app.get("/#{File.basename(__FILE__)}") { 'Hello World' }
     get "/#{File.basename(__FILE__)}"
