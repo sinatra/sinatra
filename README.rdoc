@@ -109,6 +109,11 @@ directory. To use a different views directory:
 
   set :views, File.dirname(__FILE__) + '/templates'
 
+One important thing to remember is that you always have to reference
+templates with symbols, even if they're in a subdirectory (in this
+case use <tt>:'subdir/template'</tt>). Rendering methods will render
+any strings passed to them directly.
+
 === Haml Templates
 
 The haml gem/library is required to render HAML templates:
