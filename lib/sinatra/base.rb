@@ -443,13 +443,18 @@ module Sinatra
             catch(:pass) do
               conditions.each { |cond|
                 throw :pass if instance_eval(&cond) == false }
-              throw :halt, instance_eval(&block)
+              route_eval(&block)
             end
           end
         end
       end
 
       route_missing
+    end
+
+    # Run a route block and throw :halt with the result.
+    def route_eval(&block)
+      throw :halt, instance_eval(&block)
     end
 
     # No matching route was found or all routes passed. The default
