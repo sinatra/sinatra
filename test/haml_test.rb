@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-describe "HAML Templates" do
+class HAMLTest < Test::Unit::TestCase
   def haml_app(&block)
     mock_app {
       set :views, File.dirname(__FILE__) + '/views'

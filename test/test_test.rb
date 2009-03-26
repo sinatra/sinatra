@@ -1,7 +1,7 @@
 require 'yaml'
 require File.dirname(__FILE__) + '/helper'
 
-describe 'Sinatra::Test' do
+class TestTest < Test::Unit::TestCase
   def request
     YAML.load(body)
   end
@@ -14,7 +14,7 @@ describe 'Sinatra::Test' do
     YAML.load(request['test.params'])
   end
 
-  before do
+  setup do
     mock_app {
       %w[get head post put delete].each { |verb|
         send(verb, '/') do

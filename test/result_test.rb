@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-describe 'Result Handling' do
+class ResultTest < Test::Unit::TestCase
   it "sets response.body when result is a String" do
     mock_app {
       get '/' do

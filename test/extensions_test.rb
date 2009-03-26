@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-describe 'Registering extensions' do
+class ExtensionsTest < Test::Unit::TestCase
   module FooExtensions
     def foo
     end

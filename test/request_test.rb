@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-describe 'Sinatra::Request' do
+class RequestTest < Test::Unit::TestCase
   it 'responds to #user_agent' do
     request = Sinatra::Request.new({'HTTP_USER_AGENT' => 'Test'})
     assert request.respond_to?(:user_agent)

@@ -14,8 +14,8 @@ class Rack::Handler::Mock
   end
 end
 
-describe 'Sinatra::Base.run!' do
-  before do
+class ServerTest < Test::Unit::TestCase
+  setup do
     mock_app {
       set :server, 'mock'
       set :host, 'foo.local'
@@ -24,7 +24,9 @@ describe 'Sinatra::Base.run!' do
     $stdout = File.open('/dev/null', 'wb')
   end
 
-  after { $stdout = STDOUT }
+  def teardown
+    $stdout = STDOUT
+  end
 
   it "locates the appropriate Rack handler and calls ::run" do
     @app.run!

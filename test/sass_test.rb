@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-describe "Sass Templates" do
+class SassTest < Test::Unit::TestCase
   def sass_app(&block)
     mock_app {
       set :views, File.dirname(__FILE__) + '/views'

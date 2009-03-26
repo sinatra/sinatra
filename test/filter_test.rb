@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-describe "Filters" do
+class FilterTest < Test::Unit::TestCase
   it "executes filters in the order defined" do
     count = 0
     mock_app do

@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/helper'
 
-describe "Middleware" do
-  before do
+class MiddlewareTest < Test::Unit::TestCase
+  setup do
     @app = mock_app(Sinatra::Default) {
       get '/*' do
         response.headers['X-Tests'] = env['test.ran'].

@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-describe "Builder Templates" do
+class BuilderTest < Test::Unit::TestCase
   def builder_app(&block)
     mock_app {
       set :views, File.dirname(__FILE__) + '/views'

@@ -2,8 +2,8 @@
 
 require File.dirname(__FILE__) + '/helper'
 
-describe 'Sinatra::Response' do
-  before do
+class ResponseTest < Test::Unit::TestCase
+  setup do
     @response = Sinatra::Response.new
   end
 

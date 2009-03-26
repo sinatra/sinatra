@@ -5,7 +5,7 @@ def route_def(pattern)
   mock_app { get(pattern) { } }
 end
 
-describe "Routing" do
+class RoutingTest < Test::Unit::TestCase
   %w[get put post delete].each do |verb|
     it "defines #{verb.upcase} request handlers with #{verb}" do
       mock_app {

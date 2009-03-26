@@ -8,9 +8,8 @@ module RouteAddedTest
   end
 end
 
-describe "route_added Hook" do
-
-  before { RouteAddedTest.routes.clear }
+class RouteAddedHookTest < Test::Unit::TestCase
+  setup { RouteAddedTest.routes.clear }
 
   it "should be notified of an added route" do
     mock_app(Class.new(Sinatra::Base)) {
@@ -43,5 +42,4 @@ describe "route_added Hook" do
     assert_equal [["GET", "/"], ["HEAD", "/"]],
       RouteAddedTest.routes
   end
-
 end

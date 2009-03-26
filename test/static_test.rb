@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/helper'
 
-describe 'Static' do
-  before do
+class StaticTest < Test::Unit::TestCase
+  setup do
     mock_app {
       set :static, true
       set :public, File.dirname(__FILE__)

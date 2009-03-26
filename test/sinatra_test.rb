@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-describe 'Sinatra' do
+class SinatraTest < Test::Unit::TestCase
   it 'creates a new Sinatra::Base subclass on new' do
     app =
       Sinatra.new do

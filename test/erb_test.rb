@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-describe "ERB Templates" do
+class ERBTest < Test::Unit::TestCase
   def erb_app(&block)
     mock_app {
       set :views, File.dirname(__FILE__) + '/views'
