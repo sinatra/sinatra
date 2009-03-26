@@ -616,8 +616,16 @@ module Sinatra
     @extensions = []
 
     class << self
-      attr_accessor :routes, :filters, :conditions, :templates,
-        :middleware, :errors
+      attr_accessor :routes, :filters, :conditions, :templates, :errors
+
+      # Middleware used in this class and all superclasses.
+      def middleware
+        if superclass.respond_to?(:middleware)
+          superclass.middleware + @middleware
+        else
+          @middleware
+        end
+      end
 
       # Sets an option to the given value.  If the value is a proc,
       # the proc will be called every time the option is accessed.
@@ -891,7 +899,8 @@ module Sinatra
         builder.use Rack::MethodOverride  if methodoverride?
         builder.use ShowExceptions        if show_exceptions?
 
-        @middleware.each { |c,a,b| builder.use(c, *a, &b) }
+        middleware.each { |c,a,b| builder.use(c, *a, &b) }
+
         builder.run super
         builder.to_app
       end
@@ -906,7 +915,7 @@ module Sinatra
         @conditions = []
         @filters    = []
         @errors     = {}
-        @middleware = base.middleware.dup
+        @middleware = []
         @prototype  = nil
         @extensions = []
       end
