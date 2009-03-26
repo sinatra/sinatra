@@ -2,36 +2,38 @@ require File.dirname(__FILE__) + '/helper'
 
 class OptionsTest < Test::Unit::TestCase
   setup do
-    restore_default_options
-    @app = Sinatra.new
+    @base    = Sinatra.new(Sinatra::Base)
+    @default = Sinatra.new(Sinatra::Default)
+    @base.set    :environment, :development
+    @default.set :environment, :development
   end
 
   it 'sets options to literal values' do
-    @app.set(:foo, 'bar')
-    assert @app.respond_to?(:foo)
-    assert_equal 'bar', @app.foo
+    @base.set(:foo, 'bar')
+    assert @base.respond_to?(:foo)
+    assert_equal 'bar', @base.foo
   end
 
   it 'sets options to Procs' do
-    @app.set(:foo, Proc.new { 'baz' })
-    assert @app.respond_to?(:foo)
-    assert_equal 'baz', @app.foo
+    @base.set(:foo, Proc.new { 'baz' })
+    assert @base.respond_to?(:foo)
+    assert_equal 'baz', @base.foo
   end
 
   it "sets multiple options with a Hash" do
-    @app.set :foo => 1234,
+    @base.set :foo => 1234,
         :bar => 'Hello World',
         :baz => Proc.new { 'bizzle' }
-    assert_equal 1234, @app.foo
-    assert_equal 'Hello World', @app.bar
-    assert_equal 'bizzle', @app.baz
+    assert_equal 1234, @base.foo
+    assert_equal 'Hello World', @base.bar
+    assert_equal 'bizzle', @base.baz
   end
 
   it 'inherits option methods when subclassed' do
-    @app.set :foo, 'bar'
-    @app.set :biz, Proc.new { 'baz' }
+    @base.set :foo, 'bar'
+    @base.set :biz, Proc.new { 'baz' }
 
-    sub = Class.new(@app)
+    sub = Class.new(@base)
     assert sub.respond_to?(:foo)
     assert_equal 'bar', sub.foo
     assert sub.respond_to?(:biz)
@@ -39,31 +41,31 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   it 'overrides options in subclass' do
-    @app.set :foo, 'bar'
-    @app.set :biz, Proc.new { 'baz' }
-    sub = Class.new(@app)
+    @base.set :foo, 'bar'
+    @base.set :biz, Proc.new { 'baz' }
+    sub = Class.new(@base)
     sub.set :foo, 'bling'
     assert_equal 'bling', sub.foo
-    assert_equal 'bar', @app.foo
+    assert_equal 'bar', @base.foo
   end
 
   it 'creates setter methods when first defined' do
-    @app.set :foo, 'bar'
-    assert @app.respond_to?('foo=')
-    @app.foo = 'biz'
-    assert_equal 'biz', @app.foo
+    @base.set :foo, 'bar'
+    assert @base.respond_to?('foo=')
+    @base.foo = 'biz'
+    assert_equal 'biz', @base.foo
   end
 
   it 'creates predicate methods when first defined' do
-    @app.set :foo, 'hello world'
-    assert @app.respond_to?(:foo?)
-    assert @app.foo?
-    @app.set :foo, nil
-    assert !@app.foo?
+    @base.set :foo, 'hello world'
+    assert @base.respond_to?(:foo?)
+    assert @base.foo?
+    @base.set :foo, nil
+    assert !@base.foo?
   end
 
   it 'uses existing setter methods if detected' do
-    class << @app
+    class << @base
       def foo
         @foo
       end
@@ -72,40 +74,36 @@ class OptionsTest < Test::Unit::TestCase
       end
     end
 
-    @app.set :foo, 'bam'
-    assert_equal 'oops', @app.foo
+    @base.set :foo, 'bam'
+    assert_equal 'oops', @base.foo
   end
 
   it "sets multiple options to true with #enable" do
-    @app.enable :sessions, :foo, :bar
-    assert @app.sessions
-    assert @app.foo
-    assert @app.bar
+    @base.enable :sessions, :foo, :bar
+    assert @base.sessions
+    assert @base.foo
+    assert @base.bar
   end
 
   it "sets multiple options to false with #disable" do
-    @app.disable :sessions, :foo, :bar
-    assert !@app.sessions
-    assert !@app.foo
-    assert !@app.bar
+    @base.disable :sessions, :foo, :bar
+    assert !@base.sessions
+    assert !@base.foo
+    assert !@base.bar
   end
 
   it 'enables MethodOverride middleware when :methodoverride is enabled' do
-    @app.set :methodoverride, true
-    @app.put('/') { 'okay' }
+    @base.set :methodoverride, true
+    @base.put('/') { 'okay' }
+    @app = @base
     post '/', {'_method'=>'PUT'}, {}
     assert_equal 200, status
     assert_equal 'okay', body
   end
 
   describe 'clean_trace' do
-    setup do
-      @base    = Sinatra.new
-      @default = Class.new(Sinatra::Default)
-    end
-
     def clean_backtrace(trace)
-      @base.new.send(:clean_backtrace, trace)
+      Sinatra::Base.new.send(:clean_backtrace, trace)
     end
 
     it 'is enabled on Base' do
@@ -122,8 +120,11 @@ class OptionsTest < Test::Unit::TestCase
         "./myapp:42",
         ("#{Gem.dir}/some/lib.rb" if defined?(Gem))
       ].compact
-      @base.set :clean_trace, false
-      assert_equal backtrace, clean_backtrace(backtrace)
+
+      klass = Class.new(Sinatra::Base)
+      klass.disable :clean_trace
+
+      assert_equal backtrace, klass.new.send(:clean_backtrace, backtrace)
     end
 
     it 'removes sinatra lib paths from backtrace when enabled' do
@@ -147,16 +148,12 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'run' do
-    setup do
-      @base    = Sinatra.new
-      @default = Class.new(Sinatra::Default)
-    end
-
     it 'is disabled on Base' do
       assert ! @base.run?
     end
 
     it 'is enabled on Default when not in test environment' do
+      @default.set :environment, :development
       assert @default.development?
       assert @default.run?
 
@@ -168,11 +165,6 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'raise_errors' do
-    setup do
-      @base    = Sinatra.new
-      @default = Class.new(Sinatra::Default)
-    end
-
     it 'is enabled on Base' do
       assert @base.raise_errors?
     end
@@ -180,7 +172,7 @@ class OptionsTest < Test::Unit::TestCase
     it 'is enabled on Default only in test' do
       @default.set(:environment, :development)
       assert @default.development?
-      assert ! @default.raise_errors?, "disabled development"
+      assert ! @default.raise_errors?
 
       @default.set(:environment, :production)
       assert ! @default.raise_errors?
@@ -191,11 +183,6 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'show_exceptions' do
-    setup do
-      @base    = Sinatra.new
-      @default = Class.new(Sinatra::Default)
-    end
-
     it 'is enabled on Default only in development' do
       @base.set(:environment, :development)
       assert @base.show_exceptions?
@@ -211,8 +198,8 @@ class OptionsTest < Test::Unit::TestCase
     end
 
     it 'returns a friendly 500' do
-      mock_app {
-        disable :raise_errors
+      klass = Sinatra.new(Sinatra::Default)
+      mock_app(klass) {
         enable :show_exceptions
 
         get '/' do
@@ -228,11 +215,6 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'dump_errors' do
-    setup do
-      @base    = Sinatra.new
-      @default = Class.new(Sinatra::Default)
-    end
-
     it 'is disabled on Base' do
       assert ! @base.dump_errors?
     end
@@ -242,9 +224,11 @@ class OptionsTest < Test::Unit::TestCase
     end
 
     it 'dumps exception with backtrace to rack.errors' do
-      Sinatra::Default.disable(:raise_errors)
+      klass = Sinatra.new(Sinatra::Default)
 
-      mock_app(Sinatra::Default) {
+      mock_app(klass) {
+        disable :raise_errors
+
         error do
           error = @env['rack.errors'].instance_variable_get(:@error)
           error.rewind
@@ -263,11 +247,6 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'sessions' do
-    setup do
-      @base    = Sinatra.new
-      @default = Class.new(Sinatra::Default)
-    end
-
     it 'is disabled on Base' do
       assert ! @base.sessions?
     end
@@ -280,11 +259,6 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'logging' do
-    setup do
-      @base    = Sinatra.new
-      @default = Class.new(Sinatra::Default)
-    end
-
     it 'is disabled on Base' do
       assert ! @base.logging?
     end
@@ -300,11 +274,6 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'static' do
-    setup do
-      @base    = Sinatra.new
-      @default = Class.new(Sinatra::Default)
-    end
-
     it 'is disabled on Base' do
       assert ! @base.static?
     end
@@ -318,11 +287,6 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'host' do
-    setup do
-      @base    = Sinatra.new
-      @default = Class.new(Sinatra::Default)
-    end
-
     it 'defaults to 0.0.0.0' do
       assert_equal '0.0.0.0', @base.host
       assert_equal '0.0.0.0', @default.host
@@ -330,11 +294,6 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'port' do
-    setup do
-      @base    = Sinatra.new
-      @default = Class.new(Sinatra::Default)
-    end
-
     it 'defaults to 4567' do
       assert_equal 4567, @base.port
       assert_equal 4567, @default.port
@@ -342,11 +301,6 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'server' do
-    setup do
-      @base    = Sinatra.new
-      @default = Class.new(Sinatra::Default)
-    end
-
     it 'is one of thin, mongrel, webrick' do
       assert_equal %w[thin mongrel webrick], @base.server
       assert_equal %w[thin mongrel webrick], @default.server
@@ -354,11 +308,6 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'app_file' do
-    setup do
-      @base    = Sinatra.new
-      @default = Class.new(Sinatra::Default)
-    end
-
     it 'is nil' do
       assert @base.app_file.nil?
       assert @default.app_file.nil?
@@ -366,11 +315,6 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'root' do
-    setup do
-      @base    = Sinatra.new
-      @default = Class.new(Sinatra::Default)
-    end
-
     it 'is nil if app_file is not set' do
       assert @base.root.nil?
       assert @default.root.nil?
@@ -386,11 +330,6 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'views' do
-    setup do
-      @base    = Sinatra.new
-      @default = Class.new(Sinatra::Default)
-    end
-
     it 'is nil if root is not set' do
       assert @base.views.nil?
       assert @default.views.nil?
@@ -406,11 +345,6 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'public' do
-    setup do
-      @base    = Sinatra.new
-      @default = Class.new(Sinatra::Default)
-    end
-
     it 'is nil if root is not set' do
       assert @base.public.nil?
       assert @default.public.nil?
@@ -426,11 +360,6 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'lock' do
-    setup do
-      @base    = Sinatra.new
-      @default = Class.new(Sinatra::Default)
-    end
-
     it 'is disabled by default' do
       assert ! @base.lock?
     end

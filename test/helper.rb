@@ -34,20 +34,6 @@ class Test::Unit::TestCase
   def mock_app(base=Sinatra::Base, &block)
     @app = Sinatra.new(base, &block)
   end
-
-  def restore_default_options
-    Sinatra::Default.set(
-      :environment => :development,
-      :raise_errors => Proc.new { test? },
-      :show_exceptions => Proc.new { development? },
-      :dump_errors => true,
-      :sessions => false,
-      :logging => Proc.new { ! test? },
-      :methodoverride => true,
-      :static => true,
-      :run => Proc.new { ! test? }
-    )
-  end
 end
 
 # Do not output warnings for the duration of the block.
