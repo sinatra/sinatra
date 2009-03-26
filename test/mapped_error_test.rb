@@ -101,6 +101,37 @@ class MappedErrorTest < Test::Unit::TestCase
       assert_equal 404, status
       assert_equal "Lost, are we?", body
     end
+
+    it 'inherits error mappings from base class' do
+      base = Class.new(Sinatra::Base)
+      base.error(FooError) { 'base class' }
+
+      mock_app(base) {
+        set :raise_errors, false
+        get '/' do
+          raise FooError
+        end
+      }
+
+      get '/'
+      assert_equal 'base class', body
+    end
+
+    it 'overrides error mappings in base class' do
+      base = Class.new(Sinatra::Base)
+      base.error(FooError) { 'base class' }
+
+      mock_app(base) {
+        set :raise_errors, false
+        error(FooError) { 'subclass' }
+        get '/' do
+          raise FooError
+        end
+      }
+
+      get '/'
+      assert_equal 'subclass', body
+    end
   end
 
   describe 'Custom Error Pages' do

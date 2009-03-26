@@ -575,11 +575,16 @@ module Sinatra
 
     # Find an custom error block for the key(s) specified.
     def error_block!(*keys)
-      errmap = self.class.errors
       keys.each do |key|
-        if block = errmap[key]
-          res = instance_eval(&block)
-          return res
+        base = self.class
+        while base.respond_to?(:errors)
+          if block = base.errors[key]
+            # found a handler, eval and return result
+            res = instance_eval(&block)
+            return res
+          else
+            base = base.superclass
+          end
         end
       end
       nil
@@ -900,7 +905,7 @@ module Sinatra
         @templates  = {}
         @conditions = []
         @filters    = []
-        @errors     = base.errors.dup
+        @errors     = {}
         @middleware = base.middleware.dup
         @prototype  = nil
         @extensions = []
