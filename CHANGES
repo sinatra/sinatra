@@ -1,3 +1,12 @@
+= 1.0 / unreleased
+
+ * Route handlers, before filters, templates, error mappings, and
+   middleware are now resolved dynamically up the inheritance hierarchy
+   when needed instead of duplicating the superclass's version when
+   a new Sinatra::Base subclass is created. This should fix a variety
+   of issues with extensions that need to add any of these things
+   to the base class.
+
 = 0.9.2 / 2009-05-18
 
  * This version is compatible with Rack 1.0. [Rein Henrichs]

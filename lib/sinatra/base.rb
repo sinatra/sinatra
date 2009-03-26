@@ -606,17 +606,28 @@ module Sinatra
       }.map! { |line| line.gsub(/^\.\//, '') }
     end
 
-    @routes     = {}
-    @filters    = []
-    @conditions = []
-    @templates  = {}
-    @middleware = []
-    @errors     = {}
-    @prototype  = nil
-    @extensions = []
-
     class << self
-      attr_accessor :routes, :filters, :conditions, :templates, :errors
+      attr_reader :routes, :filters, :templates, :errors
+
+      def reset!
+        @conditions = []
+        @routes     = {}
+        @filters    = []
+        @templates  = {}
+        @errors     = {}
+        @middleware = []
+        @prototype  = nil
+        @extensions = []
+      end
+
+      # Extension modules registered on this class and all superclasses.
+      def extensions
+        if superclass.respond_to?(:extensions)
+          (@extensions + superclass.extensions).uniq
+        else
+          @extensions
+        end
+      end
 
       # Middleware used in this class and all superclasses.
       def middleware
@@ -793,7 +804,7 @@ module Sinatra
 
         invoke_hook(:route_added, verb, path, block)
 
-        (routes[verb] ||= []).
+        (@routes[verb] ||= []).
           push([pattern, keys, conditions, block]).last
       end
 
@@ -834,10 +845,6 @@ module Sinatra
       def helpers(*extensions, &block)
         class_eval(&block)  if block_given?
         include(*extensions) if extensions.any?
-      end
-
-      def extensions
-        (@extensions + (superclass.extensions rescue [])).uniq
       end
 
       def register(*extensions, &block)
@@ -898,7 +905,6 @@ module Sinatra
         builder.use Rack::CommonLogger    if logging?
         builder.use Rack::MethodOverride  if methodoverride?
         builder.use ShowExceptions        if show_exceptions?
-
         middleware.each { |c,a,b| builder.use(c, *a, &b) }
 
         builder.run super
@@ -907,17 +913,6 @@ module Sinatra
 
       def call(env)
         synchronize { prototype.call(env) }
-      end
-
-      def reset!(base=superclass)
-        @routes     = {}
-        @templates  = {}
-        @conditions = []
-        @filters    = []
-        @errors     = {}
-        @middleware = []
-        @prototype  = nil
-        @extensions = []
       end
 
     private
@@ -934,7 +929,7 @@ module Sinatra
       end
 
       def inherited(subclass)
-        subclass.reset! self
+        subclass.reset!
         super
       end
 
@@ -976,6 +971,8 @@ module Sinatra
           reject { |file,line| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
       end
     end
+
+    reset!
 
     set :raise_errors, true
     set :dump_errors, false
