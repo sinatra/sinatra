@@ -270,21 +270,31 @@ module Sinatra
     def lookup_template(engine, template, views_dir, filename = nil, line = nil)
       case template
       when Symbol
-        if cached = self.class.templates[template]
-          lookup_template(engine, cached[:template], views_dir, cached[:filename], cached[:line])
-        else
-          path = ::File.join(views_dir, "#{template}.#{engine}")
-          [ ::File.read(path), path, 1 ]
-        end
+        load_template(engine, template, views_dir, options)
       when Proc
         filename, line = self.class.caller_locations.first if filename.nil?
-        [ template.call, filename, line.to_i ]
+        [template.call, filename, line.to_i]
       when String
         filename, line = self.class.caller_locations.first if filename.nil?
-        [ template, filename, line.to_i ]
+        [template, filename, line.to_i]
       else
         raise ArgumentError
       end
+    end
+
+    def load_template(engine, template, views_dir, options={})
+      base = self.class
+      while base.respond_to?(:templates)
+        if cached = base.templates[template]
+          return lookup_template(engine, cached[:template], views_dir, cached[:filename], cached[:line])
+        else
+          base = base.superclass
+        end
+      end
+
+      # If no template exists in the cache, try loading from disk.
+      path = ::File.join(views_dir, "#{template}.#{engine}")
+      [ ::File.read(path), path, 1 ]
     end
 
     def lookup_layout(engine, template, views_dir)
@@ -887,7 +897,7 @@ module Sinatra
 
       def reset!(base=superclass)
         @routes     = {}
-        @templates  = base.templates.dup
+        @templates  = {}
         @conditions = []
         @filters    = []
         @errors     = base.errors.dup

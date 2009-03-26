@@ -1,8 +1,8 @@
 require File.dirname(__FILE__) + '/helper'
 
 class TemplatesTest < Test::Unit::TestCase
-  def render_app(&block)
-    mock_app {
+  def render_app(base=Sinatra::Base, &block)
+    mock_app(base) {
       def render_test(template, data, options, locals, &block)
         inner = block ? block.call : ''
         data + inner
@@ -106,6 +106,25 @@ class TemplatesTest < Test::Unit::TestCase
     get '/'
     assert ok?
     assert_equal 'Hello Mike!<p>content</p>', body
+  end
+
+  it 'loads templates defined in subclasses' do
+    base = Class.new(Sinatra::Base)
+    base.template(:foo) { 'bar' }
+    render_app(base) { render :test, :foo }
+    assert ok?
+    assert_equal 'bar', body
+  end
+
+  it 'uses templates in superclasses before subclasses' do
+    base = Class.new(Sinatra::Base)
+    base.template(:foo) { 'template in superclass' }
+    render_app(base) { render :test, :foo }
+    @app.template(:foo) { 'template in subclass' }
+
+    get '/'
+    assert ok?
+    assert_equal 'template in subclass', body
   end
 end
 
