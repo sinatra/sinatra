@@ -450,12 +450,16 @@ module Sinatra
         end
       end
 
-      # No matching route found or all routes passed -- forward downstream
-      # when running as middleware; 404 when running as normal app.
+      route_missing
+    end
+
+    # No matching route was found or all routes passed. The default
+    # implementation is to forward the request downstream when running
+    # as middleware (@app is non-nil); when no downstream app is set, raise
+    # a NotFound exception. Subclasses can override this method to perform
+    # custom route miss logic.
+    def route_missing
       if @app
-        # Call bypassed method before forward to catch behavior that should
-        # happen even if no routes are hit.
-        bypassed if respond_to?(:bypassed)
         forward
       else
         raise NotFound
