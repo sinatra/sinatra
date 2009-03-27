@@ -49,18 +49,12 @@ describe "HAML Templates" do
   it "passes HAML options to the Haml engine" do
     mock_app {
       get '/' do
-        haml "!!!\n%h1 Hello World", :haml_options => {:format => :html5}
-      end
-      get '/backwards_compatible' do
-        haml "!!!\n%h1 Hello World", :options => {:format => :html4}
+        haml "!!!\n%h1 Hello World", :format => :html5
       end
     }
     get '/'
     assert ok?
     assert_equal "<!DOCTYPE html>\n<h1>Hello World</h1>\n", body
-    get '/backwards_compatible'
-    assert ok?
-    assert_match(/^<!DOCTYPE html PUBLIC (.*) HTML 4.01/, body)
   end
 
   it "passes default HAML options to the Haml engine" do
@@ -82,7 +76,7 @@ describe "HAML Templates" do
         haml "!!!\n%h1{:class => :header} Hello World"
       end
       get '/html4' do
-        haml "!!!\n%h1{:class => 'header'} Hello World", :haml_options => {:format => :html4}
+        haml "!!!\n%h1{:class => 'header'} Hello World", :format => :html4
       end
     }
     get '/'

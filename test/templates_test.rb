@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/helper'
 describe 'Templating' do
   def render_app(&block)
     mock_app {
-      def render_test(template, data, options, &block)
+      def render_test(template, data, options, locals, &block)
         inner = block ? block.call : ''
         data + inner
       end

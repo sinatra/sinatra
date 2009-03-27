@@ -115,6 +115,22 @@ module Sinatra
       halt data
     end
 
+    # The :views_directory, :options, :haml, and :sass options are deprecated.
+    def render(engine, template, options={}, locals={}, &bk)
+      if options.key?(:views_directory)
+        sinatra_warn "The :views_directory option is deprecated; use :views instead."
+        options[:views] = options.delete(:views_directory)
+      end
+      [:options, engine.to_sym].each do |key|
+        if options.key?(key)
+          sinatra_warn "Passing :#{key} => {} to #{engine} is deprecated; " +
+                       "merge options directly into hash instead."
+          options.merge! options.delete(key)
+        end
+      end
+      super(engine, template, options, locals, &bk)
+    end
+
     # Throwing halt with a Symbol and the to_result convention are
     # deprecated. Override the invoke method to detect those types of return
     # values.

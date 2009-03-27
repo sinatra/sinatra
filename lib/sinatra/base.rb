@@ -232,53 +232,60 @@ module Sinatra
   #   :locals       A hash with local variables that should be available
   #                 in the template
   module Templates
-    def erb(template, options={})
+    def erb(template, options={}, locals={})
       require 'erb' unless defined? ::ERB
-      render :erb, template, options
+      render :erb, template, options, locals
     end
 
-    def haml(template, options={})
+    def haml(template, options={}, locals={})
       require 'haml' unless defined? ::Haml::Engine
-      opts = options[:haml_options] || options.delete(:options) || {}
-      opts = self.class.haml.merge(opts) if self.class.respond_to?(:haml)
-      options[:haml_options] = opts
-      render :haml, template, options
+      render :haml, template, options, locals
     end
 
-    def sass(template, options={}, &block)
+    def sass(template, options={}, locals={})
       require 'sass' unless defined? ::Sass::Engine
-      opts = options[:sass_options] || options.delete(:sass) || {}
-      opts = self.class.sass.merge(opts) if self.class.respond_to?(:sass)
-      options.merge! :layout => false, :sass_options => opts
-      render :sass, template, options
+      options[:layout] = false
+      render :sass, template, options, locals
     end
 
-    def builder(template=nil, options={}, &block)
+    def builder(template=nil, options={}, locals={}, &block)
       require 'builder' unless defined? ::Builder
       options, template = template, nil if template.is_a?(Hash)
       template = lambda { block } if template.nil?
-      render :builder, template, options
+      render :builder, template, options, locals
     end
 
   private
-    def render(engine, template, options={}) #:nodoc:
-      data   = lookup_template(engine, template, options)
-      output = __send__("render_#{engine}", template, data, options)
-      layout, data = lookup_layout(engine, options)
-      if layout
-        __send__("render_#{engine}", layout, data, options) { output }
+    def render(engine, template, options={}, locals={})
+      # merge app-level options
+      options = self.class.send(engine).merge(options) if self.class.respond_to?(engine)
+
+      # extract generic options
+      layout = options.delete(:layout)
+      layout = :layout if layout.nil? || layout == true
+      views = options.delete(:views) || self.class.views || "./views"
+      locals = options.delete(:locals) || locals || {}
+
+      # render template
+      data   = lookup_template(engine, template, views)
+      output = __send__("render_#{engine}", template, data, options, locals)
+
+      # render layout
+      if layout && data = lookup_layout(engine, layout, views)
+        __send__("render_#{engine}", layout, data, options, {}) { output }
       else
         output
       end
     end
 
-    def lookup_template(engine, template, options={})
+    def lookup_template(engine, template, views_dir)
       case template
       when Symbol
         if cached = self.class.templates[template]
-          lookup_template(engine, cached, options)
+          lookup_template(engine, cached, views_dir)
         else
-          ::File.read(template_path(engine, template, options))
+          path = ::File.join(views_dir, "#{template}.#{engine}")
+          ::File.read(path)
         end
       when Proc
         template.call
@@ -289,28 +296,17 @@ module Sinatra
       end
     end
 
-    def lookup_layout(engine, options)
-      return if options[:layout] == false
-      options.delete(:layout) if options[:layout] == true
-      template = options[:layout] || :layout
-      data     = lookup_template(engine, template, options)
-      [template, data]
+    def lookup_layout(engine, template, views_dir)
+      lookup_template(engine, template, views_dir)
     rescue Errno::ENOENT
       nil
     end
 
-    def template_path(engine, template, options={})
-      views_dir =
-        options[:views_directory] || self.options.views || "./views"
-      "#{views_dir}/#{template}.#{engine}"
-    end
-
-    def render_erb(template, data, options, &block)
+    def render_erb(template, data, options, locals, &block)
       original_out_buf = @_out_buf
       data = data.call if data.kind_of? Proc
 
       instance = ::ERB.new(data, nil, nil, '@_out_buf')
-      locals = options[:locals] || {}
       locals_assigns = locals.to_a.collect { |k,v| "#{k} = locals[:#{k}]" }
 
       src = "#{locals_assigns.join("\n")}\n#{instance.src}"
@@ -319,18 +315,17 @@ module Sinatra
       result
     end
 
-    def render_haml(template, data, options, &block)
-      engine = ::Haml::Engine.new(data, options[:haml_options] || {})
-      engine.render(self, options[:locals] || {}, &block)
+    def render_haml(template, data, options, locals, &block)
+      ::Haml::Engine.new(data, options).render(self, locals, &block)
     end
 
-    def render_sass(template, data, options, &block)
-      engine = ::Sass::Engine.new(data, options[:sass_options] || {})
-      engine.render
+    def render_sass(template, data, options, locals, &block)
+      ::Sass::Engine.new(data, options).render
     end
 
-    def render_builder(template, data, options, &block)
-      xml = ::Builder::XmlMarkup.new(:indent => 2)
+    def render_builder(template, data, options, locals, &block)
+      options = { :indent => 2 }.merge(options)
+      xml = ::Builder::XmlMarkup.new(options)
       if data.respond_to?(:to_str)
         eval data.to_str, binding, '<BUILDER>', 1
       elsif data.kind_of?(Proc)

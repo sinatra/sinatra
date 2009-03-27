@@ -52,6 +52,16 @@ context "Sass" do
       body.should.equal "#sass {\n  background_color: #FFF; }\n"
     end
 
+    it "passes :sass option to the Sass engine" do
+      get '/' do
+        sass "#sass\n  :background-color #FFF\n  :color #000\n", :sass => {:style => :compact}
+      end
+
+      get_it '/'
+      should.be.ok
+      body.should.equal "#sass { background-color: #FFF; color: #000; }\n"
+    end
+
   end
 
 end
