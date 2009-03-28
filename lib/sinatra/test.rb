@@ -1,5 +1,7 @@
 require 'sinatra/base'
 
+warn 'Sinatra::Test is deprecated; use Rack::Test instead.'
+
 module Sinatra
   module Test
     include Rack::Utils
