@@ -178,7 +178,7 @@ class HelpersTest < Test::Unit::TestCase
         end
       }
 
-      get '/', :env => { 'rack.session' => { :foo => 'bar' } }
+      get '/', {}, { 'rack.session' => { :foo => 'bar' } }
       assert_equal 'bar', body
     end
 
@@ -373,7 +373,7 @@ class HelpersTest < Test::Unit::TestCase
     end
 
     it 'halts when a conditional GET matches' do
-      get '/', :env => { 'HTTP_IF_MODIFIED_SINCE' => @now.httpdate }
+      get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => @now.httpdate }
       assert_equal 304, status
       assert_equal '', body
     end
@@ -402,13 +402,13 @@ class HelpersTest < Test::Unit::TestCase
     end
 
     it 'halts when a conditional GET matches' do
-      get '/', :env => { 'HTTP_IF_NONE_MATCH' => '"FOO"' }
+      get '/', {}, { 'HTTP_IF_NONE_MATCH' => '"FOO"' }
       assert_equal 304, status
       assert_equal '', body
     end
 
     it 'should handle multiple ETag values in If-None-Match header' do
-      get '/', :env => { 'HTTP_IF_NONE_MATCH' => '"BAR", *' }
+      get '/', {}, { 'HTTP_IF_NONE_MATCH' => '"BAR", *' }
       assert_equal 304, status
       assert_equal '', body
     end

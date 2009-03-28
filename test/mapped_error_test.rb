@@ -51,18 +51,6 @@ class MappedErrorTest < Test::Unit::TestCase
       assert_equal 'looks good', body
     end
 
-    it 'dumps errors to rack.errors when dump_errors is enabled' do
-      mock_app {
-        set :raise_errors, false
-        set :dump_errors, true
-        get('/') { raise FooError, 'BOOM!' }
-      }
-
-      get '/'
-      assert_equal 500, status
-      assert @response.errors =~ /FooError - BOOM!:/
-    end
-
     it "raises without calling the handler when the raise_errors options is set" do
       mock_app {
         set :raise_errors, true

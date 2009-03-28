@@ -1,7 +1,11 @@
-require 'yaml'
 require File.dirname(__FILE__) + '/helper'
 
+require 'yaml'
+require 'sinatra/test'
+
 class TestTest < Test::Unit::TestCase
+  include Sinatra::Test
+
   def request
     YAML.load(body)
   end
@@ -45,8 +49,8 @@ class TestTest < Test::Unit::TestCase
     assert_equal('DELETE', request['REQUEST_METHOD'])
 
     head '/'
-    assert_equal('', response.body)
     assert response.headers['Content-Length'].to_i > 0
+    assert_equal('', body)
   end
 
   it 'allows to specify a body' do

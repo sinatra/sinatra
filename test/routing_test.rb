@@ -258,17 +258,7 @@ class RoutingTest < Test::Unit::TestCase
   end
 
   it "supports deeply nested params" do
-    input = {
-      'browser[chrome][engine][name]' => 'V8',
-      'browser[chrome][engine][version]' => '1.0',
-      'browser[firefox][engine][name]' => 'spidermonkey',
-      'browser[firefox][engine][version]' => '1.7.0',
-      'emacs[map][goto-line]' => 'M-g g',
-      'emacs[version]' => '22.3.1',
-      'paste[name]' => 'hello world',
-      'paste[syntax]' => 'ruby'
-    }
-    expected = {
+    expected_params = {
       "emacs" => {
         "map"     => { "goto-line" => "M-g g" },
         "version" => "22.3.1"
@@ -281,11 +271,11 @@ class RoutingTest < Test::Unit::TestCase
     }
     mock_app {
       get '/foo' do
-        assert_equal expected, params
+        assert_equal expected_params, params
         'looks good'
       end
     }
-    get "/foo?#{build_query(input)}"
+    get '/foo', expected_params
     assert ok?
     assert_equal 'looks good', body
   end
@@ -368,8 +358,9 @@ class RoutingTest < Test::Unit::TestCase
   end
 
   it 'raises a TypeError when pattern is not a String or Regexp' do
-    @app = mock_app
-    assert_raise(TypeError) { @app.get(42){} }
+    assert_raise(TypeError) {
+      mock_app { get(42){} }
+    }
   end
 
   it "returns response immediately on halt" do
@@ -494,7 +485,7 @@ class RoutingTest < Test::Unit::TestCase
     get '/foo'
     assert not_found?
 
-    get '/foo', :env => { 'HTTP_HOST' => 'example.com' }
+    get '/foo', {}, { 'HTTP_HOST' => 'example.com' }
     assert_equal 200, status
     assert_equal 'Hello World', body
   end
@@ -509,7 +500,7 @@ class RoutingTest < Test::Unit::TestCase
     get '/foo'
     assert not_found?
 
-    get '/foo', :env => { 'HTTP_USER_AGENT' => 'Foo Bar' }
+    get '/foo', {}, { 'HTTP_USER_AGENT' => 'Foo Bar' }
     assert_equal 200, status
     assert_equal 'Hello World', body
   end
@@ -521,7 +512,7 @@ class RoutingTest < Test::Unit::TestCase
         'Hello ' + params[:agent].first
       end
     }
-    get '/foo', :env => { 'HTTP_USER_AGENT' => 'Foo Bar' }
+    get '/foo', {}, { 'HTTP_USER_AGENT' => 'Foo Bar' }
     assert_equal 200, status
     assert_equal 'Hello Bar', body
   end
@@ -533,12 +524,12 @@ class RoutingTest < Test::Unit::TestCase
       end
     }
 
-    get '/', :env => { :accept => 'application/xml' }
+    get '/', {}, { 'HTTP_ACCEPT' => 'application/xml' }
     assert ok?
     assert_equal 'application/xml', body
     assert_equal 'application/xml', response.headers['Content-Type']
 
-    get '/', :env => { :accept => 'text/html' }
+    get '/', {}, { :accept => 'text/html' }
     assert !ok?
   end
 
@@ -552,7 +543,7 @@ class RoutingTest < Test::Unit::TestCase
     }
 
     types.each do |type|
-      get '/', :env => { :accept => type }
+      get '/', {}, { 'HTTP_ACCEPT' => type }
       assert ok?
       assert_equal type, body
       assert_equal type, response.headers['Content-Type']
