@@ -2,7 +2,7 @@ require 'rake/clean'
 require 'rake/testtask'
 require 'fileutils'
 
-task :default => [:test]
+task :default => [:test, :compat]
 task :spec => :test
 
 # SPECS ===============================================================
@@ -12,10 +12,14 @@ Rake::TestTask.new(:test) do |t|
   t.ruby_opts = ['-rubygems'] if defined? Gem
 end
 
-desc 'Run compatibility specs (requires test/spec)'
+desc 'Run compatibility specs (requires test-spec)'
 task :compat do |t|
-  pattern = ENV['TEST'] || '.*'
-  sh "specrb --testcase '#{pattern}' -Ilib:test compat/*_test.rb"
+  if ENV['PATH'].split(':').any? { |p| File.exist?("#{p}/specrb") }
+    pattern = ENV['TEST'] || '.*'
+    sh "specrb --testcase '#{pattern}' -Ilib:test compat/*_test.rb"
+  else
+    puts "WARN: skipping compat tests. test-spec and mocha gems required."
+  end
 end
 
 # PACKAGING ============================================================
