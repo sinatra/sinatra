@@ -37,6 +37,18 @@ class BaseTest < Test::Unit::TestCase
         assert_equal 'Foo: ', response.body
       end
     end
+
+    it "passes the subclass to configure blocks" do
+      ref = nil
+      TestApp.configure { |app| ref = app }
+      assert_equal TestApp, ref
+    end
+
+    it "allows the configure block arg to be omitted and does not change context" do
+      context = nil
+      TestApp.configure { context = self }
+      assert_equal self, context
+    end
   end
 
   describe "Sinatra::Base as Rack middleware" do
