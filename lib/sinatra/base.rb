@@ -247,7 +247,7 @@ module Sinatra
 
     def sass(template, options={}, &block)
       require 'sass' unless defined? ::Sass::Engine
-      opts = options[:sass_options] || options.delete(:options) || {}
+      opts = options[:sass_options] || options.delete(:sass) || {}
       opts = self.class.sass.merge(opts) if self.class.respond_to?(:sass)
       options.merge! :layout => false, :sass_options => opts
       render :sass, template, options

@@ -42,6 +42,14 @@ describe "Sass Templates" do
     assert_equal "#sass { background-color: #FFF; color: #000; }\n", body
   end
 
+  it "passes backwards compatible SASS options to the Sass engine" do
+    sass_app {
+      sass "#sass\n  :background-color #FFF\n  :color #000\n", :sass => {:style => :compact}
+    }
+    assert ok?
+    assert_equal "#sass { background-color: #FFF; color: #000; }\n", body
+  end
+
   it "passes default SASS options to the Sass engine" do
     mock_app {
       set :sass, {:style => :compact } # default Sass style is :nested
