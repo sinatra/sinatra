@@ -1,15 +1,20 @@
 require File.dirname(__FILE__) + '/helper'
 
 module RouteAddedTest
-  @routes = []
+  @routes, @procs = [], []
   def self.routes ; @routes ; end
-  def self.route_added(verb, path)
+  def self.procs ; @procs ; end
+  def self.route_added(verb, path, proc)
     @routes << [verb, path]
+    @procs << proc
   end
 end
 
 class RouteAddedHookTest < Test::Unit::TestCase
-  setup { RouteAddedTest.routes.clear }
+  setup { 
+    RouteAddedTest.routes.clear
+    RouteAddedTest.procs.clear
+  }
 
   it "should be notified of an added route" do
     mock_app(Class.new(Sinatra::Base)) {
@@ -41,5 +46,14 @@ class RouteAddedHookTest < Test::Unit::TestCase
 
     assert_equal [["GET", "/"], ["HEAD", "/"]],
       RouteAddedTest.routes
+  end
+  
+  it "should pass route blocks as an argument" do
+    mock_app(Class.new(Sinatra::Base)) {
+      register RouteAddedTest
+      get('/') {}
+    }
+
+    assert_kind_of Proc, RouteAddedTest.procs.first    
   end
 end

@@ -733,7 +733,7 @@ module Sinatra
             lambda { unbound_method.bind(self).call }
           end
 
-        invoke_hook(:route_added, verb, path)
+        invoke_hook(:route_added, verb, path, block)
 
         (routes[verb] ||= []).
           push([pattern, keys, conditions, block]).last
