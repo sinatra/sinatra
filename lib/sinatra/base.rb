@@ -763,9 +763,10 @@ module Sinatra
 
     private
       def route(verb, path, opts={}, &block)
-        host_name  opts[:host]  if opts.key?(:host)
-        user_agent opts[:agent] if opts.key?(:agent)
-        accept_mime_types opts[:provides] if opts.key?(:provides)
+        host_name  opts.delete(:host)  if opts.key?(:host)
+        user_agent opts.delete(:agent) if opts.key?(:agent)
+        accept_mime_types opts.delete(:provides) if opts.key?(:provides)
+        opts.each {|o, args| send(o, *args)}
 
         pattern, keys = compile(path)
         conditions, @conditions = @conditions, []

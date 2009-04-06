@@ -693,6 +693,31 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 'ab', body
   end
 
+  it 'allows for condition helper sugar' do
+    condition_helpers = Module.new {
+      def custom_condition_fu(one, two)
+        condition { one == 1 && two == 2 }
+      end
+    }
+
+    Sinatra::Base.register(condition_helpers)
+
+    mock_app {
+      get '/notit', :custom_condition_fu => [0, 0] do
+        'notit'
+      end
+      get '/it', :custom_condition_fu => [1, 2] do
+        'it'
+      end
+    }
+
+    get '/notit'
+    assert not_found?
+
+    get '/it'
+    assert ok?
+  end
+
   # NOTE Block params behaves differently under 1.8 and 1.9. Under 1.8, block
   # param arity is lax: declaring a mismatched number of block params results
   # in a warning. Under 1.9, block param arity is strict: mismatched block
