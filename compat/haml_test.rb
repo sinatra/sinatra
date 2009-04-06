@@ -183,13 +183,14 @@ context "Haml" do
       Sinatra.application = nil
     end
 
-    specify 'are empty be default' do
+    specify 'default to filename and line of caller' do
 
       get '/' do
         haml 'foo'
       end
 
-      Haml::Engine.expects(:new).with('foo', {}).returns(stub(:render => 'foo'))
+      Haml::Engine.expects(:new).with('foo', {:filename => __FILE__,
+        :line => (__LINE__-4)}).returns(stub(:render => 'foo'))
 
       get_it '/'
       should.be.ok
@@ -202,7 +203,8 @@ context "Haml" do
         haml 'foo', :options => {:format => :html4}
       end
 
-      Haml::Engine.expects(:new).with('foo', {:format => :html4}).returns(stub(:render => 'foo'))
+      Haml::Engine.expects(:new).with('foo', {:filename => __FILE__,
+        :line => (__LINE__-4), :format => :html4}).returns(stub(:render => 'foo'))
 
       get_it '/'
       should.be.ok
@@ -220,7 +222,8 @@ context "Haml" do
         haml 'foo'
       end
 
-      Haml::Engine.expects(:new).with('foo', {:format => :html4,
+      Haml::Engine.expects(:new).with('foo', {:filename => __FILE__,
+        :line => (__LINE__-4), :format => :html4,
         :escape_html => true}).returns(stub(:render => 'foo'))
 
       get_it '/'

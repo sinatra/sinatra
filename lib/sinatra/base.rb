@@ -253,30 +253,35 @@ module Sinatra
       locals = options.delete(:locals) || locals || {}
 
       # render template
-      data   = lookup_template(engine, template, views)
+      data, options[:filename], options[:line] = lookup_template(engine, template, views)
       output = __send__("render_#{engine}", template, data, options, locals)
 
       # render layout
-      if layout && data = lookup_layout(engine, layout, views)
-        __send__("render_#{engine}", layout, data, options, {}) { output }
-      else
-        output
+      if layout
+        data, options[:filename], options[:line] = lookup_layout(engine, layout, views)
+        if data
+          output = __send__("render_#{engine}", layout, data, options, {}) { output }
+        end
       end
+
+      output
     end
 
-    def lookup_template(engine, template, views_dir)
+    def lookup_template(engine, template, views_dir, filename = nil, line = nil)
       case template
       when Symbol
         if cached = self.class.templates[template]
-          lookup_template(engine, cached, views_dir)
+          lookup_template(engine, cached[:template], views_dir, cached[:filename], cached[:line])
         else
           path = ::File.join(views_dir, "#{template}.#{engine}")
-          ::File.read(path)
+          [ ::File.read(path), path, 1 ]
         end
       when Proc
-        template.call
+        filename, line = self.class.caller_locations.first if filename.nil?
+        [ template.call, filename, line.to_i ]
       when String
-        template
+        filename, line = self.class.caller_locations.first if filename.nil?
+        [ template, filename, line.to_i ]
       else
         raise ArgumentError
       end
@@ -295,8 +300,13 @@ module Sinatra
       instance = ::ERB.new(data, nil, nil, '@_out_buf')
       locals_assigns = locals.to_a.collect { |k,v| "#{k} = locals[:#{k}]" }
 
-      src = "#{locals_assigns.join("\n")}\n#{instance.src}"
-      eval src, binding, '(__ERB__)', locals_assigns.length + 1
+      filename = options.delete(:filename) || '(__ERB__)'
+      line = options.delete(:line) || 1
+      line -= 1 if instance.src =~ /^#coding:/
+
+      render_binding = binding
+      eval locals_assigns.join("\n"), render_binding
+      eval instance.src, render_binding, filename, line
       @_out_buf, result = original_out_buf, @_out_buf
       result
     end
@@ -311,9 +321,11 @@ module Sinatra
 
     def render_builder(template, data, options, locals, &block)
       options = { :indent => 2 }.merge(options)
+      filename = options.delete(:filename) || '<BUILDER>'
+      line = options.delete(:line) || 1
       xml = ::Builder::XmlMarkup.new(options)
       if data.respond_to?(:to_str)
-        eval data.to_str, binding, '<BUILDER>', 1
+        eval data.to_str, binding, filename, line
       elsif data.kind_of?(Proc)
         data.call(xml)
       end
@@ -619,7 +631,8 @@ module Sinatra
 
       # Define a named template. The block must return the template source.
       def template(name, &block)
-        templates[name] = block
+        filename, line = caller_locations.first
+        templates[name] = { :filename => filename, :line => line, :template => block }
       end
 
       # Define the layout template. The block must return the template source.
@@ -631,19 +644,18 @@ module Sinatra
       # when no file is specified.
       def use_in_file_templates!(file=nil)
         file ||= caller_files.first
-
-        begin
-          data = ::IO.read(file).split(/^__END__$/)[1]
-        rescue
-          data = nil
-        end
+        app, data =
+          ::IO.read(file).split(/^__END__$/, 2) rescue nil
 
         if data
           data.gsub!(/\r\n/, "\n")
+          lines = app.count("\n") + 1
           template = nil
           data.each_line do |line|
+            lines += 1
             if line =~ /^@@\s*(.*)/
-              template = templates[$1.to_sym] = ''
+              template = ''
+              templates[$1.to_sym] = { :filename => file, :line => lines, :template => template }
             elsif template
               template << line
             end
@@ -902,6 +914,7 @@ module Sinatra
           send :define_method, message, &block
       end
 
+    public
       CALLERS_TO_IGNORE = [
         /lib\/sinatra.*\.rb$/, # all sinatra code
         /\(.*\)/,              # generated code
