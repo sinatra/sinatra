@@ -693,29 +693,38 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 'ab', body
   end
 
-  it 'allows for condition helper sugar' do
-    condition_helpers = Module.new {
-      def custom_condition_fu(one, two)
-        condition { one == 1 && two == 2 }
+  it 'allows custom route-conditions to be set via route options' do
+    protector = Module.new {
+      def protect(*args)
+        condition {
+          unless authorize(params["user"], params["password"])
+            halt 403, "go away"
+          end
+        }
       end
     }
-
-    Sinatra::Base.register(condition_helpers)
 
     mock_app {
-      get '/notit', :custom_condition_fu => [0, 0] do
-        'notit'
+      register protector
+
+      helpers do
+        def authorize(username, password)
+          username == "foo" && password == "bar"
+        end
       end
-      get '/it', :custom_condition_fu => [1, 2] do
-        'it'
+
+      get "/", :protect => true do
+        "hey"
       end
     }
 
-    get '/notit'
-    assert not_found?
+    get "/"
+    assert forbidden?
+    assert_equal "go away", body
 
-    get '/it'
+    get "/", :user => "foo", :password => "bar"
     assert ok?
+    assert_equal "hey", body
   end
 
   # NOTE Block params behaves differently under 1.8 and 1.9. Under 1.8, block
