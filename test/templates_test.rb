@@ -75,6 +75,16 @@ class TemplatesTest < Test::Unit::TestCase
     assert_equal "this is foo\n\n", @app.templates[:foo]
     assert_equal "X\n= yield\nX\n", @app.templates[:layout]
   end
+
+  test 'use_in_file_templates simply ignores IO errors' do
+    assert_nothing_raised {
+      mock_app {
+        use_in_file_templates!('/foo/bar')
+      }
+    }
+
+    assert @app.templates.empty?
+  end
 end
 
 __END__

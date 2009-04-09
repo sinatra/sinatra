@@ -635,7 +635,14 @@ module Sinatra
       # when no file is specified.
       def use_in_file_templates!(file=nil)
         file ||= caller_files.first
-        if data = ::IO.read(file).split('__END__')[1]
+
+        begin
+          data = ::IO.read(file).split('__END__')[1]
+        rescue
+          data = nil
+        end
+
+        if data
           data.gsub!(/\r\n/, "\n")
           template = nil
           data.each_line do |line|
