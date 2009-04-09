@@ -407,7 +407,13 @@ module Sinatra
   private
     # Run before filters and then locate and run a matching route.
     def route!
-      @params = nested_params(@request.params)
+      # enable nested params in Rack < 1.0; allow indifferent access
+      @params =
+        if Rack::Utils.respond_to?(:parse_nested_query)
+          indifferent_params(@request.params)
+        else
+          nested_params(@request.params)
+        end
 
       # before filters
       self.class.filters.each { |block| instance_eval(&block) }
@@ -468,6 +474,18 @@ module Sinatra
       end
     end
 
+    # Enable string or symbol key access to the nested params hash.
+    def indifferent_params(params)
+      params = indifferent_hash.merge(params)
+      params.each do |key, value|
+        next unless value.is_a?(Hash)
+        params[key] = indifferent_params(value)
+      end
+    end
+
+    # Recursively replace the params hash with a nested indifferent
+    # hash. Rack 1.0 has a built in implementation of this method - remove
+    # this once Rack 1.0 is required.
     def nested_params(params)
       return indifferent_hash.merge(params) if !params.keys.join.include?('[')
       params.inject indifferent_hash do |res, (key,val)|
