@@ -103,7 +103,7 @@ Gem::Specification.new do |s|
   s.test_files = s.files.select {|path| path =~ /^test\/.*_test.rb/}
 
   s.extra_rdoc_files = %w[README.rdoc LICENSE]
-  s.add_dependency 'rack',    '>= 0.9.1', '< 1.0'
+  s.add_dependency 'rack',    '>= 0.9.1'
   s.add_development_dependency 'shotgun', '>= 0.2',   '< 1.0'
 
   s.has_rdoc = true
