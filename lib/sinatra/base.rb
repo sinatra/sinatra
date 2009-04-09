@@ -887,7 +887,7 @@ module Sinatra
         servers = Array(self.server)
         servers.each do |server_name|
           begin
-            return Rack::Handler.get(server_name)
+            return Rack::Handler.get(server_name.capitalize)
           rescue LoadError
           rescue NameError
           end
