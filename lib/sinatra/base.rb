@@ -33,16 +33,6 @@ module Sinatra
   # http://rack.rubyforge.org/doc/classes/Rack/Response.html
   # http://rack.rubyforge.org/doc/classes/Rack/Response/Helpers.html
   class Response < Rack::Response
-    def initialize
-      @status, @body = 200, []
-      @header = Rack::Utils::HeaderHash.new({'Content-Type' => 'text/html'})
-    end
-
-    def write(str)
-      @body << str.to_s
-      str
-    end
-
     def finish
       @body = block if block_given?
       if [204, 304].include?(status.to_i)
