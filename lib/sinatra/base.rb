@@ -637,7 +637,7 @@ module Sinatra
         file ||= caller_files.first
 
         begin
-          data = ::IO.read(file).split('__END__')[1]
+          data = ::IO.read(file).split(/^__END__$/)[1]
         rescue
           data = nil
         end

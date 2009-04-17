@@ -87,6 +87,8 @@ class TemplatesTest < Test::Unit::TestCase
   end
 end
 
+# __END__ : this is not the real end of the script.
+
 __END__
 
 @@ foo
