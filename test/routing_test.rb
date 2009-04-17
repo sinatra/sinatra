@@ -44,6 +44,17 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 404, status
   end
 
+  test "development NotFound handler" do
+    mock_app {
+      before { content_type 'text/plain' }
+    }
+
+    get '/foo'
+    assert_equal 404, status
+    assert_equal 'text/html', response["Content-Type"]
+    assert body.include?("Sinatra doesn't know this ditty")
+  end
+
   it 'takes multiple definitions of a route' do
     mock_app {
       user_agent(/Foo/)

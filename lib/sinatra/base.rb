@@ -959,6 +959,8 @@ module Sinatra
       end
 
       error NotFound do
+        content_type 'text/html'
+
         (<<-HTML).gsub(/^ {8}/, '')
         <!DOCTYPE html>
         <html>
