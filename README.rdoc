@@ -1,6 +1,6 @@
 = Sinatra
 
-Sinatra is a DSL for quickly creating web-applications in Ruby with minimal
+Sinatra is a DSL for quickly creating web applications in Ruby with minimal
 effort:
 
   # myapp.rb
