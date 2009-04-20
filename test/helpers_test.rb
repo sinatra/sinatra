@@ -439,13 +439,13 @@ class HelpersTest < Test::Unit::TestCase
     end
   end
 
-  module HelperOne; def one; '1'; end; end
-  module HelperTwo; def two; '2'; end; end
+  module ::HelperOne; def one; '1'; end; end
+  module ::HelperTwo; def two; '2'; end; end
 
   describe 'Adding new helpers' do
     it 'takes a list of modules to mix into the app' do
       mock_app {
-        helpers HelperOne, HelperTwo
+        helpers ::HelperOne, ::HelperTwo
 
         get '/one' do
           one
