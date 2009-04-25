@@ -44,15 +44,19 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 404, status
   end
 
-  it "sets the content-type to text/html in the default 404 handler" do
+  it "overrides the content-type in error handlers" do
     mock_app {
       before { content_type 'text/plain' }
+      error Sinatra::NotFound do
+        content_type "text/html"
+        "<h1>Not Found</h1>"
+      end
     }
 
     get '/foo'
     assert_equal 404, status
     assert_equal 'text/html', response["Content-Type"]
-    assert body.include?("Sinatra doesn't know this ditty")
+    assert_equal "<h1>Not Found</h1>", response.body
   end
 
   it 'takes multiple definitions of a route' do

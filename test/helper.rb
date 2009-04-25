@@ -1,3 +1,5 @@
+ENV['RACK_ENV'] = 'test'
+
 begin
   require 'rack'
 rescue LoadError
