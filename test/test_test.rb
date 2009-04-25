@@ -45,8 +45,8 @@ class TestTest < Test::Unit::TestCase
     assert_equal('DELETE', request['REQUEST_METHOD'])
 
     head '/'
-    assert_equal('596', response.headers['Content-Length'])
     assert_equal('', response.body)
+    assert response.headers['Content-Length'].to_i > 0
   end
 
   it 'allows to specify a body' do
@@ -92,8 +92,8 @@ class TestTest < Test::Unit::TestCase
     get '/', :env => { :host => '1.2.3.4' }
     assert_equal '1.2.3.4', request['HTTP_HOST']
 
-    get '/', :env => { :session => 'foo' }
-    assert_equal 'foo', request['rack.session']
+    get '/', :env => { :session => {'foo' => 'bar'} }
+    assert_equal({'foo' => 'bar'}, request['rack.session'])
 
     get '/', :env => { :cookies => 'foo' }
     assert_equal 'foo', request['HTTP_COOKIE']
