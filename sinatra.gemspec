@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'sinatra'
-  s.version = '0.9.1.2'
-  s.date = '2009-03-24'
+  s.version = '0.9.1.3'
+  s.date = '2009-04-25'
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
@@ -60,6 +60,7 @@ Gem::Specification.new do |s|
     lib/sinatra/images/404.png
     lib/sinatra/images/500.png
     lib/sinatra/main.rb
+    lib/sinatra/showexceptions.rb
     lib/sinatra/test.rb
     lib/sinatra/test/bacon.rb
     lib/sinatra/test/rspec.rb
@@ -68,6 +69,7 @@ Gem::Specification.new do |s|
     sinatra.gemspec
     test/base_test.rb
     test/builder_test.rb
+    test/contest.rb
     test/data/reload_app_file.rb
     test/erb_test.rb
     test/extensions_test.rb
@@ -78,9 +80,11 @@ Gem::Specification.new do |s|
     test/mapped_error_test.rb
     test/middleware_test.rb
     test/options_test.rb
+    test/render_backtrace_test.rb
     test/request_test.rb
     test/response_test.rb
     test/result_test.rb
+    test/route_added_hook_test.rb
     test/routing_test.rb
     test/sass_test.rb
     test/server_test.rb
@@ -88,6 +92,10 @@ Gem::Specification.new do |s|
     test/static_test.rb
     test/templates_test.rb
     test/test_test.rb
+    test/views/error.builder
+    test/views/error.erb
+    test/views/error.haml
+    test/views/error.sass
     test/views/hello.builder
     test/views/hello.erb
     test/views/hello.haml
