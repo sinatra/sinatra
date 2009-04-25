@@ -1,6 +1,10 @@
 require 'rubygems'
 require 'mocha'
 
+require 'haml'
+require 'sass'
+require 'builder'
+
 # disable warnings in compat specs.
 $VERBOSE = nil
 

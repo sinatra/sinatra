@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/helper'
+require 'haml'
 
 class HAMLTest < Test::Unit::TestCase
   def haml_app(&block)

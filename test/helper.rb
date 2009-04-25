@@ -14,6 +14,10 @@ $LOAD_PATH.unshift libdir unless $LOAD_PATH.include?(libdir)
 require 'contest'
 require 'sinatra/test'
 
+require 'haml'
+require 'sass'
+require 'builder'
+
 class Sinatra::Base
   # Allow assertions in request context
   include Test::Unit::Assertions

@@ -223,23 +223,19 @@ module Sinatra
   #                 in the template
   module Templates
     def erb(template, options={}, locals={})
-      require 'erb' unless defined? ::ERB
       render :erb, template, options, locals
     end
 
     def haml(template, options={}, locals={})
-      require 'haml' unless defined? ::Haml::Engine
       render :haml, template, options, locals
     end
 
     def sass(template, options={}, locals={})
-      require 'sass' unless defined? ::Sass::Engine
       options[:layout] = false
       render :sass, template, options, locals
     end
 
     def builder(template=nil, options={}, locals={}, &block)
-      require 'builder' unless defined? ::Builder
       options, template = template, nil if template.is_a?(Hash)
       template = lambda { block } if template.nil?
       render :builder, template, options, locals
