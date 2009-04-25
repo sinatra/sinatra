@@ -12,20 +12,22 @@ Rake::TestTask.new(:test) do |t|
   t.ruby_opts = ['-rubygems'] if defined? Gem
 end
 
+desc "Run < 0.9.x compatibility specs"
 task :compat do
   begin
     require 'mocha'
   rescue LoadError
     puts 'WARN: skipping compat tests. mocha gem required.'
-    exit
+    next
   end
 
-  if system('testrb --help &>/dev/null')
-    pattern = ENV['TEST'] || '.*'
-    sh "specrb --testcase '#{pattern}' -Ilib:test compat/*_test.rb"
-  else
+  if ! system('specrb --help &>/dev/null')
     puts 'WARN: skipping compat tests. test-spec gem required.'
+    next
   end
+
+  pattern = ENV['TEST'] || '.*'
+  sh "specrb --testcase '#{pattern}' -Ilib:test compat/*_test.rb"
 end
 
 # PACKAGING ============================================================
