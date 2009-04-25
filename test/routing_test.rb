@@ -44,7 +44,7 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 404, status
   end
 
-  test "development NotFound handler" do
+  it "sets the content-type to text/html in the default 404 handler" do
     mock_app {
       before { content_type 'text/plain' }
     }
