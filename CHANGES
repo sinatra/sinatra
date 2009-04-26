@@ -1,10 +1,79 @@
 = 0.9.2 / unreleased
 
+ * This version is compatible with Rack 1.0. [Rein Henrichs]
+
+ * The development-mode unhandled exception / error page has been
+   greatly enhanced, functionally and aesthetically. The error
+   page is used when the :show_exceptions option is enabled and an
+   exception propagates outside of a route handler or before filter.
+   [Simon Rozet / Matte Noble / Ryan Tomayko]
+
+ * Backtraces that move through templates now include filenames and
+   line numbers where possible. [#51 / S. Brent Faulkner]
+
+ * All templates now have an app-level option for setting default
+   template options (:haml, :sass, :erb, :builder). The app-level
+   option value must be a Hash if set and is merged with the
+   template options specified to the render method (Base#haml,
+   Base#erb, Base#builder). [S. Brent Faulkner, Ryan Tomayko]
+
+ * The method signature for all template rendering methods has
+   been unified: "def engine(template, options={}, locals={})".
+   The options Hash now takes the generic :views, :layout, and
+   :locals options but also any template-specific options. The
+   generic options are removed before calling the template specific
+   render method. Locals may be specified using either the
+   :locals key in the options hash or a second Hash option to the
+   rendering method. [#191 / Ryan Tomayko]
+
+ * The receiver is now passed to "configure" blocks. This
+   allows for the following idiom in top-level apps:
+   configure { |app| set :foo, app.root + '/foo' }
+   [TJ Holowaychuck / Ryan Tomayko]
+
+ * The "sinatra/test" lib is deprecated and will be removed in
+   Sinatra 1.0. This includes the Sinatra::Test module and
+   Sinatra::TestHarness class in addition to all the framework
+   test helpers that were deprecated in 0.9.1. The Rack::Test
+   lib should be used instead: http://gitrdoc.com/brynary/rack-test
+   [#176 / Simon Rozet]
+
  * Development mode source file reloading has been removed. The
    "shotgun" (http://rtomayko.github.com/shotgun/) program can be
    used to achieve the same basic functionality in most situations.
    Passenger users should use the "tmp/always_restart.txt"
-   file (http://tinyurl.com/c67o4h). [#166]
+   file (http://tinyurl.com/c67o4h). [#166 / Ryan Tomayko]
+
+ * A new Sinatra::Base#route_missing method was added. route_missing
+   is sent when no route matches the request or all route handlers
+   pass.  The default implementation forwards the request to the
+   downstream app when running as middleware (i.e., "@app" is
+   non-nil), or raises a NotFound exception when no downstream app
+   is defined. Subclasses can override this method to perform custom
+   route miss logic. [Jon Crosby]
+
+ * A new Sinatra::Base#route_eval method was added. The method
+   yields to the block and throws :halt with the result. Subclasses
+   can override this method to tap into the route execution logic.
+   [TJ Holowaychuck]
+
+ * Fix the "-x" (enable request mutex / locking) command line
+   argument. Passing -x now properly sets the :lock option.
+   [S. Brent Faulkner, Ryan Tomayko]
+
+ * Fix writer ("foo=") and predicate ("foo?") methods in extension
+   modules not being added to the registering class.
+   [#172 / Pat Nakajima]
+
+ * Fix in-file templates when running alongside activesupport and
+   fatal errors when requiring activesupport before sinatra
+   [#178 / Brian Candler]
+
+ * Fix various issues running on Google AppEngine.
+   [Samuel Goebert, Simon Rozet]
+
+ * Fix in-file templates __END__ detection when __END__ exists with
+   other stuff on a line [Yoji Shidara]
 
 = 0.9.1.1 / 2009-03-09
 
