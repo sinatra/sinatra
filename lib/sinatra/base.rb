@@ -807,6 +807,8 @@ module Sinatra
               end
             end
           [/^#{pattern}$/, keys]
+        elsif path.respond_to?(:keys) && path.respond_to?(:match)
+          [path, path.keys]
         elsif path.respond_to? :match
           [path, keys]
         else

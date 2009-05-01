@@ -5,6 +5,22 @@ def route_def(pattern)
   mock_app { get(pattern) { } }
 end
 
+class RegexpLookAlike
+  class MatchData
+    def captures
+      ["this", "is", "a", "test"]
+    end
+  end
+
+  def match(string)
+    ::RegexpLookAlike::MatchData.new if string == "/this/is/a/test/"
+  end
+
+  def keys
+    ["one", "two", "three", "four"]
+  end
+end
+
 class RoutingTest < Test::Unit::TestCase
   %w[get put post delete].each do |verb|
     it "defines #{verb.upcase} request handlers with #{verb}" do
@@ -353,6 +369,22 @@ class RoutingTest < Test::Unit::TestCase
     }
 
     get '/foorooomma/baf'
+    assert ok?
+    assert_equal 'right on', body
+  end
+
+  it 'supports regular expression look-alike routes' do
+    mock_app {
+      get(RegexpLookAlike.new) do
+        assert_equal 'this', params[:one]
+        assert_equal 'is', params[:two]
+        assert_equal 'a', params[:three]
+        assert_equal 'test', params[:four]
+        'right on'
+      end
+    }
+
+    get '/this/is/a/test/'
     assert ok?
     assert_equal 'right on', body
   end
