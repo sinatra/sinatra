@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/helper'
+require 'builder'
 
 class BuilderTest < Test::Unit::TestCase
   def builder_app(&block)

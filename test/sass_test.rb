@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/helper'
+require 'sass'
 
 class SassTest < Test::Unit::TestCase
   def sass_app(&block)
