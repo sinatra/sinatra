@@ -5,7 +5,7 @@ module Sinatra
     end
 
     def yield_content(key)
-      content_blocks[key.to_sym].map {|content| content.call }.join("")
+      content_blocks[key.to_sym].each {|content| content.call }
     end
 
     private
