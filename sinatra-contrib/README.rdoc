@@ -1,0 +1,41 @@
+= ContentFor
+
+Small extension for the Sinatra[http://sinatrarb.com] web framework
+that allows you to use the following helpers in your views:
+
+    <% content_for :some_key do %>
+      <chunk of="html">...</chunk>
+    <% end %>
+    
+    <% yield_content :some_key %>
+
+This allows you to capture blocks inside views to be rendered later
+in this request. For example, to populate different parts of your
+layout from your view.
+
+== Usage
+
+If you're writing "classic" style apps, then requring 
+<tt>sinatra/content_for</tt> should be enough. If you're writing
+"classy" apps, then you also need to call 
+<tt>helpers Sinatra::ContentFor</tt> in your app definition.
+
+== And how is this useful?
+
+For example, some of your views might need a few javascript tags and
+stylesheets, but you don't want to force this files in all your pages.
+Then you can put <tt><% yield_content :scripts_and_styles %></tt> on
+your layout, inside the <head> tag, and each view can call 
+<tt>content_for</tt> setting the appropriate set of tags that should 
+be added to the layout.
+
+== Warning
+
+This only works with ERB as a rendering mechanism. I haven't figured
+how to make it work with Haml. If you find a way, contact me and I'll
+include it.
+
+== Credits
+
+Code by foca[http://github.com/foca], inspired on the Ruby on Rails
+helpers with the same name.
