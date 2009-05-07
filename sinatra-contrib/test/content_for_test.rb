@@ -10,6 +10,11 @@ end
 require 'contest'
 require 'sinatra/test'
 
+begin
+  require 'redgreen'
+rescue LoadError
+end
+
 require File.dirname(__FILE__) + '/../lib/sinatra/content_for'
 
 Sinatra::Base.set :environment, :test
