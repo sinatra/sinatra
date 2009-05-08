@@ -74,4 +74,15 @@ class ContentForTest < Test::Unit::TestCase
     assert ok?
     assert_equal 'foobarbaz', body
   end
+
+  it 'passes values to the blocks' do
+    mock_app {
+      layout { '<% yield_content :foo, 1, 2 %>' }
+      get('/') { erb '<% content_for :foo do |a, b| %><i><%= a %></i> <%= b %><% end %>' }
+    }
+
+    get '/'
+    assert ok?
+    assert_equal '<i>1</i> 2', body
+  end
 end
