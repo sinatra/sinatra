@@ -9,6 +9,7 @@ end
 
 require 'contest'
 require 'sinatra/test'
+require 'haml'
 
 begin
   require 'redgreen'
@@ -39,50 +40,117 @@ class Test::Unit::TestCase
 end
 
 class ContentForTest < Test::Unit::TestCase
-  def erb_app(view)
-    mock_app {
-      layout { '<% yield_content :foo %>' }
-      get('/') { erb view } 
-    }
+  context 'using erb' do
+    def erb_app(view)
+      mock_app {
+        layout { '<% yield_content :foo %>' }
+        get('/') { erb view } 
+      }
+    end
+
+    it 'renders blocks declared with the same key you use when rendering' do
+      erb_app '<% content_for :foo do %>foo<% end %>'
+
+      get '/'
+      assert ok?
+      assert_equal 'foo', body
+    end
+
+    it 'does not render a block with a different key' do
+      erb_app '<% content_for :bar do %>bar<% end %>'
+
+      get '/'
+      assert ok?
+      assert_equal '', body
+    end
+
+    it 'renders multiple blocks with the same key' do
+      erb_app <<-erb_snippet
+        <% content_for :foo do %>foo<% end %>
+        <% content_for :foo do %>bar<% end %>
+        <% content_for :baz do %>WON'T RENDER ME<% end %>
+        <% content_for :foo do %>baz<% end %>
+      erb_snippet
+
+      get '/'
+      assert ok?
+      assert_equal 'foobarbaz', body
+    end
+
+    it 'passes values to the blocks' do
+      mock_app {
+        layout { '<% yield_content :foo, 1, 2 %>' }
+        get('/') { erb '<% content_for :foo do |a, b| %><i><%= a %></i> <%= b %><% end %>' }
+      }
+
+      get '/'
+      assert ok?
+      assert_equal '<i>1</i> 2', body
+    end
   end
 
-  it 'renders blocks declared with the same key you use when rendering' do
-    erb_app '<% content_for :foo do %>foo<% end %>'
+  context 'with haml' do
+    def haml_app(view)
+      mock_app {
+        layout { '= yield_content :foo' }
+        get('/') { haml view } 
+      }
+    end
 
-    get '/'
-    assert ok?
-    assert_equal 'foo', body
-  end
+    it 'renders blocks declared with the same key you use when rendering' do
+      haml_app <<-haml_end
+- content_for :foo do
+  foo
+haml_end
 
-  it 'does not render a block with a different key' do
-    erb_app '<% content_for :bar do %>bar<% end %>'
+      get '/'
+      assert ok?
+      assert_equal "foo\n", body
+    end
 
-    get '/'
-    assert ok?
-    assert_equal '', body
-  end
+    it 'does not render a block with a different key' do
+      haml_app <<-haml_end
+- content_for :bar do
+  bar
+haml_end
 
-  it 'renders multiple blocks with the same key' do
-    erb_app <<-erb_snippet
-      <% content_for :foo do %>foo<% end %>
-      <% content_for :foo do %>bar<% end %>
-      <% content_for :baz do %>WON'T RENDER ME<% end %>
-      <% content_for :foo do %>baz<% end %>
-    erb_snippet
+      get '/'
+      assert ok?
+      assert_equal "\n", body
+    end
 
-    get '/'
-    assert ok?
-    assert_equal 'foobarbaz', body
-  end
+    it 'renders multiple blocks with the same key' do
+      haml_app <<-haml_end
+- content_for :foo do
+  foo
+- content_for :foo do
+  bar
+- content_for :baz do
+  WON'T RENDER ME
+- content_for :foo do
+  baz
+haml_end
 
-  it 'passes values to the blocks' do
-    mock_app {
-      layout { '<% yield_content :foo, 1, 2 %>' }
-      get('/') { erb '<% content_for :foo do |a, b| %><i><%= a %></i> <%= b %><% end %>' }
-    }
+      get '/'
+      assert ok?
+      assert_equal "foo\nbar\nbaz\n", body
+    end
 
-    get '/'
-    assert ok?
-    assert_equal '<i>1</i> 2', body
+    it 'passes values to the blocks' do
+      mock_app {
+        layout { '= yield_content :foo, 1, 2' }
+        get('/') { 
+          haml <<-haml_end
+- content_for :foo do |a, b|
+  %i= a
+  =b
+haml_end
+        }
+      }
+
+      get '/'
+      assert ok?
+      assert_equal "<i>1</i>\n2\n", body
+    end
   end
 end
