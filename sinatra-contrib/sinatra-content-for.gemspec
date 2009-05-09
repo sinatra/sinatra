@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name    = "sinatra-content-for"
-  s.version = "0.1"
-  s.date    = "2009-05-07"
+  s.version = "0.2"
+  s.date    = "2009-05-09"
 
   s.description = "Small Sinatra extension to add a content_for helper similar to Rails'"
   s.summary     = "Small Sinatra extension to add a content_for helper similar to Rails'"
