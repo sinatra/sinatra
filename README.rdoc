@@ -490,7 +490,7 @@ clone and run your app with the <tt>sinatra/lib</tt> directory on the
   git clone git://github.com/sinatra/sinatra.git
   ruby -Isinatra/lib myapp.rb
 
-Alternatively, you can add the <tt>sinatra/lib<tt> directory to the
+Alternatively, you can add the <tt>sinatra/lib</tt> directory to the
 <tt>LOAD_PATH</tt> in your application:
 
   $LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
