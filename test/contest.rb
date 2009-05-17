@@ -6,8 +6,10 @@ require "test/unit"
 # allow them. Having a failure when no tests have been defined seems
 # counter-intuitive.
 class Test::Unit::TestSuite
-  def empty?
-    false
+  unless method_defined?(:empty?)
+    def empty?
+      false
+    end
   end
 end
 

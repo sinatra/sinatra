@@ -1,6 +1,10 @@
 require File.dirname(__FILE__) + '/helper'
 
 class BaseTest < Test::Unit::TestCase
+  def test_default
+    assert true
+  end
+
   describe 'Sinatra::Base subclasses' do
     class TestApp < Sinatra::Base
       get '/' do
@@ -23,6 +27,7 @@ class BaseTest < Test::Unit::TestCase
 
     class TestApp < Sinatra::Base
       get '/state' do
+        @foo ||= "new"
         body = "Foo: #{@foo}"
         @foo = 'discard'
         body
@@ -34,7 +39,7 @@ class BaseTest < Test::Unit::TestCase
       2.times do
         response = request.get('/state')
         assert response.ok?
-        assert_equal 'Foo: ', response.body
+        assert_equal 'Foo: new', response.body
       end
     end
 

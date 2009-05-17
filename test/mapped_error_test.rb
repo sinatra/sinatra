@@ -7,6 +7,10 @@ class FooNotFound < Sinatra::NotFound
 end
 
 class MappedErrorTest < Test::Unit::TestCase
+  def test_default
+    assert true
+  end
+
   describe 'Exception Mappings' do
     it 'invokes handlers registered with ::error when raised' do
       mock_app {

@@ -302,7 +302,7 @@ module Sinatra
     end
 
     def render_erb(template, data, options, locals, &block)
-      original_out_buf = @_out_buf
+      original_out_buf = defined?(@_out_buf) && @_out_buf
       data = data.call if data.kind_of? Proc
 
       instance = ::ERB.new(data, nil, nil, '@_out_buf')
@@ -821,7 +821,7 @@ module Sinatra
       # in `extensions` available to the handlers and templates
       def helpers(*extensions, &block)
         class_eval(&block)  if block_given?
-        include *extensions if extensions.any?
+        include(*extensions) if extensions.any?
       end
 
       def extensions
@@ -1055,7 +1055,7 @@ module Sinatra
 
     def self.register(*extensions, &block) #:nodoc:
       added_methods = extensions.map {|m| m.public_instance_methods }.flatten
-      Delegator.delegate *added_methods
+      Delegator.delegate(*added_methods)
       super(*extensions, &block)
     end
   end

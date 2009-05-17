@@ -1,6 +1,10 @@
 require File.dirname(__FILE__) + '/helper'
 
 class HelpersTest < Test::Unit::TestCase
+  def test_default
+    assert true
+  end
+
   describe 'status' do
     setup do
       mock_app {
