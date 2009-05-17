@@ -113,6 +113,7 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = %w[README.rdoc LICENSE]
   s.add_dependency 'rack',    '>= 0.9.1'
   s.add_development_dependency 'shotgun', '>= 0.2',   '< 1.0'
+  s.add_development_dependency 'rack-test', '>= 0.3.0'
 
   s.has_rdoc = true
   s.homepage = "http://sinatra.rubyforge.org"
