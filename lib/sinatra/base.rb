@@ -764,10 +764,10 @@ module Sinatra
 
     private
       def route(verb, path, options={}, &block)
-        options.each {|option, args| send(option, *args)}
-
         # Because of self.options.host
-        host_name(options[:host]) if options.key?(:host)
+        host_name(options.delete(:host)) if options.key?(:host)
+
+        options.each {|option, args| send(option, *args)}
 
         pattern, keys = compile(path)
         conditions, @conditions = @conditions, []
