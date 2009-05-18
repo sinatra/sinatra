@@ -1,7 +1,11 @@
 require File.dirname(__FILE__) + '/helper'
 
 require 'yaml'
+
+# silence deprecation warning when requiring sinatra/test
+$VERBOSE, v = nil, $VERBOSE
 require 'sinatra/test'
+$VERBOSE = v
 
 class TestTest < Test::Unit::TestCase
   include Sinatra::Test
