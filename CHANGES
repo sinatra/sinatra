@@ -44,6 +44,10 @@
    Passenger users should use the "tmp/always_restart.txt"
    file (http://tinyurl.com/c67o4h). [#166 / Ryan Tomayko]
 
+ * Auto-requiring template libs in the erb, builder, haml, and
+   sass methods is deprecated due to thread-safety issues. You must
+   require the template libs explicitly in your app file. [Simon Rozet]
+
  * A new Sinatra::Base#route_missing method was added. route_missing
    is sent when no route matches the request or all route handlers
    pass.  The default implementation forwards the request to the
