@@ -24,6 +24,9 @@ end
 
 class Test::Unit::TestCase
   include Sinatra::Test
+
+  PASSTHROUGH_EXCEPTIONS = [] unless const_defined?(:PASSTHROUGH_EXCEPTIONS)
+
   def setup
     @app = lambda { |env| Sinatra::Application.call(env) }
   end
