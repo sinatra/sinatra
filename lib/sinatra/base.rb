@@ -268,7 +268,7 @@ module Sinatra
       if layout
         data, options[:filename], options[:line] = lookup_layout(engine, layout, views)
         if data
-          output = __send__("render_#{engine}", layout, data, options, {}) { output }
+          output = __send__("render_#{engine}", layout, data, options, locals) { output }
         end
       end
 

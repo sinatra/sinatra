@@ -85,6 +85,22 @@ class TemplatesTest < Test::Unit::TestCase
 
     assert @app.templates.empty?
   end
+
+  it 'passes locals to the layout' do
+    mock_app {
+      template :my_layout do
+        'Hello <%= name %>!<%= yield %>'
+      end
+
+      get '/' do
+        erb '<p>content</p>', { :layout => :my_layout }, { :name => 'Mike'}
+      end
+    }
+
+    get '/'
+    assert ok?
+    assert_equal 'Hello Mike!<p>content</p>', body
+  end
 end
 
 # __END__ : this is not the real end of the script.
