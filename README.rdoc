@@ -45,7 +45,7 @@ Route patterns may include named parameters, accessible via the
 <tt>params</tt> hash:
 
   get '/hello/:name' do
-    # matches "GET /foo" and "GET /bar"
+    # matches "GET /hello/foo" and "GET /hello/bar"
     # params[:name] is 'foo' or 'bar'
     "Hello #{params[:name]}!"
   end
