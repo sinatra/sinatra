@@ -1,17 +1,21 @@
 require File.dirname(__FILE__) + '/helper'
 
-class Rack::Handler::Mock
-  extend Test::Unit::Assertions
+module Rack::Handler
+  class Mock
+    extend Test::Unit::Assertions
 
-  def self.run(app, options={})
-    assert(app < Sinatra::Base)
-    assert_equal 9001, options[:Port]
-    assert_equal 'foo.local', options[:Host]
-    yield new
+    def self.run(app, options={})
+      assert(app < Sinatra::Base)
+      assert_equal 9001, options[:Port]
+      assert_equal 'foo.local', options[:Host]
+      yield new
+    end
+
+    def stop
+    end
   end
 
-  def stop
-  end
+  register 'mock', 'Rack::Handler::Mock'
 end
 
 class ServerTest < Test::Unit::TestCase
