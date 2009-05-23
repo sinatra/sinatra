@@ -76,6 +76,12 @@ class TemplatesTest < Test::Unit::TestCase
     assert_equal "X\n= yield\nX\n", @app.templates[:layout][:template]
   end
 
+  it 'loads templates from specified views directory' do
+    render_app { render :test, :hello, :views => options.views + '/foo' }
+
+    assert_equal "from another views directory\n", body
+  end
+
   test 'use_in_file_templates simply ignores IO errors' do
     assert_nothing_raised {
       mock_app {
