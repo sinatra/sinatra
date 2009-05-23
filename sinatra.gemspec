@@ -96,6 +96,7 @@ Gem::Specification.new do |s|
     test/views/error.erb
     test/views/error.haml
     test/views/error.sass
+    test/views/foo/hello.test
     test/views/hello.builder
     test/views/hello.erb
     test/views/hello.haml
