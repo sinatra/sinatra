@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/helper'
 class TemplatesTest < Test::Unit::TestCase
   def render_app(base=Sinatra::Base, &block)
     mock_app(base) {
-      def render_test(template, data, options, locals, &block)
+      def render_test(data, options, locals, &block)
         inner = block ? block.call : ''
         data + inner
       end

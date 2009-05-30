@@ -254,13 +254,13 @@ module Sinatra
 
       # render template
       data, options[:filename], options[:line] = lookup_template(engine, template, views)
-      output = __send__("render_#{engine}", template, data, options, locals)
+      output = __send__("render_#{engine}", data, options, locals)
 
       # render layout
       if layout
         data, options[:filename], options[:line] = lookup_layout(engine, layout, views)
         if data
-          output = __send__("render_#{engine}", layout, data, options, locals) { output }
+          output = __send__("render_#{engine}", data, options, locals) { output }
         end
       end
 
@@ -303,7 +303,7 @@ module Sinatra
       nil
     end
 
-    def render_erb(template, data, options, locals, &block)
+    def render_erb(data, options, locals, &block)
       original_out_buf = defined?(@_out_buf) && @_out_buf
       data = data.call if data.kind_of? Proc
 
@@ -321,15 +321,15 @@ module Sinatra
       result
     end
 
-    def render_haml(template, data, options, locals, &block)
+    def render_haml(data, options, locals, &block)
       ::Haml::Engine.new(data, options).render(self, locals, &block)
     end
 
-    def render_sass(template, data, options, locals, &block)
+    def render_sass(data, options, locals, &block)
       ::Sass::Engine.new(data, options).render
     end
 
-    def render_builder(template, data, options, locals, &block)
+    def render_builder(data, options, locals, &block)
       options = { :indent => 2 }.merge(options)
       filename = options.delete(:filename) || '<BUILDER>'
       line = options.delete(:line) || 1
