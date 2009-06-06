@@ -887,6 +887,7 @@ module Sinatra
             puts "\n== Sinatra has ended his set (crowd applauds)" unless handler_name =~/cgi/i
           end
         end
+        set :running, true
       rescue Errno::EADDRINUSE => e
         puts "== Someone is already performing on port #{port}!"
       end
@@ -984,7 +985,8 @@ module Sinatra
     set :static, false
     set :environment, (ENV['RACK_ENV'] || :development).to_sym
 
-    set :run, false
+    set :run, false                       # start server via at-exit hook?
+    set :running, false                   # is the built-in server running now?
     set :server, %w[thin mongrel webrick]
     set :host, '0.0.0.0'
     set :port, 4567
