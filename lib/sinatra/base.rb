@@ -919,7 +919,7 @@ module Sinatra
         /\(.*\)/,              # generated code
         /custom_require\.rb$/, # rubygems require hacks
         /active_support/,      # active_support require hacks
-      ] unless self.const_defined?('CALLERS_TO_IGNORE')
+      ]
 
       # add rubinius (and hopefully other VM impls) ignore patterns ...
       CALLERS_TO_IGNORE.concat(RUBY_IGNORE_CALLERS) if defined?(RUBY_IGNORE_CALLERS)
