@@ -977,7 +977,7 @@ module Sinatra
     set :raise_errors, true
     set :dump_errors, false
     set :clean_trace, true
-    set :show_exceptions, Proc.new { development? }
+    set :show_exceptions, false
     set :sessions, false
     set :logging, false
     set :methodoverride, false
@@ -1048,6 +1048,7 @@ module Sinatra
   # Base class for classic style (top-level) applications.
   class Default < Base
     set :raise_errors, Proc.new { test? }
+    set :show_exceptions, Proc.new { development? }
     set :dump_errors, true
     set :sessions, false
     set :logging, Proc.new { ! test? }
