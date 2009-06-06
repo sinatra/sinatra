@@ -223,27 +223,19 @@ module Sinatra
   #                 in the template
   module Templates
     def erb(template, options={}, locals={})
-      require_warn('ERB') unless defined?(::ERB)
-
       render :erb, template, options, locals
     end
 
     def haml(template, options={}, locals={})
-      require_warn('Haml') unless defined?(::Haml::Engine)
-
       render :haml, template, options, locals
     end
 
     def sass(template, options={}, locals={})
-      require_warn('Sass') unless defined?(::Sass::Engine)
-
       options[:layout] = false
       render :sass, template, options, locals
     end
 
     def builder(template=nil, options={}, locals={}, &block)
-      require_warn('Builder') unless defined?(::Builder)
-
       options, template = template, nil if template.is_a?(Hash)
       template = lambda { block } if template.nil?
       render :builder, template, options, locals
@@ -338,11 +330,6 @@ module Sinatra
         data.call(xml)
       end
       xml.target!
-    end
-
-    def require_warn(engine)
-      warn "Auto-require of #{engine} is deprecated; add require '#{engine}' to your app."
-      require engine.downcase
     end
   end
 
