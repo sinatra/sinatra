@@ -183,10 +183,15 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'show_exceptions' do
+    %w[development test production none].each do |environment|
+      it "is disabled on Base in #{environment} environments" do
+        @base.set(:environment, environment)
+        assert ! @base.show_exceptions?
+      end
+    end
+
     it 'is enabled on Default only in development' do
       @base.set(:environment, :development)
-      assert @base.show_exceptions?
-
       assert @default.development?
       assert @default.show_exceptions?
 
