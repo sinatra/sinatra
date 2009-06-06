@@ -6,7 +6,7 @@ require 'rack/builder'
 require 'sinatra/showexceptions'
 
 module Sinatra
-  VERSION = '0.9.2'
+  VERSION = '0.10.0'
 
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
