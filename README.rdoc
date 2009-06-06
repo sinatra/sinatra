@@ -470,6 +470,56 @@ recommended:
 NOTE: The built-in Sinatra::Test module and Sinatra::TestHarness class
 are deprecated as of the 0.9.2 release.
 
+== Sinatra::Base - Middleware, Libraries, and Modular Apps
+
+Defining your app at the top-level works well for micro-apps but has
+considerable drawbacks when building reuseable components such as Rack
+middleware, Rails metal, simple libraries with a server component, or
+even Sinatra extensions. The top-level DSL pollutes the Object namespace
+and assumes a micro-app style configuration (e.g., a single application
+file, ./public and ./views directories, logging, exception detail page,
+etc.). That's where Sinatra::Base comes into play:
+
+  require 'sinatra/base'
+
+  class MyApp < Sinatra::Base
+    set :sessions, true
+    set :foo, 'bar'
+
+    get '/' do
+      'Hello world!'
+    end
+  end
+
+The MyApp class is an independent Rack component that can act as
+Rack middleware, a Rack application, or Rails metal. You can +use+ or
++run+ this class from a rackup +config.ru+ file; or, control a server
+component shipped as a library:
+
+   MyApp.run! :host => 'localhost', :port => 9090
+
+The methods available to Sinatra::Base subclasses are exactly as those
+available via the top-level DSL. Most top-level apps can be converted to
+Sinatra::Base components with two modifications:
+
+* Your file should require +sinatra/base+  instead of +sinatra+;
+  otherwise, all of Sinatra's DSL methods are imported into the main
+  namespace.
+* Put your app's routes, error handlers, filters, and options in a subclass
+  of Sinatra::Base.
+
++Sinatra::Base+ is a blank slate. Most options are disabled by default,
+including the built-in server. See {Options and Configuration}[http://sinatra.github.com/configuration.html]
+for details on available options and their behavior.
+
+SIDEBAR: Sinatra's top-level DSL is implemented using a simple delegation
+system. The +Sinatra::Application+ class -- a special subclass of
+Sinatra::Base -- receives all :get, :put, :post, :delete, :before,
+:error, :not_found, :configure, and :set messages sent to the
+top-level. Have a look at the code for yourself: here's the
+{Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/base.rb#L1064]
+being {included into the main namespace}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/main.rb#L25].
+
 == Command line
 
 Sinatra applications can be run directly:
