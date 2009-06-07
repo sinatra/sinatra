@@ -1,7 +1,7 @@
 require 'sinatra/base'
 
 module Sinatra
-  class Default < Base
+  class Application < Base
 
     # we assume that the first file that requires 'sinatra' is the
     # app_file. all other path related options are calculated based
@@ -19,6 +19,11 @@ module Sinatra
         op.on('-p port')   { |val| set :port, val.to_i }
       }.parse!(ARGV.dup)
     end
+
+    at_exit do
+      raise $! if $!
+      run! if run?
+    end
   end
 end
 
@@ -27,9 +32,4 @@ include Sinatra::Delegator
 def mime(ext, type)
   ext = ".#{ext}" unless ext.to_s[0] == ?.
   Rack::Mime::MIME_TYPES[ext.to_s] = type
-end
-
-at_exit do
-  raise $! if $!
-  Sinatra::Application.run! if Sinatra::Application.run?
 end
