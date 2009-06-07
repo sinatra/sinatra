@@ -3,6 +3,7 @@ require 'time'
 require 'uri'
 require 'rack'
 require 'rack/builder'
+require 'tilt'
 require 'sinatra/showexceptions'
 
 module Sinatra
@@ -246,104 +247,52 @@ module Sinatra
     end
 
   private
-    def render(engine, template, options={}, locals={})
+    def render(engine, data, options={}, locals={}, &block)
       # merge app-level options
       options = self.class.send(engine).merge(options) if self.class.respond_to?(engine)
 
       # extract generic options
+      locals = options.delete(:locals) || locals || {}
+      views = options.delete(:views) || self.class.views || "./views"
       layout = options.delete(:layout)
       layout = :layout if layout.nil? || layout == true
-      views = options.delete(:views) || self.class.views || "./views"
-      locals = options.delete(:locals) || locals || {}
 
-      # render template
-      data, options[:filename], options[:line] = lookup_template(engine, template, views)
-      output = __send__("render_#{engine}", data, options, locals)
+      # compile and render template
+      template = compile_template(engine, data, options, views)
+      output = template.render(self, locals, &block)
 
       # render layout
       if layout
-        data, options[:filename], options[:line] = lookup_layout(engine, layout, views)
-        if data
-          output = __send__("render_#{engine}", data, options, locals) { output }
+        begin
+          options = options.merge(:views => views, :layout => false)
+          output = render(engine, layout, options, locals) { output }
+        rescue Errno::ENOENT
         end
       end
 
       output
     end
 
-    def lookup_template(engine, template, views_dir, filename = nil, line = nil)
-      case template
-      when Symbol
-        load_template(engine, template, views_dir, options)
-      when Proc
-        filename, line = self.class.caller_locations.first if filename.nil?
-        [template.call, filename, line.to_i]
-      when String
-        filename, line = self.class.caller_locations.first if filename.nil?
-        [template, filename, line.to_i]
-      else
-        raise ArgumentError
-      end
-    end
-
-    def load_template(engine, template, views_dir, options={})
-      base = self.class
-      while base.respond_to?(:templates)
-        if cached = base.templates[template]
-          return lookup_template(engine, cached[:template], views_dir, cached[:filename], cached[:line])
+    def compile_template(engine, data, options, views)
+      @template_cache.fetch engine, data, options do
+        case
+        when data.is_a?(Symbol)
+          body, path, line = self.class.templates[data]
+          if body
+            body = body.call if body.respond_to?(:call)
+            Tilt[engine].new(path, line.to_i, options) { body }
+          else
+            path = ::File.join(views, "#{data}.#{engine}")
+            Tilt[engine].new(path, 1, options)
+          end
+        when data.is_a?(Proc) || data.is_a?(String)
+          body = data.is_a?(String) ? lambda { data } : data
+          path, line = self.class.caller_locations.first
+          Tilt[engine].new(path, line.to_i, options, &body)
         else
-          base = base.superclass
+          raise ArgumentError
         end
       end
-
-      # If no template exists in the cache, try loading from disk.
-      path = ::File.join(views_dir, "#{template}.#{engine}")
-      [ ::File.read(path), path, 1 ]
-    end
-
-    def lookup_layout(engine, template, views_dir)
-      lookup_template(engine, template, views_dir)
-    rescue Errno::ENOENT
-      nil
-    end
-
-    def render_erb(data, options, locals, &block)
-      original_out_buf = defined?(@_out_buf) && @_out_buf
-      data = data.call if data.kind_of? Proc
-
-      instance = ::ERB.new(data, nil, nil, '@_out_buf')
-      locals_assigns = locals.to_a.collect { |k,v| "#{k} = locals[:#{k}]" }
-
-      filename = options.delete(:filename) || '(__ERB__)'
-      line = options.delete(:line) || 1
-      line -= 1 if instance.src =~ /^#coding:/
-
-      render_binding = binding
-      eval locals_assigns.join("\n"), render_binding
-      eval instance.src, render_binding, filename, line
-      @_out_buf, result = original_out_buf, @_out_buf
-      result
-    end
-
-    def render_haml(data, options, locals, &block)
-      ::Haml::Engine.new(data, options).render(self, locals, &block)
-    end
-
-    def render_sass(data, options, locals, &block)
-      ::Sass::Engine.new(data, options).render
-    end
-
-    def render_builder(data, options, locals, &block)
-      options = { :indent => 2 }.merge(options)
-      filename = options.delete(:filename) || '<BUILDER>'
-      line = options.delete(:line) || 1
-      xml = ::Builder::XmlMarkup.new(options)
-      if data.respond_to?(:to_str)
-        eval data.to_str, binding, filename, line
-      elsif data.kind_of?(Proc)
-        data.call(xml)
-      end
-      xml.target!
     end
   end
 
@@ -357,6 +306,7 @@ module Sinatra
 
     def initialize(app=nil)
       @app = app
+      @template_cache = Tilt::Cache.new
       yield self if block_given?
     end
 
@@ -617,11 +567,16 @@ module Sinatra
         @conditions = []
         @routes     = {}
         @filters    = []
-        @templates  = {}
         @errors     = {}
         @middleware = []
         @prototype  = nil
         @extensions = []
+
+        if superclass.respond_to?(:templates)
+          @templates = Hash.new { |hash,key| superclass.templates[key] }
+        else
+          @templates = {}
+        end
       end
 
       # Extension modules registered on this class and all superclasses.
@@ -688,7 +643,7 @@ module Sinatra
       # Define a named template. The block must return the template source.
       def template(name, &block)
         filename, line = caller_locations.first
-        templates[name] = { :filename => filename, :line => line, :template => block }
+        templates[name] = [block, filename, line.to_i]
       end
 
       # Define the layout template. The block must return the template source.
@@ -715,7 +670,7 @@ module Sinatra
             lines += 1
             if line =~ /^@@\s*(.*)/
               template = ''
-              templates[$1.to_sym] = { :filename => file, :line => lines, :template => template }
+              templates[$1.to_sym] = [template, file, lines]
             elsif template
               template << line
             end
@@ -959,6 +914,7 @@ module Sinatra
     public
       CALLERS_TO_IGNORE = [
         /\/sinatra(\/(base|main|showexceptions))?\.rb$/, # all sinatra code
+        /lib\/tilt.*\.rb$/,    # all tilt code
         /\(.*\)/,              # generated code
         /custom_require\.rb$/, # rubygems require hacks
         /active_support/,      # active_support require hacks

@@ -1,12 +1,20 @@
 require File.dirname(__FILE__) + '/helper'
 
+class TestTemplate < Tilt::Template
+  def compile!
+  end
+
+  def evaluate(scope, locals={}, &block)
+    inner = block ? block.call : ''
+    data + inner
+  end
+
+  Tilt.register 'test', self
+end
+
 class TemplatesTest < Test::Unit::TestCase
   def render_app(base=Sinatra::Base, &block)
     mock_app(base) {
-      def render_test(data, options, locals, &block)
-        inner = block ? block.call : ''
-        data + inner
-      end
       set :views, File.dirname(__FILE__) + '/views'
       get '/', &block
       template(:layout3) { "Layout 3!\n" }
@@ -72,8 +80,8 @@ class TemplatesTest < Test::Unit::TestCase
     mock_app {
       use_in_file_templates!
     }
-    assert_equal "this is foo\n\n", @app.templates[:foo][:template]
-    assert_equal "X\n= yield\nX\n", @app.templates[:layout][:template]
+    assert_equal "this is foo\n\n", @app.templates[:foo][0]
+    assert_equal "X\n= yield\nX\n", @app.templates[:layout][0]
   end
 
   it 'loads templates from specified views directory' do
@@ -119,8 +127,14 @@ class TemplatesTest < Test::Unit::TestCase
   it 'uses templates in superclasses before subclasses' do
     base = Class.new(Sinatra::Base)
     base.template(:foo) { 'template in superclass' }
-    render_app(base) { render :test, :foo }
-    @app.template(:foo) { 'template in subclass' }
+    assert_equal 'template in superclass', base.templates[:foo].first.call
+
+    mock_app(base) {
+      set :views, File.dirname(__FILE__) + '/views'
+      template(:foo) { 'template in subclass' }
+      get('/') { render :test, :foo }
+    }
+    assert_equal 'template in subclass', @app.templates[:foo].first.call
 
     get '/'
     assert ok?
