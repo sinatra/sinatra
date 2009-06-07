@@ -242,7 +242,7 @@ module Sinatra
 
     def builder(template=nil, options={}, locals={}, &block)
       options, template = template, nil if template.is_a?(Hash)
-      template = lambda { block } if template.nil?
+      template = Proc.new { block } if template.nil?
       render :builder, template, options, locals
     end
 
@@ -286,7 +286,7 @@ module Sinatra
             Tilt[engine].new(path, 1, options)
           end
         when data.is_a?(Proc) || data.is_a?(String)
-          body = data.is_a?(String) ? lambda { data } : data
+          body = data.is_a?(String) ? Proc.new { data } : data
           path, line = self.class.caller_locations.first
           Tilt[engine].new(path, line.to_i, options, &body)
         else
