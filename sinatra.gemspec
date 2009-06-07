@@ -3,13 +3,13 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'sinatra'
-  s.version = '0.10.0'
-  s.date = '2009-06-05'
+  s.version = '0.10.1'
+  s.date = '2009-06-07'
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
 
-  s.authors = ["Blake Mizerany"]
+  s.authors = ["Blake Mizerany", "Ryan Tomayko", "Simon Rozet"]
   s.email = "sinatrarb@googlegroups.com"
 
   # = MANIFEST =
@@ -71,7 +71,7 @@ Gem::Specification.new do |s|
 
   s.extra_rdoc_files = %w[README.rdoc LICENSE]
   s.add_dependency 'rack',    '>= 1.0'
-  s.add_development_dependency 'shotgun', '>= 0.2',   '< 1.0'
+  s.add_development_dependency 'shotgun', '>= 0.3',   '< 1.0'
   s.add_development_dependency 'rack-test', '>= 0.3.0'
 
   s.has_rdoc = true
