@@ -23,7 +23,7 @@ module Sinatra
     # Override Rack 0.9.x's #params implementation (see #72 in lighthouse)
     def params
       self.GET.update(self.POST)
-    rescue EOFError => boom
+    rescue EOFError, Errno::ESPIPE
       self.GET
     end
   end
