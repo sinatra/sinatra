@@ -1,9 +1,14 @@
-= 0.9.3 / unreleased
+= 0.9.3 / 2009-06-08
+
+ * The :show_exceptions option now defaults to false in all
+   cases for subclasses of Sinatra::Base.
 
  * Fix webrick server handler not found errors when starting
    from the command line without mongrel or thin [#231].
 
- * Fix that locals are not passed to layouts.
+ * Fix locals not being passed to layouts.
+
+ * Fix 'Illegal Seek' errors running under Apache/CGI.
 
 = 0.9.2 / 2009-05-18
 
