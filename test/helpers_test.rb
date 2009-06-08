@@ -352,6 +352,43 @@ class HelpersTest < Test::Unit::TestCase
     end
   end
 
+  describe 'cache_control' do
+    setup do
+      mock_app {
+        get '/' do
+          cache_control :public, :no_cache, :max_age => 60
+          'Hello World'
+        end
+      }
+    end
+
+    it 'sets the Cache-Control header' do
+      get '/'
+      assert_equal ['public', 'no-cache', 'max-age=60'], response['Cache-Control'].split(', ')
+    end
+  end
+
+  describe 'expires' do
+    setup do
+      mock_app {
+        get '/' do
+          expires 60, :public, :no_cache
+          'Hello World'
+        end
+      }
+    end
+
+    it 'sets the Cache-Control header' do
+      get '/'
+      assert_equal ['public', 'no-cache', 'max-age=60'], response['Cache-Control'].split(', ')
+    end
+
+    it 'sets the Expires header' do
+      get '/'
+      assert_not_nil response['Expires']
+    end
+  end
+
   describe 'last_modified' do
     setup do
       now = Time.now

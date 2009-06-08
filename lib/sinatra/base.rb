@@ -171,6 +171,57 @@ module Sinatra
       end
     end
 
+    # Specify response freshness policy for HTTP caches (Cache-Control header).
+    # Any number of non-value directives (:public, :private, :no_cache,
+    # :no_store, :must_revalidate, :proxy_revalidate) may be passed along with
+    # a Hash of value directives (:max_age, :min_stale, :s_max_age).
+    #
+    #   cache_control :public, :must_revalidate, :max_age => 60
+    #   => Cache-Control: public, must-revalidate, max-age=60
+    #
+    # See RFC 2616 / 14.9 for more on standard cache control directives:
+    # http://tools.ietf.org/html/rfc2616#section-14.9.1
+    def cache_control(*values)
+      if values.last.kind_of?(Hash)
+        hash = values.pop
+        hash.reject! { |k,v| v == false }
+        hash.reject! { |k,v| values << k if v == true }
+      else
+        hash = {}
+      end
+
+      values = values.map { |value| value.to_s.tr('_','-') }
+      hash.each { |k,v| values << [k.to_s.tr('_', '-'), v].join('=') }
+
+      response['Cache-Control'] = values.join(', ') if values.any?
+    end
+
+    # Set the Expires header and Cache-Control/max-age directive. Amount
+    # can be an integer number of seconds in the future or a Time object
+    # indicating when the response should be considered "stale". The remaining
+    # "values" arguments are passed to the #cache_control helper:
+    #
+    #   expires 500, :public, :must_revalidate
+    #   => Cache-Control: public, must-revalidate, max-age=60
+    #   => Expires: Mon, 08 Jun 2009 08:50:17 GMT
+    #
+    def expires(amount, *values)
+      values << {} unless values.last.kind_of?(Hash)
+
+      if amount.respond_to?(:to_time)
+        max_age = amount.to_time - Time.now
+        time = amount.to_time
+      else
+        max_age = amount
+        time = Time.now + amount
+      end
+
+      values.last.merge!(:max_age => max_age)
+      cache_control(*values)
+
+      response['Expires'] = time.httpdate
+    end
+
     # Set the last modified time of the resource (HTTP 'Last-Modified' header)
     # and halt if conditional GET matches. The +time+ argument is a Time,
     # DateTime, or other object that responds to +to_time+.
