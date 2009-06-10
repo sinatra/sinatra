@@ -886,8 +886,8 @@ module Sinatra
             server.respond_to?(:stop!) ? server.stop! : server.stop
             puts "\n== Sinatra has ended his set (crowd applauds)" unless handler_name =~/cgi/i
           end
+          set :running, true
         end
-        set :running, true
       rescue Errno::EADDRINUSE => e
         puts "== Someone is already performing on port #{port}!"
       end
