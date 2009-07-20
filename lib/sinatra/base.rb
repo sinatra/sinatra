@@ -680,8 +680,13 @@ module Sinatra
       # when no file is specified.
       def use_in_file_templates!(file=nil)
         file ||= caller_files.first
-        app, data =
-          ::IO.read(file).split(/^__END__$/, 2) rescue nil
+
+        begin
+          app, data =
+            ::IO.read(file).split(/^__END__$/, 2)
+        rescue Errno::ENOENT
+          app, data = nil
+        end
 
         if data
           data.gsub!(/\r\n/, "\n")
