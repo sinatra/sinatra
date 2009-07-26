@@ -951,7 +951,7 @@ module Sinatra
 
     public
       CALLERS_TO_IGNORE = [
-        /lib\/sinatra.*\.rb$/, # all sinatra code
+        /\/sinatra(\/(base|main|showexceptions|compat))?\.rb$/, # all sinatra code
         /\(.*\)/,              # generated code
         /custom_require\.rb$/, # rubygems require hacks
         /active_support/,      # active_support require hacks
