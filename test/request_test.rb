@@ -15,4 +15,19 @@ class RequestTest < Test::Unit::TestCase
     )
     assert_equal 'bar', request.params['foo']
   end
+
+  it 'is secure when the url scheme is https' do
+    request = Sinatra::Request.new('rack.url_scheme' => 'https')
+    assert request.secure?
+  end
+
+  it 'is not secure when the url scheme is http' do
+    request = Sinatra::Request.new('rack.url_scheme' => 'http')
+    assert !request.secure?
+  end
+
+  it 'respects X-Forwarded-Proto header for proxied SSL' do
+    request = Sinatra::Request.new('HTTP_X_FORWARDED_PROTO' => 'https')
+    assert request.secure?
+  end
 end

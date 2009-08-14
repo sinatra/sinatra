@@ -26,6 +26,10 @@ module Sinatra
     rescue EOFError, Errno::ESPIPE
       self.GET
     end
+
+    def secure?
+      (@env['HTTP_X_FORWARDED_PROTO'] || @env['rack.url_scheme']) == 'https'
+    end
   end
 
   # The response object. See Rack::Response and Rack::ResponseHelpers for
