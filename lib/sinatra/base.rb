@@ -551,8 +551,8 @@ module Sinatra
 
     # Dispatch a request with error handling.
     def dispatch!
-      filter!
       static! if options.static? && (request.get? || request.head?)
+      filter!
       route!
     rescue NotFound => boom
       handle_not_found!(boom)
