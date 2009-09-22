@@ -293,7 +293,7 @@ TEMPLATE = <<HTML
       <div class="clear"></div>
     </div> <!-- /RACK ENV -->
 
-    <p id="explanation">You're seeing this error because you use you have
+    <p id="explanation">You're seeing this error because you have
 enabled the <code>show_exceptions</code> option.</p>
   </div> <!-- /WRAP -->
   </body>
