@@ -117,3 +117,13 @@ task 'sinatra.gemspec' => FileList['{lib,test,compat}/**','Rakefile','CHANGES','
   File.open(f.name, 'w') { |io| io.write(spec) }
   puts "updated #{f.name}"
 end
+
+# Rcov ==============================================================
+namespace :test do
+  desc 'Mesures test coverage'
+  task :coverage do
+    rm_f "coverage"
+    rcov = "rcov --text-summary --test-unit-only -Ilib"
+    system("#{rcov} --no-html --no-color test/*_test.rb")
+  end
+end
