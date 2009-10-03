@@ -689,13 +689,12 @@ module Sinatra
 
         begin
           app, data =
-            ::IO.read(file).split(/^__END__$/, 2)
+            ::IO.read(file).gsub("\r\n", "\n").split(/^__END__$/, 2)
         rescue Errno::ENOENT
           app, data = nil
         end
 
         if data
-          data.gsub!(/\r\n/, "\n")
           lines = app.count("\n") + 1
           template = nil
           data.each_line do |line|
