@@ -188,15 +188,22 @@ class HelpersTest < Test::Unit::TestCase
 
     it 'creates a new session when none provided' do
       mock_app {
+        enable :sessions
+
         get '/' do
           assert session.empty?
           session[:foo] = 'bar'
-          'Hi'
+          redirect '/hi'
+        end
+
+        get '/hi' do
+          "hi #{session[:foo]}"
         end
       }
 
       get '/'
-      assert_equal 'Hi', body
+      follow_redirect!
+      assert_equal 'hi bar', body
     end
   end
 

@@ -916,7 +916,7 @@ module Sinatra
       # an instance of the class new was called on.
       def new(*args, &bk)
         builder = Rack::Builder.new
-        builder.use Rack::Session::Cookie if sessions? && !test?
+        builder.use Rack::Session::Cookie if sessions?
         builder.use Rack::CommonLogger    if logging?
         builder.use Rack::MethodOverride  if methodoverride?
         builder.use ShowExceptions        if show_exceptions?
