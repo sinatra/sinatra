@@ -104,20 +104,20 @@ module Sinatra
     end
 
     # Look up a media type by file extension in Rack's mime registry.
-    def media_type(type)
-      Base.media_type(type)
+    def mime_type(type)
+      Base.mime_type(type)
     end
 
     # Set the Content-Type of the response body given a media type or file
     # extension.
     def content_type(type, params={})
-      media_type = self.media_type(type)
-      fail "Unknown media type: %p" % type if media_type.nil?
+      mime_type = self.mime_type(type)
+      fail "Unknown media type: %p" % type if mime_type.nil?
       if params.any?
         params = params.collect { |kv| "%s=%s" % kv }.join(', ')
-        response['Content-Type'] = [media_type, params].join(";")
+        response['Content-Type'] = [mime_type, params].join(";")
       else
-        response['Content-Type'] = media_type
+        response['Content-Type'] = mime_type
       end
     end
 
@@ -136,8 +136,8 @@ module Sinatra
       stat = File.stat(path)
       last_modified stat.mtime
 
-      content_type media_type(opts[:type]) ||
-        media_type(File.extname(path)) ||
+      content_type mime_type(opts[:type]) ||
+        mime_type(File.extname(path)) ||
         response['Content-Type'] ||
         'application/octet-stream'
 
@@ -695,7 +695,7 @@ module Sinatra
       end
 
       # Look up a media type by file extension in Rack's mime registry.
-      def media_type(type)
+      def mime_type(type)
         return type if type.nil? || type.to_s.include?('/')
         type = ".#{type}" unless type.to_s[0] == ?.
         Rack::Mime.mime_type(type, nil)
@@ -733,7 +733,7 @@ module Sinatra
 
       def provides(*types)
         types = [types] unless types.kind_of? Array
-        types.map!{|t| media_type(t)}
+        types.map!{|t| mime_type(t)}
 
         condition {
           matching_types = (request.accept & types)
