@@ -694,11 +694,12 @@ module Sinatra
         end
       end
 
-      # Look up a media type by file extension in Rack's mime registry.
-      def mime_type(type)
+      # Lookup or register a mime type in Rack's mime registry.
+      def mime_type(type, value=nil)
         return type if type.nil? || type.to_s.include?('/')
         type = ".#{type}" unless type.to_s[0] == ?.
-        Rack::Mime.mime_type(type, nil)
+        return Rack::Mime.mime_type(type, nil) unless value
+        Rack::Mime::MIME_TYPES[type] = value
       end
 
       # Define a before filter. Filters are run before all requests

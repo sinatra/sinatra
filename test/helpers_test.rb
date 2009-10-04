@@ -223,6 +223,19 @@ class HelpersTest < Test::Unit::TestCase
     end
   end
 
+  test 'Base.mime_type registers mime type' do
+    mock_app {
+      mime_type :foo, 'application/foo'
+
+      get '/' do
+        "foo is #{mime_type(:foo)}"
+      end
+    }
+
+    get '/'
+    assert_equal 'foo is application/foo', body
+  end
+
   describe 'content_type' do
     it 'sets the Content-Type header' do
       mock_app {
