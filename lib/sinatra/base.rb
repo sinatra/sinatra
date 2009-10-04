@@ -1092,7 +1092,7 @@ module Sinatra
     end
 
     delegate :get, :put, :post, :delete, :head, :template, :layout, :before,
-             :error, :not_found, :configure, :set,
+             :error, :not_found, :configure, :set, :mime_type,
              :enable, :disable, :use, :development?, :test?,
              :production?, :use_in_file_templates!, :helpers
   end
