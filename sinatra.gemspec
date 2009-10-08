@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
 
   s.name = 'sinatra'
   s.version = '0.10.1'
-  s.date = '2009-06-07'
+  s.date = '2009-10-08'
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
     AUTHORS
     CHANGES
     LICENSE
+    README.jp.rdoc
     README.rdoc
     Rakefile
     lib/sinatra.rb
@@ -25,6 +26,7 @@ Gem::Specification.new do |s|
     lib/sinatra/images/500.png
     lib/sinatra/main.rb
     lib/sinatra/showexceptions.rb
+    lib/tilt.rb
     sinatra.gemspec
     test/base_test.rb
     test/builder_test.rb
@@ -39,7 +41,6 @@ Gem::Specification.new do |s|
     test/mapped_error_test.rb
     test/middleware_test.rb
     test/options_test.rb
-    test/render_backtrace_test.rb
     test/request_test.rb
     test/response_test.rb
     test/result_test.rb
