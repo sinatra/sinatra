@@ -393,10 +393,11 @@ module Sinatra
       [status, header, body]
     end
 
-    # Access options defined with Base.set.
-    def options
+    # Access settings defined with Base.set.
+    def settings
       self.class
     end
+    alias_method :options, :settings
 
     # Exit the current block, halts any further processing
     # of the request, and returns the specified response.
