@@ -101,6 +101,10 @@ class OptionsTest < Test::Unit::TestCase
     assert_equal 'okay', body
   end
 
+  it 'is accessible from instances via #settings' do
+    assert_equal :development, @base.new.settings.environment
+  end
+
   describe 'clean_trace' do
     def clean_backtrace(trace)
       Sinatra::Base.new.send(:clean_backtrace, trace)
