@@ -1,5 +1,23 @@
 = 1.0 / unreleased
 
+ * Sinatra now uses Tilt <http://github.com/rtomayko/tilt> for rendering
+   templates. This adds support for template caching, consistent
+   template backtraces, and support for new template engines, like
+   markaby and liquid.
+
+ * New 'expires' helper method is like cache_control but takes an
+   integer number of seconds or Time object:
+       expires 300, :public, :must_revalidate
+
+ * New 'cache_control' helper method provides a convenient way of
+   setting the Cache-Control response header. Takes a variable number
+   of boolean directives followed by a hash of value directives, like
+   this:
+       cache_control :public, :must_revalidate, :max_age => 60
+
+ * Rack::Session::Cookie is now added to the middleware pipeline when
+   running in test environments if the :sessions option is set.
+
  * Route handlers, before filters, templates, error mappings, and
    middleware are now resolved dynamically up the inheritance hierarchy
    when needed instead of duplicating the superclass's version when
