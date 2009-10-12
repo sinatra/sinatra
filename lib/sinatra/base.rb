@@ -288,6 +288,10 @@ module Sinatra
       render :erb, template, options, locals
     end
 
+    def erubis(template, options={}, locals={})
+      render :erubis, template, options, locals
+    end
+
     def haml(template, options={}, locals={})
       render :haml, template, options, locals
     end
