@@ -1083,9 +1083,6 @@ module Sinatra
     end
   end
 
-  # Deprecated.
-  Default = Application
-
   # Sinatra delegation mixin. Mixing this module into an object causes all
   # methods to be delegated to the Sinatra::Application class. Used primarily
   # at the top-level.

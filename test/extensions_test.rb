@@ -35,9 +35,9 @@ class ExtensionsTest < Test::Unit::TestCase
     Sinatra::Base.register FooExtensions
     assert Sinatra::Base.respond_to?(:foo)
 
-    Sinatra::Default.register BarExtensions
-    assert Sinatra::Default.respond_to?(:bar)
-    assert Sinatra::Default.respond_to?(:foo)
+    Sinatra::Application.register BarExtensions
+    assert Sinatra::Application.respond_to?(:bar)
+    assert Sinatra::Application.respond_to?(:foo)
     assert !Sinatra::Base.respond_to?(:bar)
   end
 
@@ -48,8 +48,8 @@ class ExtensionsTest < Test::Unit::TestCase
     assert Sinatra::Base.respond_to?(:im_in_ur_anonymous_module)
   end
 
-  it 'will make sure any public methods added via Default#register are delegated to Sinatra::Delegator' do
-    Sinatra::Default.register FooExtensions
+  it 'will make sure any public methods added via Application#register are delegated to Sinatra::Delegator' do
+    Sinatra::Application.register FooExtensions
     assert Sinatra::Delegator.private_instance_methods.
       map { |m| m.to_sym }.include?(:foo)
     assert !Sinatra::Delegator.private_instance_methods.
@@ -57,7 +57,7 @@ class ExtensionsTest < Test::Unit::TestCase
   end
 
   it 'will handle special method names' do
-    Sinatra::Default.register PainExtensions
+    Sinatra::Application.register PainExtensions
     assert Sinatra::Delegator.private_instance_methods.
       map { |m| m.to_sym }.include?(:foo=)
     assert Sinatra::Delegator.private_instance_methods.
@@ -71,10 +71,10 @@ class ExtensionsTest < Test::Unit::TestCase
     assert !Sinatra::Delegator.private_instance_methods.include?("quux")
   end
 
-  it 'will extend the Sinatra::Default application by default' do
+  it 'will extend the Sinatra::Application application by default' do
     Sinatra.register BazExtensions
     assert !Sinatra::Base.respond_to?(:baz)
-    assert Sinatra::Default.respond_to?(:baz)
+    assert Sinatra::Application.respond_to?(:baz)
   end
 
   module BizzleExtension
