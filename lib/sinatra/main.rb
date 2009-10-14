@@ -25,6 +25,7 @@ end
 include Sinatra::Delegator
 
 def mime(ext, type)
+  warn 'mime is deprecated; use mime_type instead.'
   ext = ".#{ext}" unless ext.to_s[0] == ?.
   Rack::Mime::MIME_TYPES[ext.to_s] = type
 end
