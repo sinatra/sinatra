@@ -108,6 +108,11 @@ module Sinatra
       Base.mime_type(type)
     end
 
+    def media_type(type)
+      warn "media_type is deprecated; use mime_type instead"
+      mime_type(type)
+    end
+
     # Set the Content-Type of the response body given a media type or file
     # extension.
     def content_type(type, params={})
@@ -700,6 +705,11 @@ module Sinatra
         type = ".#{type}" unless type.to_s[0] == ?.
         return Rack::Mime.mime_type(type, nil) unless value
         Rack::Mime::MIME_TYPES[type] = value
+      end
+
+      def media_type(type, value=nil)
+        warn "media_type is deprecated; use mime_type instead"
+        mime_type(type, value)
       end
 
       # Define a before filter. Filters are run before all requests
