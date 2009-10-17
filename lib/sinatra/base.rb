@@ -306,11 +306,11 @@ module Sinatra
   private
     def render(engine, data, options={}, locals={}, &block)
       # merge app-level options
-      options = self.class.send(engine).merge(options) if self.class.respond_to?(engine)
+      options = settings.send(engine).merge(options) if settings.respond_to?(engine)
 
       # extract generic options
       locals = options.delete(:locals) || locals || {}
-      views = options.delete(:views) || self.class.views || "./views"
+      views = options.delete(:views) || settings.views || "./views"
       layout = options.delete(:layout)
       layout = :layout if layout.nil? || layout == true
 
@@ -501,7 +501,7 @@ module Sinatra
     # Attempt to serve static files from public directory. Throws :halt when
     # a matching file is found, returns nil otherwise.
     def static!
-      return if (public_dir = options.public).nil?
+      return if (public_dir = settings.public).nil?
       public_dir = File.expand_path(public_dir)
 
       path = File.expand_path(public_dir + unescape(request.path_info))
@@ -559,7 +559,7 @@ module Sinatra
 
     # Dispatch a request with error handling.
     def dispatch!
-      static! if options.static? && (request.get? || request.head?)
+      static! if settings.static? && (request.get? || request.head?)
       filter!
       route!
     rescue NotFound => boom
@@ -578,8 +578,8 @@ module Sinatra
     def handle_exception!(boom)
       @env['sinatra.error'] = boom
 
-      dump_errors!(boom) if options.dump_errors?
-      raise boom         if options.raise_errors? || options.show_exceptions?
+      dump_errors!(boom) if settings.dump_errors?
+      raise boom         if settings.raise_errors? || settings.show_exceptions?
 
       @response.status = 500
       error_block! boom.class, Exception
@@ -610,7 +610,7 @@ module Sinatra
     end
 
     def clean_backtrace(trace)
-      return trace unless options.clean_trace?
+      return trace unless settings.clean_trace?
 
       trace.reject { |line|
         line =~ /lib\/sinatra.*\.rb/ ||
