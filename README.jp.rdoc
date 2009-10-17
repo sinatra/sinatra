@@ -386,9 +386,9 @@ block or before filter. 例外オブジェクトはRack変数<tt>sinatra.error</
 == MIMEタイプ
 
 <tt>send_file</tt>か静的ファイルを使う時、Sinatraが理解でいないMIMEタイプがある場合があります。
-その時は +mime+ を使ってファイル拡張子毎に登録して下さい。
+その時は +mime_type+ を使ってファイル拡張子毎に登録して下さい。
 
-  mime :foo, 'text/foo'
+  mime_type :foo, 'text/foo'
 
 == Rackミドルウェア
 
