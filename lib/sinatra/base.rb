@@ -3,8 +3,14 @@ require 'time'
 require 'uri'
 require 'rack'
 require 'rack/builder'
-require 'tilt'
 require 'sinatra/showexceptions'
+
+# require tilt if available; fall back on bundled version.
+begin
+  require 'tilt'
+rescue LoadError
+  require 'sinatra/tilt'
+end
 
 module Sinatra
   VERSION = '0.10.1'
