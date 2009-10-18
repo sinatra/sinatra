@@ -1072,6 +1072,11 @@ module Sinatra
       Delegator.delegate(*added_methods)
       super(*extensions, &block)
     end
+
+    def self.new(app=nil)
+      warn "Sinatra::Default is deprecated. Use Sinatra::Application/Base"
+      super
+    end
   end
 
   # The top-level Application. All DSL methods executed on main are delegated
