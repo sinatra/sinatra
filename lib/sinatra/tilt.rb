@@ -1,16 +1,24 @@
 module Tilt
+  VERSION = '0.3'
+
   @template_mappings = {}
+
+  # Hash of template path pattern => template implementation
+  # class mappings.
+  def self.mappings
+    @template_mappings
+  end
 
   # Register a template implementation by file extension.
   def self.register(ext, template_class)
-    ext = ext.sub(/^\./, '')
-    @template_mappings[ext.downcase] = template_class
+    ext = ext.to_s.sub(/^\./, '')
+    mappings[ext.downcase] = template_class
   end
 
   # Create a new template for the given file using the file's extension
   # to determine the the template mapping.
   def self.new(file, line=nil, options={}, &block)
-    if template_class = self[File.basename(file)]
+    if template_class = self[file]
       template_class.new(file, line, options, &block)
     else
       fail "No template engine registered for #{File.basename(file)}"
@@ -19,14 +27,23 @@ module Tilt
 
   # Lookup a template class given for the given filename or file
   # extension. Return nil when no implementation is found.
-  def self.[](filename)
-    ext = filename.to_s.downcase
-    until ext.empty?
-      return @template_mappings[ext]  if @template_mappings.key?(ext)
-      ext = ext.sub(/^[^.]*\.?/, '')
+  def self.[](file)
+    if @template_mappings.key?(pattern = file.to_s.downcase)
+      @template_mappings[pattern]
+    elsif @template_mappings.key?(pattern = File.basename(pattern))
+      @template_mappings[pattern]
+    else
+      while !pattern.empty?
+        if @template_mappings.key?(pattern)
+          return @template_mappings[pattern]
+        else
+          pattern = pattern.sub(/^[^.]*\.?/, '')
+        end
+      end
+      nil
     end
-    nil
   end
+
 
   # Base class for template implementations. Subclasses must implement
   # the #compile! method and one of the #evaluate or #template_source
@@ -52,26 +69,44 @@ module Tilt
     # file is nil, a block is required.
     def initialize(file=nil, line=1, options={}, &block)
       raise ArgumentError, "file or block required" if file.nil? && block.nil?
+      options, line = line, 1 if line.is_a?(Hash)
       @file = file
       @line = line || 1
       @options = options || {}
       @reader = block || lambda { |t| File.read(file) }
     end
 
-    # Render the template in the given scope with the locals specified. If a
-    # block is given, it is typically available within the template via
-    # +yield+.
-    def render(scope=Object.new, locals={}, &block)
+    # Load template source and compile the template. The template is
+    # loaded and compiled the first time this method is called; subsequent
+    # calls are no-ops.
+    def compile
       if @data.nil?
         @data = @reader.call(self)
         compile!
       end
+    end
+
+    # Render the template in the given scope with the locals specified. If a
+    # block is given, it is typically available within the template via
+    # +yield+.
+    def render(scope=Object.new, locals={}, &block)
+      compile
       evaluate scope, locals || {}, &block
+    end
+
+    # The basename of the template file.
+    def basename(suffix='')
+      File.basename(file, suffix) if file
+    end
+
+    # The template file's basename with all extensions chomped off.
+    def name
+      basename.split('.', 2).first if basename
     end
 
     # The filename used in backtraces to describe the template.
     def eval_file
-      @file || '(__TEMPLATE__)'
+      file || '(__TEMPLATE__)'
     end
 
   protected
@@ -107,8 +142,10 @@ module Tilt
     end
 
     def require_template_library(name)
-      warn "WARN: loading '#{name}' library in a non thread-safe way; " +
-           "explicit require '#{name}' suggested."
+      if Thread.list.size > 1
+        warn "WARN: tilt autoloading '#{name}' in a non thread-safe way; " +
+             "explicit require '#{name}' suggested."
+      end
       require name
     end
   end
@@ -129,7 +166,9 @@ module Tilt
     end
   end
 
+
   # Template Implementations ================================================
+
 
   # The template source is evaluated as a Ruby string. The #{} interpolation
   # syntax can be used to generated dynamic output.
@@ -144,15 +183,13 @@ module Tilt
   end
   register 'str', StringTemplate
 
+
   # ERB template implementation. See:
   # http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html
-  #
-  # It's suggested that your program require 'erb' at load
-  # time when using this template engine.
   class ERBTemplate < Template
     def compile!
       require_template_library 'erb' unless defined?(::ERB)
-      @engine = ::ERB.new(data, nil, nil, '@_out_buf')
+      @engine = ::ERB.new(data, options[:safe], options[:trim], '@_out_buf')
     end
 
     def template_source
@@ -188,11 +225,21 @@ module Tilt
   end
   %w[erb rhtml].each { |ext| register ext, ERBTemplate }
 
+
+  # Erubis template implementation. See:
+  # http://www.kuwata-lab.com/erubis/
+  class ErubisTemplate < ERBTemplate
+    def compile!
+      require_template_library 'erubis' unless defined?(::Erubis)
+      Erubis::Eruby.class_eval(%Q{def add_preamble(src) src << "@_out_buf = _buf = '';" end})
+      @engine = ::Erubis::Eruby.new(data, options)
+    end
+  end
+  register 'erubis', ErubisTemplate
+
+
   # Haml template implementation. See:
   # http://haml.hamptoncatlin.com/
-  #
-  # It's suggested that your program require 'haml' at load
-  # time when using this template engine.
   class HamlTemplate < Template
     def compile!
       require_template_library 'haml' unless defined?(::Haml::Engine)
@@ -210,13 +257,11 @@ module Tilt
   end
   register 'haml', HamlTemplate
 
+
   # Sass template implementation. See:
   # http://haml.hamptoncatlin.com/
   #
   # Sass templates do not support object scopes, locals, or yield.
-  #
-  # It's suggested that your program require 'sass' at load
-  # time when using this template engine.
   class SassTemplate < Template
     def compile!
       require_template_library 'sass' unless defined?(::Sass::Engine)
@@ -234,11 +279,9 @@ module Tilt
   end
   register 'sass', SassTemplate
 
+
   # Builder template implementation. See:
   # http://builder.rubyforge.org/
-  #
-  # It's suggested that your program require 'builder' at load
-  # time when using this template engine.
   class BuilderTemplate < Template
     def compile!
       require_template_library 'builder' unless defined?(::Builder)
@@ -261,6 +304,7 @@ module Tilt
   end
   register 'builder', BuilderTemplate
 
+
   # Liquid template implementation. See:
   # http://liquid.rubyforge.org/
   #
@@ -281,6 +325,7 @@ module Tilt
   end
   register 'liquid', LiquidTemplate
 
+
   # Discount Markdown implementation.
   class RDiscountTemplate < Template
     def compile!
@@ -293,5 +338,57 @@ module Tilt
     end
   end
   register 'markdown', RDiscountTemplate
+  register 'md', RDiscountTemplate
 
+
+  # Mustache is written and maintained by Chris Wanstrath. See:
+  # http://github.com/defunkt/mustache
+  #
+  # When a scope argument is provided to MustacheTemplate#render, the
+  # instance variables are copied from the scope object to the Mustache
+  # view.
+  class MustacheTemplate < Template
+    attr_reader :engine
+
+    # Locates and compiles the Mustache object used to create new views. The
+    def compile!
+      require_template_library 'mustache' unless defined?(::Mustache)
+
+      # Set the Mustache view namespace if we can
+      Mustache.view_namespace = options[:namespace]
+
+      # Figure out which Mustache class to use.
+      @engine = options[:view] || Mustache.view_class(name)
+
+      # set options on the view class
+      options.each do |key, value|
+        next if %w[view namespace mustaches].include?(key.to_s)
+        @engine.send("#{key}=", value) if @engine.respond_to? "#{key}="
+      end
+    end
+
+    def evaluate(scope=nil, locals={}, &block)
+      # Create a new instance for playing with
+      instance = @engine.new
+
+      # Copy instance variables from scope to the view
+      scope.instance_variables.each do |name|
+        instance.instance_variable_set(name, scope.instance_variable_get(name))
+      end
+
+      # Locals get added to the view's context
+      locals.each do |local, value|
+        instance[local] = value
+      end
+
+      # If we're passed a block it's a subview. Sticking it in yield
+      # lets us use {{yield}} in layout.html to render the actual page.
+      instance[:yield] = block.call if block
+
+      instance.template = data unless instance.compiled?
+
+      instance.to_html
+    end
+  end
+  register 'mustache', MustacheTemplate
 end
