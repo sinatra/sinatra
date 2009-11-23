@@ -10,6 +10,8 @@ Sinatra would not be possible:
 * Ryan Tomayko (rtomayko) for constantly fixing whitespace errors 60d5006   
 * Ezra Zygmuntowicz (ezmobius) for initial help and letting Blake steal
   some of merbs internal code.
+* Ari Lerner (http://xnot.org/) for his evangelism, spirit, and gumption
+  that got Sinatra recognized from Day 1.
 * Christopher Schneid (cschneid) for The Book, the blog (gittr.com),
   irclogger.com, and a bunch of useful patches.
 * Markus Prinz (cypher) for patches over the years, caring about
