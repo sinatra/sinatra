@@ -245,7 +245,7 @@ module Sinatra
 
     # Set the response entity tag (HTTP 'ETag' header) and halt if conditional
     # GET matches. The +value+ argument is an identifier that uniquely
-    # identifies the current version of the resource. The +strength+ argument
+    # identifies the current version of the resource. The +kind+ argument
     # indicates whether the etag should be used as a :strong (default) or :weak
     # cache validator.
     #
