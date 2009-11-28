@@ -618,7 +618,7 @@ module Sinatra
       backtrace = clean_backtrace(boom.backtrace)
       msg = ["#{boom.class} - #{boom.message}:",
         *backtrace].join("\n ")
-      @env['rack.errors'].write(msg)
+      @env['rack.errors'].puts(msg)
     end
 
     def clean_backtrace(trace)
