@@ -699,11 +699,7 @@ module Sinatra
       # class, or an HTTP status code to specify which errors should be
       # handled.
       def error(codes=Exception, &block)
-        if codes.respond_to? :each
-          codes.each { |err| error(err, &block) }
-        else
-          @errors[codes] = block
-        end
+        Array(codes).each { |code| @errors[code] = block }
       end
 
       # Sugar for `error(404) { ... }`
