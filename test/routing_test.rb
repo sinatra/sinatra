@@ -462,6 +462,21 @@ class RoutingTest < Test::Unit::TestCase
     assert not_found?
   end
 
+  it "uses optional block passed to pass as route block if no other route is found" do
+    mock_app {
+      get "/" do
+        pass do
+          "this"
+        end
+        "not this"
+      end
+    }
+
+    get "/"
+    assert ok?
+    assert "this", body
+  end
+
   it "passes when matching condition returns false" do
     mock_app {
       condition { params[:foo] == 'bar' }

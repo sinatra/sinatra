@@ -416,8 +416,8 @@ module Sinatra
     # Pass control to the next matching route.
     # If there are no more matching routes, Sinatra will
     # return a 404 response.
-    def pass
-      throw :pass
+    def pass(&block)
+      throw :pass, block
     end
 
     # Forward the request to the downstream app -- middleware only.
@@ -444,7 +444,7 @@ module Sinatra
     end
 
     # Run routes defined on the class and all superclasses.
-    def route!(base=self.class)
+    def route!(base=self.class, pass_block=nil)
       if routes = base.routes[@request.request_method]
         original_params = @params
         path            = unescape(@request.path_info)
@@ -470,7 +470,7 @@ module Sinatra
             @params = original_params.merge(params)
             @block_params = values
 
-            catch(:pass) do
+            pass_block = catch(:pass) do
               conditions.each { |cond|
                 throw :pass if instance_eval(&cond) == false }
               route_eval(&block)
@@ -483,9 +483,11 @@ module Sinatra
 
       # Run routes defined in superclass.
       if base.superclass.respond_to?(:routes)
-        route! base.superclass
+        route! base.superclass, pass_block
         return
       end
+
+      route_eval(&pass_block) if pass_block
 
       route_missing
     end
