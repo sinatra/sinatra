@@ -21,8 +21,7 @@ module Sinatra
     end
 
     at_exit do
-      raise $! if $!
-      run! if run?
+      run! if $!.nil? && run?
     end
   end
 end
