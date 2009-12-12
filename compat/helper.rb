@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'mocha'
 
 # disable warnings in compat specs.
