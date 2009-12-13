@@ -1056,8 +1056,9 @@ module Sinatra
     end
   end
 
-  # Base class for classic style (top-level) applications.
-  class Default < Base
+  # The top-level Application. All DSL methods executed on main are delegated
+  # to this class.
+  class Application < Base
     set :raise_errors, Proc.new { test? }
     set :show_exceptions, Proc.new { development? }
     set :dump_errors, true
@@ -1072,17 +1073,9 @@ module Sinatra
       Delegator.delegate(*added_methods)
       super(*extensions, &block)
     end
-
-    def self.new(app=nil)
-      warn "Sinatra::Default is deprecated. Use Sinatra::Application/Base"
-      super
-    end
   end
 
-  # The top-level Application. All DSL methods executed on main are delegated
-  # to this class.
-  class Application < Default
-  end
+  Default = Application
 
   # Sinatra delegation mixin. Mixing this module into an object causes all
   # methods to be delegated to the Sinatra::Application class. Used primarily
