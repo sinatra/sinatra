@@ -298,7 +298,7 @@ filters are accessible by routes and templates:
   end
 
 After filter are evaluated after each request within the context of the
-require and can also modify the request and response. Instance variables
+request and can also modify the request and response. Instance variables
 set in before filters and routes are accessible by after filters:
 
   after do
