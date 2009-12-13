@@ -1,9 +1,18 @@
 = 1.0 / unreleased
 
+ * It's now possible to register blocks to run after each request using
+   after filters. After filters run at the end of each request, after
+   routes and error handlers.
+
  * Sinatra now uses Tilt <http://github.com/rtomayko/tilt> for rendering
    templates. This adds support for template caching, consistent
    template backtraces, and support for new template engines, like
-   markaby and liquid.
+   mustache and liquid.
+
+ * New 'settings' method gives access to options in both class and request
+   scopes. This replaces the 'options' method.
+
+ * New 'erubis' helper method for rendering Erubis templates.
 
  * New 'expires' helper method is like cache_control but takes an
    integer number of seconds or Time object:
@@ -15,6 +24,9 @@
    this:
        cache_control :public, :must_revalidate, :max_age => 60
 
+ * Sinatra apps can now be run with a `-h <addr>` argument to specify
+   the address to bind to.
+
  * Rack::Session::Cookie is now added to the middleware pipeline when
    running in test environments if the :sessions option is set.
 
@@ -24,6 +36,66 @@
    a new Sinatra::Base subclass is created. This should fix a variety
    of issues with extensions that need to add any of these things
    to the base class.
+
+The following Sinatra features have been obsoleted in the 1.0 release:
+
+ * The `sinatra/test` library is obsolete. This includes the
+   `Sinatra::Test` module, the `Sinatra::TestHarness` class,
+   and the `get_it`, `post_it`, `put_it`, `delete_it`, and `head_it`
+   helper methods.  The
+   [`Rack::Test` library](http://gitrdoc.com/brynary/rack-test) should
+   be used instead.
+
+ * Test framework specific libraries (`sinatra/test/spec`,
+   `sinatra/test/bacon`,`sinatra/test/rspec`, etc.) are obsolete.
+   See http://www.sinatrarb.com/testing.html for instructions on
+   setting up a testing environment under each of these frameworks.
+
+ * Auto-requiring template libraries in the `erb`, `builder`, `haml`,
+   and `sass` methods is obsolete due to thread-safety issues. You must
+   require the template libraries explicitly in your app.
+
+ * The `:views_directory` option to rendering methods is obsolete; use
+   `:views` instead.
+
+ * The `:haml` and `:sass` options to rendering methods are obsolete.
+   Template engine options should be passed in the second Hash argument
+   instead.
+
+ * The 'media_type' helper method is obsolete. Use 'mime_type' instead.
+
+ * The request-level `send_data` method is no longer supported.
+
+ * The `Sinatra::Event` and `Sinatra::EventContext` classes are no longer
+   supported. This may effect extensions written for versions prior to 0.9.2.
+   See [Writing Sinatra Extensions](http://www.sinatrarb.com/extensions.html)
+   for the officially supported extensions API.
+
+ * The `set_option` and `set_options` methods are obsolete; use `set`
+   instead.
+
+ * The `:env` setting (`settings.env`) is obsolete; use `:environment`
+   instead.
+
+ * The request level `stop` method is obsolete; use `halt` instead.
+
+ * The request level `entity_tag` method is obsolete; use `etag`
+   instead.
+
+ * The request level `headers` method (HTTP response headers) is obsolete;
+   use `response['Header-Name']` instead.
+
+ * `Sinatra.application` is obsolete; use `Sinatra::Application` instead.
+
+ * Using `Sinatra.application = nil` to reset an application is obsolete.
+   This should no longer be necessary.
+
+ * Using `Sinatra.default_options` to set base configuration items is
+   obsolete; use `Sinatra::Base.set(key, value)` instead.
+
+ * The `Sinatra::ServerError` exception is obsolete. All exceptions raised
+   within a request are now treated as internal server errors and result in
+   a 500 response status.
 
 = 0.9.2 / 2009-05-18
 
