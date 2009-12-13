@@ -908,7 +908,7 @@ module Sinatra
         builder = Rack::Builder.new
         builder.use Rack::Session::Cookie if sessions? && !test?
         builder.use Rack::CommonLogger    if logging?
-        builder.use Rack::MethodOverride  if methodoverride?
+        builder.use Rack::MethodOverride  if method_override?
         builder.use ShowExceptions        if show_exceptions?
 
         @middleware.each { |c,a,b| builder.use(c, *a, &b) }
@@ -1002,7 +1002,7 @@ module Sinatra
     set :show_exceptions, false
     set :sessions, false
     set :logging, false
-    set :methodoverride, false
+    set :method_override, false
     set :static, false
     set :environment, (ENV['RACK_ENV'] || :development).to_sym
 
@@ -1016,6 +1016,11 @@ module Sinatra
     set :views, Proc.new { root && File.join(root, 'views') }
     set :public, Proc.new { root && File.join(root, 'public') }
     set :lock, false
+
+    class << self
+      alias_method :methodoverride?, :method_override?
+      alias_method :methodoverride=, :method_override=
+    end
 
     # static files route
     get(/.*[^\/]$/) do
@@ -1075,7 +1080,7 @@ module Sinatra
     set :dump_errors, true
     set :sessions, false
     set :logging, Proc.new { ! test? }
-    set :methodoverride, true
+    set :method_override, true
     set :static, true
     set :run, Proc.new { ! test? }
 
