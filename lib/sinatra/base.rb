@@ -951,7 +951,7 @@ module Sinatra
         builder = Rack::Builder.new
         builder.use Rack::Session::Cookie if sessions?
         builder.use Rack::CommonLogger    if logging?
-        builder.use Rack::MethodOverride  if methodoverride?
+        builder.use Rack::MethodOverride  if method_override?
         builder.use ShowExceptions        if show_exceptions?
         middleware.each { |c,a,b| builder.use(c, *a, &b) }
 
@@ -1030,7 +1030,12 @@ module Sinatra
     set :clean_trace, true
     set :sessions, false
     set :logging, false
-    set :methodoverride, false
+    set :method_override, false
+
+    class << self
+      alias_method :methodoverride?, :method_override?
+      alias_method :methodoverride=, :method_override=
+    end
 
     set :run, false                       # start server via at-exit hook?
     set :running, false                   # is the built-in server running now?
@@ -1099,7 +1104,7 @@ module Sinatra
     set :dump_errors, true
     set :sessions, false
     set :logging, Proc.new { ! test? }
-    set :methodoverride, true
+    set :method_override, true
     set :run, Proc.new { ! test? }
     set :static, true
 

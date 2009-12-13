@@ -93,27 +93,32 @@ class SettingsTest < Test::Unit::TestCase
     assert !@base.bar
   end
 
-
   it 'is accessible from instances via #settings' do
     assert_equal :foo, @base.new.settings.environment
   end
 
   describe 'methodoverride' do
     it 'is disabled on Base' do
-      assert ! @base.methodoverride?
+      assert ! @base.method_override?
     end
 
     it 'is enabled on Application' do
-      assert @application.methodoverride?
+      assert @application.method_override?
     end
 
     it 'enables MethodOverride middleware' do
-      @base.set :methodoverride, true
+      @base.set :method_override, true
       @base.put('/') { 'okay' }
       @app = @base
       post '/', {'_method'=>'PUT'}, {}
       assert_equal 200, status
       assert_equal 'okay', body
+    end
+
+    it 'is backward compatible with methodoverride' do
+      assert ! @base.methodoverride?
+      @base.enable :methodoverride
+      assert @base.methodoverride?
     end
   end
 
