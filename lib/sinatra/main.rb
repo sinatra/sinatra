@@ -1,7 +1,7 @@
 require 'sinatra/base'
 
 module Sinatra
-  class Application < Base
+  class Default < Base
 
     # we assume that the first file that requires 'sinatra' is the
     # app_file. all other path related options are calculated based
@@ -20,11 +20,9 @@ module Sinatra
         op.on('-h addr')   { |val| set :host, val }
       }.parse!(ARGV.dup)
     end
-
-    at_exit do
-      run! if $!.nil? && run?
-    end
   end
+
+  at_exit { Application.run! if $!.nil? && Application.run? }
 end
 
 include Sinatra::Delegator

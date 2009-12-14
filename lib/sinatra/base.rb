@@ -1078,9 +1078,8 @@ module Sinatra
     end
   end
 
-  # The top-level Application. All DSL methods executed on main are delegated
-  # to this class.
-  class Application < Base
+  # Base class for classic style (top-level) applications.
+  class Default < Base
     set :raise_errors, Proc.new { test? }
     set :show_exceptions, Proc.new { development? }
     set :dump_errors, true
@@ -1095,6 +1094,11 @@ module Sinatra
       Delegator.delegate(*added_methods)
       super(*extensions, &block)
     end
+  end
+
+  # The top-level Application. All DSL methods executed on main are delegated
+  # to this class.
+  class Application < Default
   end
 
   # Sinatra delegation mixin. Mixing this module into an object causes all
@@ -1128,11 +1132,11 @@ module Sinatra
 
   # Extend the top-level DSL with the modules provided.
   def self.register(*extensions, &block)
-    Application.register(*extensions, &block)
+    Default.register(*extensions, &block)
   end
 
   # Include the helper modules provided in Sinatra's request context.
   def self.helpers(*extensions, &block)
-    Application.helpers(*extensions, &block)
+    Default.helpers(*extensions, &block)
   end
 end
