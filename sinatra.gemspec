@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
 
   s.name = 'sinatra'
   s.version = '0.10.1'
-  s.date = '2009-10-08'
+  s.date = '2009-12-13'
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
@@ -26,13 +26,14 @@ Gem::Specification.new do |s|
     lib/sinatra/images/500.png
     lib/sinatra/main.rb
     lib/sinatra/showexceptions.rb
-    lib/tilt.rb
+    lib/sinatra/tilt.rb
     sinatra.gemspec
     test/base_test.rb
     test/builder_test.rb
     test/contest.rb
     test/data/reload_app_file.rb
     test/erb_test.rb
+    test/erubis_test.rb
     test/extensions_test.rb
     test/filter_test.rb
     test/haml_test.rb
@@ -53,16 +54,19 @@ Gem::Specification.new do |s|
     test/templates_test.rb
     test/views/error.builder
     test/views/error.erb
+    test/views/error.erubis
     test/views/error.haml
     test/views/error.sass
     test/views/foo/hello.test
     test/views/hello.builder
     test/views/hello.erb
+    test/views/hello.erubis
     test/views/hello.haml
     test/views/hello.sass
     test/views/hello.test
     test/views/layout2.builder
     test/views/layout2.erb
+    test/views/layout2.erubis
     test/views/layout2.haml
     test/views/layout2.test
   ]
