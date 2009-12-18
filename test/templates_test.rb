@@ -76,9 +76,9 @@ class TemplatesTest < Test::Unit::TestCase
     assert_equal "Layout 3!\nHello World!\n", body
   end
 
-  it 'loads templates from source file with use_in_file_templates!' do
+  it 'loads templates from source file with slup_file_templates' do
     mock_app {
-      use_in_file_templates!
+      slup_file_templates
     }
     assert_equal "this is foo\n\n", @app.templates[:foo][0]
     assert_equal "X\n= yield\nX\n", @app.templates[:layout][0]
@@ -90,10 +90,10 @@ class TemplatesTest < Test::Unit::TestCase
     assert_equal "from another views directory\n", body
   end
 
-  test 'use_in_file_templates simply ignores IO errors' do
+  test 'slup_file_templates simply ignores IO errors' do
     assert_nothing_raised {
       mock_app {
-        use_in_file_templates!('/foo/bar')
+        slup_file_templates('/foo/bar')
       }
     }
 
