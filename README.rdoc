@@ -383,7 +383,7 @@ code is 404, the <tt>not_found</tt> handler is invoked:
 === Error
 
 The +error+ handler is invoked any time an exception is raised from a route
-block or before filter. The exception object can be obtained from the
+block or a filter. The exception object can be obtained from the
 <tt>sinatra.error</tt> Rack variable:
 
   error do
