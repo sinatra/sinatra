@@ -722,7 +722,7 @@ module Sinatra
 
       # Load embeded templates from the file; uses the caller's __FILE__
       # when no file is specified.
-      def slup_file_templates(file=nil)
+      def use_in_file_templates!(file=nil)
         file ||= caller_files.first
 
         begin
@@ -1119,7 +1119,7 @@ module Sinatra
     delegate :get, :put, :post, :delete, :head, :template, :layout,
              :before, :after, :error, :not_found, :configure, :set, :mime_type,
              :enable, :disable, :use, :development?, :test?,
-             :production?, :slup_file_templates, :helpers
+             :production?, :use_in_file_templates!, :helpers
   end
 
   # Create a new Sinatra application. The block is evaluated in the new app's
