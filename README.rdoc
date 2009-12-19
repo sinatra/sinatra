@@ -311,13 +311,21 @@ To immediately stop a request within a filter or route use:
 
   halt
 
-You can also specify a body when halting ...
+You can also specify the status when halting ...
+
+  halt 410
+
+Or the body ...
 
   halt 'this will be the body'
 
-Or set the status and body ...
+Or both ...
 
   halt 401, 'go away!'
+
+With headers ...
+
+  halt 402, {'Content-Type' => 'text/plain'}, 'revenge'
 
 == Passing
 
