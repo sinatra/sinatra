@@ -5,4 +5,4 @@ require 'sinatra/base'
 require 'sinatra/main'
 require 'sinatra/compat'
 
-use_in_file_templates!
+enable :inline_templates
