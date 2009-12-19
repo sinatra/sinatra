@@ -720,10 +720,16 @@ module Sinatra
         template name, &block
       end
 
+      def use_in_file_templates!(file=nil)
+        warn "use_in_file_templates! is deprecated; " \
+          "use enable :inline_templates instead"
+        set :inline_templates, file
+      end
+
       # Load embeded templates from the file; uses the caller's __FILE__
       # when no file is specified.
-      def use_in_file_templates!(file=nil)
-        file ||= caller_files.first
+      def inline_templates=(file=nil)
+        file = (file.nil? || file == true) ? caller_files.first : file
 
         begin
           app, data =

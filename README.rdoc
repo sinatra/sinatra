@@ -219,7 +219,7 @@ Or, specify an explicit Hash of local variables:
 This is typically used when rendering templates as partials from within
 other templates.
 
-=== In-file Templates
+=== Inline Templates
 
 Templates may be defined at the end of the source file:
 
@@ -239,9 +239,9 @@ Templates may be defined at the end of the source file:
   @@ index
   %div.title Hello world!!!!!
 
-NOTE: In-file templates defined in the source file that requires sinatra
-are automatically loaded. Call the <tt>use_in_file_templates!</tt>
-method explicitly if you have in-file templates in other source files.
+NOTE: Inline templates defined in the source file that requires sinatra
+are automatically loaded. Call `enable :inline_templates` explicitly if you
+have inline templates in other source files.
 
 === Named Templates
 
