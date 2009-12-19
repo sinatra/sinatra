@@ -187,7 +187,7 @@ and overridden on an individual basis.
 
   get '/stylesheet.css' do
     content_type 'text/css', :charset => 'utf-8'
-    sass :stylesheet, :sass_options => {:style => :expanded } # overridden
+    sass :stylesheet, :style => :expanded # overridden
   end
 
 
