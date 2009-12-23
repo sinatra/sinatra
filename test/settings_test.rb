@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-class OptionsTest < Test::Unit::TestCase
+class SettingsTest < Test::Unit::TestCase
   setup do
     @base = Sinatra.new(Sinatra::Base)
     @application = Sinatra.new(Sinatra::Application)
@@ -251,7 +251,7 @@ class OptionsTest < Test::Unit::TestCase
       }
 
       get '/'
-      assert body.include?("RuntimeError") && body.include?("options_test.rb")
+      assert body.include?("RuntimeError") && body.include?("settings_test.rb")
     end
   end
 
