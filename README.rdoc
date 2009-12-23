@@ -398,6 +398,22 @@ You get this:
 
   So what happened was... something bad
 
+Alternatively, you can install error handler for a status code:
+
+  error 403 do
+    'Access forbidden'
+  end
+
+  get '/secret' do
+    403
+  end
+
+Or a range:
+
+  error 400..510 do
+    'Boom'
+  end
+
 Sinatra installs special <tt>not_found</tt> and <tt>error</tt> handlers when
 running under the development environment.
 
