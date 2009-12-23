@@ -424,6 +424,10 @@ doesn't understand. Use +mime_type+ to register them by file extension:
 
   mime_type :foo, 'text/foo'
 
+You can also use it with the +content_type+ helper:
+
+  content_type :foo
+
 == Rack Middleware
 
 Sinatra rides on Rack[http://rack.rubyforge.org/], a minimal standard
