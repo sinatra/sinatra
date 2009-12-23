@@ -190,7 +190,6 @@ and overridden on an individual basis.
     sass :stylesheet, :style => :expanded # overridden
   end
 
-
 === Inline Templates
 
   get '/' do
@@ -325,11 +324,11 @@ A route can punt processing to the next matching route using <tt>pass</tt>:
 
   get '/guess/:who' do
     pass unless params[:who] == 'Frank'
-    "You got me!"
+    'You got me!'
   end
 
   get '/guess/*' do
-    "You missed!"
+    'You missed!'
   end
 
 The route block is immediately exited and control continues with the next
