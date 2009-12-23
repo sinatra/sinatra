@@ -294,7 +294,7 @@ TEMPLATE = <<HTML
     </div> <!-- /RACK ENV -->
 
     <p id="explanation">You're seeing this error because you have
-enabled the <code>show_exceptions</code> option.</p>
+enabled the <code>show_exceptions</code> setting.</p>
   </div> <!-- /WRAP -->
   </body>
 </html>

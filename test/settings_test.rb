@@ -214,7 +214,7 @@ class SettingsTest < Test::Unit::TestCase
       get '/'
       assert_equal 500, status
       assert body.include?("StandardError")
-      assert body.include?("<code>show_exceptions</code> option")
+      assert body.include?("<code>show_exceptions</code> setting")
     end
   end
 
