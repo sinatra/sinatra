@@ -573,12 +573,13 @@ being {included into the main namespace}[http://github.com/sinatra/sinatra/blob/
 
 Sinatra applications can be run directly:
 
-  ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-s HANDLER]
+  ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-h HOST] [-s HANDLER]
 
 Options are:
 
   -h # help
   -p # set the port (default is 4567)
+  -h # set the host (default is 0.0.0.0)
   -e # set the environment (default is development)
   -s # specify rack server/handler (default is thin)
   -x # turn on the mutex lock (default is off)
