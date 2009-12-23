@@ -3,24 +3,25 @@ require File.dirname(__FILE__) + '/helper'
 class SettingsTest < Test::Unit::TestCase
   setup do
     @base = Sinatra.new(Sinatra::Base)
+    @base.set :environment, :foo
+
     @application = Sinatra.new(Sinatra::Application)
-    @base.set :environment, :development
-    @application.set :environment, :development
+    @application.set :environment, :foo
   end
 
-  it 'sets options to literal values' do
+  it 'sets settings to literal values' do
     @base.set(:foo, 'bar')
     assert @base.respond_to?(:foo)
     assert_equal 'bar', @base.foo
   end
 
-  it 'sets options to Procs' do
+  it 'sets settings to Procs' do
     @base.set(:foo, Proc.new { 'baz' })
     assert @base.respond_to?(:foo)
     assert_equal 'baz', @base.foo
   end
 
-  it "sets multiple options with a Hash" do
+  it "sets multiple settings with a Hash" do
     @base.set :foo => 1234,
         :bar => 'Hello World',
         :baz => Proc.new { 'bizzle' }
@@ -29,7 +30,7 @@ class SettingsTest < Test::Unit::TestCase
     assert_equal 'bizzle', @base.baz
   end
 
-  it 'inherits option methods when subclassed' do
+  it 'inherits settings methods when subclassed' do
     @base.set :foo, 'bar'
     @base.set :biz, Proc.new { 'baz' }
 
@@ -40,7 +41,7 @@ class SettingsTest < Test::Unit::TestCase
     assert_equal 'baz', sub.biz
   end
 
-  it 'overrides options in subclass' do
+  it 'overrides settings in subclass' do
     @base.set :foo, 'bar'
     @base.set :biz, Proc.new { 'baz' }
     sub = Class.new(@base)
@@ -78,31 +79,42 @@ class SettingsTest < Test::Unit::TestCase
     assert_equal 'oops', @base.foo
   end
 
-  it "sets multiple options to true with #enable" do
+  it "sets multiple settings to true with #enable" do
     @base.enable :sessions, :foo, :bar
     assert @base.sessions
     assert @base.foo
     assert @base.bar
   end
 
-  it "sets multiple options to false with #disable" do
+  it "sets multiple settings to false with #disable" do
     @base.disable :sessions, :foo, :bar
     assert !@base.sessions
     assert !@base.foo
     assert !@base.bar
   end
 
-  it 'enables MethodOverride middleware when :methodoverride is enabled' do
-    @base.set :methodoverride, true
-    @base.put('/') { 'okay' }
-    @app = @base
-    post '/', {'_method'=>'PUT'}, {}
-    assert_equal 200, status
-    assert_equal 'okay', body
-  end
 
   it 'is accessible from instances via #settings' do
-    assert_equal :development, @base.new.settings.environment
+    assert_equal :foo, @base.new.settings.environment
+  end
+
+  describe 'methodoverride' do
+    it 'is disabled on Base' do
+      assert ! @base.methodoverride?
+    end
+
+    it 'is enabled on Application' do
+      assert @application.methodoverride?
+    end
+
+    it 'enables MethodOverride middleware' do
+      @base.set :methodoverride, true
+      @base.put('/') { 'okay' }
+      @app = @base
+      post '/', {'_method'=>'PUT'}, {}
+      assert_equal 200, status
+      assert_equal 'okay', body
+    end
   end
 
   describe 'clean_trace' do
@@ -156,16 +168,12 @@ class SettingsTest < Test::Unit::TestCase
       assert ! @base.run?
     end
 
-    it 'is enabled on Application when not in test environment' do
-      @application.set :environment, :development
-      assert @application.development?
+    it 'is enabled on Application except in test environment' do
       assert @application.run?
 
-      @application.set :environment, :development
-      assert @application.run?
+      @application.set :environment, :test
+      assert ! @application.run?
     end
-
-    # TODO: it 'is enabled when $0 == app_file'
   end
 
   describe 'raise_errors' do
@@ -174,11 +182,6 @@ class SettingsTest < Test::Unit::TestCase
     end
 
     it 'is enabled on Application only in test' do
-      @application.set(:environment, :development)
-      assert @application.development?
-      assert ! @application.raise_errors?
-
-      @application.set(:environment, :production)
       assert ! @application.raise_errors?
 
       @application.set(:environment, :test)
@@ -187,23 +190,15 @@ class SettingsTest < Test::Unit::TestCase
   end
 
   describe 'show_exceptions' do
-    %w[development test production none].each do |environment|
-      it "is disabled on Base in #{environment} environments" do
-        @base.set(:environment, environment)
-        assert ! @base.show_exceptions?
-      end
+    it 'is disabled on Base' do
+      assert ! @base.show_exceptions?
     end
 
-    it 'is enabled on Application only in development' do
-      @base.set(:environment, :development)
-      assert @application.development?
-      assert @application.show_exceptions?
-
-      @application.set(:environment, :test)
+    it 'is disabled on Application except in development' do
       assert ! @application.show_exceptions?
 
-      @base.set(:environment, :production)
-      assert ! @base.show_exceptions?
+      @application.set(:environment, :development)
+      assert @application.show_exceptions?
     end
 
     it 'returns a friendly 500' do
@@ -263,8 +258,6 @@ class SettingsTest < Test::Unit::TestCase
     it 'is disabled on Application' do
       assert ! @application.sessions?
     end
-
-    # TODO: it 'uses Rack::Session::Cookie when enabled' do
   end
 
   describe 'logging' do
@@ -272,14 +265,12 @@ class SettingsTest < Test::Unit::TestCase
       assert ! @base.logging?
     end
 
-    it 'is enabled on Application when not in test environment' do
+    it 'is enabled on Application except in test environment' do
       assert @application.logging?
 
       @application.set :environment, :test
       assert ! @application.logging
     end
-
-    # TODO: it 'uses Rack::CommonLogger when enabled' do
   end
 
   describe 'static' do
@@ -290,9 +281,6 @@ class SettingsTest < Test::Unit::TestCase
     it 'is enabled on Application' do
       assert @application.static?
     end
-
-    # TODO: it setup static routes if public is enabled
-    # TODO: however, that's already tested in static_test so...
   end
 
   describe 'host' do
@@ -318,8 +306,8 @@ class SettingsTest < Test::Unit::TestCase
 
   describe 'app_file' do
     it 'is nil' do
-      assert @base.app_file.nil?
-      assert @application.app_file.nil?
+      assert_nil @base.app_file
+      assert_nil @application.app_file
     end
   end
 
@@ -371,6 +359,7 @@ class SettingsTest < Test::Unit::TestCase
   describe 'lock' do
     it 'is disabled by default' do
       assert ! @base.lock?
+      assert ! @application.lock?
     end
   end
 end
