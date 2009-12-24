@@ -142,6 +142,19 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal 404, status
       assert_equal '', body
     end
+
+    it 'does not set a X-Cascade header' do
+      mock_app {
+        get '/' do
+          not_found
+          fail 'not_found should halt'
+        end
+      }
+
+      get '/'
+      assert_equal 404, status
+      assert_equal nil, response.headers['X-Cascade']
+    end
   end
 
   describe 'headers' do

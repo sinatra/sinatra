@@ -60,6 +60,15 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 404, status
   end
 
+  it "404s and sets X-Cascade header when no route satisfies the request" do
+    mock_app {
+      get('/foo') { }
+    }
+    get '/bar'
+    assert_equal 404, status
+    assert_equal 'pass', response.headers['X-Cascade']
+  end
+
   it "overrides the content-type in error handlers" do
     mock_app {
       before { content_type 'text/plain' }
@@ -460,6 +469,23 @@ class RoutingTest < Test::Unit::TestCase
 
     get '/bar'
     assert not_found?
+  end
+
+  it "transitions to 404 and sets X-Cascade header when passed and no subsequent route matches" do
+    mock_app {
+      get '/:foo' do
+        pass
+        'Hello Foo'
+      end
+
+      get '/bar' do
+        'Hello Bar'
+      end
+    }
+
+    get '/foo'
+    assert not_found?
+    assert_equal 'pass', response.headers['X-Cascade']
   end
 
   it "uses optional block passed to pass as route block if no other route is found" do

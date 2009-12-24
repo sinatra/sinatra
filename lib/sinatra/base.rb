@@ -583,9 +583,10 @@ module Sinatra
     end
 
     def handle_not_found!(boom)
-      @env['sinatra.error'] = boom
-      @response.status      = 404
-      @response.body        = ['<h1>Not Found</h1>']
+      @env['sinatra.error']          = boom
+      @response.status               = 404
+      @response.headers['X-Cascade'] = 'pass'
+      @response.body                 = ['<h1>Not Found</h1>']
       error_block! boom.class, NotFound
     end
 
