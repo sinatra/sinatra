@@ -934,6 +934,12 @@ module Sinatra
         @prototype = nil
         @middleware << [middleware, args, block]
       end
+      
+      def quit!(server, handler_name)
+        ## Use thins' hard #stop! if available, otherwise just #stop
+        server.respond_to?(:stop!) ? server.stop! : server.stop
+        puts "\n== Sinatra has ended his set (crowd applauds)" unless handler_name =~/cgi/i        
+      end
 
       # Run the Sinatra app as a self-hosted server using
       # Thin, Mongrel or WEBrick (in that order)
@@ -944,11 +950,7 @@ module Sinatra
         puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
           "on #{port} for #{environment} with backup from #{handler_name}" unless handler_name =~/cgi/i
         handler.run self, :Host => bind, :Port => port do |server|
-          trap(:INT) do
-            ## Use thins' hard #stop! if available, otherwise just #stop
-            server.respond_to?(:stop!) ? server.stop! : server.stop
-            puts "\n== Sinatra has ended his set (crowd applauds)" unless handler_name =~/cgi/i
-          end
+          [:INT, :TERM].each { |sig| trap(sig) { quit!(server, handler_name) } }
           set :running, true
         end
       rescue Errno::EADDRINUSE => e
