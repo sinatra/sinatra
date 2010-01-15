@@ -838,9 +838,9 @@ module Sinatra
         unbound_method = instance_method("#{verb} #{path}")
         block =
           if block.arity != 0
-            lambda { unbound_method.bind(self).call(*@block_params) }
+            proc { unbound_method.bind(self).call(*@block_params) }
           else
-            lambda { unbound_method.bind(self).call }
+            proc { unbound_method.bind(self).call }
           end
 
         invoke_hook(:route_added, verb, path, block)
