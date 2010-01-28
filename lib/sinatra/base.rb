@@ -1011,7 +1011,6 @@ module Sinatra
     set :sessions, false
     set :logging, false
     set :method_override, false
-    set :static, false
     set :environment, (ENV['RACK_ENV'] || :development).to_sym
 
     set :run, false
@@ -1023,6 +1022,7 @@ module Sinatra
     set :root, Proc.new { app_file && File.expand_path(File.dirname(app_file)) }
     set :views, Proc.new { root && File.join(root, 'views') }
     set :public, Proc.new { root && File.join(root, 'public') }
+    set :static, Proc.new { self.public && File.exist?(self.public) }
     set :lock, false
 
     class << self
@@ -1089,8 +1089,8 @@ module Sinatra
     set :sessions, false
     set :logging, Proc.new { ! test? }
     set :method_override, true
-    set :static, true
     set :run, Proc.new { ! test? }
+    set :static, true
 
     def self.register(*extensions, &block) #:nodoc:
       added_methods = extensions.map {|m| m.public_instance_methods }.flatten
