@@ -387,6 +387,7 @@ module Sinatra
       @request  = Request.new(env)
       @response = Response.new
       @params   = indifferent_params(@request.params)
+      @template_cache.clear if settings.reload_templates
 
       invoke { dispatch! }
       invoke { error_block!(response.status) }
@@ -1039,8 +1040,9 @@ module Sinatra
 
     set :app_file, nil
     set :root, Proc.new { app_file && File.expand_path(File.dirname(app_file)) }
-    set :views, Proc.new { root && File.join(root, 'views') }
     set :public, Proc.new { root && File.join(root, 'public') }
+    set :views, Proc.new { root && File.join(root, 'views') }
+    set :reload_templates, Proc.new { !development? }
     set :lock, false
 
     error ::Exception do

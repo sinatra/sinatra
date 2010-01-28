@@ -9,9 +9,12 @@
    template backtraces, and support for new template engines, like
    mustache and liquid.
 
+ * New boolean 'reload_templates' setting controls whether template files
+   are reread from disk and recompiled on each request. Template read/compile
+   is cached by default in all environments except development.
+
  * New 'settings' method gives access to options in both class and request
    scopes. This replaces the 'options' method.
-
  * New 'erubis' helper method for rendering Erubis templates.
 
  * New 'expires' helper method is like cache_control but takes an
