@@ -525,6 +525,7 @@ module Sinatra
       return if path[0, public_dir.length] != public_dir
       return unless File.file?(path)
 
+      env['sinatra.static_file'] = path
       send_file path, :disposition => nil
     end
 
@@ -584,7 +585,7 @@ module Sinatra
     rescue ::Exception => boom
       handle_exception!(boom)
     ensure
-      after_filter!
+      after_filter! unless env['sinatra.static_file']
     end
 
     def handle_not_found!(boom)

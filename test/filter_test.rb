@@ -108,6 +108,19 @@ class BeforeFilterTest < Test::Unit::TestCase
     get '/foo'
     assert_equal 'hello from superclass', body
   end
+
+  it 'does not run before filter when serving static files' do
+    ran_filter = false
+    mock_app {
+      before { ran_filter = true }
+      set :static, true
+      set :public, File.dirname(__FILE__)
+    }
+    get "/#{File.basename(__FILE__)}"
+    assert ok?
+    assert_equal File.read(__FILE__), body
+    assert !ran_filter
+  end
 end
 
 class AfterFilterTest < Test::Unit::TestCase
@@ -191,5 +204,18 @@ class AfterFilterTest < Test::Unit::TestCase
 
     get '/foo'
     assert_equal 8, count
+  end
+
+  it 'does not run after filter when serving static files' do
+    ran_filter = false
+    mock_app {
+      after { ran_filter = true }
+      set :static, true
+      set :public, File.dirname(__FILE__)
+    }
+    get "/#{File.basename(__FILE__)}"
+    assert ok?
+    assert_equal File.read(__FILE__), body
+    assert !ran_filter
   end
 end
