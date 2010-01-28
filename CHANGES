@@ -17,15 +17,15 @@
    scopes. This replaces the 'options' method.
  * New 'erubis' helper method for rendering Erubis templates.
 
- * New 'expires' helper method is like cache_control but takes an
-   integer number of seconds or Time object:
-       expires 300, :public, :must_revalidate
-
  * New 'cache_control' helper method provides a convenient way of
    setting the Cache-Control response header. Takes a variable number
    of boolean directives followed by a hash of value directives, like
    this:
        cache_control :public, :must_revalidate, :max_age => 60
+
+ * New 'expires' helper method is like cache_control but takes an
+   integer number of seconds or Time object:
+       expires 300, :public, :must_revalidate
 
  * Sinatra apps can now be run with a `-h <addr>` argument to specify
    the address to bind to.
