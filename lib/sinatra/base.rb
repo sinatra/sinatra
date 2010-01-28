@@ -1125,8 +1125,8 @@ module Sinatra
 
     delegate :get, :put, :post, :delete, :head, :template, :layout,
              :before, :after, :error, :not_found, :configure, :set, :mime_type,
-             :enable, :disable, :use, :development?, :test?,
-             :production?, :use_in_file_templates!, :helpers
+             :enable, :disable, :use, :development?, :test?, :production?,
+             :helpers, :settings
   end
 
   # Create a new Sinatra application. The block is evaluated in the new app's
