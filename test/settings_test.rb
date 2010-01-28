@@ -177,8 +177,10 @@ class SettingsTest < Test::Unit::TestCase
   end
 
   describe 'raise_errors' do
-    it 'is enabled on Base' do
+    it 'is enabled on Base except under development' do
       assert @base.raise_errors?
+      @base.environment = :development
+      assert !@base.raise_errors?
     end
 
     it 'is enabled on Application only in test' do
@@ -190,8 +192,10 @@ class SettingsTest < Test::Unit::TestCase
   end
 
   describe 'show_exceptions' do
-    it 'is disabled on Base' do
+    it 'is disabled on Base except under development' do
       assert ! @base.show_exceptions?
+      @base.environment = :development
+      assert @base.show_exceptions?
     end
 
     it 'is disabled on Application except in development' do
@@ -219,8 +223,10 @@ class SettingsTest < Test::Unit::TestCase
   end
 
   describe 'dump_errors' do
-    it 'is disabled on Base' do
+    it 'is disabled on Base except in development' do
       assert ! @base.dump_errors?
+      @base.environment = :development
+      assert @base.dump_errors?
     end
 
     it 'is enabled on Application' do

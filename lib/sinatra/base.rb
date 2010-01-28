@@ -1022,14 +1022,14 @@ module Sinatra
 
     reset!
 
-    set :raise_errors, true
-    set :dump_errors, false
+    set :environment, (ENV['RACK_ENV'] || :development).to_sym
+    set :raise_errors, Proc.new { !development? }
+    set :dump_errors, Proc.new { development? }
+    set :show_exceptions, Proc.new { development? }
     set :clean_trace, true
-    set :show_exceptions, false
     set :sessions, false
     set :logging, false
     set :methodoverride, false
-    set :environment, (ENV['RACK_ENV'] || :development).to_sym
 
     set :run, false                       # start server via at-exit hook?
     set :running, false                   # is the built-in server running now?
