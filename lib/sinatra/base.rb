@@ -1023,15 +1023,14 @@ module Sinatra
 
     reset!
 
-    set :raise_errors, true
-    set :dump_errors, false
+    set :environment, (ENV['RACK_ENV'] || :development).to_sym
+    set :raise_errors, Proc.new { !development? }
+    set :dump_errors, Proc.new { development? }
+    set :show_exceptions, Proc.new { development? }
     set :clean_trace, true
-    set :show_exceptions, false
     set :sessions, false
     set :logging, false
     set :methodoverride, false
-    set :static, false
-    set :environment, (ENV['RACK_ENV'] || :development).to_sym
 
     set :run, false                       # start server via at-exit hook?
     set :running, false                   # is the built-in server running now?
@@ -1041,10 +1040,12 @@ module Sinatra
 
     set :app_file, nil
     set :root, Proc.new { app_file && File.expand_path(File.dirname(app_file)) }
-    set :public, Proc.new { root && File.join(root, 'public') }
     set :views, Proc.new { root && File.join(root, 'views') }
     set :reload_templates, Proc.new { !development? }
     set :lock, false
+
+    set :public, Proc.new { root && File.join(root, 'public') }
+    set :static, Proc.new { self.public && File.exist?(self.public) }
 
     error ::Exception do
       response.status = 500
@@ -1086,27 +1087,27 @@ module Sinatra
     end
   end
 
-  # Base class for classic style (top-level) applications.
-  class Default < Base
+  # Execution context for classic style (top-level) applications. All
+  # DSL methods executed on main are delegated to this class.
+  #
+  # The Application class should not be subclassed, unless you want to
+  # inherit all settings, routes, handlers, and error pages from the
+  # top-level. Subclassing Sinatra::Base is heavily recommended for
+  # modular applications.
+  class Application < Base
     set :raise_errors, Proc.new { test? }
-    set :show_exceptions, Proc.new { development? }
     set :dump_errors, true
     set :sessions, false
     set :logging, Proc.new { ! test? }
     set :methodoverride, true
-    set :static, true
     set :run, Proc.new { ! test? }
+    set :static, true
 
     def self.register(*extensions, &block) #:nodoc:
       added_methods = extensions.map {|m| m.public_instance_methods }.flatten
       Delegator.delegate(*added_methods)
       super(*extensions, &block)
     end
-  end
-
-  # The top-level Application. All DSL methods executed on main are delegated
-  # to this class.
-  class Application < Default
   end
 
   # Sinatra delegation mixin. Mixing this module into an object causes all
@@ -1140,11 +1141,11 @@ module Sinatra
 
   # Extend the top-level DSL with the modules provided.
   def self.register(*extensions, &block)
-    Default.register(*extensions, &block)
+    Application.register(*extensions, &block)
   end
 
   # Include the helper modules provided in Sinatra's request context.
   def self.helpers(*extensions, &block)
-    Default.helpers(*extensions, &block)
+    Application.helpers(*extensions, &block)
   end
 end
