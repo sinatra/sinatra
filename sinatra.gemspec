@@ -78,6 +78,9 @@ Gem::Specification.new do |s|
   s.add_dependency 'rack',    '>= 1.0'
   s.add_development_dependency 'shotgun', '>= 0.6',   '< 1.0'
   s.add_development_dependency 'rack-test', '>= 0.3.0'
+  s.add_development_dependency 'haml'
+  s.add_development_dependency 'builder'
+  s.add_development_dependency 'erubis'
 
   s.has_rdoc = true
   s.homepage = "http://sinatra.rubyforge.org"
