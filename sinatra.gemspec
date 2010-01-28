@@ -76,7 +76,7 @@ Gem::Specification.new do |s|
 
   s.extra_rdoc_files = %w[README.rdoc LICENSE]
   s.add_dependency 'rack',    '>= 1.0'
-  s.add_development_dependency 'shotgun', '>= 0.3',   '< 1.0'
+  s.add_development_dependency 'shotgun', '>= 0.6',   '< 1.0'
   s.add_development_dependency 'rack-test', '>= 0.3.0'
 
   s.has_rdoc = true
