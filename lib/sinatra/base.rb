@@ -18,24 +18,28 @@ module Sinatra
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
   class Request < Rack::Request
-    def user_agent
-      @env['HTTP_USER_AGENT']
-    end
-
     # Returns an array of acceptable media types for the response
     def accept
       @env['HTTP_ACCEPT'].to_s.split(',').map { |a| a.strip }
     end
 
-    # Override Rack 0.9.x's #params implementation (see #72 in lighthouse)
-    def params
-      self.GET.update(self.POST)
-    rescue EOFError, Errno::ESPIPE
-      self.GET
-    end
-
     def secure?
       (@env['HTTP_X_FORWARDED_PROTO'] || @env['rack.url_scheme']) == 'https'
+    end
+
+    # Override Rack < 1.1's Request#params implementation (see lh #72 for
+    # more info) and add a Request#user_agent method.
+    # XXX remove when we require rack > 1.1
+    if Rack.release < '1.1'
+      def params
+        self.GET.update(self.POST)
+      rescue EOFError, Errno::ESPIPE
+        self.GET
+      end
+
+      def user_agent
+        @env['HTTP_USER_AGENT']
+      end
     end
   end
 
