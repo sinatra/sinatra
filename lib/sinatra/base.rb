@@ -585,7 +585,7 @@ module Sinatra
     rescue ::Exception => boom
       handle_exception!(boom)
     ensure
-      after_filter!
+      after_filter! unless env['sinatra.static_file']
     end
 
     def handle_not_found!(boom)
