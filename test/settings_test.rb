@@ -274,8 +274,20 @@ class SettingsTest < Test::Unit::TestCase
   end
 
   describe 'static' do
-    it 'is disabled on Base' do
+    it 'is disabled on Base by default' do
       assert ! @base.static?
+    end
+
+    it 'is enabled on Base when public is set and exists' do
+      @base.set :environment, :development
+      @base.set :public, File.dirname(__FILE__)
+      assert @base.static?
+    end
+
+    it 'is enabled on Base when root is set and root/public exists' do
+      @base.set :environment, :development
+      @base.set :root, File.dirname(__FILE__)
+      assert @base.static?
     end
 
     it 'is enabled on Application' do

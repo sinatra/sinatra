@@ -1029,7 +1029,6 @@ module Sinatra
     set :sessions, false
     set :logging, false
     set :methodoverride, false
-    set :static, false
     set :environment, (ENV['RACK_ENV'] || :development).to_sym
 
     set :run, false                       # start server via at-exit hook?
@@ -1040,10 +1039,12 @@ module Sinatra
 
     set :app_file, nil
     set :root, Proc.new { app_file && File.expand_path(File.dirname(app_file)) }
-    set :public, Proc.new { root && File.join(root, 'public') }
     set :views, Proc.new { root && File.join(root, 'views') }
     set :reload_templates, Proc.new { !development? }
     set :lock, false
+
+    set :public, Proc.new { root && File.join(root, 'public') }
+    set :static, Proc.new { self.public && File.exist?(self.public) }
 
     error ::Exception do
       response.status = 500
@@ -1093,8 +1094,8 @@ module Sinatra
     set :sessions, false
     set :logging, Proc.new { ! test? }
     set :methodoverride, true
-    set :static, true
     set :run, Proc.new { ! test? }
+    set :static, true
 
     def self.register(*extensions, &block) #:nodoc:
       added_methods = extensions.map {|m| m.public_instance_methods }.flatten
