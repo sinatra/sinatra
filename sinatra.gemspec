@@ -40,6 +40,7 @@ Gem::Specification.new do |s|
     test/helpers_test.rb
     test/mapped_error_test.rb
     test/middleware_test.rb
+    test/public/favicon.ico
     test/request_test.rb
     test/response_test.rb
     test/result_test.rb
