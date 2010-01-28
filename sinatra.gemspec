@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'sinatra'
-  s.version = '0.10.1'
-  s.date = '2009-12-13'
+  s.version = '1.0p1'
+  s.date = '2010-01-28'
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
@@ -31,7 +31,6 @@ Gem::Specification.new do |s|
     test/base_test.rb
     test/builder_test.rb
     test/contest.rb
-    test/data/reload_app_file.rb
     test/erb_test.rb
     test/erubis_test.rb
     test/extensions_test.rb
@@ -41,7 +40,6 @@ Gem::Specification.new do |s|
     test/helpers_test.rb
     test/mapped_error_test.rb
     test/middleware_test.rb
-    test/options_test.rb
     test/request_test.rb
     test/response_test.rb
     test/result_test.rb
@@ -49,6 +47,7 @@ Gem::Specification.new do |s|
     test/routing_test.rb
     test/sass_test.rb
     test/server_test.rb
+    test/settings_test.rb
     test/sinatra_test.rb
     test/static_test.rb
     test/templates_test.rb
