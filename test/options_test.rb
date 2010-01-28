@@ -101,10 +101,6 @@ class OptionsTest < Test::Unit::TestCase
     assert_equal 'okay', body
   end
 
-  it 'is accessible from instances via #settings' do
-    assert_equal :development, @base.new.settings.environment
-  end
-
   describe 'clean_trace' do
     def clean_backtrace(trace)
       Sinatra::Base.new.send(:clean_backtrace, trace)
@@ -169,8 +165,11 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'raise_errors' do
-    it 'is enabled on Base' do
+    it 'is enabled on Base except under development' do
+      @base.environment = :test
       assert @base.raise_errors?
+      @base.environment = :development
+      assert !@base.raise_errors?
     end
 
     it 'is enabled on Default only in test' do
@@ -187,11 +186,11 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'show_exceptions' do
-    %w[development test production none].each do |environment|
-      it "is disabled on Base in #{environment} environments" do
-        @base.set(:environment, environment)
-        assert ! @base.show_exceptions?
-      end
+    it 'is disabled on Base except under development' do
+      @base.environment = :test
+      assert ! @base.show_exceptions?
+      @base.environment = :development
+      assert @base.show_exceptions?
     end
 
     it 'is enabled on Default only in development' do
@@ -224,8 +223,11 @@ class OptionsTest < Test::Unit::TestCase
   end
 
   describe 'dump_errors' do
-    it 'is disabled on Base' do
+    it 'is disabled on Base except in development' do
+      @base.environment = :test
       assert ! @base.dump_errors?
+      @base.environment = :development
+      assert @base.dump_errors?
     end
 
     it 'is enabled on Default' do
