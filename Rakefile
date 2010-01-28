@@ -49,16 +49,6 @@ file package('.tar.gz') => %w[pkg/] + spec.files do |f|
   SH
 end
 
-# Rubyforge Release / Publish Tasks ==================================
-
-desc 'Publish gem and tarball to rubyforge'
-task 'release' => [package('.gem'), package('.tar.gz')] do |t|
-  sh <<-end
-    rubyforge add_release sinatra sinatra #{spec.version} #{package('.gem')} &&
-    rubyforge add_file    sinatra sinatra #{spec.version} #{package('.tar.gz')}
-  end
-end
-
 # Website ============================================================
 # Building docs requires HAML and the hanna gem:
 #   gem install mislav-hanna --source=http://gems.github.com
