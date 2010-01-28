@@ -525,6 +525,7 @@ module Sinatra
       return if path[0, public_dir.length] != public_dir
       return unless File.file?(path)
 
+      env['sinatra.static_file'] = path
       send_file path, :disposition => nil
     end
 

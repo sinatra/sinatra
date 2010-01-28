@@ -26,6 +26,12 @@ class StaticTest < Test::Unit::TestCase
     assert_equal File.read(__FILE__), buf1.join
   end
 
+  it 'sets the sinatra.static_file env variable if served' do
+    env = Rack::MockRequest.env_for("/#{File.basename(__FILE__)}")
+    status, headers, body = @app.call(env)
+    assert_equal File.expand_path(__FILE__), env['sinatra.static_file']
+  end
+
   it 'serves HEAD requests for files in the public directory' do
     head "/#{File.basename(__FILE__)}"
     assert ok?
