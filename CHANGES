@@ -80,6 +80,9 @@ the 1.0 release:
    Template engine options should be passed in the second Hash argument
    instead.
 
+ * The `use_in_file_templates` method is obsolete. Use
+   `enable :inline_templates` or `set :inline_templates, 'path/to/file'`
+
  * The 'media_type' helper method is obsolete. Use 'mime_type' instead.
 
  * The 'mime' main and class method is obsolete. Use 'mime_type' instead.
