@@ -34,7 +34,7 @@
    (Adam Wiggins)
 
  * Sinatra apps can now be run with a `-h <addr>` argument to specify
-   the address to bind to. (Simon Rozet)
+   the address to bind to. (Ryan Tomayko)
 
  * Rack::Session::Cookie is now added to the middleware pipeline when
    running in test environments if the :sessions option is set.
