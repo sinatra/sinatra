@@ -76,21 +76,18 @@ class TemplatesTest < Test::Unit::TestCase
     assert_equal "Layout 3!\nHello World!\n", body
   end
 
-  it 'loads templates from source file with inline_templates enabled' do
-    mock_app {
-      enable :inline_templates
-    }
+  it 'loads templates from source file' do
+    mock_app { enable :inline_templates }
     assert_equal "this is foo\n\n", @app.templates[:foo][0]
     assert_equal "X\n= yield\nX\n", @app.templates[:layout][0]
   end
 
-  it 'loads templates from specified views directory' do
-    render_app { render :test, :hello, :views => options.views + '/foo' }
-
-    assert_equal "from another views directory\n", body
+  it 'loads templates from given source file' do
+    mock_app { set :inline_templates, __FILE__ }
+    assert_equal "this is foo\n\n", @app.templates[:foo][0]
   end
 
-  test 'use_in_file_templates simply ignores IO errors' do
+  test 'inline_templates ignores IO errors' do
     assert_nothing_raised {
       mock_app {
         set :inline_templates, '/foo/bar'
@@ -98,6 +95,12 @@ class TemplatesTest < Test::Unit::TestCase
     }
 
     assert @app.templates.empty?
+  end
+
+  it 'loads templates from specified views directory' do
+    render_app { render :test, :hello, :views => options.views + '/foo' }
+
+    assert_equal "from another views directory\n", body
   end
 
   it 'passes locals to the layout' do
