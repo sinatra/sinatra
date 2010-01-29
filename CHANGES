@@ -1,46 +1,54 @@
-= 1.0 / unreleased
+= 1.0 / 2010-01-28 (prerelease)
 
  * It's now possible to register blocks to run after each request using
    after filters. After filters run at the end of each request, after
-   routes and error handlers.
+   routes and error handlers. (Jimmy Schementi)
 
  * Sinatra now uses Tilt <http://github.com/rtomayko/tilt> for rendering
    templates. This adds support for template caching, consistent
    template backtraces, and support for new template engines, like
-   mustache and liquid.
+   mustache and liquid. (Ryan Tomayko)
+
+ * New 'settings' method gives access to options in both class and request
+   scopes. This replaces the 'options' method. (Chris Wanstrath)
 
  * New boolean 'reload_templates' setting controls whether template files
    are reread from disk and recompiled on each request. Template read/compile
-   is cached by default in all environments except development.
+   is cached by default in all environments except development. (Ryan Tomayko)
 
- * New 'settings' method gives access to options in both class and request
-   scopes. This replaces the 'options' method.
- * New 'erubis' helper method for rendering Erubis templates.
+ * New 'erubis' helper method for rendering ERB template with Erubis. The
+   erubis gem is required. (Dylan Egan)
 
  * New 'cache_control' helper method provides a convenient way of
    setting the Cache-Control response header. Takes a variable number
    of boolean directives followed by a hash of value directives, like
-   this:
-       cache_control :public, :must_revalidate, :max_age => 60
+   this: cache_control :public, :must_revalidate, :max_age => 60
+   (Ryan Tomayko)
 
  * New 'expires' helper method is like cache_control but takes an
    integer number of seconds or Time object:
-       expires 300, :public, :must_revalidate
+   expires 300, :public, :must_revalidate
+   (Ryan Tomayko)
+
+ * New request.secure? method for checking for an SSL connection.
+   (Adam Wiggins)
 
  * Sinatra apps can now be run with a `-h <addr>` argument to specify
-   the address to bind to.
+   the address to bind to. (Simon Rozet)
 
  * Rack::Session::Cookie is now added to the middleware pipeline when
    running in test environments if the :sessions option is set.
+   (Simon Rozet)
 
  * Route handlers, before filters, templates, error mappings, and
    middleware are now resolved dynamically up the inheritance hierarchy
    when needed instead of duplicating the superclass's version when
    a new Sinatra::Base subclass is created. This should fix a variety
    of issues with extensions that need to add any of these things
-   to the base class.
+   to the base class. (Ryan Tomayko)
 
-The following Sinatra features have been obsoleted in the 1.0 release:
+ * The X-Cascade response header is set to 'pass' when no matching route
+   is found or all routes pass. (Josh Peek)
 
  * The `sinatra/test` library is obsolete. This includes the
    `Sinatra::Test` module, the `Sinatra::TestHarness` class,
