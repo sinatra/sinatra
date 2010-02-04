@@ -120,6 +120,9 @@ the 1.0 release:
    within a request are now treated as internal server errors and result in
    a 500 response status.
 
+ * The `:methodoverride' option to enable/disable the POST _method hack is
+   obsolete; use `:method_override` instead.
+
 = 0.9.2 / 2009-05-18
 
  * This version is compatible with Rack 1.0. [Rein Henrichs]
