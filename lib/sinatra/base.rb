@@ -679,7 +679,8 @@ module Sinatra
 
       # Sets an option to the given value.  If the value is a proc,
       # the proc will be called every time the option is accessed.
-      def set(option, value=self, &block)         
+      def set(option, value=self, &block)
+        raise ArgumentError if block && value != self
         value = block if block
         if value.kind_of?(Proc)
           metadef(option, &value)

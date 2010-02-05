@@ -27,11 +27,11 @@ class SettingsTest < Test::Unit::TestCase
     assert_equal 'baz', @base.foo
   end
 
-  # TODO: should it raise an error instead?
-  it 'ignores any other value if set using a block' do
-    @base.set(:foo, 'ignore'){ 'baz' }
-    assert @base.respond_to?(:foo)
-    assert_equal 'baz', @base.foo
+  it 'raises an error with a value and a block' do
+    assert_raise ArgumentError do
+      @base.set(:fiz, 'boom!'){ 'baz' }
+    end
+    assert !@base.respond_to?(:fiz)
   end
 
   it "sets multiple settings with a Hash" do
