@@ -21,6 +21,19 @@ class SettingsTest < Test::Unit::TestCase
     assert_equal 'baz', @base.foo
   end
 
+  it 'sets settings using a block' do
+    @base.set(:foo){ 'baz' }
+    assert @base.respond_to?(:foo)
+    assert_equal 'baz', @base.foo
+  end
+
+  # TODO: should it raise an error instead?
+  it 'ignores any other value if set using a block' do
+    @base.set(:foo, 'ignore'){ 'baz' }
+    assert @base.respond_to?(:foo)
+    assert_equal 'baz', @base.foo
+  end
+
   it "sets multiple settings with a Hash" do
     @base.set :foo => 1234,
         :bar => 'Hello World',
