@@ -22,7 +22,7 @@ class ServerTest < Test::Unit::TestCase
   setup do
     mock_app {
       set :server, 'mock'
-      set :host, 'foo.local'
+      set :bind, 'foo.local'
       set :port, 9001
     }
     $stdout = File.open('/dev/null', 'wb')

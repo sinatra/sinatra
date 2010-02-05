@@ -306,10 +306,10 @@ class SettingsTest < Test::Unit::TestCase
     end
   end
 
-  describe 'host' do
+  describe 'bind' do
     it 'defaults to 0.0.0.0' do
-      assert_equal '0.0.0.0', @base.host
-      assert_equal '0.0.0.0', @application.host
+      assert_equal '0.0.0.0', @base.bind
+      assert_equal '0.0.0.0', @application.bind
     end
   end
 

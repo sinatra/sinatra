@@ -833,7 +833,7 @@ module Sinatra
     private
       def route(verb, path, options={}, &block)
         # Because of self.options.host
-        host_name(options.delete(:host)) if options.key?(:host)
+        host_name(options.delete(:bind)) if options.key?(:host)
 
         options.each {|option, args| send(option, *args)}
 
@@ -927,7 +927,7 @@ module Sinatra
         handler_name = handler.name.gsub(/.*::/, '')
         puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
           "on #{port} for #{environment} with backup from #{handler_name}" unless handler_name =~/cgi/i
-        handler.run self, :Host => host, :Port => port do |server|
+        handler.run self, :Host => bind, :Port => port do |server|
           trap(:INT) do
             ## Use thins' hard #stop! if available, otherwise just #stop
             server.respond_to?(:stop!) ? server.stop! : server.stop
@@ -1040,7 +1040,7 @@ module Sinatra
     set :run, false                       # start server via at-exit hook?
     set :running, false                   # is the built-in server running now?
     set :server, %w[thin mongrel webrick]
-    set :host, '0.0.0.0'
+    set :bind, '0.0.0.0'
     set :port, 4567
 
     set :app_file, nil
