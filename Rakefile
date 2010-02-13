@@ -37,16 +37,19 @@ task 'doc'     => ['doc:api']
 task 'doc:api' => ['doc/api/index.html']
 
 file 'doc/api/index.html' => FileList['lib/**/*.rb','README.rdoc'] do |f|
+  require 'rbconfig'
+  hanna = RbConfig::CONFIG['ruby_install_name'].sub('ruby', 'hanna')
   rb_files = f.prerequisites
   sh((<<-end).gsub(/\s+/, ' '))
-    hanna --charset utf8 \
-          --fmt html \
-          --inline-source \
-          --line-numbers \
-          --main README.rdoc \
-          --op doc/api \
-          --title 'Sinatra API Documentation' \
-          #{rb_files.join(' ')}
+    #{hanna}
+      --charset utf8
+      --fmt html
+      --inline-source
+      --line-numbers
+      --main README.rdoc
+      --op doc/api
+      --title 'Sinatra API Documentation'
+      #{rb_files.join(' ')}
   end
 end
 CLEAN.include 'doc/api'
