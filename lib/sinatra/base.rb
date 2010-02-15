@@ -1048,7 +1048,7 @@ module Sinatra
     set :app_file, nil
     set :root, Proc.new { app_file && File.expand_path(File.dirname(app_file)) }
     set :views, Proc.new { root && File.join(root, 'views') }
-    set :reload_templates, Proc.new { !development? }
+    set :reload_templates, Proc.new { development? }
     set :lock, false
 
     set :public, Proc.new { root && File.join(root, 'public') }
