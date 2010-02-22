@@ -6,13 +6,15 @@ context "Symbol Params" do
     Sinatra.application = nil
   end
 
-  specify "should be accessable as Strings or Symbols" do
-    get '/' do
-      params[:foo] + params['foo']
-    end
+  if Rack.version <= '1.0.1'
+    specify "should be accessable as Strings or Symbols" do
+      get '/' do
+        params[:foo] + params['foo']
+      end
 
-    get_it '/', :foo => "X"
-    assert_equal('XX', body)
+      get_it '/', :foo => "X"
+      assert_equal('XX', body)
+    end
   end
 
 end
