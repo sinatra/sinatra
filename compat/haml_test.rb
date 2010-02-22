@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/helper'
 
 context "Haml" do
+  include Mocha::API
 
   setup do
     Sinatra.application = nil
