@@ -396,9 +396,9 @@ running under the development environment.
 == Mime types
 
 When using <tt>send_file</tt> or static files you may have mime types Sinatra
-doesn't understand. Use +mime+ to register them by file extension:
+doesn't understand. Use +mime_type+ to register them by file extension:
 
-  mime :foo, 'text/foo'
+  mime_type :foo, 'text/foo'
 
 == Rack Middleware
 
