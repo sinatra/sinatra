@@ -62,19 +62,18 @@ class TestTest < Test::Unit::TestCase
     assert_equal '42', request_body
   end
 
-  if Rack.version <= '1.0.1'
-    it 'allows to specify params' do
-      get '/', :foo => 'bar'
-      assert_equal 'bar', request_params['foo']
-    end
+  it 'allows to specify params' do
+    get '/', :foo => 'bar'
+    assert_equal 'bar', request_params['foo']
+
+    post '/', :foo => 'bar'
+    assert_equal 'bar', request_params['foo']
   end
 
-  if Rack.version <= '1.0.1'
-    it 'supports nested params' do
-      get '/', :foo => { :x => 'y', :chunky => 'bacon' }
-      assert_equal "y", request_params['foo']['x']
-      assert_equal "bacon", request_params['foo']['chunky']
-    end
+  it 'supports nested params' do
+    get '/', :foo => { :x => 'y', :chunky => 'bacon' }
+    assert_equal "y", request_params['foo']['x']
+    assert_equal "bacon", request_params['foo']['chunky']
   end
 
   it 'provides easy access to response status and body' do
@@ -88,12 +87,10 @@ class TestTest < Test::Unit::TestCase
     assert ok?
   end
 
-  if Rack.version <= '1.0.1'
-    it 'follows redirect' do
-      get '/', :redirect => true
-      follow!
-      assert_equal "you've been redirected", body
-    end
+  it 'follows redirect' do
+    get '/', :redirect => true
+    follow!
+    assert_equal "you've been redirected", body
   end
 
   it 'provides sugar for common HTTP headers' do

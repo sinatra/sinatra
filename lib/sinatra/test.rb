@@ -30,6 +30,7 @@ for more information.
       case
       when body.respond_to?(:to_hash)
         options.merge! body.delete(:env) if body.key?(:env)
+        options[:content_type] ||= 'application/x-www-form-urlencoded'
         options[:input] = param_string(body)
       when body.respond_to?(:to_str)
         options[:input] = body
