@@ -1,3 +1,23 @@
+= 0.9.5 / unreleased
+
+ * Fix use_in_file_templates! with jRuby on Windows.
+
+ * Fix sinatra/test to work with Rack > 1.0.1
+
+ * UI improvements to the show exception page.
+
+ * Slightly improved doc coverage.
+
+ * New 'settings' method gives access to options in both class and request
+   scopes. This replaces the 'options' method. (Chris Wanstrath)
+
+ * The `:methodoverride' option to enable/disable the POST _method hack is
+   obsolete; use `:method_override` instead.
+
+ * The 'media_type' helper method is deprecated. Use 'mime_type' instead.
+
+ * The 'mime' main and class method is deprecated. Use 'mime_type' instead.
+
 = 0.9.4 / 2009-07-26
 
  * The app_file and run options should be properly detected
