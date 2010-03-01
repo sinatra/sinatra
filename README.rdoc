@@ -203,6 +203,20 @@ and overridden on an individual basis.
     sass :stylesheet, :style => :expanded # overridden
   end
 
+=== Less Templates
+
+The less gem/library is required to render Less templates:
+
+  ## You'll need to require less in your app
+  require 'less'
+
+  get '/stylesheet.css' do
+    content_type 'text/css', :charset => 'utf-8'
+    less :stylesheet
+  end
+
+Renders <tt>./views/stylesheet.less</tt>.
+
 === Inline Templates
 
   get '/' do

@@ -38,6 +38,7 @@ Gem::Specification.new do |s|
     test/haml_test.rb
     test/helper.rb
     test/helpers_test.rb
+    test/less_test.rb
     test/mapped_error_test.rb
     test/middleware_test.rb
     test/public/favicon.ico
@@ -64,6 +65,7 @@ Gem::Specification.new do |s|
     test/views/hello.haml
     test/views/hello.sass
     test/views/hello.test
+    test/views/hello.less
     test/views/layout2.builder
     test/views/layout2.erb
     test/views/layout2.erubis
@@ -81,6 +83,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'haml'
   s.add_development_dependency 'builder'
   s.add_development_dependency 'erubis'
+  s.add_development_dependency 'less'
 
   s.has_rdoc = true
   s.homepage = "http://sinatra.rubyforge.org"
