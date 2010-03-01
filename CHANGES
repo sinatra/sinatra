@@ -50,6 +50,8 @@
  * The X-Cascade response header is set to 'pass' when no matching route
    is found or all routes pass. (Josh Peek)
 
+ * Filters do not run when serving static files anymore. (Ryan Tomayko)
+
 The following Sinatra features have been obsoleted (removed entirely) in
 the 1.0 release:
 
