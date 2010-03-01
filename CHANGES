@@ -33,7 +33,7 @@
  * New request.secure? method for checking for an SSL connection.
    (Adam Wiggins)
 
- * Sinatra apps can now be run with a `-h <addr>` argument to specify
+ * Sinatra apps can now be run with a `-o <addr>` argument to specify
    the address to bind to. (Ryan Tomayko)
 
  * Rack::Session::Cookie is now added to the middleware pipeline when
