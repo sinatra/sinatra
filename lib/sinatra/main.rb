@@ -17,7 +17,7 @@ module Sinatra
         op.on('-e env')    { |val| set :environment, val.to_sym }
         op.on('-s server') { |val| set :server, val }
         op.on('-p port')   { |val| set :port, val.to_i }
-        op.on('-b addr')   { |val| set :bind, val }
+        op.on('-o addr')   { |val| set :bind, val }
       }.parse!(ARGV.dup)
     end
   end
