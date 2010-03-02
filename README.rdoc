@@ -579,8 +579,8 @@ system. The +Sinatra::Application+ class -- a special subclass of
 Sinatra::Base -- receives all :get, :put, :post, :delete, :before,
 :error, :not_found, :configure, and :set messages sent to the
 top-level. Have a look at the code for yourself: here's the
-{Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/base.rb#L1064]
-being {included into the main namespace}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/main.rb#L25].
+{Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
+being {included into the main namespace}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28]
 
 == Command line
 
