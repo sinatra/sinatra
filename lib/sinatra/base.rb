@@ -240,6 +240,7 @@ module Sinatra
     # matches the time specified, execution is immediately halted with a
     # '304 Not Modified' response.
     def last_modified(time)
+      return unless time
       time = time.to_time if time.respond_to?(:to_time)
       time = time.httpdate if time.respond_to?(:httpdate)
       response['Last-Modified'] = time

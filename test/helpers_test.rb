@@ -451,6 +451,15 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal 304, status
       assert_equal '', body
     end
+
+    it 'ignores nil' do
+      mock_app {
+        get '/' do last_modified nil; 200; end
+      }
+
+      get '/'
+      assert ! response['Last-Modified']
+    end
   end
 
   describe 'etag' do
