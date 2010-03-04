@@ -14,7 +14,7 @@ def sinatra_warn(*message) #:nodoc:
 end
 
 module Sinatra
-  VERSION = '0.9.4'
+  VERSION = '0.9.5'
 
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
