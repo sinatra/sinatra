@@ -1113,11 +1113,9 @@ module Sinatra
   # top-level. Subclassing Sinatra::Base is heavily recommended for
   # modular applications.
   class Application < Base
-    set :sessions, false
     set :logging, Proc.new { ! test? }
     set :method_override, true
     set :run, Proc.new { ! test? }
-    set :static, true
 
     def self.register(*extensions, &block) #:nodoc:
       added_methods = extensions.map {|m| m.public_instance_methods }.flatten
