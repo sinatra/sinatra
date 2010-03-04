@@ -699,7 +699,7 @@ module Sinatra
         if value.kind_of?(Proc)
           metadef(option, &value)
           metadef("#{option}?") { !!__send__(option) }
-          metadef("#{option}=") { |val| set(option, Proc.new{val}) }
+          metadef("#{option}=") { |val| metadef(option, &Proc.new{val}) }
         elsif value == self && option.respond_to?(:to_hash)
           option.to_hash.each { |k,v| set(k, v) }
         elsif respond_to?("#{option}=")
