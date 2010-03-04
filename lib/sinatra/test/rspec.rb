@@ -5,7 +5,7 @@ require 'spec/interop/test'
 
 Sinatra::Test.deprecate('RSpec')
 
-Sinatra::Default.set(
+Sinatra::Application.set(
   :environment => :test,
   :run => false,
   :raise_errors => true,

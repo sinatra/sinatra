@@ -5,7 +5,7 @@ Sinatra::Test.deprecate('test/unit')
 
 Test::Unit::TestCase.send :include, Sinatra::Test
 
-Sinatra::Default.set(
+Sinatra::Application.set(
   :environment => :test,
   :run => false,
   :raise_errors => true,

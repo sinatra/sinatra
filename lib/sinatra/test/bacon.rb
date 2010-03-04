@@ -3,7 +3,7 @@ require 'sinatra/test'
 
 Sinatra::Test.deprecate('Bacon')
 
-Sinatra::Default.set(
+Sinatra::Application.set(
   :environment => :test,
   :run => false,
   :raise_errors => true,

@@ -45,7 +45,7 @@ module Sinatra
   module Compat #:nodoc:
   end
 
-  # Make Sinatra::EventContext an alias for Sinatra::Default to unbreak plugins.
+  # Make Sinatra::EventContext an alias for Sinatra::Application to unbreak plugins.
   def self.const_missing(const_name) #:nodoc:
     if const_name == :EventContext
       const_set :EventContext, Sinatra::Application

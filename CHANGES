@@ -11,6 +11,11 @@
  * New 'settings' method gives access to options in both class and request
    scopes. This replaces the 'options' method. (Chris Wanstrath)
 
+ * `Sinatra::Default` is obsolete; use `Sinatra::Base` instead.
+   `Sinatra::Base` acts more like `Sinatra::Default` in development mode.
+   For example, static file serving and sexy development error pages are
+   enabled by default.
+
  * The `:methodoverride' option to enable/disable the POST _method hack is
    obsolete; use `:method_override` instead.
 

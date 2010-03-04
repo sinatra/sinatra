@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/helper'
 
 class MiddlewareTest < Test::Unit::TestCase
   setup do
-    @app = mock_app(Sinatra::Default) {
+    @app = mock_app(Sinatra::Base) {
       get '/*' do
         response.headers['X-Tests'] = env['test.ran'].
           map { |n| n.split('::').last }.

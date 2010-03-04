@@ -1,7 +1,7 @@
 require 'sinatra/base'
 
 module Sinatra
-  class Default < Base
+  class Application < Base
 
     # we assume that the first file that requires 'sinatra' is the
     # app_file. all other path related options are calculated based

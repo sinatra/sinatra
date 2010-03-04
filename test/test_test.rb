@@ -114,7 +114,7 @@ class TestTest < Test::Unit::TestCase
   end
 
   it 'allow to test session easily' do
-    app = mock_app(Sinatra::Default) {
+    app = mock_app(Sinatra::Base) {
       get '/' do
         session['foo'] = 'bar'
         200
@@ -142,9 +142,9 @@ class TestTest < Test::Unit::TestCase
   end
 
   it 'sets the environment to :test on include' do
-    Sinatra::Default.set(:environment, :production)
+    Sinatra::Application.set(:environment, :production)
     Class.new { include Sinatra::Test }
-    assert_equal :test, Sinatra::Default.environment
+    assert_equal :test, Sinatra::Application.environment
   end
 
   def test_TestHarness

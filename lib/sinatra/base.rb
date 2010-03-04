@@ -1084,7 +1084,29 @@ module Sinatra
   # Sinatra::Base instead and set options as needed.
   class Default < Base
     set :raise_errors, Proc.new { test? }
-    set :show_exceptions, Proc.new { development? }
+    set :dump_errors, true
+    set :sessions, false
+    set :logging, Proc.new { ! test? }
+    set :method_override, true
+    set :run, Proc.new { ! test? }
+    set :static, true
+
+    def self.inherited(subclass)
+      sinatra_warn 'Sinatra::Default is deprecated; ' \
+                   'subclass Sinatra::Base instead'
+      super
+    end
+  end
+
+  # Execution context for classic style (top-level) applications. All
+  # DSL methods executed on main are delegated to this class.
+  #
+  # The Application class should not be subclassed, unless you want to
+  # inherit all settings, routes, handlers, and error pages from the
+  # top-level. Subclassing Sinatra::Base is heavily recommended for
+  # modular applications.
+  class Application < Base
+    set :raise_errors, Proc.new { test? }
     set :dump_errors, true
     set :sessions, false
     set :logging, Proc.new { ! test? }
@@ -1097,19 +1119,6 @@ module Sinatra
       Delegator.delegate(*added_methods)
       super(*extensions, &block)
     end
-
-    def self.inherited(subclass)
-      if subclass.to_s != 'Sinatra::Application'
-        sinatra_warn 'Sinatra::Default is deprecated;' +
-          ' subclass Sinatra::Base instead'
-      end
-      super
-    end
-  end
-
-  # The top-level Application. All DSL methods executed on main are delegated
-  # to this class.
-  class Application < Default
   end
 
   # Sinatra delegation mixin. Mixing this module into an object causes all
@@ -1143,12 +1152,12 @@ module Sinatra
 
   # Extend the top-level DSL with the modules provided.
   def self.register(*extensions, &block)
-    Default.register(*extensions, &block)
+    Application.register(*extensions, &block)
   end
 
   # Include the helper modules provided in Sinatra's request context.
   def self.helpers(*extensions, &block)
-    Default.helpers(*extensions, &block)
+    Application.helpers(*extensions, &block)
   end
 end
 
