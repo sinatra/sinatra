@@ -606,10 +606,16 @@ module Sinatra
       @env['sinatra.error'] = boom
 
       dump_errors!(boom) if settings.dump_errors?
-      raise boom         if settings.raise_errors? || settings.show_exceptions?
+      raise boom         if settings.show_exceptions?
 
       @response.status = 500
-      error_block! boom.class, Exception
+      if res = error_block!(boom.class)
+        res
+      elsif settings.raise_errors?
+        raise boom
+      else
+        error_block!(Exception)
+      end
     end
 
     # Find an custom error block for the key(s) specified.
@@ -619,8 +625,7 @@ module Sinatra
         while base.respond_to?(:errors)
           if block = base.errors[key]
             # found a handler, eval and return result
-            res = instance_eval(&block)
-            return res
+            return instance_eval(&block)
           else
             base = base.superclass
           end

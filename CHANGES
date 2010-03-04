@@ -47,6 +47,13 @@
    of issues with extensions that need to add any of these things
    to the base class. (Ryan Tomayko)
 
+ * Exception error handlers always override the raise_errors option now.
+   Previously, all exceptions would be raised outside of the application
+   when the raise_errors option was enabled, even if an error handler was
+   defined for that exception. The raise_errors option now controls
+   whether unhandled exceptions are raised (enabled) or if a generic 500
+   error is returned (disabled). (Ryan Tomayko)
+
  * The X-Cascade response header is set to 'pass' when no matching route
    is found or all routes pass. (Josh Peek)
 

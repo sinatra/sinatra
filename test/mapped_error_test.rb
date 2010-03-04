@@ -55,15 +55,26 @@ class MappedErrorTest < Test::Unit::TestCase
       assert_equal 'looks good', body
     end
 
-    it "raises without calling the handler when the raise_errors options is set" do
+    it "raises errors from the app when raise_errors set and no handler defined" do
       mock_app {
         set :raise_errors, true
-        error(FooError) { "she's not there." }
         get '/' do
           raise FooError
         end
       }
       assert_raise(FooError) { get '/' }
+    end
+
+    it "calls error handlers before raising errors even when raise_errors is set" do
+      mock_app {
+        set :raise_errors, true
+        error(FooError) { "she's there." }
+        get '/' do
+          raise FooError
+        end
+      }
+      assert_nothing_raised { get '/' }
+      assert_equal 500, status
     end
 
     it "never raises Sinatra::NotFound beyond the application" do
