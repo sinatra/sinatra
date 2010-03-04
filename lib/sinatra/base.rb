@@ -8,6 +8,12 @@ require 'sinatra/showexceptions'
 # require tilt if available; fall back on bundled version.
 begin
   require 'tilt'
+  if Tilt::VERSION < '0.7'
+    warn "WARN: sinatra requires tilt >= 0.7; you have #{Tilt::VERSION}. " +
+         "loading bundled version..."
+    Object.send :remove_const, :Tilt
+    raise LoadError
+  end
 rescue LoadError
   require 'sinatra/tilt'
 end
