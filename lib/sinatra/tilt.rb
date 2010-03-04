@@ -1,10 +1,9 @@
 module Tilt
-  VERSION = '0.4'
+  VERSION = '0.7'
 
   @template_mappings = {}
 
-  # Hash of template path pattern => template implementation
-  # class mappings.
+  # Hash of template path pattern => template implementation class mappings.
   def self.mappings
     @template_mappings
   end
@@ -25,7 +24,7 @@ module Tilt
     end
   end
 
-  # Lookup a template class given for the given filename or file
+  # Lookup a template class for the given filename or file
   # extension. Return nil when no implementation is found.
   def self.[](file)
     if @template_mappings.key?(pattern = file.to_s.downcase)
@@ -44,9 +43,24 @@ module Tilt
     end
   end
 
+  # Mixin allowing template compilation on scope objects.
+  #
+  # Including this module in scope objects passed to Template#render
+  # causes template source to be compiled to methods the first time they're
+  # used. This can yield significant (5x-10x) performance increases for
+  # templates that support it (ERB, Erubis, Builder).
+  #
+  # It's also possible (though not recommended) to include this module in
+  # Object to enable template compilation globally. The downside is that
+  # the template methods will polute the global namespace and could lead to
+  # unexpected behavior.
+  module CompileSite
+    def __tilt__
+    end
+  end
 
   # Base class for template implementations. Subclasses must implement
-  # the #compile! method and one of the #evaluate or #template_source
+  # the #prepare method and one of the #evaluate or #template_source
   # methods.
   class Template
     # Template source; loaded from a file or given directly.
@@ -63,51 +77,55 @@ module Tilt
     # interface.
     attr_reader :options
 
-    # Create a new template with the file, line, and options specified. By
-    # default, template data is read from the file specified. When a block
-    # is given, it should read template data and return as a String. When
-    # file is nil, a block is required.
-    #
-    # The #initialize_engine method is called if this is the very first
-    # time this template subclass has been initialized.
-    def initialize(file=nil, line=1, options={}, &block)
-      raise ArgumentError, "file or block required" if file.nil? && block.nil?
-      options, line = line, 1 if line.is_a?(Hash)
-      @file = file
-      @line = line || 1
-      @options = options || {}
-      @reader = block || lambda { |t| File.read(file) }
+    # Used to determine if this class's initialize_engine method has
+    # been called yet.
+    @engine_initialized = false
+    class << self
+      attr_accessor :engine_initialized
+      alias engine_initialized? engine_initialized
+    end
 
-      if !self.class.engine_initialized
+    # Create a new template with the file, line, and options specified. By
+    # default, template data is read from the file. When a block is given,
+    # it should read template data and return as a String. When file is nil,
+    # a block is required.
+    #
+    # All arguments are optional.
+    def initialize(file=nil, line=1, options={}, &block)
+      @file, @line, @options = nil, 1, {}
+
+      [options, line, file].compact.each do |arg|
+        case
+        when arg.respond_to?(:to_str)  ; @file = arg.to_str
+        when arg.respond_to?(:to_int)  ; @line = arg.to_int
+        when arg.respond_to?(:to_hash) ; @options = arg.to_hash
+        else raise TypeError
+        end
+      end
+
+      raise ArgumentError, "file or block required" if (@file || block).nil?
+
+      # call the initialize_engine method if this is the very first time
+      # an instance of this class has been created.
+      if !self.class.engine_initialized?
         initialize_engine
         self.class.engine_initialized = true
       end
-    end
 
-    # Called once and only once for each template subclass the first time
-    # the template class is initialized. This should be used to require the
-    # underlying template library and perform any initial setup.
-    def initialize_engine
-    end
-    @engine_initialized = false
-    class << self ; attr_accessor :engine_initialized ; end
+      # used to generate unique method names for template compilation
+      stamp = (Time.now.to_f * 10000).to_i
+      @_prefix = "__tilt_O#{object_id.to_s(16)}T#{stamp.to_s(16)}"
 
-
-    # Load template source and compile the template. The template is
-    # loaded and compiled the first time this method is called; subsequent
-    # calls are no-ops.
-    def compile
-      if @data.nil?
-        @data = @reader.call(self)
-        compile!
-      end
+      # load template data and prepare
+      @reader = block || lambda { |t| File.read(@file) }
+      @data = @reader.call(self)
+      prepare
     end
 
     # Render the template in the given scope with the locals specified. If a
     # block is given, it is typically available within the template via
     # +yield+.
     def render(scope=Object.new, locals={}, &block)
-      compile
       evaluate scope, locals || {}, &block
     end
 
@@ -127,26 +145,56 @@ module Tilt
     end
 
   protected
-    # Do whatever preparation is necessary to "compile" the template.
-    # Called immediately after template #data is loaded. Instance variables
-    # set in this method are available when #evaluate is called.
-    #
-    # Subclasses must provide an implementation of this method.
-    def compile!
-      raise NotImplementedError
+    # Called once and only once for each template subclass the first time
+    # the template class is initialized. This should be used to require the
+    # underlying template library and perform any initial setup.
+    def initialize_engine
     end
 
-    # Process the template and return the result. Subclasses should override
-    # this method unless they implement the #template_source.
+    # Do whatever preparation is necessary to setup the underlying template
+    # engine. Called immediately after template data is loaded. Instance
+    # variables set in this method are available when #evaluate is called.
+    #
+    # Subclasses must provide an implementation of this method.
+    def prepare
+      if respond_to?(:compile!)
+        # backward compat with tilt < 0.6; just in case
+        warn 'Tilt::Template#compile! is deprecated; implement #prepare instead.'
+        compile!
+      else
+        raise NotImplementedError
+      end
+    end
+
+    # Process the template and return the result. When the scope mixes in
+    # the Tilt::CompileSite module, the template is compiled to a method and
+    # reused given identical locals keys. When the scope object
+    # does not mix in the CompileSite module, the template source is
+    # evaluated with instance_eval. In any case, template executation
+    # is guaranteed to be performed in the scope object with the locals
+    # specified and with support for yielding to the block.
     def evaluate(scope, locals, &block)
-      source, offset = local_assignment_code(locals)
-      source = [source, template_source].join("\n")
-      scope.instance_eval source, eval_file, line - offset
+      if scope.respond_to?(:__tilt__)
+        method_name = compiled_method_name(locals.keys.hash)
+        if scope.respond_to?(method_name)
+          # fast path
+          scope.send method_name, locals, &block
+        else
+          # compile first and then run
+          compile_template_method(method_name, locals)
+          scope.send method_name, locals, &block
+        end
+      else
+        source, offset = local_assignment_code(locals)
+        source = [source, template_source].join("\n")
+        scope.instance_eval source, eval_file, line - offset
+      end
     end
 
     # Return a string containing the (Ruby) source code for the template. The
     # default Template#evaluate implementation requires this method be
-    # defined.
+    # defined and guarantees correct file/line handling, custom scopes, and
+    # support for template compilation when the scope object allows it.
     def template_source
       raise NotImplementedError
     end
@@ -156,6 +204,41 @@ module Tilt
       return ['', 1] if locals.empty?
       source = locals.collect { |k,v| "#{k} = locals[:#{k}]" }
       [source.join("\n"), source.length]
+    end
+
+    def compiled_method_name(locals_hash)
+      "#{@_prefix}L#{locals_hash.to_s(16).sub('-', 'n')}"
+    end
+
+    def compile_template_method(method_name, locals)
+      source, offset = local_assignment_code(locals)
+      source = [source, template_source].join("\n")
+      offset += 1
+
+      # add the new method
+      CompileSite.module_eval <<-RUBY, eval_file, line - offset
+        def #{method_name}(locals)
+          #{source}
+        end
+      RUBY
+
+      # setup a finalizer to remove the newly added method
+      ObjectSpace.define_finalizer self,
+        Template.compiled_template_method_remover(CompileSite, method_name)
+    end
+
+    def self.compiled_template_method_remover(site, method_name)
+      proc { |oid| garbage_collect_compiled_template_method(site, method_name) }
+    end
+
+    def self.garbage_collect_compiled_template_method(site, method_name)
+      site.module_eval do
+        begin
+          remove_method(method_name)
+        rescue NameError
+          # method was already removed (ruby >= 1.9)
+        end
+      end
     end
 
     def require_template_library(name)
@@ -173,7 +256,7 @@ module Tilt
   #   cache = Tilt::Cache.new
   #   cache.fetch(path, line, options) { Tilt.new(path, line, options) }
   #
-  # Subsequent invocations return the already compiled template object.
+  # Subsequent invocations return the already loaded template object.
   class Cache
     def initialize
       @cache = {}
@@ -195,7 +278,7 @@ module Tilt
   # The template source is evaluated as a Ruby string. The #{} interpolation
   # syntax can be used to generated dynamic output.
   class StringTemplate < Template
-    def compile!
+    def prepare
       @code = "%Q{#{data}}"
     end
 
@@ -213,8 +296,9 @@ module Tilt
       require_template_library 'erb' unless defined? ::ERB
     end
 
-    def compile!
-      @engine = ::ERB.new(data, options[:safe], options[:trim], '@_out_buf')
+    def prepare
+      @outvar = (options[:outvar] || '_erbout').to_s
+      @engine = ::ERB.new(data, options[:safe], options[:trim], @outvar)
     end
 
     def template_source
@@ -222,22 +306,23 @@ module Tilt
     end
 
     def evaluate(scope, locals, &block)
-      source, offset = local_assignment_code(locals)
-      source = [source, template_source].join("\n")
-
-      original_out_buf =
-        scope.instance_variables.any? { |var| var.to_sym == :@_out_buf } &&
-        scope.instance_variable_get(:@_out_buf)
-
-      scope.instance_eval source, eval_file, line - offset
-
-      output = scope.instance_variable_get(:@_out_buf)
-      scope.instance_variable_set(:@_out_buf, original_out_buf)
-
-      output
+      preserve_outvar_value(scope) { super }
     end
 
   private
+    # Retains the previous value of outvar when configured to use
+    # an instance variable. This allows multiple templates to be rendered
+    # within the context of an object without overwriting the outvar.
+    def preserve_outvar_value(scope)
+      if @outvar[0] == ?@
+        previous = scope.instance_variable_get(@outvar)
+        output = yield
+        scope.instance_variable_set(@outvar, previous)
+        output
+      else
+        yield
+      end
+    end
 
     # ERB generates a line to specify the character coding of the generated
     # source in 1.9. Account for this in the line offset.
@@ -258,13 +343,17 @@ module Tilt
       require_template_library 'erubis' unless defined? ::Erubis
     end
 
-    def compile!
-      Erubis::Eruby.class_eval(%Q{def add_preamble(src) src << "@_out_buf = _buf = '';" end})
+    def prepare
+      @options.merge!(:preamble => false, :postamble => false)
+      @outvar = (options.delete(:outvar) || '_erbout').to_s
       @engine = ::Erubis::Eruby.new(data, options)
     end
 
-  private
+    def template_source
+      ["#{@outvar} = _buf = ''", @engine.src, "_buf.to_s"].join(";")
+    end
 
+  private
     # Erubis doesn't have ERB's line-off-by-one under 1.9 problem. Override
     # and adjust back.
     if RUBY_VERSION >= '1.9.0'
@@ -284,15 +373,37 @@ module Tilt
       require_template_library 'haml' unless defined? ::Haml::Engine
     end
 
-    def compile!
+    def prepare
       @engine = ::Haml::Engine.new(data, haml_options)
     end
 
-    def evaluate(scope, locals, &block)
-      @engine.render(scope, locals, &block)
+    # Precompiled Haml source. Taken from the precompiled_with_ambles
+    # method in Haml::Precompiler:
+    # http://github.com/nex3/haml/blob/master/lib/haml/precompiler.rb#L111-126
+    def template_source
+      @engine.instance_eval do
+        <<-RUBY
+          _haml_locals = locals
+          begin
+            extend Haml::Helpers
+            _hamlout = @haml_buffer = Haml::Buffer.new(@haml_buffer, #{options_for_buffer.inspect})
+            _erbout = _hamlout.buffer
+            __in_erb_template = true
+            #{precompiled}
+            #{precompiled_method_return_value}
+          ensure
+            @haml_buffer = @haml_buffer.upper
+          end
+        RUBY
+      end
     end
 
   private
+    def local_assignment_code(locals)
+      source, offset = super
+      [source, offset + 6]
+    end
+
     def haml_options
       options.merge(:filename => eval_file, :line => line)
     end
@@ -309,12 +420,12 @@ module Tilt
       require_template_library 'sass' unless defined? ::Sass::Engine
     end
 
-    def compile!
+    def prepare
       @engine = ::Sass::Engine.new(data, sass_options)
     end
 
     def evaluate(scope, locals, &block)
-      @engine.render
+      @output ||= @engine.render
     end
 
   private
@@ -325,6 +436,26 @@ module Tilt
   register 'sass', SassTemplate
 
 
+  # Lessscss template implementation. See:
+  # http://lesscss.org/
+  #
+  # Less templates do not support object scopes, locals, or yield.
+  class LessTemplate < Template
+    def initialize_engine
+      require_template_library 'less' unless defined? ::Less::Engine
+    end
+
+    def prepare
+      @engine = ::Less::Engine.new(data)
+    end
+
+    def evaluate(scope, locals, &block)
+      @engine.to_css
+    end
+  end
+  register 'less', LessTemplate
+
+
   # Builder template implementation. See:
   # http://builder.rubyforge.org/
   class BuilderTemplate < Template
@@ -332,7 +463,7 @@ module Tilt
       require_template_library 'builder' unless defined?(::Builder)
     end
 
-    def compile!
+    def prepare
     end
 
     def evaluate(scope, locals, &block)
@@ -371,7 +502,7 @@ module Tilt
       require_template_library 'liquid' unless defined? ::Liquid::Template
     end
 
-    def compile!
+    def prepare
       @engine = ::Liquid::Template.parse(data)
     end
 
@@ -381,9 +512,8 @@ module Tilt
         scope  = scope.to_h.inject({}){ |h,(k,v)| h[k.to_s] = v ; h }
         locals = scope.merge(locals)
       end
-      # TODO: Is it possible to lazy yield ?
       locals['yield'] = block.nil? ? '' : yield
-      locals['content'] = block.nil? ? '' : yield
+      locals['content'] = locals['yield']
       @engine.render(locals)
     end
   end
@@ -405,7 +535,7 @@ module Tilt
       require_template_library 'rdiscount' unless defined? ::RDiscount
     end
 
-    def compile!
+    def prepare
       @engine = RDiscount.new(data, *flags)
     end
 
@@ -418,22 +548,22 @@ module Tilt
   register 'md', RDiscountTemplate
 
 
-# RedCloth implementation. See:
-# http://redcloth.org/
-class RedClothTemplate < Template
-  def initialize_engine
-    require_template_library 'redcloth' unless defined? ::RedCloth
-  end
+  # RedCloth implementation. See:
+  # http://redcloth.org/
+  class RedClothTemplate < Template
+    def initialize_engine
+      require_template_library 'redcloth' unless defined? ::RedCloth
+    end
 
-  def compile!
-    @engine = RedCloth.new(data)
-  end
+    def prepare
+      @engine = RedCloth.new(data)
+    end
 
-  def evaluate(scope, locals, &block)
-    @engine.to_html
+    def evaluate(scope, locals, &block)
+      @engine.to_html
+    end
   end
-end
-register 'textile', RedClothTemplate
+  register 'textile', RedClothTemplate
 
 
   # Mustache is written and maintained by Chris Wanstrath. See:
@@ -449,11 +579,12 @@ register 'textile', RedClothTemplate
       require_template_library 'mustache' unless defined? ::Mustache
     end
 
-    def compile!
+    def prepare
       Mustache.view_namespace = options[:namespace]
+      Mustache.view_path = options[:view_path] || options[:mustaches]
       @engine = options[:view] || Mustache.view_class(name)
       options.each do |key, value|
-        next if %w[view namespace mustaches].include?(key.to_s)
+        next if %w[view view_path namespace mustaches].include?(key.to_s)
         @engine.send("#{key}=", value) if @engine.respond_to? "#{key}="
       end
     end
@@ -482,6 +613,7 @@ register 'textile', RedClothTemplate
   end
   register 'mustache', MustacheTemplate
 
+
   # RDoc template. See:
   # http://rdoc.rubyforge.org/
   #
@@ -496,7 +628,7 @@ register 'textile', RedClothTemplate
       end
     end
 
-    def compile!
+    def prepare
       markup = RDoc::Markup::ToHtml.new
       @engine = markup.convert(data)
     end
@@ -506,4 +638,22 @@ register 'textile', RedClothTemplate
     end
   end
   register 'rdoc', RDocTemplate
+
+
+  # CoffeeScript info:
+  # http://jashkenas.github.com/coffee-script/
+  class CoffeeTemplate < Template
+    def initialize_engine
+      require_template_library 'coffee-script' unless defined? ::CoffeeScript
+    end
+
+    def prepare
+      @engine = ::CoffeeScript::compile(data, options)
+    end
+
+    def evaluate(scope, locals, &block)
+      @engine
+    end
+  end
+  register 'coffee', CoffeeTemplate
 end

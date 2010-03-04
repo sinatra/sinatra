@@ -1,8 +1,9 @@
 require File.dirname(__FILE__) + '/helper'
 
 class TestTemplate < Tilt::Template
-  def compile!
+  def prepare
   end
+  alias compile! prepare # for tilt < 0.7
 
   def evaluate(scope, locals={}, &block)
     inner = block ? block.call : ''
