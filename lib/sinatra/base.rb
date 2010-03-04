@@ -346,20 +346,23 @@ module Sinatra
 
     def compile_template(engine, data, options, views)
       @template_cache.fetch engine, data, options do
+        template = Tilt[engine]
+        raise "Template engine not found: #{engine}" if template.nil?
+
         case
         when data.is_a?(Symbol)
           body, path, line = self.class.templates[data]
           if body
             body = body.call if body.respond_to?(:call)
-            Tilt[engine].new(path, line.to_i, options) { body }
+            template.new(path, line.to_i, options) { body }
           else
             path = ::File.join(views, "#{data}.#{engine}")
-            Tilt[engine].new(path, 1, options)
+            template.new(path, 1, options)
           end
         when data.is_a?(Proc) || data.is_a?(String)
           body = data.is_a?(String) ? Proc.new { data } : data
           path, line = self.class.caller_locations.first
-          Tilt[engine].new(path, line.to_i, options, &body)
+          template.new(path, line.to_i, options, &body)
         else
           raise ArgumentError
         end
