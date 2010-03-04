@@ -288,6 +288,8 @@ module Sinatra
   #   :locals       A hash with local variables that should be available
   #                 in the template
   module Templates
+    include Tilt::CompileSite
+
     def erb(template, options={}, locals={})
       options[:outvar] = '@_out_buf'
       render :erb, template, options, locals
