@@ -289,10 +289,12 @@ module Sinatra
   #                 in the template
   module Templates
     def erb(template, options={}, locals={})
+      options[:outvar] = '@_out_buf'
       render :erb, template, options, locals
     end
 
     def erubis(template, options={}, locals={})
+      options[:outvar] = '@_out_buf'
       render :erubis, template, options, locals
     end
 
