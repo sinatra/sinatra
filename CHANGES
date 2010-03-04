@@ -1,4 +1,4 @@
-= 0.9.5 / unreleased
+= 0.9.5 / 2010-03-04
 
  * Fix use_in_file_templates! with jRuby on Windows.
 
