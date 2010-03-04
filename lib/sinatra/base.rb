@@ -5,6 +5,14 @@ require 'rack'
 require 'rack/builder'
 require 'sinatra/showexceptions'
 
+# Like Kernel#warn but outputs the location that triggered the warning.
+def sinatra_warn(*message) #:nodoc:
+  line = caller.
+    detect { |line| line !~ /(?:lib\/sinatra\/|__DELEGATE__)/ }.
+    sub(/:in .*/, '')
+  warn "#{line}: warning: #{message.join(' ')}"
+end
+
 module Sinatra
   VERSION = '0.9.4'
 
@@ -109,7 +117,7 @@ module Sinatra
     end
 
     def media_type(type)
-      warn "media_type is deprecated; use mime_type instead"
+      sinatra_warn "media_type is deprecated; use mime_type instead"
       mime_type(type)
     end
 
@@ -346,7 +354,7 @@ module Sinatra
     end
 
     def require_warn(engine)
-      warn "Auto-require of #{engine} is deprecated; add require '#{engine}' to your app."
+      sinatra_warn "auto-require of #{engine} is deprecated; add require '#{engine}' to your app."
       require engine.downcase
     end
   end
@@ -678,7 +686,7 @@ module Sinatra
       end
 
       def use_in_file_templates!(file=nil)
-        warn "use_in_file_templates! is deprecated; " \
+        sinatra_warn "use_in_file_templates! is deprecated; " \
           "use enable :inline_templates instead"
         set :inline_templates, file
       end
@@ -719,7 +727,7 @@ module Sinatra
       end
 
       def media_type(type, value=nil)
-        warn "media_type is deprecated; use mime_type instead"
+        sinatra_warn "media_type is deprecated; use mime_type instead"
         mime_type(type, value)
       end
 
