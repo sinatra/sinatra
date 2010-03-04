@@ -7,6 +7,6 @@ context "Compat" do
   end
 
   specify "makes EventContext available" do
-    assert_same Sinatra::Default, Sinatra::EventContext
+    assert_same Sinatra::Application, Sinatra::EventContext
   end
 end

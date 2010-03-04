@@ -48,9 +48,9 @@ module Sinatra
   # Make Sinatra::EventContext an alias for Sinatra::Default to unbreak plugins.
   def self.const_missing(const_name) #:nodoc:
     if const_name == :EventContext
-      const_set :EventContext, Sinatra::Default
-      sinatra_warn 'Sinatra::EventContext is deprecated; use Sinatra::Default instead.'
-      Sinatra::Default
+      const_set :EventContext, Sinatra::Application
+      sinatra_warn 'Sinatra::EventContext is deprecated; use Sinatra::Application instead.'
+      Sinatra::Application
     else
       super
     end
