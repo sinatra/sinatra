@@ -21,7 +21,7 @@ class RenderBacktraceTest < Test::Unit::TestCase
 
   def backtrace_app(&block)
     mock_app {
-      use_in_file_templates!
+      enable :inline_templates
       set :views, RenderBacktraceTest::VIEWS
       template :builder_template do
         'raise "error"'

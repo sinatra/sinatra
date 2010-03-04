@@ -68,9 +68,9 @@ class TemplatesTest < Test::Unit::TestCase
     assert_equal "Layout 3!\nHello World!\n", body
   end
 
-  it 'loads templates from source file with use_in_file_templates!' do
+  it 'loads templates from source file with inline templates' do
     mock_app {
-      use_in_file_templates!
+      enable :inline_templates
     }
     assert_equal "this is foo\n\n", @app.templates[:foo][:template]
     assert_equal "X\n= yield\nX\n", @app.templates[:layout][:template]
@@ -82,10 +82,10 @@ class TemplatesTest < Test::Unit::TestCase
     assert_equal "from another views directory\n", body
   end
 
-  test 'use_in_file_templates simply ignores IO errors' do
+  test 'inline_templates simply ignores IO errors' do
     assert_nothing_raised {
       mock_app {
-        use_in_file_templates!('/foo/bar')
+        set :inline_templates, '/foo/bar'
       }
     }
 
