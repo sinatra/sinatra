@@ -195,10 +195,11 @@ class SettingsTest < Test::Unit::TestCase
   end
 
   describe 'raise_errors' do
-    it 'is enabled on Base except under development' do
+    it 'is enabled on Base only in test' do
+      assert ! @base.raise_errors?
+
+      @base.set(:environment, :test)
       assert @base.raise_errors?
-      @base.environment = :development
-      assert !@base.raise_errors?
     end
 
     it 'is enabled on Application only in test' do
@@ -241,20 +242,20 @@ class SettingsTest < Test::Unit::TestCase
   end
 
   describe 'dump_errors' do
-    it 'is disabled on Base except in development' do
+    it 'is disabled on Base in test' do
+      @base.environment = :test
       assert ! @base.dump_errors?
       @base.environment = :development
       assert @base.dump_errors?
-    end
-
-    it 'is enabled on Application' do
-      assert @application.dump_errors?
+      @base.environment = :production
+      assert @base.dump_errors?
     end
 
     it 'dumps exception with backtrace to rack.errors' do
       klass = Sinatra.new(Sinatra::Application)
 
       mock_app(klass) {
+        enable :dump_errors
         disable :raise_errors
 
         error do
@@ -314,7 +315,19 @@ class SettingsTest < Test::Unit::TestCase
       assert @base.static?
     end
 
-    it 'is enabled on Application' do
+    it 'is disabled on Application by default' do
+      assert ! @application.static?
+    end
+
+    it 'is enabled on Application when public is set and exists' do
+      @application.set :environment, :development
+      @application.set :public, File.dirname(__FILE__)
+      assert @application.static?
+    end
+
+    it 'is enabled on Application when root is set and root/public exists' do
+      @application.set :environment, :development
+      @application.set :root, File.dirname(__FILE__)
       assert @application.static?
     end
   end

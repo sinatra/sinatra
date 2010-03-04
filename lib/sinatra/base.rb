@@ -1037,8 +1037,8 @@ module Sinatra
     reset!
 
     set :environment, (ENV['RACK_ENV'] || :development).to_sym
-    set :raise_errors, Proc.new { !development? }
-    set :dump_errors, Proc.new { development? }
+    set :raise_errors, Proc.new { test? }
+    set :dump_errors, Proc.new { !test? }
     set :show_exceptions, Proc.new { development? }
     set :clean_trace, true
     set :sessions, false
@@ -1113,8 +1113,6 @@ module Sinatra
   # top-level. Subclassing Sinatra::Base is heavily recommended for
   # modular applications.
   class Application < Base
-    set :raise_errors, Proc.new { test? }
-    set :dump_errors, true
     set :sessions, false
     set :logging, Proc.new { ! test? }
     set :method_override, true
