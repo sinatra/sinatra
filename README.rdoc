@@ -589,12 +589,12 @@ To update the Sinatra sources in the future:
 
 == More
 
-* {Project Website}[http://sinatra.github.com/] - Additional documentation,
+* {Project Website}[http://www.sinatrarb.com/] - Additional documentation,
   news, and links to other resources.
-* {Contributing}[http://sinatra.github.com/contributing.html] - Find a bug? Need
+* {Contributing}[http://www.sinatrarb.com/contributing] - Find a bug? Need
   help? Have a patch?
 * {Lighthouse}[http://sinatra.lighthouseapp.com] - Issue tracking and release
   planning.
 * {Twitter}[http://twitter.com/sinatra]
-* {Mailing List}[http://groups.google.com/group/sinatrarb]
+* {Mailing List}[http://groups.google.com/group/sinatrarb/topics]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] on http://freenode.net
