@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'sinatra'
-  s.version = '1.0.a'
-  s.date = '2010-01-28'
+  s.version = '1.0.b'
+  s.date = '2010-03-07'
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
@@ -63,9 +63,9 @@ Gem::Specification.new do |s|
     test/views/hello.erb
     test/views/hello.erubis
     test/views/hello.haml
+    test/views/hello.less
     test/views/hello.sass
     test/views/hello.test
-    test/views/hello.less
     test/views/layout2.builder
     test/views/layout2.erb
     test/views/layout2.erubis
