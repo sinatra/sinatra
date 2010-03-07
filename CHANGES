@@ -9,6 +9,12 @@
    template backtraces, and support for new template engines, like
    mustache and liquid. (Ryan Tomayko)
 
+ * ERB, Erubis, and Haml templates are now compiled the first time
+   they're rendered instead of being string eval'd on each invocation.
+   Benchmarks show a 5x-10x improvement in render time. This also
+   reduces the number of objects created, decreasing pressure on Ruby's
+   GC. (Ryan Tomayko)
+
  * New 'settings' method gives access to options in both class and request
    scopes. This replaces the 'options' method. (Chris Wanstrath)
 
