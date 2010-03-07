@@ -1,5 +1,7 @@
+require 'digest/md5'
+
 module Tilt
-  VERSION = '0.7'
+  VERSION = '0.8'
 
   @template_mappings = {}
 
@@ -113,8 +115,8 @@ module Tilt
       end
 
       # used to generate unique method names for template compilation
-      stamp = (Time.now.to_f * 10000).to_i
-      @_prefix = "__tilt_O#{object_id.to_s(16)}T#{stamp.to_s(16)}"
+      @stamp = (Time.now.to_f * 10000).to_i
+      @compiled_method_names = {}
 
       # load template data and prepare
       @reader = block || lambda { |t| File.read(@file) }
@@ -151,6 +153,16 @@ module Tilt
     def initialize_engine
     end
 
+    # Like Kernel::require but issues a warning urging a manual require when
+    # running under a threaded environment.
+    def require_template_library(name)
+      if Thread.list.size > 1
+        warn "WARN: tilt autoloading '#{name}' in a non thread-safe way; " +
+             "explicit require '#{name}' suggested."
+      end
+      require name
+    end
+
     # Do whatever preparation is necessary to setup the underlying template
     # engine. Called immediately after template data is loaded. Instance
     # variables set in this method are available when #evaluate is called.
@@ -175,54 +187,111 @@ module Tilt
     # specified and with support for yielding to the block.
     def evaluate(scope, locals, &block)
       if scope.respond_to?(:__tilt__)
-        method_name = compiled_method_name(locals.keys.hash)
+        method_name = compiled_method_name(locals.keys)
         if scope.respond_to?(method_name)
-          # fast path
-          scope.send method_name, locals, &block
+          scope.send(method_name, locals, &block)
         else
-          # compile first and then run
           compile_template_method(method_name, locals)
-          scope.send method_name, locals, &block
+          scope.send(method_name, locals, &block)
         end
       else
-        source, offset = local_assignment_code(locals)
-        source = [source, template_source].join("\n")
-        scope.instance_eval source, eval_file, line - offset
+        evaluate_source(scope, locals, &block)
       end
     end
 
-    # Return a string containing the (Ruby) source code for the template. The
-    # default Template#evaluate implementation requires this method be
-    # defined and guarantees correct file/line handling, custom scopes, and
-    # support for template compilation when the scope object allows it.
-    def template_source
+    # Generates all template source by combining the preamble, template, and
+    # postamble and returns a two-tuple of the form: [source, offset], where
+    # source is the string containing (Ruby) source code for the template and
+    # offset is the integer line offset where line reporting should begin.
+    #
+    # Template subclasses may override this method when they need complete
+    # control over source generation or want to adjust the default line
+    # offset. In most cases, overriding the #precompiled_template method is
+    # easier and more appropriate.
+    def precompiled(locals)
+      preamble = precompiled_preamble(locals)
+      parts = [
+        preamble,
+        precompiled_template(locals),
+        precompiled_postamble(locals)
+      ]
+      [parts.join("\n"), preamble.count("\n") + 1]
+    end
+
+    # A string containing the (Ruby) source code for the template. The
+    # default Template#evaluate implementation requires either this method
+    # or the #precompiled method be overridden. When defined, the base
+    # Template guarantees correct file/line handling, locals support, custom
+    # scopes, and support for template compilation when the scope object
+    # allows it.
+    def precompiled_template(locals)
       raise NotImplementedError
     end
 
-  private
-    def local_assignment_code(locals)
-      return ['', 1] if locals.empty?
-      source = locals.collect { |k,v| "#{k} = locals[:#{k}]" }
-      [source.join("\n"), source.length]
+    # Generates preamble code for initializing template state, and performing
+    # locals assignment. The default implementation performs locals
+    # assignment only. Lines included in the preamble are subtracted from the
+    # source line offset, so adding code to the preamble does not effect line
+    # reporting in Kernel::caller and backtraces.
+    def precompiled_preamble(locals)
+      locals.map { |k,v| "#{k} = locals[:#{k}]" }.join("\n")
     end
 
-    def compiled_method_name(locals_hash)
-      "#{@_prefix}L#{locals_hash.to_s(16).sub('-', 'n')}"
+    # Generates postamble code for the precompiled template source. The
+    # string returned from this method is appended to the precompiled
+    # template source.
+    def precompiled_postamble(locals)
+      ''
+    end
+
+    # The unique compiled method name for the locals keys provided.
+    def compiled_method_name(locals_keys)
+      @compiled_method_names[locals_keys] ||=
+        generate_compiled_method_name(locals_keys)
+    end
+
+  private
+    # Evaluate the template source in the context of the scope object.
+    def evaluate_source(scope, locals, &block)
+      source, offset = precompiled(locals)
+      scope.instance_eval(source, eval_file, line - offset)
+    end
+
+    # JRuby doesn't allow Object#instance_eval to yield to the block it's
+    # closed over. This is by design and (ostensibly) something that will
+    # change in MRI, though no current MRI version tested (1.8.6 - 1.9.2)
+    # exhibits the behavior. More info here:
+    #
+    # http://jira.codehaus.org/browse/JRUBY-2599
+    #
+    # Additionally, JRuby's eval line reporting is off by one compared to
+    # all MRI versions tested.
+    #
+    # We redefine evaluate_source to work around both issues.
+    if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
+      undef evaluate_source
+      def evaluate_source(scope, locals, &block)
+        source, offset = precompiled(locals)
+        file, lineno = eval_file, (line - offset) - 1
+        scope.instance_eval { Kernel::eval(source, binding, file, lineno) }
+      end
+    end
+
+    def generate_compiled_method_name(locals_keys)
+      parts = [object_id, @stamp] + locals_keys.map { |k| k.to_s }.sort
+      digest = Digest::MD5.hexdigest(parts.join(':'))
+      "__tilt_#{digest}"
     end
 
     def compile_template_method(method_name, locals)
-      source, offset = local_assignment_code(locals)
-      source = [source, template_source].join("\n")
+      source, offset = precompiled(locals)
       offset += 1
-
-      # add the new method
       CompileSite.module_eval <<-RUBY, eval_file, line - offset
         def #{method_name}(locals)
           #{source}
         end
       RUBY
 
-      # setup a finalizer to remove the newly added method
       ObjectSpace.define_finalizer self,
         Template.compiled_template_method_remover(CompileSite, method_name)
     end
@@ -239,14 +308,6 @@ module Tilt
           # method was already removed (ruby >= 1.9)
         end
       end
-    end
-
-    def require_template_library(name)
-      if Thread.list.size > 1
-        warn "WARN: tilt autoloading '#{name}' in a non thread-safe way; " +
-             "explicit require '#{name}' suggested."
-      end
-      require name
     end
   end
 
@@ -282,7 +343,7 @@ module Tilt
       @code = "%Q{#{data}}"
     end
 
-    def template_source
+    def precompiled_template(locals)
       @code
     end
   end
@@ -293,7 +354,8 @@ module Tilt
   # http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html
   class ERBTemplate < Template
     def initialize_engine
-      require_template_library 'erb' unless defined? ::ERB
+      return if defined? ::ERB
+      require_template_library 'erb'
     end
 
     def prepare
@@ -301,38 +363,37 @@ module Tilt
       @engine = ::ERB.new(data, options[:safe], options[:trim], @outvar)
     end
 
-    def template_source
+    def precompiled_template(locals)
       @engine.src
     end
 
-    def evaluate(scope, locals, &block)
-      preserve_outvar_value(scope) { super }
+    def precompiled_preamble(locals)
+      <<-RUBY
+        begin
+          __original_outvar = #{@outvar} if defined?(#{@outvar})
+          #{super}
+      RUBY
     end
 
-  private
-    # Retains the previous value of outvar when configured to use
-    # an instance variable. This allows multiple templates to be rendered
-    # within the context of an object without overwriting the outvar.
-    def preserve_outvar_value(scope)
-      if @outvar[0] == ?@
-        previous = scope.instance_variable_get(@outvar)
-        output = yield
-        scope.instance_variable_set(@outvar, previous)
-        output
-      else
-        yield
-      end
+    def precompiled_postamble(locals)
+      <<-RUBY
+          #{super}
+        ensure
+          #{@outvar} = __original_outvar
+        end
+      RUBY
     end
 
     # ERB generates a line to specify the character coding of the generated
     # source in 1.9. Account for this in the line offset.
     if RUBY_VERSION >= '1.9.0'
-      def local_assignment_code(locals)
+      def precompiled(locals)
         source, offset = super
         [source, offset + 1]
       end
     end
   end
+
   %w[erb rhtml].each { |ext| register ext, ERBTemplate }
 
 
@@ -340,7 +401,8 @@ module Tilt
   # http://www.kuwata-lab.com/erubis/
   class ErubisTemplate < ERBTemplate
     def initialize_engine
-      require_template_library 'erubis' unless defined? ::Erubis
+      return if defined? ::Erubis
+      require_template_library 'erubis'
     end
 
     def prepare
@@ -349,15 +411,18 @@ module Tilt
       @engine = ::Erubis::Eruby.new(data, options)
     end
 
-    def template_source
-      ["#{@outvar} = _buf = ''", @engine.src, "_buf.to_s"].join(";")
+    def precompiled_preamble(locals)
+      [super, "#{@outvar} = _buf = ''"].join("\n")
     end
 
-  private
-    # Erubis doesn't have ERB's line-off-by-one under 1.9 problem. Override
-    # and adjust back.
+    def precompiled_postamble(locals)
+      ["_buf", super].join("\n")
+    end
+
+    # Erubis doesn't have ERB's line-off-by-one under 1.9 problem.
+    # Override and adjust back.
     if RUBY_VERSION >= '1.9.0'
-      def local_assignment_code(locals)
+      def precompiled(locals)
         source, offset = super
         [source, offset - 1]
       end
@@ -370,42 +435,54 @@ module Tilt
   # http://haml.hamptoncatlin.com/
   class HamlTemplate < Template
     def initialize_engine
-      require_template_library 'haml' unless defined? ::Haml::Engine
+      return if defined? ::Haml::Engine
+      require_template_library 'haml'
     end
 
     def prepare
-      @engine = ::Haml::Engine.new(data, haml_options)
+      options = @options.merge(:filename => eval_file, :line => line)
+      @engine = ::Haml::Engine.new(data, options)
+    end
+
+    def evaluate(scope, locals, &block)
+      if @engine.respond_to?(:precompiled_method_return_value, true)
+        super
+      else
+        @engine.render(scope, locals, &block)
+      end
     end
 
     # Precompiled Haml source. Taken from the precompiled_with_ambles
     # method in Haml::Precompiler:
     # http://github.com/nex3/haml/blob/master/lib/haml/precompiler.rb#L111-126
-    def template_source
+    def precompiled_template(locals)
+      @engine.precompiled
+    end
+
+    def precompiled_preamble(locals)
+      local_assigns = super
       @engine.instance_eval do
         <<-RUBY
-          _haml_locals = locals
           begin
             extend Haml::Helpers
             _hamlout = @haml_buffer = Haml::Buffer.new(@haml_buffer, #{options_for_buffer.inspect})
             _erbout = _hamlout.buffer
             __in_erb_template = true
-            #{precompiled}
+            _haml_locals = locals
+            #{local_assigns}
+        RUBY
+      end
+    end
+
+    def precompiled_postamble(locals)
+      @engine.instance_eval do
+        <<-RUBY
             #{precompiled_method_return_value}
           ensure
             @haml_buffer = @haml_buffer.upper
           end
         RUBY
       end
-    end
-
-  private
-    def local_assignment_code(locals)
-      source, offset = super
-      [source, offset + 6]
-    end
-
-    def haml_options
-      options.merge(:filename => eval_file, :line => line)
     end
   end
   register 'haml', HamlTemplate
@@ -417,7 +494,8 @@ module Tilt
   # Sass templates do not support object scopes, locals, or yield.
   class SassTemplate < Template
     def initialize_engine
-      require_template_library 'sass' unless defined? ::Sass::Engine
+      return if defined? ::Sass::Engine
+      require_template_library 'sass'
     end
 
     def prepare
@@ -442,7 +520,8 @@ module Tilt
   # Less templates do not support object scopes, locals, or yield.
   class LessTemplate < Template
     def initialize_engine
-      require_template_library 'less' unless defined? ::Less::Engine
+      return if defined? ::Less::Engine
+      require_template_library 'less'
     end
 
     def prepare
@@ -460,7 +539,8 @@ module Tilt
   # http://builder.rubyforge.org/
   class BuilderTemplate < Template
     def initialize_engine
-      require_template_library 'builder' unless defined?(::Builder)
+      return if defined?(::Builder)
+      require_template_library 'builder'
     end
 
     def prepare
@@ -477,7 +557,7 @@ module Tilt
       xml.target!
     end
 
-    def template_source
+    def precompiled_template(locals)
       data.to_str
     end
   end
@@ -499,7 +579,8 @@ module Tilt
   # time when using this template engine.
   class LiquidTemplate < Template
     def initialize_engine
-      require_template_library 'liquid' unless defined? ::Liquid::Template
+      return if defined? ::Liquid::Template
+      require_template_library 'liquid'
     end
 
     def prepare
@@ -532,15 +613,17 @@ module Tilt
     end
 
     def initialize_engine
-      require_template_library 'rdiscount' unless defined? ::RDiscount
+      return if defined? ::RDiscount
+      require_template_library 'rdiscount'
     end
 
     def prepare
       @engine = RDiscount.new(data, *flags)
+      @output = nil
     end
 
     def evaluate(scope, locals, &block)
-      @engine.to_html
+      @output ||= @engine.to_html
     end
   end
   register 'markdown', RDiscountTemplate
@@ -552,15 +635,17 @@ module Tilt
   # http://redcloth.org/
   class RedClothTemplate < Template
     def initialize_engine
-      require_template_library 'redcloth' unless defined? ::RedCloth
+      return if defined? ::RedCloth
+      require_template_library 'redcloth'
     end
 
     def prepare
       @engine = RedCloth.new(data)
+      @output = nil
     end
 
     def evaluate(scope, locals, &block)
-      @engine.to_html
+      @output ||= @engine.to_html
     end
   end
   register 'textile', RedClothTemplate
@@ -576,7 +661,8 @@ module Tilt
     attr_reader :engine
 
     def initialize_engine
-      require_template_library 'mustache' unless defined? ::Mustache
+      return if defined? ::Mustache
+      require_template_library 'mustache'
     end
 
     def prepare
@@ -622,19 +708,19 @@ module Tilt
   # engine.
   class RDocTemplate < Template
     def initialize_engine
-      unless defined?(::RDoc::Markup)
-        require_template_library 'rdoc/markup'
-        require_template_library 'rdoc/markup/to_html'
-      end
+      return if defined?(::RDoc::Markup)
+      require_template_library 'rdoc/markup'
+      require_template_library 'rdoc/markup/to_html'
     end
 
     def prepare
       markup = RDoc::Markup::ToHtml.new
       @engine = markup.convert(data)
+      @output = nil
     end
 
     def evaluate(scope, locals, &block)
-      @engine.to_s
+      @output ||= @engine.to_s
     end
   end
   register 'rdoc', RDocTemplate
@@ -644,15 +730,16 @@ module Tilt
   # http://jashkenas.github.com/coffee-script/
   class CoffeeTemplate < Template
     def initialize_engine
-      require_template_library 'coffee-script' unless defined? ::CoffeeScript
+      return if defined? ::CoffeeScript
+      require_template_library 'coffee-script'
     end
 
     def prepare
-      @engine = ::CoffeeScript::compile(data, options)
+      @output = nil
     end
 
     def evaluate(scope, locals, &block)
-      @engine
+      @output ||= ::CoffeeScript::compile(data, options)
     end
   end
   register 'coffee', CoffeeTemplate
