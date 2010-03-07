@@ -1,3 +1,9 @@
+= 0.9.6 / 2010-03-07
+
+ * Work around for segfault under Ruby >= 1.8.7p248 and 1.9.2dev. See
+   MRI bug #2781 for more information:
+   http://redmine.ruby-lang.org/issues/show/2781
+
 = 0.9.5 / 2010-03-04
 
  * Fix use_in_file_templates! with jRuby on Windows.
