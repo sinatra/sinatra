@@ -648,19 +648,9 @@ module Sinatra
     end
 
     def dump_errors!(boom)
-      backtrace = clean_backtrace(boom.backtrace)
       msg = ["#{boom.class} - #{boom.message}:",
-        *backtrace].join("\n ")
+        *boom.backtrace].join("\n ")
       @env['rack.errors'].puts(msg)
-    end
-
-    def clean_backtrace(trace)
-      return trace unless settings.clean_trace?
-
-      trace.reject { |line|
-        line =~ /lib\/sinatra.*\.rb/ ||
-          (defined?(Gem) && line.include?(Gem.dir))
-      }.map! { |line| line.gsub(/^\.\//, '') }
     end
 
     class << self
@@ -1053,7 +1043,6 @@ module Sinatra
     set :raise_errors, Proc.new { test? }
     set :dump_errors, Proc.new { !test? }
     set :show_exceptions, Proc.new { development? }
-    set :clean_trace, true
     set :sessions, false
     set :logging, false
     set :method_override, false
