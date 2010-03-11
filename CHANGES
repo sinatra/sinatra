@@ -65,6 +65,9 @@
 
  * Filters do not run when serving static files anymore. (Ryan Tomayko)
 
+ * pass takes an optional block to be used as the route handler if no
+   subsequent route matches the request. (Blake Mizerany)
+
 The following Sinatra features have been obsoleted (removed entirely) in
 the 1.0 release:
 
