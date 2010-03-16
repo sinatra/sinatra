@@ -1,4 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
+
+begin
 require 'sass'
 
 class SassTest < Test::Unit::TestCase
@@ -76,4 +78,8 @@ class SassTest < Test::Unit::TestCase
     assert ok?
     assert_equal "#sass {\n  background-color: #FFF;\n  color: #000;\n}\n", body
   end
+end
+
+rescue
+  warn "#{$!.to_s}: skipping sass tests"
 end

@@ -1,4 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
+
+begin
 require 'haml'
 
 class HAMLTest < Test::Unit::TestCase
@@ -87,4 +89,7 @@ class HAMLTest < Test::Unit::TestCase
     assert ok?
     assert_match(/^<!DOCTYPE html PUBLIC (.*) HTML 4.01/, body)
   end
+end
+rescue
+  warn "#{$!.to_s}: skipping haml tests"
 end
