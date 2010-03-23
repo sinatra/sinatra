@@ -19,7 +19,7 @@ rescue LoadError
 end
 
 module Sinatra
-  VERSION = '1.0.b'
+  VERSION = '1.0'
 
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
