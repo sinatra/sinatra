@@ -1014,10 +1014,10 @@ module Sinatra
     public
       CALLERS_TO_IGNORE = [
         /\/sinatra(\/(base|main|showexceptions))?\.rb$/, # all sinatra code
-        /lib\/tilt.*\.rb$/,    # all tilt code
-        /\(.*\)/,              # generated code
-        /custom_require\.rb$/, # rubygems require hacks
-        /active_support/,      # active_support require hacks
+        /lib\/tilt.*\.rb$/,                              # all tilt code
+        /\(.*\)/,                                        # generated code
+        /rubygems\/custom_require\.rb$/,                 # rubygems require hacks
+        /active_support/,                                # active_support require hacks
       ]
 
       # add rubinius (and hopefully other VM impls) ignore patterns ...
