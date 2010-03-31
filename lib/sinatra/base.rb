@@ -746,7 +746,7 @@ module Sinatra
       # Load embeded templates from the file; uses the caller's __FILE__
       # when no file is specified.
       def inline_templates=(file=nil)
-        file = (file.nil? || file == true) ? caller_files.first : file
+        file = (file.nil? || file == true) ? (caller_files.first || File.expand_path($0)) : file
 
         begin
           app, data =
