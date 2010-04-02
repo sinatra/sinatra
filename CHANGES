@@ -1,4 +1,4 @@
-= 1.0 / 2010-01-28 (prerelease)
+= 1.0 / 2010-03-23
 
  * It's now possible to register blocks to run after each request using
    after filters. After filters run at the end of each request, after
