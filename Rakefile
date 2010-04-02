@@ -1,6 +1,7 @@
 require 'rake/clean'
 require 'rake/testtask'
 require 'fileutils'
+require 'date'
 
 task :default => :test
 task :spec => :test
