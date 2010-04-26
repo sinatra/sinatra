@@ -861,7 +861,7 @@ module Sinatra
     private
       def route(verb, path, options={}, &block)
         # Because of self.options.host
-        host_name(options.delete(:bind)) if options.key?(:host)
+        host_name(options.delete(:host)) if options.key?(:host)
         options.each { |option, args| send(option, *args) }
 
         block, pattern, keys = compile! verb, path, block
