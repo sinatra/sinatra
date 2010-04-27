@@ -595,6 +595,9 @@ class RoutingTest < Test::Unit::TestCase
       get '/', :provides => :xml do
         request.env['HTTP_ACCEPT']
       end
+      get '/foo', :provides => :html do
+        request.env['HTTP_ACCEPT']
+      end
     }
 
     get '/', {}, { 'HTTP_ACCEPT' => 'application/xml' }
@@ -603,6 +606,13 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 'application/xml', response.headers['Content-Type']
 
     get '/', {}, { :accept => 'text/html' }
+    assert !ok?
+
+    get '/foo', {}, { 'HTTP_ACCEPT' => 'text/html;q=0.9' }
+    assert ok?
+    assert_equal 'text/html;q=0.9', body
+
+    get '/foo', {}, { 'HTTP_ACCEPT' => '' }
     assert !ok?
   end
 
