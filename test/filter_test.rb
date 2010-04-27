@@ -121,6 +121,29 @@ class BeforeFilterTest < Test::Unit::TestCase
     assert_equal File.read(__FILE__), body
     assert !ran_filter
   end
+
+  it 'takes an optional route pattern' do
+    ran_filter = false
+    mock_app do
+      before("/b*") { ran_filter = true }
+      get('/foo') { }
+      get('/bar') { }
+    end
+    get '/foo'
+    assert !ran_filter
+    get '/bar'
+    assert ran_filter
+  end
+
+  it 'generates block arguments from route pattern' do
+    subpath = nil
+    mock_app do
+      before("/foo/:sub") { |s| subpath = s }
+      get('/foo/*') { }
+    end
+    get '/foo/bar'
+    assert_equal subpath, 'bar'
+  end
 end
 
 class AfterFilterTest < Test::Unit::TestCase
@@ -217,5 +240,28 @@ class AfterFilterTest < Test::Unit::TestCase
     assert ok?
     assert_equal File.read(__FILE__), body
     assert !ran_filter
+  end
+
+  it 'takes an optional route pattern' do
+    ran_filter = false
+    mock_app do
+      after("/b*") { ran_filter = true }
+      get('/foo') { }
+      get('/bar') { }
+    end
+    get '/foo'
+    assert !ran_filter
+    get '/bar'
+    assert ran_filter
+  end
+
+  it 'generates block arguments from route pattern' do
+    subpath = nil
+    mock_app do
+      after("/foo/:sub") { |s| subpath = s }
+      get('/foo/*') { }
+    end
+    get '/foo/bar'
+    assert_equal subpath, 'bar'
   end
 end

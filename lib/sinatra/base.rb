@@ -455,16 +455,10 @@ module Sinatra
     end
 
   private
-    # Run before filters defined on the class and all superclasses.
-    def before_filter!(base=self.class)
-      before_filter!(base.superclass) if base.superclass.respond_to?(:before_filters)
-      base.before_filters.each { |block| instance_eval(&block) }
-    end
-
-    # Run after filters defined on the class and all superclasses.
-    def after_filter!(base=self.class)
-      after_filter!(base.superclass) if base.superclass.respond_to?(:after_filters)
-      base.after_filters.each { |block| instance_eval(&block) }
+    # Run filters defined on the class and all superclasses.
+    def filter!(type, base = self.class)
+      filter! type, base.superclass if base.superclass.respond_to?(:filters)
+      base.filters[type].each { |block| instance_eval(&block) }
     end
 
     # Run routes defined on the class and all superclasses.
@@ -597,14 +591,14 @@ module Sinatra
     # Dispatch a request with error handling.
     def dispatch!
       static! if settings.static? && (request.get? || request.head?)
-      before_filter!
+      filter! :before
       route!
     rescue NotFound => boom
       handle_not_found!(boom)
     rescue ::Exception => boom
       handle_exception!(boom)
     ensure
-      after_filter! unless env['sinatra.static_file']
+      filter! :after unless env['sinatra.static_file']
     end
 
     def handle_not_found!(boom)
@@ -654,13 +648,12 @@ module Sinatra
     end
 
     class << self
-      attr_reader :routes, :before_filters, :after_filters, :templates, :errors
+      attr_reader :routes, :filters, :templates, :errors
 
       def reset!
         @conditions     = []
         @routes         = {}
-        @before_filters = []
-        @after_filters  = []
+        @filters        = {:before => [], :after => []}
         @errors         = {}
         @middleware     = []
         @prototype      = nil
@@ -671,6 +664,14 @@ module Sinatra
         else
           @templates = {}
         end
+      end
+
+      def before_filters
+        @filters[:before]
+      end
+
+      def after_filters
+        @filters[:after]
       end
 
       # Extension modules registered on this class and all superclasses.
@@ -781,15 +782,25 @@ module Sinatra
       # Define a before filter; runs before all requests within the same
       # context as route handlers and may access/modify the request and
       # response.
-      def before(&block)
-        @before_filters << block
+      def before(path = nil, &block)
+        add_filter(:before, path, &block)
       end
 
       # Define an after filter; runs after all requests within the same
       # context as route handlers and may access/modify the request and
       # response.
-      def after(&block)
-        @after_filters << block
+      def after(path = nil, &block)
+        add_filter(:after, path, &block)
+      end
+      
+      # add a filter
+      def add_filter(type, path = nil, &block)
+        return filters[type] << block unless path
+        unbound_method, pattern = compile!(type, path, &block)
+        add_filter(type) do
+          next unless match = pattern.match(request.path_info)
+          unbound_method.bind(self).call(*match.captures.to_a)
+        end
       end
 
       # Add a route condition. The route is considered non-matching when the
@@ -853,11 +864,9 @@ module Sinatra
 
         options.each {|option, args| send(option, *args)}
 
-        pattern, keys = compile(path)
+        unbound_method, pattern, keys = compile!(verb, path, &block)
         conditions, @conditions = @conditions, []
 
-        define_method "#{verb} #{path}", &block
-        unbound_method = instance_method("#{verb} #{path}")
         block =
           if block.arity != 0
             proc { unbound_method.bind(self).call(*@block_params) }
@@ -873,6 +882,14 @@ module Sinatra
 
       def invoke_hook(name, *args)
         extensions.each { |e| e.send(name, *args) if e.respond_to?(name) }
+      end
+
+      def compile!(verb, path, &block)
+        method_name = "#{verb} #{path}"
+        define_method(method_name, &block)
+        unbound_method = instance_method method_name
+        remove_method method_name
+        [unbound_method, *compile(path)]
       end
 
       def compile(path)
