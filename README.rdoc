@@ -331,6 +331,17 @@ set in before filters and routes are accessible by after filters:
     puts response.status
   end
 
+Filters optionally taking a pattern, causing them to be evaluated only if the request
+path matches that pattern:
+
+  before '/protected/*' do
+    authenticate!
+  end
+
+  after '/create/:slug' do |slug|
+    session[:last_slug] = slug
+  end
+
 == Halting
 
 To immediately stop a request within a filter or route use:
