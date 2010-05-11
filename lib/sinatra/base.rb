@@ -796,10 +796,11 @@ module Sinatra
       # add a filter
       def add_filter(type, path = nil, &block)
         return filters[type] << block unless path
-        unbound_method, pattern = compile!(type, path, &block)
+        block, pattern = compile!(type, path, block)
         add_filter(type) do
           next unless match = pattern.match(request.path_info)
-          unbound_method.bind(self).call(*match.captures.to_a)
+          @block_params = match.captures.to_a
+          instance_eval(&block)
         end
       end
 
@@ -861,19 +862,10 @@ module Sinatra
       def route(verb, path, options={}, &block)
         # Because of self.options.host
         host_name(options.delete(:bind)) if options.key?(:host)
+        options.each { |option, args| send(option, *args) }
 
-        options.each {|option, args| send(option, *args)}
-
-        unbound_method, pattern, keys = compile!(verb, path, &block)
+        block, pattern, keys = compile! verb, path, block
         conditions, @conditions = @conditions, []
-
-        block =
-          if block.arity != 0
-            proc { unbound_method.bind(self).call(*@block_params) }
-          else
-            proc { unbound_method.bind(self).call }
-          end
-
         invoke_hook(:route_added, verb, path, block)
 
         (@routes[verb] ||= []).
@@ -884,12 +876,14 @@ module Sinatra
         extensions.each { |e| e.send(name, *args) if e.respond_to?(name) }
       end
 
-      def compile!(verb, path, &block)
+      def compile!(verb, path, block)
         method_name = "#{verb} #{path}"
         define_method(method_name, &block)
         unbound_method = instance_method method_name
         remove_method method_name
-        [unbound_method, *compile(path)]
+        [block.arity != 0 ?
+          proc { unbound_method.bind(self).call(*@block_params) } :
+          proc { unbound_method.bind(self).call }, *compile(path)]
       end
 
       def compile(path)
