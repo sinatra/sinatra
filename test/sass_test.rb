@@ -13,21 +13,21 @@ class SassTest < Test::Unit::TestCase
   end
 
   it 'renders inline Sass strings' do
-    sass_app { sass "#sass\n  :background-color #FFF\n" }
+    sass_app { sass "#sass\n  :background-color white\n" }
     assert ok?
-    assert_equal "#sass {\n  background-color: #FFF; }\n", body
+    assert_equal "#sass {\n  background-color: white; }\n", body
   end
 
   it 'renders .sass files in views path' do
     sass_app { sass :hello }
     assert ok?
-    assert_equal "#sass {\n  background-color: #FFF; }\n", body
+    assert_equal "#sass {\n  background-color: white; }\n", body
   end
 
   it 'ignores the layout option' do
     sass_app { sass :hello, :layout => :layout2 }
     assert ok?
-    assert_equal "#sass {\n  background-color: #FFF; }\n", body
+    assert_equal "#sass {\n  background-color: white; }\n", body
   end
 
   it "raises error if template not found" do
@@ -39,44 +39,50 @@ class SassTest < Test::Unit::TestCase
 
   it "passes SASS options to the Sass engine" do
     sass_app {
-      sass "#sass\n  :background-color #FFF\n  :color #000\n", :style => :compact
+      sass "#sass\n  :background-color white\n  :color black\n",
+        :style => :compact
     }
     assert ok?
-    assert_equal "#sass { background-color: #FFF; color: #000; }\n", body
+    assert_equal "#sass { background-color: white; color: black; }\n", body
   end
 
   it "passes default SASS options to the Sass engine" do
     mock_app {
       set :sass, {:style => :compact} # default Sass style is :nested
       get '/' do
-        sass "#sass\n  :background-color #FFF\n  :color #000\n"
+        sass "#sass\n  :background-color white\n  :color black\n"
       end
     }
     get '/'
     assert ok?
-    assert_equal "#sass { background-color: #FFF; color: #000; }\n", body
+    assert_equal "#sass { background-color: white; color: black; }\n", body
   end
 
-  it "merges the default SASS options with the overrides and passes them to the Sass engine" do
+  it "merges the default SASS options with the overrides" do
     mock_app {
-      set :sass, {:style => :compact, :attribute_syntax => :alternate } # default Sass attribute_syntax is :normal (with : in front)
+      # default Sass attribute_syntax is :normal (with : in front)
+      set :sass, {:style => :compact, :attribute_syntax => :alternate }
       get '/' do
-        sass "#sass\n  background-color: #FFF\n  color: #000\n"
+        sass "#sass\n  background-color: white\n  color: black\n"
       end
       get '/raised' do
-        sass "#sass\n  :background-color #FFF\n  :color #000\n", :style => :expanded # retains global attribute_syntax settings
+        # retains global attribute_syntax settings
+        sass "#sass\n  :background-color white\n  :color black\n",
+          :style => :expanded
       end
       get '/expanded_normal' do
-        sass "#sass\n  :background-color #FFF\n  :color #000\n", :style => :expanded, :attribute_syntax => :normal
+        sass "#sass\n  :background-color white\n  :color black\n",
+          :style => :expanded, :attribute_syntax => :normal
       end
     }
     get '/'
     assert ok?
-    assert_equal "#sass { background-color: #FFF; color: #000; }\n", body
+    assert_equal "#sass { background-color: white; color: black; }\n", body
     assert_raise(Sass::SyntaxError) { get('/raised') }
     get '/expanded_normal'
     assert ok?
-    assert_equal "#sass {\n  background-color: #FFF;\n  color: #000;\n}\n", body
+    assert_equal "#sass {\n  background-color: white;\n  color: black;\n}\n",
+      body
   end
 end
 
