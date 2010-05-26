@@ -127,7 +127,7 @@ The haml gem/library is required to render HAML templates:
 
 Renders <tt>./views/index.haml</tt>.
 
-{Haml's options}[http://haml.hamptoncatlin.com/docs/rdoc/classes/Haml.html]
+{Haml's options}[http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options]
 can be set globally through Sinatra's configurations,
 see {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
 and overridden on an individual basis.
@@ -191,7 +191,7 @@ The sass gem/library is required to render Sass templates:
 
 Renders <tt>./views/stylesheet.sass</tt>.
 
-{Sass' options}[http://haml.hamptoncatlin.com/docs/rdoc/classes/Sass.html]
+{Sass' options}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
 can be set globally through Sinatra's configurations,
 see {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
 and overridden on an individual basis.
