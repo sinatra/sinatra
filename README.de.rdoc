@@ -128,7 +128,7 @@ Die haml gem/Bibliothek wird benötigt um HAML Templates rendern zu können:
 
 gerendert wird <tt>./views/index.haml</tt>.
 
-{Hamls Optionen}[http://haml.hamptoncatlin.com/docs/rdoc/classes/Haml.html]
+{Hamls Optionen}[http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options]
 können global durch die Sinatra Konfiguration gesetzt werden,
 siehe {Optionen und Konfiguration}[http://www.sinatrarb.com/configuration.html],
 und individuell überschrieben werden.
@@ -192,7 +192,7 @@ Die sass gem/Bibliothek wird benötigt um sass Templates rendern zu können:
 
 gerendert wird <tt>./views/stylesheet.sass</tt>.
 
-{Sass Optionen}[http://haml.hamptoncatlin.com/docs/rdoc/classes/Sass.html]
+{Sass Optionen}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
 können global durch die Sinatra Konfiguration gesetzt werden,
 siehe {Optionen und Konfiguration}[http://www.sinatrarb.com/configuration.html],
 und individuell überschrieben werden.
