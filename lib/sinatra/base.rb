@@ -355,7 +355,7 @@ module Sinatra
     end
 
     def compile_template(engine, data, options, views)
-      @template_cache.fetch engine, data, options do
+      template_cache.fetch engine, data, options do
         template = Tilt[engine]
         raise "Template engine not found: #{engine}" if template.nil?
 
@@ -387,6 +387,7 @@ module Sinatra
     include Templates
 
     attr_accessor :app
+    attr_reader   :template_cache
 
     def initialize(app=nil)
       @app = app
@@ -406,7 +407,7 @@ module Sinatra
       @request  = Request.new(env)
       @response = Response.new
       @params   = indifferent_params(@request.params)
-      @template_cache.clear if settings.reload_templates
+      template_cache.clear if settings.reload_templates
 
       invoke { dispatch! }
       invoke { error_block!(response.status) }
