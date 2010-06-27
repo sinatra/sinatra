@@ -152,7 +152,7 @@ Renders <tt>./views/index.erb</tt>
 
 === Erubis
 
-The erubis gem/library is required to render builder templates:
+The erubis gem/library is required to render erubis templates:
 
   ## You'll need to require erubis in your app
   require 'erubis'
