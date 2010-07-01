@@ -40,7 +40,7 @@ Jede Route besitzt einen Block:
 Die Routen werden in der Reihenfolge angesprochen, wie sie definiert sind.
 Das erste Route-Muster das mit dem Request übereinstimmt wird ausgeführt.
 
-Die Muster der Routen können über benannte Parameter erreicht werden mit dem 
+Die Muster der Routen können über benannte Parameter erreicht werden mit dem
 <tt>params</tt> Hash:
 
   get '/hallo/:name' do
@@ -80,7 +80,7 @@ Oder mit einem Block-Parameter:
     "Hallo, #{c}!"
   end
 
-Routen können eine Vielzahl von zutreffenden Bedingungen haben, möglich wäre 
+Routen können eine Vielzahl von zutreffenden Bedingungen haben, möglich wäre
 ein User Agent:
 
   get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
@@ -94,12 +94,12 @@ ein User Agent:
 == Statische Dateien
 
 Statische Dateien werden vom Ordner <tt>./public</tt> geliefert. Es ist
-möglich einen anderen Ort zu definieren, wenn die <tt>:public</tt> Option 
+möglich einen anderen Ort zu definieren, wenn die <tt>:public</tt> Option
 gesetzt wird:
 
   set :public, File.dirname(__FILE__) + '/static'
 
-Anmerkung: Der public Ordner ist nicht über die URL aufrufbar. Die Datei 
+Anmerkung: Der public Ordner ist nicht über die URL aufrufbar. Die Datei
 <tt>./public/css/style.css</tt> wird gefunden unter
 <tt>http://example.com/css/style.css</tt>.
 
@@ -110,7 +110,7 @@ befinden. Um einen anderen Ordner zu definieren:
 
   set :views, File.dirname(__FILE__) + '/templates'
 
-Eine wichtige Sache die man sich merken sollte, ist das man immer um auf 
+Eine wichtige Sache die man sich merken sollte, ist das man immer um auf
 Templates zu verweisen Symbole verwenden sollte, auch dann wenn sich ein
 Template in einen Unterordner befindet (in diesen Fall <tt>:'subdir/template'</tt>).
 Rendering-Methoden rendern jede Zeichenkette direkt.
@@ -214,7 +214,7 @@ Rendert die inline Template Zeichenkette.
 
 === Auf Variablen in Templates zugreifen
 
-Templates werden im selben Kontext ausgewertet wie Routen. Instanz Variablen in 
+Templates werden im selben Kontext ausgewertet wie Routen. Instanz Variablen in
 Routen sind auch direkt im Template ansprechbar:
 
   get '/:id' do
@@ -229,7 +229,7 @@ Oder durch ein explizites Hash von lokalen Variablen:
     haml '%h1= foo.name', :locals => { :foo => foo }
   end
 
-Wird typischerweise bei Verwendung von Subtemplates (partials) in anderen 
+Wird typischerweise bei Verwendung von Subtemplates (partials) in anderen
 Templates eingesetzt.
 
 === Inline Templates
@@ -253,12 +253,12 @@ Templates können am Ende der Datei definiert werden:
   %div.title Hallo Welt!!!!!
 
 Anmerkung: Inline Templates die in der Quelldatei definiert sind die Sinatra
-braucht werden automatisch geladen. Um andere Inline Templates in anderen 
+braucht werden automatisch geladen. Um andere Inline Templates in anderen
 Quelldateien aufzurufen muss `enable :inline_templates` explizit verwendet werden.
 
 === Benannte Templates
 
-Templates können auch mit der top-level <tt>template</tt> Methode definiert 
+Templates können auch mit der top-level <tt>template</tt> Methode definiert
 werden:
 
   template :layout do
@@ -273,7 +273,7 @@ werden:
     haml :index
   end
 
-Wenn ein Template mit dem Namen "layout" existiert, wird es bei jeden Aufruf 
+Wenn ein Template mit dem Namen "layout" existiert, wird es bei jeden Aufruf
 verwendet. Durch <tt>:layout => false</tt> kann das Ausführen verhindert werden.
 
   get '/' do
@@ -282,7 +282,7 @@ verwendet. Durch <tt>:layout => false</tt> kann das Ausführen verhindert werden
 
 == Helfer
 
-Am top-level werden durch die <tt>helpers</tt> Methode, Helfer Methoden 
+Am top-level werden durch die <tt>helpers</tt> Methode, Helfer Methoden
 definiert bevor die Routen und Templates definiert werden:
 
   helpers do
@@ -297,8 +297,8 @@ definiert bevor die Routen und Templates definiert werden:
 
 == Filter
 
-"Before" Filter werden immer vor jedem Request ausgeführt. Der Request kann so 
-Request und Antwort ändern. Gesetzte Instanz Variablen in Filtern können in 
+"Before" Filter werden immer vor jedem Request ausgeführt. Der Request kann so
+Request und Antwort ändern. Gesetzte Instanz Variablen in Filtern können in
 Routen und Templates verwendet werden:
 
   before do
@@ -311,7 +311,7 @@ Routen und Templates verwendet werden:
     params[:splat] #=> 'bar/baz'
   end
 
-"After" Filter werden nach jedem Request ausgeführt, können auch Request und 
+"After" Filter werden nach jedem Request ausgeführt, können auch Request und
 Antwort ändern. Gesetzte Instanz Variablen in before Filtern können in after Filter
 verwendet werden:
 
@@ -355,7 +355,7 @@ Eine Route kann mittels <tt>pass</tt> zu der nächsten treffenden Route springen
   end
 
 Der Block wird sofort verlassen und es wird nach der nächsten treffenden Route
-gesucht. Ein 404 Fehler wird zurückgegeben, wenn kein treffendes Routen-Muster 
+gesucht. Ein 404 Fehler wird zurückgegeben, wenn kein treffendes Routen-Muster
 gefunden wird.
 
 == Konfiguration
@@ -373,7 +373,7 @@ gesetzt ist:
     ...
   end
 
-Lauft nur wenn die Umgebung auf <tt>:production</tt> oder auf <tt>:test</tt> 
+Lauft nur wenn die Umgebung auf <tt>:production</tt> oder auf <tt>:test</tt>
 gesetzt ist:
 
   configure :production, :test do
@@ -383,12 +383,12 @@ gesetzt ist:
 == Fehler-Behandlung
 
 Error Handler laufen im selben Kontext wie Routen und before Filter, was bedeutet
-es können alle Goodies wie <tt>haml</tt>, <tt>erb</tt>, <tt>halt</tt>, etc. 
+es können alle Goodies wie <tt>haml</tt>, <tt>erb</tt>, <tt>halt</tt>, etc.
 verwendet werden.
 
 === Nicht gefunden
 
-Wenn eine <tt>Sinatra::NotFound</tt> Exception geworfen wird oder ein Statuscode 
+Wenn eine <tt>Sinatra::NotFound</tt> Exception geworfen wird oder ein Statuscode
 ist 404, wird der <tt>not_found</tt> Handler ausgeführt:
 
   not_found do
@@ -397,8 +397,8 @@ ist 404, wird der <tt>not_found</tt> Handler ausgeführt:
 
 === Fehler
 
-Der +error+ Handler wird immer ausgeführt wenn eine Exception in einem Routenblock 
-oder in einen Filter geworfen wurde. Das Exception Objekt kann über die 
+Der +error+ Handler wird immer ausgeführt wenn eine Exception in einem Routenblock
+oder in einen Filter geworfen wurde. Das Exception Objekt kann über die
 <tt>sinatra.error</tt> Rack Variable angesprochen werden:
 
   error do
@@ -437,13 +437,13 @@ Oder ein Bereich:
     'Boom'
   end
 
-Sinatra verwendet verschiedene <tt>not_found</tt> und <tt>error</tt> 
+Sinatra verwendet verschiedene <tt>not_found</tt> und <tt>error</tt>
 Handler in der Development Umgebung.
 
 == Mime Typen
 
-Wenn mit <tt>send_file</tt> oder statische Dateien verwendet wird, kann es 
-sein das Sinatra den Mime-Typ nicht versteht. Registriert wird mit +mime_type+ 
+Wenn mit <tt>send_file</tt> oder statische Dateien verwendet wird, kann es
+sein das Sinatra den Mime-Typ nicht versteht. Registriert wird mit +mime_type+
 per Datei Endung:
 
   mime_type :foo, 'text/foo'
@@ -454,10 +454,10 @@ Es kann auch der +content_type+ Helfer verwendet werden:
 
 == Rack Middleware
 
-Sinatra baut auf Rack[http://rack.rubyforge.org/], einen minimalen Standard 
-Interface für Ruby Web Frameworks. Eines der am meisten interessantesten 
+Sinatra baut auf Rack[http://rack.rubyforge.org/], einen minimalen Standard
+Interface für Ruby Web Frameworks. Eines der am meisten interessantesten
 Fähigkeiten für Entwickler ist der Support von "Middleware" Komponenten die
-zwischen dem Server und der Anwendung überwacht laufen und/oder den HTTP 
+zwischen dem Server und der Anwendung überwacht laufen und/oder den HTTP
 Request/Antwort manipulieren können.
 
 Sinatra macht das bauen von Rack middleware pipelines sicher via der top-level
@@ -473,9 +473,9 @@ Sinatra macht das bauen von Rack middleware pipelines sicher via der top-level
     'Hallo Welt'
   end
 
-Die Semantik von +use+ sind identisch mit den Definierten von 
+Die Semantik von +use+ sind identisch mit den Definierten von
 Rack::Builder[http://rack.rubyforge.org/doc/classes/Rack/Builder.html] DSL
-(meistens verwendet von rackup Dateien). Als Beispiel, die +use+ Methode 
+(meistens verwendet von rackup Dateien). Als Beispiel, die +use+ Methode
 akzeptiert mehrere/verschiedene Argumente genauso wie Blöcke:
 
   use Rack::Auth::Basic do |username, password|
@@ -523,13 +523,13 @@ Klasse werden nach Version 0.9.2 nicht mehr unterstützt.
 
 == Sinatra::Base - Middleware, Bibliotheken, und modulare Anwendungen
 
-Die Definition einer Anwendung vom top-level weg funktioniert gut für 
-Micro-Anwendungen hat aber Nachteile wenn man wiederverwendbare Komponenten 
-wie Rack Middleware, Rails metal, einfache Bibliotheken mit Server Komponenten 
+Die Definition einer Anwendung vom top-level weg funktioniert gut für
+Micro-Anwendungen hat aber Nachteile wenn man wiederverwendbare Komponenten
+wie Rack Middleware, Rails metal, einfache Bibliotheken mit Server Komponenten
 oder auch Sinatra Erweiterungen bauen will.
 Das top-level DSL belastet den Objekt-Namespace und setzt einen Style einer
-Micro-Anwendung voraus (ein einzelne Anwendungs-Datei, ./public und ./views 
-Ordner, Logging, Exception Detail Seite, etc). Genau hier kommt Sinatra::Base 
+Micro-Anwendung voraus (ein einzelne Anwendungs-Datei, ./public und ./views
+Ordner, Logging, Exception Detail Seite, etc). Genau hier kommt Sinatra::Base
 in das Spiel:
 
   require 'sinatra/base'
@@ -543,29 +543,29 @@ in das Spiel:
     end
   end
 
-Die MyApp Klasse ist eine unabhängige Rack Komponente die als Rack Middleware, 
+Die MyApp Klasse ist eine unabhängige Rack Komponente die als Rack Middleware,
 Rack Anwendung oder als Rails metal verwendet werden kann.
-Verwendet wird sie mit +use+ oder +run+ von einer rackup +config.ru+ Datei oder 
+Verwendet wird sie mit +use+ oder +run+ von einer rackup +config.ru+ Datei oder
 als Server Komponente als Bibliothek:
 
    MyApp.run! :host => 'localhost', :port => 9090
 
-Die Methoden von der Sinatra::Base Subklasse sind genau die selben wie die 
-über die top-level DSL möglichen. Die meisten top-level Anwendungen können zu 
+Die Methoden von der Sinatra::Base Subklasse sind genau die selben wie die
+über die top-level DSL möglichen. Die meisten top-level Anwendungen können zu
 Sinatra::Base Komponenten mit 2 Veränderungen konvertiert werden:
 
-* Die Datei sollte +sinatra/base+ und nicht aus +sinatra+; importieren 
+* Die Datei sollte +sinatra/base+ und nicht aus +sinatra+; importieren
   ansonsten werden alle von Sinatra's DSL Methoden im Namespace importiert.
-* Alle Anwendungs Routen, Error Handler, Filter und Optionen in eine SubKlasse 
+* Alle Anwendungs Routen, Error Handler, Filter und Optionen in eine SubKlasse
   von Sinatra::Base.
 
-+Sinatra::Base+ ist ein leeres Blatt. Die meisten Optionen sind per Standard 
++Sinatra::Base+ ist ein leeres Blatt. Die meisten Optionen sind per Standard
 deaktiviert, das betrifft auch dem eingebauten Server. Siehe {Optionen und Konfiguration}[http://sinatra.github.com/configuration.html] für Details an möglichen Optionen.
 
 SIDEBAR: Sinatras top-level DSL ist implementiert als einfaches Delegations
 System. Die +Sinatra::Application+ Klasse -- ein paar spezielle SubKlassen von
 Sinatra::Base -- enthält alle :get, :put, :post, :delete, :before,
-:error, :not_found, :configure und :set Meldungen gesendet durch den top-level. 
+:error, :not_found, :configure und :set Meldungen gesendet durch den top-level.
 Schaue am besten im Code nach: hier im {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/base.rb#L1064]
  {inkludieren im Haupt-Namespace}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/main.rb#L25].
 
