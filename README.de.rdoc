@@ -615,7 +615,7 @@ Um Sinatra Code in Zukunft zu aktualisieren:
 * {Projekt Website}[http://sinatra.github.com/] - Ergänzende Dokumentation,
   News und Links zu anderen Ressourcen.
 * {helfen}[http://sinatra.github.com/contributing.html] - Einen Fehler gefunden? Brauchst du Hilfe? Hast du einen Patch?
-* {Lighthouse}[http://sinatra.lighthouseapp.com] - Issue tracking und Release Plan.
+* {Issue tracker}[http://github.com/sinatra/sinatra/issues]
 * {Twitter}[http://twitter.com/sinatra]
 * {Mailing List}[http://groups.google.com/group/sinatrarb]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] auf http://freenode.net

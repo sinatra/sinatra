@@ -640,8 +640,7 @@ To update the Sinatra sources in the future:
   news, and links to other resources.
 * {Contributing}[http://www.sinatrarb.com/contributing] - Find a bug? Need
   help? Have a patch?
-* {Lighthouse}[http://sinatra.lighthouseapp.com] - Issue tracking and release
-  planning.
+* {Issue tracker}[http://github.com/sinatra/sinatra/issues]
 * {Twitter}[http://twitter.com/sinatra]
 * {Mailing List}[http://groups.google.com/group/sinatrarb/topics]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] on http://freenode.net

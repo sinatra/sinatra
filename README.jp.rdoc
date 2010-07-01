@@ -546,7 +546,7 @@ Sinatraのソースを更新する方法:
   ニュース、他のリソースへのリンクがあります。
 * {プロジェクトに参加(貢献)する}[http://sinatra.github.com/contributing.html] - バグレポート
   パッチの送信、サポートなど
-* {Lighthouse}[http://sinatra.lighthouseapp.com] - チケット管理とリリース計画
+* {Issue tracker}[http://github.com/sinatra/sinatra/issues] - チケット管理とリリース計画
 * {Twitter}[http://twitter.com/sinatra]
 * {メーリングリスト}[http://groups.google.com/group/sinatrarb]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] on http://freenode.net
