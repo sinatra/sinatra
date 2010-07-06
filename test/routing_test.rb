@@ -84,6 +84,18 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal "<h1>Not Found</h1>", response.body
   end
 
+  it 'matches empty PATH_INFO to "/"' do
+    mock_app {
+      get '/' do
+        'worked'
+      end
+    }
+
+    get '/', {}, "PATH_INFO" => ""
+    assert ok?
+    assert_equal 'worked', body
+  end
+
   it 'takes multiple definitions of a route' do
     mock_app {
       user_agent(/Foo/)
