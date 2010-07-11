@@ -948,11 +948,11 @@ module Sinatra
         @prototype = nil
         @middleware << [middleware, args, block]
       end
-      
+
       def quit!(server, handler_name)
         ## Use thins' hard #stop! if available, otherwise just #stop
         server.respond_to?(:stop!) ? server.stop! : server.stop
-        puts "\n== Sinatra has ended his set (crowd applauds)" unless handler_name =~/cgi/i        
+        puts "\n== Sinatra has ended his set (crowd applauds)" unless handler_name =~/cgi/i
       end
 
       # Run the Sinatra app as a self-hosted server using
