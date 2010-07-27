@@ -724,6 +724,7 @@ or framework. {Rack::Test}[http://gitrdoc.com/brynary/rack-test] is
 recommended:
 
   require 'my_sinatra_app'
+  require 'test/unit'
   require 'rack/test'
 
   class MyAppTest < Test::Unit::TestCase
