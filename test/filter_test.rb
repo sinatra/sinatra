@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper'
+require './' + File.dirname(__FILE__) + '/helper'
 
 class BeforeFilterTest < Test::Unit::TestCase
   it "executes filters in the order defined" do

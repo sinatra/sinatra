@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper'
+require './' + File.dirname(__FILE__) + '/helper'
 
 # Helper method for easy route pattern matching testing
 def route_def(pattern)

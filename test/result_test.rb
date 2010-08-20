@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper'
+require './' + File.dirname(__FILE__) + '/helper'
 
 class ResultTest < Test::Unit::TestCase
   it "sets response.body when result is a String" do
