@@ -1034,6 +1034,7 @@ module Sinatra
         /\(.*\)/,                                        # generated code
         /rubygems\/custom_require\.rb$/,                 # rubygems require hacks
         /active_support/,                                # active_support require hacks
+        /<internal:/,                                    # internal
       ]
 
       # add rubinius (and hopefully other VM impls) ignore patterns ...
