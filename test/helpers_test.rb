@@ -58,7 +58,7 @@ class HelpersTest < Test::Unit::TestCase
       get '/'
       assert_equal 302, status
       assert_equal '', body
-      assert_equal '/foo', response['Location']
+      assert_equal 'http://example.org/foo', response['Location']
     end
 
     it 'uses the code given when specified' do
@@ -72,7 +72,7 @@ class HelpersTest < Test::Unit::TestCase
       get '/'
       assert_equal 301, status
       assert_equal '', body
-      assert_equal '/foo', response['Location']
+      assert_equal 'http://example.org/foo', response['Location']
     end
 
     it 'redirects back to request.referer when passed back' do
@@ -85,7 +85,7 @@ class HelpersTest < Test::Unit::TestCase
       request = Rack::MockRequest.new(@app)
       response = request.get('/try_redirect', 'HTTP_REFERER' => '/foo')
       assert_equal 302, response.status
-      assert_equal '/foo', response['Location']
+      assert_equal 'http://example.org/foo', response['Location']
     end
   end
 

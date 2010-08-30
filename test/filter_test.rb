@@ -55,7 +55,7 @@ class BeforeFilterTest < Test::Unit::TestCase
 
     get '/foo'
     assert redirect?
-    assert_equal '/bar', response['Location']
+    assert_equal 'http://example.org/bar', response['Location']
     assert_equal '', body
   end
 
@@ -189,7 +189,7 @@ class AfterFilterTest < Test::Unit::TestCase
 
     get '/foo'
     assert redirect?
-    assert_equal '/bar', response['Location']
+    assert_equal 'http://example.org/bar', response['Location']
     assert_equal '', body
   end
 
