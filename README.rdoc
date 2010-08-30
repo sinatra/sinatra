@@ -203,6 +203,32 @@ and overridden on an individual basis.
     sass :stylesheet, :style => :expanded # overridden
   end
 
+=== Scss Templates
+
+The sass gem/library is required to render Scss templates:
+
+  ## You'll need to require haml or sass in your app
+  require 'sass'
+
+  get '/stylesheet.css' do
+    content_type 'text/css', :charset => 'utf-8'
+    scss :stylesheet
+  end
+
+Renders <tt>./views/stylesheet.scss</tt>.
+
+{Scss' options}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
+can be set globally through Sinatra's configurations,
+see {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
+and overridden on an individual basis.
+
+  set :scss, {:style => :compact } # default Scss style is :nested
+
+  get '/stylesheet.css' do
+    content_type 'text/css', :charset => 'utf-8'
+    scss :stylesheet, :style => :expanded # overridden
+  end
+
 === Less Templates
 
 The less gem/library is required to render Less templates:

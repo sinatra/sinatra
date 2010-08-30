@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
 
   s.name = 'sinatra'
   s.version = '1.0'
-  s.date = '2010-03-23'
+  s.date = '2010-08-29'
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
     AUTHORS
     CHANGES
     LICENSE
+    README.de.rdoc
     README.jp.rdoc
     README.rdoc
     Rakefile

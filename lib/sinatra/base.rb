@@ -317,6 +317,11 @@ module Sinatra
       render :sass, template, options, locals
     end
 
+    def scss(template, options={}, locals={})
+      options[:layout] = false
+      render :scss, template, options, locals
+    end
+
     def less(template, options={}, locals={})
       options[:layout] = false
       render :less, template, options, locals
