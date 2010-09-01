@@ -8,9 +8,8 @@ require 'sinatra/showexceptions'
 # require tilt if available; fall back on bundled version.
 begin
   require 'tilt'
-  major, minor = Tilt::VERSION.split('.').map { |e| e.to_i }
-  if major < 0 and minor < 8
-    warn "WARN: sinatra requires tilt >= 0.8; you have #{Tilt::VERSION}. " +
+  if (Tilt::VERSION.split('.').map { |e| e.to_i } <=> [1,0,2]) < 0
+    warn "WARN: sinatra requires tilt >= 1.0.2; you have #{Tilt::VERSION}. " +
          "loading bundled version..."
     Object.send :remove_const, :Tilt
     raise LoadError

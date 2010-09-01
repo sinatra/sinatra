@@ -1,7 +1,7 @@
 require 'digest/md5'
 
 module Tilt
-  VERSION = '0.8'
+  VERSION = '1.0.1'
 
   @template_mappings = {}
 
@@ -14,6 +14,11 @@ module Tilt
   def self.register(ext, template_class)
     ext = ext.to_s.sub(/^\./, '')
     mappings[ext.downcase] = template_class
+  end
+
+  # Returns true when a template exists on an exact match of the provided file extension
+  def self.registered?(ext)
+    mappings.key?(ext.downcase)
   end
 
   # Create a new template for the given file using the file's extension
@@ -29,20 +34,12 @@ module Tilt
   # Lookup a template class for the given filename or file
   # extension. Return nil when no implementation is found.
   def self.[](file)
-    if @template_mappings.key?(pattern = file.to_s.downcase)
-      @template_mappings[pattern]
-    elsif @template_mappings.key?(pattern = File.basename(pattern))
-      @template_mappings[pattern]
-    else
-      while !pattern.empty?
-        if @template_mappings.key?(pattern)
-          return @template_mappings[pattern]
-        else
-          pattern = pattern.sub(/^[^.]*\.?/, '')
-        end
-      end
-      nil
+    pattern = file.to_s.downcase
+    unless registered?(pattern)
+      pattern = File.basename(pattern)
+      pattern.sub!(/^[^.]*\.?/, '') until (pattern.empty? || registered?(pattern))
     end
+    @template_mappings[pattern]
   end
 
   # Mixin allowing template compilation on scope objects.
@@ -62,7 +59,7 @@ module Tilt
   end
 
   # Base class for template implementations. Subclasses must implement
-  # the #prepare method and one of the #evaluate or #template_source
+  # the #prepare method and one of the #evaluate or #precompiled_template
   # methods.
   class Template
     # Template source; loaded from a file or given directly.
@@ -100,7 +97,7 @@ module Tilt
         case
         when arg.respond_to?(:to_str)  ; @file = arg.to_str
         when arg.respond_to?(:to_int)  ; @line = arg.to_int
-        when arg.respond_to?(:to_hash) ; @options = arg.to_hash
+        when arg.respond_to?(:to_hash) ; @options = arg.to_hash.dup
         else raise TypeError
         end
       end
@@ -285,13 +282,18 @@ module Tilt
 
     def compile_template_method(method_name, locals)
       source, offset = precompiled(locals)
-      offset += 1
-      CompileSite.module_eval <<-RUBY, eval_file, line - offset
+      offset += 5
+      CompileSite.class_eval <<-RUBY, eval_file, line - offset
         def #{method_name}(locals)
-          #{source}
+          Thread.current[:tilt_vars] = [self, locals]
+          class << self
+            this, locals = Thread.current[:tilt_vars]
+            this.instance_eval do
+              #{source}
+            end
+          end
         end
       RUBY
-
       ObjectSpace.define_finalizer self,
         Template.compiled_template_method_remover(CompileSite, method_name)
     end
@@ -353,18 +355,29 @@ module Tilt
   # ERB template implementation. See:
   # http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html
   class ERBTemplate < Template
+    @@default_output_variable = '_erbout'
+
+    def self.default_output_variable
+      @@default_output_variable
+    end
+
+    def self.default_output_variable=(name)
+      @@default_output_variable = name
+    end
+
     def initialize_engine
       return if defined? ::ERB
       require_template_library 'erb'
     end
 
     def prepare
-      @outvar = (options[:outvar] || '_erbout').to_s
+      @outvar = options[:outvar] || self.class.default_output_variable
       @engine = ::ERB.new(data, options[:safe], options[:trim], @outvar)
     end
 
     def precompiled_template(locals)
-      @engine.src
+      source = @engine.src
+      source
     end
 
     def precompiled_preamble(locals)
@@ -399,6 +412,16 @@ module Tilt
 
   # Erubis template implementation. See:
   # http://www.kuwata-lab.com/erubis/
+  #
+  # ErubisTemplate supports the following additional options, which are not
+  # passed down to the Erubis engine:
+  #
+  #   :engine_class   allows you to specify a custom engine class to use
+  #                   instead of the default (which is ::Erubis::Eruby).
+  #
+  #   :escape_html    when true, ::Erubis::EscapedEruby will be used as
+  #                   the engine class instead of the default. All content
+  #                   within <%= %> blocks will be automatically html escaped.
   class ErubisTemplate < ERBTemplate
     def initialize_engine
       return if defined? ::Erubis
@@ -407,8 +430,10 @@ module Tilt
 
     def prepare
       @options.merge!(:preamble => false, :postamble => false)
-      @outvar = (options.delete(:outvar) || '_erbout').to_s
-      @engine = ::Erubis::Eruby.new(data, options)
+      @outvar = options.delete(:outvar) || self.class.default_output_variable
+      engine_class = options.delete(:engine_class)
+      engine_class = ::Erubis::EscapedEruby if options.delete(:escape_html)
+      @engine = (engine_class || ::Erubis::Eruby).new(data, options)
     end
 
     def precompiled_preamble(locals)
@@ -508,36 +533,19 @@ module Tilt
 
   private
     def sass_options
-      options.merge(:filename => eval_file, :line => line)
+      options.merge(:filename => eval_file, :line => line, :syntax => :sass)
     end
   end
   register 'sass', SassTemplate
 
-
-  # Scss template implementation.
-  #
-  # Scss templates do not support object scopes, locals, or yield.
-  class ScssTemplate < Template
-    def initialize_engine
-      return if defined? ::Sass::Engine
-      require_template_library 'sass'
-    end
-
-    def prepare
-      @engine = ::Sass::Engine.new(data, scss_options)
-    end
-
-    def evaluate(scope, locals, &block)
-      @output ||= @engine.render
-    end
-
+  # Sass's new .scss type template implementation.
+  class ScssTemplate < SassTemplate
   private
-    def scss_options
+    def sass_options
       options.merge(:filename => eval_file, :line => line, :syntax => :scss)
     end
   end
   register 'scss', ScssTemplate
-
 
   # Lessscss template implementation. See:
   # http://lesscss.org/
@@ -559,6 +567,33 @@ module Tilt
   end
   register 'less', LessTemplate
 
+
+  # Nokogiri template implementation. See:
+  # http://nokogiri.org/
+  class NokogiriTemplate < Template
+    def initialize_engine
+      return if defined?(::Nokogiri)
+      require_template_library 'nokogiri'
+    end
+
+    def prepare; end
+
+    def evaluate(scope, locals, &block)
+      xml = ::Nokogiri::XML::Builder.new
+      if data.respond_to?(:to_str)
+        locals[:xml] = xml
+        super(scope, locals, &block)
+      elsif data.kind_of?(Proc)
+        data.call(xml)
+      end
+      xml.to_xml
+    end
+
+    def precompiled_template(locals)
+      data.to_str
+    end
+  end
+  register 'nokogiri', NokogiriTemplate
 
   # Builder template implementation. See:
   # http://builder.rubyforge.org/
@@ -676,55 +711,6 @@ module Tilt
   register 'textile', RedClothTemplate
 
 
-  # Mustache is written and maintained by Chris Wanstrath. See:
-  # http://github.com/defunkt/mustache
-  #
-  # When a scope argument is provided to MustacheTemplate#render, the
-  # instance variables are copied from the scope object to the Mustache
-  # view.
-  class MustacheTemplate < Template
-    attr_reader :engine
-
-    def initialize_engine
-      return if defined? ::Mustache
-      require_template_library 'mustache'
-    end
-
-    def prepare
-      Mustache.view_namespace = options[:namespace]
-      Mustache.view_path = options[:view_path] || options[:mustaches]
-      @engine = options[:view] || Mustache.view_class(name)
-      options.each do |key, value|
-        next if %w[view view_path namespace mustaches].include?(key.to_s)
-        @engine.send("#{key}=", value) if @engine.respond_to? "#{key}="
-      end
-    end
-
-    def evaluate(scope=nil, locals={}, &block)
-      instance = @engine.new
-
-      # copy instance variables from scope to the view
-      scope.instance_variables.each do |name|
-        instance.instance_variable_set(name, scope.instance_variable_get(name))
-      end
-
-      # locals get added to the view's context
-      locals.each do |local, value|
-        instance[local] = value
-      end
-
-      # if we're passed a block it's a subview. Sticking it in yield
-      # lets us use {{yield}} in layout.html to render the actual page.
-      instance[:yield] = block.call if block
-
-      instance.template = data unless instance.compiled?
-
-      instance.to_html
-    end
-  end
-  register 'mustache', MustacheTemplate
-
-
   # RDoc template. See:
   # http://rdoc.rubyforge.org/
   #
@@ -751,21 +737,36 @@ module Tilt
   register 'rdoc', RDocTemplate
 
 
-  # CoffeeScript info:
-  # http://jashkenas.github.com/coffee-script/
-  class CoffeeTemplate < Template
+  # Radius Template
+  # http://github.com/jlong/radius/
+  class RadiusTemplate < Template
     def initialize_engine
-      return if defined? ::CoffeeScript
-      require_template_library 'coffee-script'
+      return if defined? ::Radius
+      require_template_library 'radius'
     end
 
     def prepare
-      @output = nil
     end
 
     def evaluate(scope, locals, &block)
-      @output ||= ::CoffeeScript::compile(data, options)
+      context = Class.new(Radius::Context).new
+      context.define_tag("yield") do
+        block.call
+      end
+      locals.each do |tag, value|
+        context.define_tag(tag) do
+          value
+        end
+      end
+      (class << context; self; end).class_eval do
+        define_method :tag_missing do |tag, attr|
+          scope.__send__(tag)  # any way to support attr as args?
+        end
+      end
+      options = {:tag_prefix => 'r'}.merge(@options)
+      parser = Radius::Parser.new(context, options)
+      parser.parse(data)
     end
   end
-  register 'coffee', CoffeeTemplate
+  register 'radius', RadiusTemplate
 end
