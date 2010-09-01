@@ -28,7 +28,8 @@
    directly pass a mime type. (Konstantin Haase)
 
  * `redirect` always redirects to an absolute URI, even if a relative URI was passed.
-   Ensures compatibility with RFC 2616 section 14.30. (Jean-Philippe Garcia Ballester)
+   Ensures compatibility with RFC 2616 section 14.30.
+   (Jean-Philippe Garcia Ballester, Anthony Williams)
 
  * Added ability to handle weighted HTTP_ACCEPT headers. (Davide D'Agostino)
 
