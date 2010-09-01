@@ -345,6 +345,18 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal 'text/plain', response['Content-Type']
     end
 
+    it 'sets the Content-Type response header if type option is set to a file extesion' do
+      send_file_app :type => 'html'
+      get '/file.txt'
+      assert_equal 'text/html', response['Content-Type']
+    end
+
+    it 'sets the Content-Type response header if type option is set to a mime type' do
+      send_file_app :type => 'application/octet-stream'
+      get '/file.txt'
+      assert_equal 'application/octet-stream', response['Content-Type']
+    end
+
     it 'sets the Content-Length response header' do
       send_file_app
       get '/file.txt'

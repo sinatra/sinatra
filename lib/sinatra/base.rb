@@ -158,6 +158,7 @@ module Sinatra
       last_modified stat.mtime
 
       content_type mime_type(opts[:type]) ||
+        opts[:type] ||
         mime_type(File.extname(path)) ||
         response['Content-Type'] ||
         'application/octet-stream'
