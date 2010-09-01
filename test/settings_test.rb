@@ -43,6 +43,11 @@ class SettingsTest < Test::Unit::TestCase
     assert_equal 'bizzle', @base.baz
   end
 
+  it 'sets multiple settings using #each' do
+    @base.set [["foo", "bar"]]
+    assert_equal "bar", @base.foo
+  end
+
   it 'inherits settings methods when subclassed' do
     @base.set :foo, 'bar'
     @base.set :biz, Proc.new { 'baz' }

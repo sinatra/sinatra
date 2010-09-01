@@ -467,7 +467,9 @@ module Sinatra
     def route!(base=self.class, pass_block=nil)
       if routes = base.routes[@request.request_method]
         original_params = @params
-        path            = unescape(@request.path_info)
+
+        path = unescape(@request.path_info)
+        path = "/" if path.empty?
 
         routes.each do |pattern, keys, conditions, block|
           if match = pattern.match(path)
@@ -703,8 +705,8 @@ module Sinatra
           metadef(option, &value)
           metadef("#{option}?") { !!__send__(option) }
           metadef("#{option}=") { |val| metadef(option, &Proc.new{val}) }
-        elsif value == self && option.respond_to?(:to_hash)
-          option.to_hash.each { |k,v| set(k, v) }
+        elsif value == self && option.respond_to?(:each)
+          option.each { |k,v| set(k, v) }
         elsif respond_to?("#{option}=")
           __send__ "#{option}=", value
         else
@@ -947,11 +949,11 @@ module Sinatra
         @prototype = nil
         @middleware << [middleware, args, block]
       end
-      
+
       def quit!(server, handler_name)
         ## Use thins' hard #stop! if available, otherwise just #stop
         server.respond_to?(:stop!) ? server.stop! : server.stop
-        puts "\n== Sinatra has ended his set (crowd applauds)" unless handler_name =~/cgi/i        
+        puts "\n== Sinatra has ended his set (crowd applauds)" unless handler_name =~/cgi/i
       end
 
       # Run the Sinatra app as a self-hosted server using
