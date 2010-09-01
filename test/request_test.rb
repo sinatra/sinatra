@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/helper'
+require 'stringio'
 
 class RequestTest < Test::Unit::TestCase
   it 'responds to #user_agent' do
