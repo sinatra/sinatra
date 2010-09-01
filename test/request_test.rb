@@ -30,4 +30,15 @@ class RequestTest < Test::Unit::TestCase
     request = Sinatra::Request.new('HTTP_X_FORWARDED_PROTO' => 'https')
     assert request.secure?
   end
+
+  it 'is possible to marshal params' do
+    request = Sinatra::Request.new(
+      'REQUEST_METHOD' => 'PUT',
+      'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
+      'rack.input' => StringIO.new('foo=bar')
+    )
+    params = Sinatra::Base.new.send(:indifferent_hash).replace(request.params)
+    dumped = Marshal.dump(request.params)
+    assert_equal 'bar', Marshal.load(dumped)['foo']
+  end
 end
