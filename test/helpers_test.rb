@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/helper'
+require 'date'
 
 class HelpersTest < Test::Unit::TestCase
   def test_default
@@ -423,42 +424,46 @@ class HelpersTest < Test::Unit::TestCase
   end
 
   describe 'last_modified' do
-    setup do
-      now = Time.now
-      mock_app {
-        get '/' do
-          body { 'Hello World' }
-          last_modified now
-          'Boo!'
-        end
-      }
-      @now = now
-    end
-
-    it 'sets the Last-Modified header to a valid RFC 2616 date value' do
-      get '/'
-      assert_equal @now.httpdate, response['Last-Modified']
-    end
-
-    it 'returns a body when conditional get misses' do
-      get '/'
-      assert_equal 200, status
-      assert_equal 'Boo!', body
-    end
-
-    it 'halts when a conditional GET matches' do
-      get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => @now.httpdate }
-      assert_equal 304, status
-      assert_equal '', body
-    end
-
     it 'ignores nil' do
-      mock_app {
+      mock_app do
         get '/' do last_modified nil; 200; end
-      }
+      end
 
       get '/'
       assert ! response['Last-Modified']
+    end
+
+    [Time, DateTime].each do |klass|
+      describe "with #{klass.name}" do
+        setup do
+          now = klass.now
+          mock_app do
+            get '/' do
+              body { 'Hello World' }
+              last_modified now
+              'Boo!'
+            end
+          end
+          @now = Time.parse now.to_s
+        end
+
+        it 'sets the Last-Modified header to a valid RFC 2616 date value' do
+          get '/'
+          assert_equal @now.httpdate, response['Last-Modified']
+        end
+
+        it 'returns a body when conditional get misses' do
+          get '/'
+          assert_equal 200, status
+          assert_equal 'Boo!', body
+        end
+
+        it 'halts when a conditional GET matches' do
+          get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => @now.httpdate }
+          assert_equal 304, status
+          assert_equal '', body
+        end
+      end
     end
   end
 
