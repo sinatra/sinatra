@@ -87,6 +87,30 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal 302, response.status
       assert_equal 'http://example.org/foo', response['Location']
     end
+
+    it 'redirects using a non-standard HTTP port' do
+      mock_app {
+        get '/' do
+          redirect '/foo'
+        end
+      }
+
+      request = Rack::MockRequest.new(@app)
+      response = request.get('/', 'SERVER_PORT' => '81')
+      assert_equal 'http://example.org:81/foo', response['Location']
+    end
+
+    it 'redirects using a non-standard HTTPS port' do
+      mock_app {
+        get '/' do
+          redirect '/foo'
+        end
+      }
+
+      request = Rack::MockRequest.new(@app)
+      response = request.get('/', 'SERVER_PORT' => '444')
+      assert_equal 'http://example.org:444/foo', response['Location']
+    end
   end
 
   describe 'error' do

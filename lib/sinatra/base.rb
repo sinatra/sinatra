@@ -97,13 +97,18 @@ module Sinatra
     # Halt processing and redirect to the URI provided.
     def redirect(uri, *args)
       if not uri =~ /^https?:\/\//
-        # According to RFC 2616 section 14.30, “the field value consists of a single absolute URI”
-        abs_uri = request.scheme + "://"
-        abs_uri << request.host
-        abs_uri << ":#{port}" if request.scheme == "https" and request.port != 443 or request.scheme == "http" and request.port != 80
-        abs_uri << uri
-        uri = abs_uri
+        # According to RFC 2616 section 14.30, "the field value consists of a
+        # single absolute URI"
+        abs_uri = "#{request.scheme}://#{request.host}"
+
+        if request.scheme == 'https' && request.port != 443 ||
+              request.scheme == 'http' && request.port != 80
+          abs_uri << ":#{request.port}"
+        end
+
+        uri = (abs_uri << uri)
       end
+
       status 302
       response['Location'] = uri
       halt(*args)
