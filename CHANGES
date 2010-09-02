@@ -36,7 +36,8 @@
  * README is now available in German. (Bernhard Essl)
 
  * This release is compatible with Ruby 1.9.2. Sinatra was trying to read
-   none existent files Ruby added to the call stack. (Konstantin Haase)
+   none existent files Ruby added to the call stack. (Shota Fukumori,
+   Konstantin Haase)
 
  * This release is now usable in combination with Rails 3. When mounting
    a Sinatra application under a subpath in Rails 3, the PATH_INFO is not
