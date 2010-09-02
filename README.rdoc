@@ -81,6 +81,8 @@ Or with a block parameter:
     "Hello, #{c}!"
   end
 
+=== Conditions
+
 Routes may include a variety of matching conditions, such as the user agent:
 
   get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
@@ -89,6 +91,32 @@ Routes may include a variety of matching conditions, such as the user agent:
 
   get '/foo' do
     # Matches non-songbird browsers
+  end
+
+Other available conditions are `host_name` and `provides`:
+
+  get '/', :host_name => /^admin\./ do
+    "Admin Area, Access denied!"
+  end
+
+  get '/', :provides => 'html' do
+    haml :index
+  end
+  
+  get '/', :provides => ['rss', 'atom', 'xml'] do
+    builder :feed
+  end
+
+You can easily define your own conditions:
+
+  set(:probability) { |value| condition { rand <= value } }
+  
+  get '/win_a_car', :probability => 0.1 do
+    "You won!"
+  end
+  
+  get '/win_a_car' do
+    "Sorry, you lost."
   end
 
 == Static Files
