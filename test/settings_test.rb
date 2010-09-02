@@ -115,6 +115,10 @@ class SettingsTest < Test::Unit::TestCase
     assert_equal :foo, @base.new.settings.environment
   end
 
+  it 'is accessible from class via #settings' do
+    assert_equal :foo, @base.settings.environment
+  end
+
   describe 'methodoverride' do
     it 'is disabled on Base' do
       assert ! @base.method_override?

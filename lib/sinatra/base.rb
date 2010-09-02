@@ -446,10 +446,19 @@ module Sinatra
     end
 
     # Access settings defined with Base.set.
-    def settings
-      self.class
+    def self.settings
+      self
     end
+
+    # Access settings defined with Base.set.
+    def settings
+      self.class.settings
+    end
+
     alias_method :options, :settings
+    class << self
+      alias_method :options, :settings
+    end
 
     # Exit the current block, halts any further processing
     # of the request, and returns the specified response.
