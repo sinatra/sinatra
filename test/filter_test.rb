@@ -264,4 +264,17 @@ class AfterFilterTest < Test::Unit::TestCase
     get '/foo/bar'
     assert_equal subpath, 'bar'
   end
+  
+  it 'is possible to access url params from the route param' do
+    ran = false
+    mock_app do
+      get('/foo/*') { }
+      before('/foo/:sub') do
+        assert_equal params[:sub], 'bar'
+        ran = true
+      end
+    end
+    get '/foo/bar'
+    assert ran
+  end
 end

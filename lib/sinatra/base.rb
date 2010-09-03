@@ -494,57 +494,65 @@ module Sinatra
     # Run routes defined on the class and all superclasses.
     def route!(base=self.class, pass_block=nil)
       if routes = base.routes[@request.request_method]
-        original_params = @params
-
-        path = unescape(@request.path_info)
-        path = "/" if path.empty?
-
         routes.each do |pattern, keys, conditions, block|
-          if match = pattern.match(path)
-            values = match.captures.to_a
-            params =
-              if keys.any?
-                keys.zip(values).inject({}) do |hash,(k,v)|
-                  if k == 'splat'
-                    (hash[k] ||= []) << v
-                  else
-                    hash[k] = v
-                  end
-                  hash
-                end
-              elsif values.any?
-                {'captures' => values}
-              else
-                {}
-              end
-            @params = original_params.merge(params)
-            @block_params = values
-
-            pass_block = catch(:pass) do
-              conditions.each { |cond|
-                throw :pass if instance_eval(&cond) == false }
-              route_eval(&block)
-            end
+          pass_block = process_route(pattern, keys, conditions) do
+            route_eval(&block)
           end
         end
-
-        @params = original_params
       end
 
       # Run routes defined in superclass.
       if base.superclass.respond_to?(:routes)
-        route! base.superclass, pass_block
-        return
+        return route!(base.superclass, pass_block)
       end
 
       route_eval(&pass_block) if pass_block
-
       route_missing
     end
 
     # Run a route block and throw :halt with the result.
     def route_eval(&block)
       throw :halt, instance_eval(&block)
+    end
+
+    # If the current request matches pattern and conditions, fill params
+    # with keys and call the given block.
+    # Revert params afterwards.
+    #
+    # Returns pass block.
+    def process_route(pattern, keys, conditions)
+      @original_params ||= @params
+      @path ||= begin
+        path = unescape(@request.path_info)
+        path.empty? ? "/" : path
+      end
+      if match = pattern.match(@path)
+        values = match.captures.to_a
+        params =
+          if keys.any?
+            keys.zip(values).inject({}) do |hash,(k,v)|
+              if k == 'splat'
+                (hash[k] ||= []) << v
+              else
+                hash[k] = v
+              end
+              hash
+            end
+          elsif values.any?
+            {'captures' => values}
+          else
+            {}
+          end
+        @params = @original_params.merge(params)
+        @block_params = values
+        catch(:pass) do
+          conditions.each { |cond|
+            throw :pass if instance_eval(&cond) == false }
+          yield
+        end
+      end
+    ensure
+      @params = @original_params
     end
 
     # No matching route was found or all routes passed. The default
@@ -828,11 +836,9 @@ module Sinatra
       # add a filter
       def add_filter(type, path = nil, &block)
         return filters[type] << block unless path
-        block, pattern = compile!(type, path, block)
+        block, *arguments = compile!(type, path, block)
         add_filter(type) do
-          next unless match = pattern.match(request.path_info)
-          @block_params = match.captures.to_a
-          instance_eval(&block)
+          process_route(*arguments) { instance_eval(&block) }
         end
       end
 
@@ -896,8 +902,7 @@ module Sinatra
         host_name(options.delete(:host)) if options.key?(:host)
         options.each { |option, args| send(option, *args) }
 
-        block, pattern, keys = compile! verb, path, block
-        conditions, @conditions = @conditions, []
+        block, pattern, keys, conditions = compile! verb, path, block
         invoke_hook(:route_added, verb, path, block)
 
         (@routes[verb] ||= []).
@@ -910,12 +915,17 @@ module Sinatra
 
       def compile!(verb, path, block)
         method_name = "#{verb} #{path}"
+
         define_method(method_name, &block)
-        unbound_method = instance_method method_name
+        unbound_method          = instance_method method_name
+        pattern, keys           = compile(path)
+        conditions, @conditions = @conditions, []
         remove_method method_name
-        [block.arity != 0 ?
-          proc { unbound_method.bind(self).call(*@block_params) } :
-          proc { unbound_method.bind(self).call }, *compile(path)]
+
+        [ block.arity != 0 ?
+            proc { unbound_method.bind(self).call(*@block_params) } :
+            proc { unbound_method.bind(self).call },
+          pattern, keys, conditions ]
       end
 
       def compile(path)
