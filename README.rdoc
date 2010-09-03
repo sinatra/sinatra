@@ -131,7 +131,7 @@ or HTTP status code:
 
 * An Array with three elements: <tt>[status (Fixnum), headers (Hash), response body (responds to #each)]</tt>
 * An Array with two elements: <tt>[status (Fixnum), response body (responds to #each)]</tt>
-* An object that responds to +#each+ and passes nothing but strings to the given block
+* An object that responds to <tt>#each</tt> and passes nothing but strings to the given block
 * A Fixnum representing the status code
 
 That way we can for instance easily implement a streaming example:
