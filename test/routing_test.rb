@@ -356,6 +356,18 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 'looks good', body
   end
 
+  it "matches paths that include ampersands" do
+    mock_app {
+      get '/:name' do
+        'looks good'
+      end
+    }
+
+    get '/foo&bar'
+    assert ok?
+    assert_equal 'looks good', body
+  end
+
   it "URL decodes named parameters and splats" do
     mock_app {
       get '/:foo/*' do
