@@ -13,10 +13,20 @@ end
 
 # SPECS ===============================================================
 
-Rake::TestTask.new(:test) do |t|
-  t.test_files = FileList['test/*_test.rb']
-  t.ruby_opts = ['-rubygems'] if defined? Gem
-  t.ruby_opts << '-I.'
+if !ENV['NO_TEST_FIX'] and RUBY_VERSION == '1.9.2' and RUBY_PATCHLEVEL == 0
+  # Avoids seg fault
+  task(:test) do
+    files = Dir.glob('test/*_test.rb')
+    files.delete 'test/settings_test.rb'
+    sh "testrb #{files.join ' '}"
+    sh "testrb test/settings_test.rb"
+  end
+else
+  Rake::TestTask.new(:test) do |t|
+    t.test_files = FileList['test/*_test.rb']
+    t.ruby_opts = ['-rubygems'] if defined? Gem
+    t.ruby_opts << '-I.'
+  end
 end
 
 # Rcov ================================================================
