@@ -5,6 +5,7 @@ effort:
 
   # myapp.rb
   require 'sinatra'
+  
   get '/' do
     'Hello world!'
   end
@@ -184,10 +185,10 @@ can be set globally through Sinatra's configurations,
 see {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
 and overridden on an individual basis.
 
-  set :haml, {:format => :html5 } # default Haml format is :xhtml
+  set :haml, :format => :html5 # default Haml format is :xhtml
 
   get '/' do
-    haml :index, :haml_options => {:format => :html4 } # overridden
+    haml :index, :format => :html4 # overridden
   end
 
 
@@ -248,7 +249,7 @@ can be set globally through Sinatra's configurations,
 see {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
 and overridden on an individual basis.
 
-  set :sass, {:style => :compact } # default Sass style is :nested
+  set :sass, :style => :compact # default Sass style is :nested
 
   get '/stylesheet.css' do
     content_type 'text/css', :charset => 'utf-8'
@@ -274,7 +275,7 @@ can be set globally through Sinatra's configurations,
 see {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
 and overridden on an individual basis.
 
-  set :scss, {:style => :compact } # default Scss style is :nested
+  set :scss, :style => :compact # default Scss style is :nested
 
   get '/stylesheet.css' do
     content_type 'text/css', :charset => 'utf-8'
