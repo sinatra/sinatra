@@ -428,6 +428,7 @@ module Sinatra
       @response = Response.new
       @params   = indifferent_params(@request.params)
       template_cache.clear if settings.reload_templates
+      force_encoding(@params)
 
       invoke { dispatch! }
       invoke { error_block!(response.status) }
@@ -1093,6 +1094,31 @@ module Sinatra
       end
     end
 
+    attr_reader :default_encoding
+    def default_encoding=(value)
+      return false unless defined? Encoding
+      case value
+      when :utf8, true
+        self.default_encoding = "UTF-8"
+      when false
+        @default_encoding = value
+      else
+        Encoding.default_external = value
+        @default_encoding = Encoding.default_external
+      end
+    end
+    
+    def force_encoding(data, encoding = default_encoding)
+      return if !encoding or data == self
+      if data.respond_to? :force_encoding
+        data.force_encoding(encoding)
+      elsif data.respond_to? :each_value
+        data.each_value { |v| force_encoding(v, encoding) }
+      elsif data.respond_to? :each
+        data.each { |v| force_encoding(v, encoding) }
+      end
+    end
+
     reset!
 
     set :environment, (ENV['RACK_ENV'] || :development).to_sym
@@ -1118,6 +1144,7 @@ module Sinatra
     set :root, Proc.new { app_file && File.expand_path(File.dirname(app_file)) }
     set :views, Proc.new { root && File.join(root, 'views') }
     set :reload_templates, Proc.new { development? or RUBY_VERSION < '1.8.7' }
+    set :default_encoding, 'UTF-8'
     set :lock, false
 
     set :public, Proc.new { root && File.join(root, 'public') }
