@@ -1104,6 +1104,7 @@ module Sinatra
         @default_encoding = value
       else
         Encoding.default_external = value
+        Encoding.default_internal ||= Encoding.default_external
         @default_encoding = Encoding.default_external
       end
     end
