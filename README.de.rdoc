@@ -3,7 +3,6 @@
 Sinatra ist eine DSL für die rasche Erstellung von Web Anwendungen in Ruby mit minimalen Aufwand:
 
   # myapp.rb
-  require 'rubygems'
   require 'sinatra'
   get '/' do
     'Hallo Welt!'
@@ -11,8 +10,8 @@ Sinatra ist eine DSL für die rasche Erstellung von Web Anwendungen in Ruby mit 
 
 Das gem installieren und starten:
 
-  sudo gem install sinatra
-  ruby myapp.rb
+  gem install sinatra
+  ruby -rubygems myapp.rb
 
 Aufrufen unter: http://localhost:4567
 
