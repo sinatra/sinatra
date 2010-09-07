@@ -142,9 +142,11 @@ That way we can for instance easily implement a streaming example:
     end
 
     get '/' do
-      Stream.new
-    rescue StandardError
-      [500, 'sorry, error']
+      begin
+        Stream.new
+      rescue StandardError
+        [500, 'sorry, error']
+      end
     end
 
 == Static Files
