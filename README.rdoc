@@ -141,13 +141,7 @@ That way we can for instance easily implement a streaming example:
       end
     end
 
-    get '/' do
-      begin
-        Stream.new
-      rescue StandardError
-        [500, 'sorry, error']
-      end
-    end
+    get('/') { Stream.new }
 
 == Static Files
 
