@@ -1,6 +1,6 @@
 = Sinatra
 
-Sinatra e uma DSL para criar rapidamente aplicacoes web em Ruby com minimo de esforco:
+Sinatra e uma DSL para criar rapidamente aplicacoes web em Ruby com o minimo de esforco:
 
   # myapp.rb
   require 'rubygems'
