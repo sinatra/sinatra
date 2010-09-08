@@ -37,8 +37,8 @@ Cada rota e associada a um bloco:
     .. aniquilando alguma coisa ..
   end
 
-Routes are matched in the order they are defined. The first route that
-matches the request is invoked.
+Rotas são encontradas na ordem em que são definidas. A primeira rota que
+e encontrada o pedido e invocado.
 
 Route patterns may include named parameters, accessible via the
 <tt>params</tt> hash:
