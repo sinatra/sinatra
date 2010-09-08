@@ -1,41 +1,40 @@
 = Sinatra
 
-Sinatra is a DSL for quickly creating web applications in Ruby with minimal
-effort:
+Sinatra é uma DSL para criar rapidamente aplicações web em Ruby com mínimo de esforço:
 
   # myapp.rb
   require 'rubygems'
   require 'sinatra'
   get '/' do
-    'Hello world!'
+    'Olá Mundo!'
   end
 
-Install the gem and run with:
+Instale a gem e execute como:
 
   sudo gem install sinatra
   ruby myapp.rb
 
-View at: http://localhost:4567
+Veja em: http://localhost:4567
 
-== Routes
+== Rotas
 
-In Sinatra, a route is an HTTP method paired with an URL matching pattern.
-Each route is associated with a block:
+No Sinatra, uma rota é um método HTTP associado a uma URL correspondente padrão.
+Cada rota é associada a um bloco:
 
   get '/' do
-    .. show something ..
+    .. mostrando alguma coisa ..
   end
 
   post '/' do
-    .. create something ..
+    .. criando alguma coisa ..
   end
 
   put '/' do
-    .. update something ..
+    .. atualizando alguma coisa ..
   end
 
   delete '/' do
-    .. annihilate something ..
+    .. aniquilando alguma coisa ..
   end
 
 Routes are matched in the order they are defined. The first route that
