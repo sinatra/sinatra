@@ -18,7 +18,7 @@ Acesse em: http://localhost:4567
 
 == Rotas
 
-No Sinatra, uma rota é um método HTTP associado a uma URL correspondente padrao.
+No Sinatra, uma rota e um metodo HTTP associado a uma URL correspondente padrao.
 Cada rota e associada a um bloco:
 
   get '/' do
