@@ -90,15 +90,15 @@ Rotas podem incluir uma variedade de condições correspondes, tal como o agente
     # Corresponde a um navegador não Songbird
   end
 
-== Static Files
+== Arquivos estáticos
 
-Static files are served from the <tt>./public</tt> directory. You can specify
-a different location by setting the <tt>:public</tt> option:
+Arquivos estáticos são servidos a partir do diretório <tt>./public</tt>. Você pode especificar
+um local diferente pela opção <tt>:public</tt>:
 
   set :public, File.dirname(__FILE__) + '/static'
 
-Note that the public directory name is not included in the URL. A file
-<tt>./public/css/style.css</tt> is made available as
+Note que o nome do diretório público não é incluido na URL. Um arquivo
+<tt>./public/css/style.css</tt> é disponibilizado como
 <tt>http://example.com/css/style.css</tt>.
 
 == Views / Templates
