@@ -1094,31 +1094,32 @@ module Sinatra
       end
     end
 
-    attr_reader :default_encoding
-    def default_encoding=(value)
-      return false unless defined? Encoding
-      case value
-      when :utf8, true
-        self.default_encoding = "UTF-8"
-      when false
-        @default_encoding = value
-      else
-        Encoding.default_external = value
-        Encoding.default_internal ||= Encoding.default_external
-        @default_encoding = Encoding.default_external
+    # Fixes encoding issues by
+    # * defaulting to UTF-8
+    # * casting params to Encoding.default_external
+    #
+    # The latter might not be necessary if Rack handles it one day.
+    # Keep an eye on Rack's LH #100.
+    if defined? Encoding
+      if Encoding.default_external.to_s =~ /^ASCII/
+        Encoding.default_external = "UTF-8"
       end
-    end
-    
-    def force_encoding(data, encoding = default_encoding)
-      return if !encoding or data == self
-      if data.respond_to? :force_encoding
-        data.force_encoding(encoding)
-      elsif data.respond_to? :each_value
-        data.each_value { |v| force_encoding(v, encoding) }
-      elsif data.respond_to? :each
-        data.each { |v| force_encoding(v, encoding) }
+      Encoding.default_internal ||= Encoding.default_external
+
+      def force_encoding(data)
+        return if data != self
+        if data.respond_to? :force_encoding
+          data.force_encoding(Encoding.default_external)
+        elsif data.respond_to? :each_value
+          data.each_value { |v| force_encoding(v) }
+        elsif data.respond_to? :each
+          data.each { |v| force_encoding(v) }
+        end
       end
+    else
+      def force_encoding(*) end
     end
+
 
     reset!
 
@@ -1145,7 +1146,6 @@ module Sinatra
     set :root, Proc.new { app_file && File.expand_path(File.dirname(app_file)) }
     set :views, Proc.new { root && File.join(root, 'views') }
     set :reload_templates, Proc.new { development? or RUBY_VERSION < '1.8.7' }
-    set :default_encoding, 'UTF-8'
     set :lock, false
 
     set :public, Proc.new { root && File.join(root, 'public') }
