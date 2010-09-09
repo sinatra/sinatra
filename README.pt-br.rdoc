@@ -93,7 +93,7 @@ Rotas podem incluir uma variedade de condições correspondes, tal como o agente
 == Arquivos estáticos
 
 Arquivos estáticos são servidos a partir do diretório <tt>./public</tt>. Você pode especificar
-um local diferente pela opção <tt>:public</tt>:
+um local diferente pela opção <tt>:public</tt>
 
   set :public, File.dirname(__FILE__) + '/static'
 
