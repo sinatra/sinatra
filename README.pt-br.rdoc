@@ -2,7 +2,7 @@
 
 Sinatra é uma DSL para criar rapidamente aplicações web em Ruby com o mínimo de esforço:
 
-  # myapp.rb
+  # minhaapp.rb
   require 'rubygems'
   require 'sinatra'
   get '/' do
@@ -12,7 +12,7 @@ Sinatra é uma DSL para criar rapidamente aplicações web em Ruby com o mínimo
 Instale a gem e execute como:
 
   sudo gem install sinatra
-  ruby myapp.rb
+  ruby minhaapp.rb
 
 Acesse em: http://localhost:4567
 
@@ -34,60 +34,60 @@ Cada rota é associada a um bloco:
   end
 
   delete '/' do
-    .. aniquilando alguma coisa ..
+    .. apagando alguma coisa ..
   end
 
 Rotas são encontradas na ordem em que são definidas. A primeira rota que
 é encontrada o pedido é invocado.
 
-Route patterns may include named parameters, accessible via the
-<tt>params</tt> hash:
+Padrões de rota podem incluir parâmetros nomeados, acessáveis via a
+hash <tt>params</tt>:
 
-  get '/hello/:name' do
-    # matches "GET /hello/foo" and "GET /hello/bar"
-    # params[:name] is 'foo' or 'bar'
-    "Hello #{params[:name]}!"
+  get '/ola/:nome' do
+    # corresponde a "GET /ola/foo" e "GET /ola/bar"
+    # params[:nome] é 'foo' ou 'bar'
+    "Olá #{params[:nome]}!"
   end
 
-You can also access named parameters via block parameters:
+Você também pode acessar parâmetros nomeados via bloco de parâmetros:
 
-  get '/hello/:name' do |n|
-    "Hello #{n}!"
+  get '/ola/:nome' do |n|
+    "Olá #{n}!"
   end
 
-Route patterns may also include splat (or wildcard) parameters, accessible
-via the <tt>params[:splat]</tt> array.
+Padrões de rota também podem incluir parâmetros splat (ou curingas), acessáveis
+via o array <tt>params[:splat]</tt>.
 
-  get '/say/*/to/*' do
-    # matches /say/hello/to/world
-    params[:splat] # => ["hello", "world"]
+  get '/diga/*/para/*' do
+    # corresponde a /diga/ola/para/mundo
+    params[:splat] # => ["ola", "mundo"]
   end
 
   get '/download/*.*' do
-    # matches /download/path/to/file.xml
-    params[:splat] # => ["path/to/file", "xml"]
+    # corresponde a /download/pasta/do/arquivo.xml
+    params[:splat] # => ["pasta/do/arquivo", "xml"]
   end
 
-Route matching with Regular Expressions:
+Rotas se correspondem com expressões regulares:
 
-  get %r{/hello/([\w]+)} do
-    "Hello, #{params[:captures].first}!"
+  get %r{/ola/([\w]+)} do
+    "Olá, #{params[:captures].first}!"
   end
 
-Or with a block parameter:
+Ou com um bloco de parâmetro:
 
-  get %r{/hello/([\w]+)} do |c|
+  get %r{/ola/([\w]+)} do |c|
     "Hello, #{c}!"
   end
 
-Routes may include a variety of matching conditions, such as the user agent:
+Rotas podem incluir uma variedade de condições correspondes, tal como o agente usuário:
 
   get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
-    "You're using Songbird version #{params[:agent][0]}"
+    "Você está utilizando a versão #{params[:agent][0]} do Songbird."
   end
 
   get '/foo' do
-    # Matches non-songbird browsers
+    # Corresponde a um navegador não Songbird
   end
 
 == Static Files
