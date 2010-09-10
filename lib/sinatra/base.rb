@@ -4,19 +4,7 @@ require 'uri'
 require 'rack'
 require 'rack/builder'
 require 'sinatra/showexceptions'
-
-# require tilt if available; fall back on bundled version.
-begin
-  require 'tilt'
-  if (Tilt::VERSION.split('.').map { |e| e.to_i } <=> [1,0,2]) < 0
-    warn "WARN: sinatra requires tilt >= 1.0.2; you have #{Tilt::VERSION}. " +
-         "loading bundled version..."
-    Object.send :remove_const, :Tilt
-    raise LoadError
-  end
-rescue LoadError
-  require 'sinatra/tilt'
-end
+require 'tilt'
 
 module Sinatra
   VERSION = '1.1.0'
