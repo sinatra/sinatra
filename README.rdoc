@@ -126,8 +126,8 @@ on to the HTTP client, or at least the next middleware in the Rack stack.
 Most commonly this is a string, as in the above examples. But other values are
 also accepted.
 
-You can return any object that would either be a valid Rack response, Rack body object
-or HTTP status code:
+You can return any object that would either be a valid Rack response, Rack
+body object or HTTP status code:
 
 * An Array with three elements: <tt>[status (Fixnum), headers (Hash), response body (responds to #each)]</tt>
 * An Array with two elements: <tt>[status (Fixnum), response body (responds to #each)]</tt>
@@ -328,7 +328,6 @@ other templates.
 
 Templates may be defined at the end of the source file:
 
-  require 'rubygems'
   require 'sinatra'
 
   get '/' do
@@ -388,9 +387,9 @@ route handlers and templates:
 
 == Filters
 
-Before filters are evaluated before each request within the context of the
-request and can modify the request and response. Instance variables set in
-filters are accessible by routes and templates:
+Before filters are evaluated before each request within the same context as
+the routes will be and can modify the request and response. Instance variables
+set in filters are accessible by routes and templates:
 
   before do
     @note = 'Hi!'
@@ -402,16 +401,16 @@ filters are accessible by routes and templates:
     params[:splat] #=> 'bar/baz'
   end
 
-After filter are evaluated after each request within the context of the
-request and can also modify the request and response. Instance variables
-set in before filters and routes are accessible by after filters:
+After filter are evaluated after each request within the same context and can
+also modify the request and response. Instance variables set in before filters
+and routes are accessible by after filters:
 
   after do
     puts response.status
   end
 
-Filters optionally taking a pattern, causing them to be evaluated only if the request
-path matches that pattern:
+Filters optionally taking a pattern, causing them to be evaluated only if the
+request path matches that pattern:
 
   before '/protected/*' do
     authenticate!
@@ -427,19 +426,19 @@ To immediately stop a request within a filter or route use:
 
   halt
 
-You can also specify the status when halting ...
+You can also specify the status when halting:
 
   halt 410
 
-Or the body ...
+Or the body:
 
   halt 'this will be the body'
 
-Or both ...
+Or both:
 
   halt 401, 'go away!'
 
-With headers ...
+With headers:
 
   halt 402, {'Content-Type' => 'text/plain'}, 'revenge'
 
@@ -484,8 +483,8 @@ Run when the environment is set to either <tt>:production</tt> or
 == Error handling
 
 Error handlers run within the same context as routes and before filters, which
-means you get all the goodies it has to offer, like <tt>haml</tt>, <tt>erb</tt>,
-<tt>halt</tt>, etc.
+means you get all the goodies it has to offer, like <tt>haml</tt>,
+<tt>erb</tt>, <tt>halt</tt>, etc.
 
 === Not Found
 
@@ -493,7 +492,7 @@ When a <tt>Sinatra::NotFound</tt> exception is raised, or the response's status
 code is 404, the <tt>not_found</tt> handler is invoked:
 
   not_found do
-    'This is nowhere to be found'
+    'This is nowhere to be found.'
   end
 
 === Error
