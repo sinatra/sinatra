@@ -33,11 +33,15 @@
 
  * Added ability to handle weighted HTTP_ACCEPT headers. (Davide D'Agostino)
 
- * README is now available in German. (Bernhard Essl)
+ * README is now available in German. (Bernhard Essl, Konstantin Haase)
 
  * This release is compatible with Ruby 1.9.2. Sinatra was trying to read
    none existent files Ruby added to the call stack. (Shota Fukumori,
    Konstantin Haase)
+
+ * Better handling of Encodings in 1.9, defaults encoding to UTF-8 and
+   respects Encoding.default_internal and Encoding.default_external.
+   (Konstantin Haase)
 
  * This release is now usable in combination with Rails 3. When mounting
    a Sinatra application under a subpath in Rails 3, the PATH_INFO is not
