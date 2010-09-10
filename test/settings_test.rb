@@ -1,4 +1,3 @@
-# encoding: UTF-8
 require File.dirname(__FILE__) + '/helper'
 
 class SettingsTest < Test::Unit::TestCase
@@ -373,13 +372,6 @@ class SettingsTest < Test::Unit::TestCase
     it 'is disabled by default' do
       assert ! @base.lock?
       assert ! @application.lock?
-    end
-  end
-
-  describe 'default_encoding' do
-    it 'allows unicode strings in ascii templates per default (1.9)' do
-      @base.set :views, File.dirname(__FILE__) + "/views"
-      @base.new.haml(:ascii, {}, :value => "åkej")
     end
   end
 end
