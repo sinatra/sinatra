@@ -204,9 +204,9 @@ e substitua em uma base individual.
 
 === Less Templates
 
-The less gem/library is required to render Less templates:
+A gem/biblioteca less é necessária para renderizar templates Less:
 
-  ## You'll need to require less in your app
+  ## Você precisa do 'require less' em sua aplicação.
   require 'less'
 
   get '/stylesheet.css' do
@@ -214,39 +214,39 @@ The less gem/library is required to render Less templates:
     less :stylesheet
   end
 
-Renders <tt>./views/stylesheet.less</tt>.
+Renderiza <tt>./views/stylesheet.less</tt>.
 
 === Inline Templates
 
   get '/' do
-    haml '%div.title Hello World'
+    haml '%div.title Olá Mundo'
   end
 
-Renders the inlined template string.
+Renderiza a string, em uma linha, no template.
 
-=== Accessing Variables in Templates
+=== Acessando Variáveis nos Templates
 
-Templates are evaluated within the same context as route handlers. Instance
-variables set in route handlers are direcly accessible by templates:
+Templates são avaliados dentro do mesmo contexto como manipuladores de rota. Variáveis
+de instância setadas em rotas manipuladas são diretamente acessáveis por templates:
 
   get '/:id' do
     @foo = Foo.find(params[:id])
-    haml '%h1= @foo.name'
+    haml '%h1= @foo.nome'
   end
 
-Or, specify an explicit Hash of local variables:
+Ou, especifique um hash explícito para variáveis locais:
 
   get '/:id' do
     foo = Foo.find(params[:id])
-    haml '%h1= foo.name', :locals => { :foo => foo }
+    haml '%h1= foo.nome', :locals => { :foo => foo }
   end
 
-This is typically used when rendering templates as partials from within
-other templates.
+Isso é tipicamente utilizando quando renderizamos templates como partials dentro
+de outros templates.
 
 === Inline Templates
 
-Templates may be defined at the end of the source file:
+Templates podem ser definidos no final do arquivo fonte(.rb):
 
   require 'rubygems'
   require 'sinatra'
@@ -262,13 +262,13 @@ Templates may be defined at the end of the source file:
     = yield
 
   @@ index
-  %div.title Hello world!!!!!
+  %div.title Olá Mundo!!!!!
 
-NOTE: Inline templates defined in the source file that requires sinatra
-are automatically loaded. Call `enable :inline_templates` explicitly if you
-have inline templates in other source files.
+NOTA: Templates inline definidos no arquivo fonte são automaticamente carregados
+pelo sinatra. Digite `enable :inline_templates` se você tem templates
+inline no outro arquivo fonte.
 
-=== Named Templates
+=== Templates nomeados
 
 Templates may also be defined using the top-level <tt>template</tt> method:
 
