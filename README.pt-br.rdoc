@@ -129,7 +129,7 @@ Renderiza <tt>./views/index.haml</tt>.
 {Opções Haml}[http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options]
 podem ser setadas globalmente através das configurações do sinatra,
 veja {Opções e Configurações}[http://www.sinatrarb.com/configuration.html],
-e substitua em uma base individual.
+e substitua em uma requisição individual.
 
   set :haml, {:format => :html5 } # o formato padrão do Haml é :xhtml
 
@@ -193,7 +193,7 @@ Renderiza <tt>./views/stylesheet.sass</tt>.
 {Opções Sass}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
 podem ser setadas globalmente através das configurações do sinatra,
 veja {Opções e Configurações}[http://www.sinatrarb.com/configuration.html],
-e substitua em uma base individual.
+e substitua em uma requisição individual.
 
   set :sass, {:style => :compact } # o estilo padrão do Sass é :nested
 
@@ -227,7 +227,7 @@ Renderiza a string, em uma linha, no template.
 === Acessando Variáveis nos Templates
 
 Templates são avaliados dentro do mesmo contexto como manipuladores de rota. Variáveis
-de instância setadas em rotas manipuladas são diretamente acessáveis por templates:
+de instância setadas em rotas manipuladas são diretamente acessadas por templates:
 
   get '/:id' do
     @foo = Foo.find(params[:id])
@@ -270,22 +270,22 @@ inline no outro arquivo fonte.
 
 === Templates nomeados
 
-Templates may also be defined using the top-level <tt>template</tt> method:
+Templates também pdem ser definidos utilizando o  método top-level <tt>template</tt>:
 
   template :layout do
     "%html\n  =yield\n"
   end
 
   template :index do
-    '%div.title Hello World!'
+    '%div.title Olá Mundo!'
   end
 
   get '/' do
     haml :index
   end
 
-If a template named "layout" exists, it will be used each time a template
-is rendered. You can disable layouts by passing <tt>:layout => false</tt>.
+Se existir um template com nome "layout", ele será utilizado toda vez que um
+template for renderizado. Você pode desabilitar layouts passando <tt>:layout => false</tt>.
 
   get '/' do
     haml :index, :layout => !request.xhr?
@@ -293,22 +293,22 @@ is rendered. You can disable layouts by passing <tt>:layout => false</tt>.
 
 == Helpers
 
-Use the top-level <tt>helpers</tt> method to define helper methods for use in
-route handlers and templates:
+Use o método top-level <tt>helpers</tt> para definir métodos auxiliares para utilizar em
+manipuladores de rotas e modelos:
 
   helpers do
-    def bar(name)
-      "#{name}bar"
+    def bar(nome)
+      "#{nome}bar"
     end
   end
 
-  get '/:name' do
-    bar(params[:name])
+  get '/:nome' do
+    bar(params[:nome])
   end
 
-== Filters
+== Filtros
 
-Before filters are evaluated before each request within the context of the
+Filtros são avaliados antes de cada requisição within the context of the
 request and can modify the request and response. Instance variables set in
 filters are accessible by routes and templates:
 
