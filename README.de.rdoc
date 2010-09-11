@@ -343,6 +343,31 @@ aufzurufen:
   %h1 Hallo von Haml!
   %p= markdown(:greetings)
 
+=== Textile-Templates
+
+Das RedCloth gem wird benötigt um Textile-Templates rendern zu können:
+
+  ## redcloth muss eingebunden werden
+  require "redcloth"
+
+  get '/' do
+    textile :index
+  end
+
+Dieser Code rendert <tt>./views/index.textile</tt>.
+
+Da es weder möglich ist Methoden aufzurufen, noch +locals+ zu übergeben, ist
+es am sinnvollsten Textile in Kombination mit einer anderen Template-Engine
+zu nutzen:
+
+  erb :overview, :locals => { :text => textile(:introduction) }
+
+Es ist auch möglich die +textile+ Methode aus anderen Templates heraus
+aufzurufen:
+
+  %h1 Hallo von Haml!
+  %p= textile(:greetings)
+
 === Inline-Templates
 
   get '/' do

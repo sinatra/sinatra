@@ -343,6 +343,10 @@ module Sinatra
       render :markdown, template, options, locals
     end
 
+    def textile(template, options={}, locals={})
+      render :textile, template, options, locals
+    end
+
   private
     def render(engine, data, options={}, locals={}, &block)
       # merge app-level options
