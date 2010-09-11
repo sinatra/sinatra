@@ -95,7 +95,7 @@ Rotas podem incluir uma variedade de condições correspondes, tal como o agente
 Arquivos estáticos são disponibilizados a partir do diretório <tt>./public</tt>. Você pode especificar
 um local diferente pela opção <tt>:public</tt>
 
-  set :public, File.dirname(__FILE__) + '/static'
+  set :public, File.dirname(__FILE__) + '/estatico'
 
 Note que o nome do diretório público não é incluido na URL. Um arquivo
 <tt>./public/css/style.css</tt> é disponibilizado como
@@ -106,7 +106,7 @@ Note que o nome do diretório público não é incluido na URL. Um arquivo
 Templates presumem-se estar localizados sob o diretório <tt>./views</tt>.
 Para utilizar um diretório view diferente:
 
-  set :views, File.dirname(__FILE__) + '/templates'
+  set :views, File.dirname(__FILE__) + '/modelo'
 
 Uma coisa importante a ser lembrada é que você sempre tem as referências dos
 templates como simbolos, mesmo se eles estiverem em um sub-diretório (nesse
@@ -192,7 +192,7 @@ Renderiza <tt>./views/stylesheet.sass</tt>.
 
 {Opções Sass}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
 podem ser setadas globalmente através das configurações do sinatra,
-veja {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
+veja {Opções e Configurações}[http://www.sinatrarb.com/configuration.html],
 e substitua em uma base individual.
 
   set :sass, {:style => :compact } # o estilo padrão do Sass é :nested
