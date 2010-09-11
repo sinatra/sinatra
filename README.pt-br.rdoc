@@ -92,7 +92,7 @@ Rotas podem incluir uma variedade de condições correspondes, tal como o agente
 
 == Arquivos estáticos
 
-Arquivos estáticos são servidos a partir do diretório <tt>./public</tt>. Você pode especificar
+Arquivos estáticos são disponibilizados a partir do diretório <tt>./public</tt>. Você pode especificar
 um local diferente pela opção <tt>:public</tt>
 
   set :public, File.dirname(__FILE__) + '/static'
@@ -103,19 +103,19 @@ Note que o nome do diretório público não é incluido na URL. Um arquivo
 
 == Views / Templates
 
-Templates are assumed to be located directly under the <tt>./views</tt>
-directory. To use a different views directory:
+Templates presumem-se estar localizados sob o diretório <tt>./views</tt>.
+Para utilizar um diretório view diferente:
 
   set :views, File.dirname(__FILE__) + '/templates'
 
-One important thing to remember is that you always have to reference
-templates with symbols, even if they're in a subdirectory (in this
-case use <tt>:'subdir/template'</tt>). Rendering methods will render
-any strings passed to them directly.
+Uma coisa importante a ser lembrada é que você sempre tem as referências dos
+templates como simbolos, mesmo se eles estiverem em um sub-diretório (nesse
+caso utilize <tt>:'subdir/template'</tt>). Métodos de renderização irão processar
+qualquer string passada diretamente para elas.
 
 === Haml Templates
 
-The haml gem/library is required to render HAML templates:
+A gem/biblioteca haml é necessária para renderizar templates HAML:
 
   ## You'll need to require haml in your app
   require 'haml'
