@@ -117,56 +117,56 @@ qualquer string passada diretamente para elas.
 
 A gem/biblioteca haml é necessária para renderizar templates HAML:
 
-  ## You'll need to require haml in your app
+  ## Você precisa do 'require haml' em sua aplicação.
   require 'haml'
 
   get '/' do
     haml :index
   end
 
-Renders <tt>./views/index.haml</tt>.
+Renderiza <tt>./views/index.haml</tt>.
 
-{Haml's options}[http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options]
-can be set globally through Sinatra's configurations,
-see {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
-and overridden on an individual basis.
+{Opções Haml}[http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options]
+podem ser setadas globalmente através das configurações do sinatra,
+veja {Opções e Configurações}[http://www.sinatrarb.com/configuration.html],
+e substitua em uma base individual.
 
-  set :haml, {:format => :html5 } # default Haml format is :xhtml
+  set :haml, {:format => :html5 } # o formato padrão do Haml é :xhtml
 
   get '/' do
-    haml :index, :haml_options => {:format => :html4 } # overridden
+    haml :index, :haml_options => {:format => :html4 } # substituido
   end
 
 
 === Erb Templates
 
-  ## You'll need to require erb in your app
+  ## Você precisa do 'require erb' em sua aplicação
   require 'erb'
 
   get '/' do
     erb :index
   end
 
-Renders <tt>./views/index.erb</tt>
+Renderiza <tt>./views/index.erb</tt>
 
 === Erubis
 
-The erubis gem/library is required to render erubis templates:
+A gem/biblioteca erubis é necessária para renderizar templates erubis:
 
-  ## You'll need to require erubis in your app
+  ## Você precisa do 'require erubis' em sua aplicação.
   require 'erubis'
 
   get '/' do
     erubis :index
   end
 
-Renders <tt>./views/index.erubis</tt>
+Renderiza <tt>./views/index.erubis</tt>
 
 === Builder Templates
 
-The builder gem/library is required to render builder templates:
+A gem/biblioteca builder é necessária para renderizar templates builder:
 
-  ## You'll need to require builder in your app
+  ## Você precisa do 'require builder' em sua aplicação.
   require 'builder'
 
   get '/' do
@@ -174,13 +174,13 @@ The builder gem/library is required to render builder templates:
     builder :index
   end
 
-Renders <tt>./views/index.builder</tt>.
+Renderiza <tt>./views/index.builder</tt>.
 
 === Sass Templates
 
-The sass gem/library is required to render Sass templates:
+A gem/biblioteca sass é necessária para renderizar templates sass:
 
-  ## You'll need to require haml or sass in your app
+  ## Você precisa do 'require haml' ou 'require sass' em sua aplicação.
   require 'sass'
 
   get '/stylesheet.css' do
@@ -188,18 +188,18 @@ The sass gem/library is required to render Sass templates:
     sass :stylesheet
   end
 
-Renders <tt>./views/stylesheet.sass</tt>.
+Renderiza <tt>./views/stylesheet.sass</tt>.
 
-{Sass' options}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
-can be set globally through Sinatra's configurations,
-see {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
-and overridden on an individual basis.
+{Opções Sass}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
+podem ser setadas globalmente através das configurações do sinatra,
+veja {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
+e substitua em uma base individual.
 
-  set :sass, {:style => :compact } # default Sass style is :nested
+  set :sass, {:style => :compact } # o estilo padrão do Sass é :nested
 
   get '/stylesheet.css' do
     content_type 'text/css', :charset => 'utf-8'
-    sass :stylesheet, :style => :expanded # overridden
+    sass :stylesheet, :style => :expanded # substituido
   end
 
 === Less Templates
