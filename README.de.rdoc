@@ -300,6 +300,24 @@ Das less gem wird benötigt um Less-Templates rendern zu können:
 
 Dieser Code rendert <tt>./views/stylesheet.less</tt>.
 
+=== Liquid Templates
+
+Das liquid gem wird benötigt um Liquid-Templates rendern zu können:
+
+  ## liquid muss eingebunden werden
+  require 'liquid'
+
+  get '/' do
+    liquid :index
+  end
+
+Dieser Code rendert <tt>./views/index.liquid</tt>.
+
+Da man aus Liquid-Templates heraus keine Methoden (abgesehen von +yield+)
+aufrufen kann, will man nahezu in allen Fällen +locals+ übergeben:
+
+  liquid :index, :locals => { :key => 'value' }
+
 === Inline Templates
 
   get '/' do

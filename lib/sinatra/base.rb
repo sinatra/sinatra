@@ -335,6 +335,10 @@ module Sinatra
       render :builder, template, options, locals
     end
 
+    def liquid(template, options={}, locals={})
+      render :liquid, template, options, locals
+    end
+
   private
     def render(engine, data, options={}, locals={}, &block)
       # merge app-level options
