@@ -244,7 +244,7 @@ Ou, especifique um hash explícito para variáveis locais:
 Isso é tipicamente utilizando quando renderizamos templates como partials dentro
 de outros templates.
 
-=== Inline Templates
+=== Templates Inline
 
 Templates podem ser definidos no final do arquivo fonte(.rb):
 
