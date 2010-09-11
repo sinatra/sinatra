@@ -171,9 +171,9 @@ Symbols auf Templates verweisen sollte, auch wenn sich ein Template in einen
 Unterordner befindet (in diesen Fall <tt>:'subdir/template'</tt>).
 Renderingmethoden rendern jeden String direkt.
 
-=== Haml Templates
+=== Haml-Templates
 
-Das haml gem wird benötigt um HAML-Templates rendern zu können:
+Das haml gem wird benötigt um Haml-Templates rendern zu können:
 
   ## haml muss eingebunden werden
   require 'haml'
@@ -195,8 +195,7 @@ und individuell überschrieben werden.
     haml :index, :format => :html4 # überschrieben
   end
 
-
-=== Erb Templates
+=== Erb-Templates
 
   ## erb muss eingebunden werden
   require 'erb'
@@ -220,7 +219,7 @@ Das erubis gem wird benötigt um Erubis-Templates rendern zu können:
 
 Dieser Code rendert <tt>./views/index.erubis</tt>.
 
-=== Builder Templates
+=== Builder-Templates
 
 Das buidler gem wird benötigt um Builder-Templates rendern zu können:
 
@@ -234,7 +233,7 @@ Das buidler gem wird benötigt um Builder-Templates rendern zu können:
 
 Dieser Code rendert <tt>./views/index.builder</tt>.
 
-=== Sass Templates
+=== Sass-Templates
 
 Das haml gem wird benötigt um SASS-Templates rendern zu können:
 
@@ -260,7 +259,7 @@ und individuell überschrieben werden.
     sass :stylesheet, :style => :expanded # überschrieben
   end
 
-=== Scss Templates
+=== Scss-Templates
 
 Das haml gem wird benötigt um SCSS-Templates rendern zu können:
 
@@ -286,7 +285,7 @@ und individuell überschrieben werden.
     scss :stylesheet, :style => :expanded # überschrieben
   end
 
-=== Less Templates
+=== Less-Templates
 
 Das less gem wird benötigt um Less-Templates rendern zu können:
 
@@ -300,7 +299,7 @@ Das less gem wird benötigt um Less-Templates rendern zu können:
 
 Dieser Code rendert <tt>./views/stylesheet.less</tt>.
 
-=== Liquid Templates
+=== Liquid-Templates
 
 Das liquid gem wird benötigt um Liquid-Templates rendern zu können:
 
@@ -318,13 +317,13 @@ aufrufen kann, will man nahezu in allen Fällen +locals+ übergeben:
 
   liquid :index, :locals => { :key => 'value' }
 
-=== Inline Templates
+=== Inline-Templates
 
   get '/' do
     haml '%div.title Hallo Welt'
   end
 
-Rendert den Inline Template String.
+Rendert den Inline-Template-String.
 
 === Auf Variablen in Templates zugreifen
 
