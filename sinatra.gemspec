@@ -87,6 +87,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'erubis'
   s.add_development_dependency 'less'
   s.add_development_dependency 'liquid'
+  s.add_development_dependency 'rdiscount'
 
   s.has_rdoc = true
   s.homepage = "http://sinatra.rubyforge.org"

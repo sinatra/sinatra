@@ -339,6 +339,10 @@ module Sinatra
       render :liquid, template, options, locals
     end
 
+    def markdown(template, options={}, locals={})
+      render :markdown, template, options, locals
+    end
+
   private
     def render(engine, data, options={}, locals={}, &block)
       # merge app-level options
@@ -379,6 +383,11 @@ module Sinatra
             template.new(path, line.to_i, options) { body }
           else
             path = ::File.join(views, "#{data}.#{engine}")
+            Tilt.mappings.each do |ext, klass|
+              break if File.exists?(path)
+              next unless klass == template
+              path = ::File.join(views, "#{data}.#{ext}")
+            end
             template.new(path, 1, options)
           end
         when data.is_a?(Proc) || data.is_a?(String)
