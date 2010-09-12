@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/helper'
 
 begin
+fail "rdiscount not available" if defined? JRuby
 require 'rdiscount'
 
 class MarkdownTest < Test::Unit::TestCase
