@@ -351,6 +351,10 @@ module Sinatra
       render :rdoc, template, options, locals
     end
 
+    def radius(template, options={}, locals={})
+      render :radius, template, options, locals
+    end
+
   private
     def render(engine, data, options={}, locals={}, &block)
       # merge app-level options

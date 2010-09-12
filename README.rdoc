@@ -381,6 +381,24 @@ Note that you may also call the rdoc method from within other templates:
   %h1 Hello From Haml!
   %p= rdoc(:greetings)
 
+=== Radius Templates
+
+The radius gem/library is required to render Radius templates:
+
+  ## You'll need to require radius in your app
+  require 'radius'
+
+  get '/' do
+    radius :index
+  end
+
+Renders <tt>./views/index.radius</tt>.
+
+Since you cannot call Ruby methods (except for +yield+) from a Radius
+template, you almost always want to pass locals to it:
+
+  radius :index, :locals => { :key => 'value' }
+
 === Inline Templates
 
   get '/' do
