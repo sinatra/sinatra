@@ -270,7 +270,7 @@ inline no outro arquivo fonte.
 
 === Templates nomeados
 
-Templates também pdem ser definidos utilizando o  método top-level <tt>template</tt>:
+Templates também podem ser definidos utilizando o  método top-level <tt>template</tt>:
 
   template :layout do
     "%html\n  =yield\n"
@@ -308,23 +308,23 @@ manipuladores de rotas e modelos:
 
 == Filtros
 
-Filtros são avaliados antes de cada requisição within the context of the
-request and can modify the request and response. Instance variables set in
-filters are accessible by routes and templates:
+Filtros Before são avaliados antes de cada requisição dentro do contexto da requisição
+e pode modificar a requisição e a reposta. Variáveis de instância setadas nos
+filtros são acessadas através de rotas e templates:
 
   before do
-    @note = 'Hi!'
+    @note = 'Oi!'
     request.path_info = '/foo/bar/baz'
   end
 
   get '/foo/*' do
-    @note #=> 'Hi!'
+    @note #=> 'Oi!'
     params[:splat] #=> 'bar/baz'
   end
 
-After filter are evaluated after each request within the context of the
-request and can also modify the request and response. Instance variables
-set in before filters and routes are accessible by after filters:
+Filtros After são avaliados após cada requisição dentro do contexto da
+requisição e também podem modificar o pedido e a resposta. Variáveis de instância
+definidas nos filtros before e rotas são acessadas através dos filtros after:
 
   after do
     puts response.status
