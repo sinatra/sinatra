@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/helper'
+File.delete(File.dirname(__FILE__) + '/views/layout.test') rescue nil
 
 class TestTemplate < Tilt::Template
   def prepare
