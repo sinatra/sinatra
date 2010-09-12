@@ -432,6 +432,7 @@ Das coffee-script gem und das `coffee`-Programm werden benötigt um CoffeScript-
   require 'coffee-script'
 
   get '/application.js' do
+    content_type 'text/javascript', :charset => 'utf-8'
     coffee :application
   end
 
