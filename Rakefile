@@ -16,10 +16,10 @@ end
 if !ENV['NO_TEST_FIX'] and RUBY_VERSION == '1.9.2' and RUBY_PATCHLEVEL == 0
   # Avoids seg fault
   task(:test) do
-    files = Dir.glob('test/*_test.rb')
-    files.delete 'test/settings_test.rb'
-    sh "testrb #{files.join ' '}"
-    sh "testrb test/settings_test.rb"
+    second_run  = %w[test/settings_test.rb test/rdoc_test.rb]
+    first_run   = Dir.glob('test/*_test.rb') - second_run
+    sh "testrb #{first_run.join ' '}"
+    sh "testrb #{second_run.join ' '}"
   end
 else
   Rake::TestTask.new(:test) do |t|
