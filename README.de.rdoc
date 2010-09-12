@@ -424,6 +424,19 @@ Das markaby gem wird benötigt um Markaby-Templates rendern zu können:
 
 Dieser Code rendert <tt>./views/index.mab</tt>.
 
+=== CoffeScript-Templates
+
+Das coffee-script gem und das `coffee`-Programm werden benötigt um CoffeScript-Templates rendern zu können:
+
+  ## coffee-script muss eingebunden werden
+  require 'coffee-script'
+
+  get '/application.js' do
+    coffee :application
+  end
+
+Dieser Code rendert <tt>./views/application.coffee</tt>.
+
 === Inline-Templates
 
   get '/' do

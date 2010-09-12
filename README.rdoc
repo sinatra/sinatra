@@ -412,6 +412,21 @@ The markaby gem/library is required to render Markaby templates:
 
 Renders <tt>./views/index.mab</tt>.
 
+=== CoffeeScript Templates
+
+The coffee-script gem/library and the `coffee` binary are required to render
+CoffeeScript templates:
+
+  ## You'll need to require coffee-script in your app
+  require 'coffee-script'
+
+  get '/application.js' do
+    content_type 'text/javascript', :charset => 'utf-8'
+    coffee :application
+  end
+
+Renders <tt>./views/application.coffee</tt>.
+
 === Inline Templates
 
   get '/' do

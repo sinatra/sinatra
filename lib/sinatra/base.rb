@@ -359,6 +359,11 @@ module Sinatra
       render :mab, template, options, locals
     end
 
+    def coffee(template, options={}, locals={})
+      options[:layout] = false
+      render :coffee, template, options, locals
+    end
+
   private
     def render(engine, data, options={}, locals={}, &block)
       # merge app-level options
