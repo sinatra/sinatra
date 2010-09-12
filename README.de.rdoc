@@ -411,6 +411,19 @@ aufrufen kann, will man nahezu in allen Fällen +locals+ übergeben:
 
   radius :index, :locals => { :key => 'value' }
 
+=== Markaby-Templates
+
+Das markaby gem wird benötigt um Markaby-Templates rendern zu können:
+
+  ## markaby muss eingebunden werden
+  require 'markaby'
+
+  get '/' do
+    markaby :index
+  end
+
+Dieser Code rendert <tt>./views/index.mab</tt>.
+
 === Inline-Templates
 
   get '/' do

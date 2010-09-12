@@ -399,6 +399,19 @@ template, you almost always want to pass locals to it:
 
   radius :index, :locals => { :key => 'value' }
 
+=== Markaby Templates
+
+The markaby gem/library is required to render Markaby templates:
+
+  ## You'll need to require markaby in your app
+  require 'markaby'
+
+  get '/' do
+    markaby :index
+  end
+
+Renders <tt>./views/index.mab</tt>.
+
 === Inline Templates
 
   get '/' do

@@ -355,6 +355,10 @@ module Sinatra
       render :radius, template, options, locals
     end
 
+    def markaby(template, options={}, locals={})
+      render :mab, template, options, locals
+    end
+
   private
     def render(engine, data, options={}, locals={}, &block)
       # merge app-level options
