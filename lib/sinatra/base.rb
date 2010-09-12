@@ -347,6 +347,10 @@ module Sinatra
       render :textile, template, options, locals
     end
 
+    def rdoc(template, options={}, locals={})
+      render :rdoc, template, options, locals
+    end
+
   private
     def render(engine, data, options={}, locals={}, &block)
       # merge app-level options

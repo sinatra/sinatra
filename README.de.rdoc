@@ -368,6 +368,31 @@ aufzurufen:
   %h1 Hallo von Haml!
   %p= textile(:greetings)
 
+=== RDoc-Templates
+
+Das rdoc gem wird benötigt um RDoc-Templates rendern zu können:
+
+  ## redcloth muss eingebunden werden
+  require "rdoc"
+
+  get '/' do
+    rdoc :index
+  end
+
+Dieser Code rendert <tt>./views/index.rdoc</tt>.
+
+Da es weder möglich ist Methoden aufzurufen, noch +locals+ zu übergeben, ist
+es am sinnvollsten RDoc in Kombination mit einer anderen Template-Engine
+zu nutzen:
+
+  erb :overview, :locals => { :text => rdoc(:introduction) }
+
+Es ist auch möglich die +rdoc+ Methode aus anderen Templates heraus
+aufzurufen:
+
+  %h1 Hallo von Haml!
+  %p= rdoc(:greetings)
+
 === Inline-Templates
 
   get '/' do
