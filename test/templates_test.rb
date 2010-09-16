@@ -84,6 +84,11 @@ class TemplatesTest < Test::Unit::TestCase
     assert_equal "X\n= yield\nX\n", @app.templates[:layout][0]
   end
 
+  it 'ignores spaces after names of inline templates' do
+    mock_app { enable :inline_templates }
+    assert_equal "There's a space after 'bar'!\n\n", @app.templates[:bar][0]
+  end
+
   it 'loads templates from given source file' do
     mock_app { set :inline_templates, __FILE__ }
     assert_equal "this is foo\n\n", @app.templates[:foo][0]
@@ -153,6 +158,9 @@ __END__
 
 @@ foo
 this is foo
+
+@@ bar 
+There's a space after 'bar'!
 
 @@ layout
 X
