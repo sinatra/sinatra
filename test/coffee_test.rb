@@ -4,9 +4,10 @@ begin
 require 'coffee-script'
 
 class CoffeeTest < Test::Unit::TestCase
-  def coffee_app(&block)
+  def coffee_app(options = {}, &block)
     mock_app {
       set :views, File.dirname(__FILE__) + '/views'
+      set(options)
       get '/', &block
     }
     get '/'
@@ -16,6 +17,29 @@ class CoffeeTest < Test::Unit::TestCase
     coffee_app { coffee "alert 'Aye!'\n" }
     assert ok?
     assert_equal "(function() {\n  alert('Aye!');\n})();\n", body
+  end
+
+  it 'defaults content type to javascript' do
+    coffee_app { coffee "alert 'Aye!'\n" }
+    assert ok?
+    assert_equal "application/javascript;charset=utf-8", response['Content-Type']
+  end
+
+  it 'defaults allows setting content type per route' do
+    coffee_app do
+      content_type :html
+      coffee "alert 'Aye!'\n"
+    end
+    assert ok?
+    assert_equal "text/html;charset=utf-8", response['Content-Type']
+  end
+
+  it 'defaults allows setting content type globally' do
+    coffee_app(:coffee => { :content_type => 'html' }) do
+      coffee "alert 'Aye!'\n"
+    end
+    assert ok?
+    assert_equal "text/html;charset=utf-8", response['Content-Type']
   end
 
   it 'renders .coffee files in views path' do
