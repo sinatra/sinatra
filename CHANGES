@@ -15,6 +15,10 @@
    behaves exactly like `sass` except for the different file extension and
    assuming the SCSS syntax. (Pedro Menezes, Konstantin Haase)
 
+ * Added `liquid`, `markdown`, `textile`, `rdoc`, `radius`, `markaby`, and
+   `coffee` rendering methods for rendering Liquid, Markdown, Textile, RDoc,
+   Radius, Markaby and CoffeeScript templates (Konstantin Haase)
+
  * Broken examples for using Erubis and Haml in README have been fixed.
    (Nick Sutterer, Doug Ireton, Jason Stewart)
 
@@ -40,7 +44,7 @@
    none existent files Ruby added to the call stack. (Shota Fukumori,
    Konstantin Haase)
 
- * Better handling of Encodings in 1.9, defaults encoding to UTF-8 and
+ * Better handling of encodings in 1.9, defaults params encoding to UTF-8 and
    respects Encoding.default_internal and Encoding.default_external.
    (Konstantin Haase)
 
@@ -53,10 +57,12 @@
  * Fixes an issue with inline templates in modular applications that manually
    call `run!`. (Konstantin Haase)
 
+ * Spaces after inline template names are now ignored (Konstantin Haase)
+
  * It's now possible to use Sinatra with different package management
    systems defining a custom require. (Konstantin Haase)
 
- * You can now use #settings from class level for convenience.
+ * You can now use #settings method from class and top level for convenience.
    (Konstantin Haase)
 
  * Prevents a memory leak on 1.8.6 is production mode. Note, however, that
@@ -65,6 +71,9 @@
    least Ruby 1.8.7. (Konstantin Haase)
 
  * Lighthouse has been dropped in favor of GitHub issues.
+
+ * Tilt is now a dependency and therefore no longer ships bundled with
+   Sinatra. (Ryan Tomayko, Konstantin Haase)
 
 = 1.0 / 2010-03-23
 
