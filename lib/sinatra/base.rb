@@ -824,7 +824,7 @@ module Sinatra
           template = nil
           data.each_line do |line|
             lines += 1
-            if line =~ /^@@\s*(\S*)/
+            if line =~ /^@@\s*(.*\S)\s*$/
               template = ''
               templates[$1.to_sym] = [template, file, lines]
             elsif template
