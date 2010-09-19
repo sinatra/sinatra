@@ -371,14 +371,18 @@ module Sinatra
       options[:outvar] ||= '@_out_buf'
 
       # extract generic options
-      locals = options.delete(:locals) || locals || {}
-      views = options.delete(:views) || settings.views || "./views"
-      layout = options.delete(:layout)
-      layout = :layout if layout.nil? || layout == true
+      locals          = options.delete(:locals) || locals         || {}
+      views           = options.delete(:views)  || settings.views || "./views"
+      @default_layout = :layout if @default_layout.nil?
+      layout          = options.delete(:layout)
+      layout          = @default_layout if layout.nil? or layout == true
 
       # compile and render template
-      template = compile_template(engine, data, options, views)
-      output = template.render(self, locals, &block)
+      layout_was      = @default_layout
+      @default_layout = false if layout
+      template        = compile_template(engine, data, options, views)
+      output          = template.render(self, locals, &block)
+      @default_layout = layout_was
 
       # render layout
       if layout
