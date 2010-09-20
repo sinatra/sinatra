@@ -301,12 +301,10 @@ module Sinatra
     include Tilt::CompileSite
 
     def erb(template, options={}, locals={})
-      options[:outvar] = '@_out_buf'
       render :erb, template, options, locals
     end
 
     def erubis(template, options={}, locals={})
-      options[:outvar] = '@_out_buf'
       render :erubis, template, options, locals
     end
 
@@ -368,6 +366,7 @@ module Sinatra
     def render(engine, data, options={}, locals={}, &block)
       # merge app-level options
       options = settings.send(engine).merge(options) if settings.respond_to?(engine)
+      options[:outvar] ||= '@_out_buf'
 
       # extract generic options
       locals = options.delete(:locals) || locals || {}
