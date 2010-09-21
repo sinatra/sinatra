@@ -1,7 +1,7 @@
 = Sinatra
 
-Sinatra es un DSL <em>(Lenguaje Específico de Dominio)</em> para crear
-aplicaciones web rápidamente en Ruby con un mínimo esfuerzo:
+Sinatra es un DSL para crear aplicaciones web rápidamente en Ruby con un mínimo
+esfuerzo:
 
   # miapp.rb
   require 'sinatra'
@@ -9,7 +9,7 @@ aplicaciones web rápidamente en Ruby con un mínimo esfuerzo:
     'Hola mundo!'
   end
 
-Instalá la gem <em>(gema)</em> y ejecutá la aplicación con:
+Instalá la gem y ejecutá la aplicación con:
 
   gem install sinatra
   ruby -rubygems miapp.rb
@@ -18,8 +18,8 @@ Podés verla en: http://localhost:4567
 
 == Rutas
 
-En Sinatra, una ruta es un método HTTP apareado con un patrón de una URL.
-Cada ruta es asociada con un bloque:
+En Sinatra, una ruta está compuesta por un método HTTP y un patrón de una URL.
+Cada ruta se asocia con un bloque:
 
   get '/' do
     .. mostrar algo ..
@@ -45,7 +45,7 @@ través de el hash <tt>params</tt>:
 
   get '/hola/:nombre' do
     # coincide con "GET /hola/foo" y "GET /hola/bar"
-    # params[:nombre] es 'foo' o 'bar' respectivamente
+    # params[:nombre] es 'foo' o 'bar'
     "Hola #{params[:nombre]}!"
   end
 
@@ -55,9 +55,8 @@ También podés acceder a los parámetros nombrados usando parámetros de bloque
     "Hola #{n}!"
   end
 
-Los patrones de ruta también pueden incluir parámetros splat o wildcard
-<em>(plaf o comodín)</em>, accesibles a través del arreglo
-<tt>params[:splat]</tt>.
+Los patrones de ruta también pueden incluir parámetros splat (o wildcard),
+accesibles a través del arreglo <tt>params[:splat]</tt>.
 
   get '/decir/*/al/*' do
     # coincide con /decir/hola/al/mundo
@@ -69,7 +68,7 @@ Los patrones de ruta también pueden incluir parámetros splat o wildcard
     params[:splat] # => ["path/al/archivo", "xml"]
   end
 
-Búsqueda de rutas con Expresiones Regulares:
+Rutas con Expresiones Regulares:
 
   get %r{/hola/([\w]+)} do
     "Hola, #{params[:captures].first}!"
@@ -82,10 +81,10 @@ O con un parámetro de bloque:
   end
 
 Las rutas pueden incluir una variedad de condiciones de selección, como por
-ejemplo el user agent <em>(agente de usuario)</em>:
+ejemplo el user agent:
 
   get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
-    "Estás usando la versión #{params[:agent][0]} de Songbird"
+    "Estás usando la versión de Songbird #{params[:agent][0]}"
   end
 
   get '/foo' do
@@ -106,16 +105,15 @@ ejemplo, el archivo <tt>./public/css/style.css</tt> se accede a través de
 
 == Vistas / Plantillas
 
-Se asume que las plantillas <em>(templates)</em> están ubicadas directamente
-bajo el directorio <tt>./views</tt>. Para usar un directorio de vistas
-<em>(views)</em> diferente:
+Se asume que las plantillas están ubicadas directamente bajo el directorio
+<tt>./views</tt>. Para usar un directorio de vistas diferente:
 
   set :views, File.dirname(__FILE__) + '/plantillas'
 
 Es importante acordarse que siempre tenés que referenciar a las plantillas con
 símbolos, incluso cuando se encuentran en un subdirectorio (en este caso tenés
 que usar <tt>:'subdir/plantilla'</tt>). Los métodos de renderización van a
-renderizar directamente cualquier string que reciban como argumento.
+renderizar directamente cualquier string que se les pase como argumento.
 
 === Plantillas Haml
 
@@ -129,7 +127,6 @@ La gem/librería haml es necesaria para para renderizar plantillas HAML:
   end
 
 Renderiza <tt>./views/index.haml</tt>.
-{Haml's options}[http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options]
 
 Las {opciones de Haml}[http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options]
 pueden ser ajustadas globalmente a través de las configuraciones de Sinatra,
@@ -231,15 +228,15 @@ Renderiza el template contenido en el string.
 === Accediendo a Variables en Plantillas
 
 Las plantillas son evaluadas dentro del mismo contexto que los manejadores de
-ruta <em>(route handlers)</em>. Las variables de instancia asignadas en los
-manejadores de ruta son accesibles directamente por las plantillas:
+ruta. Las variables de instancia asignadas en los manejadores de ruta son
+accesibles directamente por las plantillas:
 
   get '/:id' do
     @foo = Foo.find(params[:id])
     haml '%h1= @foo.nombre'
   end
 
-O es posible especificar un Hash explícito de variables locales:
+O es posible especificar un Hash de variables locales explícitamente:
 
   get '/:id' do
     foo = Foo.find(params[:id])
@@ -299,7 +296,7 @@ una plantilla es renderizada. Podés desactivar los layouts pasando
     haml :index, :layout => !request.xhr?
   end
 
-== Ayudantes <em>(Helpers)</em>
+== Ayudantes
 
 Usá el método top-level <tt>helpers</tt> para definir métodos ayudantes que
 pueden ser utilizados dentro de los manejadores de rutas y las plantillas:
@@ -314,9 +311,9 @@ pueden ser utilizados dentro de los manejadores de rutas y las plantillas:
     bar(params[:nombre])
   end
 
-== Filtros <em>(Filters)</em>
+== Filtros
 
-Los Before Filters son evaluados antes de cada petición dentro del contexto de
+Los filtros before son evaluados antes de cada petición dentro del contexto de
 la petición y pueden modificar la petición y la respuesta. Las variables de
 instancia asignadas en los filtros son accesibles por las rutas y las
 plantillas:
@@ -331,10 +328,10 @@ plantillas:
     params[:splat] #=> 'bar/baz'
   end
 
-Los After Filter son evaluados después de cada petición dentro del contexto de
-la petición y también pueden modificar la petición y la respuesta.  Las
-variables de instancia asignadas en before filters y rutas son accesibles por
-los after filters:
+Los filtros After son evaluados después de cada petición dentro del contexto de
+la petición y también pueden modificar la petición y la respuesta. Las
+variables de instancia asignadas en los filtros before y rutas son accesibles
+por los filtros after:
 
   after do
     puts response.status
@@ -352,7 +349,7 @@ patrón:
     session[:ultimo_slug] = slug
   end
 
-== Interrumpiendo <em>(Halting)</em>
+== Interrupción
 
 Para detener inmediatamente una petición dentro de un filtro o una ruta usá:
 
@@ -374,7 +371,7 @@ Con encabezados ...
 
   halt 402, { 'Content-Type' => 'text/plain' }, 'venganza'
 
-== Pasando
+== Paso
 
 Una ruta puede pasarle el procesamiento a la siguiente ruta que coincida con
 la petición usando <tt>pass</tt>:
@@ -415,7 +412,7 @@ Ejecutar cuando el entorno es <tt>:production</tt> o <tt>:test</tt>:
 == Manejo de errores
 
 Los manejadores de errores se ejecutan dentro del mismo contexto que las rutas
-y los before filters, lo que significa que podés usar, por ejemplo,
+y los filtros before, lo que significa que podés usar, por ejemplo,
 <tt>haml</tt>, <tt>erb</tt>, <tt>halt</tt>, etc.
 
 === No encontrado <em>(Not Found)</em>
@@ -507,9 +504,9 @@ método top-level +use+:
   end
 
 Las semánticas de +use+ son idénticas a las definidas para el DSL
-Rack::Builder[http://rack.rubyforge.org/doc/classes/Rack/Builder.html]
-(más frecuentemente usadas desde archivos rackup). Por ejemplo, el método
-+use+ acepta argumentos múltiples/variables así como bloques:
+Rack::Builder[http://rack.rubyforge.org/doc/classes/Rack/Builder.html] (más
+frecuentemente usado desde archivos rackup). Por ejemplo, el método +use+
+acepta argumentos múltiples/variables así como bloques:
 
   use Rack::Auth::Basic do |nombre_de_usuario, password|
     nombre_de_usuario == 'admin' && password == 'secreto'
@@ -520,11 +517,11 @@ debugging, enrutamiento URL, autenticación, y manejo de sesiones. Sinatra
 usa muchos de estos componentes automáticamente de acuerdo a su configuración
 para que típicamente no tengas que usarlas (con +use+) explícitamente.
 
-== Testing
+== Pruebas
 
-Los test para las aplicaciones Sinatra pueden ser escritos utilizando
-cualquier framework o librería de testing basada en Rack. Se recomienda
-usar {Rack::Test}[http://gitrdoc.com/brynary/rack-test]:
+Las pruebas para las aplicaciones Sinatra pueden ser escritas utilizando
+cualquier framework o librería de pruebas basada en Rack. Se recomienda usar
+{Rack::Test}[http://gitrdoc.com/brynary/rack-test]:
 
   require 'mi_app_sinatra'
   require 'rack/test'
@@ -536,14 +533,14 @@ usar {Rack::Test}[http://gitrdoc.com/brynary/rack-test]:
       Sinatra::Application
     end
 
-    def test_por_defecto
+    def test_mi_defecto
       get '/'
       assert_equal 'Hola Mundo!', last_response.body
     end
 
     def test_con_parametros
       get '/saludar', :name => 'Franco'
-      assert_equal 'Hola Franco!', last_response.body
+      assert_equal 'Hola Frank!', last_response.body
     end
 
     def test_con_entorno_rack
@@ -565,7 +562,6 @@ contamina el espacio de nombres de Object y asume una configuración apropiada
 para micro-aplicaciones (por ejemplo, un único archivo de aplicación, los
 directorios ./public y ./views, logging, página con detalles de excepción,
 etc.). Ahí es donde Sinatra::Base entra en el juego:
-
 
   require 'sinatra/base'
 
@@ -656,8 +652,7 @@ Para actualizar el código fuente de Sinatra en el futuro:
   adicional, noticias, y enlaces a otros recursos.
 * {Contribuyendo}[http://www.sinatrarb.com/contributing] - ¿Encontraste un
   error?. ¿Necesitás ayuda?. ¿Tenés un parche?.
-* {Lighthouse}[http://sinatra.lighthouseapp.com] - Seguimiento de problemas y
-  planeamiento de lanzamientos.
+* {Issue tracker}[http://sinatra.lighthouseapp.com]
 * {Twitter}[http://twitter.com/sinatra]
 * {Lista de Correo}[http://groups.google.com/group/sinatrarb/topics]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] en http://freenode.net
