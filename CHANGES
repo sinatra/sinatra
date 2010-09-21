@@ -5,12 +5,6 @@
    avoids manual path checking. No performance loss if patterns are avoided.
    (Konstantin Haase)
 
- * Setting multiple values now no longer relies on #to_hash and therefore
-   accepts any Enumerable as parameter. (Simon Rozet)
-
- * It is now possible to access Sinatra's template_cache from the outside.
-   (Nick Sutterer)
-
  * It is now possible to render SCSS files with the `scss` method, which
    behaves exactly like `sass` except for the different file extension and
    assuming the SCSS syntax. (Pedro Menezes, Konstantin Haase)
@@ -19,14 +13,41 @@
    `coffee` rendering methods for rendering Liquid, Markdown, Textile, RDoc,
    Radius, Markaby and CoffeeScript templates (Konstantin Haase)
 
- * Broken examples for using Erubis, Haml and Test::Unit in README have been
-   fixed. (Nick Sutterer, Doug Ireton, Jason Stewart, Eric Marden)
-
- * Sinatra is now able to use Tilt versions including numbers > 9, as in 0.10.
+ * You can now use #settings method from class and top level for convenience.
    (Konstantin Haase)
+
+ * Setting multiple values now no longer relies on #to_hash and therefore
+   accepts any Enumerable as parameter. (Simon Rozet)
+
+ * README is now available in French (Mickael Riga), German (Bernhard Essl,
+   Konstantin Haase) and Spanish (Gabriel Andretta).
+
+ * It is now possible to access Sinatra's template_cache from the outside.
+   (Nick Sutterer)
 
  * The `last_modified` method now also accepts DateTime instances and makes
    sure the header will always be set to a string. (Konstantin Haase)
+
+ * 599 now is a legal status code. (Steve Shreeve)
+
+ * This release is compatible with Ruby 1.9.2. Sinatra was trying to read
+   none existent files Ruby added to the call stack. (Shota Fukumori,
+   Konstantin Haase)
+
+ * Prevents a memory leak on 1.8.6 is production mode. Note, however, that
+   this is due to a bug in 1.8.6 and request will have the additional overhead
+   of parsing templates again on that version. It is recommended to use at
+   least Ruby 1.8.7. (Konstantin Haase)
+
+ * Sinatra is now usable in combination with Rails 3. When mounting a Sinatra
+   application under a subpath in Rails 3, the PATH_INFO is not prefixed with
+   a slash and no routes did match. (José Valim)
+
+ * Better handling of encodings in 1.9, defaults params encoding to UTF-8 and
+   respects Encoding.default_internal and Encoding.default_external.
+   (Konstantin Haase)
+
+ * Added ability to handle weighted HTTP_ACCEPT headers. (Davide D'Agostino)
 
  * `send_file` now always respects the `:type` option if set. Previously it
    was discarded if no matching mime type was found, which made it impossible
@@ -36,21 +57,11 @@
    passed. Ensures compatibility with RFC 2616 section 14.30. (Jean-Philippe
    Garcia Ballester, Anthony Williams)
 
- * Added ability to handle weighted HTTP_ACCEPT headers. (Davide D'Agostino)
+ * Broken examples for using Erubis, Haml and Test::Unit in README have been
+   fixed. (Nick Sutterer, Doug Ireton, Jason Stewart, Eric Marden)
 
- * README is now available in German. (Bernhard Essl, Konstantin Haase)
-
- * This release is compatible with Ruby 1.9.2. Sinatra was trying to read
-   none existent files Ruby added to the call stack. (Shota Fukumori,
-   Konstantin Haase)
-
- * Better handling of encodings in 1.9, defaults params encoding to UTF-8 and
-   respects Encoding.default_internal and Encoding.default_external.
+ * Sinatra is now able to use Tilt versions including numbers > 9, as in 0.10.
    (Konstantin Haase)
-
- * This release is now usable in combination with Rails 3. When mounting
-   a Sinatra application under a subpath in Rails 3, the PATH_INFO is not
-   prefixed with a slash and no routes did match. (José Valim)
 
  * Sinatra now handles SIGTERM correctly. (Patrick Collison)
 
@@ -61,16 +72,6 @@
 
  * It's now possible to use Sinatra with different package management
    systems defining a custom require. (Konstantin Haase)
-
- * You can now use #settings method from class and top level for convenience.
-   (Konstantin Haase)
-
- * Prevents a memory leak on 1.8.6 is production mode. Note, however, that
-   this is due to a bug in 1.8.6 and request will have the additional overhead
-   of parsing templates again on that version. It is recommended to use at
-   least Ruby 1.8.7. (Konstantin Haase)
-
- * 599 now is a legal status code. (Steve Shreeve)
 
  * Lighthouse has been dropped in favor of GitHub issues.
 
