@@ -99,7 +99,7 @@ Gem::Specification.new do |s|
 
   s.test_files = s.files.select {|path| path =~ /^test\/.*_test.rb/}
 
-  s.extra_rdoc_files = %w[README.rdoc README.de.rdoc README.jp.rdoc LICENSE]
+  s.extra_rdoc_files = %w[README.rdoc README.de.rdoc README.jp.rdoc README.fr.rdoc README.es.rdoc LICENSE]
   s.add_dependency 'rack', '>= 1.0'
   s.add_dependency 'tilt', '~> 1.1'
   s.add_development_dependency 'shotgun', '>= 0.6',   '< 1.0'
