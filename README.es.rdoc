@@ -4,7 +4,6 @@ Sinatra es un DSL <em>(Lenguaje Específico de Dominio)</em> para crear
 aplicaciones web rápidamente en Ruby con un mínimo esfuerzo:
 
   # miapp.rb
-  require 'rubygems'
   require 'sinatra'
   get '/' do
     'Hola mundo!'
@@ -12,8 +11,8 @@ aplicaciones web rápidamente en Ruby con un mínimo esfuerzo:
 
 Instalá la gem <em>(gema)</em> y ejecutá la aplicación con:
 
-  sudo gem install sinatra
-  ruby miapp.rb
+  gem install sinatra
+  ruby -rubygems miapp.rb
 
 Podés verla en: http://localhost:4567
 
@@ -137,10 +136,10 @@ pueden ser ajustadas globalmente a través de las configuraciones de Sinatra,
 ver {Opciones y Configuraciones}[http://www.sinatrarb.com/configuration.html],
 y reemplazadas individualmente.
 
-  set :haml, { :format => :html5 } # el formato por defecto de Haml es :xhtml
+  set :haml, :format => :html5 # el formato por defecto de Haml es :xhtml
 
   get '/' do
-    haml :index, :haml_options => { :format => :html4 } # reemplazado
+    haml :index, :format => :html4 # reemplazado
   end
 
 === Plantillas Erb
@@ -200,7 +199,7 @@ pueden ser ajustadas globalmente a través de las configuraciones de Sinatra,
 ver {Opciones y Configuraciones}[http://www.sinatrarb.com/configuration.html],
 y reemplazadas individualmente.
 
-  set :sass, { :style => :compact } # el estilo por defecto de Sass es :nested
+  set :sass, :style => :compact # el estilo por defecto de Sass es :nested
 
   get '/stylesheet.css' do
     content_type 'text/css', :charset => 'utf-8'

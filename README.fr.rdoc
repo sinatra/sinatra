@@ -4,7 +4,6 @@ Sinatra est une DSL pour créer rapidement des applications web en Ruby et sans
 effort:
 
   # mon_application.rb
-  require 'rubygems'
   require 'sinatra'
   get '/' do
     'Bonjour Monde!'
@@ -12,8 +11,8 @@ effort:
 
 Installez le Gem et lancez avec:
 
-  sudo gem install sinatra
-  ruby mon_application.rb
+  gem install sinatra
+  ruby -rubygems mon_application.rb
 
 Voir ici: http://localhost:4567
 
@@ -132,10 +131,10 @@ peuvent se manipuler directement avec la configuration de Sinatra,
 voir {Options et Configuration}[http://www.sinatrarb.com/configuration.html]
 qui supportent aussi la réécriture (surcharge) comme dans cet exemple.
 
-  set :haml, {:format => :html5 } # le format par défaut dans Haml est :xhtml
+  set :haml, :format => :html5 # le format par défaut dans Haml est :xhtml
 
   get '/' do
-    haml :index, :haml_options => {:format => :html4 } # surcharge
+    haml :index, :format => :html4 # surcharge
   end
 
 
@@ -196,7 +195,7 @@ peuvent se manipuler directement avec la configuration de Sinatra,
 voir {Options et Configuration}[http://www.sinatrarb.com/configuration.html]
 qui supportent aussi la réécriture (surcharge) comme dans cet exemple.
 
-  set :sass, {:style => :compact } # le style par défaut dans Sass est :nested
+  set :sass, :style => :compact # le style par défaut dans Sass est :nested
 
   get '/stylesheet.css' do
     content_type 'text/css', :charset => 'utf-8'
