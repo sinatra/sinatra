@@ -1,4 +1,5 @@
 = Sinatra
+<i>Wichtig: Dieses Dokument ist eine Übersetzung aus dem Englischen und unter Umständen nicht auf dem aktuellsten Stand.</i>
 
 Sinatra ist eine DSL, die das schnelles Erstellen von Webanwendungen in Ruby
 mit minimalen Aufwand ermöglicht:
