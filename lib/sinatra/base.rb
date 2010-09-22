@@ -878,23 +878,22 @@ module Sinatra
       # Condition for matching user agent. Parameter should be Regexp.
       # Will set params[:agent].
       def user_agent(pattern)
-        condition {
+        condition do
           if request.user_agent =~ pattern
             @params[:agent] = $~[1..-1]
             true
           else
             false
           end
-        }
+        end
       end
       alias_method :agent, :user_agent
 
       # Condition for matching mimetypes. Accepts file extensions.
       def provides(*types)
-        types = [types] unless types.kind_of? Array
-        types.map!{|t| mime_type(t)}
+        types.map! { |t| mime_type(t) }
 
-        condition {
+        condition do
           matching_types = (request.accept & types)
           unless matching_types.empty?
             response.headers['Content-Type'] = matching_types.first
@@ -902,7 +901,7 @@ module Sinatra
           else
             false
           end
-        }
+        end
       end
 
     public
