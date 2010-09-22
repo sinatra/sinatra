@@ -47,11 +47,11 @@ task 'doc'     => ['doc:api']
 
 task 'doc:api' => ['doc/api/index.html']
 
-file 'doc/api/index.html' => FileList['lib/**/*.rb','README.rdoc'] do |f|
+file 'doc/api/index.html' => FileList['lib/**/*.rb', 'README.*'] do |f|
   require 'rbconfig'
   hanna = RbConfig::CONFIG['ruby_install_name'].sub('ruby', 'hanna')
   rb_files = f.prerequisites
-  sh((<<-end).gsub(/\s+/, ' '))
+  sh(<<-end.gsub(/\s+/, ' '))
     #{hanna}
       --charset utf8
       --fmt html
