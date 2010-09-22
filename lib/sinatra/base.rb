@@ -735,14 +735,6 @@ module Sinatra
         end
       end
 
-      def before_filters
-        @filters[:before]
-      end
-
-      def after_filters
-        @filters[:after]
-      end
-
       # Extension modules registered on this class and all superclasses.
       def extensions
         if superclass.respond_to?(:extensions)
