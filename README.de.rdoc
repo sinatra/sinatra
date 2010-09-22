@@ -1,7 +1,7 @@
 = Sinatra
 
-Sinatra ist eine DSL das schnelles Erstellen von Webanwendungen in Ruby mit
-minimalen Aufwand ermöglicht:
+Sinatra ist eine DSL, die das schnelles Erstellen von Webanwendungen in Ruby
+mit minimalen Aufwand ermöglicht:
 
   # myapp.rb
   require 'sinatra'
