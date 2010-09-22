@@ -17,6 +17,8 @@ module Sinatra
       @env['HTTP_ACCEPT'].to_s.split(',').map { |a| a.split(';')[0].strip }
     end
 
+    # Whether or not the web server (or a reverse proxy in front of it) is
+    # using SSL to communicate with the client.
     def secure?
       (@env['HTTP_X_FORWARDED_PROTO'] || @env['rack.url_scheme']) == 'https'
     end
@@ -443,7 +445,7 @@ module Sinatra
 
     attr_accessor :env, :request, :response, :params
 
-    def call!(env)
+    def call!(env) # :nodoc:
       @env      = env
       @request  = Request.new(env)
       @response = Response.new
@@ -613,6 +615,7 @@ module Sinatra
       end
     end
 
+    # Creates a Hash with indifferent access.
     def indifferent_hash
       Hash.new {|hash,key| hash[key.to_s] if Symbol === key }
     end
@@ -663,6 +666,7 @@ module Sinatra
       filter! :after unless env['sinatra.static_file']
     end
 
+    # Special treatment for 404s in order to play nice with cascades.
     def handle_not_found!(boom)
       @env['sinatra.error']          = boom
       @response.status               = 404
@@ -671,6 +675,7 @@ module Sinatra
       error_block! boom.class, NotFound
     end
 
+    # Error handling during requests.
     def handle_exception!(boom)
       @env['sinatra.error'] = boom
 
@@ -712,6 +717,8 @@ module Sinatra
     class << self
       attr_reader :routes, :filters, :templates, :errors
 
+      # Removes all routes, filters, middleware and extension hooks from the
+      # current class (not routes/filters/... defined by its superclass).
       def reset!
         @conditions     = []
         @routes         = {}
@@ -871,10 +878,13 @@ module Sinatra
       end
 
    private
+      # Condition for matching host name. Parameter might be String or Regexp.
       def host_name(pattern)
         condition { pattern === request.host }
       end
 
+      # Condition for matching user agent. Parameter should be Regexp.
+      # Will set params[:agent].
       def user_agent(pattern)
         condition {
           if request.user_agent =~ pattern
@@ -887,6 +897,7 @@ module Sinatra
       end
       alias_method :agent, :user_agent
 
+      # Condition for matching mimetypes. Accepts file extensions.
       def provides(*types)
         types = [types] unless types.kind_of? Array
         types.map!{|t| mime_type(t)}
@@ -985,6 +996,8 @@ module Sinatra
         include(*extensions) if extensions.any?
       end
 
+      # Register an extension. Alternatively take a block from which an
+      # extension will be created and registered on the fly.
       def register(*extensions, &block)
         extensions << Module.new(&block) if block_given?
         @extensions += extensions
@@ -1089,7 +1102,7 @@ module Sinatra
       end
 
     public
-      CALLERS_TO_IGNORE = [
+      CALLERS_TO_IGNORE = [ # :nodoc:
         /\/sinatra(\/(base|main|showexceptions))?\.rb$/, # all sinatra code
         /lib\/tilt.*\.rb$/,                              # all tilt code
         /\(.*\)/,                                        # generated code
@@ -1108,6 +1121,8 @@ module Sinatra
           map { |file,line| file }
       end
 
+      # Like caller_files, but containing Arrays rather than strings with the
+      # first element being the file, and the second being the line.
       def caller_locations
         caller(1).
           map    { |line| line.split(/:(?=\d|in )/)[0,2] }.

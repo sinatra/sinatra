@@ -1,11 +1,19 @@
 require 'rack/showexceptions'
 
 module Sinatra
+  # Sinatra::ShowExceptions catches all exceptions raised from the app it
+  # wraps. It shows a useful backtrace with the sourcefile and clickable
+  # context, the whole Rack environment and the request data.
+  #
+  # Be careful when you use this on public-facing sites as it could reveal
+  # information helpful to attackers.
   class ShowExceptions < Rack::ShowExceptions
     def initialize(app)
       @app      = app
       @template = ERB.new(TEMPLATE)
     end
+
+    private
 
     def frame_class(frame)
       if frame.filename =~ /lib\/sinatra.*\.rb/
@@ -18,7 +26,7 @@ module Sinatra
       end
     end
 
-TEMPLATE = <<HTML
+TEMPLATE = <<-HTML # :nodoc:
 <!DOCTYPE html>
 <html>
 <head>
