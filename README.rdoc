@@ -164,8 +164,9 @@ directory. To use a different views directory:
 
 One important thing to remember is that you always have to reference
 templates with symbols, even if they're in a subdirectory (in this
-case use <tt>:'subdir/template'</tt>). Rendering methods will render
-any strings passed to them directly.
+case use <tt>:'subdir/template'</tt>). You must use a symbol because 
+otherwise rendering methods will render any strings passed to them 
+directly.
 
 === Haml Templates
 
