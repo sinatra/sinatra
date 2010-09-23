@@ -804,6 +804,86 @@ top-level. Have a look at the code for yourself: here's the
 {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
 being {included into the main namespace}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28]
 
+== Scopes and Binding
+
+The scope you are currently in determines what methods and variables are available.
+
+=== Application/Class Scope
+
+Every Sinatra application corresponds to a subclass of Sinatra::Base. If you
+are using the top level DSL (<tt>require 'sinatra'</tt>), then this class is
+Sinatra::Application, otherwise it is the subclass you created explicitly. At
+class level you have methods like `get` or `before`, but you cannot access the
+`request` object or the `session`, as there only is a single application class
+for all requests.
+
+Options created via `set` are methods at class level:
+
+    class MyApp << Sinatra::Base
+      # Hey, I'm in the application scope!
+      set :foo, 42
+      foo # => 42
+      
+      get '/foo' do
+        # Hey, I'm no longer in the application scope!
+      end
+    end
+
+You have the application scope binding inside
+
+* Your application class body
+* Methods defined by extensions
+* The block passed to `helpers`
+* Procs/blocks used as value for `set`
+
+You can reach the scope object (the class) like this:
+
+* The object passed to configure blocks (<tt>configure { |c| ... }</tt>)
+* `settings` from within request scope
+
+=== Request/Instance Scope
+
+For every incoming request a new instance of your application class is created
+and all handler blocks run in that scope. From within this scope you can
+access the `request` or `session` object and call methods like `erb` or
+`haml`. You can access the application scope from within the request scope via
+the `settings` helper.
+
+  class MyApp << Sinatra::Base
+    # Hey, I'm in the application scope!
+    get '/define_route/:name' do
+      # Request scope for '/define_route/:name'
+      @value = 42
+      
+      settings.get("/#{params[:name]}") do
+        # Request scope for "/#{params[:name]}"
+        @value # => nil (not the same request)
+      end
+      
+      "Route defined!"
+    end
+  end
+
+You have the request scope binding inside
+
+* get/head/post/put/delete blocks
+* before/after filters
+* helper methods
+* templates/views
+
+=== Delegation Scope
+
+The delegation scope just forwards methods to the class scope. However, it
+does not behave 100% like the class scope, as you do not have the classes
+bindings: Only methods explicitly marked for delegation are available and you
+do not share variables with the class scope (read: you have a different
+`self`).
+
+You have the delegate scope binding inside
+
+* The top level binding, if you did <tt>require "sinatra"</tt>
+* A object extended with the `Sinatra::Delegator` mixin
+
 == Command line
 
 Sinatra applications can be run directly:
