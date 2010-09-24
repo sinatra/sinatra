@@ -757,7 +757,7 @@ are deprecated as of the 0.9.2 release.
 == Sinatra::Base - Middleware, Libraries, and Modular Apps
 
 Defining your app at the top-level works well for micro-apps but has
-considerable drawbacks when building reuseable components such as Rack
+considerable drawbacks when building reusable components such as Rack
 middleware, Rails metal, simple libraries with a server component, or
 even Sinatra extensions. The top-level DSL pollutes the Object namespace
 and assumes a micro-app style configuration (e.g., a single application
@@ -796,7 +796,7 @@ Sinatra::Base components with two modifications:
 including the built-in server. See {Options and Configuration}[http://sinatra.github.com/configuration.html]
 for details on available options and their behavior.
 
-=== Using Sinatra as middleware
+=== Using Sinatra as Middleware
 
 Not only is Sinatra able to use other Rack middleware, any Sinatra application
 can in turn be added in front of any Rack endpoint as middleware itself. This
@@ -916,7 +916,7 @@ You have the delegate scope binding inside:
 
 Have a look at the code for yourself: here's the
 {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
-being {included into the main namespace}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28]
+being {included into the main namespace}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28].
 
 == Command line
 
