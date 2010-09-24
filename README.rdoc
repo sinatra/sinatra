@@ -806,7 +806,8 @@ being {included into the main namespace}[http://github.com/sinatra/sinatra/blob/
 
 == Scopes and Binding
 
-The scope you are currently in determines what methods and variables are available.
+The scope you are currently in determines what methods and variables are
+available.
 
 === Application/Class Scope
 
@@ -829,7 +830,7 @@ Options created via `set` are methods at class level:
       end
     end
 
-You have the application scope binding inside
+You have the application scope binding inside:
 
 * Your application class body
 * Methods defined by extensions
@@ -838,16 +839,16 @@ You have the application scope binding inside
 
 You can reach the scope object (the class) like this:
 
-* The object passed to configure blocks (<tt>configure { |c| ... }</tt>)
+* Via the object passed to configure blocks (<tt>configure { |c| ... }</tt>)
 * `settings` from within request scope
 
 === Request/Instance Scope
 
-For every incoming request a new instance of your application class is created
-and all handler blocks run in that scope. From within this scope you can
-access the `request` or `session` object and call methods like `erb` or
-`haml`. You can access the application scope from within the request scope via
-the `settings` helper.
+For every incoming request, a new instance of your application class is
+created and all handler blocks run in that scope. From within this scope you
+can access the `request` and `session` object or call rendering methods like
+`erb` or `haml`. You can access the application scope from within the request
+scope via the `settings` helper:
 
   class MyApp << Sinatra::Base
     # Hey, I'm in the application scope!
@@ -864,7 +865,7 @@ the `settings` helper.
     end
   end
 
-You have the request scope binding inside
+You have the request scope binding inside:
 
 * get/head/post/put/delete blocks
 * before/after filters
@@ -874,15 +875,16 @@ You have the request scope binding inside
 === Delegation Scope
 
 The delegation scope just forwards methods to the class scope. However, it
-does not behave 100% like the class scope, as you do not have the classes
-bindings: Only methods explicitly marked for delegation are available and you
-do not share variables with the class scope (read: you have a different
-`self`).
+does not behave 100% like the class scope, as you do not have the class'
+binding: Only methods explicitly marked for delegation are available and you
+do not share variables/state with the class scope (read: you have a different
+`self`). You can explicitly add method delegations by calling
+<tt>Sinatra::Delegator.delegate :method_name</tt>.
 
-You have the delegate scope binding inside
+You have the delegate scope binding inside:
 
 * The top level binding, if you did <tt>require "sinatra"</tt>
-* A object extended with the `Sinatra::Delegator` mixin
+* An object extended with the `Sinatra::Delegator` mixin
 
 == Command line
 
