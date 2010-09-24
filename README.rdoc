@@ -796,6 +796,42 @@ Sinatra::Base components with two modifications:
 including the built-in server. See {Options and Configuration}[http://sinatra.github.com/configuration.html]
 for details on available options and their behavior.
 
+=== Using Sinatra as middleware
+
+Not only is Sinatra able to use other Rack middleware, any Sinatra application
+can in turn be added in front of any Rack endpoint as middleware itself. This
+endpoint could be another Sinatra application, or any other Rack-based
+application (Rails/Ramaze/Camping/...).
+
+  require 'sinatra/base'
+  
+  class LoginScreen < Sinatra::Base
+    enable :session
+    
+    get('/login') { haml :login }
+    
+    post('/login') do
+      if params[:name] = 'admin' and params[:password] = 'admin'
+        session['user_name'] = params[:name]
+      else
+        redirect '/login'
+      end
+    end
+  end
+  
+  class MyApp < Sinatra::Base
+    # middleware will run before filters
+    use LoginScreen
+    
+    before do
+      unless session['user_name']
+        halt "Access denied, please <a href='/login'>login</a>."
+      end
+    end
+    
+    get('/') { "Hello #{session['user_name']}." }
+  end
+
 == Scopes and Binding
 
 The scope you are currently in determines what methods and variables are
