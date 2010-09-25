@@ -19,7 +19,8 @@ Die Seite kann nun unter http://localhost:4567 betrachtet werden.
 
 == Routen
 
-In Sinatra ist eine Route definiert durch eine HTTP Methode und ein URL Muster. Jeder dieser Routen wird ein Ruby block zugeordnnet.
+In Sinatra wird eine Route durch eine HTTP-Methode und ein URL-Muster definiert . Jeder dieser Routen wird ein
+Ruby-Block zugeordnnet.
 
   get '/' do
     .. zeig etwas ..
@@ -37,11 +38,11 @@ In Sinatra ist eine Route definiert durch eine HTTP Methode und ein URL Muster. 
     .. entferne etwas ..
   end
 
-Die Routen werden in der Reihenfolge durchlaufen, in der sie definiert sind.
+Die Routen werden in der Reihenfolge durchlaufen, in der sie definiert wurden.
 Das erste Routemuster, das mit dem Request übereinstimmt, wird ausgeführt.
 
 Die Muster der Routen können benannte Parameter beinhalten, die über den
-<tt>params</tt> Hash zugänglich gemacht werden:
+<tt>params</tt>-Hash zugänglich gemacht werden:
 
   get '/hallo/:name' do
     # passt auf "GET /hallo/foo" und "GET /hallo/bar"
