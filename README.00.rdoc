@@ -1,0 +1,971 @@
+= Sinatra
+
+Sinatra is a DSL for quickly creating web applications in Ruby with minimal
+effort:
+
+  # myapp.rb
+  require 'sinatra'
+  
+  get '/' do
+    'Hello world!'
+  end
+
+Install the gem and run with:
+
+  gem install sinatra
+  ruby -rubygems myapp.rb
+
+View at: http://localhost:4567
+
+== Routes
+
+In Sinatra, a route is an HTTP method paired with an URL matching pattern.
+Each route is associated with a block:
+
+  get '/' do
+    .. show something ..
+  end
+
+  post '/' do
+    .. create something ..
+  end
+
+  put '/' do
+    .. update something ..
+  end
+
+  delete '/' do
+    .. annihilate something ..
+  end
+
+Routes are matched in the order they are defined. The first route that
+matches the request is invoked.
+
+Route patterns may include named parameters, accessible via the
+<tt>params</tt> hash:
+
+  get '/hello/:name' do
+    # matches "GET /hello/foo" and "GET /hello/bar"
+    # params[:name] is 'foo' or 'bar'
+    "Hello #{params[:name]}!"
+  end
+
+You can also access named parameters via block parameters:
+
+  get '/hello/:name' do |n|
+    "Hello #{n}!"
+  end
+
+Route patterns may also include splat (or wildcard) parameters, accessible
+via the <tt>params[:splat]</tt> array.
+
+  get '/say/*/to/*' do
+    # matches /say/hello/to/world
+    params[:splat] # => ["hello", "world"]
+  end
+
+  get '/download/*.*' do
+    # matches /download/path/to/file.xml
+    params[:splat] # => ["path/to/file", "xml"]
+  end
+
+Route matching with Regular Expressions:
+
+  get %r{/hello/([\w]+)} do
+    "Hello, #{params[:captures].first}!"
+  end
+
+Or with a block parameter:
+
+  get %r{/hello/([\w]+)} do |c|
+    "Hello, #{c}!"
+  end
+
+=== Conditions
+
+Routes may include a variety of matching conditions, such as the user agent:
+
+  get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
+    "You're using Songbird version #{params[:agent][0]}"
+  end
+
+  get '/foo' do
+    # Matches non-songbird browsers
+  end
+
+Other available conditions are +host_name+ and +provides+:
+
+  get '/', :host_name => /^admin\./ do
+    "Admin Area, Access denied!"
+  end
+
+  get '/', :provides => 'html' do
+    haml :index
+  end
+  
+  get '/', :provides => ['rss', 'atom', 'xml'] do
+    builder :feed
+  end
+
+You can easily define your own conditions:
+
+  set(:probability) { |value| condition { rand <= value } }
+  
+  get '/win_a_car', :probability => 0.1 do
+    "You won!"
+  end
+  
+  get '/win_a_car' do
+    "Sorry, you lost."
+  end
+
+=== Return values
+
+The return value of a route block determines at least the response body passed
+on to the HTTP client, or at least the next middleware in the Rack stack.
+Most commonly this is a string, as in the above examples. But other values are
+also accepted.
+
+You can return any object that would either be a valid Rack response, Rack
+body object or HTTP status code:
+
+* An Array with three elements: <tt>[status (Fixnum), headers (Hash), response body (responds to #each)]</tt>
+* An Array with two elements: <tt>[status (Fixnum), response body (responds to #each)]</tt>
+* An object that responds to <tt>#each</tt> and passes nothing but strings to the given block
+* A Fixnum representing the status code
+
+That way we can for instance easily implement a streaming example:
+
+    class Stream
+      def each
+        100.times { |i| yield "#{i}\n" }
+      end
+    end
+
+    get('/') { Stream.new }
+
+== Static Files
+
+Static files are served from the <tt>./public</tt> directory. You can specify
+a different location by setting the <tt>:public</tt> option:
+
+  set :public, File.dirname(__FILE__) + '/static'
+
+Note that the public directory name is not included in the URL. A file
+<tt>./public/css/style.css</tt> is made available as
+<tt>http://example.com/css/style.css</tt>.
+
+== Views / Templates
+
+Templates are assumed to be located directly under the <tt>./views</tt>
+directory. To use a different views directory:
+
+  set :views, File.dirname(__FILE__) + '/templates'
+
+One important thing to remember is that you always have to reference
+templates with symbols, even if they're in a subdirectory (in this
+case use <tt>:'subdir/template'</tt>). You must use a symbol because 
+otherwise rendering methods will render any strings passed to them 
+directly.
+
+=== Haml Templates
+
+The haml gem/library is required to render HAML templates:
+
+  ## You'll need to require haml in your app
+  require 'haml'
+
+  get '/' do
+    haml :index
+  end
+
+Renders <tt>./views/index.haml</tt>.
+
+{Haml's options}[http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options]
+can be set globally through Sinatra's configurations,
+see {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
+and overridden on an individual basis.
+
+  set :haml, :format => :html5 # default Haml format is :xhtml
+
+  get '/' do
+    haml :index, :format => :html4 # overridden
+  end
+
+
+=== Erb Templates
+
+  ## You'll need to require erb in your app
+  require 'erb'
+
+  get '/' do
+    erb :index
+  end
+
+Renders <tt>./views/index.erb</tt>
+
+=== Erubis
+
+The erubis gem/library is required to render erubis templates:
+
+  ## You'll need to require erubis in your app
+  require 'erubis'
+
+  get '/' do
+    erubis :index
+  end
+
+Renders <tt>./views/index.erubis</tt>
+
+=== Builder Templates
+
+The builder gem/library is required to render builder templates:
+
+  ## You'll need to require builder in your app
+  require 'builder'
+
+  get '/' do
+    content_type 'application/xml', :charset => 'utf-8'
+    builder :index
+  end
+
+Renders <tt>./views/index.builder</tt>.
+
+=== Sass Templates
+
+The sass gem/library is required to render Sass templates:
+
+  ## You'll need to require haml or sass in your app
+  require 'sass'
+
+  get '/stylesheet.css' do
+    content_type 'text/css', :charset => 'utf-8'
+    sass :stylesheet
+  end
+
+Renders <tt>./views/stylesheet.sass</tt>.
+
+{Sass' options}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
+can be set globally through Sinatra's configurations,
+see {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
+and overridden on an individual basis.
+
+  set :sass, :style => :compact # default Sass style is :nested
+
+  get '/stylesheet.css' do
+    content_type 'text/css', :charset => 'utf-8'
+    sass :stylesheet, :style => :expanded # overridden
+  end
+
+=== Scss Templates
+
+The sass gem/library is required to render Scss templates:
+
+  ## You'll need to require haml or sass in your app
+  require 'sass'
+
+  get '/stylesheet.css' do
+    content_type 'text/css', :charset => 'utf-8'
+    scss :stylesheet
+  end
+
+Renders <tt>./views/stylesheet.scss</tt>.
+
+{Scss' options}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
+can be set globally through Sinatra's configurations,
+see {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
+and overridden on an individual basis.
+
+  set :scss, :style => :compact # default Scss style is :nested
+
+  get '/stylesheet.css' do
+    content_type 'text/css', :charset => 'utf-8'
+    scss :stylesheet, :style => :expanded # overridden
+  end
+
+=== Less Templates
+
+The less gem/library is required to render Less templates:
+
+  ## You'll need to require less in your app
+  require 'less'
+
+  get '/stylesheet.css' do
+    content_type 'text/css', :charset => 'utf-8'
+    less :stylesheet
+  end
+
+Renders <tt>./views/stylesheet.less</tt>.
+
+=== Liquid Templates
+
+The liquid gem/library is required to render Liquid templates:
+
+  ## You'll need to require liquid in your app
+  require 'liquid'
+
+  get '/' do
+    liquid :index
+  end
+
+Renders <tt>./views/index.liquid</tt>.
+
+Since you cannot call Ruby methods (except for +yield+) from a Liquid
+template, you almost always want to pass locals to it:
+
+  liquid :index, :locals => { :key => 'value' }
+
+=== Markdown Templates
+
+The rdiscount gem/library is required to render Markdown templates:
+
+  ## You'll need to require rdiscount in your app
+  require "rdiscount"
+  
+  get '/' do
+    markdown :index
+  end
+
+Renders <tt>./views/index.markdown</tt> (+md+ and +mkd+ are also valid file
+extensions).
+
+It is not possible to call methods from markdown, nor to pass locals to it. You therefore will usually use it in combination with another rendering engine:
+
+  erb :overview, :locals => { :text => markdown(:introduction) }
+
+Note that you may also call the markdown method from within other templates:
+
+  %h1 Hello From Haml!
+  %p= markdown(:greetings)
+
+=== Textile Templates
+
+The RedCloth gem/library is required to render Textile templates:
+
+  ## You'll need to require rdiscount in your app
+  require "redcloth"
+
+  get '/' do
+    textile :index
+  end
+
+Renders <tt>./views/index.textile</tt>.
+
+It is not possible to call methods from textile, nor to pass locals to it. You therefore will usually use it in combination with another rendering engine:
+
+  erb :overview, :locals => { :text => textile(:introduction) }
+
+Note that you may also call the textile method from within other templates:
+
+  %h1 Hello From Haml!
+  %p= textile(:greetings)
+
+=== RDoc Templates
+
+The RDoc gem/library is required to render RDoc templates:
+
+  ## You'll need to require rdiscount in your app
+  require "rdoc"
+
+  get '/' do
+    rdoc :index
+  end
+
+Renders <tt>./views/index.rdoc</tt>.
+
+It is not possible to call methods from rdoc, nor to pass locals to it. You therefore will usually use it in combination with another rendering engine:
+
+  erb :overview, :locals => { :text => rdoc(:introduction) }
+
+Note that you may also call the rdoc method from within other templates:
+
+  %h1 Hello From Haml!
+  %p= rdoc(:greetings)
+
+=== Radius Templates
+
+The radius gem/library is required to render Radius templates:
+
+  ## You'll need to require radius in your app
+  require 'radius'
+
+  get '/' do
+    radius :index
+  end
+
+Renders <tt>./views/index.radius</tt>.
+
+Since you cannot call Ruby methods (except for +yield+) from a Radius
+template, you almost always want to pass locals to it:
+
+  radius :index, :locals => { :key => 'value' }
+
+=== Markaby Templates
+
+The markaby gem/library is required to render Markaby templates:
+
+  ## You'll need to require markaby in your app
+  require 'markaby'
+
+  get '/' do
+    markaby :index
+  end
+
+Renders <tt>./views/index.mab</tt>.
+
+=== CoffeeScript Templates
+
+The coffee-script gem/library and the `coffee` binary are required to render
+CoffeeScript templates:
+
+  ## You'll need to require coffee-script in your app
+  require 'coffee-script'
+
+  get '/application.js' do
+    content_type 'text/javascript', :charset => 'utf-8'
+    coffee :application
+  end
+
+Renders <tt>./views/application.coffee</tt>.
+
+=== Inline Templates
+
+  get '/' do
+    haml '%div.title Hello World'
+  end
+
+Renders the inlined template string.
+
+=== Accessing Variables in Templates
+
+Templates are evaluated within the same context as route handlers. Instance
+variables set in route handlers are direcly accessible by templates:
+
+  get '/:id' do
+    @foo = Foo.find(params[:id])
+    haml '%h1= @foo.name'
+  end
+
+Or, specify an explicit Hash of local variables:
+
+  get '/:id' do
+    foo = Foo.find(params[:id])
+    haml '%h1= foo.name', :locals => { :foo => foo }
+  end
+
+This is typically used when rendering templates as partials from within
+other templates.
+
+=== Inline Templates
+
+Templates may be defined at the end of the source file:
+
+  require 'sinatra'
+
+  get '/' do
+    haml :index
+  end
+
+  __END__
+
+  @@ layout
+  %html
+    = yield
+
+  @@ index
+  %div.title Hello world!!!!!
+
+NOTE: Inline templates defined in the source file that requires sinatra
+are automatically loaded. Call +enable :inline_templates+ explicitly if you
+have inline templates in other source files.
+
+=== Named Templates
+
+Templates may also be defined using the top-level <tt>template</tt> method:
+
+  template :layout do
+    "%html\n  =yield\n"
+  end
+
+  template :index do
+    '%div.title Hello World!'
+  end
+
+  get '/' do
+    haml :index
+  end
+
+If a template named "layout" exists, it will be used each time a template
+is rendered. You can disable layouts by passing <tt>:layout => false</tt>.
+
+  get '/' do
+    haml :index, :layout => !request.xhr?
+  end
+
+== Helpers
+
+Use the top-level <tt>helpers</tt> method to define helper methods for use in
+route handlers and templates:
+
+  helpers do
+    def bar(name)
+      "#{name}bar"
+    end
+  end
+
+  get '/:name' do
+    bar(params[:name])
+  end
+
+== Filters
+
+Before filters are evaluated before each request within the same context as
+the routes will be and can modify the request and response. Instance variables
+set in filters are accessible by routes and templates:
+
+  before do
+    @note = 'Hi!'
+    request.path_info = '/foo/bar/baz'
+  end
+
+  get '/foo/*' do
+    @note #=> 'Hi!'
+    params[:splat] #=> 'bar/baz'
+  end
+
+After filter are evaluated after each request within the same context and can
+also modify the request and response. Instance variables set in before filters
+and routes are accessible by after filters:
+
+  after do
+    puts response.status
+  end
+
+Filters optionally taking a pattern, causing them to be evaluated only if the
+request path matches that pattern:
+
+  before '/protected/*' do
+    authenticate!
+  end
+
+  after '/create/:slug' do |slug|
+    session[:last_slug] = slug
+  end
+
+== Halting
+
+To immediately stop a request within a filter or route use:
+
+  halt
+
+You can also specify the status when halting:
+
+  halt 410
+
+Or the body:
+
+  halt 'this will be the body'
+
+Or both:
+
+  halt 401, 'go away!'
+
+With headers:
+
+  halt 402, {'Content-Type' => 'text/plain'}, 'revenge'
+
+== Passing
+
+A route can punt processing to the next matching route using <tt>pass</tt>:
+
+  get '/guess/:who' do
+    pass unless params[:who] == 'Frank'
+    'You got me!'
+  end
+
+  get '/guess/*' do
+    'You missed!'
+  end
+
+The route block is immediately exited and control continues with the next
+matching route. If no matching route is found, a 404 is returned.
+
+== Configuration
+
+Run once, at startup, in any environment:
+
+  configure do
+    ...
+  end
+
+Run only when the environment (RACK_ENV environment variable) is set to
+<tt>:production</tt>:
+
+  configure :production do
+    ...
+  end
+
+Run when the environment is set to either <tt>:production</tt> or
+<tt>:test</tt>:
+
+  configure :production, :test do
+    ...
+  end
+
+== Error handling
+
+Error handlers run within the same context as routes and before filters, which
+means you get all the goodies it has to offer, like <tt>haml</tt>,
+<tt>erb</tt>, <tt>halt</tt>, etc.
+
+=== Not Found
+
+When a <tt>Sinatra::NotFound</tt> exception is raised, or the response's status
+code is 404, the <tt>not_found</tt> handler is invoked:
+
+  not_found do
+    'This is nowhere to be found.'
+  end
+
+=== Error
+
+The +error+ handler is invoked any time an exception is raised from a route
+block or a filter. The exception object can be obtained from the
+<tt>sinatra.error</tt> Rack variable:
+
+  error do
+    'Sorry there was a nasty error - ' + env['sinatra.error'].name
+  end
+
+Custom errors:
+
+  error MyCustomError do
+    'So what happened was...' + request.env['sinatra.error'].message
+  end
+
+Then, if this happens:
+
+  get '/' do
+    raise MyCustomError, 'something bad'
+  end
+
+You get this:
+
+  So what happened was... something bad
+
+Alternatively, you can install error handler for a status code:
+
+  error 403 do
+    'Access forbidden'
+  end
+
+  get '/secret' do
+    403
+  end
+
+Or a range:
+
+  error 400..510 do
+    'Boom'
+  end
+
+Sinatra installs special <tt>not_found</tt> and <tt>error</tt> handlers when
+running under the development environment.
+
+== Mime types
+
+When using <tt>send_file</tt> or static files you may have mime types Sinatra
+doesn't understand. Use +mime_type+ to register them by file extension:
+
+  mime_type :foo, 'text/foo'
+
+You can also use it with the +content_type+ helper:
+
+  content_type :foo
+
+== Rack Middleware
+
+Sinatra rides on Rack[http://rack.rubyforge.org/], a minimal standard
+interface for Ruby web frameworks. One of Rack's most interesting capabilities
+for application developers is support for "middleware" -- components that sit
+between the server and your application monitoring and/or manipulating the
+HTTP request/response to provide various types of common functionality.
+
+Sinatra makes building Rack middleware pipelines a cinch via a top-level
++use+ method:
+
+  require 'sinatra'
+  require 'my_custom_middleware'
+
+  use Rack::Lint
+  use MyCustomMiddleware
+
+  get '/hello' do
+    'Hello World'
+  end
+
+The semantics of +use+ are identical to those defined for the
+Rack::Builder[http://rack.rubyforge.org/doc/classes/Rack/Builder.html] DSL
+(most frequently used from rackup files). For example, the +use+ method
+accepts multiple/variable args as well as blocks:
+
+  use Rack::Auth::Basic do |username, password|
+    username == 'admin' && password == 'secret'
+  end
+
+Rack is distributed with a variety of standard middleware for logging,
+debugging, URL routing, authentication, and session handling. Sinatra uses
+many of of these components automatically based on configuration so you
+typically don't have to +use+ them explicitly.
+
+== Testing
+
+Sinatra tests can be written using any Rack-based testing library
+or framework. {Rack::Test}[http://gitrdoc.com/brynary/rack-test] is
+recommended:
+
+  require 'my_sinatra_app'
+  require 'test/unit'
+  require 'rack/test'
+
+  class MyAppTest < Test::Unit::TestCase
+    include Rack::Test::Methods
+
+    def app
+      Sinatra::Application
+    end
+
+    def test_my_default
+      get '/'
+      assert_equal 'Hello World!', last_response.body
+    end
+
+    def test_with_params
+      get '/meet', :name => 'Frank'
+      assert_equal 'Hello Frank!', last_response.body
+    end
+
+    def test_with_rack_env
+      get '/', {}, 'HTTP_USER_AGENT' => 'Songbird'
+      assert_equal "You're using Songbird!", last_response.body
+    end
+  end
+
+NOTE: The built-in Sinatra::Test module and Sinatra::TestHarness class
+are deprecated as of the 0.9.2 release.
+
+== Sinatra::Base - Middleware, Libraries, and Modular Apps
+
+Defining your app at the top-level works well for micro-apps but has
+considerable drawbacks when building reusable components such as Rack
+middleware, Rails metal, simple libraries with a server component, or
+even Sinatra extensions. The top-level DSL pollutes the Object namespace
+and assumes a micro-app style configuration (e.g., a single application
+file, ./public and ./views directories, logging, exception detail page,
+etc.). That's where Sinatra::Base comes into play:
+
+  require 'sinatra/base'
+
+  class MyApp < Sinatra::Base
+    set :sessions, true
+    set :foo, 'bar'
+
+    get '/' do
+      'Hello world!'
+    end
+  end
+
+The MyApp class is an independent Rack component that can act as
+Rack middleware, a Rack application, or Rails metal. You can +use+ or
++run+ this class from a rackup +config.ru+ file; or, control a server
+component shipped as a library:
+
+   MyApp.run! :host => 'localhost', :port => 9090
+
+The methods available to Sinatra::Base subclasses are exactly as those
+available via the top-level DSL. Most top-level apps can be converted to
+Sinatra::Base components with two modifications:
+
+* Your file should require +sinatra/base+  instead of +sinatra+;
+  otherwise, all of Sinatra's DSL methods are imported into the main
+  namespace.
+* Put your app's routes, error handlers, filters, and options in a subclass
+  of Sinatra::Base.
+
++Sinatra::Base+ is a blank slate. Most options are disabled by default,
+including the built-in server. See {Options and Configuration}[http://sinatra.github.com/configuration.html]
+for details on available options and their behavior.
+
+=== Using Sinatra as Middleware
+
+Not only is Sinatra able to use other Rack middleware, any Sinatra application
+can in turn be added in front of any Rack endpoint as middleware itself. This
+endpoint could be another Sinatra application, or any other Rack-based
+application (Rails/Ramaze/Camping/...).
+
+  require 'sinatra/base'
+  
+  class LoginScreen < Sinatra::Base
+    enable :session
+    
+    get('/login') { haml :login }
+    
+    post('/login') do
+      if params[:name] = 'admin' and params[:password] = 'admin'
+        session['user_name'] = params[:name]
+      else
+        redirect '/login'
+      end
+    end
+  end
+  
+  class MyApp < Sinatra::Base
+    # middleware will run before filters
+    use LoginScreen
+    
+    before do
+      unless session['user_name']
+        halt "Access denied, please <a href='/login'>login</a>."
+      end
+    end
+    
+    get('/') { "Hello #{session['user_name']}." }
+  end
+
+== Scopes and Binding
+
+The scope you are currently in determines what methods and variables are
+available.
+
+=== Application/Class Scope
+
+Every Sinatra application corresponds to a subclass of Sinatra::Base. If you
+are using the top level DSL (<tt>require 'sinatra'</tt>), then this class is
+Sinatra::Application, otherwise it is the subclass you created explicitly. At
+class level you have methods like `get` or `before`, but you cannot access the
+`request` object or the `session`, as there only is a single application class
+for all requests.
+
+Options created via `set` are methods at class level:
+
+    class MyApp << Sinatra::Base
+      # Hey, I'm in the application scope!
+      set :foo, 42
+      foo # => 42
+      
+      get '/foo' do
+        # Hey, I'm no longer in the application scope!
+      end
+    end
+
+You have the application scope binding inside:
+
+* Your application class body
+* Methods defined by extensions
+* The block passed to `helpers`
+* Procs/blocks used as value for `set`
+
+You can reach the scope object (the class) like this:
+
+* Via the object passed to configure blocks (<tt>configure { |c| ... }</tt>)
+* `settings` from within request scope
+
+=== Request/Instance Scope
+
+For every incoming request, a new instance of your application class is
+created and all handler blocks run in that scope. From within this scope you
+can access the `request` and `session` object or call rendering methods like
+`erb` or `haml`. You can access the application scope from within the request
+scope via the `settings` helper:
+
+  class MyApp << Sinatra::Base
+    # Hey, I'm in the application scope!
+    get '/define_route/:name' do
+      # Request scope for '/define_route/:name'
+      @value = 42
+      
+      settings.get("/#{params[:name]}") do
+        # Request scope for "/#{params[:name]}"
+        @value # => nil (not the same request)
+      end
+      
+      "Route defined!"
+    end
+  end
+
+You have the request scope binding inside:
+
+* get/head/post/put/delete blocks
+* before/after filters
+* helper methods
+* templates/views
+
+=== Delegation Scope
+
+The delegation scope just forwards methods to the class scope. However, it
+does not behave 100% like the class scope, as you do not have the class'
+binding: Only methods explicitly marked for delegation are available and you
+do not share variables/state with the class scope (read: you have a different
+`self`). You can explicitly add method delegations by calling
+<tt>Sinatra::Delegator.delegate :method_name</tt>.
+
+You have the delegate scope binding inside:
+
+* The top level binding, if you did <tt>require "sinatra"</tt>
+* An object extended with the `Sinatra::Delegator` mixin
+
+Have a look at the code for yourself: here's the
+{Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
+being {included into the main namespace}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28].
+
+== Command line
+
+Sinatra applications can be run directly:
+
+  ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
+
+Options are:
+
+  -h # help
+  -p # set the port (default is 4567)
+  -o # set the host (default is 0.0.0.0)
+  -e # set the environment (default is development)
+  -s # specify rack server/handler (default is thin)
+  -x # turn on the mutex lock (default is off)
+
+== The Bleeding Edge
+
+If you would like to use Sinatra's latest bleeding code, create a local
+clone and run your app with the <tt>sinatra/lib</tt> directory on the
+<tt>LOAD_PATH</tt>:
+
+  cd myapp
+  git clone git://github.com/sinatra/sinatra.git
+  ruby -Isinatra/lib myapp.rb
+
+Alternatively, you can add the <tt>sinatra/lib</tt> directory to the
+<tt>LOAD_PATH</tt> in your application:
+
+  $LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
+  require 'rubygems'
+  require 'sinatra'
+
+  get '/about' do
+    "I'm running version " + Sinatra::VERSION
+  end
+
+To update the Sinatra sources in the future:
+
+  cd myproject/sinatra
+  git pull
+
+== More
+
+* {Project Website}[http://www.sinatrarb.com/] - Additional documentation,
+  news, and links to other resources.
+* {Contributing}[http://www.sinatrarb.com/contributing] - Find a bug? Need
+  help? Have a patch?
+* {Issue tracker}[http://github.com/sinatra/sinatra/issues]
+* {Twitter}[http://twitter.com/sinatra]
+* {Mailing List}[http://groups.google.com/group/sinatrarb/topics]
+* {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] on http://freenode.net
