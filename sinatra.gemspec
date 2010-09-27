@@ -111,6 +111,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'liquid'
   s.add_development_dependency 'rdiscount'
   s.add_development_dependency 'RedCloth'
+  s.add_development_dependency 'radius'
+  s.add_development_dependency 'markaby'
+  s.add_development_dependency 'coffee-script'
 
   s.has_rdoc = true
   s.homepage = "http://sinatra.rubyforge.org"
