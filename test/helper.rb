@@ -1,10 +1,13 @@
 ENV['RACK_ENV'] = 'test'
 
 begin
-  require 'rack'
+  require 'bundler'
+  Bundler.setup
 rescue LoadError
-  require 'rubygems'
-  require 'rack'
+  abort "Install bundler '[sudo] gem install bundler'" unless require 'rubygems'
+  retry
+rescue Bundler::GemNotFound
+  abort "Run 'bundle install' to install all required dependencies"
 end
 
 testdir = File.dirname(__FILE__)
