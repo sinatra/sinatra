@@ -1088,8 +1088,9 @@ module Sinatra
       end
 
       def metadef(message, &block)
-        (class << self; self; end).
-          send :define_method, message, &block
+        class << self
+          define_method(message, &block)
+        end
       end
 
     public
