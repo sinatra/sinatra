@@ -1262,7 +1262,7 @@ module Sinatra
   # class scope.
   def self.new(base=Base, options={}, &block)
     base = Class.new(base)
-    base.send :class_eval, &block if block_given?
+    base.class_eval(&block) if block_given?
     base
   end
 
