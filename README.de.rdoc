@@ -1,7 +1,7 @@
 = Sinatra
 <i>Wichtig: Dieses Dokument ist eine Übersetzung aus dem Englischen und unter Umständen nicht auf dem aktuellsten Stand.</i>
 
-Sinatra ist eine DSL, die das schnelles Erstellen von Webanwendungen in Ruby
+Sinatra ist eine DSL, die das schnelle Erstellen von Webanwendungen in Ruby
 mit minimalen Aufwand ermöglicht:
 
   # myapp.rb
@@ -10,7 +10,7 @@ mit minimalen Aufwand ermöglicht:
     'Hallo Welt!'
   end
 
-Eingach via rubygems installieren und starten:
+Einfach via rubygems installieren und starten:
 
   gem install sinatra
   ruby -rubygems myapp.rb
@@ -19,11 +19,11 @@ Die Seite kann nun unter http://localhost:4567 betrachtet werden.
 
 == Routen
 
-In Sinatra wird eine Route durch eine HTTP-Methode und ein URL-Muster definiert . Jeder dieser Routen wird ein
-Ruby-Block zugeordnnet.
+In Sinatra wird eine Route durch eine HTTP-Methode und ein URL-Muster definiert. Jeder dieser Routen wird ein
+Ruby-Block zugeordnet.
 
   get '/' do
-    .. zeig etwas ..
+    .. zeige etwas ..
   end
 
   post '/' do
@@ -75,7 +75,7 @@ Routen mit regulären Ausdrücken sind auch möglich:
     "Hallo, #{params[:captures].first}!"
   end
 
-Un auch hier kann man Blockparameter nutzen:
+Und auch hier kann man Blockparameter nutzen:
 
   get %r{/hallo/([\w]+)} do |c|
     "Hallo, #{c}!"
@@ -84,7 +84,7 @@ Un auch hier kann man Blockparameter nutzen:
 === Bedingungen
 
 An Routen können eine Vielzahl von Bedingungen angehängt werden, die erfüllt
-sein müssen, damit der Block ausgeführt wird. möglich wäre etwa eine
+sein müssen, damit der Block ausgeführt wird. Möglich wäre etwa eine
 Einschränkung des User Agents:
 
   get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
@@ -125,11 +125,11 @@ Man kann auch relativ einfach eigene Bedingungen hinzufügen:
 
 Durch den Rückgabewert eines Routenblocks wird mindestens der Response Body
 festgelegt, der an den HTTP Client, bzw die nächste Rack Middleware
-weitergegeben wird. Im Normalfall handelt es sich hierbei um einen String, wie
-in den vorrangehenden Beispielen zu sehen. Es werden alledings auch andere
+weitergegeben wird. Im Normalfall handelt es sich hierbei, wie
+in den vorangehenden Beispielen zu sehen war, um einen String. Es werden allerdings auch andere
 Werte akzeptiert.
 
-Man kann jedes Object zurückgeben, bei dem es sich entweder um einenen validen
+Man kann jedes Objekt zurückgeben, bei dem es sich entweder um einenen validen
 Rack-Rückgabewert, einen validen Rack-Body oder einen HTTP Status Code
 handelt:
 
@@ -162,20 +162,20 @@ Zu beachten ist, dass der Ordnername public nicht Teil der URL ist. Die Datei
 
 == Views / Templates
 
-Standardmäßig wird davon ausgegangen, dass sich Templates sich im
+Standardmäßig wird davon ausgegangen, dass sich Templates im
 <tt>./views</tt> Ordner befinden. Man kann jedoch einen anderen Ordner
 festlegen:
 
   set :views, File.dirname(__FILE__) + '/templates'
 
 Eine wichtige Sache, die man sich hierbei merken sollte, ist das man immer mit
-Symbols auf Templates verweisen sollte, auch wenn sich ein Template in einen
+Symbols auf Templates verweisen sollte, auch wenn sich ein Template in einem
 Unterordner befindet (in diesen Fall <tt>:'subdir/template'</tt>).
 Renderingmethoden rendern jeden String direkt.
 
 === Haml-Templates
 
-Das haml gem wird benötigt um Haml-Templates rendern zu können:
+Das haml gem wird benötigt, um Haml-Templates rendern zu können:
 
   ## haml muss eingebunden werden
   require 'haml'
@@ -210,7 +210,7 @@ Dieser Code rendert <tt>./views/index.erb</tt>.
 
 === Erubis
 
-Das erubis gem wird benötigt um Erubis-Templates rendern zu können:
+Das erubis gem wird benötigt, um Erubis-Templates rendern zu können:
 
   ## erbubis muss eingebunden werden
   require 'erubis'
@@ -223,7 +223,7 @@ Dieser Code rendert <tt>./views/index.erubis</tt>.
 
 === Builder-Templates
 
-Das buidler gem wird benötigt um Builder-Templates rendern zu können:
+Das buidler gem wird benötigt, um Builder-Templates rendern zu können:
 
   ## builder muss eingebunden werden
   require 'builder'
@@ -237,7 +237,7 @@ Dieser Code rendert <tt>./views/index.builder</tt>.
 
 === Sass-Templates
 
-Das haml gem wird benötigt um SASS-Templates rendern zu können:
+Das haml gem wird benötigt, um SASS-Templates rendern zu können:
 
   ## sass muss eingebunden werden
   require 'sass'
@@ -263,7 +263,7 @@ und individuell überschrieben werden.
 
 === Scss-Templates
 
-Das haml gem wird benötigt um SCSS-Templates rendern zu können:
+Das haml gem wird benötigt, um SCSS-Templates rendern zu können:
 
   ## sass muss eingebunden werden
   require 'sass'
@@ -289,7 +289,7 @@ und individuell überschrieben werden.
 
 === Less-Templates
 
-Das less gem wird benötigt um Less-Templates rendern zu können:
+Das less gem wird benötigt, um Less-Templates rendern zu können:
 
   ## less muss eingebunden werden
   require 'less'
@@ -303,7 +303,7 @@ Dieser Code rendert <tt>./views/stylesheet.less</tt>.
 
 === Liquid-Templates
 
-Das liquid gem wird benötigt um Liquid-Templates rendern zu können:
+Das liquid gem wird benötigt, um Liquid-Templates rendern zu können:
 
   ## liquid muss eingebunden werden
   require 'liquid'
@@ -321,7 +321,7 @@ aufrufen kann, will man nahezu in allen Fällen +locals+ übergeben:
 
 === Markdown-Templates
 
-Das rdiscount gem wird benötigt um Markdown-Templates rendern zu können:
+Das rdiscount gem wird benötigt, um Markdown-Templates rendern zu können:
 
   ## rdiscount muss eingebunden werden
   require "rdiscount"
@@ -347,7 +347,7 @@ aufzurufen:
 
 === Textile-Templates
 
-Das RedCloth gem wird benötigt um Textile-Templates rendern zu können:
+Das RedCloth gem wird benötigt, um Textile-Templates rendern zu können:
 
   ## redcloth muss eingebunden werden
   require "redcloth"
@@ -372,9 +372,9 @@ aufzurufen:
 
 === RDoc-Templates
 
-Das rdoc gem wird benötigt um RDoc-Templates rendern zu können:
+Das rdoc gem wird benötigt, um RDoc-Templates rendern zu können:
 
-  ## redcloth muss eingebunden werden
+  ## RDoc muss eingebunden werden
   require "rdoc"
 
   get '/' do
@@ -397,7 +397,7 @@ aufzurufen:
 
 === Radius-Templates
 
-Das radius gem wird benötigt um Radius-Templates rendern zu können:
+Das radius gem wird benötigt, um Radius-Templates rendern zu können:
 
   ## radius muss eingebunden werden
   require 'radius'
@@ -415,7 +415,7 @@ aufrufen kann, will man nahezu in allen Fällen +locals+ übergeben:
 
 === Markaby-Templates
 
-Das markaby gem wird benötigt um Markaby-Templates rendern zu können:
+Das markaby gem wird benötigt, um Markaby-Templates rendern zu können:
 
   ## markaby muss eingebunden werden
   require 'markaby'
@@ -428,7 +428,7 @@ Dieser Code rendert <tt>./views/index.mab</tt>.
 
 === CoffeScript-Templates
 
-Das coffee-script gem und das `coffee`-Programm werden benötigt um CoffeScript-Templates rendern zu können:
+Das coffee-script gem und das `coffee`-Programm werden benötigt, um CoffeScript-Templates rendern zu können:
 
   ## coffee-script muss eingebunden werden
   require 'coffee-script'
@@ -487,9 +487,9 @@ Templates können auch am Ende der Datei definiert werden:
   @@ index
   %div.title Hallo Welt!!!!!
 
-Anmerkung: Inline-Templates die in der Datei definiert sind die <tt>require
-'sinatra'</tt> aufruft werden automatisch geladen. Um andere Inline-Templates
-in anderen Dateien aufzurufen muss <tt>enable :inline_templates</tt> explizit
+Anmerkung: Inline-Templates die in der Datei definiert sind, die <tt>require
+'sinatra'</tt> aufruft, werden automatisch geladen. Um andere Inline-Templates
+in anderen Dateien aufzurufen, muss <tt>enable :inline_templates</tt> explizit
 verwendet werden.
 
 === Benannte Templates
@@ -509,7 +509,7 @@ werden:
     haml :index
   end
 
-Wenn ein Template mit dem Namen "layout" existiert, wird es bei jeden Aufruf
+Wenn ein Template mit dem Namen "layout" existiert, wird es bei jedem Aufruf
 verwendet. Durch <tt>:layout => false</tt> kann das Ausführen verhindert werden.
 
   get '/' do
@@ -518,7 +518,7 @@ verwendet. Durch <tt>:layout => false</tt> kann das Ausführen verhindert werden
 
 == Helfer
 
-Durch die Top-Level <tt>helpers</tt>-Methode, Helfer-Methoden
+Durch die Top-Level <tt>helpers</tt>-Methode, werden sogenannte Helfer-Methoden
 definiert, die in Routen und Templates verwendet werden können:
 
   helpers do
@@ -555,7 +555,7 @@ Instanzvariablen können in After-Filterm verwendet werden:
     puts response.status
   end
 
-Filter können optional auch mit einem Pattern ausgestattet werden, welches auf den Request-Pfad passen müssen, damit der Filter ausgeführt wird:
+Filter können optional auch mit einem Pattern ausgestattet werden, welche auf den Request-Pfad passen müssen, damit der Filter ausgeführt wird:
 
   before '/protected/*' do
     authenticate!
@@ -567,7 +567,7 @@ Filter können optional auch mit einem Pattern ausgestattet werden, welches auf 
 
 == Anhalten
 
-Zum sofortigen stoppen eines Request in einen Filter oder einer Route:
+Zum sofortigen stoppen eines Request in einem Filter oder einer Route:
 
   halt
 
@@ -612,14 +612,14 @@ Wird einmal beim Starten in jedweder Umgebung ausgeführt:
     ...
   end
 
-Läuft nurm wenn die Umgebung (RACK_ENV Umgebungsvariable) auf
+Läuft nur, wenn die Umgebung (RACK_ENV Umgebungsvariable) auf
 <tt>:production</tt> gesetzt ist:
 
   configure :production do
     ...
   end
 
-Läuft nur wenn die Umgebung auf <tt>:production</tt> oder auf <tt>:test</tt>
+Läuft nur, wenn die Umgebung auf <tt>:production</tt> oder auf <tt>:test</tt>
 gesetzt ist:
 
   configure :production, :test do
@@ -634,16 +634,16 @@ verwendet werden können.
 
 === Nicht gefunden
 
-Wenn eine <tt>Sinatra::NotFound</tt> Exception geworfen wird oder der Statuscode 404ist, wird der <tt>not_found</tt> Handler ausgeführt:
+Wenn eine <tt>Sinatra::NotFound</tt> Exception geworfen wird oder der Statuscode 404 ist, wird der <tt>not_found</tt> Handler ausgeführt:
 
   not_found do
-    'Kann nirgendwo gefunden werden.'
+    'Seite kann nirgendwo gefunden werden.'
   end
 
 === Fehler
 
-Der +error+ Handler wird immer ausgeführt wenn eine Exception in einem Routenblock
-oder in einen Filter geworfen wurde. Doe Exception kann über die
+Der +error+ Handler wird immer ausgeführt, wenn eine Exception in einem Routenblock
+oder in einen Filter geworfen wurde. Die Exception kann über die
 <tt>sinatra.error</tt> Rack-Variable angesprochen werden:
 
   error do
@@ -652,14 +652,14 @@ oder in einen Filter geworfen wurde. Doe Exception kann über die
 
 Benutzerdefinierte Fehler:
 
-  error MyCustomError do
+  error MeinFehler do
     'Was passiert ist...' + request.env['sinatra.error'].message
   end
 
 Dann, wenn das passiert:
 
   get '/' do
-    raise MyCustomError, 'etwas schlechtes'
+    raise MeinFehler, 'etwas schlechtes'
   end
 
 Bekommt man dieses:
@@ -699,37 +699,37 @@ Es kann aber auch der +content_type+ Helfer verwendet werden:
 
 == Rack Middleware
 
-Sinatra baut auf Rack[http://rack.rubyforge.org/], einen minimales Standardinterface für Ruby Webframeworks. Eines der ainteressantesten
+Sinatra baut auf Rack[http://rack.rubyforge.org/], einem minimalen Standardinterface für Ruby Webframeworks. Eines der interessantesten
 Features für Entwickler ist der Support von Middleware, die
 zwischen den Server und die Anwendung geschaltet wird und so HTTP
-Request und/order Antwort überwachen und/oder manipulieren kann.
+Request und/oder Antwort überwachen und/oder manipulieren kann.
 
 Sinatra macht das erstellen von Middleware-Verkettungen mit der Top-Level
 Methode +use+ zu einem Kinderspiel:
 
   require 'sinatra'
-  require 'my_custom_middleware'
+  require 'meine_middleware'
 
   use Rack::Lint
-  use MyCustomMiddleware
+  use MeineMiddleware
 
   get '/hallo' do
     'Hallo Welt'
   end
 
-Die Semantik von +use+ mit identisch mit der gleichnamigen Methode der
+Die Semantik von +use+ entspricht der gleichnamigen Methode der
 Rack::Builder[http://rack.rubyforge.org/doc/classes/Rack/Builder.html] DSL
 (meist verwendet in Rackup-Dateien). Ein Beispiel dafür ist, dass die
 +use+-Methode mehrere/verschiedene Argumente und auch Blöcke entgegen nimmt:
 
   use Rack::Auth::Basic do |username, password|
-    username == 'admin' && password == 'secret'
+    username == 'admin' && password == 'geheim'
   end
 
-Rack bietet eine Vielzahl von Standard Middleware für Logging, Debugging,
+Rack bietet eine Vielzahl von standard Middleware für Logging, Debugging,
 URL-Routing, Authentifizierung und Session-Verarbeitung.
 Sinatra verwendet viele von diesen Komponenten automatisch, abhängig von der
-Konfiguration, so muss man häufig +use+ nicht explizit verwenden.
+Konfiguration. So muss man häufig +use+ nicht explizit verwenden.
 
 == Testen
 
@@ -767,13 +767,13 @@ Klasse werden seit Version 0.9.2 nicht mehr unterstützt.
 
 == Sinatra::Base - Middleware, Bibliotheken, und modulare Anwendungen
 
-Das Definitieren einer Top-Level Anwendung  funktioniert gut für
-Microanwendungen, hat aber Nachteile wenn man wiederverwendbare Komponenten
+Das Definitieren einer Top-Level Anwendung funktioniert gut für
+Microanwendungen, hat aber Nachteile, wenn man wiederverwendbare Komponenten
 wie Middleware, Rails Metal, einfache Bibliotheken mit Server Komponenten
 oder auch Sinatra Erweiterungen bauen will.
-Die Top-Level DSL belastet den Objekt-Namespace und setzt einen Microanwendungsstil voraus (ein einzelne Anwendungsdatei, ./public und ./views
-Ordner, Logging, Exception-Detail-Seite, usw). Genau hier kommt Sinatra::Base
-in das Spiel:
+Die Top-Level DSL belastet den Objekt-Namespace und setzt einen Microanwendungsstil voraus (eine einzelne Anwendungsdatei, ./public und ./views
+Ordner, Logging, Exception-Detail-Seite, usw.). Genau hier kommt Sinatra::Base
+ins Spiel:
 
   require 'sinatra/base'
 
@@ -786,7 +786,7 @@ in das Spiel:
     end
   end
 
-Die MyApp-Klasse ist eine unabhängige Rack-Komponente die als Middleware,
+Die MyApp-Klasse ist eine unabhängige Rack-Komponente, die als Middleware,
 Endpunkt oder via Rails Metal verwendet werden kann. Verwendet wird sie durch
 +use+ oder +run+ von einer Rackup +config.ru+ Datei oder als Serverkomponente
 einer Bibliothek:
@@ -798,32 +798,32 @@ der Top-Level DSL. Die meisten Top-Level Anwendungen können mit nur zwei Verän
 
 * Die Datei sollte <tt>require 'sinatra/base'</tt> anstelle von
   <tt>require 'sinatra/base'</tt> aufrufen, ansonsten werden alle von
-  Sinatra's DSL Methoden in den Top-Level- Namespace importiert.
+  Sinatras DSL Methoden in den Top-Level- Namespace importiert.
 * Alle Routen, Error Handler, Filter und Optionen der Applikation müssen in
-  einer Subklass von Sinatra::Base definiert werden.
+  einer Subklasse von Sinatra::Base definiert werden.
 
-+Sinatra::Base+ ist ein unbeschriebense Blatt. Die meisten Optionen sind per default deaktiviert, das betrifft auch den eingebauten Server. Siehe {Optionen und Konfiguration}[http://sinatra.github.com/configuration.html] für Details über möglichen Optionen.
++Sinatra::Base+ ist ein unbeschriebense Blatt. Die meisten Optionen sind per default deaktiviert. Das betrifft auch den eingebauten Server. Siehe {Optionen und Konfiguration}[http://sinatra.github.com/configuration.html] für Details über möglichen Optionen.
 
 SIDEBAR: Sinatras Top-Level DSL-Methoden sind als einfache Delegationen
 implementiert. Die Sinatra::Application-Klasse -- eine spezielle Subklasse von
 Sinatra::Base -- erhält alle :get, :put, :post, :delete, :before, :error,
-:not_found, :configure und :set Meldungen die vom Top-Level aus gesendet
+:not_found, :configure und :set Meldungen, die vom Top-Level aus gesendet
 werden. Schau am besten im Code nach: Hier ist {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/base.rb#L1064] definiert und wird in den {globalen Namespace eingebunden}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/main.rb#L25].
 
 == Kommandozeile
 
-Sinatra Anwendungen können direkt gestartet werden:
+Sinatra Anwendungen können direkt von der Kommandozeile aus gestartet werden:
 
   ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-h HOST] [-s HANDLER]
 
 Die Optionen sind:
 
   -h # Hilfe
-  -p # Den Port setzen (Standard ist 4567)
-  -h # Den Host setzen (Standard ist 0.0.0.0)
-  -e # Die Umgebung setzen (Standard ist development)
-  -s # rack server/handler setzen (Standard ist thin)
-  -x # mutex lock einschalten (Standard ist off)
+  -p # Port setzen (Standard ist 4567)
+  -h # Host setzen (Standard ist 0.0.0.0)
+  -e # Umgebung setzen (Standard ist development)
+  -s # Rack Server/Handler setzen (Standard ist thin)
+  -x # Mutex lock einschalten (Standard ist off)
 
 == Der neueste Stand (The Bleeding Edge)
 
@@ -843,10 +843,10 @@ der Anwendung hinzugefügt werden:
   require 'sinatra'
 
   get '/ueber' do
-    "Ich laufe mit Version " + Sinatra::VERSION
+    "Ich laufe auf Version " + Sinatra::VERSION
   end
 
-Um Sinatra Code in der Zukunft zu aktualisieren:
+Um Sinatra Code von Zeit zu Zeit zu aktualisieren:
 
   cd myproject/sinatra
   git pull
