@@ -342,7 +342,7 @@ Note that you may also call the markdown method from within other templates:
 
 The RedCloth gem/library is required to render Textile templates:
 
-  ## You'll need to require rdiscount in your app
+  ## You'll need to require redcloth in your app
   require "redcloth"
 
   get '/' do
@@ -364,7 +364,7 @@ Note that you may also call the textile method from within other templates:
 
 The RDoc gem/library is required to render RDoc templates:
 
-  ## You'll need to require rdiscount in your app
+  ## You'll need to require rdoc in your app
   require "rdoc"
 
   get '/' do
