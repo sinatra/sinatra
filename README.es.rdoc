@@ -6,6 +6,7 @@ esfuerzo:
 
   # miapp.rb
   require 'sinatra'
+
   get '/' do
     'Hola mundo!'
   end
@@ -81,6 +82,8 @@ O con un parámetro de bloque:
     "Hola, #{c}!"
   end
 
+=== Condiciones
+
 Las rutas pueden incluir una variedad de condiciones de selección, como por
 ejemplo el user agent:
 
@@ -91,6 +94,57 @@ ejemplo el user agent:
   get '/foo' do
     # Coincide con browsers que no sean songbird
   end
+
+Otras condiciones disponibles son +host_name+ y +provides+:
+
+  get '/', :host_name => /^admin\./ do
+    "Área de Administración, Acceso denegado!"
+  end
+
+  get '/', :provides => 'html' do
+    haml :index
+  end
+
+  get '/', :provides => ['rss', 'atom', 'xml'] do
+    builder :feed
+  end
+
+Podés definir tus propias condiciones fácilmente:
+
+  set(:probabilidad) { |valor| condition { rand <= valor } }
+
+  get '/gana_un_auto', :probabilidad => 0.1 do
+    "Ganaste!"
+  end
+
+  get '/gana_un_auto' do
+    "Lo siento, perdiste."
+  end
+
+=== Valores de retorno
+
+El valor de retorno de un bloque de ruta determina al menos el cuerpo de la
+respuesta que se le pasa al cliente HTTP o al siguiente middleware en la pila
+de Rack. Lo más común es que sea un string, como en los ejemplos anteriores.
+Sin embargo, otros valor también son aceptados.
+
+Podés devolver cualquier objeto que sea una respuesta Rack válida, un objeto
+que represente el cuerpo de una respuesta Rack o un código de estado HTTP:
+
+* Un arreglo con tres elementos: <tt>[estado (Fixnum), cabeceras (Hash), cuerpo de la respuesta (responde a #each)]</tt>
+* Un arreglo con dos elementos: <tt>[estado (Fixnum), cuerpo de la respuesta (responde a #each)]</tt>
+* Un objeto que responde a <tt>#each</tt> y que le pasa únicamente strings al bloque dado
+* Un Fixnum representando el código de estado
+
+De esa manera podemos, por ejemplo, implementar fácilmente un streaming:
+
+    class Stream
+      def each
+        100.times { |i| yield "#{i}\n" }
+      end
+    end
+
+    get('/') { Stream.new }
 
 == Archivos estáticos
 
@@ -113,8 +167,9 @@ Se asume que las plantillas están ubicadas directamente bajo el directorio
 
 Es importante acordarse que siempre tenés que referenciar a las plantillas con
 símbolos, incluso cuando se encuentran en un subdirectorio (en este caso tenés
-que usar <tt>:'subdir/plantilla'</tt>). Los métodos de renderización van a
-renderizar directamente cualquier string que se les pase como argumento.
+que usar <tt>:'subdir/plantilla'</tt>). Tenés que usar un símbolo porque los
+métodos de renderización van a renderizar directamente cualquier string que se
+les pase como argumento.
 
 === Plantillas Haml
 
@@ -204,6 +259,32 @@ y reemplazadas individualmente.
     sass :stylesheet, :style => :expanded # reemplazado
   end
 
+=== Plantillas Scss
+
+La gem/librería sass es necesaria para renderizar plantillas Scss:
+
+  ## Vas a necesitar requerir haml o sass en tu app
+  require 'sass'
+
+  get '/stylesheet.css' do
+    content_type 'text/css', :charset => 'utf-8'
+    scss :stylesheet
+  end
+
+Renderiza <tt>./views/stylesheet.scss</tt>.
+
+Las {opciones de Scss}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
+pueden ser ajustadas globalmente a través de las configuraciones de Sinatra,
+ver {Opciones y Configuraciones}[http://www.sinatrarb.com/configuration.html],
+y reemplazadas individualmente.
+
+  set :scss, :style => :compact # el estilo por defecto de Sass es :nested
+
+  get '/stylesheet.css' do
+    content_type 'text/css', :charset => 'utf-8'
+    scss :stylesheet, :style => :expanded # reemplazado
+  end
+
 === Plantillas Less
 
 La gem/librería less es necesaria para renderizar plantillas Less:
@@ -217,6 +298,143 @@ La gem/librería less es necesaria para renderizar plantillas Less:
   end
 
 Renderiza <tt>./views/stylesheet.less</tt>.
+
+=== Plantillas Liquid
+
+La gem/librería liquid es necesaria para renderizar plantillas Liquid:
+
+  ## Vas a necesitar requerir liquid en tu app
+  require 'liquid'
+
+  get '/' do
+    liquid :index
+  end
+
+Renderiza <tt>./views/index.liquid</tt>.
+
+Como no vas a poder llamar a métodos de Ruby (excepto a +yield+) desde una
+plantilla Liquid, casi siempre vas a querer pasarle locales:
+
+  liquid :index, :locals => { :clave => 'valor' }
+
+=== Plantillas Markdown
+
+La gem/librería rdiscount es necesaria para renderizar plantillas Markdown:
+
+  ## Vas a necesitar requerir rdiscount en tu app
+  require "rdiscount"
+
+  get '/' do
+    markdown :index
+  end
+
+Renderiza <tt>./views/index.markdown</tt> (+md+ y +mkd+ también son extensiones
+de archivo válidas).
+
+No es posible llamar métodos desde markdown, ni pasarle locales. Por lo tanto,
+generalmente vas a usarlo en combinación con otro motor de renderizado:
+
+  erb :resumen, :locals => { :texto => markdown(:introduccion) }
+
+Tené en cuenta que también podés llamar al método markdown desde otras
+plantillas:
+
+  %h1 Hola Desde Haml!
+  %p= markdown(:saludos)
+
+=== Plantilla Textile
+
+La gem/librería RedCloth es necesaria para renderizar plantillas Textile:
+
+  ## Vas a necesitar requerir redcloth en tu app
+  require "redcloth"
+
+  get '/' do
+    textile :index
+  end
+
+Renderiza <tt>./views/index.textile</tt>.
+
+No es posible llamar métodos desde textile, ni pasarle locales. Por lo tanto,
+generalmente vas a usarlo en combinación con otro motor de renderizado:
+
+  erb :resumen, :locals => { :texto => textile(:introduccion) }
+
+Tené en cuenta que también podés llamar al método textile desde otras
+plantillas:
+
+  %h1 Hola Desde Haml!
+  %p= textile(:saludos)
+
+=== Plantillas RDoc
+
+La gem/librería RDoc es necesaria para renderizar plantillas RDoc:
+
+  ## Vas a necesitar requerir rdoc en tu app
+  require "rdoc"
+
+  get '/' do
+    rdoc :index
+  end
+
+Renderiza <tt>./views/index.rdoc</tt>.
+
+No es posible llamar métodos desde rdoc, ni pasarle locales. Por lo tanto,
+generalmente vas a usarlo en combinación con otro motor de renderizado:
+
+  erb :resumen, :locals => { :texto => rdoc(:introduccion) }
+
+Tené en cuenta que también podés llamar al método rdoc desde otras
+plantillas:
+
+  %h1 Hola Desde Haml!
+  %p= rdoc(:saludos)
+
+=== Plantillas Radius
+
+La gem/librería radius es necesaria para renderizar plantillas Radius:
+
+  ## Vas a necesitar requerir radius en tu app
+  require 'radius'
+
+  get '/' do
+    radius :index
+  end
+
+Renderiza <tt>./views/index.radius</tt>.
+
+Como no vas a poder llamar a métodos de Ruby (excepto a +yield+) desde una
+plantilla Radius, casi siempre vas a querer pasarle locales:
+
+  radius :index, :locals => { :clave => 'valor' }
+
+=== Plantillas Markaby
+
+La gem/librería markaby es necesaria para renderizar plantillas Markaby:
+
+  ## Vas a necesitar requerir markaby en tu app
+  require 'markaby'
+
+  get '/' do
+    markaby :index
+  end
+
+Renderiza <tt>./views/index.mab</tt>.
+
+=== Plantillas CoffeeScript
+
+La gem/librería coffee-script y el binario `coffee` son necesarios para
+renderizar plantillas CoffeeScript:
+
+  ## Vas a necesitar requerir coffee-script en tu app
+  require 'coffee-script'
+
+  get '/application.js' do
+    content_type 'text/javascript', :charset => 'utf-8'
+    coffee :application
+  end
+
+Renderiza <tt>./views/application.coffee</tt>.
 
 === Plantillas Inline
 
@@ -269,7 +487,7 @@ Las plantillas pueden ser definidas al final del archivo fuente:
 
 NOTA: únicamente las plantillas inline definidas en el archivo fuente que
 requiere sinatra son cargadas automáticamente. Llamá
-`enable :inline_templates` explícitamente si tenés plantillas inline en otros
++enable :inline_templates+ explícitamente si tenés plantillas inline en otros
 archivos fuente.
 
 === Plantillas Nombradas
@@ -314,10 +532,10 @@ pueden ser utilizados dentro de los manejadores de rutas y las plantillas:
 
 == Filtros
 
-Los filtros before son evaluados antes de cada petición dentro del contexto de
-la petición y pueden modificar la petición y la respuesta. Las variables de
-instancia asignadas en los filtros son accesibles por las rutas y las
-plantillas:
+Los filtros before son evaluados antes de cada petición dentro del mismo
+contexto que las rutas serán evaluadas y pueden modificar la petición y la
+respuesta. Las variables de instancia asignadas en los filtros son accesibles
+por las rutas y las plantillas:
 
   before do
     @nota = 'Hey!'
@@ -329,10 +547,10 @@ plantillas:
     params[:splat] #=> 'bar/baz'
   end
 
-Los filtros After son evaluados después de cada petición dentro del contexto de
-la petición y también pueden modificar la petición y la respuesta. Las
-variables de instancia asignadas en los filtros before y rutas son accesibles
-por los filtros after:
+Los filtros after son evaluados después de cada petición dentro del mismo
+contexto y también pueden modificar la petición y la respuesta. Las variables
+de instancia asignadas en los filtros before y rutas son accesibles por los
+filtros after:
 
   after do
     puts response.status
@@ -356,19 +574,19 @@ Para detener inmediatamente una petición dentro de un filtro o una ruta usá:
 
   halt
 
-También podés especificar el estado ...
+También podés especificar el estado:
 
   halt 410
 
-O el cuerpo ...
+O el cuerpo:
 
   halt 'esto va a ser el cuerpo'
 
-O los dos ...
+O los dos:
 
   halt 401, 'salí de acá!'
 
-Con encabezados ...
+Con cabeceras:
 
   halt 402, { 'Content-Type' => 'text/plain' }, 'venganza'
 
@@ -525,6 +743,7 @@ cualquier framework o librería de pruebas basada en Rack. Se recomienda usar
 {Rack::Test}[http://gitrdoc.com/brynary/rack-test]:
 
   require 'mi_app_sinatra'
+  require 'test/unit'
   require 'rack/test'
 
   class MiAppTest < Test::Unit::TestCase
@@ -557,7 +776,7 @@ deprecados a partir de la versión 0.9.2.
 
 Definir tu aplicación en el top-level funciona bien para micro-aplicaciones
 pero trae inconvenientes considerables a la hora de construir componentes
-reusables como Rack middleware, Rails metal, simple librerías con un
+reutilizables como Rack middleware, Rails metal, simple librerías con un
 componente de servidor, o incluso extensiones de Sinatra. El DSL de top-level
 contamina el espacio de nombres de Object y asume una configuración apropiada
 para micro-aplicaciones (por ejemplo, un único archivo de aplicación, los
@@ -598,13 +817,127 @@ desactivadas por defecto, incluyendo el servidor incorporado. Mirá
 {Opciones y Configuraciones}[http://sinatra.github.com/configuration.html]
 para detalles sobre las opciones disponibles y su comportamiento.
 
-NOTA AL MÁRGEN: el DSL de top-level de Sinatra es implementado usando un
-simple sistema de delegación. La clase +Sinatra::Application+ -- una subclase
-especial de Sinatra::Base -- recive todos los mensajes :get, :put, :post,
-:delete, :before, :error, :not_found, :configure y :set enviados al top-level.
+=== Utilizando Sinatra como Middleware
+
+Sinatra no solo es capaz de usar otro Rack middleware, sino que a su vez,
+cualquier aplicación Sinatra puede ser agregada delante de un endpoint Rack
+como middleware. Este endpoint puede ser otra aplicación Sinatra, o cualquier
+aplicación basada en Rack (Rails/Ramaze/Camping/...).
+
+  require 'sinatra/base'
+
+  class PantallaDeLogin< Sinatra::Base
+    enable :session
+
+    get('/login') { haml :login }
+
+    post('/login') do
+      if params[:nombre] = 'admin' and params[:password] = 'admin'
+        session['nombre_de_usuario'] = params[:nombre]
+      else
+        redirect '/login'
+      end
+    end
+  end
+
+  class MiApp < Sinatra::Base
+    # el middleware se ejecutará antes que los filtros
+    use PantallaDeLogin
+
+    before do
+      unless session['nombre_de_usuario']
+        halt "Acceso denegado, por favor <a href='/login'>iniciá sesión</a>."
+      end
+    end
+
+    get('/') { "Hola #{session['nombre_de_usuario']}." }
+  end
+
+== Ámbitos y Ligaduras
+
+El ámbito en el que te encontrás determina que métodos y variables están
+disponibles.
+
+=== Ámbito de Aplicación/Clase
+
+Cada aplicación Sinatra es una subclase de Sinatra::Base. Si estás usando el
+DSL de top-level (<tt>require 'sinatra'</tt>), entonces esta clase es
+Sinatra::Application, de otra manera es la subclase que creaste explícitamente.
+Al nivel de la clase tenés métodos como `get` o `before`, pero no podés acceder
+a los objetos `request` o `session`, ya que hay una única clase de la
+aplicación para todas las peticiones.
+
+Las opciones creadas utilizando `set` son métodos al nivel de la clase:
+
+    class MiApp << Sinatra::Base
+      # Ey, estoy en el ámbito de la aplicación!
+      set :foo, 42
+      foo # => 42
+
+      get '/foo' do
+        # Hey, ya no estoy en el ámbito de la aplicación!
+      end
+    end
+
+Tenés la ligadura al ámbito de la aplicación dentro de:
+
+* El cuerpo de la clase de tu aplicación
+* Métodos definidos por extensiones
+* El bloque pasado a `helpers`
+* Procs/bloques usados como el valor para `set`
+
+Este ámbito puede alcanzarse de las siguientes maneras:
+
+* A través del objeto pasado a los bloques de configuración (<tt>configure { |c| ...}</tt>)
+* Llamando a `settings` desde dentro del ámbito de la petición
+
+=== Ámbito de Petición/Instancia
+
+Para cada petición entrante, una nueva instancia de la clase de tu aplicación
+es creada y todos los bloques de rutas son ejecutados en ese ámbito. Desde este
+ámbito podés acceder a los objetos `request` y `session` o llamar a los métodos
+de renderización como `erb` o `haml`. Podés acceder al ámbito de la aplicación
+desde el ámbito de la petición utilizando `settings`:
+
+  class MiApp << Sinatra::Base
+    # Ey, estoy en el ámbito de la aplicación!
+    get '/definir_ruta/:nombre' do
+      # Ámbito de petición para '/definir_ruta/:nombre'
+      @valor = 42
+
+      settings.get("/#{params[:nombre]}") do
+        # Ámbito de petición para "/#{params[:nombre]}"
+        @valor # => nil (no es la misma petición)
+      end
+
+      "Ruta definida!"
+    end
+  end
+
+Tenés la ligadura al ámbito de la petición dentro de:
+
+* bloques pasados a get/head/post/put/delete
+* filtros before/after
+* métodos ayudantes
+* plantillas/vistas
+
+=== Ámbito de Delegación
+
+El ámbito de delegación solo reenvía métodos al ámbito de clase. De cualquier
+manera, no se comporta 100% como el ámbito de clase porque no tenés la ligadura
+de la clase: únicamente métodos marcados explícitamente para delegación están
+disponibles y no compartís variables/estado con el ámbito de clase (léase:
+tenés un `self` diferente). Podés agregar delegaciones de método llamando a
+<tt>Sinatra::Delegator.delegate :nombre_del_metodo</tt>.
+
+Tenés la ligadura al ámbito de delegación dentro de:
+
+* La ligadura del top-level, si hiciste <tt>require "sinatra"</tt>
+* Un objeto extendido con el mixin `Sinatra::Delegator`
+
 Pegale una mirada al código: acá está el
 {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
-que es {incluido en el espacio de nombres principal}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28]
+que es {incluido en el espacio de nombres principal}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28].
 
 == Línea de comandos
 
@@ -653,7 +986,7 @@ Para actualizar el código fuente de Sinatra en el futuro:
   adicional, noticias, y enlaces a otros recursos.
 * {Contribuyendo}[http://www.sinatrarb.com/contributing] - ¿Encontraste un
   error?. ¿Necesitás ayuda?. ¿Tenés un parche?.
-* {Issue tracker}[http://sinatra.lighthouseapp.com]
+* {Seguimiento de problemas}[http://github.com/sinatra/sinatra/issues]
 * {Twitter}[http://twitter.com/sinatra]
 * {Lista de Correo}[http://groups.google.com/group/sinatrarb/topics]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] en http://freenode.net
