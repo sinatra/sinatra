@@ -1028,7 +1028,7 @@ module Sinatra
         handler_name = handler.name.gsub(/.*::/, '')
         puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
           "on #{port} for #{environment} with backup from #{handler_name}" unless handler_name =~/cgi/i
-        handler.run self, :Host => bind, :Port => port do |server|
+		handler.run self, { :Host => bind, :Port => port }.merge(rack_handler_options) do |server|
           [:INT, :TERM].each { |sig| trap(sig) { quit!(server, handler_name) } }
           set :running, true
         end
@@ -1166,6 +1166,7 @@ module Sinatra
     set :run, false                       # start server via at-exit hook?
     set :running, false                   # is the built-in server running now?
     set :server, %w[thin mongrel webrick]
+    set :rack_handler_options, {}
     set :bind, '0.0.0.0'
     set :port, 4567
 
