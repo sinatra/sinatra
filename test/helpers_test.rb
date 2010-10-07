@@ -472,32 +472,79 @@ class HelpersTest < Test::Unit::TestCase
     [Time, DateTime].each do |klass|
       describe "with #{klass.name}" do
         setup do
-          now = klass.now
+          last_modified_time = klass.now
           mock_app do
             get '/' do
-              body { 'Hello World' }
-              last_modified now
+              last_modified last_modified_time
               'Boo!'
             end
           end
-          @now = Time.parse now.to_s
+          @last_modified_time = Time.parse last_modified_time.to_s
         end
 
-        it 'sets the Last-Modified header to a valid RFC 2616 date value' do
-          get '/'
-          assert_equal @now.httpdate, response['Last-Modified']
+        context "when there's no If-Modified-Since header" do
+          it 'sets the Last-Modified header to a valid RFC 2616 date value' do
+            get '/'
+            assert_equal @last_modified_time.httpdate, response['Last-Modified']
+          end
+
+          it 'conditional GET misses and returns a body' do
+            get '/'
+            assert_equal 200, status
+            assert_equal 'Boo!', body
+          end
         end
 
-        it 'returns a body when conditional get misses' do
-          get '/'
-          assert_equal 200, status
-          assert_equal 'Boo!', body
+        context "when there's an invalid If-Modified-Since header" do
+          it 'sets the Last-Modified header to a valid RFC 2616 date value' do
+            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'a really weird date' }
+            assert_equal @last_modified_time.httpdate, response['Last-Modified']
+          end
+
+          it 'conditional GET misses and returns a body' do
+            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'a really weird date' }
+            assert_equal 200, status
+            assert_equal 'Boo!', body
+          end
         end
 
-        it 'halts when a conditional GET matches' do
-          get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => @now.httpdate }
-          assert_equal 304, status
-          assert_equal '', body
+        context "when the resource has been modified since the If-Modified-Since header date" do
+          it 'sets the Last-Modified header to a valid RFC 2616 date value' do
+            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => (@last_modified_time - 1).httpdate }
+            assert_equal @last_modified_time.httpdate, response['Last-Modified']
+          end
+
+          it 'conditional GET misses and returns a body' do
+            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => (@last_modified_time - 1).httpdate }
+            assert_equal 200, status
+            assert_equal 'Boo!', body
+          end
+        end
+
+        context "when the resource has been modified on the exact If-Modified-Since header date" do
+          it 'sets the Last-Modified header to a valid RFC 2616 date value' do
+            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => @last_modified_time.httpdate }
+            assert_equal @last_modified_time.httpdate, response['Last-Modified']
+          end
+
+          it 'conditional GET matches and halts' do
+            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => @last_modified_time.httpdate }
+            assert_equal 304, status
+            assert_equal '', body
+          end
+        end
+
+        context "when the resource hasn't been modified since the If-Modified-Since header date" do
+          it 'sets the Last-Modified header to a valid RFC 2616 date value' do
+            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => (@last_modified_time + 1).httpdate }
+            assert_equal @last_modified_time.httpdate, response['Last-Modified']
+          end
+
+          it 'conditional GET matches and halts' do
+            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => (@last_modified_time + 1).httpdate }
+            assert_equal 304, status
+            assert_equal '', body
+          end
         end
       end
     end

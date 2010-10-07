@@ -246,16 +246,19 @@ module Sinatra
     # and halt if conditional GET matches. The +time+ argument is a Time,
     # DateTime, or other object that responds to +to_time+.
     #
-    # When the current request includes an 'If-Modified-Since' header that
-    # matches the time specified, execution is immediately halted with a
-    # '304 Not Modified' response.
+    # When the current request includes an 'If-Modified-Since' header that is
+    # equal or later than the time specified, execution is immediately halted
+    # with a '304 Not Modified' response.
     def last_modified(time)
       return unless time
       time = time.to_time if time.respond_to?(:to_time)
       time = Time.parse time.strftime('%FT%T%:z') if time.respond_to?(:strftime)
       time = time.httpdate if time.respond_to?(:httpdate)
       response['Last-Modified'] = time.to_s
-      halt 304 if time == request.env['HTTP_IF_MODIFIED_SINCE']
+      begin
+        halt 304 if time <= Time.httpdate(request.env['HTTP_IF_MODIFIED_SINCE']).httpdate
+      rescue ArgumentError
+      end
       time
     end
 
