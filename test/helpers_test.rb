@@ -482,6 +482,9 @@ class HelpersTest < Test::Unit::TestCase
           @last_modified_time = Time.parse last_modified_time.to_s
         end
 
+        # fixes strange missing test error when running complete test suite.
+        it("does not complain about missing tests") { }
+
         context "when there's no If-Modified-Since header" do
           it 'sets the Last-Modified header to a valid RFC 2616 date value' do
             get '/'
