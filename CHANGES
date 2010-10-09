@@ -20,7 +20,7 @@
    accepts any Enumerable as parameter. (Simon Rozet)
 
  * README is now available in French (Mickael Riga), German (Bernhard Essl,
-   Konstantin Haase) and Spanish (Gabriel Andretta).
+   Konstantin Haase, burningTyger) and Spanish (Gabriel Andretta).
 
  * It is now possible to access Sinatra's template_cache from the outside.
    (Nick Sutterer)
@@ -38,6 +38,11 @@
    this is due to a bug in 1.8.6 and request will have the additional overhead
    of parsing templates again on that version. It is recommended to use at
    least Ruby 1.8.7. (Konstantin Haase)
+
+ * Compares last modified date correctly. `last_modified` was halting only
+   when the 'If-Modified-Since' header date was equal to the time specified.
+   Now, it halts when is equal or later than the time specified (Gabriel
+   Andretta).
 
  * Sinatra is now usable in combination with Rails 3. When mounting a Sinatra
    application under a subpath in Rails 3, the PATH_INFO is not prefixed with

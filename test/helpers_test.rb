@@ -291,21 +291,21 @@ class HelpersTest < Test::Unit::TestCase
       }
 
       get '/'
-      assert_equal 'text/plain', response['Content-Type']
+      assert_equal 'text/plain;charset=utf-8', response['Content-Type']
       assert_equal 'Hello World', body
     end
 
     it 'takes media type parameters (like charset=)' do
       mock_app {
         get '/' do
-          content_type 'text/html', :charset => 'utf-8'
+          content_type 'text/html', :charset => 'latin1'
           "<h1>Hello, World</h1>"
         end
       }
 
       get '/'
       assert ok?
-      assert_equal 'text/html;charset=utf-8', response['Content-Type']
+      assert_equal 'text/html;charset=latin1', response['Content-Type']
       assert_equal "<h1>Hello, World</h1>", body
     end
 
@@ -320,7 +320,7 @@ class HelpersTest < Test::Unit::TestCase
 
       get '/foo.xml'
       assert ok?
-      assert_equal 'application/foo', response['Content-Type']
+      assert_equal 'application/foo;charset=utf-8', response['Content-Type']
       assert_equal 'I AM FOO', body
     end
 
@@ -366,19 +366,19 @@ class HelpersTest < Test::Unit::TestCase
     it 'sets the Content-Type response header if a mime-type can be located' do
       send_file_app
       get '/file.txt'
-      assert_equal 'text/plain', response['Content-Type']
+      assert_equal 'text/plain;charset=utf-8', response['Content-Type']
     end
 
     it 'sets the Content-Type response header if type option is set to a file extesion' do
       send_file_app :type => 'html'
       get '/file.txt'
-      assert_equal 'text/html', response['Content-Type']
+      assert_equal 'text/html;charset=utf-8', response['Content-Type']
     end
 
     it 'sets the Content-Type response header if type option is set to a mime type' do
       send_file_app :type => 'application/octet-stream'
       get '/file.txt'
-      assert_equal 'application/octet-stream', response['Content-Type']
+      assert_equal 'application/octet-stream;charset=utf-8', response['Content-Type']
     end
 
     it 'sets the Content-Length response header' do
@@ -472,32 +472,82 @@ class HelpersTest < Test::Unit::TestCase
     [Time, DateTime].each do |klass|
       describe "with #{klass.name}" do
         setup do
-          now = klass.now
+          last_modified_time = klass.now
           mock_app do
             get '/' do
-              body { 'Hello World' }
-              last_modified now
+              last_modified last_modified_time
               'Boo!'
             end
           end
-          @now = Time.parse now.to_s
+          @last_modified_time = Time.parse last_modified_time.to_s
         end
 
-        it 'sets the Last-Modified header to a valid RFC 2616 date value' do
-          get '/'
-          assert_equal @now.httpdate, response['Last-Modified']
+        # fixes strange missing test error when running complete test suite.
+        it("does not complain about missing tests") { }
+
+        context "when there's no If-Modified-Since header" do
+          it 'sets the Last-Modified header to a valid RFC 2616 date value' do
+            get '/'
+            assert_equal @last_modified_time.httpdate, response['Last-Modified']
+          end
+
+          it 'conditional GET misses and returns a body' do
+            get '/'
+            assert_equal 200, status
+            assert_equal 'Boo!', body
+          end
         end
 
-        it 'returns a body when conditional get misses' do
-          get '/'
-          assert_equal 200, status
-          assert_equal 'Boo!', body
+        context "when there's an invalid If-Modified-Since header" do
+          it 'sets the Last-Modified header to a valid RFC 2616 date value' do
+            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'a really weird date' }
+            assert_equal @last_modified_time.httpdate, response['Last-Modified']
+          end
+
+          it 'conditional GET misses and returns a body' do
+            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'a really weird date' }
+            assert_equal 200, status
+            assert_equal 'Boo!', body
+          end
         end
 
-        it 'halts when a conditional GET matches' do
-          get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => @now.httpdate }
-          assert_equal 304, status
-          assert_equal '', body
+        context "when the resource has been modified since the If-Modified-Since header date" do
+          it 'sets the Last-Modified header to a valid RFC 2616 date value' do
+            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => (@last_modified_time - 1).httpdate }
+            assert_equal @last_modified_time.httpdate, response['Last-Modified']
+          end
+
+          it 'conditional GET misses and returns a body' do
+            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => (@last_modified_time - 1).httpdate }
+            assert_equal 200, status
+            assert_equal 'Boo!', body
+          end
+        end
+
+        context "when the resource has been modified on the exact If-Modified-Since header date" do
+          it 'sets the Last-Modified header to a valid RFC 2616 date value' do
+            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => @last_modified_time.httpdate }
+            assert_equal @last_modified_time.httpdate, response['Last-Modified']
+          end
+
+          it 'conditional GET matches and halts' do
+            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => @last_modified_time.httpdate }
+            assert_equal 304, status
+            assert_equal '', body
+          end
+        end
+
+        context "when the resource hasn't been modified since the If-Modified-Since header date" do
+          it 'sets the Last-Modified header to a valid RFC 2616 date value' do
+            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => (@last_modified_time + 1).httpdate }
+            assert_equal @last_modified_time.httpdate, response['Last-Modified']
+          end
+
+          it 'conditional GET matches and halts' do
+            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => (@last_modified_time + 1).httpdate }
+            assert_equal 304, status
+            assert_equal '', body
+          end
         end
       end
     end
