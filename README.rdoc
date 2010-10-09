@@ -225,7 +225,6 @@ The builder gem/library is required to render builder templates:
   require 'builder'
 
   get '/' do
-    content_type 'application/xml', :charset => 'utf-8'
     builder :index
   end
 
@@ -239,7 +238,6 @@ The sass gem/library is required to render Sass templates:
   require 'sass'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     sass :stylesheet
   end
 
@@ -253,7 +251,6 @@ and overridden on an individual basis.
   set :sass, :style => :compact # default Sass style is :nested
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     sass :stylesheet, :style => :expanded # overridden
   end
 
@@ -265,7 +262,6 @@ The sass gem/library is required to render Scss templates:
   require 'sass'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     scss :stylesheet
   end
 
@@ -279,7 +275,6 @@ and overridden on an individual basis.
   set :scss, :style => :compact # default Scss style is :nested
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     scss :stylesheet, :style => :expanded # overridden
   end
 
@@ -291,7 +286,6 @@ The less gem/library is required to render Less templates:
   require 'less'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     less :stylesheet
   end
 
@@ -422,7 +416,6 @@ CoffeeScript templates:
   require 'coffee-script'
 
   get '/application.js' do
-    content_type 'text/javascript', :charset => 'utf-8'
     coffee :application
   end
 

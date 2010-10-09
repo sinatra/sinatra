@@ -229,7 +229,6 @@ Das buidler gem wird benötigt, um Builder-Templates rendern zu können:
   require 'builder'
 
   get '/' do
-    content_type 'application/xml', :charset => 'utf-8'
     builder :index
   end
 
@@ -243,7 +242,6 @@ Das haml gem wird benötigt, um SASS-Templates rendern zu können:
   require 'sass'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     sass :stylesheet
   end
 
@@ -257,7 +255,6 @@ und individuell überschrieben werden.
   set :sass, :style => :compact # Standard Sass-Style ist :nested
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     sass :stylesheet, :style => :expanded # überschrieben
   end
 
@@ -269,7 +266,6 @@ Das haml gem wird benötigt, um SCSS-Templates rendern zu können:
   require 'sass'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     scss :stylesheet
   end
 
@@ -283,7 +279,6 @@ und individuell überschrieben werden.
   set :scss, :style => :compact # Standard Scss-Style ist :nested
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     scss :stylesheet, :style => :expanded # überschrieben
   end
 
@@ -295,7 +290,6 @@ Das less gem wird benötigt, um Less-Templates rendern zu können:
   require 'less'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     less :stylesheet
   end
 
@@ -434,7 +428,6 @@ Das coffee-script gem und das `coffee`-Programm werden benötigt, um CoffeScript
   require 'coffee-script'
 
   get '/application.js' do
-    content_type 'text/javascript', :charset => 'utf-8'
     coffee :application
   end
 

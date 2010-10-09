@@ -15,9 +15,11 @@ class TestTemplate < Tilt::Template
 end
 
 class TemplatesTest < Test::Unit::TestCase
-  def render_app(base=Sinatra::Base, &block)
+  def render_app(base=Sinatra::Base, options = {}, &block)
+    base, options = Sinatra::Base, base if base.is_a? Hash
     mock_app(base) {
       set :views, File.dirname(__FILE__) + '/views'
+      set options
       get '/', &block
       template(:layout3) { "Layout 3!\n" }
     }
@@ -78,6 +80,27 @@ class TemplatesTest < Test::Unit::TestCase
     assert_equal "Layout 3!\nHello World!\n", body
   end
 
+  it 'avoids wrapping layouts around nested templates' do
+    render_app { render :str, :nested, :layout => :layout2 }
+    assert ok?
+    assert_equal "<h1>String Layout!</h1>\n<content><h1>Hello From String</h1></content>", body
+  end
+
+  it 'allows explicitly wrapping layouts around nested templates' do
+    render_app { render :str, :explicitly_nested, :layout => :layout2 }
+    assert ok?
+    assert_equal "<h1>String Layout!</h1>\n<content><h1>String Layout!</h1>\n<h1>Hello From String</h1></content>", body
+  end
+
+  it 'two independent render calls do not disable layouts' do
+    render_app do
+      render :str, :explicitly_nested, :layout => :layout2
+      render :str, :nested, :layout => :layout2
+    end
+    assert ok?
+    assert_equal "<h1>String Layout!</h1>\n<content><h1>Hello From String</h1></content>", body
+  end
+
   it 'loads templates from source file' do
     mock_app { enable :inline_templates }
     assert_equal "this is foo\n\n", @app.templates[:foo][0]
@@ -133,6 +156,24 @@ class TemplatesTest < Test::Unit::TestCase
     render_app(base) { render :test, :foo }
     assert ok?
     assert_equal 'bar', body
+  end
+
+  it 'allows setting default content type per template engine' do
+    render_app(:str => { :content_type => :txt }) { render :str, 'foo' }
+    assert_equal 'text/plain;charset=utf-8', response['Content-Type']
+  end
+
+  it 'setting default content type does not affect other template engines' do
+    render_app(:str => { :content_type => :txt }) { render :test, 'foo' }
+    assert_equal 'text/html;charset=utf-8', response['Content-Type']
+  end
+
+  it 'setting default content type per template engine does not override content_type' do
+    render_app :str => { :content_type => :txt } do
+      content_type :html
+      render :str, 'foo'
+    end
+    assert_equal 'text/html;charset=utf-8', response['Content-Type']
   end
 
   it 'uses templates in superclasses before subclasses' do

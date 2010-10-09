@@ -4,9 +4,10 @@ begin
 require 'sass'
 
 class SassTest < Test::Unit::TestCase
-  def sass_app(&block)
+  def sass_app(options = {}, &block)
     mock_app {
       set :views, File.dirname(__FILE__) + '/views'
+      set options
       get '/', &block
     }
     get '/'
@@ -16,6 +17,29 @@ class SassTest < Test::Unit::TestCase
     sass_app { sass "#sass\n  :background-color white\n" }
     assert ok?
     assert_equal "#sass {\n  background-color: white; }\n", body
+  end
+
+  it 'defaults content type to css' do
+    sass_app { sass "#sass\n  :background-color white\n" }
+    assert ok?
+    assert_equal "text/css;charset=utf-8", response['Content-Type']
+  end
+
+  it 'defaults allows setting content type per route' do
+    sass_app do
+      content_type :html
+      sass "#sass\n  :background-color white\n"
+    end
+    assert ok?
+    assert_equal "text/html;charset=utf-8", response['Content-Type']
+  end
+
+  it 'defaults allows setting content type globally' do
+    sass_app(:sass => { :content_type => 'html' }) do
+      sass "#sass\n  :background-color white\n"
+    end
+    assert ok?
+    assert_equal "text/html;charset=utf-8", response['Content-Type']
   end
 
   it 'renders .sass files in views path' do

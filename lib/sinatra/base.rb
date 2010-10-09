@@ -77,10 +77,12 @@ module Sinatra
     # evaluation is deferred until the body is read with #each.
     def body(value=nil, &block)
       if block_given?
-        def block.each ; yield call ; end
+        def block.each; yield(call) end
         response.body = block
-      else
+      elsif value
         response.body = value
+      else
+        response.body
       end
     end
 
@@ -137,6 +139,7 @@ module Sinatra
     def content_type(type, params={})
       mime_type = mime_type(type)
       fail "Unknown media type: %p" % type if mime_type.nil?
+      params[:charset] ||= defined?(Encoding) ? Encoding.default_external.to_s.downcase : 'utf-8'
       if params.any?
         params = params.collect { |kv| "%s=%s" % kv }.join(', ')
         response['Content-Type'] = [mime_type, params].join(";")
@@ -303,6 +306,10 @@ module Sinatra
   #   :locals       A hash with local variables that should be available
   #                 in the template
   module Templates
+    module ContentTyped
+      attr_accessor :content_type
+    end
+
     include Tilt::CompileSite
 
     def erb(template, options={}, locals={})
@@ -318,21 +325,22 @@ module Sinatra
     end
 
     def sass(template, options={}, locals={})
-      options[:layout] = false
+      options.merge! :layout => false, :default_content_type => :css
       render :sass, template, options, locals
     end
 
     def scss(template, options={}, locals={})
-      options[:layout] = false
+      options.merge! :layout => false, :default_content_type => :css
       render :scss, template, options, locals
     end
 
     def less(template, options={}, locals={})
-      options[:layout] = false
+      options.merge! :layout => false, :default_content_type => :css
       render :less, template, options, locals
     end
 
     def builder(template=nil, options={}, locals={}, &block)
+      options[:default_content_type] = :xml
       options, template = template, nil if template.is_a?(Hash)
       template = Proc.new { block } if template.nil?
       render :builder, template, options, locals
@@ -363,7 +371,7 @@ module Sinatra
     end
 
     def coffee(template, options={}, locals={})
-      options[:layout] = false
+      options.merge! :layout => false, :default_content_type => :js
       render :coffee, template, options, locals
     end
 
@@ -374,14 +382,19 @@ module Sinatra
       options[:outvar] ||= '@_out_buf'
 
       # extract generic options
-      locals = options.delete(:locals) || locals || {}
-      views = options.delete(:views) || settings.views || "./views"
-      layout = options.delete(:layout)
-      layout = :layout if layout.nil? || layout == true
+      locals          = options.delete(:locals) || locals         || {}
+      views           = options.delete(:views)  || settings.views || "./views"
+      @default_layout = :layout if @default_layout.nil?
+      layout          = options.delete(:layout)
+      layout          = @default_layout if layout.nil? or layout == true
+      content_type    = options.delete(:content_type) || options.delete(:default_content_type)
 
       # compile and render template
-      template = compile_template(engine, data, options, views)
-      output = template.render(self, locals, &block)
+      layout_was      = @default_layout
+      @default_layout = false if layout
+      template        = compile_template(engine, data, options, views)
+      output          = template.render(self, locals, &block)
+      @default_layout = layout_was
 
       # render layout
       if layout
@@ -392,6 +405,7 @@ module Sinatra
         end
       end
 
+      output.extend(ContentTyped).content_type = content_type if content_type
       output
     end
 
@@ -456,8 +470,16 @@ module Sinatra
       template_cache.clear if settings.reload_templates
       force_encoding(@params)
 
+      @response['Content-Type'] = nil
       invoke { dispatch! }
       invoke { error_block!(response.status) }
+      unless @response['Content-Type']
+        if body.respond_to?(:to_ary) and body.first.respond_to? :content_type
+          content_type body.first.content_type
+        else
+          content_type :html
+        end
+      end
 
       status, header, body = @response.finish
 

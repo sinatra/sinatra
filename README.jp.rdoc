@@ -154,7 +154,6 @@ builderを使うにはbuilderライブラリが必要です:
   require 'builder'
 
   get '/' do
-    content_type 'application/xml', :charset => 'utf-8'
     builder :index
   end
 
@@ -168,7 +167,6 @@ Sassテンプレートを使うにはsassライブラリが必要です:
   require 'sass'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     sass :stylesheet
   end
 
@@ -182,7 +180,6 @@ see {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
   set :sass, {:style => :compact } # デフォルトのSass styleは :nested
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     sass :stylesheet, :sass_options => {:style => :expanded } # 上書き
   end
 

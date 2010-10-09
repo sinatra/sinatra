@@ -291,21 +291,21 @@ class HelpersTest < Test::Unit::TestCase
       }
 
       get '/'
-      assert_equal 'text/plain', response['Content-Type']
+      assert_equal 'text/plain;charset=utf-8', response['Content-Type']
       assert_equal 'Hello World', body
     end
 
     it 'takes media type parameters (like charset=)' do
       mock_app {
         get '/' do
-          content_type 'text/html', :charset => 'utf-8'
+          content_type 'text/html', :charset => 'latin1'
           "<h1>Hello, World</h1>"
         end
       }
 
       get '/'
       assert ok?
-      assert_equal 'text/html;charset=utf-8', response['Content-Type']
+      assert_equal 'text/html;charset=latin1', response['Content-Type']
       assert_equal "<h1>Hello, World</h1>", body
     end
 
@@ -320,7 +320,7 @@ class HelpersTest < Test::Unit::TestCase
 
       get '/foo.xml'
       assert ok?
-      assert_equal 'application/foo', response['Content-Type']
+      assert_equal 'application/foo;charset=utf-8', response['Content-Type']
       assert_equal 'I AM FOO', body
     end
 
@@ -366,19 +366,19 @@ class HelpersTest < Test::Unit::TestCase
     it 'sets the Content-Type response header if a mime-type can be located' do
       send_file_app
       get '/file.txt'
-      assert_equal 'text/plain', response['Content-Type']
+      assert_equal 'text/plain;charset=utf-8', response['Content-Type']
     end
 
     it 'sets the Content-Type response header if type option is set to a file extesion' do
       send_file_app :type => 'html'
       get '/file.txt'
-      assert_equal 'text/html', response['Content-Type']
+      assert_equal 'text/html;charset=utf-8', response['Content-Type']
     end
 
     it 'sets the Content-Type response header if type option is set to a mime type' do
       send_file_app :type => 'application/octet-stream'
       get '/file.txt'
-      assert_equal 'application/octet-stream', response['Content-Type']
+      assert_equal 'application/octet-stream;charset=utf-8', response['Content-Type']
     end
 
     it 'sets the Content-Length response header' do
