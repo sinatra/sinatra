@@ -20,7 +20,7 @@
    accepts any Enumerable as parameter. (Simon Rozet)
 
  * README is now available in French (Mickael Riga), German (Bernhard Essl,
-   Konstantin Haase) and Spanish (Gabriel Andretta).
+   Konstantin Haase, burningTyger) and Spanish (Gabriel Andretta).
 
  * It is now possible to access Sinatra's template_cache from the outside.
    (Nick Sutterer)
