@@ -22,21 +22,6 @@ module Sinatra
     def secure?
       (@env['HTTP_X_FORWARDED_PROTO'] || @env['rack.url_scheme']) == 'https'
     end
-
-    # Override Rack < 1.1's Request#params implementation (see lh #72 for
-    # more info) and add a Request#user_agent method.
-    # XXX remove when we require rack > 1.1
-    if Rack.release < '1.1'
-      def params
-        self.GET.update(self.POST)
-      rescue EOFError, Errno::ESPIPE
-        self.GET
-      end
-
-      def user_agent
-        @env['HTTP_USER_AGENT']
-      end
-    end
   end
 
   # The response object. See Rack::Response and Rack::ResponseHelpers for
