@@ -224,7 +224,6 @@ Le gem builder est nécessaire pour utiliser la fonction de rendu builder:
   require 'builder'
 
   get '/' do
-    content_type 'application/xml', :charset => 'utf-8'
     builder :index
   end
 
@@ -238,7 +237,6 @@ Le gem nokogiri est nécessaire pour utiliser la fonction de rendu nokogiri:
   require 'nokogiri'
 
   get '/' do
-    content_type 'application/xml', :charset => 'utf-8'
     nokogiri :index
   end
 
@@ -252,7 +250,6 @@ Le gem sass est nécessaire pour utiliser la fonction de rendu Sass:
   require 'sass'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     sass :stylesheet
   end
 
@@ -266,7 +263,6 @@ et supportent aussi la réécriture (surcharge) comme dans cet exemple.
   set :sass, :style => :compact # le style par défaut dans Sass est :nested
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     sass :stylesheet, :style => :expanded # surcharge
   end
 
@@ -278,7 +274,6 @@ Le gem sass est nécessaire pour utiliser la fonction de rendu Scss:
   require 'sass'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     scss :stylesheet
   end
 
@@ -292,7 +287,6 @@ et supportent aussi la réécriture (surcharge) comme dans cet exemple.
   set :scss, :style => :compact # le style par défaut de Scss est :nested
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     scss :stylesheet, :style => :expanded # surcharge
   end
 
@@ -304,7 +298,6 @@ Le gem less est nécessaire pour utiliser la fonction de rendu Less:
   require 'less'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     less :stylesheet
   end
 
@@ -441,7 +434,6 @@ fonction de rendu CoffeeScript:
   require 'coffee-script'
 
   get '/application.js' do
-    content_type 'text/javascript', :charset => 'utf-8'
     coffee :application
   end
 

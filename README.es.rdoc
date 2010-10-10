@@ -227,7 +227,6 @@ La gem/librería builder es necesaria para renderizar plantillas builder:
   require 'builder'
 
   get '/' do
-    content_type 'application/xml', :charset => 'utf-8'
     builder :index
   end
 
@@ -241,7 +240,6 @@ La gem/librería nokogiri es necesaria para renderizar plantillas nokogiri:
   require 'nokogiri'
 
   get '/' do
-    content_type 'application/xml', :charset => 'utf-8'
     nokogiri :index
   end
 
@@ -255,7 +253,6 @@ La gem/librería sass es necesaria para renderizar plantillas Sass:
   require 'sass'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     sass :stylesheet
   end
 
@@ -269,7 +266,6 @@ y reemplazadas individualmente.
   set :sass, :style => :compact # el estilo por defecto de Sass es :nested
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     sass :stylesheet, :style => :expanded # reemplazado
   end
 
@@ -281,7 +277,6 @@ La gem/librería sass es necesaria para renderizar plantillas Scss:
   require 'sass'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     scss :stylesheet
   end
 
@@ -295,7 +290,6 @@ y reemplazadas individualmente.
   set :scss, :style => :compact # el estilo por defecto de Sass es :nested
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     scss :stylesheet, :style => :expanded # reemplazado
   end
 
@@ -307,7 +301,6 @@ La gem/librería less es necesaria para renderizar plantillas Less:
   require 'less'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     less :stylesheet
   end
 
@@ -444,7 +437,6 @@ renderizar plantillas CoffeeScript:
   require 'coffee-script'
 
   get '/application.js' do
-    content_type 'text/javascript', :charset => 'utf-8'
     coffee :application
   end
 
