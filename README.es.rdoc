@@ -233,6 +233,20 @@ La gem/librería builder es necesaria para renderizar plantillas builder:
 
 Renderiza <tt>./views/index.builder</tt>.
 
+=== Plantillas Nokogiri
+
+La gem/librería nokogiri es necesaria para renderizar plantillas nokogiri:
+
+  ## Vas a necesitar requerir nokogiri en tu app
+  require 'nokogiri'
+
+  get '/' do
+    content_type 'application/xml', :charset => 'utf-8'
+    nokogiri :index
+  end
+
+Renderiza <tt>./views/index.nokogiri</tt>.
+
 === Plantillas Sass
 
 La gem/librería sass es necesaria para renderizar plantillas Sass:

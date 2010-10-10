@@ -159,6 +159,19 @@ builderを使うにはbuilderライブラリが必要です:
 
 <tt>./views/index.builder</tt>を表示します。
 
+=== 鋸 テンプレート
+
+鋸を使うには鋸ライブラリが必要です:
+
+  ## 鋸を読み込みます
+  require 'nokogiri'
+
+  get '/' do
+    nokogiri :index
+  end
+
+<tt>./views/index.nokogiri</tt>を表示します。
+
 === Sass テンプレート
 
 Sassテンプレートを使うにはsassライブラリが必要です:

@@ -230,6 +230,20 @@ Le gem builder est nécessaire pour utiliser la fonction de rendu builder:
 
 Utilisera le template: <tt>./views/index.builder</tt>.
 
+=== Templates Nokogiri
+
+Le gem nokogiri est nécessaire pour utiliser la fonction de rendu nokogiri:
+
+  ## Chargez la bibliothèque nokogiri dans votre application
+  require 'nokogiri'
+
+  get '/' do
+    content_type 'application/xml', :charset => 'utf-8'
+    nokogiri :index
+  end
+
+Utilisera le template: <tt>./views/index.nokogiri</tt>.
+
 === Templates Sass
 
 Le gem sass est nécessaire pour utiliser la fonction de rendu Sass:

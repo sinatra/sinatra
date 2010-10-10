@@ -350,10 +350,7 @@ module Sinatra
     end
 
     def builder(template=nil, options={}, locals={}, &block)
-      options[:default_content_type] = :xml
-      options, template = template, nil if template.is_a?(Hash)
-      template = Proc.new { block } if template.nil?
-      render :builder, template, options, locals
+      render_xml(:builder, template, options, locals, &block)
     end
 
     def liquid(template, options={}, locals={})
@@ -385,7 +382,20 @@ module Sinatra
       render :coffee, template, options, locals
     end
 
+    def nokogiri(template=nil, options={}, locals={}, &block)
+      options[:layout] = false if Tilt::VERSION <= "1.1"
+      render_xml(:nokogiri, template, options, locals, &block)
+    end
+
   private
+    # logic shared between builder and nokogiri
+    def render_xml(engine, template, options={}, locals={}, &block)
+      options[:default_content_type] = :xml
+      options, template = template, nil if template.is_a?(Hash)
+      template = Proc.new { block } if template.nil?
+      render engine, template, options, locals
+    end
+
     def render(engine, data, options={}, locals={}, &block)
       # merge app-level options
       options = settings.send(engine).merge(options) if settings.respond_to?(engine)

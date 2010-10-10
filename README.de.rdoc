@@ -234,6 +234,19 @@ Das buidler gem wird benötigt, um Builder-Templates rendern zu können:
 
 Dieser Code rendert <tt>./views/index.builder</tt>.
 
+=== Nokogiri-Templates
+
+Das nokogiri gem wird benötigt, um Nokogiri-Templates rendern zu können:
+
+  ## nokogiri muss eingebunden werden
+  require 'nokogiri'
+
+  get '/' do
+    nokogiri :index
+  end
+
+Dieser Code rendert <tt>./views/index.nokogiri</tt>.
+
 === Sass-Templates
 
 Das haml gem wird benötigt, um SASS-Templates rendern zu können:
