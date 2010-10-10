@@ -162,12 +162,12 @@ module Sinatra
         response['Content-Disposition'] = 'inline'
       end
       sf = StaticFile.open(path, 'rb')
-      if (env['HTTP_RANGE'] =~ /^bytes=(\d+-\d+(?:,\d+-\d+)*)$/)
-        sf.ranges = $1.split(',').collect{|range| range.split('-').collect{|n| n.to_i}}
+      if m = /^bytes=(\d+-\d+(?:,\d+-\d+)*)$/.match(env['HTTP_RANGE'])
+        sf.ranges = m[1].split(',').collect{|range| range.split('-').collect{|n| n.to_i}}
         sf.ranges.each do |range|
           halt 416 if range[1] < range[0]
         end
-        response['Content-Range'] = "bytes #{$1}/#{response['Content-Length']}"
+        response['Content-Range'] = "bytes #{m[1]}/#{response['Content-Length']}"
         response['Content-Length'] = sf.ranges.dup.inject(0){|total,range| total + range[1] - range[0] + 1 }.to_s
         halt 206, sf
       else
