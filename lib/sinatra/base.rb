@@ -175,11 +175,16 @@ module Sinatra
       end
       sf = StaticFile.open(path, 'rb')
       if (env['HTTP_RANGE'] =~ /^bytes=(\d+-\d+(?:,\d+-\d+)*)$/)
-        response['Content-Range'] = "bytes #{$1}/#{response['Content-Length']}"
         sf.ranges = $1.split(',').collect{|range| range.split('-').collect{|n| n.to_i}}
-        response['Content-Length'] = sf.ranges.dup.inject(0){|total,range| total + range[1] - range[0] }.to_s
+        sf.ranges.each do |range|
+          halt 416 if range[1] < range[0]
+        end
+        response['Content-Range'] = "bytes #{$1}/#{response['Content-Length']}"
+        response['Content-Length'] = sf.ranges.dup.inject(0){|total,range| total + range[1] - range[0] + 1 }.to_s
+        halt 206, sf
+      else
+        halt sf
       end
-      halt sf
     rescue Errno::ENOENT
       not_found
     end
@@ -192,11 +197,20 @@ module Sinatra
       attr_accessor :ranges
       
       def each
-        (@ranges || [[0,nil]]).each do |range|
-          self.pos = range[0]
-          while buf = read([8192,(range[1] - self.pos rescue nil)].compact.min)
+        if @ranges
+          @ranges.each do |range|
+            self.pos = range[0]
+            length = range[1] - range[0] + 1
+            while buf = read([8192,length.abs].min)
+              yield buf
+              length -= buf.length
+              break if (length -= 8192) + 8192 <= 0
+            end
+          end
+        else
+          rewind
+          while buf = read(8192)
             yield buf
-            break if self.pos >= range[1]
           end
         end
       end

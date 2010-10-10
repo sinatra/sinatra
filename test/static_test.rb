@@ -90,4 +90,29 @@ class StaticTest < Test::Unit::TestCase
     get "/../#{File.basename(__FILE__)}"
     assert not_found?
   end
+
+  it 'deals correctly with incompletable range requests' do
+    request = Rack::MockRequest.new(@app)
+    response = request.get("/#{File.basename(__FILE__)}", 'HTTP_RANGE' => "bytes=45-40")
+    
+    assert_equal 416,response.status, "Ranges with final position < initial position should give HTTP/1.1 416 Requested Range Not Satisfiable"
+  end
+
+  it 'accepts and returns byte ranges correctly' do
+    [[[42,88]],[[1,5],[6,85]]].each do |ranges|
+      request = Rack::MockRequest.new(@app)
+      response = request.get("/#{File.basename(__FILE__)}", 'HTTP_RANGE' => "bytes=#{ranges.map{|r| r.join('-')}.join(',')}")
+      
+      file = File.read(__FILE__)
+      should_be = ''
+      ranges.each do |range|
+        should_be += file[range[0]..range[1]]
+      end
+        
+      assert_equal 206,response.status, "Should be HTTP/1.1 206 Partial content"
+      assert_equal should_be, response.body
+      assert_equal should_be.length.to_s, response['Content-Length'], "Length given was not the same as Content-Length reported"
+      assert_equal "bytes #{ranges.map{|r| r.join('-')}.join(',')}/#{File.size(__FILE__)}", response['Content-Range'],"Content-Range header was not correct"
+    end
+  end
 end
