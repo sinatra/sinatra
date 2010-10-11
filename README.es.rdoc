@@ -613,6 +613,55 @@ la petición usando <tt>pass</tt>:
 Se sale inmediatamente del bloque de la ruta y se le pasa el control a la
 siguiente ruta que coincida. Si no coincide ninguna ruta, se devuelve un 404.
 
+== Accediendo al objeto de la petición
+
+El objeto de la petición entrante puede ser accedido desde el nivel de la
+petición (filtros, rutas y manejadores de errores) a través del método
+`request`:
+
+  # app corriendo en http://ejemplo.com/ejemplo
+  get '/foo' do
+    request.body              # cuerpo de la petición enviado por el cliente (ver más abajo)
+    request.scheme            # "http"
+    request.script_name       # "/ejemplo"
+    request.path_info         # "/foo"
+    request.port              # 80
+    request.request_method    # "GET"
+    request.query_string      # ""
+    request.content_length    # longitud de request.body
+    request.media_type        # tipo de medio de request.body
+    request.host              # "ejemplo.com"
+    request.get?              # verdadero (hay métodos análogos para los otros verbos)
+    request.form_data?        # falso
+    request["UNA_CABECERA"]   # valor de la cabecera UNA_CABECERA
+    request.referer           # la referencia del cliente o '/'
+    request.user_agent        # user agent (usado por la condición :agent)
+    request.cookies           # hash de las cookies del browser
+    request.xhr?              # es una petición ajax?
+    request.url               # "http://ejemplo.com/ejemplo/foo"
+    request.path              # "/ejemplo/foo"
+    request.ip                # dirección IP del cliente
+    request.secure?           # falso
+    requuest.env              # hash de entorno directamente entregado por Rack
+  end
+
+Algunas opciones, como <tt>script_name</tt> o <tt>path_info</tt> pueden
+también ser escritas:
+
+  before { request.path_info = "/" }
+
+  get "/" do
+    "todas las peticiones llegan acá"
+  end
+
+El objeto <tt>request.body</tt> es una instancia de IO o StringIO:
+
+  post "/api" do
+    request.body.rewind  # en caso de que alguien ya lo haya leído
+    datos = JSON.parse request.body.read
+    "Hola #{datos['nombre']}!"
+  end
+
 == Configuración
 
 Ejecutar una vez, en el inicio, en cualquier entorno:
