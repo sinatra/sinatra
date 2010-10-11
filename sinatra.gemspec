@@ -125,6 +125,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'markaby'
   s.add_development_dependency 'coffee-script'
   s.add_development_dependency 'rdoc'
+  s.add_development_dependency 'nokogiri'
 
   s.has_rdoc = true
   s.homepage = "http://sinatra.rubyforge.org"
