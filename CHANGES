@@ -9,15 +9,31 @@
    behaves exactly like `sass` except for the different file extension and
    assuming the SCSS syntax. (Pedro Menezes, Konstantin Haase)
 
- * Added `liquid`, `markdown`, `textile`, `rdoc`, `radius`, `markaby`, and
-   `coffee` rendering methods for rendering Liquid, Markdown, Textile, RDoc,
-   Radius, Markaby and CoffeeScript templates (Konstantin Haase)
+ * Added `liquid`, `markdown`, `nokogiri`, `textile`, `rdoc`, `radius`,
+   `markaby`, and `coffee` rendering methods for rendering Liquid, Markdown,
+   Nokogiri, Textile, RDoc, Radius, Markaby and CoffeeScript templates.
+   (Konstantin Haase)
+
+ * `send_file` now handles range requests. (JP Hastings-Spital, Konstantin
+   Haase)
 
  * You can now use #settings method from class and top level for convenience.
    (Konstantin Haase)
 
  * Setting multiple values now no longer relies on #to_hash and therefore
    accepts any Enumerable as parameter. (Simon Rozet)
+
+ * Nested templates default the `layout` option to `false` rather than `true`.
+   This eases the use of partials. If you wanted to render one haml template
+   embedded in another, you had to call `haml :partial, {}, :layout => false`.
+   As you almost never want the partial to be wrapped in the standard layout
+   in this situation, you now only have to call `haml :partial`. Passing in
+   `layout` explicitly is still possible. (Konstantin Haase)
+
+ * If a the return value of one of the render functions is used as a response
+   body and the content type has not been set explicitly, Sinatra chooses a
+   content type corresponding to the rendering engine rather than just using
+   "text/html". (Konstantin Haase)
 
  * README is now available in French (Mickael Riga), German (Bernhard Essl,
    Konstantin Haase, burningTyger) and Spanish (Gabriel Andretta).
@@ -52,6 +68,9 @@
    respects Encoding.default_internal and Encoding.default_external.
    (Konstantin Haase)
 
+ * `show_exeptions` handling is now triggered after custom error handlers,
+   thus not disabling those in development mode. (pangel)
+
  * Added ability to handle weighted HTTP_ACCEPT headers. (Davide D'Agostino)
 
  * `send_file` now always respects the `:type` option if set. Previously it
@@ -82,6 +101,9 @@
 
  * Tilt is now a dependency and therefore no longer ships bundled with
    Sinatra. (Ryan Tomayko, Konstantin Haase)
+
+ * Sinatra now depends on Rack 1.1 or higher. Rack 1.0 is no longer supported.
+   (Konstantin Haase)
 
 = 1.0 / 2010-03-23
 
