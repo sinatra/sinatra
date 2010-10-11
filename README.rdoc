@@ -598,7 +598,7 @@ matching route. If no matching route is found, a 404 is returned.
 
 == Accessing the Request Object
 
-The incoming request object can be accessed form request level (filter, routes, error handlers) through the `request` method:
+The incoming request object can be accessed from request level (filter, routes, error handlers) through the `request` method:
 
   # app running on http://example.com/example
   get '/foo' do
