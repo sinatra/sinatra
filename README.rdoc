@@ -626,7 +626,8 @@ The incoming request object can be accessed form request level (filter, routes, 
     requuest.env              # raw env hash handed in by Rack
   end
 
-Some options, like `script_name` or `path_info` can also be written:
+Some options, like <tt>script_name</tt> or <tt>path_info</tt> can also be
+written:
 
   before { request.path_info = "/" }
   
