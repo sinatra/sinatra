@@ -4,12 +4,12 @@ Gem::Specification.new do |s|
 
   s.name = 'sinatra'
   s.version = '1.1.0'
-  s.date = '2010-09-13'
+  s.date = '2010-10-11'
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
 
-  s.authors = ["Blake Mizerany", "Ryan Tomayko", "Simon Rozet"]
+  s.authors = ["Blake Mizerany", "Ryan Tomayko", "Simon Rozet", "Konstantin Haase"]
   s.email = "sinatrarb@googlegroups.com"
 
   # = MANIFEST =
@@ -18,6 +18,8 @@ Gem::Specification.new do |s|
     CHANGES
     LICENSE
     README.de.rdoc
+    README.es.rdoc
+    README.fr.rdoc
     README.jp.rdoc
     README.rdoc
     Rakefile
@@ -47,6 +49,7 @@ Gem::Specification.new do |s|
     test/markaby_test.rb
     test/markdown_test.rb
     test/middleware_test.rb
+    test/nokogiri_test.rb
     test/public/favicon.ico
     test/radius_test.rb
     test/rdoc_test.rb
@@ -69,6 +72,7 @@ Gem::Specification.new do |s|
     test/views/error.erubis
     test/views/error.haml
     test/views/error.sass
+    test/views/explicitly_nested.str
     test/views/foo/hello.test
     test/views/hello.builder
     test/views/hello.coffee
@@ -79,10 +83,12 @@ Gem::Specification.new do |s|
     test/views/hello.liquid
     test/views/hello.mab
     test/views/hello.md
+    test/views/hello.nokogiri
     test/views/hello.radius
     test/views/hello.rdoc
     test/views/hello.sass
     test/views/hello.scss
+    test/views/hello.str
     test/views/hello.test
     test/views/hello.textile
     test/views/layout2.builder
@@ -91,8 +97,11 @@ Gem::Specification.new do |s|
     test/views/layout2.haml
     test/views/layout2.liquid
     test/views/layout2.mab
+    test/views/layout2.nokogiri
     test/views/layout2.radius
+    test/views/layout2.str
     test/views/layout2.test
+    test/views/nested.str
     test/views/utf8.haml
   ]
   # = MANIFEST =
