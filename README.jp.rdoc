@@ -331,6 +331,53 @@ body部を指定することもできます ...
 ルートブロックからすぐに抜け出し、次にマッチするルートを実行します。
 マッチするルートが見当たらない場合は404が返されます。
 
+== リクエストオブジェクトへのアクセス
+
+受信するリクエストオブジェクトは、`request`メソッドを通じてリクエストレベル(フィルタ、ルート、エラーハンドラ)からアクセスすることができます:
+
+  # アプリケーションが http://example.com/example で動作している場合
+  get '/foo' do
+    request.body              # クライアントによって送信されたリクエストボディ(下記参照)
+    request.scheme            # "http"
+    request.script_name       # "/example"
+    request.path_info         # "/foo"
+    request.port              # 80
+    request.request_method    # "GET"
+    request.query_string      # ""
+    request.content_length    # request.bodyの長さ
+    request.media_type        # request.bodyのメディアタイプ
+    request.host              # "example.com"
+    request.get?              # true (他の動詞についても同様のメソッドあり)
+    request.form_data?        # false
+    request["SOME_HEADER"]    # SOME_HEADERヘッダの値
+    request.referer           # クライアントのリファラまたは'/'
+    request.user_agent        # ユーザエージェント (:agent 条件によって使用される)
+    request.cookies           # ブラウザクッキーのハッシュ
+    request.xhr?              # Ajaxリクエストかどうか
+    request.url               # "http://example.com/example/foo"
+    request.path              # "/example/foo"
+    request.ip                # クライアントのIPアドレス
+    request.secure?           # false
+    request.env               # Rackによって渡された生のenvハッシュ
+  end
+
+<tt>script_name</tt>や<tt>path_info</tt>などのオプションは次のように利用することもできます:
+
+  before { request.path_info = "/" }
+  
+  get "/" do
+    "全てのリクエストはここに来る"
+  end
+
+<tt>request.body</tt>はIOまたはStringIOのオブジェクトです:
+
+  post "/api" do
+    request.body.rewind  # 既に読まれているときのため
+    data = JSON.parse request.body.read
+    "Hello #{data['name']}!"
+  end
+
+
 == 設定
 
 どの環境でも起動時に１回だけ実行されます。
