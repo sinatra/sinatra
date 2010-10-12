@@ -725,6 +725,7 @@ module Sinatra
       @env['sinatra.error'] = boom
 
       dump_errors!(boom) if settings.dump_errors?
+      raise boom if settings.show_exceptions? and settings.show_exceptions != :after_handler
 
       @response.status = 500
       if res = error_block!(boom.class)
