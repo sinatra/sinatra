@@ -811,7 +811,7 @@ deux modifications:
 * Mettre vos gestionnaires de route, vos gestionnaires d'erreur, vos filtres
 	et options dans une sous-classe de Sinatra::Base.
 
-+Sinatra::Base+ est plutôt épuré. La plupart des options sont désactivées par défaut,
+<tt>Sinatra::Base</tt> est plutôt épuré. La plupart des options sont désactivées par défaut,
 ceci inclus le serveur. Voir {Options et Configuration}[http://sinatra.github.com/configuration.html]
 pour plus de détails sur les options et leur comportement.
 

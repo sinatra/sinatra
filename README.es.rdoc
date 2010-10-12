@@ -867,7 +867,7 @@ dos modificaciones:
 * Poné las rutas, manejadores de errores, filtros y opciones de tu aplicación
   en una subclase de Sinatra::Base.
 
-+Sinatra::Base+ es una pizarra en blanco. La mayoría de las opciones están
+<tt>Sinatra::Base</tt> es una pizarra en blanco. La mayoría de las opciones están
 desactivadas por defecto, incluyendo el servidor incorporado. Mirá
 {Opciones y Configuraciones}[http://sinatra.github.com/configuration.html]
 para detalles sobre las opciones disponibles y su comportamiento.

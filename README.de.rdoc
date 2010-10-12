@@ -808,7 +808,7 @@ der Top-Level DSL. Die meisten Top-Level Anwendungen können mit nur zwei Verän
 * Alle Routen, Error Handler, Filter und Optionen der Applikation müssen in
   einer Subklasse von Sinatra::Base definiert werden.
 
-+Sinatra::Base+ ist ein unbeschriebense Blatt. Die meisten Optionen sind per default deaktiviert. Das betrifft auch den eingebauten Server. Siehe {Optionen und Konfiguration}[http://sinatra.github.com/configuration.html] für Details über möglichen Optionen.
+<tt>Sinatra::Base</tt> ist ein unbeschriebense Blatt. Die meisten Optionen sind per default deaktiviert. Das betrifft auch den eingebauten Server. Siehe {Optionen und Konfiguration}[http://sinatra.github.com/configuration.html] für Details über möglichen Optionen.
 
 SIDEBAR: Sinatras Top-Level DSL-Methoden sind als einfache Delegationen
 implementiert. Die Sinatra::Application-Klasse -- eine spezielle Subklasse von

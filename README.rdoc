@@ -845,7 +845,7 @@ Sinatra::Base components with two modifications:
 * Put your app's routes, error handlers, filters, and options in a subclass
   of Sinatra::Base.
 
-+Sinatra::Base+ is a blank slate. Most options are disabled by default,
+<tt>Sinatra::Base</tt> is a blank slate. Most options are disabled by default,
 including the built-in server. See {Options and Configuration}[http://sinatra.github.com/configuration.html]
 for details on available options and their behavior.
 
