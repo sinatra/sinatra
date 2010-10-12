@@ -491,7 +491,7 @@ Des templates peuvent être définis dans le fichier source comme ceci:
 
 NOTE: Les templates du fichier source qui contient <tt>require 'sinatra'</tt>
 sont automatiquement chargés. Si vous avez des templates dans d'autres fichiers source,
-il faut explicitement les déclarer via: `enable :inline_templates`.
+il faut explicitement les déclarer via: <tt>enable :inline_templates</tt>.
 
 === Templates nommés
 

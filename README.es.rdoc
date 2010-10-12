@@ -492,8 +492,8 @@ Las plantillas pueden ser definidas al final del archivo fuente:
   %div.titulo Hola mundo!!!!!
 
 NOTA: únicamente las plantillas inline definidas en el archivo fuente que
-requiere sinatra son cargadas automáticamente. Llamá
-+enable :inline_templates+ explícitamente si tenés plantillas inline en otros
+requiere sinatra son cargadas automáticamente. Llamá <tt>enable
+:inline_templates</tt> explícitamente si tenés plantillas inline en otros
 archivos fuente.
 
 === Plantillas Nombradas

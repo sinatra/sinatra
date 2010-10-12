@@ -481,8 +481,8 @@ Templates may be defined at the end of the source file:
   @@ index
   %div.title Hello world!!!!!
 
-NOTE: Inline templates defined in the source file that requires sinatra
-are automatically loaded. Call +enable :inline_templates+ explicitly if you
+NOTE: Inline templates defined in the source file that requires sinatra are
+automatically loaded. Call <tt>enable :inline_templates<tt> explicitly if you
 have inline templates in other source files.
 
 === Named Templates
