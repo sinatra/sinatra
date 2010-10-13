@@ -68,8 +68,9 @@
    respects Encoding.default_internal and Encoding.default_external.
    (Konstantin Haase)
 
- * `show_exeptions` handling is now triggered after custom error handlers,
-   thus not disabling those in development mode. (pangel)
+ * `show_exeptions` handling is now triggered after custom error handlers, if
+   it is set to `:after_handlers`, thus not disabling those handler in
+   development mode. (pangel, Konstantin Haase)
 
  * Added ability to handle weighted HTTP_ACCEPT headers. (Davide D'Agostino)
 
@@ -83,9 +84,6 @@
 
  * Broken examples for using Erubis, Haml and Test::Unit in README have been
    fixed. (Nick Sutterer, Doug Ireton, Jason Stewart, Eric Marden)
-
- * Sinatra is now able to use Tilt versions including numbers > 9, as in 0.10.
-   (Konstantin Haase)
 
  * Sinatra now handles SIGTERM correctly. (Patrick Collison)
 
