@@ -36,7 +36,8 @@
    "text/html". (Konstantin Haase)
 
  * README is now available in French (Mickael Riga), German (Bernhard Essl,
-   Konstantin Haase, burningTyger) and Spanish (Gabriel Andretta).
+   Konstantin Haase, burningTyger), Hungarian (Janos Hardi) and Spanish
+   (Gabriel Andretta).
 
  * It is now possible to access Sinatra's template_cache from the outside.
    (Nick Sutterer)
