@@ -37,7 +37,8 @@
 
  * README is now available in French (Mickael Riga), German (Bernhard Essl,
    Konstantin Haase, burningTyger), Hungarian (Janos Hardi) and Spanish
-   (Gabriel Andretta).
+   (Gabriel Andretta). The extremely outdated Japanese README has been updated
+   (Kouhei Yanagita).
 
  * It is now possible to access Sinatra's template_cache from the outside.
    (Nick Sutterer)
