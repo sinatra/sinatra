@@ -609,6 +609,53 @@ On sort donc immédiatement de ce gestionnaire et on continue à chercher,
 dans les masques suivants, le prochain qui correspond à la requête.
 Si aucun des masques suivants ne correspond, un code 404 est retourné.
 
+== Accéder à l'objet requête
+
+L'objet correspondant à la requête envoyée peut être récupéré dans le contexte de la requête (filtres, routes, gestionnaires d'erreur) au moyen de la méthode `request`:
+
+  # application tournant à l'adresse http://exemple.com/exemple
+  get '/foo' do
+    request.body              # corps de la requête envoyée par le client (voir ci-dessous)
+    request.scheme            # "http"
+    request.script_name       # "/exemple"
+    request.path_info         # "/foo"
+    request.port              # 80
+    request.request_method    # "GET"
+    request.query_string      # ""
+    request.content_length    # taille de request.body
+    request.media_type        # type de média pour request.body
+    request.host              # "exemple.com"
+    request.get?              # true (méthodes similaires pour les autres verbes HTTP)
+    request.form_data?        # false
+    request["UN_ENTETE"]      # valeur de l'entête UN_ENTETE
+    request.referer           # référant du client ou '/'
+    request.user_agent        # user agent (utilisé par la condition :agent)
+    request.cookies           # tableau contenant les cookies du navigateur
+    request.xhr?              # requête AJAX ?
+    request.url               # "http://exemple.com/exemple/foo"
+    request.path              # "/exemple/foo"
+    request.ip                # adresse IP du client
+    request.secure?           # false
+    request.env               # tableau brut de l'environnement fourni par Rack
+  end
+
+Certaines options, telles que <tt>script_name</tt> ou <tt>path_info</tt> peuvent
+également être modifiées:
+
+  before { request.path_info = "/" }
+
+  get "/" do
+    "toutes les requêtes arrivent ici"
+  end
+
+<tt>request.body</tt> est un objet IO ou StringIO:
+
+  post "/api" do
+    request.body.rewind  # au cas où il a déjà été lu
+    donnees = JSON.parse request.body.read
+    "Bonjour #{donnees['nom']}!"
+  end
+
 == Configuration
 
 Lancé une seule fois au démarrage de tous les environnements:
