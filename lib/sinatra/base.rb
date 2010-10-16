@@ -161,8 +161,18 @@ module Sinatra
       elsif opts[:disposition] == 'inline'
         response['Content-Disposition'] = 'inline'
       end
-
-      halt StaticFile.open(path, 'rb')
+      sf = StaticFile.open(path, 'rb')
+      if m = /^bytes=(\d+-\d+(?:,\d+-\d+)*)$/.match(env['HTTP_RANGE'])
+        sf.ranges = m[1].split(',').collect{|range| range.split('-').collect{|n| n.to_i}}
+        sf.ranges.each do |range|
+          halt 416 if range[1] < range[0]
+        end
+        response['Content-Range'] = "bytes #{m[1]}/#{response['Content-Length']}"
+        response['Content-Length'] = sf.ranges.dup.inject(0){|total,range| total + range[1] - range[0] + 1 }.to_s
+        halt 206, sf
+      else
+        halt sf
+      end
     rescue Errno::ENOENT
       not_found
     end
@@ -171,10 +181,25 @@ module Sinatra
     # generated iteratively in 8K chunks.
     class StaticFile < ::File #:nodoc:
       alias_method :to_path, :path
+      
+      attr_accessor :ranges
+      
       def each
-        rewind
-        while buf = read(8192)
-          yield buf
+        if @ranges
+          @ranges.each do |range|
+            self.pos = range[0]
+            length = range[1] - range[0] + 1
+            while buf = read([8192,length.abs].min)
+              yield buf
+              length -= buf.length
+              break if (length -= 8192) + 8192 <= 0
+            end
+          end
+        else
+          rewind
+          while buf = read(8192)
+            yield buf
+          end
         end
       end
     end
@@ -325,10 +350,7 @@ module Sinatra
     end
 
     def builder(template=nil, options={}, locals={}, &block)
-      options[:default_content_type] = :xml
-      options, template = template, nil if template.is_a?(Hash)
-      template = Proc.new { block } if template.nil?
-      render :builder, template, options, locals
+      render_xml(:builder, template, options, locals, &block)
     end
 
     def liquid(template, options={}, locals={})
@@ -360,7 +382,20 @@ module Sinatra
       render :coffee, template, options, locals
     end
 
+    def nokogiri(template=nil, options={}, locals={}, &block)
+      options[:layout] = false if Tilt::VERSION <= "1.1"
+      render_xml(:nokogiri, template, options, locals, &block)
+    end
+
   private
+    # logic shared between builder and nokogiri
+    def render_xml(engine, template, options={}, locals={}, &block)
+      options[:default_content_type] = :xml
+      options, template = template, nil if template.is_a?(Hash)
+      template = Proc.new { block } if template.nil?
+      render engine, template, options, locals
+    end
+
     def render(engine, data, options={}, locals={}, &block)
       # merge app-level options
       options = settings.send(engine).merge(options) if settings.respond_to?(engine)
@@ -690,7 +725,7 @@ module Sinatra
       @env['sinatra.error'] = boom
 
       dump_errors!(boom) if settings.dump_errors?
-      raise boom         if settings.show_exceptions?
+      raise boom if settings.show_exceptions? and settings.show_exceptions != :after_handler
 
       @response.status = 500
       if res = error_block!(boom.class)
@@ -715,6 +750,7 @@ module Sinatra
           end
         end
       end
+      raise boom if settings.show_exceptions? and keys == Exception
       nil
     end
 

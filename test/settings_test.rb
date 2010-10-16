@@ -202,6 +202,29 @@ class SettingsTest < Test::Unit::TestCase
       assert body.include?("StandardError")
       assert body.include?("<code>show_exceptions</code> setting")
     end
+
+    it 'does not override app-specified error handling when set to :after_handler' do
+      klass = Sinatra.new(Sinatra::Application)
+      mock_app(klass) {
+        set :show_exceptions, :after_handler
+        
+        error RuntimeError do
+          'Big mistake !'
+        end
+        
+        get '/' do
+          raise RuntimeError
+        end  
+      }
+      
+      get '/'
+      assert_equal 500, status
+
+      assert ! body.include?("<code>")
+      assert body.include? "Big mistake !"
+      
+    end
+    
   end
 
   describe 'dump_errors' do

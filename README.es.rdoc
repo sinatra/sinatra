@@ -227,11 +227,23 @@ La gem/librería builder es necesaria para renderizar plantillas builder:
   require 'builder'
 
   get '/' do
-    content_type 'application/xml', :charset => 'utf-8'
     builder :index
   end
 
 Renderiza <tt>./views/index.builder</tt>.
+
+=== Plantillas Nokogiri
+
+La gem/librería nokogiri es necesaria para renderizar plantillas nokogiri:
+
+  ## Vas a necesitar requerir nokogiri en tu app
+  require 'nokogiri'
+
+  get '/' do
+    nokogiri :index
+  end
+
+Renderiza <tt>./views/index.nokogiri</tt>.
 
 === Plantillas Sass
 
@@ -241,7 +253,6 @@ La gem/librería sass es necesaria para renderizar plantillas Sass:
   require 'sass'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     sass :stylesheet
   end
 
@@ -255,7 +266,6 @@ y reemplazadas individualmente.
   set :sass, :style => :compact # el estilo por defecto de Sass es :nested
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     sass :stylesheet, :style => :expanded # reemplazado
   end
 
@@ -267,7 +277,6 @@ La gem/librería sass es necesaria para renderizar plantillas Scss:
   require 'sass'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     scss :stylesheet
   end
 
@@ -281,7 +290,6 @@ y reemplazadas individualmente.
   set :scss, :style => :compact # el estilo por defecto de Sass es :nested
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     scss :stylesheet, :style => :expanded # reemplazado
   end
 
@@ -293,7 +301,6 @@ La gem/librería less es necesaria para renderizar plantillas Less:
   require 'less'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     less :stylesheet
   end
 
@@ -430,7 +437,6 @@ renderizar plantillas CoffeeScript:
   require 'coffee-script'
 
   get '/application.js' do
-    content_type 'text/javascript', :charset => 'utf-8'
     coffee :application
   end
 
@@ -486,8 +492,8 @@ Las plantillas pueden ser definidas al final del archivo fuente:
   %div.titulo Hola mundo!!!!!
 
 NOTA: únicamente las plantillas inline definidas en el archivo fuente que
-requiere sinatra son cargadas automáticamente. Llamá
-+enable :inline_templates+ explícitamente si tenés plantillas inline en otros
+requiere sinatra son cargadas automáticamente. Llamá <tt>enable
+:inline_templates</tt> explícitamente si tenés plantillas inline en otros
 archivos fuente.
 
 === Plantillas Nombradas
@@ -606,6 +612,55 @@ la petición usando <tt>pass</tt>:
 
 Se sale inmediatamente del bloque de la ruta y se le pasa el control a la
 siguiente ruta que coincida. Si no coincide ninguna ruta, se devuelve un 404.
+
+== Accediendo al objeto de la petición
+
+El objeto de la petición entrante puede ser accedido desde el nivel de la
+petición (filtros, rutas y manejadores de errores) a través del método
+`request`:
+
+  # app corriendo en http://ejemplo.com/ejemplo
+  get '/foo' do
+    request.body              # cuerpo de la petición enviado por el cliente (ver más abajo)
+    request.scheme            # "http"
+    request.script_name       # "/ejemplo"
+    request.path_info         # "/foo"
+    request.port              # 80
+    request.request_method    # "GET"
+    request.query_string      # ""
+    request.content_length    # longitud de request.body
+    request.media_type        # tipo de medio de request.body
+    request.host              # "ejemplo.com"
+    request.get?              # verdadero (hay métodos análogos para los otros verbos)
+    request.form_data?        # falso
+    request["UNA_CABECERA"]   # valor de la cabecera UNA_CABECERA
+    request.referer           # la referencia del cliente o '/'
+    request.user_agent        # user agent (usado por la condición :agent)
+    request.cookies           # hash de las cookies del browser
+    request.xhr?              # es una petición ajax?
+    request.url               # "http://ejemplo.com/ejemplo/foo"
+    request.path              # "/ejemplo/foo"
+    request.ip                # dirección IP del cliente
+    request.secure?           # falso
+    requuest.env              # hash de entorno directamente entregado por Rack
+  end
+
+Algunas opciones, como <tt>script_name</tt> o <tt>path_info</tt> pueden
+también ser escritas:
+
+  before { request.path_info = "/" }
+
+  get "/" do
+    "todas las peticiones llegan acá"
+  end
+
+El objeto <tt>request.body</tt> es una instancia de IO o StringIO:
+
+  post "/api" do
+    request.body.rewind  # en caso de que alguien ya lo haya leído
+    datos = JSON.parse request.body.read
+    "Hola #{datos['nombre']}!"
+  end
 
 == Configuración
 
@@ -812,7 +867,7 @@ dos modificaciones:
 * Poné las rutas, manejadores de errores, filtros y opciones de tu aplicación
   en una subclase de Sinatra::Base.
 
-+Sinatra::Base+ es una pizarra en blanco. La mayoría de las opciones están
+<tt>Sinatra::Base</tt> es una pizarra en blanco. La mayoría de las opciones están
 desactivadas por defecto, incluyendo el servidor incorporado. Mirá
 {Opciones y Configuraciones}[http://sinatra.github.com/configuration.html]
 para detalles sobre las opciones disponibles y su comportamiento.

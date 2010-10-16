@@ -230,6 +230,19 @@ The builder gem/library is required to render builder templates:
 
 Renders <tt>./views/index.builder</tt>.
 
+=== Nokogiri Templates
+
+The nokogiri gem/library is required to render nokogiri templates:
+
+  ## You'll need to require nokogiri in your app
+  require 'nokogiri'
+
+  get '/' do
+    nokogiri :index
+  end
+
+Renders <tt>./views/index.nokogiri</tt>.
+
 === Sass Templates
 
 The sass gem/library is required to render Sass templates:
@@ -468,8 +481,8 @@ Templates may be defined at the end of the source file:
   @@ index
   %div.title Hello world!!!!!
 
-NOTE: Inline templates defined in the source file that requires sinatra
-are automatically loaded. Call +enable :inline_templates+ explicitly if you
+NOTE: Inline templates defined in the source file that requires sinatra are
+automatically loaded. Call <tt>enable :inline_templates</tt> explicitly if you
 have inline templates in other source files.
 
 === Named Templates
@@ -582,6 +595,53 @@ A route can punt processing to the next matching route using <tt>pass</tt>:
 
 The route block is immediately exited and control continues with the next
 matching route. If no matching route is found, a 404 is returned.
+
+== Accessing the Request Object
+
+The incoming request object can be accessed from request level (filter, routes, error handlers) through the `request` method:
+
+  # app running on http://example.com/example
+  get '/foo' do
+    request.body              # request body sent by the client (see below)
+    request.scheme            # "http"
+    request.script_name       # "/example"
+    request.path_info         # "/foo"
+    request.port              # 80
+    request.request_method    # "GET"
+    request.query_string      # ""
+    request.content_length    # length of request.body
+    request.media_type        # media type of request.body
+    request.host              # "example.com"
+    request.get?              # true (similar methods for other verbs)
+    request.form_data?        # false
+    request["SOME_HEADER"]    # value of SOME_HEADER header
+    request.referer           # the referer of the client or '/'
+    request.user_agent        # user agent (used by :agent condition)
+    request.cookies           # hash of browser cookies
+    request.xhr?              # is this an ajax request?
+    request.url               # "http://example.com/example/foo"
+    request.path              # "/example/foo"
+    request.ip                # client IP address
+    request.secure?           # false
+    requuest.env              # raw env hash handed in by Rack
+  end
+
+Some options, like <tt>script_name</tt> or <tt>path_info</tt> can also be
+written:
+
+  before { request.path_info = "/" }
+  
+  get "/" do
+    "all requests end up here"
+  end
+
+The <tt>request.body</tt> is an IO or StringIO object:
+
+  post "/api" do
+    request.body.rewind  # in case someone already read it
+    data = JSON.parse request.body.read
+    "Hello #{data['name']}!"
+  end
 
 == Configuration
 
@@ -785,7 +845,7 @@ Sinatra::Base components with two modifications:
 * Put your app's routes, error handlers, filters, and options in a subclass
   of Sinatra::Base.
 
-+Sinatra::Base+ is a blank slate. Most options are disabled by default,
+<tt>Sinatra::Base</tt> is a blank slate. Most options are disabled by default,
 including the built-in server. See {Options and Configuration}[http://sinatra.github.com/configuration.html]
 for details on available options and their behavior.
 

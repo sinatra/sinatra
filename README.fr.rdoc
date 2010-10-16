@@ -224,11 +224,23 @@ Le gem builder est nécessaire pour utiliser la fonction de rendu builder:
   require 'builder'
 
   get '/' do
-    content_type 'application/xml', :charset => 'utf-8'
     builder :index
   end
 
 Utilisera le template: <tt>./views/index.builder</tt>.
+
+=== Templates Nokogiri
+
+Le gem nokogiri est nécessaire pour utiliser la fonction de rendu nokogiri:
+
+  ## Chargez la bibliothèque nokogiri dans votre application
+  require 'nokogiri'
+
+  get '/' do
+    nokogiri :index
+  end
+
+Utilisera le template: <tt>./views/index.nokogiri</tt>.
 
 === Templates Sass
 
@@ -238,7 +250,6 @@ Le gem sass est nécessaire pour utiliser la fonction de rendu Sass:
   require 'sass'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     sass :stylesheet
   end
 
@@ -252,7 +263,6 @@ et supportent aussi la réécriture (surcharge) comme dans cet exemple.
   set :sass, :style => :compact # le style par défaut dans Sass est :nested
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     sass :stylesheet, :style => :expanded # surcharge
   end
 
@@ -264,7 +274,6 @@ Le gem sass est nécessaire pour utiliser la fonction de rendu Scss:
   require 'sass'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     scss :stylesheet
   end
 
@@ -278,7 +287,6 @@ et supportent aussi la réécriture (surcharge) comme dans cet exemple.
   set :scss, :style => :compact # le style par défaut de Scss est :nested
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     scss :stylesheet, :style => :expanded # surcharge
   end
 
@@ -290,7 +298,6 @@ Le gem less est nécessaire pour utiliser la fonction de rendu Less:
   require 'less'
 
   get '/stylesheet.css' do
-    content_type 'text/css', :charset => 'utf-8'
     less :stylesheet
   end
 
@@ -427,7 +434,6 @@ fonction de rendu CoffeeScript:
   require 'coffee-script'
 
   get '/application.js' do
-    content_type 'text/javascript', :charset => 'utf-8'
     coffee :application
   end
 
@@ -485,7 +491,7 @@ Des templates peuvent être définis dans le fichier source comme ceci:
 
 NOTE: Les templates du fichier source qui contient <tt>require 'sinatra'</tt>
 sont automatiquement chargés. Si vous avez des templates dans d'autres fichiers source,
-il faut explicitement les déclarer via: `enable :inline_templates`.
+il faut explicitement les déclarer via: <tt>enable :inline_templates</tt>.
 
 === Templates nommés
 
@@ -602,6 +608,53 @@ avec <tt>pass</tt>:
 On sort donc immédiatement de ce gestionnaire et on continue à chercher,
 dans les masques suivants, le prochain qui correspond à la requête.
 Si aucun des masques suivants ne correspond, un code 404 est retourné.
+
+== Accéder à l'objet requête
+
+L'objet correspondant à la requête envoyée peut être récupéré dans le contexte de la requête (filtres, routes, gestionnaires d'erreur) au moyen de la méthode `request`:
+
+  # application tournant à l'adresse http://exemple.com/exemple
+  get '/foo' do
+    request.body              # corps de la requête envoyée par le client (voir ci-dessous)
+    request.scheme            # "http"
+    request.script_name       # "/exemple"
+    request.path_info         # "/foo"
+    request.port              # 80
+    request.request_method    # "GET"
+    request.query_string      # ""
+    request.content_length    # taille de request.body
+    request.media_type        # type de média pour request.body
+    request.host              # "exemple.com"
+    request.get?              # true (méthodes similaires pour les autres verbes HTTP)
+    request.form_data?        # false
+    request["UN_ENTETE"]      # valeur de l'entête UN_ENTETE
+    request.referer           # référant du client ou '/'
+    request.user_agent        # user agent (utilisé par la condition :agent)
+    request.cookies           # tableau contenant les cookies du navigateur
+    request.xhr?              # requête AJAX ?
+    request.url               # "http://exemple.com/exemple/foo"
+    request.path              # "/exemple/foo"
+    request.ip                # adresse IP du client
+    request.secure?           # false
+    request.env               # tableau brut de l'environnement fourni par Rack
+  end
+
+Certaines options, telles que <tt>script_name</tt> ou <tt>path_info</tt> peuvent
+également être modifiées:
+
+  before { request.path_info = "/" }
+
+  get "/" do
+    "toutes les requêtes arrivent ici"
+  end
+
+<tt>request.body</tt> est un objet IO ou StringIO:
+
+  post "/api" do
+    request.body.rewind  # au cas où il a déjà été lu
+    donnees = JSON.parse request.body.read
+    "Bonjour #{donnees['nom']}!"
+  end
 
 == Configuration
 
@@ -805,7 +858,7 @@ deux modifications:
 * Mettre vos gestionnaires de route, vos gestionnaires d'erreur, vos filtres
 	et options dans une sous-classe de Sinatra::Base.
 
-+Sinatra::Base+ est plutôt épuré. La plupart des options sont désactivées par défaut,
+<tt>Sinatra::Base</tt> est plutôt épuré. La plupart des options sont désactivées par défaut,
 ceci inclus le serveur. Voir {Options et Configuration}[http://sinatra.github.com/configuration.html]
 pour plus de détails sur les options et leur comportement.
 
