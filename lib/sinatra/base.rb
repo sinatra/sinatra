@@ -117,7 +117,7 @@ module Sinatra
 
     # Access the underlying Rack session.
     def session
-      env['rack.session'] ||= {}
+      request.session
     end
 
     # Look up a media type by file extension in Rack's mime registry.
