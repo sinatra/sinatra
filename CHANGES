@@ -1,5 +1,8 @@
 = 1.1 / Not Yet Released
 
+ * Now supports byte-range requests (the HTTP_RANGE header) for static files.
+   Multi-range requests are not supported, however. (Jens Alfke)
+
  * Before and after filters now support pattern matching, including the
    ability to use captures: "before('/user/:name') { |name| ... }". This
    avoids manual path checking. No performance loss if patterns are avoided.
