@@ -167,18 +167,8 @@ module Sinatra
       elsif opts[:disposition] == 'inline'
         response['Content-Disposition'] = 'inline'
       end
-      sf = StaticFile.open(path, 'rb')
-      if m = /^bytes=(\d+-\d+(?:,\d+-\d+)*)$/.match(env['HTTP_RANGE'])
-        sf.ranges = m[1].split(',').collect{|range| range.split('-').collect{|n| n.to_i}}
-        sf.ranges.each do |range|
-          halt 416 if range[1] < range[0]
-        end
-        response['Content-Range'] = "bytes #{m[1]}/#{response['Content-Length']}"
-        response['Content-Length'] = sf.ranges.dup.inject(0){|total,range| total + range[1] - range[0] + 1 }.to_s
-        halt 206, sf
-      else
-        halt sf
-      end
+
+      halt StaticFile.open(path, 'rb')
     rescue Errno::ENOENT
       not_found
     end
@@ -187,25 +177,10 @@ module Sinatra
     # generated iteratively in 8K chunks.
     class StaticFile < ::File #:nodoc:
       alias_method :to_path, :path
-      
-      attr_accessor :ranges
-      
       def each
-        if @ranges
-          @ranges.each do |range|
-            self.pos = range[0]
-            length = range[1] - range[0] + 1
-            while buf = read([8192,length.abs].min)
-              yield buf
-              length -= buf.length
-              break if (length -= 8192) + 8192 <= 0
-            end
-          end
-        else
-          rewind
-          while buf = read(8192)
-            yield buf
-          end
+        rewind
+        while buf = read(8192)
+          yield buf
         end
       end
     end

@@ -14,9 +14,6 @@
    Nokogiri, Textile, RDoc, Radius, Markaby and CoffeeScript templates.
    (Konstantin Haase)
 
- * `send_file` now handles range requests. (JP Hastings-Spital, Konstantin
-   Haase)
-
  * You can now use #settings method from class and top level for convenience.
    (Konstantin Haase)
 
