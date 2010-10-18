@@ -17,10 +17,16 @@ module Sinatra
       @env['HTTP_ACCEPT'].to_s.split(',').map { |a| a.split(';')[0].strip }
     end
 
-    # Whether or not the web server (or a reverse proxy in front of it) is
-    # using SSL to communicate with the client.
-    def secure?
-      (@env['HTTP_X_FORWARDED_PROTO'] || @env['rack.url_scheme']) == 'https'
+    if Rack.release <= "1.2"
+      # Whether or not the web server (or a reverse proxy in front of it) is
+      # using SSL to communicate with the client.
+      def secure?
+        @env['HTTPS'] == 'on' or
+        @env['HTTP_X_FORWARDED_PROTO'] == 'https' or
+        @env['rack.url_scheme'] == 'https'
+      end
+    else
+      alias secure? ssl?
     end
   end
 
@@ -111,7 +117,7 @@ module Sinatra
 
     # Access the underlying Rack session.
     def session
-      env['rack.session'] ||= {}
+      request.session
     end
 
     # Look up a media type by file extension in Rack's mime registry.
@@ -154,23 +160,23 @@ module Sinatra
         response['Content-Type'] ||
         'application/octet-stream'
 
-      response['Content-Length'] ||= (opts[:length] || stat.size).to_s
-
       if opts[:disposition] == 'attachment' || opts[:filename]
         attachment opts[:filename] || path
       elsif opts[:disposition] == 'inline'
         response['Content-Disposition'] = 'inline'
       end
+
+      file_length = opts[:length] || stat.size
       sf = StaticFile.open(path, 'rb')
-      if m = /^bytes=(\d+-\d+(?:,\d+-\d+)*)$/.match(env['HTTP_RANGE'])
-        sf.ranges = m[1].split(',').collect{|range| range.split('-').collect{|n| n.to_i}}
-        sf.ranges.each do |range|
-          halt 416 if range[1] < range[0]
-        end
-        response['Content-Range'] = "bytes #{m[1]}/#{response['Content-Length']}"
-        response['Content-Length'] = sf.ranges.dup.inject(0){|total,range| total + range[1] - range[0] + 1 }.to_s
+      if ! sf.parse_ranges(env, file_length)
+        response['Content-Range'] = "bytes */#{file_length}"
+        halt 416
+      elsif r=sf.range
+        response['Content-Range'] = "bytes #{r.begin}-#{r.end}/#{file_length}"
+        response['Content-Length'] = (r.end - r.begin + 1).to_s
         halt 206, sf
       else
+        response['Content-Length'] ||= file_length.to_s
         halt sf
       end
     rescue Errno::ENOENT
@@ -181,23 +187,63 @@ module Sinatra
     # generated iteratively in 8K chunks.
     class StaticFile < ::File #:nodoc:
       alias_method :to_path, :path
-      
-      attr_accessor :ranges
-      
-      def each
-        if @ranges
-          @ranges.each do |range|
-            self.pos = range[0]
-            length = range[1] - range[0] + 1
-            while buf = read([8192,length.abs].min)
-              yield buf
-              length -= buf.length
-              break if (length -= 8192) + 8192 <= 0
+
+      attr_accessor :range  # a Range or nil
+
+      # Checks for byte-ranges in the request and sets self.range appropriately.
+      # Returns false if the ranges are unsatisfiable and the request should return 416.
+      def parse_ranges(env, size)
+        #r = Rack::Utils::byte_ranges(env, size)  # TODO: not available yet in released Rack
+        r = byte_ranges(env, size)
+        return false if r == []  # Unsatisfiable; report error
+        @range = r[0] if r && r.length == 1  # Ignore multiple-range requests for now
+        return true
+      end
+
+      # TODO: Copied from the new method Rack::Utils::byte_ranges; this method can be removed once
+      # a version of Rack with that method is released and Sinatra can depend on it.
+      def byte_ranges(env, size)
+        # See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35>
+        http_range = env['HTTP_RANGE']
+        return nil unless http_range
+        ranges = []
+        http_range.split(/,\s*/).each do |range_spec|
+          matches = range_spec.match(/bytes=(\d*)-(\d*)/)
+          return nil  unless matches
+          r0,r1 = matches[1], matches[2]
+          if r0.empty?
+            return nil  if r1.empty?
+            # suffix-byte-range-spec, represents trailing suffix of file
+            r0 = [size - r1.to_i, 0].max
+            r1 = size - 1
+          else
+            r0 = r0.to_i
+            if r1.empty?
+              r1 = size - 1
+            else
+              r1 = r1.to_i
+              return nil  if r1 < r0  # backwards range is syntactically invalid
+              r1 = size-1  if r1 >= size
             end
+          end
+          ranges << (r0..r1)  if r0 <= r1
+        end
+        ranges
+      end
+
+      CHUNK_SIZE = 8192
+
+      def each
+        if @range
+          self.pos = @range.begin
+          length = @range.end - @range.begin + 1
+          while length > 0 && (buf = read([CHUNK_SIZE,length].min))
+            yield buf
+            length -= buf.length
           end
         else
           rewind
-          while buf = read(8192)
+          while buf = read(CHUNK_SIZE)
             yield buf
           end
         end
@@ -1180,7 +1226,7 @@ module Sinatra
       Encoding.default_internal ||= Encoding.default_external
 
       def force_encoding(data)
-        return if data == self
+        return if data == self || data.is_a?(Tempfile)
         if data.respond_to? :force_encoding
           data.force_encoding(Encoding.default_external)
         elsif data.respond_to? :each_value
