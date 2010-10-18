@@ -1226,7 +1226,7 @@ module Sinatra
       Encoding.default_internal ||= Encoding.default_external
 
       def force_encoding(data)
-        return if data == self
+        return if data == self || data.is_a?(Tempfile)
         if data.respond_to? :force_encoding
           data.force_encoding(Encoding.default_external)
         elsif data.respond_to? :each_value
