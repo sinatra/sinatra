@@ -91,7 +91,7 @@ class StaticTest < Test::Unit::TestCase
     assert not_found?
   end
 
-  def test_valid_range(http_range, range, path, file)
+  def assert_valid_range(http_range, range, path, file)
     request = Rack::MockRequest.new(@app)
     response = request.get("/#{File.basename(path)}", 'HTTP_RANGE' => http_range)
 
@@ -113,23 +113,23 @@ class StaticTest < Test::Unit::TestCase
     assert length > 9000, "The test file #{path} is too short (#{length} bytes) to run these tests"
 
     [0..0, 42..88, 1234..1234, 100..9000, 0..(length-1), (length-1)..(length-1)].each do |range|
-      test_valid_range("bytes=#{range.begin}-#{range.end}", range, path, file)
+      assert_valid_range("bytes=#{range.begin}-#{range.end}", range, path, file)
     end
 
     [0, 100, length-100, length-1].each do |start|
-      test_valid_range("bytes=#{start}-", (start..length-1), path, file)
+      assert_valid_range("bytes=#{start}-", (start..length-1), path, file)
     end
 
     [1, 100, length-100, length-1, length].each do |range_length|
-      test_valid_range("bytes=-#{range_length}", (length-range_length..length-1), path, file)
+      assert_valid_range("bytes=-#{range_length}", (length-range_length..length-1), path, file)
     end
 
     # Some valid ranges that exceed the length of the file:
-    test_valid_range("bytes=100-999999", (100..length-1), path, file)
-    test_valid_range("bytes=100-#{length}", (100..length-1), path, file)
-    test_valid_range("bytes=-#{length}", (0..length-1), path, file)
-    test_valid_range("bytes=-#{length+1}", (0..length-1), path, file)
-    test_valid_range("bytes=-999999", (0..length-1), path, file)
+    assert_valid_range("bytes=100-999999", (100..length-1), path, file)
+    assert_valid_range("bytes=100-#{length}", (100..length-1), path, file)
+    assert_valid_range("bytes=-#{length}", (0..length-1), path, file)
+    assert_valid_range("bytes=-#{length+1}", (0..length-1), path, file)
+    assert_valid_range("bytes=-999999", (0..length-1), path, file)
   end
 
   it 'correctly ignores syntactically invalid range requests' do
