@@ -244,7 +244,7 @@ Utilisera le template: <tt>./views/index.nokogiri</tt>.
 
 === Templates Sass
 
-Le gem sass est nécessaire pour utiliser la fonction de rendu Sass:
+Le gem haml est nécessaire pour utiliser la fonction de rendu Sass:
 
   ## Chargez la bibliothèque haml ou sass dans votre application
   require 'sass'
@@ -268,7 +268,7 @@ et supportent aussi la réécriture (surcharge) comme dans cet exemple.
 
 === Scss Templates
 
-Le gem sass est nécessaire pour utiliser la fonction de rendu Scss:
+Le gem haml est nécessaire pour utiliser la fonction de rendu Scss:
 
   ## Chargez la bibliothèque haml ou sass dans votre application
   require 'sass'
