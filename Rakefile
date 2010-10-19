@@ -16,7 +16,7 @@ end
 if !ENV['NO_TEST_FIX'] and RUBY_VERSION == '1.9.2' and RUBY_PATCHLEVEL == 0
   # Avoids seg fault
   task(:test) do
-    second_run  = %w[settings rdoc markaby].map { |l| "test/#{l}_test.rb" }
+    second_run  = %w[settings rdoc markaby templates static].map { |l| "test/#{l}_test.rb" }
     first_run   = Dir.glob('test/*_test.rb') - second_run
     [first_run, second_run].each { |f| sh "testrb #{f.join ' '}" }
   end

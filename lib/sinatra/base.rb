@@ -7,7 +7,7 @@ require 'sinatra/showexceptions'
 require 'tilt'
 
 module Sinatra
-  VERSION = '1.1.0'
+  VERSION = '1.1.a'
 
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
@@ -154,9 +154,8 @@ module Sinatra
       stat = File.stat(path)
       last_modified stat.mtime
 
-      content_type mime_type(opts[:type]) ||
-        opts[:type] ||
-        mime_type(File.extname(path)) ||
+      content_type opts[:type] ||
+        File.extname(path) ||
         response['Content-Type'] ||
         'application/octet-stream'
 
@@ -312,13 +311,9 @@ module Sinatra
       return unless time
       time = time.to_time if time.respond_to?(:to_time)
       time = Time.parse time.strftime('%FT%T%:z') if time.respond_to?(:strftime)
-      time = time.httpdate if time.respond_to?(:httpdate)
-      response['Last-Modified'] = time.to_s
-      begin
-        halt 304 if time <= Time.httpdate(request.env['HTTP_IF_MODIFIED_SINCE']).httpdate
-      rescue ArgumentError
-      end
-      time
+      response['Last-Modified'] = time.respond_to?(:httpdate) ? time.httpdate : time.to_s
+      halt 304 if Time.httpdate(request.env['HTTP_IF_MODIFIED_SINCE']) >= time
+    rescue ArgumentError
     end
 
     # Set the response entity tag (HTTP 'ETag' header) and halt if conditional

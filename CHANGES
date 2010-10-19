@@ -1,8 +1,5 @@
 = 1.1 / Not Yet Released
 
- * Now supports byte-range requests (the HTTP_RANGE header) for static files.
-   Multi-range requests are not supported, however. (Jens Alfke)
-
  * Before and after filters now support pattern matching, including the
    ability to use captures: "before('/user/:name') { |name| ... }". This
    avoids manual path checking. No performance loss if patterns are avoided.
@@ -16,6 +13,9 @@
    `markaby`, and `coffee` rendering methods for rendering Liquid, Markdown,
    Nokogiri, Textile, RDoc, Radius, Markaby and CoffeeScript templates.
    (Konstantin Haase)
+
+ * Now supports byte-range requests (the HTTP_RANGE header) for static files.
+   Multi-range requests are not supported, however. (Jens Alfke)
 
  * You can now use #settings method from class and top level for convenience.
    (Konstantin Haase)
