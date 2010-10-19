@@ -49,10 +49,10 @@
  * 599 now is a legal status code. (Steve Shreeve)
 
  * This release is compatible with Ruby 1.9.2. Sinatra was trying to read
-   none existent files Ruby added to the call stack. (Shota Fukumori,
+   non existent files Ruby added to the call stack. (Shota Fukumori,
    Konstantin Haase)
 
- * Prevents a memory leak on 1.8.6 is production mode. Note, however, that
+ * Prevents a memory leak on 1.8.6 in production mode. Note, however, that
    this is due to a bug in 1.8.6 and request will have the additional overhead
    of parsing templates again on that version. It is recommended to use at
    least Ruby 1.8.7. (Konstantin Haase)
