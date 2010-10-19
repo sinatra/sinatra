@@ -522,6 +522,19 @@ class HelpersTest < Test::Unit::TestCase
             assert_equal 200, status
             assert_equal 'Boo!', body
           end
+
+          it 'does not rely on string comparison' do
+            mock_app do
+              get '/compare' do
+                last_modified "Mon, 18 Oct 2010 20:57:11 GMT"
+                "foo"
+              end
+            end
+
+            get '/compare', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'Sun, 26 Sep 2010 23:43:52 GMT' }
+            assert_equal 200, status
+            assert_equal 'foo', body
+          end
         end
 
         context "when the resource has been modified on the exact If-Modified-Since header date" do
