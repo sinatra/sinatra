@@ -171,7 +171,7 @@ Ez pedig a <tt>./views/index.builder</tt> állományt fogja renderelni.
 
 === Sass sablonok
 
-Sass sablonok használatához szükség lesz a sass gem-re vagy könyvtárra:
+Sass sablonok használatához szükség lesz a haml gem-re vagy könyvtárra:
 
   ## Be kell importálni a haml, vagy a sass könyvtárat
   require 'sass'

@@ -247,7 +247,7 @@ Renderiza <tt>./views/index.nokogiri</tt>.
 
 === Plantillas Sass
 
-La gem/librería sass es necesaria para renderizar plantillas Sass:
+La gem/librería haml es necesaria para renderizar plantillas Sass:
 
   ## Vas a necesitar requerir haml o sass en tu app
   require 'sass'
@@ -271,7 +271,7 @@ y reemplazadas individualmente.
 
 === Plantillas Scss
 
-La gem/librería sass es necesaria para renderizar plantillas Scss:
+La gem/librería haml es necesaria para renderizar plantillas Scss:
 
   ## Vas a necesitar requerir haml o sass en tu app
   require 'sass'
