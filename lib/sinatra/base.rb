@@ -130,13 +130,9 @@ module Sinatra
     def content_type(type, params={})
       mime_type = mime_type(type)
       fail "Unknown media type: %p" % type if mime_type.nil?
-      params[:charset] ||= defined?(Encoding) ? Encoding.default_external.to_s.downcase : 'utf-8'
-      if params.any?
-        params = params.collect { |kv| "%s=%s" % kv }.join(', ')
-        response['Content-Type'] = [mime_type, params].join(";")
-      else
-        response['Content-Type'] = mime_type
-      end
+      params[:charset] ||= params.delete('charset') ||
+        defined?(Encoding) ? Encoding.default_external.to_s.downcase : 'utf-8'
+      response['Content-Type'] = "#{mime_type};#{params.map { |kv| kv.join('=') }.join(', ')}"
     end
 
     # Set the Content-Disposition to "attachment" with the specified filename,
