@@ -245,7 +245,7 @@ Renders <tt>./views/index.nokogiri</tt>.
 
 === Sass Templates
 
-The sass gem/library is required to render Sass templates:
+The haml gem/library is required to render Sass templates:
 
   ## You'll need to require haml or sass in your app
   require 'sass'
@@ -269,7 +269,7 @@ and overridden on an individual basis.
 
 === Scss Templates
 
-The sass gem/library is required to render Scss templates:
+The haml gem/library is required to render Scss templates:
 
   ## You'll need to require haml or sass in your app
   require 'sass'
