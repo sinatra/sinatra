@@ -154,9 +154,8 @@ module Sinatra
       stat = File.stat(path)
       last_modified stat.mtime
 
-      content_type mime_type(opts[:type]) ||
-        opts[:type] ||
-        mime_type(File.extname(path)) ||
+      content_type opts[:type] ||
+        File.extname(path) ||
         response['Content-Type'] ||
         'application/octet-stream'
 
