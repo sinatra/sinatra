@@ -313,12 +313,12 @@ e pode modificar a requisição e a reposta. Variáveis de instância setadas no
 filtros são acessadas através de rotas e templates:
 
   before do
-    @note = 'Oi!'
+    @nota = 'Oi!'
     request.path_info = '/foo/bar/baz'
   end
 
   get '/foo/*' do
-    @note #=> 'Oi!'
+    @nota #=> 'Oi!'
     params[:splat] #=> 'bar/baz'
   end
 
@@ -361,55 +361,55 @@ Ou também...
 
 Com cabeçalhos...
 
-  halt 402, {'Content-Type' => 'text/plain'}, 'revenge'
+  halt 402, {'Content-Type' => 'text/plain'}, 'revanche'
 
 == Passing
 
-A route can punt processing to the next matching route using <tt>pass</tt>:
+Uma rota pode processar aposta para a próxima rota correspondente usando <tt>pass</tt>:
 
-  get '/guess/:who' do
-    pass unless params[:who] == 'Frank'
-    'You got me!'
+  get '/adivinhar/:quem' do
+    pass unless params[:quem] == 'Frank'
+    'Você me pegou!'
   end
 
-  get '/guess/*' do
-    'You missed!'
+  get '/adivinhar/*' do
+    'Você falhou!'
   end
 
-The route block is immediately exited and control continues with the next
-matching route. If no matching route is found, a 404 is returned.
+O bloqueio da rota é imediatamente encerrado e o controle continua com a próxima
+rota de parâmetro. Se o parâmetro da rota não for encontrado, um 404 é retornado.
 
-== Configuration
+== Configuração
 
-Run once, at startup, in any environment:
+Rodando uma vez, na inicialização, em qualquer ambiente:
 
   configure do
     ...
   end
 
-Run only when the environment (RACK_ENV environment variable) is set to
+Rodando somente quando o ambiente (RACK_ENV environment variável) é setado para
 <tt>:production</tt>:
 
   configure :production do
     ...
   end
 
-Run when the environment is set to either <tt>:production</tt> or
+Rodando quando o ambiente é setado para <tt>:production</tt> ou
 <tt>:test</tt>:
 
   configure :production, :test do
     ...
   end
 
-== Error handling
+== Tratamento de Erros
 
-Error handlers run within the same context as routes and before filters, which
+Tratamento de erros rodam dentro do mesmo contexto como rotas e filtros before, which
 means you get all the goodies it has to offer, like <tt>haml</tt>, <tt>erb</tt>,
 <tt>halt</tt>, etc.
 
-=== Not Found
+=== Não Encontrado
 
-When a <tt>Sinatra::NotFound</tt> exception is raised, or the response's status
+Quando um <tt>Sinatra::NotFound</tt> exception é levantada, ou o response's status
 code is 404, the <tt>not_found</tt> handler is invoked:
 
   not_found do
@@ -489,11 +489,11 @@ Sinatra makes building Rack middleware pipelines a cinch via a top-level
   use Rack::Lint
   use MyCustomMiddleware
 
-  get '/hello' do
-    'Hello World'
+  get '/ola' do
+    'Olá mundo'
   end
 
-The semantics of +use+ are identical to those defined for the
+A semântica of +use+ are identical to those defined for the
 Rack::Builder[http://rack.rubyforge.org/doc/classes/Rack/Builder.html] DSL
 (most frequently used from rackup files). For example, the +use+ method
 accepts multiple/variable args as well as blocks:
@@ -507,11 +507,11 @@ debugging, URL routing, authentication, and session handling. Sinatra uses
 many of of these components automatically based on configuration so you
 typically don't have to +use+ them explicitly.
 
-== Testing
+== Testando
 
-Sinatra tests can be written using any Rack-based testing library
-or framework. {Rack::Test}[http://gitrdoc.com/brynary/rack-test] is
-recommended:
+Testes no Sinatra podem ser escritos utilizando qualquer biblioteca ou framework
+de teste baseados no Rack. {Rack::Test}[http://gitrdoc.com/brynary/rack-test] é
+recomendado:
 
   require 'my_sinatra_app'
   require 'rack/test'
@@ -525,7 +525,7 @@ recommended:
 
     def test_my_default
       get '/'
-      assert_equal 'Hello World!', last_response.body
+      assert_equal 'Ola Mundo!', last_response.body
     end
 
     def test_with_params
@@ -554,23 +554,23 @@ etc.). That's where Sinatra::Base comes into play:
 
   require 'sinatra/base'
 
-  class MyApp < Sinatra::Base
+  class MinhaApp < Sinatra::Base
     set :sessions, true
     set :foo, 'bar'
 
     get '/' do
-      'Hello world!'
+      'Ola mundo!'
     end
   end
 
-The MyApp class is an independent Rack component that can act as
+A classe MinhaApp é an independent Rack component that can act as
 Rack middleware, a Rack application, or Rails metal. You can +use+ or
 +run+ this class from a rackup +config.ru+ file; or, control a server
 component shipped as a library:
 
    MyApp.run! :host => 'localhost', :port => 9090
 
-The methods available to Sinatra::Base subclasses are exactly as those
+Os métodos disponíveis para Sinatra::Base subclasses are exactly as those
 available via the top-level DSL. Most top-level apps can be converted to
 Sinatra::Base components with two modifications:
 
@@ -592,7 +592,7 @@ top-level. Have a look at the code for yourself: here's the
 {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
 being {included into the main namespace}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28]
 
-== Command line
+== Linha de Comando
 
 Sinatra applications can be run directly:
 
@@ -628,14 +628,14 @@ Alternatively, you can add the <tt>sinatra/lib</tt> directory to the
     "I'm running version " + Sinatra::VERSION
   end
 
-To update the Sinatra sources in the future:
+Para atualizar o código do Sinatra no futuro:
 
-  cd myproject/sinatra
+  cd meuprojeto/sinatra
   git pull
 
-== More
+== Mais
 
-* {Project Website}[http://www.sinatrarb.com/] - Additional documentation,
+* {Project Website}[http://www.sinatrarb.com/] - Documentação adicional,
   news, and links to other resources.
 * {Contributing}[http://www.sinatrarb.com/contributing] - Find a bug? Need
   help? Have a patch?
