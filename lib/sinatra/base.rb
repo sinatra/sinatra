@@ -130,8 +130,7 @@ module Sinatra
     def content_type(type, params={})
       mime_type = mime_type(type)
       fail "Unknown media type: %p" % type if mime_type.nil?
-      params[:charset] ||= params.delete('charset') ||
-        defined?(Encoding) ? Encoding.default_external.to_s.downcase : 'utf-8'
+      params[:charset] ||= params.delete('charset') || settings.default_encoding
       response['Content-Type'] = "#{mime_type};#{params.map { |kv| kv.join('=') }.join(', ')}"
     end
 
@@ -1211,15 +1210,10 @@ module Sinatra
     # The latter might not be necessary if Rack handles it one day.
     # Keep an eye on Rack's LH #100.
     if defined? Encoding
-      if Encoding.default_external.to_s =~ /^ASCII/
-        Encoding.default_external = "UTF-8"
-      end
-      Encoding.default_internal ||= Encoding.default_external
-
       def force_encoding(data)
         return if data == self || data.is_a?(Tempfile)
         if data.respond_to? :force_encoding
-          data.force_encoding(Encoding.default_external)
+          data.force_encoding settings.default_encoding
         elsif data.respond_to? :each_value
           data.each_value { |v| force_encoding(v) }
         elsif data.respond_to? :each
@@ -1230,7 +1224,6 @@ module Sinatra
       def force_encoding(*) end
     end
 
-
     reset!
 
     set :environment, (ENV['RACK_ENV'] || :development).to_sym
@@ -1240,6 +1233,7 @@ module Sinatra
     set :sessions, false
     set :logging, false
     set :method_override, false
+    set :default_encoding, "utf-8"
 
     class << self
       alias_method :methodoverride?, :method_override?
