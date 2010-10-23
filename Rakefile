@@ -124,4 +124,16 @@ if defined?(Gem)
     File.open(f.name, 'w') { |io| io.write(spec) }
     puts "updated #{f.name}"
   end
+
+  task 'release' => package('.gem') do
+    sh <<-SH
+      gem install #{package('.gem')} --local &&
+      gem push #{package('.gem')}  &&
+      git add sinatra.gemspec &&
+      git commit --allow-empty -m 'Release #{source_version}'  &&
+      git tag -s #{source_version} -m 'Release #{source_version}'  &&
+      git push && (git push sinatra || true) &&
+      git push --tags && (git push sinatra --tags || true)
+    SH
+  end
 end
