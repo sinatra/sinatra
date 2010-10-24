@@ -1,4 +1,4 @@
-= 1.1 / Not Yet Released
+= 1.1.0 / 2010-10-24
 
  * Before and after filters now support pattern matching, including the
    ability to use captures: "before('/user/:name') { |name| ... }". This

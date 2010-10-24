@@ -130,8 +130,8 @@ if defined?(Gem)
       gem install #{package('.gem')} --local &&
       gem push #{package('.gem')}  &&
       git add sinatra.gemspec &&
-      git commit --allow-empty -m 'Release #{source_version}'  &&
-      git tag -s #{source_version} -m 'Release #{source_version}'  &&
+      git commit --allow-empty -m '#{source_version} release'  &&
+      git tag -s #{source_version} -m '#{source_version} release'  &&
       git push && (git push sinatra || true) &&
       git push --tags && (git push sinatra --tags || true)
     SH
