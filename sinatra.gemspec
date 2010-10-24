@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'sinatra'
-  s.version = '1.1.b'
-  s.date = '2010-10-23'
+  s.version = '1.1.0'
+  s.date = '2010-10-24'
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
     README.hu.rdoc
     README.jp.rdoc
     README.rdoc
+    README.zh.rdoc
     Rakefile
     lib/sinatra.rb
     lib/sinatra/base.rb
@@ -109,7 +110,7 @@ Gem::Specification.new do |s|
 
   s.test_files = s.files.select {|path| path =~ /^test\/.*_test.rb/}
 
-  s.extra_rdoc_files = %w[README.rdoc README.de.rdoc README.jp.rdoc README.fr.rdoc README.es.rdoc README.hu.rdoc LICENSE]
+  s.extra_rdoc_files = %w[README.rdoc README.de.rdoc README.jp.rdoc README.fr.rdoc README.es.rdoc README.hu.rdoc README.zh.rdoc LICENSE]
   s.add_dependency 'rack', '~> 1.1'
   s.add_dependency 'tilt', '~> 1.1'
   s.add_development_dependency 'rake'

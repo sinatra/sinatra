@@ -1,4 +1,4 @@
-= 1.1 / Not Yet Released
+= 1.1.0 / 2010-10-24
 
  * Before and after filters now support pattern matching, including the
    ability to use captures: "before('/user/:name') { |name| ... }". This
@@ -35,10 +35,10 @@
    content type corresponding to the rendering engine rather than just using
    "text/html". (Konstantin Haase)
 
- * README is now available in French (Mickael Riga), German (Bernhard Essl,
-   Konstantin Haase, burningTyger), Hungarian (Janos Hardi) and Spanish
-   (Gabriel Andretta). The extremely outdated Japanese README has been updated
-   (Kouhei Yanagita).
+ * README is now available in Chinese (Wu Jiang), French (Mickael Riga),
+   German (Bernhard Essl, Konstantin Haase, burningTyger), Hungarian (Janos
+   Hardi) and Spanish (Gabriel Andretta). The extremely outdated Japanese
+   README has been updated (Kouhei Yanagita).
 
  * It is now possible to access Sinatra's template_cache from the outside.
    (Nick Sutterer)
@@ -66,8 +66,7 @@
    application under a subpath in Rails 3, the PATH_INFO is not prefixed with
    a slash and no routes did match. (José Valim)
 
- * Better handling of encodings in 1.9, defaults params encoding to UTF-8 and
-   respects Encoding.default_internal and Encoding.default_external.
+ * Better handling of encodings in 1.9, defaults params encoding to UTF-8.
    (Konstantin Haase)
 
  * `show_exeptions` handling is now triggered after custom error handlers, if
