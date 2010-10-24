@@ -1,0 +1,1024 @@
+= Sinatra
+
+Sinatra是一个基于Ruby语言，以最小精力为代价快速创建web应用为目的的DSL
+（领域专属语言）：
+
+  # myapp.rb
+  require 'sinatra'
+
+  get '/' do
+    'Hello world!'
+  end
+
+安装gem然后运行：
+
+  gem install sinatra
+  ruby rubygems myapp.rb
+
+在该地址查看： http://localhost:4567
+
+== 路由
+
+在Sinatra中，一个路由是一个HTTP方法与URL匹配范式的配对。
+每个路由都与一个代码块关联：
+
+  get '/' do
+    .. 显示一些事物 ..
+  end
+
+  post '/' do
+    .. 创建一些事物 ..
+  end
+
+  put '/' do
+    .. 更新一些事物 ..
+  end
+
+  delete '/' do
+    .. 消灭一些事物 ..
+  end
+
+路由按照它们被定义的顺序进行匹配。
+第一个与请求匹配的路由会被调用。
+
+路由范式可以包括具名参数，
+可通过<tt>params</tt>哈希表获得：
+
+  get '/hello/:name' do
+    # 匹配 "GET /hello/foo" 和 "GET /hello/bar"
+    # params[:name] 的值是 'foo' 或者 'bar'
+    "Hello #{params[:name]}!"
+  end
+
+你同样可以通过代码块参数获得具名参数：
+
+  get '/hello/:name' do |n|
+    "Hello #{n}!"
+  end
+
+路由范式也可以包含通配符参数，
+可以通过<tt>params[:splat]</tt> 数组获得。
+
+  get '/say/*/to/*' do
+    # 匹配 /say/hello/to/world
+    params[:splat] # => ["hello", "world"]
+  end
+
+  get '/download/*.*' do
+    # 匹配 /download/path/to/file.xml
+    params[:splat] # => ["path/to/file", "xml"]
+  end
+
+通过正则表达式匹配的路由：
+
+  get %r{/hello/([\w]+)} do
+    "Hello, #{params[:captures].first}!"
+  end
+
+或者使用代码块参数：
+
+  get %r{/hello/([\w]+)} do |c|
+    "Hello, #{c}!"
+  end
+
+=== 条件
+
+路由也可以包含多样的匹配条件，比如user agent：
+
+  get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
+    "你正在使用Songbird，版本是 #{params[:agent][0]}"
+  end
+
+  get '/foo' do
+    # 匹配除Songbird以外的浏览器
+  end
+
+其他可选的条件是 +host_name+ 和 +provides+：
+
+  get '/', :host_name => /^admin\./ do
+    "管理员区域，无权进入！"
+  end
+
+  get '/', :provides => 'html' do
+    haml :index
+  end
+  
+  get '/', :provides => ['rss', 'atom', 'xml'] do
+    builder :feed
+  end
+
+你也可以很轻松地定义自己的条件：
+
+  set(:probability) { |value| condition { rand <= value } }
+  
+  get '/win_a_car', :probability => 0.1 do
+    "You won!"
+  end
+  
+  get '/win_a_car' do
+    "Sorry, you lost."
+  end
+
+=== 返回值
+
+一个路由代码块的返回值最少决定了返回给HTTP客户端的响应体，
+或者至少决定了在Rack堆栈中的下一个中间件。
+大多数情况下，将是一个字符串，就像上面的例子中的一样。
+但是其他值也是可以接受的。
+
+你可以返回任何对象，或者是一个合理的Rack响应，
+Rack body对象或者HTTP状态码：
+
+* 一个包含三个元素的数组: <tt>[状态 (Fixnum), 头 (Hash), 响应体 (回应 #each)]</tt>
+* 一个包含两个元素的数组: <tt>[状态 (Fixnum), 响应体 (回应 #each)]</tt>
+* 一个能够回应 <tt>#each</tt> ，只传回字符串的对象
+* 一个代表状态码的数字
+
+那样，我们可以轻松的实现例如流式传输的例子：
+
+    class Stream
+      def each
+        100.times { |i| yield "#{i}\n" }
+      end
+    end
+
+    get('/') { Stream.new }
+
+== 静态文件
+
+静态文件是从 <tt>./public</tt> 目录提供服务。你可以通过设置<tt>:public</tt>
+选项设定一个不同的位置：
+
+  set :public, File.dirname(__FILE__) + '/static'
+
+请注意public目录名并没有被包含在URL之中。文件
+<tt>./public/css/style.css</tt>是通过
+<tt>http://example.com/css/style.css</tt>地址访问。
+
+== 视图 / 模板
+
+模板被假定直接位于<tt>./views</tt>目录。
+要使用不同的视图目录：
+
+  set :views, File.dirname(__FILE__) + '/templates'
+
+请记住一件非常重要的事情，你只可以使用符号引用模板，
+即使它们在子目录下
+（在这种情况下，使用 <tt>:'subdir/template'</tt>）。
+你必须使用一个符号，因为渲染方法会直接地渲染
+任何传入的字符串。 
+
+=== Haml模板
+
+需要引入haml gem/library以渲染 HAML 模板：
+
+  ## 你需要在你的应用中引入 haml
+  require 'haml'
+
+  get '/' do
+    haml :index
+  end
+
+渲染 <tt>./views/index.haml</tt>。
+
+{Haml的选项}[http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options]
+可以通过Sinatra的配置全局设定，
+参见 {选项和配置}[http://www.sinatrarb.com/configuration.html]，
+也可以个别的被覆盖。
+
+  set :haml, {:format => :html5 } # 默认的Haml输出格式是 :xhtml
+
+  get '/' do
+    haml :index, :haml_options => {:format => :html4 } # 被覆盖，变成:html4
+  end
+
+
+=== Erb模板
+
+  ## 你需要在你的应用中引入 erb
+  require 'erb'
+
+  get '/' do
+    erb :index
+  end
+
+渲染 <tt>./views/index.erb</tt>
+
+=== Erubis
+
+需要引入erubis gem/library以渲染 erubis 模板：
+
+  ## 你需要在你的应用中引入 erubis
+  require 'erubis'
+
+  get '/' do
+    erubis :index
+  end
+
+渲染 <tt>./views/index.erubis</tt>
+
+=== Builder 模板
+
+需要引入 builder gem/library 以渲染 builder templates：
+
+  ## 需要在你的应用中引入builder
+  require 'builder'
+
+  get '/' do
+    builder :index
+  end
+
+渲染 <tt>./views/index.builder</tt>。
+
+=== Nokogiri 模板
+
+需要引入 nokogiri gem/library 以渲染 nokogiri 模板：
+
+  ## 需要在你的应用中引入 nokogiri
+  require 'nokogiri'
+
+  get '/' do
+    nokogiri :index
+  end
+
+渲染 <tt>./views/index.nokogiri</tt>。
+
+=== Sass 模板 
+
+需要引入 haml gem/library 以渲染 Sass 模板：
+
+  ## 需要在你的应用中引入 haml 或者 sass 
+  require 'sass'
+
+  get '/stylesheet.css' do
+    sass :stylesheet
+  end
+
+渲染 <tt>./views/stylesheet.sass</tt>。
+
+{Sass 的选项}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
+可以通过Sinatra选项全局设定，
+参考 {选项和配置（英文）}[http://www.sinatrarb.com/configuration.html],
+也可以在个体的基础上覆盖。
+
+  set :sass, {:style => :compact } # 默认的 Sass 样式是 :nested
+
+  get '/stylesheet.css' do
+    sass :stylesheet, :style => :expanded # 覆盖
+  end
+
+=== Scss 模板 
+
+需要引入 haml gem/library 来渲染 Scss templates：
+
+  ## 需要在你的应用中引入 haml 或者 sass
+  require 'sass'
+
+  get '/stylesheet.css' do
+    scss :stylesheet
+  end
+
+渲染 <tt>./views/stylesheet.scss</tt>。
+
+{Scss的选项}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
+可以通过Sinatra选项全局设定，
+参考 {选项和配置（英文）}[http://www.sinatrarb.com/configuration.html],
+也可以在个体的基础上覆盖。
+
+  set :scss, :style => :compact # default Scss style is :nested
+
+  get '/stylesheet.css' do
+    scss :stylesheet, :style => :expanded # overridden
+  end
+
+=== Less 模板 
+
+需要引入 less gem/library 以渲染 Less 模板：
+
+  ## 需要在你的应用中引入 less
+  require 'less'
+
+  get '/stylesheet.css' do
+    less :stylesheet
+  end
+
+渲染 <tt>./views/stylesheet.less</tt>。
+
+=== Liquid 模板 
+
+需要引入 liquid gem/library 来渲染 Liquid 模板：
+
+  ## 需要在你的应用中引入 liquid
+  require 'liquid'
+
+  get '/' do
+    liquid :index
+  end
+
+渲染 <tt>./views/index.liquid</tt>。
+
+因为你不能在Liquid 模板中调用 Ruby 方法 (除了 +yield+) ，
+你几乎总是需要传递locals给它：
+
+  liquid :index, :locals => { :key => 'value' }
+
+=== Markdown 模板
+
+需要引入 rdiscount gem/library 以渲染 Markdown 模板：
+
+  ## 需要在你的应用中引入rdiscount
+  require "rdiscount"
+  
+  get '/' do
+    markdown :index
+  end
+
+渲染 <tt>./views/index.markdown</tt> 
+(+md+ 和 +mkd+ 也是合理的文件扩展名)。
+
+在markdown中是不可以调用方法的，也不可以传递 locals给它。你因此一般会结合其他的渲染引擎来使用它：
+
+  erb :overview, :locals => { :text => markdown(:introduction) }
+
+请注意你也可以从其他模板中调用 markdown 方法：
+
+  %h1 Hello From Haml!
+  %p= markdown(:greetings)
+
+=== Textile 模板
+
+需要引入 RedCloth gem/library 以渲染 Textile 模板：
+
+  ## 在你的应用中引入redcloth
+  require "redcloth"
+
+  get '/' do
+    textile :index
+  end
+
+渲染 <tt>./views/index.textile</tt>。
+
+在textile中是不可以调用方法的，也不可以传递 locals给它。你因此一般会结合其他的渲染引擎来使用它：
+
+  erb :overview, :locals => { :text => textile(:introduction) }
+
+请注意你也可以从其他模板中调用textile方法：
+
+  %h1 Hello From Haml!
+  %p= textile(:greetings)
+
+=== RDoc 模板
+
+需要引入 RDoc gem/library 以渲染RDoc模板：
+
+  ## 需要在你的应用中引入rdoc
+  require "rdoc"
+
+  get '/' do
+    rdoc :index
+  end
+
+渲染 <tt>./views/index.rdoc</tt>。
+
+在rdoc中是不可以调用方法的，也不可以传递 locals给它。你因此一般会结合其他的渲染引擎来使用它：
+
+  erb :overview, :locals => { :text => rdoc(:introduction) }
+
+请注意你也可以从其他模板中调用rdoc方法：
+
+  %h1 Hello From Haml!
+  %p= rdoc(:greetings)
+
+=== Radius 模板
+
+需要引入 radius gem/library 以渲染 Radius 模板：
+
+  ## You'll need to require radius in your app
+  require 'radius'
+
+  get '/' do
+    radius :index
+  end
+
+渲染 <tt>./views/index.radius</tt>。
+
+因为你不能在Liquid 模板中调用 Ruby 方法 (除了 +yield+) ，
+你几乎总是需要传递locals给它：
+
+  radius :index, :locals => { :key => 'value' }
+
+=== Markaby 模板 
+
+需要引入markaby gem/library以渲染Markaby模板：
+
+  ##需要在你的应用中引入 markaby
+  require 'markaby'
+
+  get '/' do
+    markaby :index
+  end
+
+渲染 <tt>./views/index.mab</tt>。
+
+=== CoffeeScript 模板
+
+需要引入 coffee-script gem/library 并在路径中存在 `coffee` 二进制文件以渲染
+CoffeeScript 模板：
+
+  ## 需要在你的应用中引入coffee-script
+  require 'coffee-script'
+
+  get '/application.js' do
+    coffee :application
+  end
+
+渲染 <tt>./views/application.coffee</tt>。
+
+=== 内联模板字符串
+
+  get '/' do
+    haml '%div.title Hello World'
+  end
+
+渲染内联模板字符串。
+
+=== 在模板中访问变量
+
+模板和路由执行器在同样的上下文求值。
+在路由执行器中赋值的实例变量可以直接被模板访问。
+
+  get '/:id' do
+    @foo = Foo.find(params[:id])
+    haml '%h1= @foo.name'
+  end
+
+或者，显式地指定一个本地变量的哈希：
+
+  get '/:id' do
+    foo = Foo.find(params[:id])
+    haml '%h1= foo.name', :locals => { :foo => foo }
+  end
+
+典型的使用情况是在别的模板中按照部分模板的方式来渲染。
+
+
+=== 内联模板
+
+模板可以在源文件的末尾定义：
+
+  require 'sinatra'
+
+  get '/' do
+    haml :index
+  end
+
+  __END__
+
+  @@ layout
+  %html
+    = yield
+
+  @@ index
+  %div.title Hello world!!!!!
+
+注意：引入sinatra的源文件中定义的内联模板才能被自动载入。
+如果你在其他源文件中有内联模板，
+需要显式执行调用<tt>enable :inline_templates</tt>。
+
+=== 具名模板
+
+模板可以通过使用顶层 <tt>template</tt> 方法定义：
+
+  template :layout do
+    "%html\n  =yield\n"
+  end
+
+  template :index do
+    '%div.title Hello World!'
+  end
+
+  get '/' do
+    haml :index
+  end
+
+如果存在名为"layout"的模板，该模板会在每个模板渲染的时候被使用。
+你可以通过传送 <tt>:layout => false</tt>来禁用。
+
+  get '/' do
+    haml :index, :layout => !request.xhr?
+  end
+
+== 辅助方法
+
+使用顶层的 <tt>helpers</tt> 方法来定义辅助方法，
+以便在路由处理器和模板中使用：
+
+  helpers do
+    def bar(name)
+      "#{name}bar"
+    end
+  end
+
+  get '/:name' do
+    bar(params[:name])
+  end
+
+== 过滤器
+
+前置过滤器在每个请求前，在请求的上下文环境中被执行，
+而且可以修改请求和响应。
+在过滤器中设定的实例变量可以被路由和模板访问：
+
+  before do
+    @note = 'Hi!'
+    request.path_info = '/foo/bar/baz'
+  end
+
+  get '/foo/*' do
+    @note #=> 'Hi!'
+    params[:splat] #=> 'bar/baz'
+  end
+
+后置过滤器在每个请求之后，在请求的上下文环境中执行，
+而且可以修改请求和响应。
+在前置过滤器和路由中设定的实例变量可以被后置过滤器访问：
+
+  after do
+    puts response.status
+  end
+
+过滤器可以可选地带有范式，
+只有请求路径满足该范式时才会执行：
+
+  before '/protected/*' do
+    authenticate!
+  end
+
+  after '/create/:slug' do |slug|
+    session[:last_slug] = slug
+  end
+
+== 挂起
+
+要想直接地停止请求，在过滤器或者路由中使用：
+
+  halt
+
+你也可以指定挂起时的状态码：
+
+  halt 410
+
+或者消息体：
+
+  halt 'this will be the body'
+
+或者两者;
+
+  halt 401, 'go away!'
+
+也可以带消息头：
+
+  halt 402, {'Content-Type' => 'text/plain'}, 'revenge'
+
+== 让路
+
+一个路由可以放弃处理，将处理让给下一个匹配的路由，使用 <tt>pass</tt>：
+
+  get '/guess/:who' do
+    pass unless params[:who] == 'Frank'
+    'You got me!'
+  end
+
+  get '/guess/*' do
+    'You missed!'
+  end
+
+路由代码块被直接退出，控制流继续前进到下一个匹配的路由。
+如果没有匹配的路由，将返回404。
+
+== 访问请求对象
+
+传入的请求对象可以在请求层（过滤器，路由，错误处理）通过 `request` 方法被访问：
+
+  # 在 http://example.com/example 上运行的应用
+  get '/foo' do
+    request.body              # 被客户端设定的请求体（见下）
+    request.scheme            # "http"
+    request.script_name       # "/example"
+    request.path_info         # "/foo"
+    request.port              # 80
+    request.request_method    # "GET"
+    request.query_string      # ""
+    request.content_length    # request.body的长度
+    request.media_type        # request.body的媒体类型
+    request.host              # "example.com"
+    request.get?              # true (其他动词也具有类似方法)
+    request.form_data?        # false
+    request["SOME_HEADER"]    # SOME_HEADER header的值
+    request.referer           # 客户端的referer 或者 '/'
+    request.user_agent        # user agent (被 :agent 条件使用)
+    request.cookies           # 浏览器 cookies 哈希
+    request.xhr?              # 这是否是ajax请求？
+    request.url               # "http://example.com/example/foo"
+    request.path              # "/example/foo"
+    request.ip                # 客户端IP地址
+    request.secure?           # false
+    request.env               # Rack中使用的未处理的env哈希
+  end
+
+一些选项，例如 <tt>script_name</tt> 或者 <tt>path_info</tt> 
+也是可写的：
+
+  before { request.path_info = "/" }
+  
+  get "/" do
+    "all requests end up here"
+  end
+
+<tt>request.body</tt> 是一个IO或者StringIO对象：
+
+  post "/api" do
+    request.body.rewind  # 如果已经有人读了它
+    data = JSON.parse request.body.read
+    "Hello #{data['name']}!"
+  end
+
+== 配置
+
+运行一次，在启动的时候，在任何环境下：
+
+  configure do
+    ...
+  end
+
+只当环境 (RACK_ENV environment 变量) 被设定为
+<tt>:production</tt>的时候运行：
+
+  configure :production do
+    ...
+  end
+
+当环境被设定为 <tt>:production</tt> 或者
+<tt>:test</tt>的时候运行：
+
+  configure :production, :test do
+    ...
+  end
+
+== 错误处理
+
+错误处理在与路由和前置过滤器相同的上下文中运行，
+这意味着你可以使用许多好东西，比如 <tt>haml</tt>, <tt>erb</tt>,
+<tt>halt</tt>，等等。
+
+=== 未找到
+
+当一个 <tt>Sinatra::NotFound</tt> 错误被抛出的时候，
+或者响应状态码是404，<tt>not_found</tt> 处理器会被调用：
+
+  not_found do
+    'This is nowhere to be found'
+  end
+
+=== 错误
+
++error+ 处理器，在任何路由代码块或者过滤器抛出异常的时候会被调用。 
+异常对象可以通过<tt>sinatra.error</tt> Rack 变量获得：
+
+
+  error do
+    'Sorry there was a nasty error - ' + env['sinatra.error'].name
+  end
+
+自定义错误：
+
+  error MyCustomError do
+    'So what happened was...' + request.env['sinatra.error'].message
+  end
+
+那么，当这个发生的时候：
+
+  get '/' do
+    raise MyCustomError, 'something bad'
+  end
+
+你会得到：
+
+  So what happened was... something bad
+
+另一种替代方法是，为一个状态码安装错误处理器：
+
+  error 403 do
+    'Access forbidden'
+  end
+
+  get '/secret' do
+    403
+  end
+
+或者一个范围：
+
+  error 400..510 do
+    'Boom'
+  end
+
+在运行在development环境下时，Sinatra会安装特殊的
+<tt>not_found</tt> 和 <tt>error</tt> 处理器。
+
+== 媒体类型
+
+当使用 <tt>send_file</tt> 或者静态文件的适合，你的媒体类型可能
+Sinatra并不理解。使用 +mime_type+ 通过文件扩展名来注册它们：
+
+  mime_type :foo, 'text/foo'
+
+你也可以通过 +content_type+ 辅助方法使用：
+
+  content_type :foo
+
+== Rack 中间件
+
+Sinatra 依靠 Rack[http://rack.rubyforge.org/], 
+一个面向Ruby web框架的最小标准接口。
+Rack的一个最有趣的面向应用开发者的能力是支持“中间件”——坐落在服务器和你的应用之间，
+监视 并/或 操作HTTP请求/响应以
+提供多样类型的常用功能。
+
+Sinatra 让建立Rack中间件管道异常简单，
+通过顶层的 +use+ 方法：
+
+  require 'sinatra'
+  require 'my_custom_middleware'
+
+  use Rack::Lint
+  use MyCustomMiddleware
+
+  get '/hello' do
+    'Hello World'
+  end
+
++use+ 的语义和在Rack::Builder[http://rack.rubyforge.org/doc/classes/Rack/Builder.html] DSL
+(在rack文件中最频繁使用)
+中定义的完全一样。例如，+use+ 方法
+接受 多个/可变 参数，包括代码块：
+
+  use Rack::Auth::Basic do |username, password|
+    username == 'admin' && password == 'secret'
+  end
+
+Rack中分布有多样的标准中间件，针对日志，
+调试，URL路由，认证和session处理。
+Sinatra会自动使用这里面的大部分组件，
+所以你一般不需要显示地 +use+ 他们。
+
+== 测试
+
+Sinatra的测试可以使用任何基于Rack的测试程序库或者框架来编写。
+{Rack::Test}[http://gitrdoc.com/brynary/rack-test]
+是推荐候选：
+
+  require 'my_sinatra_app'
+  require 'test/unit'
+  require 'rack/test'
+
+  class MyAppTest < Test::Unit::TestCase
+    include Rack::Test::Methods
+
+    def app
+      Sinatra::Application
+    end
+
+    def test_my_default
+      get '/'
+      assert_equal 'Hello World!', last_response.body
+    end
+
+    def test_with_params
+      get '/meet', :name => 'Frank'
+      assert_equal 'Hello Frank!', last_response.body
+    end
+
+    def test_with_rack_env
+      get '/', {}, 'HTTP_USER_AGENT' => 'Songbird'
+      assert_equal "You're using Songbird!", last_response.body
+    end
+  end
+
+请注意: 内置的 Sinatra::Test 模块和 Sinatra::TestHarness 类
+在 0.9.2 版本已废弃。
+
+== Sinatra::Base - 中间件，程序库和模块化应用
+
+把你的应用定义在顶层，对于微型应用这会工作得很好，但是在
+构建可复用的组件时候会带来客观的不利，
+比如构建Rack中间件，Rails metal，带有服务器组件的简单程序库，
+或者甚至是Sinatra扩展。顶层的DSL污染了Object命名空间并
+假定了一个微型应用风格的配置 (例如, 单一的应用文件，
+./public 和 ./views 目录，日志，异常细节页面，等等）。
+这时应该让 Sinatra::Base 走到台前了：
+
+  require 'sinatra/base'
+
+  class MyApp < Sinatra::Base
+    set :sessions, true
+    set :foo, 'bar'
+
+    get '/' do
+      'Hello world!'
+    end
+  end
+
+MyApp 类是一个独立的Rack组件，可以扮演
+Rack中间件，一个Rack应用，或者 Rails metal。你可以从rackup +config.ru文件
++use+ 或者 +run+ 这个类；或者，
+直接控制作为程序库提供的服务器组件：
+
+   MyApp.run! :host => 'localhost', :port => 9090
+
+Sinatra::Base子类可用的方法实际上就是
+通过顶层DSL可用的方法。大部分顶层应用可以通过两个改变
+转换成Sinatra::Base组件：
+
+* 你的文件应当引入 +sinatra/base+ 而不是 +sinatra+;
+  否则，所有的Sinatra的 DSL 方法将会被引进到
+  主命名空间。
+* 把你的应用的路由，错误处理，过滤器和选项放在
+  一个Sinatra::Base的子类中。
+
+<tt>+Sinatra::Base+</tt> 是一张白纸。大部分的选项默认是禁用的，
+包含内置的服务器。参见 {选项和配置}[http://sinatra.github.com/configuration.html]
+查看可用选项的具体细节和他们的行为。
+
+=== 把Sinatra当成中间件来使用
+
+不仅Sinatra有能力使用其他的Rack中间件，任何Sinatra
+应用程序都可以反过来自身被当作中间件，被加在任何Rack断电前面。
+这个端点可以是任何Sinatra应用，或者任何基于Rack的应用程序
+(Rails/Ramaze/Camping/...)。
+
+  require 'sinatra/base'
+  
+  class LoginScreen < Sinatra::Base
+    enable :session
+    
+    get('/login') { haml :login }
+    
+    post('/login') do
+      if params[:name] = 'admin' and params[:password] = 'admin'
+        session['user_name'] = params[:name]
+      else
+        redirect '/login'
+      end
+    end
+  end
+  
+  class MyApp < Sinatra::Base
+    # 在前置过滤器前运行中间件
+    use LoginScreen
+    
+    before do
+      unless session['user_name']
+        halt "Access denied, please <a href='/login'>login</a>."
+      end
+    end
+    
+    get('/') { "Hello #{session['user_name']}." }
+  end
+
+== 变量域和绑定
+
+当前所在的变量域决定了哪些方法和变量是可用的。
+
+
+=== 应用/类 变量域
+
+每个Sinatra应用相当与Sinatra::Base的一个子类。
+如果你在使用顶层DSL(<tt>require 'sinatra'</tt>)，那么这个类就是
+Sinatra::Application，或者这个类就是你显式创建的子类。
+在类层面，你具有的方法类似于 `get` 或者 `before`，但是你不能访问
+`request` 对象或者 `session`, 因为对于所有的请求，
+只有单一的应用类。
+
+通过 `set` 创建的选项是类层面的方法：
+
+    class MyApp << Sinatra::Base
+      # 嘿，我在应用变量域！
+      set :foo, 42
+      foo # => 42
+      
+      get '/foo' do
+        # 嘿，我不再处于应用变量域了！
+      end
+    end
+
+在下列情况下你将拥有应用变量域的绑定：
+
+* 在应用类中
+* 在扩展中定义的方法
+* 传递给 `helpers` 的代码块
+* 用作`set`值的过程/代码块
+
+你可以访问变量域对象（就是应用类）就像这样：
+
+* 通过传递给代码块的对象 (<tt>configure { |c| ... }</tt>)
+* 在请求变量域中使用`settings`
+
+=== 请求/实例 变量域
+
+对于每个进入的请求，一个新的应用类的实例会被创建
+所有的处理器代码块在该变量域被运行。在这个变量域中，
+你可以访问 `request` 和 `session` 对象，或者调用渲染方法比如
+`erb` 或者 `haml`。你可以在请求变量域当中通过`settings`辅助方法
+访问应用变量域：
+
+  class MyApp << Sinatra::Base
+    # 嘿，我在应用变量域!
+    get '/define_route/:name' do
+      # 针对 '/define_route/:name' 的请求变量域
+      @value = 42
+      
+      settings.get("/#{params[:name]}") do
+        # 针对 "/#{params[:name]}" 的请求变量域
+        @value # => nil (并不是相同的请求)
+      end
+      
+      "Route defined!"
+    end
+  end
+
+在以下情况将获得请求变量域：
+
+* get/head/post/put/delete 代码块
+* 前置/后置 过滤器
+* 辅助方法
+* 模板/视图
+
+=== 代理变量域
+
+代理变量域只是把方法转送到类变量域。可是，
+他并非表现得100%类似于类变量域, 因为你并不能获得类的绑定: 
+只有显式地标记为供代理使用的方法才是可用的，
+而且你不能和类变量域共享变量/状态。(解释：你有了一个不同的
+`self`)。 你可以显式地增加方法代理，通过调用
+<tt>Sinatra::Delegator.delegate :method_name</tt>。
+
+在以下情况将获得代理变量域：
+
+* 顶层的绑定，如果你做过 <tt>require "sinatra"</tt>
+* 在扩展了 `Sinatra::Delegator` mixin的对象
+
+自己在这里看一下代码: 
+{Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
+已经 {被包含进了主命名空间}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28]。
+
+== 命令行
+
+Sinatra 应用可以被直接运行：
+
+  ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
+
+选项是：
+
+  -h # help
+  -p # 设定端口 (默认是 4567)
+  -o # 设定主机名 (默认是 0.0.0.0)
+  -e # 设定环境 (默认是 development)
+  -s # 限定 rack 服务器/处理器 (默认是 thin)
+  -x # 打开互斥标记锁 (默认是 off)
+
+== 紧追前沿
+
+如果你喜欢使用 Sinatra 的最新鲜的代码，创建一个本地克隆
+， 把<tt>sinatra/lib</tt> 目录添加到
+<tt>LOAD_PATH</tt>后运行你的应用：
+
+  cd myapp
+  git clone git://github.com/sinatra/sinatra.git
+  ruby -Isinatra/lib myapp.rb
+
+另一种方法是，你也可以在你的应用中，添加 <tt>sinatra/lib</tt> 目录到
+<tt>LOAD_PATH</tt>：
+
+  $LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
+  require 'rubygems'
+  require 'sinatra'
+
+  get '/about' do
+    "I'm running version " + Sinatra::VERSION
+  end
+
+在未来，要更新Sinatra源代码：
+
+  cd myproject/sinatra
+  git pull
+
+== 更多
+
+* {项目主页（英文）}[http://www.sinatrarb.com/] - 更多的文档，
+  新闻，和其他资源的链接。
+* {贡献}[http://www.sinatrarb.com/contributing] - 找到了一个bug？
+  需要帮助？有了一个 patch?
+* {问题追踪}[http://github.com/sinatra/sinatra/issues]
+* {Twitter}[http://twitter.com/sinatra]
+* {邮件列表}[http://groups.google.com/group/sinatrarb/topics]
+* {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] on http://freenode.net
