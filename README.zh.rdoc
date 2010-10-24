@@ -1,7 +1,7 @@
 = Sinatra
+<i>注：本文档仅仅是英文版的翻译，会出现内容没有及时更新的情况发生。如有不一致的地方，请以英文版为准。</i>
 
-Sinatra是一个基于Ruby语言，以最小精力为代价快速创建web应用为目的的DSL
-（领域专属语言）：
+Sinatra是一个基于Ruby语言，以最小精力为代价快速创建web应用为目的的DSL（领域专属语言）：
 
   # myapp.rb
   require 'sinatra'
