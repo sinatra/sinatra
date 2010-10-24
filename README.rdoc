@@ -623,7 +623,7 @@ The incoming request object can be accessed from request level (filter, routes, 
     request.path              # "/example/foo"
     request.ip                # client IP address
     request.secure?           # false
-    requuest.env              # raw env hash handed in by Rack
+    request.env               # raw env hash handed in by Rack
   end
 
 Some options, like <tt>script_name</tt> or <tt>path_info</tt> can also be
