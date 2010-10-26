@@ -264,7 +264,11 @@ module Sinatra
       end
 
       values = values.map { |value| value.to_s.tr('_','-') }
-      hash.each { |k,v| values << [k.to_s.tr('_', '-'), v].join('=') }
+      hash.each do |key, value|
+        key = key.to_s.tr('_', '-')
+        value = value.to_i if key == "max-age"
+        values << [key, value].join('=')
+      end
 
       response['Cache-Control'] = values.join(', ') if values.any?
     end

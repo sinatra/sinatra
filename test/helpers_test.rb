@@ -426,7 +426,7 @@ class HelpersTest < Test::Unit::TestCase
     setup do
       mock_app {
         get '/' do
-          cache_control :public, :no_cache, :max_age => 60
+          cache_control :public, :no_cache, :max_age => 60.0
           'Hello World'
         end
       }
