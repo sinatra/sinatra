@@ -1,12 +1,10 @@
 ENV['RACK_ENV'] = 'test'
 Encoding.default_external = "UTF-8" if defined? Encoding
 
-begin
-  require 'rack'
-rescue LoadError
-  require 'rubygems'
-  require 'rack'
-end
+require 'rubygems'
+require 'bundler/setup'
+require 'rack'
+
 
 testdir = File.dirname(__FILE__)
 $LOAD_PATH.unshift testdir unless $LOAD_PATH.include?(testdir)

@@ -1,0 +1,68 @@
+PATH
+  remote: .
+  specs:
+    sinatra (1.1.0)
+      rack (~> 1.1)
+      tilt (~> 1.1)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    RedCloth (4.2.3)
+    abstract (1.0.0)
+    builder (2.1.2)
+    coffee-script (1.0.0)
+    erubis (2.6.6)
+      abstract (>= 1.0.0)
+    escape_utils (0.1.9)
+    haml (3.0.22)
+    less (1.2.21)
+      mutter (>= 0.4.2)
+      treetop (>= 1.4.2)
+    liquid (2.2.2)
+    markaby (0.7.1)
+      builder (>= 2.0.0)
+    mutter (0.5.3)
+    nokogiri (1.4.3.1)
+    polyglot (0.3.1)
+    rack (1.2.1)
+    rack-test (0.5.6)
+      rack (>= 1.0)
+    radius (0.6.1)
+    rake (0.8.7)
+    rdiscount (1.6.5)
+    rdoc (2.5.11)
+    shotgun (0.8)
+      rack (>= 1.0)
+    slim (0.7.0)
+      escape_utils (>= 0.1.9)
+      temple (~> 0.1.3)
+      tilt (~> 1.1)
+    temple (0.1.3)
+    tilt (1.1)
+    treetop (1.4.8)
+      polyglot (>= 0.3.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  RedCloth
+  builder
+  coffee-script
+  erubis
+  haml (>= 3.0)
+  less
+  liquid
+  markaby
+  nokogiri
+  rack (~> 1.1)
+  rack-test (>= 0.5.6)
+  radius
+  rake
+  rdiscount
+  rdoc
+  shotgun (~> 0.6)
+  sinatra!
+  slim
+  tilt (~> 1.1)
