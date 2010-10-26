@@ -427,6 +427,10 @@ module Sinatra
       render_xml(:nokogiri, template, options, locals, &block)
     end
 
+    def slim(template, options={}, locals={})
+      render :slim, template, options, locals
+    end
+
   private
     # logic shared between builder and nokogiri
     def render_xml(engine, template, options={}, locals={}, &block)
