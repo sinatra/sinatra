@@ -1,0 +1,1020 @@
+= Sinatra
+<i>Внимание: Этот документ является переводом Английской версии и может быть устаревшим</i>
+
+Sinatra это предметно-ориентированный язык для быстрого создания приложений на Ruby с 
+приложением минимума усилий:
+
+  # myapp.rb
+  require 'sinatra'
+  
+  get '/' do
+    'Hello world!'
+  end
+
+Установите gem и запустите его используя:
+
+  gem install sinatra
+  ruby -rubygems myapp.rb
+
+Результат будет тут: http://localhost:4567
+
+== Пути
+
+В Sinatra, путь это HTTP метод на пару с сочетающимся шаблоном URL.
+Каждый путь ассоциирован с блоком:
+
+  get '/' do
+    .. что-то показать ..
+  end
+
+  post '/' do
+    .. что-то создать ..
+  end
+
+  put '/' do
+    .. что-то обновить ..
+  end
+
+  delete '/' do
+    .. что-то удалить ..
+  end
+
+Пути проверяются по очередности определения. Первый же путь сочетающийся
+c запросом будет вызван.
+
+Шаблоны путей могут включать в себя параметры доступные в 
+<tt>params</tt> xэше:
+
+  get '/hello/:name' do
+    # сочетается с "GET /hello/foo" и "GET /hello/bar",
+    # где params[:name] 'foo' или 'bar'
+    "Hello #{params[:name]}!"
+  end
+
+Можно также использовать именные параметры с помощью блоков:
+
+  get '/hello/:name' do |n|
+    "Hello #{n}!"
+  end
+
+Шаблоны путей также могут включать splat (или постановочные) параметры доступные
+в <tt>params[:splat]</tt> массиве.
+
+  get '/say/*/to/*' do
+    # сочетается с /say/hello/to/world
+    params[:splat] # => ["hello", "world"]
+  end
+
+  get '/download/*.*' do
+    # сочетается с /download/path/to/file.xml
+    params[:splat] # => ["path/to/file", "xml"]
+  end
+
+Пути могут также сочетаться с регулярными выражениями напрямую:
+
+  get %r{/hello/([\w]+)} do
+    "Hello, #{params[:captures].first}!"
+  end
+
+Или используя блоки:
+
+  get %r{/hello/([\w]+)} do |c|
+    "Hello, #{c}!"
+  end
+
+=== Условия
+
+Пути могут включать различные сочетающиеся условия, такие как user agent:
+
+  get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
+    "You're using Songbird version #{params[:agent][0]}"
+  end
+
+  get '/foo' do
+    # сочетается с non-songbird браузерами
+  end
+
+Другими доступными условиями являются +host_name+ и +provides+:
+
+  get '/', :host_name => /^admin\./ do
+    "Admin Area, Access denied!"
+  end
+
+  get '/', :provides => 'html' do
+    haml :index
+  end
+  
+  get '/', :provides => ['rss', 'atom', 'xml'] do
+    builder :feed
+  end
+
+Довольно легко также описать собственные условия:
+
+  set(:probability) { |value| condition { rand <= value } }
+  
+  get '/win_a_car', :probability => 0.1 do
+    "You won!"
+  end
+  
+  get '/win_a_car' do
+    "Sorry, you lost."программн
+  end
+
+=== Возвращаемые значения
+
+Возвращаемое значения блока определяет как минимум тело ответа переданное HTTP клиенту, 
+или хотя бы следующему подпрограммному обеспечению из Rack стека.
+Чаще всего это строка, как в выше изложенных примерах. Но другие значения также доступны.
+
+Вы можете вернуть любой объект, который должен быть либо действительным Rack ответом, Rack
+объектным телом либо HTTP статус кодом:
+
+* Массив с тремя переменными: <tt>[status (Fixnum), headers (Hash), response body (должен отвечать на #each)]</tt>
+* Массив с двумя переменными: <tt>[status (Fixnum), response body (должен отвечать на #each)]</tt>
+* Объект отвечающий на <tt>#each</tt> который передает только строковые типы данных в этот блок
+* Fixnum соответствующий статус коду
+
+Таким образом мы легко можем создать поточный пример:
+
+    class Stream
+      def each
+        100.times { |i| yield "#{i}\n" }
+      end
+    end
+
+    get('/') { Stream.new }
+
+== Статичный файлы
+
+Статичный файлы поставляются из <tt>./public</tt> директории. Вы можете настроить
+на другую локацию использую <tt>:public</tt> опцию:
+
+  set :public, File.dirname(__FILE__) + '/static'
+
+Учтите что имя public директории не включено в URL. Например файл
+<tt>./public/css/style.css</tt> будет доступен как
+<tt>http://example.com/css/style.css</tt>.
+
+== Виды / Шаблоны
+
+Шаблоны видов по умолчанию будут использованы  из директории <tt>./views</tt>. 
+Для использования другой директории:
+
+  set :views, File.dirname(__FILE__) + '/templates'
+
+Важно помнить что вы всегда должны указывать шаблоны 
+с помощью символов даже если это подкаталог (в этом случае
+успользуйте <tt>:'subdir/template'</tt>). Вы должны использовать 
+символ иначе методы ответственные за рендеринг отобразят либо строку переданную им.
+
+=== Haml шаблоны
+
+Haml gem/библиотека необходима для визуализации HAML шаблонов:
+
+  ## Вам нужно будет затребовать haml gem в приложении
+  require 'haml'
+
+  get '/' do
+    haml :index
+  end
+
+Визуализирует <tt>./views/index.haml</tt>.
+
+{Опции Haml'а}[http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options]
+могут быть установлены глобально через конфигурацию Sinatra'ы, 
+посмотрите {Опции и Конфигурации}[http://www.sinatrarb.com/configuration.html],
+и переписаны на индивидуальной основе.
+
+  set :haml, :format => :html5 # :xhtml - Haml формат по умолчанию
+
+  get '/' do
+    haml :index, :format => :html4 # переписан
+  end
+
+
+=== Erb шаблоны
+
+  ## Вам нужно будет затребовать erb в приложении
+  require 'erb'
+
+  get '/' do
+    erb :index
+  end
+
+Визуализирует <tt>./views/index.erb</tt>
+
+=== Erubis шаблоны
+
+Erubis gem/библиотека необходима для визуализации erubis шаблонов:
+
+  ## Вам нужно будет затребовать erubis в приложении
+  require 'erubis'
+
+  get '/' do
+    erubis :index
+  end
+
+Визуализирует <tt>./views/index.erubis</tt>
+
+=== Builder шаблоны
+
+Builder gem/библиотека необходима для визуализации builder шаблонов:
+
+  ## Вам нужно будет затребовать builder в приложении
+  require 'builder'
+
+  get '/' do
+    builder :index
+  end
+
+Визуализирует <tt>./views/index.builder</tt>.
+
+=== Nokogiri шаблоны
+
+Nokogiri gem/библиотека необходима для визуализации nokogiri шаблонов:
+
+  ## Вам нужно будет затребовать nokogiri в приложении
+  require 'nokogiri'
+
+  get '/' do
+    nokogiri :index
+  end
+
+Визуализирует <tt>./views/index.nokogiri</tt>.
+
+=== Sass шаблоны
+
+Haml gem/библиотека необходима для визуализации Sass шаблонов:
+
+  ## Вам нужно будет затребовать haml или sass в приложении
+  require 'sass'
+
+  get '/stylesheet.css' do
+    sass :stylesheet
+  end
+
+Визуализирует <tt>./views/stylesheet.sass</tt>.
+
+{Опции Sass}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
+могут быть установлены глобально через конфигурацию Sinatra'ы, 
+посмотрите {Опции и Конфигурации}[http://www.sinatrarb.com/configuration.html],
+и переписаны на индивидуальной основе.
+
+  set :sass, :style => :compact # :nested - стиль Sass по умолчанию
+
+  get '/stylesheet.css' do
+    sass :stylesheet, :style => :expanded # переписан
+  end
+
+=== Scss шаблоны
+
+Haml gem/библиотека необходима для визуализации Scss шаблонов:
+
+  ## Вам нужно будет затребовать haml или sass в приложении
+  require 'sass'
+
+  get '/stylesheet.css' do
+    scss :stylesheet
+  end
+
+Визуализирует <tt>./views/stylesheet.scss</tt>.
+
+{Опции Scss}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
+могут быть установлены глобально через конфигурацию Sinatra'ы, 
+посмотрите {Опции и Конфигурации}[http://www.sinatrarb.com/configuration.html],
+и переписаны на индивидуальной основе.
+
+  set :scss, :style => :compact # :nested - стиль Scss по умолчанию
+
+  get '/stylesheet.css' do
+    scss :stylesheet, :style => :expanded # переписан
+  end
+
+=== Less шаблоны
+
+less gem/библиотека необходима для визуализации Less шаблонов:
+
+  ## Вам нужно будет затребовать less в приложении
+  require 'less'
+
+  get '/stylesheet.css' do
+    less :stylesheet
+  end
+
+Визуализирует <tt>./views/stylesheet.less</tt>.
+
+=== Liquid шаблоны
+
+liquid gem/библиотека необходима для визуализации liquid шаблонов:
+
+  ## Вам нужно будет затребовать liquid в приложении
+  require 'liquid'
+
+  get '/' do
+    liquid :index
+  end
+
+Визуализирует <tt>./views/index.liquid</tt>.
+
+Так как в Liquid шаблоне невозможно вызывать методы из Ruby (кроме +yield+), 
+то вы почти всегда будете передавать локальные переменные:
+
+  liquid :index, :locals => { :key => 'value' }
+
+=== Markdown шаблоны
+
+rdiscount gem/библиотека необходима для визуализации Markdown шаблонов:
+
+  ## Вам нужно будет затребовать rdiscount в приложении
+  require "rdiscount"
+  
+  get '/' do
+    markdown :index
+  end
+
+Визуализирует <tt>./views/index.markdown</tt> (+md+ и +mkd+ являются также допустимыми файловыми 
+расширениями).
+
+В markdown невозможно вызывать методы или передавать локальные переменные. Следовательно вам скорее всего прийдется 
+использовать этот шаблон совместно с другим рендер движком:
+
+  erb :overview, :locals => { :text => markdown(:introduction) }
+
+Заметьте что в можете вызывать метод markdown из других шаблонов:
+
+  %h1 Hello From Haml!
+  %p= markdown(:greetings)
+
+=== Textile шаблоны
+
+RedCloth gem/библиотека необходима для визуализации Textile шаблонов:
+
+  ## Вам нужно будет затребовать redcloth в приложении
+  require "redcloth"
+
+  get '/' do
+    textile :index
+  end
+
+Визуализирует <tt>./views/index.textile</tt>.
+
+В textile невозможно вызывать методы или передавать локальные переменные. Следовательно вам скорее всего прийдется 
+использовать этот шаблон совместно с другим рендер движком:
+
+  erb :overview, :locals => { :text => textile(:introduction) }
+
+Заметьте что в можете вызывать метод textile из других шаблонов:
+
+  %h1 Hello From Haml!
+  %p= textile(:greetings)
+
+=== RDoc шаблоны
+
+RDoc gem/библиотека необходима для визуализации RDoc шаблонов:
+
+  ## Вам нужно будет затребовать rdoc в приложении
+  require "rdoc"
+
+  get '/' do
+    rdoc :index
+  end
+
+Визуализирует <tt>./views/index.rdoc</tt>.
+
+В rdoc невозможно вызывать методы или передавать локальные переменные. Следовательно вам скорее всего прийдется 
+использовать этот шаблон совместно с другим рендер движком:
+
+  erb :overview, :locals => { :text => rdoc(:introduction) }
+
+Заметьте что в можете вызывать метод rdoc из других шаблонов:
+
+  %h1 Hello From Haml!
+  %p= rdoc(:greetings)
+
+=== Radius шаблоны
+
+radius gem/библиотека необходима для визуализации Radius шаблонов:
+
+  ## Вам нужно будет затребовать radius в приложении
+  require 'radius'
+
+  get '/' do
+    radius :index
+  end
+
+Визуализирует <tt>./views/index.radius</tt>.
+
+Так как в Radius шаблоне невозможно вызывать методы из Ruby (кроме +yield+), 
+то вы почти всегда будете передавать локальные переменные:
+
+  radius :index, :locals => { :key => 'value' }
+
+=== Markaby шаблоны
+
+markaby gem/библиотека необходима для визуализации Markaby шаблонов:
+
+  ## Вам нужно будет затребовать markaby в приложении
+  require 'markaby'
+
+  get '/' do
+    markaby :index
+  end
+
+Визуализирует <tt>./views/index.mab</tt>.
+
+=== CoffeeScript шаблоны
+
+coffee-script gem/библиотека и `coffee` бинарный файл необходимы для визуализации CoffeeScript шаблонов:
+
+  ## Вам нужно будет затребовать coffee-script в приложении
+  require 'coffee-script'
+
+  get '/application.js' do
+    coffee :application
+  end
+
+Визуализирует <tt>./views/application.coffee</tt>.
+
+=== Внутристроковые шаблоны
+
+  get '/' do
+    haml '%div.title Hello World'
+  end
+
+Визуализирует стороковые переменные.
+
+=== Доступ к переменным в шаблонах
+
+Шаблоны определяются/интерпретируются в том же контексте что и обработчики путей. Переменные 
+установленные в процесе обработки путей будут доступны напрямую в шаблоне:
+
+  get '/:id' do
+    @foo = Foo.find(params[:id])
+    haml '%h1= @foo.name'
+  end
+
+Либо через хеш локальных переменных:
+
+  get '/:id' do
+    foo = Foo.find(params[:id])
+    haml '%h1= foo.name', :locals => { :foo => foo }
+  end
+
+Это обычно используется когда шаблоны рендерятся как частные из других шаблонов.
+
+=== Внутристроковые шаблоны
+
+Шаблоны так же могут быть определены в конце файла-исходника:
+
+  require 'sinatra'
+
+  get '/' do
+    haml :index
+  end
+
+  __END__
+
+  @@ layout
+  %html
+    = yield
+
+  @@ index
+  %div.title Hello world!!!!!
+
+Заметьте: Внутристроковые шаблоны определенные в файле-исходнике которые затребовал sinatra будут
+автоматически загружены. Вызовите <tt>enable :inline_templates</tt> напрямую если у вас внутристроковые 
+шаблоны в других файлах.
+
+=== Именные шаблоны
+
+Шаблоны так же могут быть определены используя <tt>template</tt> метод:
+
+  template :layout do
+    "%html\n  =yield\n"
+  end
+
+  template :index do
+    '%div.title Hello World!'
+  end
+
+  get '/' do
+    haml :index
+  end
+
+Если шаблон с именем "layout" существует, то он будет использован каждый раз
+когда любой шаблон будет визуализирован. Вы можете отключить layout-макет с помощью <tt>:layout => false</tt>.
+
+  get '/' do
+    haml :index, :layout => !request.xhr?
+  end
+
+== Методы помощники
+
+Используйте <tt>helpers</tt> метод для определения методов помощников для дальнейшего 
+использования в обработчиках путей и шаблонах:
+
+  helpers do
+    def bar(name)
+      "#{name}bar"
+    end
+  end
+
+  get '/:name' do
+    bar(params[:name])
+  end
+
+== Фильтры
+
+Before-фильтры будут определены/интерпретированы перед каждым запросом с тем же контекстом что и пути и фильтры могут изменять
+как запрос там и ответ на него. Переменные установленные в фильтрах доспутны в путях и шаблонах:
+
+  before do
+    @note = 'Hi!'
+    request.path_info = '/foo/bar/baz'
+  end
+
+  get '/foo/*' do
+    @note #=> 'Hi!'
+    params[:splat] #=> 'bar/baz'
+  end
+
+After-фильтры будут определены/интерпретированы после каждого запроса с тем же контекстом что и пути и фильтры могут изменять
+как запрос там и ответ на него. Переменные установленные в before-фильтрах и путях будут доступны в after-фильтрах:
+
+  after do
+    puts response.status
+  end
+
+Фильтры могут принимать схемы/шаблоны и будут интерпретированы только если путь запроса совпадает с этим шаблоном:
+
+  before '/protected/*' do
+    authenticate!
+  end
+
+  after '/create/:slug' do |slug|
+    session[:last_slug] = slug
+  end
+
+== Прерывание
+
+Для того чтобы незамедлительно прервать запрос внутри фильтра либо пути используйте:
+
+  halt
+
+Можно также указать статус при прерывании:
+
+  halt 410
+
+Либо тело:
+
+  halt 'this will be the body'
+
+Либо и то, и другое:
+
+  halt 401, 'go away!'
+
+Можно указать заголовки:
+
+  halt 402, {'Content-Type' => 'text/plain'}, 'revenge'
+
+== Передача
+
+Путь может передать процесс следующему совпадающему пути используя <tt>pass</tt>:
+
+  get '/guess/:who' do
+    pass unless params[:who] == 'Frank'
+    'You got me!'
+  end
+
+  get '/guess/*' do
+    'You missed!'
+  end
+
+Блок пути сказу же закончен и контроль переходить к следующему совпадающему пути. Если совпадающий путь не найден то ответом
+на запрос будет 404.
+
+== Доспут к объекту запроса
+
+Входящий объект запроса может быть доступен в уровне запроса (в фильтрах, путях, обработчиках ошибок) используя `request` метод:
+
+  # приложение запущено на http://example.com/example
+  get '/foo' do
+    request.body              # тело запроса посланное клиентом (см ниже)
+    request.scheme            # "http"
+    request.script_name       # "/example"
+    request.path_info         # "/foo"
+    request.port              # 80
+    request.request_method    # "GET"
+    request.query_string      # ""
+    request.content_length    # длина тела запроса
+    request.media_type        # медиа тип тела запроса
+    request.host              # "example.com"
+    request.get?              # true (для других участвующих глаголах есть похожие методы)
+    request.form_data?        # false
+    request["SOME_HEADER"]    # значение SOME_HEADER заголовка
+    request.referer           # источник запроса клиента либо '/'
+    request.user_agent        # user agent (используется для :agent условия)
+    request.cookies           # хеш куки браузера
+    request.xhr?              # является ли запрос ajax запросом?
+    request.url               # "http://example.com/example/foo"
+    request.path              # "/example/foo"
+    request.ip                # IP адрес клиента
+    request.secure?           # false
+    request.env               # env хеш как получено Rack-ом
+  end
+
+Некоторые опции, такие как <tt>script_name</tt> или <tt>path_info</tt> могут быть переписаны:
+
+  before { request.path_info = "/" }
+  
+  get "/" do
+    "all requests end up here"
+  end
+
+<tt>request.body</tt> является IO либо StringIO объектом:
+
+  post "/api" do
+    request.body.rewind  # в случаи если кто то уже прочитал тело запроса
+    data = JSON.parse request.body.read
+    "Hello #{data['name']}!"
+  end
+
+== Конфигурация
+
+Будет запущено про загрузке в любом из сред:
+
+  configure do
+    ...
+  end
+
+Будет запущено когда среда (RACK_ENV переменная) установлена на
+<tt>:production</tt>:
+
+  configure :production do
+    ...
+  end
+
+Будет запущено когда среда на <tt>:production</tt> или на
+<tt>:test</tt>:
+
+  configure :production, :test do
+    ...
+  end
+
+== Обработка ошибок
+
+Обработчики ошибок будут запущены с тем же контекстом что и пути и before-фильтры, что означаем что всякие 
+прелести какие как <tt>haml</tt>, <tt>erb</tt>, <tt>halt</tt> и т.д. будут доступны.
+
+===  Исключение NotFound
+
+Когда <tt>Sinatra::NotFound</tt> исключение было вызвано или когда статусом ответа является 404,
+то <tt>not_found</tt> будет вызван:
+
+  not_found do
+    'This is nowhere to be found.'
+  end
+
+=== Ошибка
+
+Обработчик ошибок +error+ будет призван когда исключение вызвано из блока пути либо из фильтра.
+Объект-исключение будут основан на <tt>sinatra.error</tt> переменной Rack-а:
+
+  error do
+    'Sorry there was a nasty error - ' + env['sinatra.error'].name
+  end
+
+Частные ошибки:
+
+  error MyCustomError do
+    'So what happened was...' + request.env['sinatra.error'].message
+  end
+
+Тогда, если это произошло:
+
+  get '/' do
+    raise MyCustomError, 'something bad'
+  end
+
+То вы получите:
+
+  So what happened was... something bad
+
+Помимо вы можете установить обработчик ошибок для статус кода:
+
+  error 403 do
+    'Access forbidden'
+  end
+
+  get '/secret' do
+    403
+  end
+
+Либо набора кодов:
+
+  error 400..510 do
+    'Boom'
+  end
+
+Sinatra устанавливает специальные <tt>not_found</tt> и <tt>error</tt> обработчики когда является
+запущенной в среде разработки.
+
+== Mime типы
+
+Когда используете <tt>send_file</tt> либо статичные файлы мы можете использовать mime типы которые Sinatra
+не понимает по умолчанию. Используйте +mime_type+ для их регистрации по файловому расширению:
+
+  mime_type :foo, 'text/foo'
+
+Вы также можете использовать +content_type+ помощник:
+
+  content_type :foo
+
+== Rack подпрограммное обеспечение
+
+Sinatra использует Rack[http://rack.rubyforge.org/], минимальный стандартный 
+интерфейс для Ruby веб систем. Одна из самых интересных способностей Rack'а 
+является возможность поддержки подпрограммного обеспечения-"middleware" -- компоненты
+сидящие между сервером и вашем приложении которые наблюдают и/или манипулируют 
+HTTP запросы/ответы для предоставления различных типов общей функциональности.
+
+Sinatra позволяет создание подпрограммного обеспечения Rack пустяком используя метод
+вверхнего уровня +use+:
+
+  require 'sinatra'
+  require 'my_custom_middleware'
+
+  use Rack::Lint
+  use MyCustomMiddleware
+
+  get '/hello' do
+    'Hello World'
+  end
+
+Семантика +use+ идентичная той что определена для
+Rack::Builder[http://rack.rubyforge.org/doc/classes/Rack/Builder.html] DSL
+(чаще всего используется в rackup файлах). Например, +use+ метод принимает
+множественные переменные, также как и блоки:
+
+  use Rack::Auth::Basic do |username, password|
+    username == 'admin' && password == 'secret'
+  end
+
+Rack распространяется с различным стандартным подпрограммным обеспечением
+для логирования, дебагинга, URL пути следования, аудентикации и обработки сессий. Sinatra использует
+многие из этих компонентов автоматически основываясь на конфигурации чтобы вам не проходилось
+регистрировать/использовать +use+ их вручную.
+
+== Тестирование
+
+Sinatra тесты могут быть написаны на любой из библиотек либо систем поддерживающих
+Rack тестирование. {Rack::Test}[http://gitrdoc.com/brynary/rack-test] рекомендован:
+
+  require 'my_sinatra_app'
+  require 'test/unit'
+  require 'rack/test'
+
+  class MyAppTest < Test::Unit::TestCase
+    include Rack::Test::Methods
+
+    def app
+      Sinatra::Application
+    end
+
+    def test_my_default
+      get '/'
+      assert_equal 'Hello World!', last_response.body
+    end
+
+    def test_with_params
+      get '/meet', :name => 'Frank'
+      assert_equal 'Hello Frank!', last_response.body
+    end
+
+    def test_with_rack_env
+      get '/', {}, 'HTTP_USER_AGENT' => 'Songbird'
+      assert_equal "You're using Songbird!", last_response.body
+    end
+  end
+
+Заметьте: Встроенные модули Sinatra::Test и Sinatra::TestHarness являются
+устаревшими начиная с 0.9.2 релиза.
+
+== Sinatra::Base - Подпрограммное обеспечение, библиотеки и модульные приложения
+
+Определяя свое приложение как приложение вверхнего уровня работает 
+отлично что микро приложений, но имеет множество недостатков когда надо 
+создать используемые компоненты такие как Rack
+middleware, Rails metal, простые библиотеки с серверными компонентами либо
+Sinatra разрешениями. Предметно-ориентированный язык вверхнего уровня
+загрязняет пространство имен объекта и подразумевает стиль конфигурации
+микро приложения (например: единый файл приложения, ./public и 
+./views директории, создание логов, страницу деталей об исключениях 
+и т.д.). В такой случае идеально использование Sinatra::Base:
+
+  require 'sinatra/base'
+
+  class MyApp < Sinatra::Base
+    set :sessions, true
+    set :foo, 'bar'
+
+    get '/' do
+      'Hello world!'
+    end
+  end
+
+MyApp класс является независимым Rack компонентом который может исполнять роли
+Rack подпрограммного обеспечения, Rack приложения, либо Rails metal. Вы можете +use+(использовать) либо
++run+(запустить) этот класс из rackup +config.ru+ конфиругационного файла; или, контролировать компонент 
+сервера созданного библиотекой:
+
+   MyApp.run! :host => 'localhost', :port => 9090
+
+Методы доступные Sinatra::Base сабклассам являются идентичными тем, что доступны 
+в предметно-ориентированном языке вверхнего уровня. Большинство приложений вверхнего уровня могут быть
+конвертированы в Sinatra::Base компоненты с помощью двух модификаций:
+
+* Все файлы должны запрашивать +sinatra/base+ вместо +sinatra+;
+  иначе, все методы предоставляемые Sinatra'ой будут импортированные в 
+ 	главное пространство имен.
+* Все блоки путей, обработчики ошибок, фильтры и опции должны быть в 
+	Sinatra::Base сабклассе.
+
+<tt>Sinatra::Base</tt> это чистый лист. Большинство опций, включая встроенный сервер, по умолчанию отключены.
+Смотрите {Опции и Конфигурации}[http://www.sinatrarb.com/configuration.html] для детальной информации
+об опциях и их поведения.
+
+=== Использование Sinatra как подпрограммное обеспечение
+
+Не только Sinatra сама может использовать другое подпрограммное обеспечение Rack, так и любое Sinatra приложение
+само может быть добавлено к любому Rack эндпоинту в качестве подпрограммного обеспечения. Этим эндпоинтом 
+может быть другое Sinatra приложение либо приложение основанное на Rack (Rails/Ramaze/Camping/...).
+
+  require 'sinatra/base'
+  
+  class LoginScreen < Sinatra::Base
+    enable :session
+    
+    get('/login') { haml :login }
+    
+    post('/login') do
+      if params[:name] = 'admin' and params[:password] = 'admin'
+        session['user_name'] = params[:name]
+      else
+        redirect '/login'
+      end
+    end
+  end
+  
+  class MyApp < Sinatra::Base
+    # подпрограммное обеспечение будет запущено перед фильтрами
+    use LoginScreen
+    
+    before do
+      unless session['user_name']
+        halt "Access denied, please <a href='/login'>login</a>."
+      end
+    end
+    
+    get('/') { "Hello #{session['user_name']}." }
+  end
+
+== Область видимости и привязка
+
+Текучая область видимости определяет методы и переменные доступные 
+в данный момент.
+
+=== Область видимости приложения / класса
+
+Любое Sinatra приложение соответствует сабклассу Sinatra::Base. Если вы 
+используете предметно-ориентированный язык вверхнего 
+уровня (<tt>require 'sinatra'</tt>), то этим классом будет 
+Sinatra::Application, иначе это будет сабкласс которые вы создали вручную. 
+На уровне класса вам будут доступны методы как `get` или `before`, но вы
+не сможете иметь доступ с объекту `request` или `session`, так как существует
+только единый application класс для всех запросов.
+
+Опции созданные используя `set` являются методами на уровне класса:
+
+    class MyApp << Sinatra::Base
+      # Я в области видимости приложения!
+      set :foo, 42
+      foo # => 42
+      
+      get '/foo' do
+        # Я больше не в области видимости приложения!
+      end
+    end
+
+У вас будет область видимости приложения внутри:
+
+* Тела вашего application класса
+* Методов определенных расширениями
+* Блока переданного в `helpers`
+* Блоках использованных как значения для `set`
+
+Вы можете достать объект области видимости (класс) через:
+
+* объект переданный блокам конфигурации (<tt>configure { |c| ... }</tt>)
+* `settings` внутри области видимости запроса
+
+=== Область видимости запроса/экземпляра
+
+Для каждого входящего запроса новый экземпляр вашего класса приложения будет
+создан и все блоки обработчика будут запущены в этом контексте. В этой области
+видимости вам доступны `request` и `session` объекты или вызовы методов 
+визуализации такие как `erb` или `haml`. Вы можете получить доступ к 
+области видимости приложения из контекста запроса используя `settings` помощник:
+
+  class MyApp << Sinatra::Base
+    # Я в области видимости приложения!
+    get '/define_route/:name' do
+      # Область видимости запроса '/define_route/:name'
+      @value = 42
+      
+      settings.get("/#{params[:name]}") do
+        # Область видимости запроса "/#{params[:name]}"
+        @value # => nil (другой запрос)
+      end
+      
+      "Route defined!"
+    end
+  end
+
+У вас будет область видимости запроса внутри:
+
+* get/head/post/put/delete блоков
+* before/after фильтрах
+* методах помощниках 
+* шаблонах/видах
+
+=== Контекст делегирования
+
+Область видимости делегирования просто переправляет методы в контекст класса. 
+Однако, оно не полностью на 100% ведет себя как область видимости класса,
+так как у вас нету привязи к классу: только методы помеченные для 
+делегирования будут доступны и переменные/состояние области видимости класса 
+не будут поделены (иначе говоря: у вас будет другой `self` объект). Вы можете
+непосредственно добавить методы делегирования вызывая
+<tt>Sinatra::Delegator.delegate :method_name</tt>.
+
+У вас будет контекст делегирования внутри:
+
+* Привязь вверхнего уровня, если вы запросили <tt>require "sinatra"</tt>
+* Объекта расширенного с помощью `Sinatra::Delegator` примеси
+
+Посмотрите на непосредствено сам код: тут
+{Sinatra::Delegator примесь}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
+будет {включена в глобальное именное пространство}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28].
+
+== Командная строка
+
+Sinatra приложения могут быть запущены напрямую:
+
+  ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
+
+Опции включают:
+
+  -h # помощь
+  -p # настроить порт (по умолчанию 4567)
+  -o # настроить хост (по умолчанию 0.0.0.0)
+  -e # настроить среду (по умолчанию development)
+  -s # настроить rack сервер/обработчик (по умолчанию thin)
+  -x # включить семафор взаимного исключения (по умолчанию выключено)
+
+== The Bleeding Edge (Новейший и потенциально нестабильный код)
+
+Если вы хотите использовать новейший код Sinatra'ы, то создайте локальный
+клон и запускайте свое приложение с <tt>sinatra/lib</tt> директорией
+в <tt>LOAD_PATH</tt>:
+
+  cd myapp
+  git clone git://github.com/sinatra/sinatra.git
+  ruby -Isinatra/lib myapp.rb
+
+Альтернативно вы можете добавить <tt>sinatra/lib</tt> директорию в 
+<tt>LOAD_PATH</tt> приложения:
+
+  $LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
+  require 'rubygems'
+  require 'sinatra'
+
+  get '/about' do
+    "I'm running version " + Sinatra::VERSION
+  end
+
+Чтобы обновить Sinatra исходники в будущем:
+
+  cd myproject/sinatra
+  git pull
+
+== Больше информации
+
+* {Вебсайт проекта}[http://www.sinatrarb.com/] - Дополнительная документация,
+  новости и ссылки на другие ресурсы.
+* {Способствание/Помощь}[http://www.sinatrarb.com/contributing] - Нашли баг? Нужна помощь?
+ 	Написали патч?
+* {Слежение за проблемами}[http://github.com/sinatra/sinatra/issues]
+* {Twitter}[http://twitter.com/sinatra]
+* {Лист рассылки}[http://groups.google.com/group/sinatrarb/topics]
+* {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] on http://freenode.net 
