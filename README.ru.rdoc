@@ -1002,7 +1002,7 @@ Sinatra приложения могут быть запущены напряму
     "I'm running version " + Sinatra::VERSION
   end
 
-Чтобы обновить Sinatra исходники в будущем:
+Чтобы обновить исходники Sinatra'ы:
 
   cd myproject/sinatra
   git pull
