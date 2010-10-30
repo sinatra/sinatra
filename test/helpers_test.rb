@@ -320,7 +320,7 @@ class HelpersTest < Test::Unit::TestCase
 
       get '/foo.xml'
       assert ok?
-      assert_equal 'application/foo;charset=utf-8', response['Content-Type']
+      assert_equal 'application/foo', response['Content-Type']
       assert_equal 'I AM FOO', body
     end
 
@@ -333,6 +333,32 @@ class HelpersTest < Test::Unit::TestCase
       }
 
       assert_raise(RuntimeError) { get '/foo.xml' }
+    end
+
+    it 'only sets default charset for specific mime types' do
+      tests_ran = false
+      mock_app do
+        mime_type :foo, 'text/foo'
+        mime_type :bar, 'application/bar'
+        mime_type :baz, 'application/baz'
+        add_charset << mime_type(:baz)
+        get '/' do
+          assert_equal content_type(:txt),    'text/plain;charset=utf-8'
+          assert_equal content_type(:css),    'text/css;charset=utf-8'
+          assert_equal content_type(:html),   'text/html;charset=utf-8'
+          assert_equal content_type(:foo),    'text/foo;charset=utf-8'
+          assert_equal content_type(:xml),    'application/xml;charset=utf-8'
+          assert_equal content_type(:xhtml),  'application/xhtml+xml;charset=utf-8'
+          assert_equal content_type(:js),     'application/javascript;charset=utf-8'
+          assert_equal content_type(:bar),    'application/bar'
+          assert_equal content_type(:png),    'image/png'
+          assert_equal content_type(:baz),    'application/baz;charset=utf-8'
+          tests_ran = true
+          "done"
+        end
+      end
+      get '/'
+      assert tests_ran
     end
   end
 
@@ -378,7 +404,7 @@ class HelpersTest < Test::Unit::TestCase
     it 'sets the Content-Type response header if type option is set to a mime type' do
       send_file_app :type => 'application/octet-stream'
       get '/file.txt'
-      assert_equal 'application/octet-stream;charset=utf-8', response['Content-Type']
+      assert_equal 'application/octet-stream', response['Content-Type']
     end
 
     it 'sets the Content-Length response header' do

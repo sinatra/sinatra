@@ -130,8 +130,12 @@ module Sinatra
     def content_type(type, params={})
       mime_type = mime_type(type)
       fail "Unknown media type: %p" % type if mime_type.nil?
-      params[:charset] ||= params.delete('charset') || settings.default_encoding
-      response['Content-Type'] = "#{mime_type};#{params.map { |kv| kv.join('=') }.join(', ')}"
+      mime_type = mime_type.dup
+      unless params.include? :charset or settings.add_charset.all? { |p| not p === mime_type }
+        params[:charset] = params.delete('charset') || settings.default_encoding
+      end
+      mime_type << ";#{params.map { |kv| kv.join('=') }.join(', ')}" unless params.empty?
+      response['Content-Type'] = mime_type
     end
 
     # Set the Content-Disposition to "attachment" with the specified filename,
@@ -1238,6 +1242,7 @@ module Sinatra
     set :logging, false
     set :method_override, false
     set :default_encoding, "utf-8"
+    set :add_charset, [/^text\//, 'application/javascript', 'application/xml', 'application/xhtml+xml']
 
     class << self
       alias_method :methodoverride?, :method_override?
