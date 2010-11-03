@@ -933,21 +933,22 @@ module Sinatra
       # Define a before filter; runs before all requests within the same
       # context as route handlers and may access/modify the request and
       # response.
-      def before(path = nil, &block)
-        add_filter(:before, path, &block)
+      def before(path = nil, options = {}, &block)
+        add_filter(:before, path, options, &block)
       end
 
       # Define an after filter; runs after all requests within the same
       # context as route handlers and may access/modify the request and
       # response.
-      def after(path = nil, &block)
-        add_filter(:after, path, &block)
+      def after(path = nil, options = {}, &block)
+        add_filter(:after, path, options, &block)
       end
 
       # add a filter
-      def add_filter(type, path = nil, &block)
+      def add_filter(type, path = nil, options = {}, &block)
         return filters[type] << block unless path
-        block, *arguments = compile!(type, path, block)
+        path, options = //, path if path.respond_to?(:each_pair)
+        block, *arguments = compile!(type, path, block, options)
         add_filter(type) do
           process_route(*arguments) { instance_eval(&block) }
         end
@@ -1014,9 +1015,8 @@ module Sinatra
       def route(verb, path, options={}, &block)
         # Because of self.options.host
         host_name(options.delete(:host)) if options.key?(:host)
-        options.each { |option, args| send(option, *args) }
 
-        block, pattern, keys, conditions = compile! verb, path, block
+        block, pattern, keys, conditions = compile! verb, path, block, options
         invoke_hook(:route_added, verb, path, block)
 
         (@routes[verb] ||= []).
@@ -1027,7 +1027,8 @@ module Sinatra
         extensions.each { |e| e.send(name, *args) if e.respond_to?(name) }
       end
 
-      def compile!(verb, path, block)
+      def compile!(verb, path, block, options = {})
+        options.each_pair { |option, args| send(option, *args) }
         method_name = "#{verb} #{path}"
 
         define_method(method_name, &block)

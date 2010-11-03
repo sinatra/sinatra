@@ -558,6 +558,16 @@ request path matches that pattern:
     session[:last_slug] = slug
   end
 
+Like routes, filters also take conditions:
+
+  before :agent => /Songbird/ do
+    # ...
+  end
+  
+  after '/blog/*', :host_name => 'example.com' do
+    # ...
+  end
+
 == Halting
 
 To immediately stop a request within a filter or route use:
