@@ -255,6 +255,16 @@ class AfterFilterTest < Test::Unit::TestCase
     assert ran_filter
   end
 
+  it 'changes to path_info from a pattern matching before filter are respoected when routing' do
+    mock_app do
+      before('/foo') { request.path_info = '/bar' }
+      get('/bar') { 'blah' }
+    end
+    get '/foo'
+    assert ok?
+    assert_equal 'blah', body
+  end
+
   it 'generates block arguments from route pattern' do
     subpath = nil
     mock_app do

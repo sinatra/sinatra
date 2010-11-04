@@ -28,6 +28,18 @@ module Sinatra
     else
       alias secure? ssl?
     end
+
+    def route
+      @route ||= begin
+        path = Rack::Utils.unescape(path_info)
+        path.empty? ? "/" : path
+      end
+    end
+
+    def path_info=(value)
+      @route = nil
+      super
+    end
   end
 
   # The response object. See Rack::Response and Rack::ResponseHelpers for
@@ -635,11 +647,7 @@ module Sinatra
     # Returns pass block.
     def process_route(pattern, keys, conditions)
       @original_params ||= @params
-      @path ||= begin
-        path = unescape(@request.path_info)
-        path.empty? ? "/" : path
-      end
-      if match = pattern.match(@path)
+      if match = pattern.match(@request.route)
         values = match.captures.to_a
         params =
           if keys.any?
