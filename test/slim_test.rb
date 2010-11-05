@@ -27,7 +27,7 @@ class SlimTest < Test::Unit::TestCase
   it "renders with inline layouts" do
     mock_app {
       layout { %(h1\n  | THIS. IS. \n  == yield.upcase ) }
-      get('/') { slim 'em Sparta ' }
+      get('/') { slim 'em Sparta' }
     }
     get '/'
     assert ok?
@@ -36,7 +36,7 @@ class SlimTest < Test::Unit::TestCase
   
   it "renders with file layouts" do
     slim_app {
-      slim '| Hello World ', :layout => :layout2
+      slim '| Hello World', :layout => :layout2
     }
     assert ok?
     assert_equal "<h1>Slim Layout!</h1><p>Hello World</p>", body
@@ -54,7 +54,7 @@ class SlimTest < Test::Unit::TestCase
   it "passes slim options to the slim engine" do
     mock_app {
       get '/' do
-        slim "! doctype html\nh1 Hello World ", :format => :html4
+        slim "! doctype html\nh1 Hello World", :format => :html4
       end
     }
     get '/'
@@ -66,7 +66,7 @@ class SlimTest < Test::Unit::TestCase
     mock_app {
       set :slim, {:format => :html4}
       get '/' do
-        slim "! doctype html\nh1 Hello World "
+        slim "! doctype html\nh1 Hello World"
       end
     }
     get '/'
@@ -78,10 +78,10 @@ class SlimTest < Test::Unit::TestCase
     mock_app {
       set :haml, {:format => :html5, :attr_wrapper => '"'} # default slim attr are <tag attr='single-quoted'>
       get '/' do
-        slim "! doctype html\nh1.header Hello World "
+        slim "! doctype html\nh1.header Hello World"
       end
       get '/html4' do
-        slim "! doctype html\nh1.header Hello World ", :format => :html4
+        slim "! doctype html\nh1.header Hello World", :format => :html4
       end
     }
     get '/'
