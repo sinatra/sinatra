@@ -70,14 +70,15 @@ task :add_template, [:name] do |t, args|
   Dir.glob('README.*') do |file|
     code = File.read(file)
     if code =~ /^===.*#{args.name.capitalize}/
-      puts "Already covered in #{file}."
+      puts "Already covered in #{file}"
     else
       template = code[/===[^\n]*Liquid.*index\.liquid<\/tt>[^\n]*/m]
       if !template
         puts "Liquid not found in #{file}"
       else
-        template = template.gsub(/Liquid/, args.name.capitalize).gsub(/liquid/, args.name.downcase)
-        code.gsub! '=== CoffeScript', template << "\n\n=== CoffeScript"
+        puts "Adding section to #{file}"
+        template = template.gsub(/Liquid/, args.name.capitalize).gsub(/liquid/, args.name.downcase)        
+        code.gsub! /^(\s*===.*CoffeeScript)/, template << "\n\\1"        
         File.open(file, "w") { |f| f << code }
       end
     end
