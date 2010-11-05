@@ -76,20 +76,20 @@ class SlimTest < Test::Unit::TestCase
   
   it "merges the default slim options with the overrides and passes them to the slim engine" do
     mock_app {
-      set :haml, {:format => :html5, :attr_wrapper => '"'} # default slim attr are <tag attr='single-quoted'>
+      set :slim, {:format => :html4}
       get '/' do
         slim "! doctype html\nh1.header Hello World"
       end
-      get '/html4' do
-        slim "! doctype html\nh1.header Hello World", :format => :html4
+      get '/html5' do
+        slim "! doctype html\nh1.header Hello World", :format => :html5
       end
     }
     get '/'
     assert ok?
-    assert_equal "<!DOCTYPE html><h1 class=\"header\">Hello World</h1>", body
-    get '/html4'
-    assert ok?
     assert_match(/^#{HTML4_DOCTYPE}/, body)
+    get '/html5'
+    assert ok?
+    assert_equal "<!DOCTYPE html><h1 class=\"header\">Hello World</h1>", body
   end
 end
 rescue
