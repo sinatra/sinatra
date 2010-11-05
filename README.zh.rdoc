@@ -420,6 +420,19 @@ Rack body对象或者HTTP状态码：
 
 渲染 <tt>./views/index.mab</tt>。
 
+=== Slim 模板 
+
+需要引入 slim gem/library 来渲染 Slim 模板：
+
+  ## 需要在你的应用中引入 slim
+  require 'slim'
+
+  get '/' do
+    slim :index
+  end
+
+渲染 <tt>./views/index.slim</tt>。
+
 === CoffeeScript 模板
 
 需要引入 coffee-script gem/library 并在路径中存在 `coffee` 二进制文件以渲染

@@ -425,6 +425,19 @@ Le gem markaby est nécessaire pour utiliser la fonction de rendu Markaby:
 
 Utilisera <tt>./views/index.mab</tt>.
 
+=== Templates Slim
+
+Le gem slim est nécessaire pour utiliser la fonction de rendu Slim:
+
+  ## Chargez la bibliothèque slim dans votre application
+  require 'slim'
+
+  get '/' do
+    slim :index
+  end
+
+Utilisera <tt>./views/index.slim</tt>.
+
 === Templates CoffeeScript
 
 Le gem coffee-script et l'exécutable `coffee` sont nécessaires pour utiliser la

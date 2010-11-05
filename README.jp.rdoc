@@ -419,6 +419,19 @@ Markabyテンプレートを使うにはmarkabyライブラリが必要です:
 
 <tt>./views/index.mab</tt>を表示します。
 
+=== Slim テンプレート
+
+Slimテンプレートを使うにはslimライブラリが必要です:
+
+  ## slimを読み込みます
+  require 'slim'
+
+  get '/' do
+    slim :index
+  end
+
+<tt>./views/index.slim</tt>を表示します。
+
 === CoffeeScript テンプレート
 
 CoffeeScriptテンプレートを表示するにはcoffee-scriptライブラリと`coffee`バイナリが必要です:

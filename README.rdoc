@@ -420,6 +420,19 @@ The markaby gem/library is required to render Markaby templates:
 
 Renders <tt>./views/index.mab</tt>.
 
+=== Slim Templates
+
+The slim gem/library is required to render Slim templates:
+
+  ## You'll need to require slim in your app
+  require 'slim'
+
+  get '/' do
+    slim :index
+  end
+
+Renders <tt>./views/index.slim</tt>.
+
 === CoffeeScript Templates
 
 The coffee-script gem/library and the `coffee` binary are required to render

@@ -78,7 +78,7 @@ task :add_template, [:name] do |t, args|
       else
         puts "Adding section to #{file}"
         template = template.gsub(/Liquid/, args.name.capitalize).gsub(/liquid/, args.name.downcase)        
-        code.gsub! /^(\s*===.*CoffeeScript)/, template << "\n\\1"        
+        code.gsub! /^(\s*===.*CoffeeScript)/, "\n" << template << "\n\\1"
         File.open(file, "w") { |f| f << code }
       end
     end

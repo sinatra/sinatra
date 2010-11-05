@@ -428,6 +428,19 @@ La gem/librería markaby es necesaria para renderizar plantillas Markaby:
 
 Renderiza <tt>./views/index.mab</tt>.
 
+=== Plantillas Slim
+
+La gem/librería slim es necesaria para renderizar plantillas Slim:
+
+  ## Vas a necesitar requerir slim en tu app
+  require 'slim'
+
+  get '/' do
+    slim :index
+  end
+
+Renderiza <tt>./views/index.slim</tt>.
+
 === Plantillas CoffeeScript
 
 La gem/librería coffee-script y el binario `coffee` son necesarios para

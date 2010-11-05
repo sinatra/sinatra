@@ -433,6 +433,19 @@ Das markaby gem wird benötigt, um Markaby-Templates rendern zu können:
 
 Dieser Code rendert <tt>./views/index.mab</tt>.
 
+=== Slim-Templates
+
+Das slim gem wird benötigt, um Slim-Templates rendern zu können:
+
+  ## slim muss eingebunden werden
+  require 'slim'
+
+  get '/' do
+    slim :index
+  end
+
+Dieser Code rendert <tt>./views/index.slim</tt>.
+
 === CoffeeScript-Templates
 
 Das coffee-script gem und das `coffee`-Programm werden benötigt, um CoffeScript-Templates rendern zu können:
