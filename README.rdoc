@@ -872,7 +872,7 @@ application (Rails/Ramaze/Camping/...).
   require 'sinatra/base'
   
   class LoginScreen < Sinatra::Base
-    enable :session
+    enable :sessions
     
     get('/login') { haml :login }
     
