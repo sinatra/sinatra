@@ -869,7 +869,7 @@ Sinatra-Anwendung handen, es kann jede andere Rack-Anwendung sein
   require 'sinatra/base'
 
   class LoginScreen < Sinatra::Base
-    enable :session
+    enable :sessions
   
     get('/login') { haml :login }
   

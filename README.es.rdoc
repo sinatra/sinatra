@@ -882,7 +882,7 @@ aplicación basada en Rack (Rails/Ramaze/Camping/...).
   require 'sinatra/base'
 
   class PantallaDeLogin< Sinatra::Base
-    enable :session
+    enable :sessions
 
     get('/login') { haml :login }
 

@@ -872,7 +872,7 @@ application basée sur Rack (Rails/Ramaze/Camping/...).
   require 'sinatra/base'
 
   class EcranDeConnexion < Sinatra::Base
-    enable :session
+    enable :sessions
 
     get('/connexion') { haml :connexion }
 
