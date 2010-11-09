@@ -12,11 +12,11 @@ Gem::Specification.new do |s|
   s.authors = ["Blake Mizerany", "Ryan Tomayko", "Simon Rozet", "Konstantin Haase"]
   s.email = "sinatrarb@googlegroups.com"
 
-  s.files         = Dir.glob("lib/**/*") + Dir.glob("README.*.rdoc") + %w(README.rdoc AUTHORS CHANGES LICENSE Rakefile Gemfile)
-  s.test_files    = Dir.glob("test/**/*")
+  s.files         = `git ls-files README* AUTHORS CHANGES LICENSE Rakefile Gemfile lib/`.split("\n")
+  s.test_files    = `git ls-files test/`.split("\n")
   s.require_paths = ["lib"]
 
-  s.extra_rdoc_files = Dir.glob("README.*.rdoc") + %w(README.rdoc LICENSE)
+  s.extra_rdoc_files = `git ls-files README* LICENSE`.split("\n")
 
   s.add_dependency 'rack', '~> 1.1'
   s.add_dependency 'tilt', '~> 1.1'
