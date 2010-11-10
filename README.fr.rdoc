@@ -914,7 +914,7 @@ même classe d'application qui traitera toutes les requêtes.
 
 Les options définies au moyen de `set` deviennent des méthodes de classe:
 
-    class MonApp << Sinatra::Base
+    class MonApp < Sinatra::Base
       # Eh, je suis dans le contexte de l'application!
       set :foo, 42
       foo # => 42
@@ -944,7 +944,7 @@ vous pouvez accéder aux objets `request` et `session` et faire appel aux foncti
 de rendu telles que `erb` ou `haml`. Vous pouvez accéder au contexte de l'application
 depuis le contexte de la requête au moyen de `settings`:
 
-  class MonApp << Sinatra::Base
+  class MonApp < Sinatra::Base
     # Eh, je suis dans le contexte de l'application!
     get '/ajouter_route/:nom' do
       # Contexte de la requête pour '/ajouter_route/:nom'

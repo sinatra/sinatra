@@ -915,7 +915,7 @@ Sinatraは他のRackミドルウェアを利用することができるだけで
 このスコープの内側からは`request`や`session`オブジェクトにアクセスすることができ、`erb`や`haml`のような表示メソッドを呼び出すことができます。
 リクエストスコープの内側からは、`settings`ヘルパによってアプリケーションスコープにアクセスすることができます。
 
-  class MyApp << Sinatra::Base
+  class MyApp < Sinatra::Base
     # Hey, I'm in the application scope!
     get '/define_route/:name' do
       # Request scope for '/define_route/:name'

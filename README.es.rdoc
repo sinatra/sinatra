@@ -924,7 +924,7 @@ aplicación para todas las peticiones.
 
 Las opciones creadas utilizando `set` son métodos al nivel de la clase:
 
-    class MiApp << Sinatra::Base
+    class MiApp < Sinatra::Base
       # Ey, estoy en el ámbito de la aplicación!
       set :foo, 42
       foo # => 42
@@ -954,7 +954,7 @@ es creada y todos los bloques de rutas son ejecutados en ese ámbito. Desde este
 de renderización como `erb` o `haml`. Podés acceder al ámbito de la aplicación
 desde el ámbito de la petición utilizando `settings`:
 
-  class MiApp << Sinatra::Base
+  class MiApp < Sinatra::Base
     # Ey, estoy en el ámbito de la aplicación!
     get '/definir_ruta/:nombre' do
       # Ámbito de petición para '/definir_ruta/:nombre'

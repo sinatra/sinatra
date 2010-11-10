@@ -901,7 +901,7 @@ for all requests.
 
 Options created via `set` are methods at class level:
 
-    class MyApp << Sinatra::Base
+    class MyApp < Sinatra::Base
       # Hey, I'm in the application scope!
       set :foo, 42
       foo # => 42
@@ -931,7 +931,7 @@ can access the `request` and `session` object or call rendering methods like
 `erb` or `haml`. You can access the application scope from within the request
 scope via the `settings` helper:
 
-  class MyApp << Sinatra::Base
+  class MyApp < Sinatra::Base
     # Hey, I'm in the application scope!
     get '/define_route/:name' do
       # Request scope for '/define_route/:name'
