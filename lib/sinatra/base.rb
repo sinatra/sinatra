@@ -471,7 +471,7 @@ module Sinatra
 
       # compile and render template
       layout_was      = @default_layout
-      @default_layout = false if layout
+      @default_layout = false
       template        = compile_template(engine, data, options, views)
       output          = template.render(self, locals, &block)
       @default_layout = layout_was
