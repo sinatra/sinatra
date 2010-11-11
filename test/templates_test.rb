@@ -101,6 +101,15 @@ class TemplatesTest < Test::Unit::TestCase
     assert_equal "<h1>String Layout!</h1>\n<content><h1>Hello From String</h1></content>", body
   end
 
+  it 'is possible to use partials in layouts' do
+    render_app do
+      settings.layout { "<%= erb 'foo' %><%= yield %>" }
+      erb 'bar'
+    end
+    assert ok?
+    assert_equal "foobar", body
+  end
+
   it 'loads templates from source file' do
     mock_app { enable :inline_templates }
     assert_equal "this is foo\n\n", @app.templates[:foo][0]
