@@ -406,7 +406,8 @@ module Sinatra
     end
 
     def builder(template=nil, options={}, locals={}, &block)
-      render_xml(:builder, template, options, locals, &block)
+      options[:default_content_type] = :xml
+      render_ruby(:builder, template, options, locals, &block)
     end
 
     def liquid(template, options={}, locals={})
@@ -429,8 +430,8 @@ module Sinatra
       render :radius, template, options, locals
     end
 
-    def markaby(template, options={}, locals={})
-      render :mab, template, options, locals
+    def markaby(template=nil, options={}, locals={}, &block)
+      render_ruby(:mab, template, options, locals, &block)
     end
 
     def coffee(template, options={}, locals={})
@@ -439,8 +440,8 @@ module Sinatra
     end
 
     def nokogiri(template=nil, options={}, locals={}, &block)
-      options[:layout] = false if Tilt::VERSION <= "1.1"
-      render_xml(:nokogiri, template, options, locals, &block)
+      options[:default_content_type] = :xml
+      render_ruby(:nokogiri, template, options, locals, &block)
     end
 
     def slim(template, options={}, locals={})
@@ -449,8 +450,7 @@ module Sinatra
 
   private
     # logic shared between builder and nokogiri
-    def render_xml(engine, template, options={}, locals={}, &block)
-      options[:default_content_type] = :xml
+    def render_ruby(engine, template, options={}, locals={}, &block)
       options, template = template, nil if template.is_a?(Hash)
       template = Proc.new { block } if template.nil?
       render engine, template, options, locals

@@ -2,6 +2,9 @@
 
  * Added `slim` rendering method for rendering Slim templates. (Steve Hodgkiss)
 
+ * The `markaby` rendering method now allows passing a block, making inline
+   usage possible. Requires Tilt 1.2 or newer. (Konstantin Haase)
+
  * README has been translated to Russian. (Nickolay Schwarz, Vasily Polovnyov)
 
  * Nested templates without a `:layout` option can now be used from the layout

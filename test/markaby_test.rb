@@ -12,6 +12,13 @@ class MarkabyTest < Test::Unit::TestCase
     get '/'
   end
 
+  def check_tilt(&block)
+    instance_eval(&block)
+  rescue TypeError => e
+    raise e unless Tilt::VERSION < '1.2'
+    warn "\nUpgrade Tilt!"
+  end
+
   it 'renders inline markaby strings' do
     markaby_app { markaby 'h1 "Hiya"' }
     assert ok?
@@ -38,6 +45,33 @@ class MarkabyTest < Test::Unit::TestCase
     markaby_app { markaby 'text "Hello World"', :layout => :layout2 }
     assert ok?
     assert_equal "<h1>Markaby Layout!</h1><p>Hello World</p>", body
+  end
+
+  it 'renders inline markaby blocks' do
+    check_tilt do
+      markaby_app { markaby { h1 'Hiya' } }
+      assert ok?
+      assert_equal "<h1>Hiya</h1>", body
+    end
+  end
+
+  it 'renders inline markaby blocks with inline layouts' do
+    check_tilt do
+      markaby_app do
+        settings.layout { 'h1 { text "THIS. IS. "; yield }' }
+        markaby { em 'SPARTA' }
+      end
+      assert ok?
+      assert_equal "<h1>THIS. IS. <em>SPARTA</em></h1>", body
+    end
+  end
+
+  it 'renders inline markaby blocks with file layouts' do
+    check_tilt do
+      markaby_app { markaby(:layout => :layout2) { text "Hello World" } }
+      assert ok?
+      assert_equal "<h1>Markaby Layout!</h1><p>Hello World</p>", body
+    end
   end
 
   it "raises error if template not found" do
