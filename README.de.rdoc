@@ -433,7 +433,20 @@ Das markaby gem wird benötigt, um Markaby-Templates rendern zu können:
 
 Dieser Code rendert <tt>./views/index.mab</tt>.
 
-=== CoffeScript-Templates
+=== Slim-Templates
+
+Das slim gem wird benötigt, um Slim-Templates rendern zu können:
+
+  ## slim muss eingebunden werden
+  require 'slim'
+
+  get '/' do
+    slim :index
+  end
+
+Dieser Code rendert <tt>./views/index.slim</tt>.
+
+=== CoffeeScript-Templates
 
 Das coffee-script gem und das `coffee`-Programm werden benötigt, um CoffeScript-Templates rendern zu können:
 
@@ -869,7 +882,7 @@ Sinatra-Anwendung handen, es kann jede andere Rack-Anwendung sein
   require 'sinatra/base'
 
   class LoginScreen < Sinatra::Base
-    enable :session
+    enable :sessions
   
     get('/login') { haml :login }
   
@@ -906,7 +919,7 @@ Jede Sinatra-Anwendung entspricht einer Sinatra::Base-Subklasse. Falls man die T
 
 Optionen die via `set` gesetzt werden, sind Methoden auf Klassenebene:
 
-  class MyApp << Sinatra::Base
+  class MyApp < Sinatra::Base
     # Hey, ich bin im Anwendungsscope!
     set :foo, 42
     foo # => 42
@@ -933,7 +946,7 @@ Man kann auf das Scope-Object (die Klasse) wie folgt zugreifen:
 
 Für jede eingehende Anfrage wird eine neue Instanz der Anwendungsklasse erstellt und alle Handlers werden in diesem Scope ausgeführt. Aus diesem Scope heraus kann man auf `request` oder `session` zugreifen und Methoden wie `erb` oder `haml` aufrufen. Man kann mit der `settings` Methode außerdem auf den Anwengungsscope zugreifen.
 
-  class MyApp << Sinatra::Base
+  class MyApp < Sinatra::Base
     # Hey, ich bin im Anwendungsscope!
     get '/neue_route/:name' do
       # Anfragescope für '/neue_route/:name'

@@ -420,6 +420,19 @@ Rack body对象或者HTTP状态码：
 
 渲染 <tt>./views/index.mab</tt>。
 
+=== Slim 模板 
+
+需要引入 slim gem/library 来渲染 Slim 模板：
+
+  ## 需要在你的应用中引入 slim
+  require 'slim'
+
+  get '/' do
+    slim :index
+  end
+
+渲染 <tt>./views/index.slim</tt>。
+
 === CoffeeScript 模板
 
 需要引入 coffee-script gem/library 并在路径中存在 `coffee` 二进制文件以渲染
@@ -859,7 +872,7 @@ Sinatra::Base子类可用的方法实际上就是
   require 'sinatra/base'
   
   class LoginScreen < Sinatra::Base
-    enable :session
+    enable :sessions
     
     get('/login') { haml :login }
     
@@ -901,7 +914,7 @@ Sinatra::Application，或者这个类就是你显式创建的子类。
 
 通过 `set` 创建的选项是类层面的方法：
 
-    class MyApp << Sinatra::Base
+    class MyApp < Sinatra::Base
       # 嘿，我在应用变量域！
       set :foo, 42
       foo # => 42
@@ -931,7 +944,7 @@ Sinatra::Application，或者这个类就是你显式创建的子类。
 `erb` 或者 `haml`。你可以在请求变量域当中通过`settings`辅助方法
 访问应用变量域：
 
-  class MyApp << Sinatra::Base
+  class MyApp < Sinatra::Base
     # 嘿，我在应用变量域!
     get '/define_route/:name' do
       # 针对 '/define_route/:name' 的请求变量域

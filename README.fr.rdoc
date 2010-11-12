@@ -425,6 +425,19 @@ Le gem markaby est nécessaire pour utiliser la fonction de rendu Markaby:
 
 Utilisera <tt>./views/index.mab</tt>.
 
+=== Templates Slim
+
+Le gem slim est nécessaire pour utiliser la fonction de rendu Slim:
+
+  ## Chargez la bibliothèque slim dans votre application
+  require 'slim'
+
+  get '/' do
+    slim :index
+  end
+
+Utilisera <tt>./views/index.slim</tt>.
+
 === Templates CoffeeScript
 
 Le gem coffee-script et l'exécutable `coffee` sont nécessaires pour utiliser la
@@ -872,7 +885,7 @@ application basée sur Rack (Rails/Ramaze/Camping/...).
   require 'sinatra/base'
 
   class EcranDeConnexion < Sinatra::Base
-    enable :session
+    enable :sessions
 
     get('/connexion') { haml :connexion }
 
@@ -914,7 +927,7 @@ même classe d'application qui traitera toutes les requêtes.
 
 Les options définies au moyen de `set` deviennent des méthodes de classe:
 
-    class MonApp << Sinatra::Base
+    class MonApp < Sinatra::Base
       # Eh, je suis dans le contexte de l'application!
       set :foo, 42
       foo # => 42
@@ -944,7 +957,7 @@ vous pouvez accéder aux objets `request` et `session` et faire appel aux foncti
 de rendu telles que `erb` ou `haml`. Vous pouvez accéder au contexte de l'application
 depuis le contexte de la requête au moyen de `settings`:
 
-  class MonApp << Sinatra::Base
+  class MonApp < Sinatra::Base
     # Eh, je suis dans le contexte de l'application!
     get '/ajouter_route/:nom' do
       # Contexte de la requête pour '/ajouter_route/:nom'

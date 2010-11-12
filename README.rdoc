@@ -420,6 +420,19 @@ The markaby gem/library is required to render Markaby templates:
 
 Renders <tt>./views/index.mab</tt>.
 
+=== Slim Templates
+
+The slim gem/library is required to render Slim templates:
+
+  ## You'll need to require slim in your app
+  require 'slim'
+
+  get '/' do
+    slim :index
+  end
+
+Renders <tt>./views/index.slim</tt>.
+
 === CoffeeScript Templates
 
 The coffee-script gem/library and the `coffee` binary are required to render
@@ -859,7 +872,7 @@ application (Rails/Ramaze/Camping/...).
   require 'sinatra/base'
   
   class LoginScreen < Sinatra::Base
-    enable :session
+    enable :sessions
     
     get('/login') { haml :login }
     
@@ -901,7 +914,7 @@ for all requests.
 
 Options created via `set` are methods at class level:
 
-    class MyApp << Sinatra::Base
+    class MyApp < Sinatra::Base
       # Hey, I'm in the application scope!
       set :foo, 42
       foo # => 42
@@ -931,7 +944,7 @@ can access the `request` and `session` object or call rendering methods like
 `erb` or `haml`. You can access the application scope from within the request
 scope via the `settings` helper:
 
-  class MyApp << Sinatra::Base
+  class MyApp < Sinatra::Base
     # Hey, I'm in the application scope!
     get '/define_route/:name' do
       # Request scope for '/define_route/:name'

@@ -419,6 +419,19 @@ Markabyテンプレートを使うにはmarkabyライブラリが必要です:
 
 <tt>./views/index.mab</tt>を表示します。
 
+=== Slim テンプレート
+
+Slimテンプレートを使うにはslimライブラリが必要です:
+
+  ## slimを読み込みます
+  require 'slim'
+
+  get '/' do
+    slim :index
+  end
+
+<tt>./views/index.slim</tt>を表示します。
+
 === CoffeeScript テンプレート
 
 CoffeeScriptテンプレートを表示するにはcoffee-scriptライブラリと`coffee`バイナリが必要です:
@@ -847,7 +860,7 @@ Sinatraは他のRackミドルウェアを利用することができるだけで
   require 'sinatra/base'
   
   class LoginScreen < Sinatra::Base
-    enable :session
+    enable :sessions
     
     get('/login') { haml :login }
     
@@ -915,7 +928,7 @@ Sinatraは他のRackミドルウェアを利用することができるだけで
 このスコープの内側からは`request`や`session`オブジェクトにアクセスすることができ、`erb`や`haml`のような表示メソッドを呼び出すことができます。
 リクエストスコープの内側からは、`settings`ヘルパによってアプリケーションスコープにアクセスすることができます。
 
-  class MyApp << Sinatra::Base
+  class MyApp < Sinatra::Base
     # Hey, I'm in the application scope!
     get '/define_route/:name' do
       # Request scope for '/define_route/:name'

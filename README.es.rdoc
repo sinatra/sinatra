@@ -428,6 +428,19 @@ La gem/librería markaby es necesaria para renderizar plantillas Markaby:
 
 Renderiza <tt>./views/index.mab</tt>.
 
+=== Plantillas Slim
+
+La gem/librería slim es necesaria para renderizar plantillas Slim:
+
+  ## Vas a necesitar requerir slim en tu app
+  require 'slim'
+
+  get '/' do
+    slim :index
+  end
+
+Renderiza <tt>./views/index.slim</tt>.
+
 === Plantillas CoffeeScript
 
 La gem/librería coffee-script y el binario `coffee` son necesarios para
@@ -882,7 +895,7 @@ aplicación basada en Rack (Rails/Ramaze/Camping/...).
   require 'sinatra/base'
 
   class PantallaDeLogin< Sinatra::Base
-    enable :session
+    enable :sessions
 
     get('/login') { haml :login }
 
@@ -924,7 +937,7 @@ aplicación para todas las peticiones.
 
 Las opciones creadas utilizando `set` son métodos al nivel de la clase:
 
-    class MiApp << Sinatra::Base
+    class MiApp < Sinatra::Base
       # Ey, estoy en el ámbito de la aplicación!
       set :foo, 42
       foo # => 42
@@ -954,7 +967,7 @@ es creada y todos los bloques de rutas son ejecutados en ese ámbito. Desde este
 de renderización como `erb` o `haml`. Podés acceder al ámbito de la aplicación
 desde el ámbito de la petición utilizando `settings`:
 
-  class MiApp << Sinatra::Base
+  class MiApp < Sinatra::Base
     # Ey, estoy en el ámbito de la aplicación!
     get '/definir_ruta/:nombre' do
       # Ámbito de petición para '/definir_ruta/:nombre'
