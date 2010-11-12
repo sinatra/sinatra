@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'sinatra'
-  s.version = '1.1.0'
-  s.date = '2010-10-24'
+  s.version = '1.1.1'
+  s.date = '2010-11-12'
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
     README.hu.rdoc
     README.jp.rdoc
     README.rdoc
+    README.ru.rdoc
     README.zh.rdoc
     Rakefile
     lib/sinatra.rb
@@ -65,6 +66,7 @@ Gem::Specification.new do |s|
     test/server_test.rb
     test/settings_test.rb
     test/sinatra_test.rb
+    test/slim_test.rb
     test/static_test.rb
     test/templates_test.rb
     test/textile_test.rb
@@ -90,6 +92,7 @@ Gem::Specification.new do |s|
     test/views/hello.rdoc
     test/views/hello.sass
     test/views/hello.scss
+    test/views/hello.slim
     test/views/hello.str
     test/views/hello.test
     test/views/hello.textile
@@ -101,6 +104,7 @@ Gem::Specification.new do |s|
     test/views/layout2.mab
     test/views/layout2.nokogiri
     test/views/layout2.radius
+    test/views/layout2.slim
     test/views/layout2.str
     test/views/layout2.test
     test/views/nested.str
