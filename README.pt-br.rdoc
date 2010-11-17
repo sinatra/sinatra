@@ -1,6 +1,7 @@
 = Sinatra
 
-Sinatra é uma DSL para criar rapidamente aplicações web em Ruby com o mínimo de esforço:
+Sinatra é uma DSL para criar rapidamente aplicações web em Ruby com o mínimo de
+esforço:
 
   # minhaapp.rb
   require 'rubygems'
@@ -601,11 +602,11 @@ Sinatra applications can be run directly:
 Options are:
 
   -h # help
-  -p # set the port (default is 4567)
-  -o # set the host (default is 0.0.0.0)
-  -e # set the environment (default is development)
-  -s # specify rack server/handler (default is thin)
-  -x # turn on the mutex lock (default is off)
+  -p # define a porta (padrão é 4567)
+  -o # define o host (padrão é 0.0.0.0)
+  -e # define o ambiente (padrão é development)
+  -s # especifica o servidor/manipulador rack (padrão é thin)
+  -x # ativa o bloqueio (padrão é desligado)
 
 == The Bleeding Edge
 
@@ -615,17 +616,17 @@ clone and run your app with the <tt>sinatra/lib</tt> directory on the
 
   cd myapp
   git clone git://github.com/sinatra/sinatra.git
-  ruby -Isinatra/lib myapp.rb
+  ruby -I sinatra/lib myapp.rb
 
-Alternatively, you can add the <tt>sinatra/lib</tt> directory to the
-<tt>LOAD_PATH</tt> in your application:
+Alternativamente, você pode adicionar o diretório do <tt>sinatra/lib</tt> no
+<tt>LOAD_PATH</tt> do seu aplicativo:
 
   $LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
   require 'rubygems'
   require 'sinatra'
 
-  get '/about' do
-    "I'm running version " + Sinatra::VERSION
+  get '/sobre' do
+    "Estou rodando a versão" + Sinatra::VERSION
   end
 
 Para atualizar o código do Sinatra no futuro:
@@ -635,11 +636,11 @@ Para atualizar o código do Sinatra no futuro:
 
 == Mais
 
-* {Project Website}[http://www.sinatrarb.com/] - Documentação adicional,
-  news, and links to other resources.
-* {Contributing}[http://www.sinatrarb.com/contributing] - Find a bug? Need
-  help? Have a patch?
-* {Issue tracker}[http://github.com/sinatra/sinatra/issues]
+* {Website do Projeto}[http://www.sinatrarb.com/] - Documentação adicional,
+  novidades e links para outros recursos.
+* {Contribuir}[http://www.sinatrarb.com/contributing] - Encontrar um bug? Precisa
+  de ajuda? Tem um patch?
+* {Acompanhar Questões}[http://github.com/sinatra/sinatra/issues]
 * {Twitter}[http://twitter.com/sinatra]
-* {Mailing List}[http://groups.google.com/group/sinatrarb/topics]
-* {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] on http://freenode.net
+* {Lista de Email}[http://groups.google.com/group/sinatrarb/topics]
+* {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] em http://freenode.net
