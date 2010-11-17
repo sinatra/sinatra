@@ -403,30 +403,30 @@ Rodando quando o ambiente é setado para <tt>:production</tt> ou
 
 == Tratamento de Erros
 
-Tratamento de erros rodam dentro do mesmo contexto como rotas e filtros before, which
-means you get all the goodies it has to offer, like <tt>haml</tt>, <tt>erb</tt>,
+Tratamento de erros rodam dentro do mesmo contexto como rotas e filtros before, o
+que significa que você pega todos os presentes que tem para oferecer, como <tt>haml</tt>, <tt>erb</tt>,
 <tt>halt</tt>, etc.
 
 === Não Encontrado
 
-Quando um <tt>Sinatra::NotFound</tt> exception é levantada, ou o response's status
-code is 404, the <tt>not_found</tt> handler is invoked:
+Quando um <tt>Sinatra::NotFound</tt> exception é levantado, ou o código de status
+da reposta é 404, o <tt>not_found</tt> manipulador é invocado:
 
   not_found do
-    'This is nowhere to be found'
+    'Isto está longe de ser encontrado'
   end
 
-=== Error
+=== Erro
 
-The +error+ handler is invoked any time an exception is raised from a route
-block or a filter. The exception object can be obtained from the
-<tt>sinatra.error</tt> Rack variable:
+O manipulador +error+ é invocado toda a vez que uma exceção é lançada a partir de
+um bloco de rota ou um filtro. O objeto da exceção pode ser obtido a partir da variável
+Rack <tt>sinatra.error</tt>:
 
   error do
-    'Sorry there was a nasty error - ' + env['sinatra.error'].name
+    'Desculpe, houve um erro desagradável - ' + env['sinatra.error'].name
   end
 
-Custom errors:
+Erros customizados:
 
   error MyCustomError do
     'So what happened was...' + request.env['sinatra.error'].message
