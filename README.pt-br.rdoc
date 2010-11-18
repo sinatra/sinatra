@@ -39,7 +39,7 @@ Cada rota é associada a um bloco:
   end
 
 Rotas são encontradas na ordem em que são definidas. A primeira rota que
-é encontrada o pedido é invocado.
+é encontrada invoca o pedido.
 
 Padrões de rota podem incluir parâmetros nomeados, acessáveis via a
 hash <tt>params</tt>:
@@ -110,7 +110,7 @@ Para utilizar um diretório view diferente:
   set :views, File.dirname(__FILE__) + '/modelo'
 
 Uma coisa importante a ser lembrada é que você sempre tem as referências dos
-templates como simbolos, mesmo se eles estiverem em um sub-diretório (nesse
+templates como símbolos, mesmo se eles estiverem em um sub-diretório (nesse
 caso utilize <tt>:'subdir/template'</tt>). Métodos de renderização irão processar
 qualquer string passada diretamente para elas.
 
@@ -294,7 +294,7 @@ template for renderizado. Você pode desabilitar layouts passando <tt>:layout =>
 
 == Helpers
 
-Use o método top-level <tt>helpers</tt> para definir métodos auxiliares para utilizar em
+Use o método de alto nível <tt>helpers</tt> para definir métodos auxiliares para utilizar em
 manipuladores de rotas e modelos:
 
   helpers do
@@ -429,84 +429,84 @@ Rack <tt>sinatra.error</tt>:
 
 Erros customizados:
 
-  error MyCustomError do
-    'So what happened was...' + request.env['sinatra.error'].message
+  error MeuErroCustomizado do
+    'Então que aconteceu foi...' + request.env['sinatra.error'].message
   end
 
-Then, if this happens:
+Então, se isso acontecer:
 
   get '/' do
-    raise MyCustomError, 'something bad'
+    raise MeuErroCustomizado, 'alguma coisa ruim'
   end
 
-You get this:
+Você receberá isso:
 
-  So what happened was... something bad
+  Então que aconteceu foi... alguma coisa ruim
 
-Alternatively, you can install error handler for a status code:
+Alternativamente, você pode instalar manipulador de erro para um código de status:
 
   error 403 do
-    'Access forbidden'
+    'Accesso negado'
   end
 
-  get '/secret' do
+  get '/secreto' do
     403
   end
 
-Or a range:
+Ou um range:
 
   error 400..510 do
     'Boom'
   end
 
-Sinatra installs special <tt>not_found</tt> and <tt>error</tt> handlers when
-running under the development environment.
+O Sinatra instala os manipuladores especiais <tt>not_found</tt> e <tt>error</tt> quando
+roda sobre o ambiente de desenvolvimento.
 
-== Mime types
+== Mime Types
 
-When using <tt>send_file</tt> or static files you may have mime types Sinatra
-doesn't understand. Use +mime_type+ to register them by file extension:
+Quando utilizamos <tt>send_file</tt> ou arquivos estáticos você pode ter mime types Sinatra
+não entendidos. Use +mime_type+ para registrar eles por extensão de arquivos:
 
   mime_type :foo, 'text/foo'
 
-You can also use it with the +content_type+ helper:
+Você também pode utilizar isto com o helper +content_type+:
 
   content_type :foo
 
-== Rack Middleware
+== Middleware Rack
 
-Sinatra rides on Rack[http://rack.rubyforge.org/], a minimal standard
-interface for Ruby web frameworks. One of Rack's most interesting capabilities
-for application developers is support for "middleware" -- components that sit
-between the server and your application monitoring and/or manipulating the
-HTTP request/response to provide various types of common functionality.
+O Sinatra roda no Rack[http://rack.rubyforge.org/], uma interface padrão
+mínima para frameworks web em Ruby. Um das capacidades mais interessantes do Rack
+para desenvolver aplicativos é suporte a "middleware" -- componentes que ficam
+entre o servidor e sua aplicação monitorando e/ou manipulando o request/response do
+HTTP para prover vários tipos de funcionalidades comuns.
 
-Sinatra makes building Rack middleware pipelines a cinch via a top-level
-+use+ method:
+O Sinatra faz construtores pipelines do middleware Rack facilmente em um nível superior
+utilizando o método +use+:
 
   require 'sinatra'
-  require 'my_custom_middleware'
+  require 'meu_middleware_customizado'
 
   use Rack::Lint
-  use MyCustomMiddleware
+  use MeuMiddlewareCustomizado
 
   get '/ola' do
     'Olá mundo'
   end
 
-A semântica of +use+ are identical to those defined for the
-Rack::Builder[http://rack.rubyforge.org/doc/classes/Rack/Builder.html] DSL
-(most frequently used from rackup files). For example, the +use+ method
-accepts multiple/variable args as well as blocks:
+A semântica de +use+ é idêntica aquela definida para a DSL
+Rack::Builder[http://rack.rubyforge.org/doc/classes/Rack/Builder.html]
+(mais frequentemente utilizada para arquivos rackup). Por exemplo, o método +use+
+aceita múltiplos argumentos/variáveis bem como blocos:
 
-  use Rack::Auth::Basic do |username, password|
-    username == 'admin' && password == 'secret'
+  use Rack::Auth::Basic do |usuario, senha|
+    usuario == 'admin' && senha == 'secreto'
   end
 
-Rack is distributed with a variety of standard middleware for logging,
-debugging, URL routing, authentication, and session handling. Sinatra uses
-many of of these components automatically based on configuration so you
-typically don't have to +use+ them explicitly.
+O Rack é distribuido com uma variedade de middleware padrões para logs,
+debugs, rotas de URL, autenticação, e manipuladores de sessão. Sinatra utilizada
+muitos desses componentes automaticamente baseando sobre configuração, então, tipicamente
+você não tem +use+ explicitamente.
 
 == Testando
 
@@ -514,44 +514,44 @@ Testes no Sinatra podem ser escritos utilizando qualquer biblioteca ou framework
 de teste baseados no Rack. {Rack::Test}[http://gitrdoc.com/brynary/rack-test] é
 recomendado:
 
-  require 'my_sinatra_app'
+  require 'minha_aplicacao_sinatra'
   require 'rack/test'
 
-  class MyAppTest < Test::Unit::TestCase
+  class MinhaAplicacaoTeste < Test::Unit::TestCase
     include Rack::Test::Methods
 
     def app
       Sinatra::Application
     end
 
-    def test_my_default
+    def meu_test_default
       get '/'
       assert_equal 'Ola Mundo!', last_response.body
     end
 
-    def test_with_params
-      get '/meet', :name => 'Frank'
-      assert_equal 'Hello Frank!', last_response.body
+    def teste_com_parametros
+      get '/atender', :name => 'Frank'
+      assert_equal 'Olá Frank!', last_response.bodymeet
     end
 
-    def test_with_rack_env
+    def test_com_ambiente_rack
       get '/', {}, 'HTTP_USER_AGENT' => 'Songbird'
-      assert_equal "You're using Songbird!", last_response.body
+      assert_equal "Você está utilizando o Songbird!", last_response.body
     end
   end
 
-NOTE: The built-in Sinatra::Test module and Sinatra::TestHarness class
-are deprecated as of the 0.9.2 release.
+NOTA: Os módulos de classe embutidos Sinatra::Test e Sinatra::TestHarness
+são depreciados na versão 0.9.2.
 
-== Sinatra::Base - Middleware, Libraries, and Modular Apps
+== Sinatra::Base - Middleware, Bibliotecas e aplicativos modulares
 
-Defining your app at the top-level works well for micro-apps but has
-considerable drawbacks when building reuseable components such as Rack
-middleware, Rails metal, simple libraries with a server component, or
-even Sinatra extensions. The top-level DSL pollutes the Object namespace
-and assumes a micro-app style configuration (e.g., a single application
-file, ./public and ./views directories, logging, exception detail page,
-etc.). That's where Sinatra::Base comes into play:
+Definir sua aplicação em um nível superior de trabalho funciona bem para micro aplicativos, mas tem
+consideráveis incovenientes na construção de componentes reutilizáveis como um middleware Rack,
+metal Rails, bibliotecas simples como um componente de servidor, ou
+mesmo extensões Sinatra. A DSL de nível superior polui o espaço do objeto
+e assume um estilo de configuração de micro aplicativos (exemplo: uma simples arquivo de
+aplicação, diretórios ./public e ./views, logs, página de detalhes de exceção,
+etc.). É onde o Sinatra::Base entra em jogo:
 
   require 'sinatra/base'
 
@@ -564,59 +564,59 @@ etc.). That's where Sinatra::Base comes into play:
     end
   end
 
-A classe MinhaApp é an independent Rack component that can act as
-Rack middleware, a Rack application, or Rails metal. You can +use+ or
-+run+ this class from a rackup +config.ru+ file; or, control a server
-component shipped as a library:
+A classe MinhaApp é um componente Rack independente que pode agir como um
+middleware Rack, uma aplicação Rack, ou metal Rails. Você pode +utilizar+ ou
++executar+ esta classe com um arquivo rackup +config.ru+; ou, controlar um componente
+de servidor fornecendo como biblioteca:
 
    MyApp.run! :host => 'localhost', :port => 9090
 
-Os métodos disponíveis para Sinatra::Base subclasses are exactly as those
-available via the top-level DSL. Most top-level apps can be converted to
-Sinatra::Base components with two modifications:
+Os métodos disponíveis para subclasses Sinatra::Base são exatamente como aqueles
+disponíveis via a DSL de nível superior. Aplicações de nível mais alto podem ser convertidas para
+componentes Sinatra::Base com duas modificações:
 
-* Your file should require +sinatra/base+  instead of +sinatra+;
-  otherwise, all of Sinatra's DSL methods are imported into the main
-  namespace.
-* Put your app's routes, error handlers, filters, and options in a subclass
-  of Sinatra::Base.
+* Seu arquivo deve requerer +sinatra/base+  ao invés de +sinatra+;
+  outra coisa, todos os métodos DSL do Sinatra são importados para o espaço
+  principal.
+* Coloque as rotas da sua aplicação, manipuladores de erro, filtros e opções na subclasse de
+  um Sinatra::Base.
 
-+Sinatra::Base+ is a blank slate. Most options are disabled by default,
-including the built-in server. See {Options and Configuration}[http://sinatra.github.com/configuration.html]
-for details on available options and their behavior.
++Sinatra::Base+ é um quadro branco. Muitas opções são desabilitadas por padrão,
+incluindo o servidor embutido. Veja {Opções e Configurações}[http://sinatra.github.com/configuration.html]
+para detalhes de opções disponíveis e seus comportamentos.
 
-SIDEBAR: Sinatra's top-level DSL is implemented using a simple delegation
-system. The +Sinatra::Application+ class -- a special subclass of
-Sinatra::Base -- receives all :get, :put, :post, :delete, :before,
-:error, :not_found, :configure, and :set messages sent to the
-top-level. Have a look at the code for yourself: here's the
+SIDEBAR: A DSL de alto nível do Sinatra é implementada utilizando um simples sistema de
+delegação. A classe +Sinatra::Application+ -- uma subclasse especial da
+Sinatra::Base -- recebe todos os :get, :put, :post, :delete, :before,
+:error, :not_found, :configure, e :set messages enviados para o
+alto nível. Dê uma olhada no código você mesmo: aqui está o
 {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
-being {included into the main namespace}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28]
+sendo {incluido dentro de um espaço principal}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28]
 
 == Linha de Comando
 
-Sinatra applications can be run directly:
+Aplicações Sinatra podem ser executadas diretamente:
 
-  ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
+  ruby minhaapp.rb [-h] [-x] [-e AMBIENTE] [-p PORTA] [-o HOST] [-s SERVIDOR]
 
-Options are:
+As opções são:
 
-  -h # help
+  -h # ajuda
   -p # define a porta (padrão é 4567)
   -o # define o host (padrão é 0.0.0.0)
   -e # define o ambiente (padrão é development)
   -s # especifica o servidor/manipulador rack (padrão é thin)
   -x # ativa o bloqueio (padrão é desligado)
 
-== The Bleeding Edge
+== A última versão
 
-If you would like to use Sinatra's latest bleeding code, create a local
-clone and run your app with the <tt>sinatra/lib</tt> directory on the
+Se você gostaria de utilizar o código da última versão do Sinatra, crie um clone
+local e execute sua aplicação com o diretório <tt>sinatra/lib</tt> no
 <tt>LOAD_PATH</tt>:
 
-  cd myapp
+  cd minhaapp
   git clone git://github.com/sinatra/sinatra.git
-  ruby -I sinatra/lib myapp.rb
+  ruby -I sinatra/lib minhaapp.rb
 
 Alternativamente, você pode adicionar o diretório do <tt>sinatra/lib</tt> no
 <tt>LOAD_PATH</tt> do seu aplicativo:
