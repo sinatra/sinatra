@@ -569,7 +569,7 @@ middleware Rack, uma aplicação Rack, ou metal Rails. Você pode +utilizar+ ou
 +executar+ esta classe com um arquivo rackup +config.ru+; ou, controlar um componente
 de servidor fornecendo como biblioteca:
 
-   MyApp.run! :host => 'localhost', :port => 9090
+   MinhaApp.run! :host => 'localhost', :port => 9090
 
 Os métodos disponíveis para subclasses Sinatra::Base são exatamente como aqueles
 disponíveis via a DSL de nível superior. Aplicações de nível mais alto podem ser convertidas para
