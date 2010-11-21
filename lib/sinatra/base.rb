@@ -1197,7 +1197,8 @@ module Sinatra
         /\(.*\)/,                                        # generated code
         /rubygems\/custom_require\.rb$/,                 # rubygems require hacks
         /active_support/,                                # active_support require hacks
-        /<internal:/,                                    # internal in ruby >= 1.9.2
+        /bundler(\/runtime)?\.rb/,                       # bundler require hacks
+        /<internal:/                                     # internal in ruby >= 1.9.2
       ]
 
       # add rubinius (and hopefully other VM impls) ignore patterns ...
