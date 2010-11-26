@@ -446,6 +446,14 @@ class HelpersTest < Test::Unit::TestCase
       get '/file.txt'
       assert_equal 'attachment; filename="foo.txt"', response['Content-Disposition']
     end
+
+    it "is able to send files with unkown mime type" do
+      @file = File.dirname(__FILE__) + '/file.foobar'
+      File.open(@file, 'wb') { |io| io.write('Hello World') }
+      send_file_app
+      get '/file.txt'
+      assert_equal 'application/octet-stream', response['Content-Type']
+    end
   end
 
   describe 'cache_control' do
