@@ -140,7 +140,8 @@ module Sinatra
     # Set the Content-Type of the response body given a media type or file
     # extension.
     def content_type(type, params={})
-      mime_type = mime_type(type)
+      default = params.delete :default
+      mime_type = mime_type(type) || default
       fail "Unknown media type: %p" % type if mime_type.nil?
       mime_type = mime_type.dup
       unless params.include? :charset or settings.add_charset.all? { |p| not p === mime_type }
@@ -165,10 +166,8 @@ module Sinatra
       stat = File.stat(path)
       last_modified stat.mtime
 
-      content_type opts[:type] ||
-        File.extname(path) ||
-        response['Content-Type'] ||
-        'application/octet-stream'
+      content_type opts[:type] || File.extname(path),
+        :default => response['Content-Type'] || 'application/octet-stream'
 
       if opts[:disposition] == 'attachment' || opts[:filename]
         attachment opts[:filename] || path
