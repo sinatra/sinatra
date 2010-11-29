@@ -37,6 +37,10 @@ Each route is associated with a block:
   delete '/' do
     .. annihilate something ..
   end
+  
+  options '/' do
+    .. appease something ..
+  end
 
 Routes are matched in the order they are defined. The first route that
 matches the request is invoked.
@@ -977,7 +981,7 @@ scope via the `settings` helper:
 
 You have the request scope binding inside:
 
-* get/head/post/put/delete blocks
+* get/head/post/put/delete/options blocks
 * before/after filters
 * helper methods
 * templates/views
