@@ -7,7 +7,7 @@ require 'sinatra/showexceptions'
 require 'tilt'
 
 module Sinatra
-  VERSION = '1.1.0'
+  VERSION = '1.1.1'
 
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
@@ -140,7 +140,8 @@ module Sinatra
     # Set the Content-Type of the response body given a media type or file
     # extension.
     def content_type(type, params={})
-      mime_type = mime_type(type)
+      default = params.delete :default
+      mime_type = mime_type(type) || default
       fail "Unknown media type: %p" % type if mime_type.nil?
       mime_type = mime_type.dup
       unless params.include? :charset or settings.add_charset.all? { |p| not p === mime_type }
@@ -165,10 +166,8 @@ module Sinatra
       stat = File.stat(path)
       last_modified stat.mtime
 
-      content_type opts[:type] ||
-        File.extname(path) ||
-        response['Content-Type'] ||
-        'application/octet-stream'
+      content_type opts[:type] || File.extname(path),
+        :default => response['Content-Type'] || 'application/octet-stream'
 
       if opts[:disposition] == 'attachment' || opts[:filename]
         attachment opts[:filename] || path
@@ -406,7 +405,8 @@ module Sinatra
     end
 
     def builder(template=nil, options={}, locals={}, &block)
-      render_xml(:builder, template, options, locals, &block)
+      options[:default_content_type] = :xml
+      render_ruby(:builder, template, options, locals, &block)
     end
 
     def liquid(template, options={}, locals={})
@@ -429,8 +429,8 @@ module Sinatra
       render :radius, template, options, locals
     end
 
-    def markaby(template, options={}, locals={})
-      render :mab, template, options, locals
+    def markaby(template=nil, options={}, locals={}, &block)
+      render_ruby(:mab, template, options, locals, &block)
     end
 
     def coffee(template, options={}, locals={})
@@ -439,8 +439,8 @@ module Sinatra
     end
 
     def nokogiri(template=nil, options={}, locals={}, &block)
-      options[:layout] = false if Tilt::VERSION <= "1.1"
-      render_xml(:nokogiri, template, options, locals, &block)
+      options[:default_content_type] = :xml
+      render_ruby(:nokogiri, template, options, locals, &block)
     end
 
     def slim(template, options={}, locals={})
@@ -449,8 +449,7 @@ module Sinatra
 
   private
     # logic shared between builder and nokogiri
-    def render_xml(engine, template, options={}, locals={}, &block)
-      options[:default_content_type] = :xml
+    def render_ruby(engine, template, options={}, locals={}, &block)
       options, template = template, nil if template.is_a?(Hash)
       template = Proc.new { block } if template.nil?
       render engine, template, options, locals
@@ -1201,7 +1200,8 @@ module Sinatra
         /\(.*\)/,                                        # generated code
         /rubygems\/custom_require\.rb$/,                 # rubygems require hacks
         /active_support/,                                # active_support require hacks
-        /<internal:/,                                    # internal in ruby >= 1.9.2
+        /bundler(\/runtime)?\.rb/,                       # bundler require hacks
+        /<internal:/                                     # internal in ruby >= 1.9.2
       ]
 
       # add rubinius (and hopefully other VM impls) ignore patterns ...

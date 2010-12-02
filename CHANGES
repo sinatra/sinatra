@@ -1,3 +1,22 @@
+= 1.1.1 / Not Yet Released
+
+ * Added `slim` rendering method for rendering Slim templates. (Steve Hodgkiss)
+
+ * The `markaby` rendering method now allows passing a block, making inline
+   usage possible. Requires Tilt 1.2 or newer. (Konstantin Haase)
+
+ * README has been translated to Russian. (Nickolay Schwarz, Vasily Polovnyov)
+
+ * Nested templates without a `:layout` option can now be used from the layout
+   template without causing an infinite loop. (Konstantin Haase)
+
+ * Path is no longer cached if changed between handlers that do pattern
+   matching. This means you can change `request.path_info` in a pattern matching
+   before filter. (Konstantin Haase)
+
+ * Headers set by cache_control now always set max_age as an Integer, making
+   sure it is compatible with RFC2616. (Konstantin Haase)
+
 = 1.1.0 / 2010-10-24
 
  * Before and after filters now support pattern matching, including the
