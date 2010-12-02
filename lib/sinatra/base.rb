@@ -1127,9 +1127,11 @@ module Sinatra
         set options
         handler      = detect_rack_handler
         handler_name = handler.name.gsub(/.*::/, '')
+        # handler specific options use the lower case handler name as hash key, if present
+        handler_opts = options[handler_name.downcase.to_sym] || {}
         puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
           "on #{port} for #{environment} with backup from #{handler_name}" unless handler_name =~/cgi/i
-        handler.run self, :Host => bind, :Port => port do |server|
+        handler.run self, handler_opts.merge(:Host => bind, :Port => port) do |server|
           [:INT, :TERM].each { |sig| trap(sig) { quit!(server, handler_name) } }
           set :running, true
         end

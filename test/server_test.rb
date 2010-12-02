@@ -8,6 +8,7 @@ module Rack::Handler
       assert(app < Sinatra::Base)
       assert_equal 9001, options[:Port]
       assert_equal 'foo.local', options[:Host]
+      assert_equal 'foobar', options[:extra] if options[:extra]
       yield new
     end
 
@@ -43,5 +44,9 @@ class ServerTest < Test::Unit::TestCase
 
   it "falls back on the next server handler when not found" do
     @app.run! :server => %w[foo bar mock]
+  end
+
+  it "passes on extra options to the corresponding handler" do
+    @app.run! :mock => { :extra => 'foobar' }
   end
 end

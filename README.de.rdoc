@@ -860,6 +860,25 @@ einer Bibliothek:
 
    MyApp.run! :host => 'localhost', :port => 9090
 
+Die run!-Methode unterstützt es auch, Optionen an den Rack-Handler
+weiterzureichen. Dazu muß ein Hash an den Parameter mit dem Namen des
+Handlers übergeben werden (in Kleinbuchstaben und als Symbol). Falls
+z.B. WEBrick mit SSL-Unterstützung auf Port 8443 genutzt werden soll,
+kann man den Server folgendermaßen starten:
+
+   require 'webrick/https'
+
+   [...]
+
+   MyApp.run! :port => 8443, :server => %w[webrick],
+              :webrick => {
+                :SSLEnable => true,
+                :SSLCertificate =>
+                  OpenSSL::X509::Certificate.new(File.read('cert.pem')),
+                :SSLPrivateKey  =>
+                  OpenSSL::PKey::RSA.new(File.read('key.pem')),
+                :SSLVerifyClient => nil }
+
 Die Methoden der Sinatra::Base-Subklasse sind genau die selben wie die
 der Top-Level DSL. Die meisten Top-Level Anwendungen können mit nur zwei Veränderungen zu Sinatra::Base-Komponenten konvertiert werden:
 
