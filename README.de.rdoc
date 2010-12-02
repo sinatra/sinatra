@@ -869,7 +869,7 @@ der Top-Level DSL. Die meisten Top-Level Anwendungen können mit nur zwei Verän
 * Alle Routen, Error Handler, Filter und Optionen der Applikation müssen in
   einer Subklasse von Sinatra::Base definiert werden.
 
-<tt>Sinatra::Base</tt> ist ein unbeschriebense Blatt. Die meisten Optionen sind per default deaktiviert. Das betrifft auch den eingebauten Server. Siehe {Optionen und Konfiguration}[http://sinatra.github.com/configuration.html] für Details über möglichen Optionen.
+<tt>Sinatra::Base</tt> ist ein unbeschriebenes Blatt. Die meisten Optionen sind per default deaktiviert. Das betrifft auch den eingebauten Server. Siehe {Optionen und Konfiguration}[http://sinatra.github.com/configuration.html] für Details über mögliche Optionen.
 
 === Sinatra als Middleware nutzen
 
@@ -931,7 +931,7 @@ Optionen die via `set` gesetzt werden, sind Methoden auf Klassenebene:
 
 Im Anwendungsscope befindet man sich:
 
-* In der Anwenungsklasse.
+* In der Anwendungsklasse.
 * In Methoden die von Erweiterungen definiert werden.
 * Im Block, der an `helpers` übergeben wird.
 * In Procs und Blöcken die an `set` übergeben werden.
@@ -973,7 +973,7 @@ Im Anfragescope befindet man sich:
 Vom Delegation-Scope aus werden Methoden einfach an den Klassenscope
 weitergeleitet. Dieser verhält sich jedoch nicht 100%ig wie der Klassenscope,
 da man nicht die Bindung der Klasse besitzt: Nur Methoden, die explizit als
-deligierbar markiert wurden stehen hier zur Verfügung und man kann nicht auf
+delegierbar markiert wurden stehen hier zur Verfügung und man kann nicht auf
 die Variablen des Klassenscopes zugreifen (mit anderen Worten: man hat ein
 anderes `self`). Man kann mit <tt>Sinatra::Delegator.delegate
 :methoden_name</tt> auch weitere Delegationen hinzufügen.
