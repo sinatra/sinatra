@@ -6,6 +6,16 @@ require 'rack/builder'
 require 'sinatra/showexceptions'
 require 'tilt'
 
+begin
+  require 'escape_utils'
+  require 'escape_utils/url/rack'
+  require 'escape_utils/html/rack'
+rescue LoadError
+  unless defined? RUBY_ENGINE and RUBY_ENGINE != 'ruby'
+    $stderr.puts 'consider installing escape_utils for better performance'
+  end
+end
+
 module Sinatra
   VERSION = '1.1.1'
 
