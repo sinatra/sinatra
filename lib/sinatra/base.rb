@@ -9,6 +9,17 @@ require 'tilt'
 module Sinatra
   VERSION = '1.1.1'
 
+  # string caching, reduces object allocation (and thereby GC cycles)
+  CONTENT_TYPE    = 'Content-Type'
+  CONTENT_LENGTH  = 'Content-Length'
+  REQUEST_METHOD  = 'REQUEST_METHOD'
+  DELETE          = 'DELETE'
+  GET             = 'GET'
+  HEAD            = 'HEAD'
+  POST            = 'POST'
+  PUT             = 'PUT'
+  STATIC_FILE     = 'sinatra.static_file'
+
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
   class Request < Rack::Request
@@ -50,13 +61,13 @@ module Sinatra
     def finish
       @body = block if block_given?
       if [204, 304].include?(status.to_i)
-        header.delete "Content-Type"
+        header.delete CONTENT_TYPE
         [status.to_i, header.to_hash, []]
       else
         body = @body || []
         body = [body] if body.respond_to? :to_str
         if body.respond_to?(:to_ary)
-          header["Content-Length"] = body.to_ary.
+          header[CONTENT_LENGTH] = body.to_ary.
             inject(0) { |len, part| len + Rack::Utils.bytesize(part) }.to_s
         end
         [status.to_i, header.to_hash, body]
@@ -148,7 +159,7 @@ module Sinatra
         params[:charset] = params.delete('charset') || settings.default_encoding
       end
       mime_type << ";#{params.map { |kv| kv.join('=') }.join(', ')}" unless params.empty?
-      response['Content-Type'] = mime_type
+      response[CONTENT_TYPE] = mime_type
     end
 
     # Set the Content-Disposition to "attachment" with the specified filename,
@@ -167,7 +178,7 @@ module Sinatra
       last_modified stat.mtime
 
       content_type opts[:type] || File.extname(path),
-        :default => response['Content-Type'] || 'application/octet-stream'
+        :default => response[CONTENT_TYPE] || 'application/octet-stream'
 
       if opts[:disposition] == 'attachment' || opts[:filename]
         attachment opts[:filename] || path
@@ -182,10 +193,10 @@ module Sinatra
         halt 416
       elsif r=sf.range
         response['Content-Range'] = "bytes #{r.begin}-#{r.end}/#{file_length}"
-        response['Content-Length'] = (r.end - r.begin + 1).to_s
+        response[CONTENT_LENGTH] = (r.end - r.begin + 1).to_s
         halt 206, sf
       else
-        response['Content-Length'] ||= file_length.to_s
+        response[CONTENT_LENGTH] ||= file_length.to_s
         halt sf
       end
     rescue Errno::ENOENT
@@ -549,10 +560,10 @@ module Sinatra
       template_cache.clear if settings.reload_templates
       force_encoding(@params)
 
-      @response['Content-Type'] = nil
+      @response[CONTENT_TYPE] = nil
       invoke { dispatch! }
       invoke { error_block!(response.status) }
-      unless @response['Content-Type']
+      unless @response[CONTENT_TYPE]
         if body.respond_to?(:to_ary) and body.first.respond_to? :content_type
           content_type body.first.content_type
         else
@@ -565,9 +576,9 @@ module Sinatra
       # Never produce a body on HEAD requests. Do retain the Content-Length
       # unless it's "0", in which case we assume it was calculated erroneously
       # for a manual HEAD response and remove it entirely.
-      if @env['REQUEST_METHOD'] == 'HEAD'
+      if @env[REQUEST_METHOD] == HEAD
         body = []
-        header.delete('Content-Length') if header['Content-Length'] == '0'
+        header.delete(CONTENT_LENGTH) if header[CONTENT_LENGTH] == '0'
       end
 
       [status, header, body]
@@ -702,7 +713,7 @@ module Sinatra
       return if path[0, public_dir.length] != public_dir
       return unless File.file?(path)
 
-      env['sinatra.static_file'] = path
+      env[STATIC_FILE] = path
       send_file path, :disposition => nil
     end
 
@@ -763,7 +774,7 @@ module Sinatra
     rescue ::Exception => boom
       handle_exception!(boom)
     ensure
-      filter! :after unless env['sinatra.static_file']
+      filter! :after unless env[STATIC_FILE]
     end
 
     # Special treatment for 404s in order to play nice with cascades.
@@ -997,7 +1008,7 @@ module Sinatra
         condition do
           matching_types = (request.accept & types)
           unless matching_types.empty?
-            response.headers['Content-Type'] = matching_types.first
+            response.headers[CONTENT_TYPE] = matching_types.first
             true
           else
             false
@@ -1010,16 +1021,16 @@ module Sinatra
       # a `HEAD` handler.
       def get(path, opts={}, &block)
         conditions = @conditions.dup
-        route('GET', path, opts, &block)
+        route(GET, path, opts, &block)
 
         @conditions = conditions
-        route('HEAD', path, opts, &block)
+        route(HEAD, path, opts, &block)
       end
 
-      def put(path, opts={}, &bk);    route 'PUT',    path, opts, &bk end
-      def post(path, opts={}, &bk);   route 'POST',   path, opts, &bk end
-      def delete(path, opts={}, &bk); route 'DELETE', path, opts, &bk end
-      def head(path, opts={}, &bk);   route 'HEAD',   path, opts, &bk end
+      def put(path, opts={}, &bk);    route PUT,    path, opts, &bk end
+      def post(path, opts={}, &bk);   route POST,   path, opts, &bk end
+      def delete(path, opts={}, &bk); route DELETE, path, opts, &bk end
+      def head(path, opts={}, &bk);   route HEAD,   path, opts, &bk end
 
     private
       def route(verb, path, options={}, &block)
