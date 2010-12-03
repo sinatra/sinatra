@@ -1077,6 +1077,8 @@ module Sinatra
       def compile(path)
         keys = []
         if path.respond_to? :to_str
+          # if this is a simple pattern, don't bother creating a regexp
+          #return [StringMatch.new(path), []] unless path =~ /[\:\\\*]/
           special_chars = %w{. + ( )}
           pattern =
             path.to_str.gsub(/((:\w+)|[\*#{special_chars.join}])/) do |match|
@@ -1101,6 +1103,11 @@ module Sinatra
         end
       end
 
+      class StringMatch # :nodoc:
+        def initialize(str) @str = str end
+        def match(str) self if @str == str end
+        def captures; [] end
+      end
     public
       # Makes the methods defined in the block and in the Modules given
       # in `extensions` available to the handlers and templates
