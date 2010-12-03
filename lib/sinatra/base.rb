@@ -736,9 +736,21 @@ module Sinatra
       end
     end
 
-    # Creates a Hash with indifferent access.
-    def indifferent_hash
-      Hash.new {|hash,key| hash[key.to_s] if Symbol === key }
+    begin
+      require 'hwia'
+
+      def indifferent_hash # :nodoc:
+        StrHash.new
+      end
+    rescue LoadError
+      unless defined? RUBY_ENGINE and RUBY_ENGINE != 'ruby'
+        $stderr.puts 'consider installing hwia for better performance'
+      end
+
+      # Creates a Hash with indifferent access.
+      def indifferent_hash
+        Hash.new {|hash,key| hash[key.to_s] if Symbol === key }
+      end
     end
 
     # Run the block with 'throw :halt' support and apply result to the response.
