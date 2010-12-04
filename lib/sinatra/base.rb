@@ -877,20 +877,28 @@ module Sinatra
 
       # Sets an option to the given value.  If the value is a proc,
       # the proc will be called every time the option is accessed.
-      def set(option, value=self, &block)
+      def set(option, value = self, override = false, &block)
         raise ArgumentError if block && value != self
         value = block if block
-        if value.kind_of?(Proc)
-          metadef(option, &value)
-          metadef("#{option}?") { !!__send__(option) }
-          metadef("#{option}=") { |val| metadef(option, &Proc.new{val}) }
-        elsif value == self && option.respond_to?(:each)
+        create_setter = true
+        if value == self and option.respond_to? :each
           option.each { |k,v| set(k, v) }
-        elsif respond_to?("#{option}=")
+          return self
+        elsif value.kind_of?(Proc)
+          metadef(option, &value)
+        elsif respond_to?("#{option}=") and !override
           __send__ "#{option}=", value
+          create_setter = false
+        elsif [Symbol, Fixnum, NilClass, FalseClass, TrueClass].any? { |c| c === value }
+          metadef option, value.inspect
+        elsif name == inspect
+          metadef option, "self == #{name} ? @#{option} : #{name}.#{option}"
+          instance_variable_set "@#{option}", value
         else
-          set option, Proc.new{value}
+          metadef(option) { value }
         end
+        metadef("#{option}=") { |val| set option, val, true } if create_setter
+        metadef("#{option}?", "!!#{option}") unless respond_to? "#{option}?"
         self
       end
 
@@ -1216,9 +1224,18 @@ module Sinatra
         end
       end
 
-      def metadef(message, &block)
-        (class << self; self; end).
-          send :define_method, message, &block
+      unless respond_to? :singleton_class # Ruby >= 1.9.2
+        def singleton_class
+          class << self; self end
+        end
+      end
+
+      def metadef(name, code = nil, &block)
+        if code
+          singleton_class.class_eval "def #{name}; #{code}; end"
+        else
+          singleton_class.send(:define_method, name, &block)
+        end
       end
 
     public
