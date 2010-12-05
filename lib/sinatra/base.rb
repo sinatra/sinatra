@@ -563,6 +563,7 @@ module Sinatra
     attr_accessor :env, :request, :response, :params
 
     def call!(env) # :nodoc:
+      settings.freeze_settings!
       @env      = env
       @request  = Request.new(env)
       @response = Response.new
@@ -1197,6 +1198,19 @@ module Sinatra
         synchronize { prototype.call(env) }
       end
 
+      @@freezable_settings = [
+        :raise_errors, :dump_errors, :show_exceptions, :root, :views,
+        :reload_templates, :public, :static ]
+
+      # eliminates some closures we don't have to keep but access frequently
+      def freeze_settings! # :nodoc:
+        return if @froze_settings or !freeze_settings?
+        @froze_settings = true
+        @@freezable_settings.each do |name|
+          set name, __send__(name)
+        end
+      end
+
     private
       def detect_rack_handler
         servers = Array(server)
@@ -1291,6 +1305,8 @@ module Sinatra
 
     reset!
 
+    # intentionally activating freeze_settings in test mode
+    set :freeze_settings, Proc.new { !development? }
     set :environment, (ENV['RACK_ENV'] || :development).to_sym
     set :raise_errors, Proc.new { test? }
     set :dump_errors, Proc.new { !test? }
