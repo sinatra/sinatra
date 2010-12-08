@@ -465,6 +465,7 @@ module Sinatra
       views           = options.delete(:views)  || settings.views || "./views"
       @default_layout = :layout if @default_layout.nil?
       layout          = options.delete(:layout)
+      eat_errors      = layout.nil?
       layout          = @default_layout if layout.nil? or layout == true
       content_type    = options.delete(:content_type) || options.delete(:default_content_type)
 
@@ -477,11 +478,8 @@ module Sinatra
 
       # render layout
       if layout
-        begin
-          options = options.merge(:views => views, :layout => false)
-          output = render(engine, layout, options, locals) { output }
-        rescue Errno::ENOENT
-        end
+        options = options.merge(:views => views, :layout => false, :eat_errors => eat_errors)
+        catch(:layout_missing) { output = render(engine, layout, options, locals) { output }}
       end
 
       output.extend(ContentTyped).content_type = content_type if content_type
@@ -489,6 +487,7 @@ module Sinatra
     end
 
     def compile_template(engine, data, options, views)
+      eat_errors = options.delete :eat_errors
       template_cache.fetch engine, data, options do
         template = Tilt[engine]
         raise "Template engine not found: #{engine}" if template.nil?
@@ -500,12 +499,14 @@ module Sinatra
             body = body.call if body.respond_to?(:call)
             template.new(path, line.to_i, options) { body }
           else
+            found = false
             path = ::File.join(views, "#{data}.#{engine}")
             Tilt.mappings.each do |ext, klass|
-              break if File.exists?(path)
+              break if found = File.exists?(path)
               next unless klass == template
               path = ::File.join(views, "#{data}.#{ext}")
             end
+            throw :layout_missing if eat_errors and !found
             template.new(path, 1, options)
           end
         when data.is_a?(Proc) || data.is_a?(String)
