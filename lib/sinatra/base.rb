@@ -166,8 +166,9 @@ module Sinatra
       stat = File.stat(path)
       last_modified stat.mtime
 
-      content_type opts[:type] || File.extname(path),
-        :default => response['Content-Type'] || 'application/octet-stream'
+      if opts[:type] or not response['Content-Type']
+        content_type opts[:type] || File.extname(path), :default => 'application/octet-stream'
+      end
 
       if opts[:disposition] == 'attachment' || opts[:filename]
         attachment opts[:filename] || path

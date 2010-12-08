@@ -454,6 +454,30 @@ class HelpersTest < Test::Unit::TestCase
       get '/file.txt'
       assert_equal 'application/octet-stream', response['Content-Type']
     end
+
+    it "does not override Content-Type if already set and no explicit type is given" do
+      path = @file
+      mock_app do
+        get '/' do
+          content_type :png
+          send_file path
+        end
+      end
+      get '/'
+      assert_equal 'image/png', response['Content-Type']
+    end
+
+    it "does override Content-Type even if already set, if explicit type is given" do
+      path = @file
+      mock_app do
+        get '/' do
+          content_type :png
+          send_file path, :type => :gif
+        end
+      end
+      get '/'
+      assert_equal 'image/gif', response['Content-Type']
+    end
   end
 
   describe 'cache_control' do
