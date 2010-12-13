@@ -921,15 +921,20 @@ module Sinatra
         end
 
         if data
+          if app and app.lines.first =~ /^\s*#\W*encoding\W*(\w[\w_\-\.\d]+)\W*$/
+            encoding = $1
+          else
+            encoding = settings.default_encoding
+          end
           lines = app.count("\n") + 1
           template = nil
           data.each_line do |line|
             lines += 1
             if line =~ /^@@\s*(.*\S)\s*$/
-              template = ''
+              template = force_encoding('', encoding)
               templates[$1.to_sym] = [template, file, lines]
             elsif template
-              template << line
+              template << force_encoding(line, encoding)
             end
           end
         end
@@ -1231,20 +1236,22 @@ module Sinatra
     #
     # The latter might not be necessary if Rack handles it one day.
     # Keep an eye on Rack's LH #100.
+    def force_encoding(*args) settings.force_encoding(*args) end
     if defined? Encoding
-      def force_encoding(data)
-        return if data == self || data.is_a?(Tempfile)
+      def self.force_encoding(data, encoding = default_encoding)
+        return if data == settings || data.is_a?(Tempfile)
         if data.respond_to? :force_encoding
-          data.force_encoding settings.default_encoding
+          data.force_encoding encoding
         elsif data.respond_to? :each_value
-          data.each_value { |v| force_encoding(v) }
+          data.each_value { |v| force_encoding(v, encoding) }
         elsif data.respond_to? :each
-          data.each { |v| force_encoding(v) }
+          data.each { |v| force_encoding(v, encoding) }
         end
+        data
       end
     else
-      def force_encoding(*) end
-    end
+      def self.force_encoding(data, *) data end
+      end
 
     reset!
 
