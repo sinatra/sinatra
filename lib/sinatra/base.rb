@@ -919,8 +919,8 @@ module Sinatra
         end
 
         if data
-          if app and app.lines.first =~ /^\s*#\W*encoding\W*(\w[\w_\-\.\d]+)\W*$/
-            encoding = $1
+          if app and app =~ /([^\n]*\n)?#[^\n]*coding: *(\S+)/m
+            encoding = $2
           else
             encoding = settings.default_encoding
           end
