@@ -914,9 +914,7 @@ module Sinatra
         file = (file.nil? || file == true) ? (caller_files.first || File.expand_path($0)) : file
 
         begin
-          io = '1.9'.respond_to?(:encoding) ?
-            ::IO.read(file, nil, 0, :encoding => 'BINARY') :
-            ::IO.read(file)
+          io = ::IO.respond_to?(:binread) ? ::IO.binread(file) : ::IO.read(file)
           app, data = io.gsub("\r\n", "\n").split(/^__END__$/, 2)
         rescue Errno::ENOENT
           app, data = nil
