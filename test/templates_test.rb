@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require File.dirname(__FILE__) + '/helper'
 File.delete(File.dirname(__FILE__) + '/views/layout.test') rescue nil
 
@@ -137,6 +138,12 @@ class TemplatesTest < Test::Unit::TestCase
     assert @app.templates.empty?
   end
 
+  it 'allows unicode in inline templates' do
+    mock_app { set :inline_templates, __FILE__ }
+    assert_equal "Den som tror at hemma det är där man bor har aldrig vart hos mig.\n\n",
+      @app.templates[:umlaut][0]
+  end
+
   it 'loads templates from specified views directory' do
     render_app { render :test, :hello, :views => options.views + '/foo' }
 
@@ -215,6 +222,9 @@ There's a space after 'bar'!
 
 @@ foo bar
 this is not foo
+
+@@ umlaut
+Den som tror at hemma det är där man bor har aldrig vart hos mig.
 
 @@ layout
 X
