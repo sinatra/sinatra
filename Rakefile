@@ -12,6 +12,10 @@ def source_version
 end
 
 # SPECS ===============================================================
+task :test do
+  ENV['LANG'] = 'C'
+  ENV.delete 'LC_CTYPE'
+end
 
 if !ENV['NO_TEST_FIX'] and RUBY_VERSION == '1.9.2' and RUBY_PATCHLEVEL == 0
   # Avoids seg fault
