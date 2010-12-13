@@ -926,13 +926,14 @@ module Sinatra
           end
           lines = app.count("\n") + 1
           template = nil
+          force_encoding data, encoding
           data.each_line do |line|
             lines += 1
             if line =~ /^@@\s*(.*\S)\s*$/
               template = force_encoding('', encoding)
               templates[$1.to_sym] = [template, file, lines]
             elsif template
-              template << force_encoding(line, encoding)
+              template << line
             end
           end
         end
