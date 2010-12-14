@@ -468,7 +468,8 @@ module Sinatra
       layout          = options.delete(:layout)
       eat_errors      = layout.nil?
       layout          = @default_layout if layout.nil? or layout == true
-      content_type    = options.delete(:content_type) || options.delete(:default_content_type)
+      content_type    = options.delete(:content_type)  || options.delete(:default_content_type)
+      layout_engine   = options.delete(:layout_engine) || engine
 
       # compile and render template
       layout_was      = @default_layout
@@ -480,7 +481,7 @@ module Sinatra
       # render layout
       if layout
         options = options.merge(:views => views, :layout => false, :eat_errors => eat_errors)
-        catch(:layout_missing) { output = render(engine, layout, options, locals) { output }}
+        catch(:layout_missing) { output = render(layout_engine, layout, options, locals) { output }}
       end
 
       output.extend(ContentTyped).content_type = content_type if content_type

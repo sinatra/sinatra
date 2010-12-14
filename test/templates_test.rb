@@ -208,6 +208,22 @@ class TemplatesTest < Test::Unit::TestCase
     assert ok?
     assert_equal 'template in subclass', body
   end
+
+  it "is possible to use a different engine for the layout than for the template itself explicitely" do
+    render_app do
+      settings.template(:layout) { 'Hello <%= yield %>!' }
+      render :str, "<%= 'World' %>", :layout_engine => :erb
+    end
+    assert_equal "Hello <%= 'World' %>!", body
+  end
+
+  it "is possible to use a different engine for the layout than for the template itself globally" do
+    render_app :str => { :layout_engine => :erb } do
+      settings.template(:layout) { 'Hello <%= yield %>!' }
+      render :str, "<%= 'World' %>"
+    end
+    assert_equal "Hello <%= 'World' %>!", body
+  end
 end
 
 # __END__ : this is not the real end of the script.
