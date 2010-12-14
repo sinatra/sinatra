@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'sinatra'
-  s.version = '1.1.1'
-  s.date = '2010-11-12'
+  s.version = '1.2.0'
+  s.date = '2010-12-14'
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
     README.fr.rdoc
     README.hu.rdoc
     README.jp.rdoc
+    README.pt-br.rdoc
     README.rdoc
     README.ru.rdoc
     README.zh.rdoc
