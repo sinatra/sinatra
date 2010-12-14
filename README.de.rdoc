@@ -584,6 +584,16 @@ Filter können optional auch mit einem Pattern ausgestattet werden, welche auf d
     session[:last_slug] = slug
   end
 
+Ähnlich wie Routen können Filter auch mit weiteren Bedingungen eingeschränkt werden:
+
+  before :agent => /Songbird/ do
+    # ...
+  end
+  
+  after '/blog/*', :host_name => 'example.com' do
+    # ...
+  end
+
 == Anhalten
 
 Zum sofortigen stoppen eines Request in einem Filter oder einer Route:
