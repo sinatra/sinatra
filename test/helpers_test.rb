@@ -419,6 +419,13 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal File.mtime(@file).httpdate, response['Last-Modified']
     end
 
+    it 'allows passing in a differen Last-Modified response header with :last_modified' do
+      time = Time.now
+      send_file_app :last_modified => time
+      get '/file.txt'
+      assert_equal time.httpdate, response['Last-Modified']
+    end
+
     it "returns a 404 when not found" do
       mock_app {
         get '/' do

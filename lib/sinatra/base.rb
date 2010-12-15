@@ -164,7 +164,7 @@ module Sinatra
     # Use the contents of the file at +path+ as the response body.
     def send_file(path, opts={})
       stat = File.stat(path)
-      last_modified stat.mtime
+      last_modified(opts[:last_modified] || stat.mtime)
 
       if opts[:type] or not response['Content-Type']
         content_type opts[:type] || File.extname(path), :default => 'application/octet-stream'
