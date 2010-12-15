@@ -1,3 +1,4 @@
+# I like coding: UTF-8
 require File.dirname(__FILE__) + '/helper'
 
 # Helper method for easy route pattern matching testing
@@ -67,6 +68,14 @@ class RoutingTest < Test::Unit::TestCase
     get '/bar'
     assert_equal 404, status
     assert_equal 'pass', response.headers['X-Cascade']
+  end
+
+  it "allows using unicode" do
+    mock_app do
+      get('/föö') { }
+    end
+    get '/f%C3%B6%C3%B6'
+    assert_equal 200, status
   end
 
   it "overrides the content-type in error handlers" do
