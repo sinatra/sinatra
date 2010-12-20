@@ -39,6 +39,11 @@ Cada ruta se asocia con un bloque:
     .. aniquilar algo ..
   end
 
+  options '/' do
+    .. informar algo ..
+  end
+
+
 Las rutas son comparadas en el orden en el que son definidas. La primer ruta
 que coincide con la petición es invocada.
 
@@ -428,6 +433,13 @@ La gem/librería markaby es necesaria para renderizar plantillas Markaby:
 
 Renderiza <tt>./views/index.mab</tt>.
 
+Si tenés Tilt 1.2 o posterior, podés usar markaby inline:
+
+  get '/' do
+    markaby { h1 "Bienvenido!" }
+  end
+
+
 === Plantillas Slim
 
 La gem/librería slim es necesaria para renderizar plantillas Slim:
@@ -585,6 +597,16 @@ patrón:
 
   after '/crear/:slug' do |slug|
     session[:ultimo_slug] = slug
+  end
+
+Al igual que las rutas, los filtros también aceptan condiciones:
+
+  before :agent => /Songbird/ do
+    # ...
+  end
+
+  after '/blog/*', :host_name => 'ejemplo.com' do
+    # ...
   end
 
 == Interrupción
@@ -894,7 +916,7 @@ aplicación basada en Rack (Rails/Ramaze/Camping/...).
 
   require 'sinatra/base'
 
-  class PantallaDeLogin< Sinatra::Base
+  class PantallaDeLogin < Sinatra::Base
     enable :sessions
 
     get('/login') { haml :login }
@@ -984,7 +1006,7 @@ desde el ámbito de la petición utilizando `settings`:
 
 Tenés la ligadura al ámbito de la petición dentro de:
 
-* bloques pasados a get/head/post/put/delete
+* bloques pasados a get/head/post/put/delete/options
 * filtros before/after
 * métodos ayudantes
 * plantillas/vistas
