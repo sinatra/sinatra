@@ -376,8 +376,6 @@ module Sinatra
       attr_accessor :content_type
     end
 
-    include Tilt::CompileSite
-
     def erb(template, options={}, locals={})
       render :erb, template, options, locals
     end
