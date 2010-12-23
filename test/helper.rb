@@ -53,6 +53,10 @@ class Test::Unit::TestCase
     response.body.to_s
   end
 
+  def assert_body(value)
+    assert_equal value.strip, body.strip
+  end
+
   # Delegate other missing methods to response.
   def method_missing(name, *args, &block)
     if response && response.respond_to?(name)
