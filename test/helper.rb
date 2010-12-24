@@ -54,7 +54,7 @@ class Test::Unit::TestCase
   end
 
   def assert_body(value)
-    assert_equal value.strip, body.strip
+    assert_equal value.lstrip.gsub(/\s*\n\s*/, ""), body.lstrip.gsub(/\s*\n\s*/, "")
   end
 
   # Delegate other missing methods to response.
