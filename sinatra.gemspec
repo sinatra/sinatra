@@ -129,7 +129,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'RedCloth'
   s.add_development_dependency 'radius'
   s.add_development_dependency 'markaby'
-  s.add_development_dependency 'coffee-script'
+  s.add_development_dependency 'coffee-script', '>= 2.0'
   s.add_development_dependency 'rdoc'
   s.add_development_dependency 'nokogiri'
 
