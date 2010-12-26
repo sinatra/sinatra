@@ -17,21 +17,11 @@ task :test do
   ENV.delete 'LC_CTYPE'
 end
 
-if !ENV['NO_TEST_FIX'] and RUBY_VERSION == '1.9.2' and RUBY_PATCHLEVEL == 0
-  # Avoids seg fault
-  task(:test) do
-    second_run  = %w[settings rdoc markaby templates static textile].map { |l| "test/#{l}_test.rb" }
-    first_run   = Dir.glob('test/*_test.rb') - second_run
-    [first_run, second_run].each { |f| sh "testrb #{f.join ' '}" }
-  end
-else
-  Rake::TestTask.new(:test) do |t|
-    t.test_files = FileList['test/*_test.rb']
-    t.ruby_opts = ['-rubygems'] if defined? Gem
-    t.ruby_opts << '-I.'
-  end
+Rake::TestTask.new(:test) do |t|
+  t.test_files = FileList['test/*_test.rb']
+  t.ruby_opts = ['-rubygems'] if defined? Gem
+  t.ruby_opts << '-I.'
 end
-
 # Rcov ================================================================
 namespace :test do
   desc 'Mesures test coverage'
