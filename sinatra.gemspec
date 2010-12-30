@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'sinatra'
-  s.version = '1.1.1'
-  s.date = '2010-11-12'
+  s.version = '1.2.0.a'
+  s.date = '2010-12-25'
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
     README.fr.rdoc
     README.hu.rdoc
     README.jp.rdoc
+    README.pt-br.rdoc
     README.rdoc
     README.ru.rdoc
     README.zh.rdoc
@@ -116,7 +117,7 @@ Gem::Specification.new do |s|
 
   s.extra_rdoc_files = %w[README.rdoc README.de.rdoc README.jp.rdoc README.fr.rdoc README.es.rdoc README.hu.rdoc README.zh.rdoc LICENSE]
   s.add_dependency 'rack', '~> 1.1'
-  s.add_dependency 'tilt', '~> 1.1'
+  s.add_dependency 'tilt', '~> 1.2'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'shotgun', '~> 0.6'
   s.add_development_dependency 'rack-test', '>= 0.5.6'
@@ -129,7 +130,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'RedCloth'
   s.add_development_dependency 'radius'
   s.add_development_dependency 'markaby'
-  s.add_development_dependency 'coffee-script'
+  s.add_development_dependency 'coffee-script', '>= 2.0'
   s.add_development_dependency 'rdoc'
   s.add_development_dependency 'nokogiri'
   s.add_development_dependency 'slim'

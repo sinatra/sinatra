@@ -1,21 +1,58 @@
-= 1.1.1 / Not Yet Released
+= 1.2.0 / Not Yet Released
 
- * Added `slim` rendering method for rendering Slim templates. (Steve Hodgkiss)
+ * Added `slim` rendering method for rendering Slim templates. (Steve
+   Hodgkiss)
 
  * The `markaby` rendering method now allows passing a block, making inline
    usage possible. Requires Tilt 1.2 or newer. (Konstantin Haase)
 
- * README has been translated to Russian. (Nickolay Schwarz, Vasily Polovnyov)
+ * All render methods now take a `:layout_engine` option, allowing to use a
+   layout in a different template language. Even more useful than using this
+   directly (`erb :index, :layout_engine => :haml`) is setting this globally for
+   a template engine that otherwise does not support layouts, like Markdown or
+   Textile (`set :markdown, :layout_engine => :erb`). (Konstantin Haase)
+
+ * Before and after filters now support conditions, both with and without
+   patterns (`before '/api/*', :agent => /Songbird/`). (Konstantin Haase)
+
+ * `send_file` now allows overriding the Last-Modified header, which defaults
+   to the file's mtime, by passing a `:last_modified` option. (Konstantin Haase)
+
+= 1.1.2 / 2010-10-25
+
+Like 1.1.1, but with proper CHANGES file.
+
+= 1.1.1 / 2010-10-25
+
+ * README has been translated to Russian (Nickolay Schwarz, Vasily Polovnyov)
+   and Portuguese (Luciano Sousa).
 
  * Nested templates without a `:layout` option can now be used from the layout
    template without causing an infinite loop. (Konstantin Haase)
 
+ * Inline templates are now encoding aware and can therefore be used with
+   unicode characters on Ruby 1.9. Magic comments at the beginning of the file
+   will be honored. (Konstantin Haase)
+
+ * Default `app_file` is set correctly when running with bundler. Using
+   bundler caused Sinatra not to find the `app_file` and therefore not to find
+   the `views` folder on it's own. (Konstantin Haase)
+
+ * Better handling of Content-Type when using `send_file`: If file extension
+   is unknown, fall back to `application/octet-stream` and do not override
+   content type if it has already been set, except if `:type` is passed
+   explicitly (Konstantin Haase)
+
  * Path is no longer cached if changed between handlers that do pattern
-   matching. This means you can change `request.path_info` in a pattern matching
-   before filter. (Konstantin Haase)
+   matching. This means you can change `request.path_info` in a pattern
+   matching before filter. (Konstantin Haase)
 
  * Headers set by cache_control now always set max_age as an Integer, making
    sure it is compatible with RFC2616. (Konstantin Haase)
+
+ * Further improved handling of string encodings on Ruby 1.9, templates now
+   honor default_encoding and URLs support unicode characters. (Konstantin
+   Haase)
 
 = 1.1.0 / 2010-10-24
 

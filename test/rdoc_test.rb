@@ -15,13 +15,13 @@ class RdocTest < Test::Unit::TestCase
   it 'renders inline rdoc strings' do
     rdoc_app { rdoc '= Hiya' }
     assert ok?
-    assert_equal "<h1>Hiya</h1>\n", body
+    assert_body "<h1>Hiya</h1>"
   end
 
   it 'renders .rdoc files in views path' do
     rdoc_app { rdoc :hello }
     assert ok?
-    assert_equal "<h1>Hello From RDoc</h1>\n", body
+    assert_body "<h1>Hello From RDoc</h1>"
   end
 
   it "raises error if template not found" do

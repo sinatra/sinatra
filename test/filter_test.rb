@@ -274,7 +274,7 @@ class AfterFilterTest < Test::Unit::TestCase
     get '/foo/bar'
     assert_equal subpath, 'bar'
   end
-  
+
   it 'is possible to access url params from the route param' do
     ran = false
     mock_app do
@@ -285,6 +285,110 @@ class AfterFilterTest < Test::Unit::TestCase
       end
     end
     get '/foo/bar'
+    assert ran
+  end
+
+  it 'is possible to apply host_name conditions to before filters with no path' do
+    ran = false
+    mock_app do
+      before(:host_name => 'example.com') { ran = true }
+      get('/') { 'welcome' }
+    end
+    get '/', {}, { 'HTTP_HOST' => 'example.org' }
+    assert !ran
+    get '/', {}, { 'HTTP_HOST' => 'example.com' }
+    assert ran
+  end
+
+  it 'is possible to apply host_name conditions to before filters with a path' do
+    ran = false
+    mock_app do
+      before('/foo', :host_name => 'example.com') { ran = true }
+      get('/') { 'welcome' }
+    end
+    get '/', {}, { 'HTTP_HOST' => 'example.com' }
+    assert !ran
+    get '/foo', {}, { 'HTTP_HOST' => 'example.org' }
+    assert !ran
+    get '/foo', {}, { 'HTTP_HOST' => 'example.com' }
+    assert ran
+  end
+
+  it 'is possible to apply host_name conditions to after filters with no path' do
+    ran = false
+    mock_app do
+      after(:host_name => 'example.com') { ran = true }
+      get('/') { 'welcome' }
+    end
+    get '/', {}, { 'HTTP_HOST' => 'example.org' }
+    assert !ran
+    get '/', {}, { 'HTTP_HOST' => 'example.com' }
+    assert ran
+  end
+
+  it 'is possible to apply host_name conditions to after filters with a path' do
+    ran = false
+    mock_app do
+      after('/foo', :host_name => 'example.com') { ran = true }
+      get('/') { 'welcome' }
+    end
+    get '/', {}, { 'HTTP_HOST' => 'example.com' }
+    assert !ran
+    get '/foo', {}, { 'HTTP_HOST' => 'example.org' }
+    assert !ran
+    get '/foo', {}, { 'HTTP_HOST' => 'example.com' }
+    assert ran
+  end
+
+  it 'is possible to apply user_agent conditions to before filters with no path' do
+    ran = false
+    mock_app do
+      before(:user_agent => /foo/) { ran = true }
+      get('/') { 'welcome' }
+    end
+    get '/', {}, { 'HTTP_USER_AGENT' => 'bar' }
+    assert !ran
+    get '/', {}, { 'HTTP_USER_AGENT' => 'foo' }
+    assert ran
+  end
+
+  it 'is possible to apply user_agent conditions to before filters with a path' do
+    ran = false
+    mock_app do
+      before('/foo', :user_agent => /foo/) { ran = true }
+      get('/') { 'welcome' }
+    end
+    get '/', {}, { 'HTTP_USER_AGENT' => 'foo' }
+    assert !ran
+    get '/foo', {}, { 'HTTP_USER_AGENT' => 'bar' }
+    assert !ran
+    get '/foo', {}, { 'HTTP_USER_AGENT' => 'foo' }
+    assert ran
+  end
+
+  it 'is possible to apply user_agent conditions to after filters with no path' do
+    ran = false
+    mock_app do
+      after(:user_agent => /foo/) { ran = true }
+      get('/') { 'welcome' }
+    end
+    get '/', {}, { 'HTTP_USER_AGENT' => 'bar' }
+    assert !ran
+    get '/', {}, { 'HTTP_USER_AGENT' => 'foo' }
+    assert ran
+  end
+
+  it 'is possible to apply user_agent conditions to before filters with a path' do
+    ran = false
+    mock_app do
+      after('/foo', :user_agent => /foo/) { ran = true }
+      get('/') { 'welcome' }
+    end
+    get '/', {}, { 'HTTP_USER_AGENT' => 'foo' }
+    assert !ran
+    get '/foo', {}, { 'HTTP_USER_AGENT' => 'bar' }
+    assert !ran
+    get '/foo', {}, { 'HTTP_USER_AGENT' => 'foo' }
     assert ran
   end
 end

@@ -419,6 +419,13 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal File.mtime(@file).httpdate, response['Last-Modified']
     end
 
+    it 'allows passing in a differen Last-Modified response header with :last_modified' do
+      time = Time.now
+      send_file_app :last_modified => time
+      get '/file.txt'
+      assert_equal time.httpdate, response['Last-Modified']
+    end
+
     it "returns a 404 when not found" do
       mock_app {
         get '/' do
@@ -453,6 +460,30 @@ class HelpersTest < Test::Unit::TestCase
       send_file_app
       get '/file.txt'
       assert_equal 'application/octet-stream', response['Content-Type']
+    end
+
+    it "does not override Content-Type if already set and no explicit type is given" do
+      path = @file
+      mock_app do
+        get '/' do
+          content_type :png
+          send_file path
+        end
+      end
+      get '/'
+      assert_equal 'image/png', response['Content-Type']
+    end
+
+    it "does override Content-Type even if already set, if explicit type is given" do
+      path = @file
+      mock_app do
+        get '/' do
+          content_type :png
+          send_file path, :type => :gif
+        end
+      end
+      get '/'
+      assert_equal 'image/gif', response['Content-Type']
     end
   end
 

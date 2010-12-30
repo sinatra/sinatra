@@ -37,6 +37,10 @@ Each route is associated with a block:
   delete '/' do
     .. annihilate something ..
   end
+  
+  options '/' do
+    .. appease something ..
+  end
 
 Routes are matched in the order they are defined. The first route that
 matches the request is invoked.
@@ -577,6 +581,16 @@ request path matches that pattern:
     session[:last_slug] = slug
   end
 
+Like routes, filters also take conditions:
+
+  before :agent => /Songbird/ do
+    # ...
+  end
+  
+  after '/blog/*', :host_name => 'example.com' do
+    # ...
+  end
+
 == Halting
 
 To immediately stop a request within a filter or route use:
@@ -967,7 +981,7 @@ scope via the `settings` helper:
 
 You have the request scope binding inside:
 
-* get/head/post/put/delete blocks
+* get/head/post/put/delete/options blocks
 * before/after filters
 * helper methods
 * templates/views
