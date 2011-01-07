@@ -469,7 +469,7 @@ module Sinatra
       layout          = @default_layout if layout.nil? or layout == true
       content_type    = options.delete(:content_type)  || options.delete(:default_content_type)
       layout_engine   = options.delete(:layout_engine) || engine
-      scope = options.delete(:scope) || self
+      scope           = options.delete(:scope) || self
 
       # compile and render template
       layout_was      = @default_layout
