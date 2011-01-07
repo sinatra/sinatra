@@ -223,6 +223,38 @@ class TemplatesTest < Test::Unit::TestCase
     end
     assert_equal "Hello <%= 'World' %>!", body
   end
+  
+  it "allows setting a file extension" do
+    options = { :erb => { :extension => 'html' } }
+    render_app(options) { render :test, :'hello.test' }
+
+    assert ok?
+    assert_equal "Hello World with html extension!", body
+  end
+  
+  it "allows passing a file extension" do
+    render_app(options) { render(:test, :'hello.test', { :extension => 'html' }) }
+
+    assert ok?
+    assert_equal "Hello World with html extension!", body
+  end
+  
+  it "passes scope to the template" do
+    mock_app {
+      template :scoped do
+        'Hello <%= foo %>'
+      end
+
+      get '/' do
+        some_scope = Class.new; def foo; 'World!'; end; end
+        erb :scoped, { :scope => some_scope }
+      end
+    }
+
+    get '/'
+    assert ok?
+    assert_equal 'Hello World!', body
+  end
 end
 
 # __END__ : this is not the real end of the script.
