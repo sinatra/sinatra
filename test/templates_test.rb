@@ -225,7 +225,7 @@ class TemplatesTest < Test::Unit::TestCase
   end
   
   it "allows setting a file extension" do
-    options = { :erb => { :extension => 'html' } }
+    options = { :test => { :extension => 'html' } }
     render_app(options) { render :test, :'hello.test' }
 
     assert ok?
