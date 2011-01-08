@@ -502,7 +502,8 @@ Templates may also be defined using the top-level <tt>template</tt> method:
   end
 
 If a template named "layout" exists, it will be used each time a template
-is rendered. You can disable layouts by passing <tt>:layout => false</tt>.
+is rendered. You can individually disable layouts by passing <tt>:layout => false</tt>
+or disable them by default via <tt>set :haml, :layout => false</tt>.
 
   get '/' do
     haml :index, :layout => !request.xhr?
