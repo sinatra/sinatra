@@ -206,11 +206,11 @@ and overridden on an individual basis.
     erb :index
   end
 
-Renders <tt>./views/index.erb</tt>
+Renders <tt>./views/index.erb</tt>.
 
-=== Erubis
+=== Erubis Templates
 
-The erubis gem/library is required to render erubis templates:
+The erubis gem/library is required to render Erubis templates:
 
   ## You'll need to require erubis in your app
   require 'erubis'
@@ -219,7 +219,18 @@ The erubis gem/library is required to render erubis templates:
     erubis :index
   end
 
-Renders <tt>./views/index.erubis</tt>
+Renders <tt>./views/index.erubis</tt>.
+
+It is also possible to replace Erb with Erubis:
+
+  require 'erubis'
+  Tilt.register :erb, Tilt[:erubis]
+  
+  get '/' do
+    erb :index
+  end
+
+Renders <tt>./views/index.erb</tt> with Erubis.
 
 === Builder Templates
 
