@@ -863,13 +863,6 @@ etc.). Ahí es donde Sinatra::Base entra en el juego:
     end
   end
 
-La clase MiApp es un componente Rack independiente que puede actuar como Rack
-middleware, una aplicación Rack, o Rails metal. Podés usar (con +use+) o
-ejecutar (con +run+) esta clase desde un archivo rackup +config.ru+; o,
-controlar un componente de servidor provisto como una librería:
-
-   MiApp.run! :host => 'localhost', :port => 9090
-
 Las subclases de Sinatra::Base tienen disponibles exactamente los mismos
 métodos que los provistos por el DSL de top-level. La mayoría de las
 aplicaciones top-level se pueden convertir en componentes Sinatra::Base con
@@ -885,6 +878,64 @@ dos modificaciones:
 desactivadas por defecto, incluyendo el servidor incorporado. Mirá
 {Opciones y Configuraciones}[http://sinatra.github.com/configuration.html]
 para detalles sobre las opciones disponibles y su comportamiento.
+
+=== Sirviendo una aplicación modular
+
+Las dos opciones más comunes para iniciar una aplicación modular son, iniciarla
+activamente con <tt>run!</tt>:
+
+  # mi_app.rb
+  require 'sinatra/base'
+
+  class MiApp < Sinatra::Base
+    # ... código de la app  ...
+
+    # iniciar el servidor si el archivo fue ejecutado directamente
+    run! if app_file == $0
+  end
+
+Iniciar con:
+
+  ruby mi_app.rb
+
+O, con un archivo <tt>config.ru</tt>, que permite usar cualquier handler Rack:
+
+  # config.ru
+  require 'mi_app'
+  run MiApp
+
+Después ejecutar:
+
+  rackup -p 4567
+
+=== Usando una aplicación clásica con un archivo config.ru
+
+Escribí el archivo de tu aplicación:
+
+  # app.rb
+  require 'sinatra'
+
+  get '/' do
+    'Hola mundo!'
+  end
+
+Y el <tt>config.ru</tt> correspondiente:
+
+  require 'app'
+  run Sinatra::Application
+
+=== ¿Cuándo usar config.ru?
+
+Indicadores de que probablemente querés usar <tt>config.ru</tt>:
+
+* Querés realizar el deploy con un hanlder Rack distinto (Passenger, Unicorn,
+  Heroku, ...).
+* Querés usar más de una subclase de <tt>Sinatra::Base</tt>.
+* Querés usar Sinatra únicamente para middleware, pero no como un endpoint.
+
+<b>No hay necesidad de utilizar un archivo <tt>config.ru</tt> exclusivamente
+porque tenés una aplicación modular, y no necesitás una aplicación modular para
+iniciarla con <tt>config.ru</tt>.</b>
 
 === Utilizando Sinatra como Middleware
 
