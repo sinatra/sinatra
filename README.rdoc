@@ -471,13 +471,13 @@ Now you can render CoffeeScript templates:
 
 Renders <tt>./views/application.coffee</tt>.
 
-=== Inline Templates
+=== Embedded Templates
 
   get '/' do
     haml '%div.title Hello World'
   end
 
-Renders the inlined template string.
+Renders the embedded template string.
 
 === Accessing Variables in Templates
 
