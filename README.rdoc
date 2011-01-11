@@ -643,6 +643,23 @@ To associate a file extension with a template engine, use
 
   Tilt.register :tt, Tilt[:textile]
 
+=== Adding You Own Template Engine
+
+First, register your engine with Tilt, then create a rendering method:
+
+  Tilt.register :myat, MyAwesomeTemplateEngine
+
+  helpers do
+    def myat(*args) render(:myat, *args) end
+  end
+
+  get '/' do
+    myat :index
+  end
+
+Renders <tt>./views/index.myat</tt>. See https://github.com/rtomayko/tilt to
+learn more about Tilt.
+
 == Helpers
 
 Use the top-level <tt>helpers</tt> method to define helper methods for use in
