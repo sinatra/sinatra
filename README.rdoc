@@ -451,8 +451,16 @@ Renders <tt>./views/index.mab</tt>.
 
 === CoffeeScript Templates
 
-The coffee-script gem/library and the `coffee` binary are required to render
-CoffeeScript templates:
+The <tt>coffee-script</tt> gem/library and at least <b>one</b> of the
+following options to execute JavaScript:
+
+* +node+ (from Node.js) in your path
+* you must be running on OSX
+* +therubyracer+ gem/library
+
+See http://github.com/josh/ruby-coffee-script for an updated list of options.
+
+Now you can render CoffeeScript templates:
 
   ## You'll need to require coffee-script in your app
   require 'coffee-script'
