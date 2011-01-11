@@ -1200,6 +1200,15 @@ Options are:
   -x # turn on the mutex lock (default is off)
 
 == The Bleeding Edge
+If you would like to use Sinatra's latest bleeding code, feel free to run your
+application against the master branch, it should be rather stable.
+
+We also push out prerelease gems from time to time, so you can do a
+
+  gem install sinatra --pre
+
+To get some of the latest features.
+
 === With Bundler
 If you want to run your application with the latest Sinatra, using
 {Bundler}[http://gembundler.com/] is the recommend way.
@@ -1226,9 +1235,8 @@ Now you can run your app like this:
   bundle exec ruby myapp.rb
 
 === Roll Your Own
-If you would like to use Sinatra's latest bleeding code, create a local
-clone and run your app with the <tt>sinatra/lib</tt> directory on the
-<tt>LOAD_PATH</tt>:
+Create a local clone and run your app with the <tt>sinatra/lib</tt> directory
+on the <tt>LOAD_PATH</tt>:
 
   cd myapp
   git clone git://github.com/sinatra/sinatra.git
@@ -1238,6 +1246,19 @@ To update the Sinatra sources in the future:
 
   cd myapp/sinatra
   git pull
+
+=== Install Globally
+
+You can build the gem on your own:
+
+  git clone git://github.com/sinatra/sinatra.git
+  cd sinatra
+  rake sinatra.gemspec
+  rake install
+
+If you install gems as root, the last step should be
+
+  sudo rake install
 
 == Further Reading
 
