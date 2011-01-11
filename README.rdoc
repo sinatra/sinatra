@@ -176,7 +176,7 @@ directly.
 
 The haml gem/library is required to render HAML templates:
 
-  ## You'll need to require haml in your app
+  # You'll need to require haml in your app
   require 'haml'
 
   get '/' do
@@ -199,7 +199,7 @@ and overridden on an individual basis.
 
 === Erb Templates
 
-  ## You'll need to require erb in your app
+  # You'll need to require erb in your app
   require 'erb'
 
   get '/' do
@@ -212,7 +212,7 @@ Renders <tt>./views/index.erb</tt>.
 
 The erubis gem/library is required to render Erubis templates:
 
-  ## You'll need to require erubis in your app
+  # You'll need to require erubis in your app
   require 'erubis'
 
   get '/' do
@@ -236,7 +236,7 @@ Renders <tt>./views/index.erb</tt> with Erubis.
 
 The builder gem/library is required to render builder templates:
 
-  ## You'll need to require builder in your app
+  # You'll need to require builder in your app
   require 'builder'
 
   get '/' do
@@ -249,7 +249,7 @@ Renders <tt>./views/index.builder</tt>.
 
 The nokogiri gem/library is required to render nokogiri templates:
 
-  ## You'll need to require nokogiri in your app
+  # You'll need to require nokogiri in your app
   require 'nokogiri'
 
   get '/' do
@@ -262,7 +262,7 @@ Renders <tt>./views/index.nokogiri</tt>.
 
 The haml gem/library is required to render Sass templates:
 
-  ## You'll need to require haml or sass in your app
+  # You'll need to require haml or sass in your app
   require 'sass'
 
   get '/stylesheet.css' do
@@ -286,7 +286,7 @@ and overridden on an individual basis.
 
 The haml gem/library is required to render Scss templates:
 
-  ## You'll need to require haml or sass in your app
+  # You'll need to require haml or sass in your app
   require 'sass'
 
   get '/stylesheet.css' do
@@ -310,7 +310,7 @@ and overridden on an individual basis.
 
 The less gem/library is required to render Less templates:
 
-  ## You'll need to require less in your app
+  # You'll need to require less in your app
   require 'less'
 
   get '/stylesheet.css' do
@@ -323,7 +323,7 @@ Renders <tt>./views/stylesheet.less</tt>.
 
 The liquid gem/library is required to render Liquid templates:
 
-  ## You'll need to require liquid in your app
+  # You'll need to require liquid in your app
   require 'liquid'
 
   get '/' do
@@ -341,7 +341,7 @@ template, you almost always want to pass locals to it:
 
 The rdiscount gem/library is required to render Markdown templates:
 
-  ## You'll need to require rdiscount in your app
+  # You'll need to require rdiscount in your app
   require "rdiscount"
   
   get '/' do
@@ -380,7 +380,7 @@ Renders <tt>./views/index.md</tt> with BlueCloth.
 
 The RedCloth gem/library is required to render Textile templates:
 
-  ## You'll need to require redcloth in your app
+  # You'll need to require redcloth in your app
   require "redcloth"
 
   get '/' do
@@ -403,7 +403,7 @@ Note that you may also call the textile method from within other templates:
 
 The RDoc gem/library is required to render RDoc templates:
 
-  ## You'll need to require rdoc in your app
+  # You'll need to require rdoc in your app
   require "rdoc"
 
   get '/' do
@@ -426,7 +426,7 @@ Note that you may also call the rdoc method from within other templates:
 
 The radius gem/library is required to render Radius templates:
 
-  ## You'll need to require radius in your app
+  # You'll need to require radius in your app
   require 'radius'
 
   get '/' do
@@ -444,7 +444,7 @@ template, you almost always want to pass locals to it:
 
 The markaby gem/library is required to render Markaby templates:
 
-  ## You'll need to require markaby in your app
+  # You'll need to require markaby in your app
   require 'markaby'
 
   get '/' do
@@ -463,7 +463,7 @@ If you have Tilt 1.2 or later, you may also use inline markaby:
 
 The slim gem/library is required to render Slim templates:
 
-  ## You'll need to require slim in your app
+  # You'll need to require slim in your app
   require 'slim'
 
   get '/' do
@@ -477,7 +477,7 @@ Renders <tt>./views/index.slim</tt>.
 The coffee-script gem/library and the `coffee` binary are required to render
 CoffeeScript templates:
 
-  ## You'll need to require coffee-script in your app
+  # You'll need to require coffee-script in your app
   require 'coffee-script'
 
   get '/application.js' do
