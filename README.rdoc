@@ -1137,7 +1137,7 @@ clone and run your app with the <tt>sinatra/lib</tt> directory on the
 
 To update the Sinatra sources in the future:
 
-  cd myproject/sinatra
+  cd myapp/sinatra
   git pull
 
 == Further Reading
