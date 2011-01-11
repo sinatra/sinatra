@@ -728,7 +728,7 @@ Run when the environment is set to either <tt>:production</tt> or
     ...
   end
 
-== Error handling
+== Error Handling
 
 Error handlers run within the same context as routes and before filters, which
 means you get all the goodies it has to offer, like <tt>haml</tt>,
@@ -788,7 +788,7 @@ Or a range:
 Sinatra installs special <tt>not_found</tt> and <tt>error</tt> handlers when
 running under the development environment.
 
-== Mime types
+== Mime Types
 
 When using <tt>send_file</tt> or static files you may have mime types Sinatra
 doesn't understand. Use +mime_type+ to register them by file extension:
@@ -905,7 +905,7 @@ Sinatra::Base components with two modifications:
 including the built-in server. See {Options and Configuration}[http://sinatra.github.com/configuration.html]
 for details on available options and their behavior.
 
-=== Serving a modular app
+=== Serving a Modular Application
 
 There are two common options for starting a modular app, activly starting with
 <tt>run!</tt>:
@@ -934,7 +934,7 @@ Run:
 
   rackup -p 4567
 
-=== Using a classic app with a config.ru
+=== Using a Classic Style Application with a config.ru
 
 Write your app file:
 
@@ -1085,7 +1085,7 @@ Have a look at the code for yourself: here's the
 {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
 being {included into the main namespace}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28].
 
-== Command line
+== Command Line
 
 Sinatra applications can be run directly:
 
@@ -1126,7 +1126,7 @@ To update the Sinatra sources in the future:
   cd myproject/sinatra
   git pull
 
-== More
+== Further Reading
 
 * {Project Website}[http://www.sinatrarb.com/] - Additional documentation,
   news, and links to other resources.
