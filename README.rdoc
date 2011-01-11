@@ -461,7 +461,7 @@ If you have Tilt 1.2 or later, you may also use inline markaby:
 
 === Slim Templates
 
-The slim gem/library is required to render Slim templates:
+The <tt>slim</tt> gem/library is required to render Slim templates:
 
   # You'll need to require slim in your app
   require 'slim'
