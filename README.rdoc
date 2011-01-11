@@ -453,7 +453,7 @@ The <tt>markaby</tt> gem/library is required to render Markaby templates:
 
 Renders <tt>./views/index.mab</tt>.
 
-If you have Tilt 1.2 or later, you may also use inline markaby:
+You may also use inline Markaby:
 
   get '/' do
     markaby { h1 "Welcome!" }
