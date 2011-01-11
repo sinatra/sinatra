@@ -546,6 +546,14 @@ or disable them by default via <tt>set :haml, :layout => false</tt>.
     haml :index, :layout => !request.xhr?
   end
 
+=== Associating File Extensions
+
+To associate a file extension with a template engine, use
+<tt>Tilt.register</tt>. For instance, if you like to use the file extension
++tt+ for Textile templates, you can do the following:
+
+  Tilt.register :tt, Tilt[:textile]
+
 == Helpers
 
 Use the top-level <tt>helpers</tt> method to define helper methods for use in
