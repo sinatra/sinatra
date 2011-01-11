@@ -1200,7 +1200,32 @@ Options are:
   -x # turn on the mutex lock (default is off)
 
 == The Bleeding Edge
+=== With Bundler
+If you want to run your application with the latest Sinatra, using
+{Bundler}[http://gembundler.com/] is the recommend way.
 
+First, install bundler, if you haven't:
+
+  gem install bundler
+
+Then, in you project directory, create a +Gemfile+:
+
+  source :rubygems
+  gem 'sinatra', :git => "git://github.com/sinatra/sinatra.git"
+  
+  # other dependencies
+  gem 'haml'                    # for instance, if you use haml
+  gem 'activerecord', '~> 3.0'  # maybe you also need ActiveRecord 3.x
+
+Note that you will have to list all your applications dependencies in there.
+Sinatra's direct dependencies (Rack and Tilt) will however be automatically
+fetched and added by Bundler.
+
+Now you can run your app like this:
+
+  bundle exec ruby myapp.rb
+
+=== Roll Your Own
 If you would like to use Sinatra's latest bleeding code, create a local
 clone and run your app with the <tt>sinatra/lib</tt> directory on the
 <tt>LOAD_PATH</tt>:
@@ -1208,17 +1233,6 @@ clone and run your app with the <tt>sinatra/lib</tt> directory on the
   cd myapp
   git clone git://github.com/sinatra/sinatra.git
   ruby -Isinatra/lib myapp.rb
-
-Alternatively, you can add the <tt>sinatra/lib</tt> directory to the
-<tt>LOAD_PATH</tt> in your application:
-
-  $LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
-  require 'rubygems'
-  require 'sinatra'
-
-  get '/about' do
-    "I'm running version " + Sinatra::VERSION
-  end
 
 To update the Sinatra sources in the future:
 
