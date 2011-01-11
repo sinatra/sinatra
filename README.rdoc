@@ -174,7 +174,7 @@ directly.
 
 === Haml Templates
 
-The haml gem/library is required to render HAML templates:
+The <tt>haml</tt> gem/library is required to render HAML templates:
 
   # You'll need to require haml in your app
   require 'haml'
@@ -210,7 +210,7 @@ Renders <tt>./views/index.erb</tt>.
 
 === Erubis Templates
 
-The erubis gem/library is required to render Erubis templates:
+The <tt>erubis</tt> gem/library is required to render Erubis templates:
 
   # You'll need to require erubis in your app
   require 'erubis'
@@ -234,7 +234,7 @@ Renders <tt>./views/index.erb</tt> with Erubis.
 
 === Builder Templates
 
-The builder gem/library is required to render builder templates:
+The <tt>builder</tt> gem/library is required to render builder templates:
 
   # You'll need to require builder in your app
   require 'builder'
@@ -247,7 +247,7 @@ Renders <tt>./views/index.builder</tt>.
 
 === Nokogiri Templates
 
-The nokogiri gem/library is required to render nokogiri templates:
+The <tt>nokogiri</tt> gem/library is required to render nokogiri templates:
 
   # You'll need to require nokogiri in your app
   require 'nokogiri'
@@ -260,7 +260,7 @@ Renders <tt>./views/index.nokogiri</tt>.
 
 === Sass Templates
 
-The haml gem/library is required to render Sass templates:
+The <tt>haml</tt> or <tt>sass</tt> gem/library is required to render Sass templates:
 
   # You'll need to require haml or sass in your app
   require 'sass'
@@ -284,7 +284,7 @@ and overridden on an individual basis.
 
 === Scss Templates
 
-The haml gem/library is required to render Scss templates:
+The <tt>haml</tt> or <tt>sass</tt> gem/library is required to render Scss templates:
 
   # You'll need to require haml or sass in your app
   require 'sass'
@@ -308,7 +308,7 @@ and overridden on an individual basis.
 
 === Less Templates
 
-The less gem/library is required to render Less templates:
+The <tt>less</tt> gem/library is required to render Less templates:
 
   # You'll need to require less in your app
   require 'less'
@@ -321,7 +321,7 @@ Renders <tt>./views/stylesheet.less</tt>.
 
 === Liquid Templates
 
-The liquid gem/library is required to render Liquid templates:
+The <tt>liquid</tt> gem/library is required to render Liquid templates:
 
   # You'll need to require liquid in your app
   require 'liquid'
@@ -339,7 +339,7 @@ template, you almost always want to pass locals to it:
 
 === Markdown Templates
 
-The rdiscount gem/library is required to render Markdown templates:
+The <tt>rdiscount</tt> gem/library is required to render Markdown templates:
 
   # You'll need to require rdiscount in your app
   require "rdiscount"
@@ -378,7 +378,7 @@ Renders <tt>./views/index.md</tt> with BlueCloth.
 
 === Textile Templates
 
-The RedCloth gem/library is required to render Textile templates:
+The <tt>RedCloth</tt> gem/library is required to render Textile templates:
 
   # You'll need to require redcloth in your app
   require "redcloth"
@@ -394,14 +394,14 @@ therefore will usually use it in combination with another rendering engine:
 
   erb :overview, :locals => { :text => textile(:introduction) }
 
-Note that you may also call the textile method from within other templates:
+Note that you may also call the +textile+ method from within other templates:
 
   %h1 Hello From Haml!
   %p= textile(:greetings)
 
 === RDoc Templates
 
-The RDoc gem/library is required to render RDoc templates:
+The <tt>rdoc</tt> gem/library is required to render RDoc templates:
 
   # You'll need to require rdoc in your app
   require "rdoc"
@@ -417,14 +417,14 @@ therefore will usually use it in combination with another rendering engine:
 
   erb :overview, :locals => { :text => rdoc(:introduction) }
 
-Note that you may also call the rdoc method from within other templates:
+Note that you may also call the +rdoc+ method from within other templates:
 
   %h1 Hello From Haml!
   %p= rdoc(:greetings)
 
 === Radius Templates
 
-The radius gem/library is required to render Radius templates:
+The <tt>radius</tt> gem/library is required to render Radius templates:
 
   # You'll need to require radius in your app
   require 'radius'
@@ -442,7 +442,7 @@ template, you almost always want to pass locals to it:
 
 === Markaby Templates
 
-The markaby gem/library is required to render Markaby templates:
+The <tt>markaby</tt> gem/library is required to render Markaby templates:
 
   # You'll need to require markaby in your app
   require 'markaby'
