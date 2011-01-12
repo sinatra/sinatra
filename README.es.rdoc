@@ -1262,7 +1262,7 @@ localmente y ejecutá tu aplicación, asegurándote que el directorio
 
 Para actualizar el código fuente de Sinatra en el futuro:
 
-  cd miproyecto/sinatra
+  cd miapp/sinatra
   git pull
 
 == Lecturas Recomendadas
