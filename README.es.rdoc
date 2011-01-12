@@ -359,11 +359,25 @@ generalmente vas a usarlo en combinación con otro motor de renderizado:
 
   erb :resumen, :locals => { :texto => markdown(:introduccion) }
 
-Tené en cuenta que también podés llamar al método markdown desde otras
+Tené en cuenta que también podés llamar al método +markdown+ desde otras
 plantillas:
 
   %h1 Hola Desde Haml!
   %p= markdown(:saludos)
+
+También es posible parsear Markdown con BlueCloth en lugar de RDiscount:
+
+  require 'bluecloth'
+
+  Tilt.register 'markdown', BlueClothTemplate
+  Tilt.register 'mkd',      BlueClothTemplate
+  Tilt.register 'md',       BlueClothTemplate
+
+  get '/' do
+    markdown :index
+  end
+
+Renderiza <tt>./views/index.md</tt> con BlueCloth.
 
 === Plantilla Textile
 
