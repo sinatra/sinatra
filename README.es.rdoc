@@ -211,9 +211,9 @@ y reemplazadas individualmente.
 
 Renderiza <tt>./views/index.erb</tt>
 
-=== Erubis
+=== Plantillas Erubis
 
-La gem/librería erubis es necesaria para renderizar plantillas erubis:
+La gem/librería erubis es necesaria para renderizar plantillas Erubis:
 
   # Vas a necesitar requerir erubis en tu app
   require 'erubis'
@@ -222,7 +222,18 @@ La gem/librería erubis es necesaria para renderizar plantillas erubis:
     erubis :index
   end
 
-Renderiza <tt>./views/index.erubis</tt>
+Renderiza <tt>./views/index.erubis</tt>.
+
+También es posible reemplazar Erb con Erubis:
+
+  require 'erubis'
+  Tilt.register :erb, Tilt[:erubis]
+
+  get '/' do
+    erb :index
+  end
+
+Renderiza <tt>./views/index.erb</tt> con Erubis.
 
 === Plantillas Builder
 
