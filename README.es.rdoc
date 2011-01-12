@@ -1125,6 +1125,16 @@ Las opciones son:
   -x # activa el mutex lock (está desactivado por defecto)
 
 == A la Vanguardia
+
+Si querés usar el código de Sinatra más reciente, sentite libre de ejecutar
+tu aplicación sobre la rama master, en general es bastante estable.
+
+También liberamos prereleases de vez en cuando, así, podés hacer
+
+  gem install sinatra --pre
+
+Para obtener algunas de las últimas características.
+
 === Con Bundler
 
 Esta es la manera recomendada para ejecutar tu aplicación sobre la última
@@ -1153,9 +1163,8 @@ Ahora podés arrancar tu aplicación así:
 
 === Con Git
 
-Si querés usar el código de Sinatra más reciente, cloná el repositorio
-localmente y ejecutá tu aplicación, asegurándote que el directorio
-<tt>sinatra/lib</tt> esté en el <tt>LOAD_PATH</tt>:
+Cloná el repositorio localmente y ejecutá tu aplicación, asegurándote que el
+directorio <tt>sinatra/lib</tt> esté en el <tt>LOAD_PATH</tt>:
 
   cd miapp
   git clone git://github.com/sinatra/sinatra.git
@@ -1165,6 +1174,19 @@ Para actualizar el código fuente de Sinatra en el futuro:
 
   cd miapp/sinatra
   git pull
+
+=== Instalación Global
+
+Podés construir la gem vos mismo:
+
+  git clone git://github.com/sinatra/sinatra.git
+  cd sinatra
+  rake sinatra.gemspec
+  rake install
+
+Si instalás tus gems como root, el último paso debería ser
+
+  sudo rake install
 
 == Lecturas Recomendadas
 
