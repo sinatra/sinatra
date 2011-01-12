@@ -649,6 +649,14 @@ pasando <tt>:layout => false</tt> o globalmente con
     haml :index, :layout => !request.xhr?
   end
 
+=== Asociando Extensiones de Archivo
+
+Para asociar una extensión de archivo con un motor de renderizado, usá
+<tt>Tilt.register</tt>. Por ejemplo, si querés usar la extensión +tt+ para
+las plantillas Textitle, podés hacer lo siguiente:
+
+  Tilt.register :tt, Tilt[:textile]
+
 == Ayudantes
 
 Usá el método top-level <tt>helpers</tt> para definir métodos ayudantes que
