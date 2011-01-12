@@ -474,7 +474,7 @@ Si tenés Tilt 1.2 o posterior, podés usar markaby inline:
 
 === Plantillas Slim
 
-La gem/librería slim es necesaria para renderizar plantillas Slim:
+La gem/librería <tt>slim</tt> es necesaria para renderizar plantillas Slim:
 
   # Vas a necesitar requerir slim en tu app
   require 'slim'
