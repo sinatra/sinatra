@@ -1125,6 +1125,33 @@ Las opciones son:
   -x # activa el mutex lock (está desactivado por defecto)
 
 == A la Vanguardia
+=== Con Bundler
+
+Esta es la manera recomendada para ejecutar tu aplicación sobre la última
+versión de Sinatra usando {Bundler}[http://gembundler.com/].
+
+Primero, instalá bundler si no lo hiciste todavía:
+
+  gem install bundler
+
+Después, en el directorio de tu proyecto, creá un archivo +Gemfile+:
+
+  source :rubygems
+  gem 'sinatra', :git => "git://github.com/sinatra/sinatra.git"
+
+  # otras dependencias
+  gem 'haml'                    # por ejemplo, si usás haml
+  gem 'activerecord', '~> 3.0'  # quizás también necesités ActiveRecord 3.x
+
+Tené en cuenta que tenés que listar todas las dependencias directas de tu
+aplicación. No es necesario listar las dependencias de Sinatra (Rack y Tilt)
+porque Bundler las agrega directamente.
+
+Ahora podés arrancar tu aplicación así:
+
+  bundle exec ruby miapp.rb
+
+=== Con Git
 
 Si querés usar el código de Sinatra más reciente, cloná el repositorio
 localmente y ejecutá tu aplicación, asegurándote que el directorio
@@ -1133,17 +1160,6 @@ localmente y ejecutá tu aplicación, asegurándote que el directorio
   cd miapp
   git clone git://github.com/sinatra/sinatra.git
   ruby -Isinatra/lib miapp.rb
-
-Otra opción consiste en agregar el directorio <tt>sinatra/lib</tt> al
-<tt>LOAD_PATH</tt> dentro de tu aplicación:
-
-  $LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
-  require 'rubygems'
-  require 'sinatra'
-
-  get '/acerca-de' do
-    "Estoy usando la versión " + Sinatra::VERSION
-  end
 
 Para actualizar el código fuente de Sinatra en el futuro:
 
