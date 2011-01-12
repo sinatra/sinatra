@@ -379,7 +379,7 @@ También es posible parsear Markdown con BlueCloth en lugar de RDiscount:
 
 Renderiza <tt>./views/index.md</tt> con BlueCloth.
 
-=== Plantilla Textile
+=== Plantillas Textile
 
 La gem/librería <tt>RedCloth</tt> es necesaria para renderizar plantillas
 Textile:
