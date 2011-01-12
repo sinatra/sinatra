@@ -465,7 +465,7 @@ Markaby:
 
 Renderiza <tt>./views/index.mab</tt>.
 
-Si tenés Tilt 1.2 o posterior, podés usar markaby inline:
+También podés usar Markaby inline:
 
   get '/' do
     markaby { h1 "Bienvenido!" }
