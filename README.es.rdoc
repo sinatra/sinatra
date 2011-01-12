@@ -178,7 +178,7 @@ les pase como argumento.
 
 === Plantillas Haml
 
-La gem/librería haml es necesaria para para renderizar plantillas HAML:
+La gem/librería <tt>haml</tt> es necesaria para para renderizar plantillas HAML:
 
   # Vas a necesitar requerir haml en tu app
   require 'haml'
@@ -213,7 +213,7 @@ Renderiza <tt>./views/index.erb</tt>
 
 === Plantillas Erubis
 
-La gem/librería erubis es necesaria para renderizar plantillas Erubis:
+La gem/librería <tt>erubis</tt> es necesaria para renderizar plantillas Erubis:
 
   # Vas a necesitar requerir erubis en tu app
   require 'erubis'
@@ -237,7 +237,8 @@ Renderiza <tt>./views/index.erb</tt> con Erubis.
 
 === Plantillas Builder
 
-La gem/librería builder es necesaria para renderizar plantillas builder:
+La gem/librería <tt>builder</tt> es necesaria para renderizar plantillas
+builder:
 
   # Vas a necesitar requerir builder en tu app
   require 'builder'
@@ -250,7 +251,8 @@ Renderiza <tt>./views/index.builder</tt>.
 
 === Plantillas Nokogiri
 
-La gem/librería nokogiri es necesaria para renderizar plantillas nokogiri:
+La gem/librería <tt>nokogiri</tt> es necesaria para renderizar plantillas
+nokogiri:
 
   # Vas a necesitar requerir nokogiri en tu app
   require 'nokogiri'
@@ -263,7 +265,8 @@ Renderiza <tt>./views/index.nokogiri</tt>.
 
 === Plantillas Sass
 
-La gem/librería haml es necesaria para renderizar plantillas Sass:
+La gem/librería <tt>haml</tt> o <tt>sass</tt> es necesaria para renderizar
+plantillas Sass:
 
   # Vas a necesitar requerir haml o sass en tu app
   require 'sass'
@@ -287,7 +290,8 @@ y reemplazadas individualmente.
 
 === Plantillas Scss
 
-La gem/librería haml es necesaria para renderizar plantillas Scss:
+La gem/librería <tt>haml</tt> o <tt>sass</tt>es necesaria para renderizar
+plantillas Scss:
 
   # Vas a necesitar requerir haml o sass en tu app
   require 'sass'
@@ -311,7 +315,7 @@ y reemplazadas individualmente.
 
 === Plantillas Less
 
-La gem/librería less es necesaria para renderizar plantillas Less:
+La gem/librería <tt>less</tt> es necesaria para renderizar plantillas Less:
 
   # Vas a necesitar requerir less en tu app
   require 'less'
@@ -324,7 +328,7 @@ Renderiza <tt>./views/stylesheet.less</tt>.
 
 === Plantillas Liquid
 
-La gem/librería liquid es necesaria para renderizar plantillas Liquid:
+La gem/librería <tt>liquid</tt> es necesaria para renderizar plantillas Liquid:
 
   # Vas a necesitar requerir liquid en tu app
   require 'liquid'
@@ -342,7 +346,8 @@ plantilla Liquid, casi siempre vas a querer pasarle locales:
 
 === Plantillas Markdown
 
-La gem/librería rdiscount es necesaria para renderizar plantillas Markdown:
+La gem/librería <tt>rdiscount</tt> es necesaria para renderizar plantillas
+Markdown:
 
   # Vas a necesitar requerir rdiscount en tu app
   require "rdiscount"
@@ -381,7 +386,8 @@ Renderiza <tt>./views/index.md</tt> con BlueCloth.
 
 === Plantilla Textile
 
-La gem/librería RedCloth es necesaria para renderizar plantillas Textile:
+La gem/librería <tt>RedCloth</tt> es necesaria para renderizar plantillas
+Textile:
 
   # Vas a necesitar requerir redcloth en tu app
   require "redcloth"
@@ -397,7 +403,7 @@ generalmente vas a usarlo en combinación con otro motor de renderizado:
 
   erb :resumen, :locals => { :texto => textile(:introduccion) }
 
-Tené en cuenta que también podés llamar al método textile desde otras
+Tené en cuenta que también podés llamar al método +textile+ desde otras
 plantillas:
 
   %h1 Hola Desde Haml!
@@ -405,7 +411,7 @@ plantillas:
 
 === Plantillas RDoc
 
-La gem/librería RDoc es necesaria para renderizar plantillas RDoc:
+La gem/librería <tt>rdoc</tt> es necesaria para renderizar plantillas RDoc:
 
   # Vas a necesitar requerir rdoc en tu app
   require "rdoc"
@@ -421,7 +427,7 @@ generalmente vas a usarlo en combinación con otro motor de renderizado:
 
   erb :resumen, :locals => { :texto => rdoc(:introduccion) }
 
-Tené en cuenta que también podés llamar al método rdoc desde otras
+Tené en cuenta que también podés llamar al método +rdoc+ desde otras
 plantillas:
 
   %h1 Hola Desde Haml!
@@ -429,7 +435,7 @@ plantillas:
 
 === Plantillas Radius
 
-La gem/librería radius es necesaria para renderizar plantillas Radius:
+La gem/librería <tt>radius</tt> es necesaria para renderizar plantillas Radius:
 
   # Vas a necesitar requerir radius en tu app
   require 'radius'
@@ -447,7 +453,8 @@ plantilla Radius, casi siempre vas a querer pasarle locales:
 
 === Plantillas Markaby
 
-La gem/librería markaby es necesaria para renderizar plantillas Markaby:
+La gem/librería <tt>markaby</tt> es necesaria para renderizar plantillas
+Markaby:
 
   # Vas a necesitar requerir markaby en tu app
   require 'markaby'
