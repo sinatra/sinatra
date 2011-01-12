@@ -177,7 +177,7 @@ Renderingmethoden rendern jeden String direkt.
 
 Das haml gem wird benötigt, um Haml-Templates rendern zu können:
 
-  ## haml muss eingebunden werden
+  # haml muss eingebunden werden
   require 'haml'
 
   get '/' do
@@ -199,7 +199,7 @@ und individuell überschrieben werden.
 
 === Erb-Templates
 
-  ## erb muss eingebunden werden
+  # erb muss eingebunden werden
   require 'erb'
 
   get '/' do
@@ -212,7 +212,7 @@ Dieser Code rendert <tt>./views/index.erb</tt>.
 
 Das erubis gem wird benötigt, um Erubis-Templates rendern zu können:
 
-  ## erbubis muss eingebunden werden
+  # erbubis muss eingebunden werden
   require 'erubis'
 
   get '/' do
@@ -225,7 +225,7 @@ Dieser Code rendert <tt>./views/index.erubis</tt>.
 
 Das buidler gem wird benötigt, um Builder-Templates rendern zu können:
 
-  ## builder muss eingebunden werden
+  # builder muss eingebunden werden
   require 'builder'
 
   get '/' do
@@ -238,7 +238,7 @@ Dieser Code rendert <tt>./views/index.builder</tt>.
 
 Das nokogiri gem wird benötigt, um Nokogiri-Templates rendern zu können:
 
-  ## nokogiri muss eingebunden werden
+  # nokogiri muss eingebunden werden
   require 'nokogiri'
 
   get '/' do
@@ -251,7 +251,7 @@ Dieser Code rendert <tt>./views/index.nokogiri</tt>.
 
 Das haml gem wird benötigt, um SASS-Templates rendern zu können:
 
-  ## sass muss eingebunden werden
+  # sass muss eingebunden werden
   require 'sass'
 
   get '/stylesheet.css' do
@@ -275,7 +275,7 @@ und individuell überschrieben werden.
 
 Das haml gem wird benötigt, um SCSS-Templates rendern zu können:
 
-  ## sass muss eingebunden werden
+  # sass muss eingebunden werden
   require 'sass'
 
   get '/stylesheet.css' do
@@ -299,7 +299,7 @@ und individuell überschrieben werden.
 
 Das less gem wird benötigt, um Less-Templates rendern zu können:
 
-  ## less muss eingebunden werden
+  # less muss eingebunden werden
   require 'less'
 
   get '/stylesheet.css' do
@@ -312,7 +312,7 @@ Dieser Code rendert <tt>./views/stylesheet.less</tt>.
 
 Das liquid gem wird benötigt, um Liquid-Templates rendern zu können:
 
-  ## liquid muss eingebunden werden
+  # liquid muss eingebunden werden
   require 'liquid'
 
   get '/' do
@@ -330,7 +330,7 @@ aufrufen kann, will man nahezu in allen Fällen +locals+ übergeben:
 
 Das rdiscount gem wird benötigt, um Markdown-Templates rendern zu können:
 
-  ## rdiscount muss eingebunden werden
+  # rdiscount muss eingebunden werden
   require "rdiscount"
 
   get '/' do
@@ -356,7 +356,7 @@ aufzurufen:
 
 Das RedCloth gem wird benötigt, um Textile-Templates rendern zu können:
 
-  ## redcloth muss eingebunden werden
+  # redcloth muss eingebunden werden
   require "redcloth"
 
   get '/' do
@@ -381,7 +381,7 @@ aufzurufen:
 
 Das rdoc gem wird benötigt, um RDoc-Templates rendern zu können:
 
-  ## RDoc muss eingebunden werden
+  # RDoc muss eingebunden werden
   require "rdoc"
 
   get '/' do
@@ -406,7 +406,7 @@ aufzurufen:
 
 Das radius gem wird benötigt, um Radius-Templates rendern zu können:
 
-  ## radius muss eingebunden werden
+  # radius muss eingebunden werden
   require 'radius'
 
   get '/' do
@@ -424,7 +424,7 @@ aufrufen kann, will man nahezu in allen Fällen +locals+ übergeben:
 
 Das markaby gem wird benötigt, um Markaby-Templates rendern zu können:
 
-  ## markaby muss eingebunden werden
+  # markaby muss eingebunden werden
   require 'markaby'
 
   get '/' do
@@ -437,7 +437,7 @@ Dieser Code rendert <tt>./views/index.mab</tt>.
 
 Das slim gem wird benötigt, um Slim-Templates rendern zu können:
 
-  ## slim muss eingebunden werden
+  # slim muss eingebunden werden
   require 'slim'
 
   get '/' do
@@ -450,7 +450,7 @@ Dieser Code rendert <tt>./views/index.slim</tt>.
 
 Das coffee-script gem und das `coffee`-Programm werden benötigt, um CoffeScript-Templates rendern zu können:
 
-  ## coffee-script muss eingebunden werden
+  # coffee-script muss eingebunden werden
   require 'coffee-script'
 
   get '/application.js' do

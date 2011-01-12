@@ -7,7 +7,7 @@ require 'sinatra/showexceptions'
 require 'tilt'
 
 module Sinatra
-  VERSION = '1.2.0'
+  VERSION = '1.2.0.a'
 
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
@@ -376,8 +376,6 @@ module Sinatra
       attr_accessor :content_type
     end
 
-    include Tilt::CompileSite
-
     def erb(template, options={}, locals={})
       render :erb, template, options, locals
     end
@@ -459,7 +457,8 @@ module Sinatra
     def render(engine, data, options={}, locals={}, &block)
       # merge app-level options
       options = settings.send(engine).merge(options) if settings.respond_to?(engine)
-      options[:outvar] ||= '@_out_buf'
+      options[:outvar]           ||= '@_out_buf'
+      options[:default_encoding] ||= settings.default_encoding
 
       # extract generic options
       locals          = options.delete(:locals) || locals         || {}

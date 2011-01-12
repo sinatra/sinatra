@@ -16,7 +16,7 @@ class CoffeeTest < Test::Unit::TestCase
   it 'renders inline Coffee strings' do
     coffee_app { coffee "alert 'Aye!'\n" }
     assert ok?
-    assert_equal "(function() {\n  alert('Aye!');\n})();\n", body
+    assert_equal "(function() {\n  alert('Aye!');\n}).call(this);\n", body
   end
 
   it 'defaults content type to javascript' do
@@ -45,13 +45,13 @@ class CoffeeTest < Test::Unit::TestCase
   it 'renders .coffee files in views path' do
     coffee_app { coffee :hello }
     assert ok?
-    assert_equal "(function() {\n  alert(\"Aye!\");\n})();\n", body
+    assert_equal "(function() {\n  alert(\"Aye!\");\n}).call(this);\n", body
   end
 
   it 'ignores the layout option' do
     coffee_app { coffee :hello, :layout => :layout2 }
     assert ok?
-    assert_equal "(function() {\n  alert(\"Aye!\");\n})();\n", body
+    assert_equal "(function() {\n  alert(\"Aye!\");\n}).call(this);\n", body
   end
 
   it "raises error if template not found" do
