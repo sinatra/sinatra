@@ -370,6 +370,27 @@ plantillas:
   %h1 Hola Desde Haml!
   %p= markdown(:saludos)
 
+Como no podés utilizar Ruby desde Markdown, no podés usar layouts escritos en
+Markdown. De todos modos, es posible usar un motor de renderizado para el
+layout distinto al de la plantilla pasando la opción `:layout_engine`:
+
+  get '/' do
+    markdown :index, :layout_engine => :erb
+  end
+
+Renderiza <tt>./views/index.md</tt> con el layout <tt>./views/layout.erb</tt>.
+
+Recordá que podés asignar las opciones de renderizado globalmente:
+
+  set :markdown, :layout_engine => :haml, :layout => :post
+
+  get '/' do
+    markdown :index
+  end
+
+Renderiza <tt>./views/index.md</tt> (o cualquier otra plantilla Markdown) con
+el layout <tt>./views/post.haml</tt>.
+
 También es posible parsear Markdown con BlueCloth en lugar de RDiscount:
 
   require 'bluecloth'
@@ -409,6 +430,28 @@ plantillas:
   %h1 Hola Desde Haml!
   %p= textile(:saludos)
 
+Como no podés utilizar Ruby desde Textile, no podés usar layouts escritos en
+Textile. De todos modos, es posible usar un motor de renderizado para el
+layout distinto al de la plantilla pasando la opción `:layout_engine`:
+
+  get '/' do
+    textile :index, :layout_engine => :erb
+  end
+
+Renderiza <tt>./views/index.textile</tt> con el layout
+<tt>./views/layout.erb</tt>.
+
+Recordá que podés asignar las opciones de renderizado globalmente:
+
+  set :textile, :layout_engine => :haml, :layout => :post
+
+  get '/' do
+    textile :index
+  end
+
+Renderiza <tt>./views/index.textile</tt> (o cualquier otra plantilla Textile)
+con el layout <tt>./views/post.haml</tt>.
+
 === Plantillas RDoc
 
 La gem/librería <tt>rdoc</tt> es necesaria para renderizar plantillas RDoc:
@@ -432,6 +475,27 @@ plantillas:
 
   %h1 Hola Desde Haml!
   %p= rdoc(:saludos)
+
+Como no podés utilizar Ruby desde RDoc, no podés usar layouts escritos en RDoc.
+De todos modos, es posible usar un motor de renderizado para el layout distinto
+al de la plantilla pasando la opción `:layout_engine`:
+
+  get '/' do
+    rdoc :index, :layout_engine => :erb
+  end
+
+Renderiza <tt>./views/index.rdoc</tt> con el layout <tt>./views/layout.erb</tt>.
+
+Recordá que podés asignar las opciones de renderizado globalmente:
+
+  set :rdoc, :layout_engine => :haml, :layout => :post
+
+  get '/' do
+    rdoc :index
+  end
+
+Renderiza <tt>./views/index.rdoc</tt> (o cualquier otra plantilla RDoc) con el
+layout <tt>./views/post.haml</tt>.
 
 === Plantillas Radius
 
