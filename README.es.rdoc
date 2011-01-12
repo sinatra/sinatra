@@ -151,7 +151,7 @@ De esa manera podemos, por ejemplo, implementar fácilmente un streaming:
 
     get('/') { Stream.new }
 
-== Archivos estáticos
+== Archivos Estáticos
 
 Los archivos estáticos son servidos desde el directorio público
 <tt>./public</tt>. Podés especificar una ubicación diferente ajustando la
@@ -846,7 +846,7 @@ Ejecutar cuando el entorno es <tt>:production</tt> o <tt>:test</tt>:
     ...
   end
 
-== Manejo de errores
+== Manejo de Errores
 
 Los manejadores de errores se ejecutan dentro del mismo contexto que las rutas
 y los filtros before, lo que significa que podés usar, por ejemplo,
@@ -1028,7 +1028,7 @@ desactivadas por defecto, incluyendo el servidor incorporado. Mirá
 {Opciones y Configuraciones}[http://sinatra.github.com/configuration.html]
 para detalles sobre las opciones disponibles y su comportamiento.
 
-=== Sirviendo una aplicación modular
+=== Sirviendo una Aplicación Modular
 
 Las dos opciones más comunes para iniciar una aplicación modular son, iniciarla
 activamente con <tt>run!</tt>:
@@ -1057,7 +1057,7 @@ Después ejecutar:
 
   rackup -p 4567
 
-=== Usando una aplicación clásica con un archivo config.ru
+=== Usando una Aplicación Clásica con un Archivo config.ru
 
 Escribí el archivo de tu aplicación:
 
@@ -1073,7 +1073,7 @@ Y el <tt>config.ru</tt> correspondiente:
   require 'app'
   run Sinatra::Application
 
-=== ¿Cuándo usar config.ru?
+=== ¿Cuándo Usar config.ru?
 
 Indicadores de que probablemente querés usar <tt>config.ru</tt>:
 
@@ -1208,7 +1208,7 @@ Pegale una mirada al código: acá está el
 {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
 que es {incluido en el espacio de nombres principal}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28].
 
-== Línea de comandos
+== Línea de Comandos
 
 Las aplicaciones Sinatra pueden ser ejecutadas directamente:
 
@@ -1223,7 +1223,7 @@ Las opciones son:
   -s # especifica el servidor/manejador rack (thin es usado por defecto)
   -x # activa el mutex lock (está desactivado por defecto)
 
-== A la vanguardia
+== A la Vanguardia
 
 Si querés usar el código de Sinatra más reciente, cloná el repositorio
 localmente y ejecutá tu aplicación, asegurándote que el directorio
@@ -1249,7 +1249,7 @@ Para actualizar el código fuente de Sinatra en el futuro:
   cd miproyecto/sinatra
   git pull
 
-== Más
+== Lecturas Recomendadas
 
 * {Sito web del proyecto}[http://www.sinatrarb.com/] - Documentación
   adicional, noticias, y enlaces a otros recursos.
