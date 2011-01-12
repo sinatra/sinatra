@@ -480,13 +480,13 @@ son necesarios para renderizar plantillas CoffeeScript:
 
 Renderiza <tt>./views/application.coffee</tt>.
 
-=== Plantillas Inline
+=== Plantillas Embebidas
 
   get '/' do
     haml '%div.titulo Hola Mundo'
   end
 
-Renderiza el template contenido en el string.
+Renderiza el template embebido en el string.
 
 === Accediendo a Variables en Plantillas
 
