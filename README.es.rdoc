@@ -487,8 +487,14 @@ Renderiza <tt>./views/index.slim</tt>.
 
 === Plantillas CoffeeScript
 
-La gem/librería coffee-script y el binario `coffee` son necesarios para
-renderizar plantillas CoffeeScript:
+La gem/librería <tt>coffee-script</tt> y al menos <b>una</b> de las siguientes
+opciones para ejecutar JavaScript:
+
+* +node+ (de Node.js) en tu path
+* utilizar OSX
+* la gem/librería +therubyracer+
+
+son necesarios para renderizar plantillas CoffeeScript:
 
   # Vas a necesitar requerir coffee-script en tu app
   require 'coffee-script'
