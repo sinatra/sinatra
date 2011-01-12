@@ -568,6 +568,23 @@ las plantillas Textitle, podés hacer lo siguiente:
 
   Tilt.register :tt, Tilt[:textile]
 
+=== Agregando Tu Propio Motor de Renderizado
+
+Primero, registrá tu motor con Tilt, y después, creá tu método de renderizado:
+
+  Tilt.register :mipg, MiMotorParaPlantillaGenial
+
+  helpers do
+    def mypg(*args) render(:mypg, *args) end
+  end
+
+  get '/' do
+    mypg :index
+  end
+
+Renderiza <tt>./views/index.mypg</tt>. Mirá https://github.com/rtomayko/tilt
+para aprender más de Tilt.
+
 == Ayudantes
 
 Usá el método top-level <tt>helpers</tt> para definir métodos ayudantes que
