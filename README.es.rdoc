@@ -564,7 +564,7 @@ pasando <tt>:layout => false</tt> o globalmente con
 
 Para asociar una extensión de archivo con un motor de renderizado, usá
 <tt>Tilt.register</tt>. Por ejemplo, si querés usar la extensión +tt+ para
-las plantillas Textitle, podés hacer lo siguiente:
+las plantillas Textile, podés hacer lo siguiente:
 
   Tilt.register :tt, Tilt[:textile]
 
