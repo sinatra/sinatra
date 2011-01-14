@@ -472,7 +472,16 @@ Sinatra — это предметно-ориентированный язык (D
 
 === CoffeeScript шаблоны
 
-coffee-script gem/библиотека и `coffee` бинарный файл необходимы для рендеринга CoffeeScript шаблонов:
+Вам понадобится <tt>coffee-script</tt> gem/библиотека и что-то <b>одно</b> из следующего списка,
+чтобы запускать JavaScript:
+
+* +node+ (из Node.js)
+* вы можете использовать OSX (есть встроенные средства для выполнения JavaScript)
+* +therubyracer+ gem/библиотека
+
+Подробнее смотрите на {странице проекта}[http://github.com/josh/ruby-coffee-script].
+
+Таким образом вы можете использовать CoffeeScript шаблоны.
 
   # Вам нужно будет подключить coffee-script в приложении
   require 'coffee-script'
