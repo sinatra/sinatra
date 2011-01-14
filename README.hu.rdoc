@@ -123,7 +123,7 @@ metódusok minden, nekik közvetlenül átadott karakterláncot megjelenítenek.
 
 HAML sablonok rendereléséhez szükségünk lesz a haml gem-re vagy könyvtárra:
 
-  ## Importáljuk be a haml-t az alkalmazásba
+  # Importáljuk be a haml-t az alkalmazásba
   require 'haml'
 
   get '/' do
@@ -146,7 +146,7 @@ A globális beállításokat lehetőségünk van felülírni metódus szinten is
 
 === Erb sablonok
 
-  ## Importáljuk be az erb-t az alkalmazásba
+  # Importáljuk be az erb-t az alkalmazásba
   require 'erb'
 
   get '/' do
@@ -160,7 +160,7 @@ Ez a <tt>./views/index.erb</tt> sablont fogja lerenderelni.
 Szükségünk lesz a builder gem-re vagy könyvtárra a builder sablonok
 rendereléséhez:
 
-  ## Importáljuk be a builder-t az alkalmazásba
+  # Importáljuk be a builder-t az alkalmazásba
   require 'builder'
 
   get '/' do
@@ -173,7 +173,7 @@ Ez pedig a <tt>./views/index.builder</tt> állományt fogja renderelni.
 
 Sass sablonok használatához szükség lesz a haml gem-re vagy könyvtárra:
 
-  ## Be kell importálni a haml, vagy a sass könyvtárat
+  # Be kell importálni a haml, vagy a sass könyvtárat
   require 'sass'
 
   get '/stylesheet.css' do

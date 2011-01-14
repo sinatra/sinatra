@@ -39,6 +39,11 @@ Cada ruta se asocia con un bloque:
     .. aniquilar algo ..
   end
 
+  options '/' do
+    .. informar algo ..
+  end
+
+
 Las rutas son comparadas en el orden en el que son definidas. La primer ruta
 que coincide con la petición es invocada.
 
@@ -146,7 +151,7 @@ De esa manera podemos, por ejemplo, implementar fácilmente un streaming:
 
     get('/') { Stream.new }
 
-== Archivos estáticos
+== Archivos Estáticos
 
 Los archivos estáticos son servidos desde el directorio público
 <tt>./public</tt>. Podés especificar una ubicación diferente ajustando la
@@ -173,9 +178,9 @@ les pase como argumento.
 
 === Plantillas Haml
 
-La gem/librería haml es necesaria para para renderizar plantillas HAML:
+La gem/librería <tt>haml</tt> es necesaria para para renderizar plantillas HAML:
 
-  ## Vas a necesitar requerir haml en tu app
+  # Vas a necesitar requerir haml en tu app
   require 'haml'
 
   get '/' do
@@ -197,7 +202,7 @@ y reemplazadas individualmente.
 
 === Plantillas Erb
 
-  ## Vas a necesitar requerir erb en tu app
+  # Vas a necesitar requerir erb en tu app
   require 'erb'
 
   get '/' do
@@ -206,24 +211,36 @@ y reemplazadas individualmente.
 
 Renderiza <tt>./views/index.erb</tt>
 
-=== Erubis
+=== Plantillas Erubis
 
-La gem/librería erubis es necesaria para renderizar plantillas erubis:
+La gem/librería <tt>erubis</tt> es necesaria para renderizar plantillas Erubis:
 
-  ## Vas a necesitar requerir erubis en tu app
+  # Vas a necesitar requerir erubis en tu app
   require 'erubis'
 
   get '/' do
     erubis :index
   end
 
-Renderiza <tt>./views/index.erubis</tt>
+Renderiza <tt>./views/index.erubis</tt>.
+
+También es posible reemplazar Erb con Erubis:
+
+  require 'erubis'
+  Tilt.register :erb, Tilt[:erubis]
+
+  get '/' do
+    erb :index
+  end
+
+Renderiza <tt>./views/index.erb</tt> con Erubis.
 
 === Plantillas Builder
 
-La gem/librería builder es necesaria para renderizar plantillas builder:
+La gem/librería <tt>builder</tt> es necesaria para renderizar plantillas
+builder:
 
-  ## Vas a necesitar requerir builder en tu app
+  # Vas a necesitar requerir builder en tu app
   require 'builder'
 
   get '/' do
@@ -234,9 +251,10 @@ Renderiza <tt>./views/index.builder</tt>.
 
 === Plantillas Nokogiri
 
-La gem/librería nokogiri es necesaria para renderizar plantillas nokogiri:
+La gem/librería <tt>nokogiri</tt> es necesaria para renderizar plantillas
+nokogiri:
 
-  ## Vas a necesitar requerir nokogiri en tu app
+  # Vas a necesitar requerir nokogiri en tu app
   require 'nokogiri'
 
   get '/' do
@@ -247,9 +265,10 @@ Renderiza <tt>./views/index.nokogiri</tt>.
 
 === Plantillas Sass
 
-La gem/librería haml es necesaria para renderizar plantillas Sass:
+La gem/librería <tt>haml</tt> o <tt>sass</tt> es necesaria para renderizar
+plantillas Sass:
 
-  ## Vas a necesitar requerir haml o sass en tu app
+  # Vas a necesitar requerir haml o sass en tu app
   require 'sass'
 
   get '/stylesheet.css' do
@@ -271,9 +290,10 @@ y reemplazadas individualmente.
 
 === Plantillas Scss
 
-La gem/librería haml es necesaria para renderizar plantillas Scss:
+La gem/librería <tt>haml</tt> o <tt>sass</tt>es necesaria para renderizar
+plantillas Scss:
 
-  ## Vas a necesitar requerir haml o sass en tu app
+  # Vas a necesitar requerir haml o sass en tu app
   require 'sass'
 
   get '/stylesheet.css' do
@@ -295,9 +315,9 @@ y reemplazadas individualmente.
 
 === Plantillas Less
 
-La gem/librería less es necesaria para renderizar plantillas Less:
+La gem/librería <tt>less</tt> es necesaria para renderizar plantillas Less:
 
-  ## Vas a necesitar requerir less en tu app
+  # Vas a necesitar requerir less en tu app
   require 'less'
 
   get '/stylesheet.css' do
@@ -308,9 +328,9 @@ Renderiza <tt>./views/stylesheet.less</tt>.
 
 === Plantillas Liquid
 
-La gem/librería liquid es necesaria para renderizar plantillas Liquid:
+La gem/librería <tt>liquid</tt> es necesaria para renderizar plantillas Liquid:
 
-  ## Vas a necesitar requerir liquid en tu app
+  # Vas a necesitar requerir liquid en tu app
   require 'liquid'
 
   get '/' do
@@ -326,9 +346,10 @@ plantilla Liquid, casi siempre vas a querer pasarle locales:
 
 === Plantillas Markdown
 
-La gem/librería rdiscount es necesaria para renderizar plantillas Markdown:
+La gem/librería <tt>rdiscount</tt> es necesaria para renderizar plantillas
+Markdown:
 
-  ## Vas a necesitar requerir rdiscount en tu app
+  # Vas a necesitar requerir rdiscount en tu app
   require "rdiscount"
 
   get '/' do
@@ -343,17 +364,53 @@ generalmente vas a usarlo en combinación con otro motor de renderizado:
 
   erb :resumen, :locals => { :texto => markdown(:introduccion) }
 
-Tené en cuenta que también podés llamar al método markdown desde otras
+Tené en cuenta que también podés llamar al método +markdown+ desde otras
 plantillas:
 
   %h1 Hola Desde Haml!
   %p= markdown(:saludos)
 
-=== Plantilla Textile
+Como no podés utilizar Ruby desde Markdown, no podés usar layouts escritos en
+Markdown. De todos modos, es posible usar un motor de renderizado para el
+layout distinto al de la plantilla pasando la opción `:layout_engine`:
 
-La gem/librería RedCloth es necesaria para renderizar plantillas Textile:
+  get '/' do
+    markdown :index, :layout_engine => :erb
+  end
 
-  ## Vas a necesitar requerir redcloth en tu app
+Renderiza <tt>./views/index.md</tt> con el layout <tt>./views/layout.erb</tt>.
+
+Recordá que podés asignar las opciones de renderizado globalmente:
+
+  set :markdown, :layout_engine => :haml, :layout => :post
+
+  get '/' do
+    markdown :index
+  end
+
+Renderiza <tt>./views/index.md</tt> (o cualquier otra plantilla Markdown) con
+el layout <tt>./views/post.haml</tt>.
+
+También es posible parsear Markdown con BlueCloth en lugar de RDiscount:
+
+  require 'bluecloth'
+
+  Tilt.register 'markdown', BlueClothTemplate
+  Tilt.register 'mkd',      BlueClothTemplate
+  Tilt.register 'md',       BlueClothTemplate
+
+  get '/' do
+    markdown :index
+  end
+
+Renderiza <tt>./views/index.md</tt> con BlueCloth.
+
+=== Plantillas Textile
+
+La gem/librería <tt>RedCloth</tt> es necesaria para renderizar plantillas
+Textile:
+
+  # Vas a necesitar requerir redcloth en tu app
   require "redcloth"
 
   get '/' do
@@ -367,17 +424,39 @@ generalmente vas a usarlo en combinación con otro motor de renderizado:
 
   erb :resumen, :locals => { :texto => textile(:introduccion) }
 
-Tené en cuenta que también podés llamar al método textile desde otras
+Tené en cuenta que también podés llamar al método +textile+ desde otras
 plantillas:
 
   %h1 Hola Desde Haml!
   %p= textile(:saludos)
 
+Como no podés utilizar Ruby desde Textile, no podés usar layouts escritos en
+Textile. De todos modos, es posible usar un motor de renderizado para el
+layout distinto al de la plantilla pasando la opción `:layout_engine`:
+
+  get '/' do
+    textile :index, :layout_engine => :erb
+  end
+
+Renderiza <tt>./views/index.textile</tt> con el layout
+<tt>./views/layout.erb</tt>.
+
+Recordá que podés asignar las opciones de renderizado globalmente:
+
+  set :textile, :layout_engine => :haml, :layout => :post
+
+  get '/' do
+    textile :index
+  end
+
+Renderiza <tt>./views/index.textile</tt> (o cualquier otra plantilla Textile)
+con el layout <tt>./views/post.haml</tt>.
+
 === Plantillas RDoc
 
-La gem/librería RDoc es necesaria para renderizar plantillas RDoc:
+La gem/librería <tt>rdoc</tt> es necesaria para renderizar plantillas RDoc:
 
-  ## Vas a necesitar requerir rdoc en tu app
+  # Vas a necesitar requerir rdoc en tu app
   require "rdoc"
 
   get '/' do
@@ -391,17 +470,38 @@ generalmente vas a usarlo en combinación con otro motor de renderizado:
 
   erb :resumen, :locals => { :texto => rdoc(:introduccion) }
 
-Tené en cuenta que también podés llamar al método rdoc desde otras
+Tené en cuenta que también podés llamar al método +rdoc+ desde otras
 plantillas:
 
   %h1 Hola Desde Haml!
   %p= rdoc(:saludos)
 
+Como no podés utilizar Ruby desde RDoc, no podés usar layouts escritos en RDoc.
+De todos modos, es posible usar un motor de renderizado para el layout distinto
+al de la plantilla pasando la opción `:layout_engine`:
+
+  get '/' do
+    rdoc :index, :layout_engine => :erb
+  end
+
+Renderiza <tt>./views/index.rdoc</tt> con el layout <tt>./views/layout.erb</tt>.
+
+Recordá que podés asignar las opciones de renderizado globalmente:
+
+  set :rdoc, :layout_engine => :haml, :layout => :post
+
+  get '/' do
+    rdoc :index
+  end
+
+Renderiza <tt>./views/index.rdoc</tt> (o cualquier otra plantilla RDoc) con el
+layout <tt>./views/post.haml</tt>.
+
 === Plantillas Radius
 
-La gem/librería radius es necesaria para renderizar plantillas Radius:
+La gem/librería <tt>radius</tt> es necesaria para renderizar plantillas Radius:
 
-  ## Vas a necesitar requerir radius en tu app
+  # Vas a necesitar requerir radius en tu app
   require 'radius'
 
   get '/' do
@@ -417,9 +517,10 @@ plantilla Radius, casi siempre vas a querer pasarle locales:
 
 === Plantillas Markaby
 
-La gem/librería markaby es necesaria para renderizar plantillas Markaby:
+La gem/librería <tt>markaby</tt> es necesaria para renderizar plantillas
+Markaby:
 
-  ## Vas a necesitar requerir markaby en tu app
+  # Vas a necesitar requerir markaby en tu app
   require 'markaby'
 
   get '/' do
@@ -428,11 +529,18 @@ La gem/librería markaby es necesaria para renderizar plantillas Markaby:
 
 Renderiza <tt>./views/index.mab</tt>.
 
+También podés usar Markaby inline:
+
+  get '/' do
+    markaby { h1 "Bienvenido!" }
+  end
+
+
 === Plantillas Slim
 
-La gem/librería slim es necesaria para renderizar plantillas Slim:
+La gem/librería <tt>slim</tt> es necesaria para renderizar plantillas Slim:
 
-  ## Vas a necesitar requerir slim en tu app
+  # Vas a necesitar requerir slim en tu app
   require 'slim'
 
   get '/' do
@@ -443,10 +551,16 @@ Renderiza <tt>./views/index.slim</tt>.
 
 === Plantillas CoffeeScript
 
-La gem/librería coffee-script y el binario `coffee` son necesarios para
-renderizar plantillas CoffeeScript:
+La gem/librería <tt>coffee-script</tt> y al menos <b>una</b> de las siguientes
+opciones para ejecutar JavaScript:
 
-  ## Vas a necesitar requerir coffee-script en tu app
+* +node+ (de Node.js) en tu path
+* utilizar OSX
+* la gem/librería +therubyracer+
+
+son necesarios para renderizar plantillas CoffeeScript:
+
+  # Vas a necesitar requerir coffee-script en tu app
   require 'coffee-script'
 
   get '/application.js' do
@@ -455,13 +569,13 @@ renderizar plantillas CoffeeScript:
 
 Renderiza <tt>./views/application.coffee</tt>.
 
-=== Plantillas Inline
+=== Plantillas Embebidas
 
   get '/' do
     haml '%div.titulo Hola Mundo'
   end
 
-Renderiza el template contenido en el string.
+Renderiza el template embebido en el string.
 
 === Accediendo a Variables en Plantillas
 
@@ -527,12 +641,38 @@ Las plantillas también pueden ser definidas usando el método top-level
   end
 
 Si existe una plantilla con el nombre "layout", va a ser usada cada vez que
-una plantilla es renderizada. Podés desactivar los layouts pasando
-<tt>:layout => false</tt>.
+una plantilla es renderizada. Podés desactivar los layouts individualmente
+pasando <tt>:layout => false</tt> o globalmente con
+<tt>set :haml, :layout => false</tt>.
 
   get '/' do
     haml :index, :layout => !request.xhr?
   end
+
+=== Asociando Extensiones de Archivo
+
+Para asociar una extensión de archivo con un motor de renderizado, usá
+<tt>Tilt.register</tt>. Por ejemplo, si querés usar la extensión +tt+ para
+las plantillas Textile, podés hacer lo siguiente:
+
+  Tilt.register :tt, Tilt[:textile]
+
+=== Agregando Tu Propio Motor de Renderizado
+
+Primero, registrá tu motor con Tilt, y después, creá tu método de renderizado:
+
+  Tilt.register :mipg, MiMotorParaPlantillaGenial
+
+  helpers do
+    def mypg(*args) render(:mypg, *args) end
+  end
+
+  get '/' do
+    mypg :index
+  end
+
+Renderiza <tt>./views/index.mypg</tt>. Mirá https://github.com/rtomayko/tilt
+para aprender más de Tilt.
 
 == Ayudantes
 
@@ -585,6 +725,16 @@ patrón:
 
   after '/crear/:slug' do |slug|
     session[:ultimo_slug] = slug
+  end
+
+Al igual que las rutas, los filtros también aceptan condiciones:
+
+  before :agent => /Songbird/ do
+    # ...
+  end
+
+  after '/blog/*', :host_name => 'ejemplo.com' do
+    # ...
   end
 
 == Interrupción
@@ -696,7 +846,7 @@ Ejecutar cuando el entorno es <tt>:production</tt> o <tt>:test</tt>:
     ...
   end
 
-== Manejo de errores
+== Manejo de Errores
 
 Los manejadores de errores se ejecutan dentro del mismo contexto que las rutas
 y los filtros before, lo que significa que podés usar, por ejemplo,
@@ -862,13 +1012,6 @@ etc.). Ahí es donde Sinatra::Base entra en el juego:
     end
   end
 
-La clase MiApp es un componente Rack independiente que puede actuar como Rack
-middleware, una aplicación Rack, o Rails metal. Podés usar (con +use+) o
-ejecutar (con +run+) esta clase desde un archivo rackup +config.ru+; o,
-controlar un componente de servidor provisto como una librería:
-
-   MiApp.run! :host => 'localhost', :port => 9090
-
 Las subclases de Sinatra::Base tienen disponibles exactamente los mismos
 métodos que los provistos por el DSL de top-level. La mayoría de las
 aplicaciones top-level se pueden convertir en componentes Sinatra::Base con
@@ -885,6 +1028,64 @@ desactivadas por defecto, incluyendo el servidor incorporado. Mirá
 {Opciones y Configuraciones}[http://sinatra.github.com/configuration.html]
 para detalles sobre las opciones disponibles y su comportamiento.
 
+=== Sirviendo una Aplicación Modular
+
+Las dos opciones más comunes para iniciar una aplicación modular son, iniciarla
+activamente con <tt>run!</tt>:
+
+  # mi_app.rb
+  require 'sinatra/base'
+
+  class MiApp < Sinatra::Base
+    # ... código de la app  ...
+
+    # iniciar el servidor si el archivo fue ejecutado directamente
+    run! if app_file == $0
+  end
+
+Iniciar con:
+
+  ruby mi_app.rb
+
+O, con un archivo <tt>config.ru</tt>, que permite usar cualquier handler Rack:
+
+  # config.ru
+  require 'mi_app'
+  run MiApp
+
+Después ejecutar:
+
+  rackup -p 4567
+
+=== Usando una Aplicación Clásica con un Archivo config.ru
+
+Escribí el archivo de tu aplicación:
+
+  # app.rb
+  require 'sinatra'
+
+  get '/' do
+    'Hola mundo!'
+  end
+
+Y el <tt>config.ru</tt> correspondiente:
+
+  require 'app'
+  run Sinatra::Application
+
+=== ¿Cuándo Usar config.ru?
+
+Indicadores de que probablemente querés usar <tt>config.ru</tt>:
+
+* Querés realizar el deploy con un hanlder Rack distinto (Passenger, Unicorn,
+  Heroku, ...).
+* Querés usar más de una subclase de <tt>Sinatra::Base</tt>.
+* Querés usar Sinatra únicamente para middleware, pero no como un endpoint.
+
+<b>No hay necesidad de utilizar un archivo <tt>config.ru</tt> exclusivamente
+porque tenés una aplicación modular, y no necesitás una aplicación modular para
+iniciarla con <tt>config.ru</tt>.</b>
+
 === Utilizando Sinatra como Middleware
 
 Sinatra no solo es capaz de usar otro Rack middleware, sino que a su vez,
@@ -894,7 +1095,7 @@ aplicación basada en Rack (Rails/Ramaze/Camping/...).
 
   require 'sinatra/base'
 
-  class PantallaDeLogin< Sinatra::Base
+  class PantallaDeLogin < Sinatra::Base
     enable :sessions
 
     get('/login') { haml :login }
@@ -984,7 +1185,7 @@ desde el ámbito de la petición utilizando `settings`:
 
 Tenés la ligadura al ámbito de la petición dentro de:
 
-* bloques pasados a get/head/post/put/delete
+* bloques pasados a get/head/post/put/delete/options
 * filtros before/after
 * métodos ayudantes
 * plantillas/vistas
@@ -1007,7 +1208,7 @@ Pegale una mirada al código: acá está el
 {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
 que es {incluido en el espacio de nombres principal}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28].
 
-== Línea de comandos
+== Línea de Comandos
 
 Las aplicaciones Sinatra pueden ser ejecutadas directamente:
 
@@ -1022,33 +1223,71 @@ Las opciones son:
   -s # especifica el servidor/manejador rack (thin es usado por defecto)
   -x # activa el mutex lock (está desactivado por defecto)
 
-== A la vanguardia
+== A la Vanguardia
 
-Si querés usar el código de Sinatra más reciente, cloná el repositorio
-localmente y ejecutá tu aplicación, asegurándote que el directorio
-<tt>sinatra/lib</tt> esté en el <tt>LOAD_PATH</tt>:
+Si querés usar el código de Sinatra más reciente, sentite libre de ejecutar
+tu aplicación sobre la rama master, en general es bastante estable.
+
+También liberamos prereleases de vez en cuando, así, podés hacer
+
+  gem install sinatra --pre
+
+Para obtener algunas de las últimas características.
+
+=== Con Bundler
+
+Esta es la manera recomendada para ejecutar tu aplicación sobre la última
+versión de Sinatra usando {Bundler}[http://gembundler.com/].
+
+Primero, instalá bundler si no lo hiciste todavía:
+
+  gem install bundler
+
+Después, en el directorio de tu proyecto, creá un archivo +Gemfile+:
+
+  source :rubygems
+  gem 'sinatra', :git => "git://github.com/sinatra/sinatra.git"
+
+  # otras dependencias
+  gem 'haml'                    # por ejemplo, si usás haml
+  gem 'activerecord', '~> 3.0'  # quizás también necesités ActiveRecord 3.x
+
+Tené en cuenta que tenés que listar todas las dependencias directas de tu
+aplicación. No es necesario listar las dependencias de Sinatra (Rack y Tilt)
+porque Bundler las agrega directamente.
+
+Ahora podés arrancar tu aplicación así:
+
+  bundle exec ruby miapp.rb
+
+=== Con Git
+
+Cloná el repositorio localmente y ejecutá tu aplicación, asegurándote que el
+directorio <tt>sinatra/lib</tt> esté en el <tt>LOAD_PATH</tt>:
 
   cd miapp
   git clone git://github.com/sinatra/sinatra.git
   ruby -Isinatra/lib miapp.rb
 
-Otra opción consiste en agregar el directorio <tt>sinatra/lib</tt> al
-<tt>LOAD_PATH</tt> dentro de tu aplicación:
-
-  $LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
-  require 'rubygems'
-  require 'sinatra'
-
-  get '/acerca-de' do
-    "Estoy usando la versión " + Sinatra::VERSION
-  end
-
 Para actualizar el código fuente de Sinatra en el futuro:
 
-  cd miproyecto/sinatra
+  cd miapp/sinatra
   git pull
 
-== Más
+=== Instalación Global
+
+Podés construir la gem vos mismo:
+
+  git clone git://github.com/sinatra/sinatra.git
+  cd sinatra
+  rake sinatra.gemspec
+  rake install
+
+Si instalás tus gems como root, el último paso debería ser
+
+  sudo rake install
+
+== Lecturas Recomendadas
 
 * {Sito web del proyecto}[http://www.sinatrarb.com/] - Documentación
   adicional, noticias, y enlaces a otros recursos.

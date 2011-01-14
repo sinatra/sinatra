@@ -119,7 +119,7 @@ qualquer string passada diretamente para elas.
 
 A gem/biblioteca haml é necessária para renderizar templates HAML:
 
-  ## Você precisa do 'require haml' em sua aplicação.
+  # Você precisa do 'require haml' em sua aplicação.
   require 'haml'
 
   get '/' do
@@ -142,7 +142,7 @@ e substitua em uma requisição individual.
 
 === Erb Templates
 
-  ## Você precisa do 'require erb' em sua aplicação
+  # Você precisa do 'require erb' em sua aplicação
   require 'erb'
 
   get '/' do
@@ -155,7 +155,7 @@ Renderiza <tt>./views/index.erb</tt>
 
 A gem/biblioteca erubis é necessária para renderizar templates erubis:
 
-  ## Você precisa do 'require erubis' em sua aplicação.
+  # Você precisa do 'require erubis' em sua aplicação.
   require 'erubis'
 
   get '/' do
@@ -168,7 +168,7 @@ Renderiza <tt>./views/index.erubis</tt>
 
 A gem/biblioteca builder é necessária para renderizar templates builder:
 
-  ## Você precisa do 'require builder' em sua aplicação.
+  # Você precisa do 'require builder' em sua aplicação.
   require 'builder'
 
   get '/' do
@@ -182,7 +182,7 @@ Renderiza <tt>./views/index.builder</tt>.
 
 A gem/biblioteca sass é necessária para renderizar templates sass:
 
-  ## Você precisa do 'require haml' ou 'require sass' em sua aplicação.
+  # Você precisa do 'require haml' ou 'require sass' em sua aplicação.
   require 'sass'
 
   get '/stylesheet.css' do
@@ -208,7 +208,7 @@ e substitua em uma requisição individual.
 
 A gem/biblioteca less é necessária para renderizar templates Less:
 
-  ## Você precisa do 'require less' em sua aplicação.
+  # Você precisa do 'require less' em sua aplicação.
   require 'less'
 
   get '/stylesheet.css' do

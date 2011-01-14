@@ -5,7 +5,6 @@ File.delete(File.dirname(__FILE__) + '/views/layout.test') rescue nil
 class TestTemplate < Tilt::Template
   def prepare
   end
-  alias compile! prepare # for tilt < 0.7
 
   def evaluate(scope, locals={}, &block)
     inner = block ? block.call : ''
