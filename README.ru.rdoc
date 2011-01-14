@@ -204,20 +204,31 @@ Haml gem/библиотека необходима для рендеринга H
     erb :index
   end
 
-Отрисует <tt>./views/index.erb</tt>
+Отрисует <tt>./views/index.erb</tt>.
 
 === Erubis шаблоны
 
-Erubis gem/библиотека необходима для рендеринга erubis шаблонов:
+Erubis gem/библиотека необходима для рендеринга Erubis шаблонов:
 
-  # Вам нужно будет подключить erubis в приложении
+  # Вам нужно будет подключить Erubis в приложении
   require 'erubis'
 
   get '/' do
     erubis :index
   end
 
-Отрисует <tt>./views/index.erubis</tt>
+Отрисует <tt>./views/index.erubis</tt>.
+
+Также возможно заменить Erb на Erubis:
+
+  require 'erubis'
+  Tilt.register :erb, Tilt[:erubis]
+
+  get '/' do
+    erb :index
+  end
+
+Отрисует <tt>./views/index.erb</tt> с помощью Erubis.
 
 === Builder шаблоны
 
