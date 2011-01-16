@@ -611,6 +611,18 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 'Hello World', body
   end
 
+  it "treats missing user agent like an empty string" do
+    mock_app do
+      user_agent(/.*/)
+      get '/' do
+        "Hello World"
+      end
+    end
+    get '/'
+    assert_equal 200, status
+    assert_equal 'Hello World', body
+  end
+
   it "makes captures in user agent pattern available in params[:agent]" do
     mock_app {
       user_agent(/Foo (.*)/)
