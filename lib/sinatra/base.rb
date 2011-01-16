@@ -990,7 +990,7 @@ module Sinatra
       # Will set params[:agent].
       def user_agent(pattern)
         condition do
-          if request.user_agent =~ pattern
+          if request.user_agent.to_s =~ pattern
             @params[:agent] = $~[1..-1]
             true
           else
