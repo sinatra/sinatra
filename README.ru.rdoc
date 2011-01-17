@@ -640,6 +640,23 @@ Sinatra — это предметно-ориентированный язык (D
 
   Tilt.register :tt, Tilt[:textile]
 
+=== Добавляем собственный движок рендеринга
+
+Сначала зарегистрируйте свой движок в Tilt, затем создать метод, отвечающий за отрисовку:
+
+  Tilt.register :myat, MyAwesomeTemplateEngine
+
+  helpers do
+    def myat(*args) render(:myat, *args) end
+  end
+
+  get '/' do
+    myat :index
+  end
+
+Отрисует <tt>./views/index.myat</tt>. Чтобы узнать больше о Tilt,
+смотрите https://github.com/rtomayko/tilt
+
 == Методы помощники
 
 Используйте <tt>helpers</tt> метод для определения методов помощников для дальнейшего 
