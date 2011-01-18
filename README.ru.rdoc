@@ -1190,6 +1190,34 @@ Sinatra приложения могут быть запущены напряму
 
 == На острие
 
+=== С помощью Bundler
+
+Если вы хотите запускать свое приложение с последней версией Sinatra, то
+рекомендуем использовать {Bundler}[http://gembundler.com/].
+
+Сначала установите Bundler, если у вас его еще нет:
+
+  gem install bundler
+
+Затем создайте файл +Gemfile+ в директории вашего проекта:
+
+  source :rubygems
+  gem 'sinatra', :git => "git://github.com/sinatra/sinatra.git"
+
+  # другие зависимости
+  gem 'haml'                    # например, если используете haml
+  gem 'activerecord', '~> 3.0'  # может быть, вам нужен и ActiveRecord 3.x
+
+Обратите внимание, вам нужно будет указывать все зависимости вашего приложения
+в этом файле. Однако, непосредственные зависимости Sinatra (Rack и Tilt) Bundler
+автоматически скачает и добавит.
+
+Теперь вы можете запускать свое приложение примерно так:
+
+  bundle exec ruby myapp.rb
+
+=== Вручную
+
 Если вы хотите использовать новейший код Sinatra, то создайте локальный
 клон и запускайте свое приложение с <tt>sinatra/lib</tt> директорией
 в <tt>LOAD_PATH</tt>:
@@ -1197,17 +1225,6 @@ Sinatra приложения могут быть запущены напряму
   cd myapp
   git clone git://github.com/sinatra/sinatra.git
   ruby -Isinatra/lib myapp.rb
-
-Также вы можете добавить <tt>sinatra/lib</tt> директорию в
-<tt>LOAD_PATH</tt> приложения:
-
-  $LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
-  require 'rubygems'
-  require 'sinatra'
-
-  get '/about' do
-    "I'm running version " + Sinatra::VERSION
-  end
 
 Чтобы обновить исходники Sinatra:
 
