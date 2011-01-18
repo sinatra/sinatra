@@ -640,9 +640,9 @@ Sinatra — это предметно-ориентированный язык (D
 
   Tilt.register :tt, Tilt[:textile]
 
-=== Добавляем собственный движок рендеринга
+=== Добавление собственного движка рендеринга
 
-Сначала зарегистрируйте свой движок в Tilt, затем создать метод, отвечающий за отрисовку:
+Сначала зарегистрируйте свой движок в Tilt, затем создайте метод, отвечающий за отрисовку:
 
   Tilt.register :myat, MyAwesomeTemplateEngine
 
@@ -657,10 +657,10 @@ Sinatra — это предметно-ориентированный язык (D
 Отрисует <tt>./views/index.myat</tt>. Чтобы узнать больше о Tilt,
 смотрите https://github.com/rtomayko/tilt
 
-== Методы помощники
+== Методы-помощники
 
-Используйте <tt>helpers</tt> метод для определения методов помощников для дальнейшего 
-использования в обработчиках маршрутов и шаблонах:
+Используйте метод <tt>helpers</tt>, чтобы определить методы-помощники, которые
+в дальнейшем можно будет использовать в обработчиках маршрутов и шаблонах:
 
   helpers do
     def bar(name)
@@ -767,23 +767,23 @@ After-фильтры выполняются после каждого запро
     request.request_method    # "GET"
     request.query_string      # ""
     request.content_length    # длина тела запроса
-    request.media_type        # медиа тип тела запроса
+    request.media_type        # медиатип тела запроса
     request.host              # "example.com"
-    request.get?              # true (для других участвующих HTTP глаголов есть похожие методы)
+    request.get?              # true (есть аналоги для других методов HTTP)
     request.form_data?        # false
-    request["SOME_HEADER"]    # значение SOME_HEADER заголовка
+    request["SOME_HEADER"]    # значение заголовка SOME_HEADER
     request.referer           # источник запроса клиента либо '/'
     request.user_agent        # user agent (используется для :agent условия)
-    request.cookies           # хеш куки браузера
+    request.cookies           # хеш с куками браузера
     request.xhr?              # является ли запрос ajax запросом?
     request.url               # "http://example.com/example/foo"
     request.path              # "/example/foo"
-    request.ip                # IP адрес клиента
+    request.ip                # IP-адрес клиента
     request.secure?           # false
-    request.env               # env хеш как получено Rack
+    request.env               # "сырой" env хеш, полученный Rack
   end
 
-Некоторые опции, такие как <tt>script_name</tt> или <tt>path_info</tt> могут быть переписаны:
+Некоторые опции, такие как <tt>script_name</tt> или <tt>path_info</tt> доступны для записи:
 
   before { request.path_info = "/" }
   
@@ -878,9 +878,9 @@ After-фильтры выполняются после каждого запро
 Sinatra устанавливает специальные <tt>not_found</tt> и <tt>error</tt> обработчики, когда запущена в режиме
 разработки (окружение <tt>:development</tt>).
 
-== Mime типы
+== Mime-типы
 
-Когда вы используете <tt>send_file</tt> или статические файлы, у вас могут быть mime типы, которые Sinatra
+Когда вы используете <tt>send_file</tt> или статические файлы, у вас могут быть mime-типы, которые Sinatra
 не понимает по умолчанию. Используйте +mime_type+ для их регистрации по расширению файла:
 
   mime_type :foo, 'text/foo'
@@ -955,8 +955,8 @@ Rack распространяется с различными стандартн
     end
   end
 
-Заметьте: Встроенные модули Sinatra::Test и Sinatra::TestHarness являются
-устаревшими, начиная с 0.9.2 релиза.
+Обратите внимание: Встроенные модуль Sinatra::Test и класс Sinatra::TestHarness являются
+устаревшими, начиная с релиза 0.9.2.
 
 == Sinatra::Base — "прослойки", библиотеки и модульные приложения
 
