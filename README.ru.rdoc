@@ -1228,7 +1228,7 @@ Sinatra приложения могут быть запущены напряму
 
 Чтобы обновить исходники Sinatra:
 
-  cd myproject/sinatra
+  cd myapp/sinatra
   git pull
 
 == Дальнейшее чтение
