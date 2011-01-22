@@ -172,7 +172,7 @@ Rack body对象或者HTTP状态码：
 
 需要引入haml gem/library以渲染 HAML 模板：
 
-  ## 你需要在你的应用中引入 haml
+  # 你需要在你的应用中引入 haml
   require 'haml'
 
   get '/' do
@@ -195,7 +195,7 @@ Rack body对象或者HTTP状态码：
 
 === Erb模板
 
-  ## 你需要在你的应用中引入 erb
+  # 你需要在你的应用中引入 erb
   require 'erb'
 
   get '/' do
@@ -208,7 +208,7 @@ Rack body对象或者HTTP状态码：
 
 需要引入erubis gem/library以渲染 erubis 模板：
 
-  ## 你需要在你的应用中引入 erubis
+  # 你需要在你的应用中引入 erubis
   require 'erubis'
 
   get '/' do
@@ -221,7 +221,7 @@ Rack body对象或者HTTP状态码：
 
 需要引入 builder gem/library 以渲染 builder templates：
 
-  ## 需要在你的应用中引入builder
+  # 需要在你的应用中引入builder
   require 'builder'
 
   get '/' do
@@ -234,7 +234,7 @@ Rack body对象或者HTTP状态码：
 
 需要引入 nokogiri gem/library 以渲染 nokogiri 模板：
 
-  ## 需要在你的应用中引入 nokogiri
+  # 需要在你的应用中引入 nokogiri
   require 'nokogiri'
 
   get '/' do
@@ -247,7 +247,7 @@ Rack body对象或者HTTP状态码：
 
 需要引入 haml gem/library 以渲染 Sass 模板：
 
-  ## 需要在你的应用中引入 haml 或者 sass 
+  # 需要在你的应用中引入 haml 或者 sass 
   require 'sass'
 
   get '/stylesheet.css' do
@@ -271,7 +271,7 @@ Rack body对象或者HTTP状态码：
 
 需要引入 haml gem/library 来渲染 Scss templates：
 
-  ## 需要在你的应用中引入 haml 或者 sass
+  # 需要在你的应用中引入 haml 或者 sass
   require 'sass'
 
   get '/stylesheet.css' do
@@ -295,7 +295,7 @@ Rack body对象或者HTTP状态码：
 
 需要引入 less gem/library 以渲染 Less 模板：
 
-  ## 需要在你的应用中引入 less
+  # 需要在你的应用中引入 less
   require 'less'
 
   get '/stylesheet.css' do
@@ -308,7 +308,7 @@ Rack body对象或者HTTP状态码：
 
 需要引入 liquid gem/library 来渲染 Liquid 模板：
 
-  ## 需要在你的应用中引入 liquid
+  # 需要在你的应用中引入 liquid
   require 'liquid'
 
   get '/' do
@@ -326,7 +326,7 @@ Rack body对象或者HTTP状态码：
 
 需要引入 rdiscount gem/library 以渲染 Markdown 模板：
 
-  ## 需要在你的应用中引入rdiscount
+  # 需要在你的应用中引入rdiscount
   require "rdiscount"
   
   get '/' do
@@ -349,7 +349,7 @@ Rack body对象或者HTTP状态码：
 
 需要引入 RedCloth gem/library 以渲染 Textile 模板：
 
-  ## 在你的应用中引入redcloth
+  # 在你的应用中引入redcloth
   require "redcloth"
 
   get '/' do
@@ -371,7 +371,7 @@ Rack body对象或者HTTP状态码：
 
 需要引入 RDoc gem/library 以渲染RDoc模板：
 
-  ## 需要在你的应用中引入rdoc
+  # 需要在你的应用中引入rdoc
   require "rdoc"
 
   get '/' do
@@ -393,7 +393,7 @@ Rack body对象或者HTTP状态码：
 
 需要引入 radius gem/library 以渲染 Radius 模板：
 
-  ## You'll need to require radius in your app
+  # You'll need to require radius in your app
   require 'radius'
 
   get '/' do
@@ -411,7 +411,7 @@ Rack body对象或者HTTP状态码：
 
 需要引入markaby gem/library以渲染Markaby模板：
 
-  ##需要在你的应用中引入 markaby
+  #需要在你的应用中引入 markaby
   require 'markaby'
 
   get '/' do
@@ -424,7 +424,7 @@ Rack body对象或者HTTP状态码：
 
 需要引入 slim gem/library 来渲染 Slim 模板：
 
-  ## 需要在你的应用中引入 slim
+  # 需要在你的应用中引入 slim
   require 'slim'
 
   get '/' do
@@ -438,7 +438,7 @@ Rack body对象或者HTTP状态码：
 需要引入 coffee-script gem/library 并在路径中存在 `coffee` 二进制文件以渲染
 CoffeeScript 模板：
 
-  ## 需要在你的应用中引入coffee-script
+  # 需要在你的应用中引入coffee-script
   require 'coffee-script'
 
   get '/application.js' do

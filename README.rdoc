@@ -174,9 +174,9 @@ directly.
 
 === Haml Templates
 
-The haml gem/library is required to render HAML templates:
+The <tt>haml</tt> gem/library is required to render HAML templates:
 
-  ## You'll need to require haml in your app
+  # You'll need to require haml in your app
   require 'haml'
 
   get '/' do
@@ -199,33 +199,44 @@ and overridden on an individual basis.
 
 === Erb Templates
 
-  ## You'll need to require erb in your app
+  # You'll need to require erb in your app
   require 'erb'
 
   get '/' do
     erb :index
   end
 
-Renders <tt>./views/index.erb</tt>
+Renders <tt>./views/index.erb</tt>.
 
-=== Erubis
+=== Erubis Templates
 
-The erubis gem/library is required to render erubis templates:
+The <tt>erubis</tt> gem/library is required to render Erubis templates:
 
-  ## You'll need to require erubis in your app
+  # You'll need to require erubis in your app
   require 'erubis'
 
   get '/' do
     erubis :index
   end
 
-Renders <tt>./views/index.erubis</tt>
+Renders <tt>./views/index.erubis</tt>.
+
+It is also possible to replace Erb with Erubis:
+
+  require 'erubis'
+  Tilt.register :erb, Tilt[:erubis]
+  
+  get '/' do
+    erb :index
+  end
+
+Renders <tt>./views/index.erb</tt> with Erubis.
 
 === Builder Templates
 
-The builder gem/library is required to render builder templates:
+The <tt>builder</tt> gem/library is required to render builder templates:
 
-  ## You'll need to require builder in your app
+  # You'll need to require builder in your app
   require 'builder'
 
   get '/' do
@@ -236,9 +247,9 @@ Renders <tt>./views/index.builder</tt>.
 
 === Nokogiri Templates
 
-The nokogiri gem/library is required to render nokogiri templates:
+The <tt>nokogiri</tt> gem/library is required to render nokogiri templates:
 
-  ## You'll need to require nokogiri in your app
+  # You'll need to require nokogiri in your app
   require 'nokogiri'
 
   get '/' do
@@ -249,9 +260,9 @@ Renders <tt>./views/index.nokogiri</tt>.
 
 === Sass Templates
 
-The haml gem/library is required to render Sass templates:
+The <tt>haml</tt> or <tt>sass</tt> gem/library is required to render Sass templates:
 
-  ## You'll need to require haml or sass in your app
+  # You'll need to require haml or sass in your app
   require 'sass'
 
   get '/stylesheet.css' do
@@ -273,9 +284,9 @@ and overridden on an individual basis.
 
 === Scss Templates
 
-The haml gem/library is required to render Scss templates:
+The <tt>haml</tt> or <tt>sass</tt> gem/library is required to render Scss templates:
 
-  ## You'll need to require haml or sass in your app
+  # You'll need to require haml or sass in your app
   require 'sass'
 
   get '/stylesheet.css' do
@@ -297,9 +308,9 @@ and overridden on an individual basis.
 
 === Less Templates
 
-The less gem/library is required to render Less templates:
+The <tt>less</tt> gem/library is required to render Less templates:
 
-  ## You'll need to require less in your app
+  # You'll need to require less in your app
   require 'less'
 
   get '/stylesheet.css' do
@@ -310,9 +321,9 @@ Renders <tt>./views/stylesheet.less</tt>.
 
 === Liquid Templates
 
-The liquid gem/library is required to render Liquid templates:
+The <tt>liquid</tt> gem/library is required to render Liquid templates:
 
-  ## You'll need to require liquid in your app
+  # You'll need to require liquid in your app
   require 'liquid'
 
   get '/' do
@@ -328,9 +339,9 @@ template, you almost always want to pass locals to it:
 
 === Markdown Templates
 
-The rdiscount gem/library is required to render Markdown templates:
+The <tt>rdiscount</tt> gem/library is required to render Markdown templates:
 
-  ## You'll need to require rdiscount in your app
+  # You'll need to require rdiscount in your app
   require "rdiscount"
   
   get '/' do
@@ -340,20 +351,58 @@ The rdiscount gem/library is required to render Markdown templates:
 Renders <tt>./views/index.markdown</tt> (+md+ and +mkd+ are also valid file
 extensions).
 
-It is not possible to call methods from markdown, nor to pass locals to it. You therefore will usually use it in combination with another rendering engine:
+It is not possible to call methods from markdown, nor to pass locals to it.
+You therefore will usually use it in combination with another rendering
+engine:
 
   erb :overview, :locals => { :text => markdown(:introduction) }
 
-Note that you may also call the markdown method from within other templates:
+Note that you may also call the +markdown+ method from within other templates:
 
   %h1 Hello From Haml!
   %p= markdown(:greetings)
 
+Since you cannot call Ruby from Markdown, you cannot use layouts written in
+Markdown. However, it is possible to use another rendering engine for the
+template than for the layout by passing the `:layout_engine` option:
+
+  get '/' do
+    markdown :index, :layout_engine => :erb
+  end
+
+This will render <tt>./views/index.md</tt> with <tt>./views/layout.erb</tt> as
+layout.
+
+Remember that you can set such rendering options globally:
+
+  set :markdown, :layout_engine => :haml, :layout => :post
+
+  get '/' do
+    markdown :index
+  end
+
+This will render <tt>./views/index.md</tt> (and any other Markdown template)
+with <tt>./views/post.haml</tt> as layout.
+
+It is also possible to parse Markdown with BlueCloth rather than RDiscount:
+
+  require 'bluecloth'
+  
+  Tilt.register 'markdown', BlueClothTemplate
+  Tilt.register 'mkd',      BlueClothTemplate
+  Tilt.register 'md',       BlueClothTemplate
+  
+  get '/' do
+    markdown :index
+  end
+
+Renders <tt>./views/index.md</tt> with BlueCloth.
+
 === Textile Templates
 
-The RedCloth gem/library is required to render Textile templates:
+The <tt>RedCloth</tt> gem/library is required to render Textile templates:
 
-  ## You'll need to require redcloth in your app
+  # You'll need to require redcloth in your app
   require "redcloth"
 
   get '/' do
@@ -362,20 +411,43 @@ The RedCloth gem/library is required to render Textile templates:
 
 Renders <tt>./views/index.textile</tt>.
 
-It is not possible to call methods from textile, nor to pass locals to it. You therefore will usually use it in combination with another rendering engine:
+It is not possible to call methods from textile, nor to pass locals to it. You
+therefore will usually use it in combination with another rendering engine:
 
   erb :overview, :locals => { :text => textile(:introduction) }
 
-Note that you may also call the textile method from within other templates:
+Note that you may also call the +textile+ method from within other templates:
 
   %h1 Hello From Haml!
   %p= textile(:greetings)
 
+Since you cannot call Ruby from Textile, you cannot use layouts written in
+Textile. However, it is possible to use another rendering engine for the
+template than for the layout by passing the `:layout_engine` option:
+
+  get '/' do
+    textile :index, :layout_engine => :erb
+  end
+
+This will render <tt>./views/index.textile</tt> with
+<tt>./views/layout.erb</tt> as layout.
+
+Remember that you can set such rendering options globally:
+
+  set :textile, :layout_engine => :haml, :layout => :post
+
+  get '/' do
+    textile :index
+  end
+
+This will render <tt>./views/index.textile</tt> (and any other Textile
+template) with <tt>./views/post.haml</tt> as layout.
+
 === RDoc Templates
 
-The RDoc gem/library is required to render RDoc templates:
+The <tt>rdoc</tt> gem/library is required to render RDoc templates:
 
-  ## You'll need to require rdoc in your app
+  # You'll need to require rdoc in your app
   require "rdoc"
 
   get '/' do
@@ -384,20 +456,43 @@ The RDoc gem/library is required to render RDoc templates:
 
 Renders <tt>./views/index.rdoc</tt>.
 
-It is not possible to call methods from rdoc, nor to pass locals to it. You therefore will usually use it in combination with another rendering engine:
+It is not possible to call methods from rdoc, nor to pass locals to it. You
+therefore will usually use it in combination with another rendering engine:
 
   erb :overview, :locals => { :text => rdoc(:introduction) }
 
-Note that you may also call the rdoc method from within other templates:
+Note that you may also call the +rdoc+ method from within other templates:
 
   %h1 Hello From Haml!
   %p= rdoc(:greetings)
 
+Since you cannot call Ruby from RDoc, you cannot use layouts written in
+RDoc. However, it is possible to use another rendering engine for the
+template than for the layout by passing the `:layout_engine` option:
+
+  get '/' do
+    rdoc :index, :layout_engine => :erb
+  end
+
+This will render <tt>./views/index.rdoc</tt> with <tt>./views/layout.erb</tt> as
+layout.
+
+Remember that you can set such rendering options globally:
+
+  set :rdoc, :layout_engine => :haml, :layout => :post
+
+  get '/' do
+    rdoc :index
+  end
+
+This will render <tt>./views/index.rdoc</tt> (and any other RDoc template)
+with <tt>./views/post.haml</tt> as layout.
+
 === Radius Templates
 
-The radius gem/library is required to render Radius templates:
+The <tt>radius</tt> gem/library is required to render Radius templates:
 
-  ## You'll need to require radius in your app
+  # You'll need to require radius in your app
   require 'radius'
 
   get '/' do
@@ -413,9 +508,9 @@ template, you almost always want to pass locals to it:
 
 === Markaby Templates
 
-The markaby gem/library is required to render Markaby templates:
+The <tt>markaby</tt> gem/library is required to render Markaby templates:
 
-  ## You'll need to require markaby in your app
+  # You'll need to require markaby in your app
   require 'markaby'
 
   get '/' do
@@ -424,7 +519,7 @@ The markaby gem/library is required to render Markaby templates:
 
 Renders <tt>./views/index.mab</tt>.
 
-If you have Tilt 1.2 or later, you may also use inline markaby:
+You may also use inline Markaby:
 
   get '/' do
     markaby { h1 "Welcome!" }
@@ -432,9 +527,9 @@ If you have Tilt 1.2 or later, you may also use inline markaby:
 
 === Slim Templates
 
-The slim gem/library is required to render Slim templates:
+The <tt>slim</tt> gem/library is required to render Slim templates:
 
-  ## You'll need to require slim in your app
+  # You'll need to require slim in your app
   require 'slim'
 
   get '/' do
@@ -445,10 +540,18 @@ Renders <tt>./views/index.slim</tt>.
 
 === CoffeeScript Templates
 
-The coffee-script gem/library and the `coffee` binary are required to render
-CoffeeScript templates:
+The <tt>coffee-script</tt> gem/library and at least <b>one</b> of the
+following options to execute JavaScript:
 
-  ## You'll need to require coffee-script in your app
+* +node+ (from Node.js) in your path
+* you must be running on OSX
+* +therubyracer+ gem/library
+
+See http://github.com/josh/ruby-coffee-script for an updated list of options.
+
+Now you can render CoffeeScript templates:
+
+  # You'll need to require coffee-script in your app
   require 'coffee-script'
 
   get '/application.js' do
@@ -457,13 +560,13 @@ CoffeeScript templates:
 
 Renders <tt>./views/application.coffee</tt>.
 
-=== Inline Templates
+=== Embedded Templates
 
   get '/' do
     haml '%div.title Hello World'
   end
 
-Renders the inlined template string.
+Renders the embedded template string.
 
 === Accessing Variables in Templates
 
@@ -531,6 +634,31 @@ or disable them by default via <tt>set :haml, :layout => false</tt>.
   get '/' do
     haml :index, :layout => !request.xhr?
   end
+
+=== Associating File Extensions
+
+To associate a file extension with a template engine, use
+<tt>Tilt.register</tt>. For instance, if you like to use the file extension
++tt+ for Textile templates, you can do the following:
+
+  Tilt.register :tt, Tilt[:textile]
+
+=== Adding You Own Template Engine
+
+First, register your engine with Tilt, then create a rendering method:
+
+  Tilt.register :myat, MyAwesomeTemplateEngine
+
+  helpers do
+    def myat(*args) render(:myat, *args) end
+  end
+
+  get '/' do
+    myat :index
+  end
+
+Renders <tt>./views/index.myat</tt>. See https://github.com/rtomayko/tilt to
+learn more about Tilt.
 
 == Helpers
 
@@ -699,7 +827,7 @@ Run when the environment is set to either <tt>:production</tt> or
     ...
   end
 
-== Error handling
+== Error Handling
 
 Error handlers run within the same context as routes and before filters, which
 means you get all the goodies it has to offer, like <tt>haml</tt>,
@@ -759,7 +887,7 @@ Or a range:
 Sinatra installs special <tt>not_found</tt> and <tt>error</tt> handlers when
 running under the development environment.
 
-== Mime types
+== Mime Types
 
 When using <tt>send_file</tt> or static files you may have mime types Sinatra
 doesn't understand. Use +mime_type+ to register them by file extension:
@@ -876,7 +1004,7 @@ Sinatra::Base components with two modifications:
 including the built-in server. See {Options and Configuration}[http://sinatra.github.com/configuration.html]
 for details on available options and their behavior.
 
-=== Serving a modular app
+=== Serving a Modular Application
 
 There are two common options for starting a modular app, activly starting with
 <tt>run!</tt>:
@@ -905,7 +1033,7 @@ Run:
 
   rackup -p 4567
 
-=== Using a classic app with a config.ru
+=== Using a Classic Style Application with a config.ru
 
 Write your app file:
 
@@ -1056,7 +1184,7 @@ Have a look at the code for yourself: here's the
 {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
 being {included into the main namespace}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28].
 
-== Command line
+== Command Line
 
 Sinatra applications can be run directly:
 
@@ -1072,32 +1200,67 @@ Options are:
   -x # turn on the mutex lock (default is off)
 
 == The Bleeding Edge
+If you would like to use Sinatra's latest bleeding code, feel free to run your
+application against the master branch, it should be rather stable.
 
-If you would like to use Sinatra's latest bleeding code, create a local
-clone and run your app with the <tt>sinatra/lib</tt> directory on the
-<tt>LOAD_PATH</tt>:
+We also push out prerelease gems from time to time, so you can do a
+
+  gem install sinatra --pre
+
+To get some of the latest features.
+
+=== With Bundler
+If you want to run your application with the latest Sinatra, using
+{Bundler}[http://gembundler.com/] is the recommend way.
+
+First, install bundler, if you haven't:
+
+  gem install bundler
+
+Then, in you project directory, create a +Gemfile+:
+
+  source :rubygems
+  gem 'sinatra', :git => "git://github.com/sinatra/sinatra.git"
+  
+  # other dependencies
+  gem 'haml'                    # for instance, if you use haml
+  gem 'activerecord', '~> 3.0'  # maybe you also need ActiveRecord 3.x
+
+Note that you will have to list all your applications dependencies in there.
+Sinatra's direct dependencies (Rack and Tilt) will however be automatically
+fetched and added by Bundler.
+
+Now you can run your app like this:
+
+  bundle exec ruby myapp.rb
+
+=== Roll Your Own
+Create a local clone and run your app with the <tt>sinatra/lib</tt> directory
+on the <tt>LOAD_PATH</tt>:
 
   cd myapp
   git clone git://github.com/sinatra/sinatra.git
   ruby -Isinatra/lib myapp.rb
 
-Alternatively, you can add the <tt>sinatra/lib</tt> directory to the
-<tt>LOAD_PATH</tt> in your application:
-
-  $LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
-  require 'rubygems'
-  require 'sinatra'
-
-  get '/about' do
-    "I'm running version " + Sinatra::VERSION
-  end
-
 To update the Sinatra sources in the future:
 
-  cd myproject/sinatra
+  cd myapp/sinatra
   git pull
 
-== More
+=== Install Globally
+
+You can build the gem on your own:
+
+  git clone git://github.com/sinatra/sinatra.git
+  cd sinatra
+  rake sinatra.gemspec
+  rake install
+
+If you install gems as root, the last step should be
+
+  sudo rake install
+
+== Further Reading
 
 * {Project Website}[http://www.sinatrarb.com/] - Additional documentation,
   news, and links to other resources.
