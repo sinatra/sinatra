@@ -247,7 +247,7 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 'right on', body
   end
 
-  it "literally matches . in paths" do
+  it "literally matches dot in paths" do
     route_def '/test.bar'
 
     get '/test.bar'
@@ -256,14 +256,14 @@ class RoutingTest < Test::Unit::TestCase
     assert not_found?
   end
 
-  it "literally matches $ in paths" do
+  it "literally matches dollar sign in paths" do
     route_def '/test$/'
 
     get '/test$/'
     assert ok?
   end
 
-  it "literally matches + in paths" do
+  it "literally matches plus sign in paths" do
     route_def '/te+st/'
 
     get '/te%2Bst/'
@@ -272,7 +272,7 @@ class RoutingTest < Test::Unit::TestCase
     assert not_found?
   end
 
-  it "literally matches () in paths" do
+  it "literally matches parens in paths" do
     route_def '/test(bar)/'
 
     get '/test(bar)/'
