@@ -179,6 +179,36 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal "foo=;bar=", body
   end
 
+  it "supports named captures like %r{/hello/(?<person>[^/?#]+)}" do
+    mock_app {
+      get %r{/hello/(?<person>[^/?#]+)} do
+        "Hello #{params['person']}"
+      end
+    }
+    get '/hello/Frank'
+    assert_equal 'Hello Frank', body
+  end
+
+  it "supports optional named captures like %r{/page(?<format>.[^/?#]+)?}" do
+    mock_app {
+      get %r{/page(?<format>.[^/?#]+)?} do
+        "format=#{params[:format]}"
+      end
+    }
+
+    get '/page.html'
+    assert ok?
+    assert_equal "format=.html", body
+
+    get '/page.xml'
+    assert ok?
+    assert_equal "format=.xml", body
+
+    get '/page'
+    assert ok?
+    assert_equal "format=", body
+  end
+
   it "supports single splat params like /*" do
     mock_app {
       get '/*' do
