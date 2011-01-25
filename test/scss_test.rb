@@ -83,6 +83,6 @@ class ScssTest < Test::Unit::TestCase
   end
 end
 
-rescue
+rescue LoadError
   warn "#{$!.to_s}: skipping scss tests"
 end

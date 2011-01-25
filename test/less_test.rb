@@ -1,4 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
+
+begin
 require 'less'
 
 class LessTest < Test::Unit::TestCase
@@ -58,4 +60,8 @@ class LessTest < Test::Unit::TestCase
     }
     assert_raise(Errno::ENOENT) { get('/') }
   end
+end
+
+rescue LoadError
+  warn "#{$!.to_s}: skipping less tests"
 end

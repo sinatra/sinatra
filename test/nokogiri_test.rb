@@ -64,6 +64,7 @@ class NokogiriTest < Test::Unit::TestCase
     assert_raise(Errno::ENOENT) { get('/') }
   end
 end
-rescue
+
+rescue LoadError
   warn "#{$!.to_s}: skipping nokogiri tests"
 end

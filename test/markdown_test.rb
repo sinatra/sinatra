@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/helper'
 
 begin
-fail "rdiscount not available" if defined? JRuby
+fail LoadError, "rdiscount not available" if defined? JRuby
 require 'rdiscount'
 
 class MarkdownTest < Test::Unit::TestCase
@@ -30,6 +30,7 @@ class MarkdownTest < Test::Unit::TestCase
     assert_raise(Errno::ENOENT) { get('/') }
   end
 end
-rescue
+
+rescue LoadError
   warn "#{$!.to_s}: skipping markdown tests"
 end

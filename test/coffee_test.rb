@@ -83,6 +83,6 @@ class CoffeeTest < Test::Unit::TestCase
   end
 end
 
-rescue
+rescue LoadError
   warn "#{$!.to_s}: skipping coffee tests"
 end

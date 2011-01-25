@@ -53,6 +53,7 @@ class LiquidTest < Test::Unit::TestCase
     assert_equal 'foo', body
   end
 end
-rescue
+
+rescue LoadError
   warn "#{$!.to_s}: skipping liquid tests"
 end
