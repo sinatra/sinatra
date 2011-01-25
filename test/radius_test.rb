@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/helper'
 
 begin
-fail 'Radius broken on 1.9.' if RUBY_VERSION >= '1.9.1'
+fail LoadError, 'Radius broken on 1.9.' if RUBY_VERSION >= '1.9.1'
 require 'radius'
 
 class RadiusTest < Test::Unit::TestCase
@@ -54,6 +54,7 @@ class RadiusTest < Test::Unit::TestCase
     assert_equal 'foo', body
   end
 end
-rescue
+
+rescue LoadError
   warn "#{$!.to_s}: skipping radius tests"
 end

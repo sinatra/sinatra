@@ -92,6 +92,7 @@ class SlimTest < Test::Unit::TestCase
     assert_equal "<!DOCTYPE html><h1 class=\"header\">Hello World</h1>", body
   end
 end
-rescue
+
+rescue LoadError
   warn "#{$!.to_s}: skipping slim tests"
 end

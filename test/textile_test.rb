@@ -29,6 +29,7 @@ class TextileTest < Test::Unit::TestCase
     assert_raise(Errno::ENOENT) { get('/') }
   end
 end
-rescue
+
+rescue LoadError
   warn "#{$!.to_s}: skipping textile tests"
 end
