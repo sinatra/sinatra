@@ -74,6 +74,7 @@ class MarkabyTest < Test::Unit::TestCase
     assert_equal 'foo', body
   end
 end
-rescue
+
+rescue LoadError
   warn "#{$!.to_s}: skipping markaby tests"
 end

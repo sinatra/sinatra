@@ -1,4 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
+
+begin
 require 'erubis'
 
 class ERubisTest < Test::Unit::TestCase
@@ -79,4 +81,8 @@ class ERubisTest < Test::Unit::TestCase
     assert ok?
     assert_equal '<outer><inner>hi</inner></outer>', body
   end
+end
+
+rescue LoadError
+  warn "#{$!.to_s}: skipping erubis tests"
 end

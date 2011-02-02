@@ -95,6 +95,7 @@ class HAMLTest < Test::Unit::TestCase
     assert_equal "bar\n", body
   end
 end
-rescue
+
+rescue LoadError
   warn "#{$!.to_s}: skipping haml tests"
 end
