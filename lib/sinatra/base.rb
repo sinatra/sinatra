@@ -324,10 +324,17 @@ module Sinatra
     # with a '304 Not Modified' response.
     def last_modified(time)
       return unless time
-      time = time.to_time if time.respond_to?(:to_time)
-      time = Time.parse time.strftime('%FT%T%:z') if time.respond_to?(:strftime)
-      response['Last-Modified'] = time.respond_to?(:httpdate) ? time.httpdate : time.to_s
-      halt 304 if Time.httpdate(request.env['HTTP_IF_MODIFIED_SINCE']) >= time
+      if time.respond_to?(:to_time)
+          time = time.to_time
+      else
+          ## make a best effort to convert something else to a time object
+          ## if this fails, this should throw an ArgumentError, then the
+          # rescue will result in an http 200, which should be safe
+          time = Time.parse(time.to_s).to_time
+      end
+      response['Last-Modified'] = time.httpdate
+      # compare based on seconds since epoch
+      halt 304 if Time.httpdate(request.env['HTTP_IF_MODIFIED_SINCE']).to_i >= time.to_i
     rescue ArgumentError
     end
 
