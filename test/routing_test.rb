@@ -648,7 +648,7 @@ class RoutingTest < Test::Unit::TestCase
     get '/', {}, { 'HTTP_ACCEPT' => 'application/xml' }
     assert ok?
     assert_equal 'application/xml', body
-    assert_equal 'application/xml', response.headers['Content-Type']
+    assert_equal 'application/xml;charset=utf-8', response.headers['Content-Type']
 
     get '/', {}, { :accept => 'text/html' }
     assert !ok?
