@@ -330,7 +330,7 @@ module Sinatra
           ## make a best effort to convert something else to a time object
           ## if this fails, this should throw an ArgumentError, then the
           # rescue will result in an http 200, which should be safe
-          time = Time.parse(time.to_s).to_time
+          time = Time.parse(time.to_s)
       end
       response['Last-Modified'] = time.httpdate
       # compare based on seconds since epoch
