@@ -1014,7 +1014,7 @@ module Sinatra
         condition do
           matching_types = (request.accept & types)
           unless matching_types.empty?
-            response.headers['Content-Type'] = matching_types.first
+            content_type matching_types.first
             true
           else
             false
