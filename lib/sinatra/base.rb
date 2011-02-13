@@ -1039,7 +1039,33 @@ module Sinatra
       def head(path, opts={}, &bk)    route 'HEAD',    path, opts, &bk end
       def options(path, opts={}, &bk) route 'OPTIONS', path, opts, &bk end
 
+      def rewrite(*path, &bk)
+        if path.size == 1 and path.first.is_a? Hash
+          path.first.each do |from,to|
+            rewrite_impl from, to
+          end
+        else
+          path.each do |p|
+            rewrite_impl p, &bk
+          end
+        end
+      end
+
     private
+      def rewrite_impl(path, replacement=nil, &bk)
+        method_name = "REWRITE #{path}"
+        unless replacement
+          define_method(method_name, &bk)
+          unbound_method = instance_method method_name
+        end
+        %w( get put post delete options ).each do |verb|
+          send verb, path do
+            request.path_info = replacement || unbound_method.bind(self).call || request.path_info
+            pass
+          end
+        end
+      end
+    
       def route(verb, path, options={}, &block)
         # Because of self.options.host
         host_name(options.delete(:host)) if options.key?(:host)
@@ -1373,7 +1399,7 @@ module Sinatra
     delegate :get, :put, :post, :delete, :head, :options, :template, :layout,
              :before, :after, :error, :not_found, :configure, :set, :mime_type,
              :enable, :disable, :use, :development?, :test?, :production?,
-             :helpers, :settings
+             :helpers, :settings, :rewrite
   end
 
   # Create a new Sinatra application. The block is evaluated in the new app's
