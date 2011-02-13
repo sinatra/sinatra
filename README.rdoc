@@ -148,6 +148,31 @@ That way we can for instance easily implement a streaming example:
 
     get('/') { Stream.new }
 
+=== URL Rewriting
+
+URL rewrite rules may be set up with the <tt>rewrite</tt> method. Two different syntaxes are supported; hash and block.
+
+  rewrite '/' => '/index'
+
+  get '/:page' do
+    # render page
+  end
+
+Blocks are also supported by <tt>rewrite</tt>. You can use this to dynamically rewrite requests, one possible use is 'aliasing' routes:
+
+  rewrite '/bar/:qux' do; "/foo/#{params[:qux]}"; end
+  get '/foo/:qux' do
+    # render page
+  end
+
+A URL rewrite rule will be ignored if the associated block returns <tt>false</tt> or <tt>nil</tt>:
+
+  rewrite '/protected/*' do
+    unless @authenticated
+      "/login"
+    end
+  end
+
 == Static Files
 
 Static files are served from the <tt>./public</tt> directory. You can specify
