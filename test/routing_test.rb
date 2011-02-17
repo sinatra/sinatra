@@ -179,9 +179,10 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal "foo=;bar=", body
   end
 
-  it "supports named captures like %r{/hello/(?<person>[^/?#]+)}" do
+  it "supports named captures like %r{/hello/(?<person>[^/?#]+)} on Ruby >= 1.9" do
+    next if RUBY_VERSION < '1.9'
     mock_app {
-      get %r{/hello/(?<person>[^/?#]+)} do
+      get Regexp.new('/hello/(?<person>[^/?#]+)') do
         "Hello #{params['person']}"
       end
     }
@@ -189,9 +190,10 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 'Hello Frank', body
   end
 
-  it "supports optional named captures like %r{/page(?<format>.[^/?#]+)?}" do
+  it "supports optional named captures like %r{/page(?<format>.[^/?#]+)?} on Ruby >= 1.9" do
+    next if RUBY_VERSION < '1.9'
     mock_app {
-      get %r{/page(?<format>.[^/?#]+)?} do
+      get Regexp.new('/page(?<format>.[^/?#]+)?') do
         "format=#{params[:format]}"
       end
     }
