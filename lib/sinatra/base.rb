@@ -508,13 +508,12 @@ module Sinatra
             template.new(path, line.to_i, options) { body }
           else
             found = false
-            path = ::File.join(views, "#{data}.#{engine}")
             Tilt.mappings.each do |ext, klass|
-              break if found = File.exists?(path)
               next unless klass == template
               path = ::File.join(views, "#{data}.#{ext}")
+              break if found = File.exists?(path)
             end
-            throw :layout_missing if eat_errors and !found
+            throw :layout_missing if eat_errors and not found
             template.new(path, 1, options)
           end
         when data.is_a?(Proc) || data.is_a?(String)

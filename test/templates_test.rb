@@ -223,6 +223,12 @@ class TemplatesTest < Test::Unit::TestCase
     end
     assert_equal "Hello <%= 'World' %>!", body
   end
+
+  it "is possible to register another template" do
+    Tilt.register "html.erb", Tilt[:erb]
+    render_app { render :erb, :calc }
+    assert_equal '2', body
+  end
 end
 
 # __END__ : this is not the real end of the script.
