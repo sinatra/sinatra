@@ -118,22 +118,7 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = %w[README.rdoc README.de.rdoc README.jp.rdoc README.fr.rdoc README.es.rdoc README.hu.rdoc README.zh.rdoc LICENSE]
   s.add_dependency 'rack', '~> 1.1'
   s.add_dependency 'tilt', '>= 1.2.2', '< 2.0'
-  s.add_development_dependency 'rake'
   s.add_development_dependency 'shotgun', '~> 0.6'
-  s.add_development_dependency 'rack-test', '>= 0.5.6'
-  s.add_development_dependency 'haml', '>= 3.0'
-  s.add_development_dependency 'builder'
-  s.add_development_dependency 'erubis'
-  s.add_development_dependency 'less'
-  s.add_development_dependency 'liquid'
-  s.add_development_dependency 'rdiscount'
-  s.add_development_dependency 'RedCloth'
-  s.add_development_dependency 'radius'
-  s.add_development_dependency 'markaby'
-  s.add_development_dependency 'coffee-script', '>= 2.0'
-  s.add_development_dependency 'rdoc'
-  s.add_development_dependency 'nokogiri'
-  s.add_development_dependency 'slim'
 
   s.has_rdoc = true
   s.homepage = "http://sinatra.rubyforge.org"
