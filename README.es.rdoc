@@ -674,21 +674,6 @@ Primero, registrá tu motor con Tilt, y después, creá tu método de renderizad
 Renderiza <tt>./views/index.mypg</tt>. Mirá https://github.com/rtomayko/tilt
 para aprender más de Tilt.
 
-== Ayudantes
-
-Usá el método top-level <tt>helpers</tt> para definir métodos ayudantes que
-pueden ser utilizados dentro de los manejadores de rutas y las plantillas:
-
-  helpers do
-    def bar(nombre)
-      "#{nombre}bar"
-    end
-  end
-
-  get '/:nombre' do
-    bar(params[:nombre])
-  end
-
 == Filtros
 
 Los filtros before son evaluados antes de cada petición dentro del mismo
@@ -741,7 +726,22 @@ Al igual que las rutas, los filtros también aceptan condiciones:
     # ...
   end
 
-== Interrupción
+== Ayudantes
+
+Usá el método top-level <tt>helpers</tt> para definir métodos ayudantes que
+pueden ser utilizados dentro de los manejadores de rutas y las plantillas:
+
+  helpers do
+    def bar(nombre)
+      "#{nombre}bar"
+    end
+  end
+
+  get '/:nombre' do
+    bar(params[:nombre])
+  end
+
+=== Interrupción
 
 Para detener inmediatamente una petición dentro de un filtro o una ruta usá:
 
@@ -763,7 +763,7 @@ Con cabeceras:
 
   halt 402, { 'Content-Type' => 'text/plain' }, 'venganza'
 
-== Paso
+=== Paso
 
 Una ruta puede pasarle el procesamiento a la siguiente ruta que coincida con
 la petición usando <tt>pass</tt>:
@@ -780,7 +780,7 @@ la petición usando <tt>pass</tt>:
 Se sale inmediatamente del bloque de la ruta y se le pasa el control a la
 siguiente ruta que coincida. Si no coincide ninguna ruta, se devuelve un 404.
 
-== Accediendo al objeto de la petición
+=== Accediendo al objeto de la petición
 
 El objeto de la petición entrante puede ser accedido desde el nivel de la
 petición (filtros, rutas y manejadores de errores) a través del método
