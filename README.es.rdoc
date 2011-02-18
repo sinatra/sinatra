@@ -780,6 +780,33 @@ la petición usando <tt>pass</tt>:
 Se sale inmediatamente del bloque de la ruta y se le pasa el control a la
 siguiente ruta que coincida. Si no coincide ninguna ruta, se devuelve un 404.
 
+=== Asignando el cuerpo y el código de estado de una respuesta
+
+Es posible, y se recomienda, asignar el código de estado y el cuerpo de una
+respuesta con el valor de retorno de una ruta.  De cualquier manera, en varios
+escenarios, puede que sea conveniente asignar el cuerpo en un punto arbitrario
+del flujo de ejecución con el método `body`.  A partir de ahí, podés usar ese
+mismo método para acceder al cuerpo de la respuesta:
+
+  get '/foo' do
+    body "bar"
+  end
+
+  after do
+    puts body
+  end
+
+También es posible pasarle un bloque a body, que será ejecutado por el rack
+handler (podés usar esto para implementar streaming, mirá
+[Valores de retorno](#Valores%20de%20retorno)).
+
+De manera similar, también podés asignar el código de estado:
+
+  get '/foo' do
+    status 418
+    halt "I'm a teapot"
+  end
+
 === Accediendo al objeto de la petición
 
 El objeto de la petición entrante puede ser accedido desde el nivel de la
