@@ -762,7 +762,7 @@ A route can punt processing to the next matching route using <tt>pass</tt>:
 The route block is immediately exited and control continues with the next
 matching route. If no matching route is found, a 404 is returned.
 
-=== Setting body and status
+=== Setting Body and Status Code
 
 It is possible and recommended to set the status code and response body with the
 return value of the route block. However, in some scenarios you might want to
@@ -787,6 +787,36 @@ Similar to the body, you can also set the status code:
   get '/foo' do
     status 418
     halt "I'm a tea pot!"
+  end
+
+=== Browser Redirect
+
+You can trigger a browser redirect with the `redirect` helper method:
+
+  get '/foo' do
+    redirect '/bar'
+  end
+
+Any additional parameters are handled like arguments passed to `halt`:
+
+  redirect '/bar', 303
+  redirect '/bar', 'wrong place, buddy'
+
+To pass arguments with a redirect, either add them to the query:
+
+  redirect '/bar?sum=42'
+
+Or use a session:
+
+  enable :session
+  
+  get '/foo' do
+    session[:secret] = 'foo'
+    redirect '/bar'
+  end
+  
+  get '/bar' do
+    session[:secret]
   end
 
 === Accessing the Request Object
