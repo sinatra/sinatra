@@ -770,13 +770,13 @@ set the body at an arbritary point in the execution flow. You can do so with the
 `body` helper method. If you do so, you can use that method from there on to
 access the body:
 
-    get '/foo' do
-      body "bar"
-    end
-    
-    after do
-      puts body
-    end
+  get '/foo' do
+    body "bar"
+  end
+  
+  after do
+    puts body
+  end
 
 It is also possible to pass a block to body, that will be executed by the rack
 handler (this can be used to implement streaming, see
