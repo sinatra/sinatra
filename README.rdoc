@@ -762,6 +762,33 @@ A route can punt processing to the next matching route using <tt>pass</tt>:
 The route block is immediately exited and control continues with the next
 matching route. If no matching route is found, a 404 is returned.
 
+=== Setting body and status
+
+It is possible and recommended to set the status code and response body with the
+return value of the route block. However, in some scenarios you might want to
+set the body at an arbritary point in the execution flow. You can do so with the
+`body` helper method. If you do so, you can use that method from there on to
+access the body:
+
+    get '/foo' do
+      body "bar"
+    end
+    
+    after do
+      puts body
+    end
+
+It is also possible to pass a block to body, that will be executed by the rack
+handler (this can be used to implement streaming, see
+[Return values](#Return%20values)).
+
+Similar to the body, you can also set the status code:
+
+  get '/foo' do
+    status 418
+    halt "I'm a tea pot!"
+  end
+
 === Accessing the Request Object
 
 The incoming request object can be accessed from request level (filter, routes, error handlers) through the `request` method:
