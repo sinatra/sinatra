@@ -660,21 +660,6 @@ First, register your engine with Tilt, then create a rendering method:
 Renders <tt>./views/index.myat</tt>. See https://github.com/rtomayko/tilt to
 learn more about Tilt.
 
-== Helpers
-
-Use the top-level <tt>helpers</tt> method to define helper methods for use in
-route handlers and templates:
-
-  helpers do
-    def bar(name)
-      "#{name}bar"
-    end
-  end
-
-  get '/:name' do
-    bar(params[:name])
-  end
-
 == Filters
 
 Before filters are evaluated before each request within the same context as
@@ -724,7 +709,22 @@ Like routes, filters also take conditions:
     # ...
   end
 
-== Halting
+== Helpers
+
+Use the top-level <tt>helpers</tt> method to define helper methods for use in
+route handlers and templates:
+
+  helpers do
+    def bar(name)
+      "#{name}bar"
+    end
+  end
+
+  get '/:name' do
+    bar(params[:name])
+  end
+
+=== Halting
 
 To immediately stop a request within a filter or route use:
 
@@ -746,7 +746,7 @@ With headers:
 
   halt 402, {'Content-Type' => 'text/plain'}, 'revenge'
 
-== Passing
+=== Passing
 
 A route can punt processing to the next matching route using <tt>pass</tt>:
 
@@ -762,7 +762,7 @@ A route can punt processing to the next matching route using <tt>pass</tt>:
 The route block is immediately exited and control continues with the next
 matching route. If no matching route is found, a 404 is returned.
 
-== Accessing the Request Object
+=== Accessing the Request Object
 
 The incoming request object can be accessed from request level (filter, routes, error handlers) through the `request` method:
 
