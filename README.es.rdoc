@@ -807,6 +807,38 @@ De manera similar, también podés asignar el código de estado:
     halt "I'm a teapot"
   end
 
+=== Redirección del Navegador
+
+Podés redireccionar al navegador con el método `redirect`:
+
+  get '/foo' do
+    redirect '/bar'
+  end
+
+Cualquier parámetro adicional se utiliza de la misma manera que los argumentos
+pasados a `halt`:
+
+  redirect '/bar', 303
+  redirect '/bar', 'te confundiste de lugar, compañero'
+
+Para pasar argumetnos con una redirección, podés agregarlo a la cadena de
+búsqueda:
+
+  redirect '/bar?suma=42'
+
+O usar una sesión:
+
+  enable :session
+
+  get '/foo' do
+    session[:secreto] = 'foo'
+    redirect '/bar'
+  end
+
+  get '/bar' do
+    session[:secreto]
+  end
+
 === Accediendo al objeto de la petición
 
 El objeto de la petición entrante puede ser accedido desde el nivel de la
