@@ -715,6 +715,10 @@ filtros after:
     puts response.status
   end
 
+Nota: A menos que usés el método `body` en lugar de simplemente devolver un
+string desde una ruta, el cuerpo de la respuesta no va a estar disponible en
+un filtro after, debido a que todavía no se ha generado.
+
 Los filtros aceptan un patrón opcional, que cuando está presente causa que los
 mismos sean evaluados únicamente si el path de la petición coincide con ese
 patrón:
