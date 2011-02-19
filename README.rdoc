@@ -789,6 +789,18 @@ Similar to the body, you can also set the status code:
     halt "I'm a tea pot!"
   end
 
+=== Generating URLs
+
+For generating URLs you should use the `url` helper method, for instance, in
+Haml:
+
+  %a{:href => url('/foo')} foo
+
+It takes reverse proxies and Rack routers into account, if present.
+
+This method is also aliased to `to` (see [below](#Browser%20Redirect) for an
+example).
+
 === Browser Redirect
 
 You can trigger a browser redirect with the `redirect` helper method:
