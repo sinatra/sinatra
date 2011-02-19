@@ -104,10 +104,7 @@ module Sinatra
     def uri(addr = nil, absolute = true, add_script_name = true)
       return addr if addr =~ /^https?:\/\//
       uri = [host = ""]
-      if absolute
-        host << "#{request.scheme}://#{request.host}"
-        host << ":#{request.port}" unless request.port == (request.secure? ? 443 : 80)
-      end
+      uri << request.host_with_port if absolute
       uri << request.script_name.to_s if add_script_name
       uri << (addr ? addr : request.path_info).to_s
       File.join uri
