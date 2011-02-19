@@ -36,6 +36,8 @@ Sinatra would not be possible:
 * Rick Olson (technoweenie) for the killer plug at RailsConf '08.
 * Steven Garcia for the amazing custom artwork you see on 404's and 500's
 * Pat Nakajima (nakajima) for fixing non-nested params in nested params Hash's.
+* Konstantin Haase for his hard work and ongoing commitment to improving 
+  Sinatra, for 1.1.0, 1.2.0 and beyond..
 
 and last but not least:
 
