@@ -831,6 +831,33 @@ Or use a session:
     session[:secret]
   end
 
+=== Sending Files
+
+For sending files, you can use the `send_file` helper method:
+
+  get '/' do
+    send_file 'foo.png'
+  end
+
+It also take a couple of options:
+
+  send_file 'foo.png', :type => :jpg
+
+The options are:
+
+* <tt>:filename</tt> - file name in response, defaults to the real file name.
+* <tt>:last_modified</tt> - value for Last-Modified header, defaults to the
+  file's mtime.
+* <tt>:type</tt> - content type to use, guessed from the file extension if
+  missing.
+* <tt>:disposition</tt> - used for Content-Disposition, possible values: +nil+
+  (default), <tt>:attachement</tt> and <tt>:inline</tt>
+* <tt>:length</tt> - Content-Length header, defaults to file size.
+
+If supported by the Rack handler, other means than streaming from the Ruby
+process will be used. If you use this helper method, Sinatra will automatically
+handle range requests.
+
 === Accessing the Request Object
 
 The incoming request object can be accessed from request level (filter, routes, error handlers) through the `request` method:
