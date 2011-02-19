@@ -123,7 +123,7 @@ You can easily define your own conditions:
     "Sorry, you lost."
   end
 
-=== Return values
+=== Return Values
 
 The return value of a route block determines at least the response body passed
 on to the HTTP client, or at least the next middleware in the Rack stack.
