@@ -231,16 +231,17 @@ class TemplatesTest < Test::Unit::TestCase
   end
 
   it "passes scope to the template" do
-    mock_app {
+    mock_app do
       template :scoped do
         'Hello <%= foo %>'
       end
 
       get '/' do
-        some_scope = Class.new; def foo; 'World!'; end;
+        some_scope = Object.new
+        def some_scope.foo() 'World!' end
         erb :scoped, :scope => some_scope
       end
-    }
+    end
 
     get '/'
     assert ok?
