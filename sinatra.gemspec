@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'sinatra'
-  s.version = '1.2.0.a'
-  s.date = '2010-12-25'
+  s.version = '1.2.0.b'
+  s.date = '2011-02-19'
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
@@ -16,6 +16,8 @@ Gem::Specification.new do |s|
   s.files = %w[
     AUTHORS
     CHANGES
+    Gemfile
+    Gemfile.lock
     LICENSE
     README.de.rdoc
     README.es.rdoc
@@ -71,7 +73,10 @@ Gem::Specification.new do |s|
     test/static_test.rb
     test/templates_test.rb
     test/textile_test.rb
+    test/views/a/in_a.str
     test/views/ascii.haml
+    test/views/b/in_b.str
+    test/views/calc.html.erb
     test/views/error.builder
     test/views/error.erb
     test/views/error.erubis
