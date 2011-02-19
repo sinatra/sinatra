@@ -460,6 +460,15 @@ module Sinatra
       render :slim, template, options, locals
     end
 
+    # Calls the given block for every possible template file in views,
+    # named name.ext, where ext is registered on engine.
+    def find_template(views, name, engine)
+      Tilt.mappings.each do |ext, klass|
+        next unless klass == engine
+        yield ::File.join(views, "#{name}.#{ext}")
+      end
+    end
+
   private
     # logic shared between builder and nokogiri
     def render_ruby(engine, template, options={}, locals={}, &block)
@@ -516,10 +525,12 @@ module Sinatra
             template.new(path, line.to_i, options) { body }
           else
             found = false
-            Tilt.mappings.each do |ext, klass|
-              next unless klass == template
-              path = ::File.join(views, "#{data}.#{ext}")
-              break if found = File.exists?(path)
+            find_template(views, data, template) do |file|
+              path ||= file # keep the initial path rather than the last one
+              if found = File.exists?(file)
+                path = file
+                break
+              end
             end
             throw :layout_missing if eat_errors and not found
             template.new(path, 1, options)
