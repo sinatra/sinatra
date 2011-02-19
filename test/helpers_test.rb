@@ -111,6 +111,18 @@ class HelpersTest < Test::Unit::TestCase
       response = request.get('/', 'SERVER_PORT' => '444')
       assert_equal 'http://example.org:444/foo', response['Location']
     end
+
+    it 'works behind a reverse proxy' do
+      mock_app do
+        get '/' do
+          redirect '/foo'
+        end
+      end
+
+      request = Rack::MockRequest.new(@app)
+      response = request.get('/', 'HTTP_X_FORWARDED_HOST' => 'example.com', 'SERVER_PORT' => '8080')
+      assert_equal 'http://example.com/foo', response['Location']
+    end
   end
 
   describe 'error' do

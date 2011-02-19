@@ -29,6 +29,10 @@ module Sinatra
       alias secure? ssl?
     end
 
+    def forwarded?
+      @env.include? "HTTP_X_FORWARDED_HOST"
+    end
+
     def route
       @route ||= begin
         path = Rack::Utils.unescape(path_info)
@@ -104,7 +108,16 @@ module Sinatra
     def uri(addr = nil, absolute = true, add_script_name = true)
       return addr if addr =~ /^https?:\/\//
       uri = [host = ""]
-      uri << request.host_with_port if absolute
+      if absolute
+        host << 'http'
+        host << 's' if request.secure?
+        host << "://"
+        if request.forwarded? or request.port != (request.secure? ? 443 : 80)
+          host << request.host_with_port
+        else
+          host << request.host
+        end
+      end
       uri << request.script_name.to_s if add_script_name
       uri << (addr ? addr : request.path_info).to_s
       File.join uri
