@@ -1,3 +1,22 @@
+= 1.1.3 / Not Yet Released
+
+ * Fixed issues with `user_agent` condition if the user agent header is missing.
+   (Konstantin Haase)
+
+ * Fix some routing tests that have been skipped by accident (Ross A. Baker)
+
+ * Fix rendering issues with Builder and Nokogiri (Konstantin Haase)
+
+ * Replace last_modified helper with better implementation. (cactus,
+   Konstantin Haase)
+
+ * Fix issue with charset not being set when using `provides` condition.
+   (Konstantin Haase)
+
+ * Fix issue with `render` not picking up all alternative file extensions for
+   a rendering engine - it was not possible to register ".html.erb" without
+   tricks. (Konstantin Haase)
+
 = 1.1.2 / 2010-10-25
 
 Like 1.1.1, but with proper CHANGES file.
