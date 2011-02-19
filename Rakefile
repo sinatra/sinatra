@@ -6,6 +6,8 @@ require 'date'
 task :default => :test
 task :spec => :test
 
+CLEAN.include "**/*.rbc"
+
 def source_version
   line = File.read('lib/sinatra/base.rb')[/^\s*VERSION = .*/]
   line.match(/.*VERSION = '(.*)'/)[1]
