@@ -33,8 +33,14 @@
  * `send_file` now allows overriding the Last-Modified header, which defaults
    to the file's mtime, by passing a `:last_modified` option. (Konstantin Haase)
 
+ * You can use your own template lookup method by defining `find_template`.
+   This allows, among other things, using more than one views folder.
+   (Konstantin Haase)
+
  * Largely improved documentation. (burningTyger, Vasily Polovnyov, Gabriel
    Andretta, Konstantin Haase)
+
+ * Improved error handling. (cactus, Konstantin Haase)
 
  * Skip missing template engines in tests correctly. (cactus)
 
