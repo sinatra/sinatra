@@ -762,6 +762,29 @@ A route can punt processing to the next matching route using <tt>pass</tt>:
 The route block is immediately exited and control continues with the next
 matching route. If no matching route is found, a 404 is returned.
 
+=== Triggering Another Route
+
+Sometimes +pass+ is not what you want, instead you would like to get the result
+of calling another route. Simply use +call+ to achieve this:
+
+  get '/foo' do
+    status, headers, body = call request.env.merge("PATH_INFO" => '/bar')
+    [status, body.upcase]
+  end
+
+  get '/bar' do
+    "bar"
+  end
+
+Note that in the example above, you would ease testing and increase performance
+by simply moving <tt>"bar"</tt> into a helper used by both <tt>/foo</tt> and
+<tt>/bar</tt>.
+
+If you want the request to be sent to the same application instance rather than
+a duplicate, use <tt>call!</tt> instead of <tt>call</tt>.
+
+Check out the Rack specification if you want to learn more about <tt>call</tt>.
+
 === Setting Body and Status Code
 
 It is possible and recommended to set the status code and response body with the
