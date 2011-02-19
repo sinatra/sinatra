@@ -91,21 +91,11 @@ module Sinatra
 
     # Halt processing and redirect to the URI provided.
     def redirect(uri, *args)
-      if not uri =~ /^https?:\/\//
-        # According to RFC 2616 section 14.30, "the field value consists of a
-        # single absolute URI"
-        abs_uri = "#{request.scheme}://#{request.host}"
-
-        if request.scheme == 'https' && request.port != 443 ||
-              request.scheme == 'http' && request.port != 80
-          abs_uri << ":#{request.port}"
-        end
-
-        uri = (abs_uri << uri)
-      end
-
       status 302
-      response['Location'] = uri
+
+      # According to RFC 2616 section 14.30, "the field value consists of a
+      # single absolute URI"
+      response['Location'] = url(uri, absolute_redirects?, settings.prefixed_redirects?)
       halt(*args)
     end
 
@@ -1304,6 +1294,9 @@ module Sinatra
     set :server, %w[thin mongrel webrick]
     set :bind, '0.0.0.0'
     set :port, 4567
+
+    set :absolute_redirects, true
+    set :prefixed_redirects, false
 
     set :app_file, nil
     set :root, Proc.new { app_file && File.expand_path(File.dirname(app_file)) }
