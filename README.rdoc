@@ -802,6 +802,18 @@ Any additional parameters are handled like arguments passed to `halt`:
   redirect to('/bar'), 303
   redirect 'http://google.com', 'wrong place, buddy'
 
+You can also easily redirect back to the page the user came from with
+`redirect back`:
+
+  get '/foo' do
+    "<a href='/bar'>do something</a>"
+  end
+
+  get '/bar' do
+    do_something
+    redirect back
+  end
+
 To pass arguments with a redirect, either add them to the query:
 
   redirect to('/bar?sum=42')
