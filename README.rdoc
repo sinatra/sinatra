@@ -780,7 +780,7 @@ access the body:
 
 It is also possible to pass a block to body, that will be executed by the rack
 handler (this can be used to implement streaming, see
-[Return values](#Return%20values)).
+{Return values}[#Return%20values]).
 
 Similar to the body, you can also set the status code:
 
@@ -798,7 +798,7 @@ Haml:
 
 It takes reverse proxies and Rack routers into account, if present.
 
-This method is also aliased to +to+ (see [below](#Browser%20Redirect) for an
+This method is also aliased to +to+ (see {below}[#Browser%20Redirect] for an
 example).
 
 === Browser Redirect
