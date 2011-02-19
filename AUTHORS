@@ -38,6 +38,13 @@ Sinatra would not be possible:
 * Pat Nakajima (nakajima) for fixing non-nested params in nested params Hash's.
 * Konstantin Haase for his hard work and ongoing commitment to improving
   Sinatra, for 1.1.0, 1.2.0 and beyond..
+* Zachary Scott for adding Konstantin to the AUTHORS file. He also did help
+  writing the book, but mainly for adding Konstantin.
+* Gabriel Andretta for having people wonder whether our documentation is
+  actually in English or in Spanish.
+* Vasily Polovnyov, Nickolay Schwarz, Luciano Sousa, Wu Jiang, Mickael Riga,
+  Bernhard Essl, Janos Hardi, Kouhei Yanagita and "burningTyger" for willingly
+  translating whatever ends up in the README.
 
 and last but not least:
 
