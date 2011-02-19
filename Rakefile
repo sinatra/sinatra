@@ -123,7 +123,7 @@ if defined?(Gem)
     puts "updated #{f.name}"
   end
 
-  task 'release' => package('.gem') do
+  task 'release' => ['test', package('.gem')] do
     sh <<-SH
       gem install #{package('.gem')} --local &&
       gem push #{package('.gem')}  &&
