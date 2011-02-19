@@ -364,7 +364,7 @@ Note that you may also call the +markdown+ method from within other templates:
 
 Since you cannot call Ruby from Markdown, you cannot use layouts written in
 Markdown. However, it is possible to use another rendering engine for the
-template than for the layout by passing the `:layout_engine` option:
+template than for the layout by passing the <tt>:layout_engine</tt> option:
 
   get '/' do
     markdown :index, :layout_engine => :erb
@@ -423,7 +423,7 @@ Note that you may also call the +textile+ method from within other templates:
 
 Since you cannot call Ruby from Textile, you cannot use layouts written in
 Textile. However, it is possible to use another rendering engine for the
-template than for the layout by passing the `:layout_engine` option:
+template than for the layout by passing the <tt>:layout_engine</tt> option:
 
   get '/' do
     textile :index, :layout_engine => :erb
@@ -468,7 +468,7 @@ Note that you may also call the +rdoc+ method from within other templates:
 
 Since you cannot call Ruby from RDoc, you cannot use layouts written in
 RDoc. However, it is possible to use another rendering engine for the
-template than for the layout by passing the `:layout_engine` option:
+template than for the layout by passing the <tt>:layout_engine</tt> option:
 
   get '/' do
     rdoc :index, :layout_engine => :erb
@@ -684,7 +684,7 @@ and routes are accessible by after filters:
     puts response.status
   end
 
-Note: Unless you use the `body` method rather than just returning a String from
+Note: Unless you use the +body+ method rather than just returning a String from
 the routes, the body will not yet be available in the after filter, since it is
 generated later on.
 
@@ -767,7 +767,7 @@ matching route. If no matching route is found, a 404 is returned.
 It is possible and recommended to set the status code and response body with the
 return value of the route block. However, in some scenarios you might want to
 set the body at an arbritary point in the execution flow. You can do so with the
-`body` helper method. If you do so, you can use that method from there on to
++body+ helper method. If you do so, you can use that method from there on to
 access the body:
 
   get '/foo' do
@@ -791,31 +791,31 @@ Similar to the body, you can also set the status code:
 
 === Generating URLs
 
-For generating URLs you should use the `url` helper method, for instance, in
+For generating URLs you should use the +url+ helper method, for instance, in
 Haml:
 
   %a{:href => url('/foo')} foo
 
 It takes reverse proxies and Rack routers into account, if present.
 
-This method is also aliased to `to` (see [below](#Browser%20Redirect) for an
+This method is also aliased to +to+ (see [below](#Browser%20Redirect) for an
 example).
 
 === Browser Redirect
 
-You can trigger a browser redirect with the `redirect` helper method:
+You can trigger a browser redirect with the +redirect+ helper method:
 
   get '/foo' do
     redirect to('/bar')
   end
 
-Any additional parameters are handled like arguments passed to `halt`:
+Any additional parameters are handled like arguments passed to +halt+:
 
   redirect to('/bar'), 303
   redirect 'http://google.com', 'wrong place, buddy'
 
 You can also easily redirect back to the page the user came from with
-`redirect back`:
+<tt>redirect back</tt>:
 
   get '/foo' do
     "<a href='/bar'>do something</a>"
@@ -845,7 +845,7 @@ Or use a session:
 
 === Sending Files
 
-For sending files, you can use the `send_file` helper method:
+For sending files, you can use the <tt>send_file</tt> helper method:
 
   get '/' do
     send_file 'foo.png'
@@ -879,7 +879,8 @@ handle range requests.
 
 === Accessing the Request Object
 
-The incoming request object can be accessed from request level (filter, routes, error handlers) through the `request` method:
+The incoming request object can be accessed from request level (filter, routes,
+error handlers) through the <tt>request</tt> method:
 
   # app running on http://example.com/example
   get '/foo' do
@@ -1362,11 +1363,11 @@ available.
 Every Sinatra application corresponds to a subclass of Sinatra::Base. If you
 are using the top level DSL (<tt>require 'sinatra'</tt>), then this class is
 Sinatra::Application, otherwise it is the subclass you created explicitly. At
-class level you have methods like `get` or `before`, but you cannot access the
-`request` object or the `session`, as there only is a single application class
+class level you have methods like +get+ or +before+, but you cannot access the
++request+ object or the +session+, as there only is a single application class
 for all requests.
 
-Options created via `set` are methods at class level:
+Options created via +set+ are methods at class level:
 
     class MyApp < Sinatra::Base
       # Hey, I'm in the application scope!
@@ -1382,21 +1383,21 @@ You have the application scope binding inside:
 
 * Your application class body
 * Methods defined by extensions
-* The block passed to `helpers`
-* Procs/blocks used as value for `set`
+* The block passed to +helpers+
+* Procs/blocks used as value for +set+
 
 You can reach the scope object (the class) like this:
 
 * Via the object passed to configure blocks (<tt>configure { |c| ... }</tt>)
-* `settings` from within request scope
+* +settings+ from within request scope
 
 === Request/Instance Scope
 
 For every incoming request, a new instance of your application class is
 created and all handler blocks run in that scope. From within this scope you
-can access the `request` and `session` object or call rendering methods like
-`erb` or `haml`. You can access the application scope from within the request
-scope via the `settings` helper:
+can access the +request+ and +session+ object or call rendering methods like
++erb+ or +haml+. You can access the application scope from within the request
+scope via the +settings+ helper:
 
   class MyApp < Sinatra::Base
     # Hey, I'm in the application scope!
@@ -1426,13 +1427,13 @@ The delegation scope just forwards methods to the class scope. However, it
 does not behave 100% like the class scope, as you do not have the class'
 binding: Only methods explicitly marked for delegation are available and you
 do not share variables/state with the class scope (read: you have a different
-`self`). You can explicitly add method delegations by calling
++self+). You can explicitly add method delegations by calling
 <tt>Sinatra::Delegator.delegate :method_name</tt>.
 
 You have the delegate scope binding inside:
 
 * The top level binding, if you did <tt>require "sinatra"</tt>
-* An object extended with the `Sinatra::Delegator` mixin
+* An object extended with the <tt>Sinatra::Delegator</tt> mixin
 
 Have a look at the code for yourself: here's the
 {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
