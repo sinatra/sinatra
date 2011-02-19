@@ -23,6 +23,10 @@
    captures: `get(%r{/hi/(?<name>[^/?#]+)}) { "Hi #{params['name']}" }`.
    (Steve Price)
 
+ * All rendering methods now take a `:scope` option, which renders them in
+   another context. Note that helpers and instance variables will be
+   unavailable if you use this feature. (Paul Walker)
+
  * The behavior of `redirect` can now be configured with `absolute_redirects`
    and `prefixed_redirects`. (Konstantin Haase)
 
