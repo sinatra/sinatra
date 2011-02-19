@@ -694,6 +694,44 @@ class HelpersTest < Test::Unit::TestCase
     end
   end
 
+  describe 'uri' do
+    it 'generates absolute urls' do
+      mock_app { get('/') { uri }}
+      get '/'
+      assert_equal 'http://example.org/', body
+    end
+
+    it 'includes path_info' do
+      mock_app { get('/:name') { uri }}
+      get '/foo'
+      assert_equal 'http://example.org/foo', body
+    end
+
+    it 'allows passing an alternative to path_info' do
+      mock_app { get('/:name') { uri '/bar' }}
+      get '/foo'
+      assert_equal 'http://example.org/bar', body
+    end
+
+    it 'includes script_name' do
+      mock_app { get('/:name') { uri '/bar' }}
+      get '/foo', {}, { "SCRIPT_NAME" => '/foo' }
+      assert_equal 'http://example.org/foo/bar', body
+    end
+
+    it 'is aliased to #url' do
+      mock_app { get('/') { url }}
+      get '/'
+      assert_equal 'http://example.org/', body
+    end
+
+    it 'is aliased to #to' do
+      mock_app { get('/') { to }}
+      get '/'
+      assert_equal 'http://example.org/', body
+    end
+  end
+
   module ::HelperOne; def one; '1'; end; end
   module ::HelperTwo; def two; '2'; end; end
 

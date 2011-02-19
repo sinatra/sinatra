@@ -109,6 +109,23 @@ module Sinatra
       halt(*args)
     end
 
+    # Generates the absolute URI for a given path in the app.
+    # Takes Rack routers and reverse proxies into account.
+    def uri(addr = nil, absolute = true, add_script_name = true)
+      return addr if addr =~ /^https?:\/\//
+      uri = [host = ""]
+      if absolute
+        host << "#{request.scheme}://#{request.host}"
+        host << ":#{request.port}" unless request.port == (request.secure? ? 443 : 80)
+      end
+      uri << request.script_name.to_s if add_script_name
+      uri << (addr ? addr : request.path_info).to_s
+      File.join uri
+    end
+
+    alias url uri
+    alias to uri
+
     # Halt processing and return the error status provided.
     def error(code, body=nil)
       code, body    = 500, code.to_str if code.respond_to? :to_str
