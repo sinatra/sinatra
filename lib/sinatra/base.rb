@@ -483,17 +483,18 @@ module Sinatra
       layout          = @default_layout if layout.nil? or layout == true
       content_type    = options.delete(:content_type)  || options.delete(:default_content_type)
       layout_engine   = options.delete(:layout_engine) || engine
+      scope           = options.delete(:scope)         || self
 
       # compile and render template
       layout_was      = @default_layout
       @default_layout = false
       template        = compile_template(engine, data, options, views)
-      output          = template.render(self, locals, &block)
+      output          = template.render(scope, locals, &block)
       @default_layout = layout_was
 
       # render layout
       if layout
-        options = options.merge(:views => views, :layout => false, :eat_errors => eat_errors)
+        options = options.merge(:views => views, :layout => false, :eat_errors => eat_errors, :scope => scope)
         catch(:layout_missing) { output = render(layout_engine, layout, options, locals) { output }}
       end
 

@@ -229,6 +229,23 @@ class TemplatesTest < Test::Unit::TestCase
     render_app { render :erb, :calc }
     assert_equal '2', body
   end
+
+  it "passes scope to the template" do
+    mock_app {
+      template :scoped do
+        'Hello <%= foo %>'
+      end
+
+      get '/' do
+        some_scope = Class.new; def foo; 'World!'; end;
+        erb :scoped, :scope => some_scope
+      end
+    }
+
+    get '/'
+    assert ok?
+    assert_equal 'Hello World!', body
+  end
 end
 
 # __END__ : this is not the real end of the script.
