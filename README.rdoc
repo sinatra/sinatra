@@ -1224,6 +1224,33 @@ Sinatra::Base components with two modifications:
 including the built-in server. See {Options and Configuration}[http://sinatra.github.com/configuration.html]
 for details on available options and their behavior.
 
+=== Modular vs. Classic Style
+
+Contrary to common believes, there is nothing wrong with classic style. If it
+suits your application, you do not have to switch to a modular application.
+
+There are only two downsides compared to modulare style:
+
+* You may only have one Sinatra application per Ruby process - if you plan to
+  use more, switch to modular style.
+
+* Classic style pollutes Object with delegator methods - if you plan to ship
+  your application in a library/gem, switch to modular style.
+
+There is no reason you cannot mix modular and classic style.
+
+If switching from one style to the other, you should be aware of slight
+differences in the setting:
+
+  Setting             Classic                 Modular
+
+  app_file            file loading sinatra    nil
+  run                 $0 == app_file          false
+  logging             true                    false
+  method_override     true                    false
+  inline_templates    true                    false
+
+
 === Serving a Modular Application
 
 There are two common options for starting a modular app, activly starting with
