@@ -964,6 +964,89 @@ You can access those options via <tt>settings</tt>:
     ...
   end
 
+=== Available Settings
+
+[absolute_redirects]  If disabled, Sinatra will allow relative redirects,
+                      however, Sinatra will no longer conform with RFC 2616
+                      (HTTP 1.1), which only allows absolute redirects.
+                      
+                      Enable if your app is running behind a reverse proxy that
+                      has not been set up properly. Note that the +url+ helper
+                      will still produce absolute URLs, unless you pass in
+                      +false+ as second parameter.
+                      
+                      Disabled per default.
+
+[add_charsets]        mime types the <tt>content_type</tt> helper will
+                      automatically add the charset info to.
+                      
+                      You should add to it rather than overriding this option:
+                      
+                        settings.add_charsets << "application/foobar"
+
+[app_file]            main application file, used to detect project root,
+                      views and public folder and inline templates
+
+[bind]                IP address to bind to (default: 0.0.0.0).
+                      Only used for built-in server.
+
+[default_encoding]    encoding to assume if unknown
+                      (defaults to <tt>"utf-8"</tt>)
+
+[dump_errors]         display errors in the log
+
+[environment]         current environment, defaults to <tt>ENV['RACK_ENV']</tt>,
+                      or <tt>"development"</tt> if not available
+
+[logging]             use the logger
+
+[lock]                Places a lock around every request, only running
+                      processing on request per Ruby process concurrently.
+                      
+                      Enabled if your app is not thread-safe.
+                      Disabled per default.
+
+[method_override]     use <tt>_method</tt> magic to allow put/delete forms in
+                      browsers that don't support it
+
+[port]                Port to listen on. Only used for built-in server.
+
+[prefixed_redirects]  Whether or not to insert <tt>request.script_name</tt> into
+                      redirects if no absolute path is given. That way
+                      <tt>redirect '/foo'</tt> would behave like
+                      <tt>redirect to('/foo')</tt>. Disabled per default.
+
+[public]              folder public files are server from
+
+[reload_templates]    whether or not to reload templates between requests.
+                      enabled in development mode and on Ruby 1.8.6 (to
+                      compensate a bug in Ruby causing a memory leak)
+
+[root]                project root folder
+
+[raise_errors]        raise exceptions (will stop application)
+
+[run]                 if enabled, Sinatra will handle starting the webserver,
+                      do not enable if using rackup or other means.
+
+[running]             is the built-in server running now?
+                      do not change this setting!
+
+[server]              server or list of servers to use for built-in server.
+                      defaults to ['thin', 'mongrel', 'webrick'], order indicates
+                      priority.
+
+[sessions]            enable cookie based sessions
+
+[show_exceptions]     show a stacktrace in the browser
+
+[static]              Whether Sinatra should handle serving static files.
+                      Disable when using a Server able to do this on its own.
+                      Disabling will boost performance.
+                      Enabled per default.
+
+[views]               views folder
+
 == Error Handling
 
 Error handlers run within the same context as routes and before filters, which
