@@ -794,17 +794,17 @@ Similar to the body, you can also set the status code:
 You can trigger a browser redirect with the `redirect` helper method:
 
   get '/foo' do
-    redirect '/bar'
+    redirect to('/bar')
   end
 
 Any additional parameters are handled like arguments passed to `halt`:
 
-  redirect '/bar', 303
-  redirect '/bar', 'wrong place, buddy'
+  redirect to('/bar'), 303
+  redirect 'http://google.com', 'wrong place, buddy'
 
 To pass arguments with a redirect, either add them to the query:
 
-  redirect '/bar?sum=42'
+  redirect to('/bar?sum=42')
 
 Or use a session:
 
@@ -812,7 +812,7 @@ Or use a session:
   
   get '/foo' do
     session[:secret] = 'foo'
-    redirect '/bar'
+    redirect to('/bar')
   end
   
   get '/bar' do
