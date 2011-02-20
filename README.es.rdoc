@@ -946,7 +946,20 @@ El objeto <tt>request.body</tt> es una instancia de IO o StringIO:
 Ejecutar una vez, en el inicio, en cualquier entorno:
 
   configure do
-    ...
+    # asignando una opción
+    set :opcion, 'valor'
+
+    # asignando varias opciones
+    set :a => 1, :b => 2
+
+    # atajo para `set :opcion, true`
+    enable :opcion
+
+    # atajo para `set :opcion, false`
+    disable :opcion
+
+    # también podés tener configuraciones dinámicas usando bloques
+    set(:css_dir) { File.join(views, 'css') }
   end
 
 Ejecutar únicamente cuando el entorno (la variable de entorno RACK_ENV) es
@@ -959,6 +972,18 @@ Ejecutar únicamente cuando el entorno (la variable de entorno RACK_ENV) es
 Ejecutar cuando el entorno es <tt>:production</tt> o <tt>:test</tt>:
 
   configure :production, :test do
+    ...
+  end
+
+Podés acceder a estas opciones utilizando el método <tt>settings</tt>:
+
+  configure do
+    set :foo, 'bar'
+  end
+
+  get '/' do
+    settings.foo? # => true
+    settings.foo  # => 'bar'
     ...
   end
 
