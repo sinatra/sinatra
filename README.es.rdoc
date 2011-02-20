@@ -807,6 +807,17 @@ De manera similar, también podés asignar el código de estado:
     halt "I'm a teapot"
   end
 
+=== Generando URLs
+
+Para generar URLs deberías usar el método `url`.  Por ejemplo, en Haml:
+
+  %a{:href => url('/foo')} foo
+
+Tiene en cuenta proxies inversos y encaminadores de Rack, si están presentes.
+
+Este método también puede invocarse mediante su alias `to`  (mirá un ejemplo
+[a continuación](#Redirección%20del%20Navegador)).
+
 === Redirección del Navegador
 
 Podés redireccionar al navegador con el método `redirect`:
