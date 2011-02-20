@@ -11,7 +11,7 @@ mit minimalen Aufwand ermöglicht:
     'Hallo Welt!'
   end
 
-Einfach via rubygems installieren und starten:
+Einfach via +rubygems+ installieren und starten:
 
   gem install sinatra
   ruby -rubygems myapp.rb
@@ -20,8 +20,8 @@ Die Seite kann nun unter http://localhost:4567 betrachtet werden.
 
 == Routen
 
-In Sinatra wird eine Route durch eine HTTP-Methode und ein URL-Muster definiert. 
-Jeder dieser Routen wird ein Ruby-Block zugeordnet.
+In Sinatra wird eine Route durch eine HTTP-Methode und ein URL-Muster 
+definiert. Jeder dieser Routen wird ein Ruby-Block zugeordnet.
 
   get '/' do
     .. zeige etwas ..
@@ -131,16 +131,19 @@ Man kann auch relativ einfach eigene Bedingungen hinzufügen:
 Durch den Rückgabewert eines Routenblocks wird mindestens der Response Body
 festgelegt, der an den HTTP Client, bzw die nächste Rack Middleware
 weitergegeben wird. Im Normalfall handelt es sich hierbei, wie
-in den vorangehenden Beispielen zu sehen war, um einen String. Es werden allerdings auch andere
-Werte akzeptiert.
+in den vorangehenden Beispielen zu sehen war, um einen String. Es werden 
+allerdings auch andere Werte akzeptiert.
 
 Man kann jedes Objekt zurückgeben, bei dem es sich entweder um einenen validen
 Rack-Rückgabewert, einen validen Rack-Body oder einen HTTP Status Code
 handelt:
 
-* Ein Array mit drei Elementen: <tt>[Status (Fixnum), Headers (Hash), Response Body (hört auf #each)]</tt>
-* Ein Array mit zwei Elementen: <tt>[Status (Fixnum), Response Body (hört auf #each)]</tt>
-* Ein Objekt, das auf <tt>#each</tt> hört und den an diese Methode übergebenen Block nur mit Strings als Übergabewerte aufruft.
+* Ein Array mit drei Elementen: <tt>[Status (Fixnum), Headers (Hash), Response
+  Body (hört auf #each)]</tt>
+* Ein Array mit zwei Elementen: <tt>[Status (Fixnum), Response Body (hört auf 
+  #each)]</tt>
+* Ein Objekt, das auf <tt>#each</tt> hört und den an diese Methode übergebenen
+  Block nur mit Strings als Übergabewerte aufruft.
 * Ein Fixnum, das den Status Code festlegt.
 
 Damit lässt sich relativ einfach Streaming implementieren:
@@ -391,7 +394,7 @@ Denk dran, dass man solche Einstellungen auch global setzen kann:
 Das wird <tt>./views/index.md</tt> (und jedes andere Markdown Template) mit
 <tt>./views/post.haml</tt> als Layout rendern.
 
-Ebenso ist es möglich Markdown mit BlueCloth anstelle von RDsicount zu parsen:
+Ebenso ist es möglich Markdown mit BlueCloth anstelle von RDiscount zu parsen:
 
   require 'bluecloth'
   
@@ -450,8 +453,8 @@ Denk dran, dass man solche Einstellungen auch global setzen kann:
     textile :index
   end
 
-Das wird <tt>./views/index.textile</tt> (und jedes andere Markdown Template) mit
-<tt>./views/post.haml</tt> als Layout rendern.
+Das wird <tt>./views/index.textile</tt> (und jedes andere Markdown Template) 
+mit <tt>./views/post.haml</tt> als Layout rendern.
 
 === RDoc-Templates
 
@@ -646,8 +649,12 @@ verwendet. Durch <tt>:layout => false</tt> kann das Ausführen verhindert werden
     haml :index, :layout => !request.xhr?
   end
 
+<<<<<<< Updated upstream
 --
 === Associating File Extensions
+=======
+=== Dateiendungen zuordnen
+>>>>>>> Stashed changes
 
 To associate a file extension with a template engine, use
 <tt>Tilt.register</tt>. For instance, if you like to use the file extension
@@ -775,11 +782,10 @@ Der Block wird sofort verlassen und es wird nach der nächsten treffenden Route
 gesucht. Ein 404 Fehler wird zurückgegeben, wenn kein treffendes Routen-Muster
 gefunden wird.
 
---
-=== Triggering Another Route
+=== Eine andere Route ansteuern
 
-Sometimes +pass+ is not what you want, instead you would like to get the result
-of calling another route. Simply use +call+ to achieve this:
+Manchmal entspricht +pass+ nicht den Anforderungen, wenn das Ergebnis einer 
+anderen Route gefordert wird. Um das zu erreichen, lässt sich +call+ nutzen:
 
   get '/foo' do
     status, headers, body = call request.env.merge("PATH_INFO" => '/bar')
@@ -790,22 +796,23 @@ of calling another route. Simply use +call+ to achieve this:
     "bar"
   end
 
-Note that in the example above, you would ease testing and increase performance
-by simply moving <tt>"bar"</tt> into a helper method used by both <tt>/foo</tt>
-and <tt>/bar</tt>.
+Beachte, dass in dem oben angegeben Beispiel die Performance erheblich erhöht
+werden kann, wenn man +"bar"+ in eine Helfermethode umwandelt, auf die +/foo+
+und +/bar+ zugreifen können.
 
-If you want the request to be sent to the same application instance rather than
-a duplicate, use <tt>call!</tt> instead of <tt>call</tt>.
+Wenn der Request innerhalb der gleichen App-Instanz aufgerufen und keine
+Kopie der Instanz erzeugt werden soll, dann verwende +call!+ anstelle von 
++call+.
 
-Check out the Rack specification if you want to learn more about <tt>call</tt>.
+Die Rack Spezifikationen enthalten weitere Informationen zu +call+.
 
-=== Setting Body and Status Code
+=== Body und Status Code setzen
 
-It is possible and recommended to set the status code and response body with the
-return value of the route block. However, in some scenarios you might want to
-set the body at an arbitrary point in the execution flow. You can do so with the
-+body+ helper method. If you do so, you can use that method from there on to
-access the body:
+Es ist möglich und empfohlen den Status Code sowie den Response Body mit einem 
+Returnwert in der Route zu setzen. In manchen Situationen kann es jedoch sein,
+dass der Body an irgendeiner anderen Stelle während der Ausführung gesetzt 
+wird. Das lässt sich mit der Helfermethode +body+ bewerkstelligen. Wird +body+
+verwendet, dann lässt sich der Body jederzeit über diese Methode aufrufen:
 
   get '/foo' do
     body "bar"
@@ -815,58 +822,61 @@ access the body:
     puts body
   end
 
-It is also possible to pass a block to +body+, that will be executed by the Rack
-handler (this can be used to implement streaming, see "Return Values").
+Ebenso ist es möglich einen Block an +body+ weiterzureichen, der dann vom Rack
+Handler ausgeführt wird (lässt sich z.B. zur Umsetzung von Streaming einsetzen,
+siehe auch "Rückgabewerte").
 
-Similar to +body+, you can also set the status code:
+Vergleichbar mit +body+ lässt sich auch der Status Code setzen:
 
   get '/foo' do
     status 418
-    halt "I'm a tea pot!"
+    halt "Ich bin ein Teekesselchen"
   end
 
-=== Generating URLs
+=== URLs generieren
 
-For generating URLs you should use the +url+ helper method, for instance, in
-Haml:
+Zum Generieren von URLs sollte man die +url+ Helfermethode nutzen, so z.B.
+beim Einsatz von Haml:
 
   %a{:href => url('/foo')} foo
 
-It takes reverse proxies and Rack routers into account, if present.
+Soweit vorhanden, wird Rücksicht auf Proxies und Rack Router genommen.
 
-This method is also aliased to +to+ (see below) for an
-example).
+Diese Methode ist ebenso über den Alias +to+ zu erreichen (siehe Beispiel 
+unten).
 
-=== Browser Redirect
+=== Browserumleitung
 
-You can trigger a browser redirect with the +redirect+ helper method:
+Eine Browserumleitung kann mit Hilfe der +redirect+ Hilfsmethode erreicht 
+werden:
 
   get '/foo' do
     redirect to('/bar')
   end
 
-Any additional parameters are handled like arguments passed to +halt+:
+Weitere Parameter werden wie Argumente der +halt+ Methode behandelt:+:
 
   redirect to('/bar'), 303
-  redirect 'http://google.com', 'wrong place, buddy'
+  redirect 'http://google.com', 'Hier bist Du falsch'
 
-You can also easily redirect back to the page the user came from with
-<tt>redirect back</tt>:
+Ebenso leicht lässt sich ein Schritt zurück mit dem Alias 
+<tt>redirect back</tt> erreichen:
 
   get '/foo' do
-    "<a href='/bar'>do something</a>"
+    "<a href='/bar'>mach was</a>"
   end
 
   get '/bar' do
-    do_something
+    mach_was
     redirect back
   end
 
-To pass arguments with a redirect, either add them to the query:
+Um Argumente an ein Redirect weiterzugeben, fügt man sie entweder dem Query 
+hinzu:
 
-  redirect to('/bar?sum=42')
+  redirect to('/bar?summe=42')
 
-Or use a session:
+Oder man verwendet eine Session:
 
   enable :session
   
@@ -879,45 +889,45 @@ Or use a session:
     session[:secret]
   end
 
-=== Sending Files
+=== Dateien versenden
 
-For sending files, you can use the <tt>send_file</tt> helper method:
+Zum versenden von Dateien kann die <tt>send_file</tt> Helfermethode verwende
+werden:
 
   get '/' do
     send_file 'foo.png'
   end
 
-It also takes a couple of options:
+Für <tt>send_file</tt> stehen einige Hash-Optionen zur Verfügung:
 
   send_file 'foo.png', :type => :jpg
 
-The options are:
-
 [filename]
-  file name in response, defaults to the real file name.
+  Dateiname als Response. Standartwert ist der eigentliche Dateiname
 
 [last_modified]
-  value for Last-Modified header, defaults to the file's mtime.
+  Wert für den Last-Modified Header, Standardwert ist +mtime+ der Datei.
 
 [type]
-  content type to use, guessed from the file extension if missing.
-
+  content type der verwendet werden soll. Wird, wenn nicht angegeben, von der
+  Dateiendung abgeleitet.
+  
 [disposition]
-  used for Content-Disposition, possible values: +nil+ (default),
-  <tt>:attachement</tt> and <tt>:inline</tt>
+  Verwendet für Content-Disposition. Mögliche Werte sind: +nil+ (Standard),
+  <tt>:attachement</tt> und <tt>:inline</tt>
 
 [length]
-  Content-Length header, defaults to file size.
+  Content-Length Header. Standardwert ist die Dateigröße
 
-If supported by the Rack handler, other means than streaming from the Ruby
-process will be used. If you use this helper method, Sinatra will automatically
-handle range requests.
-
-++
+Soweit vom Rack Handler unterstützt, werden neben der Übertragung über den Ruby
+Prozess auch andere Möglichkeiten genutzt. Bei Verwendung der 
+<tt>send_file</tt> Helfermethode kümmert sich Sinatra selbständig um die 
+Range Requests.
 
 == Das Request-Objekt
 
-Auf das `request`-Objeket der eigehenden Anfrage kann man vom Anfragescope aus zugreifen:
+Auf das `request`-Objeket der eigehenden Anfrage kann man vom Anfragescope aus
+zugreifen:
 
   # App läuft unter http://example.com/example
   get '/foo' do
@@ -962,18 +972,19 @@ Der <tt>request.body</tt> ist einn IO- oder StringIO-Objekt:
     "Hallo #{daten['name']}!"
   end
 
---
-=== Looking Up Template Files
 
-The <tt>find_template</tt> helper is used to find template files for rendering:
+=== Nachschlagen von Template Dateien
+
+Die <tt>find_template</tt> Helfermethode wird genutzt, um Template Dateien zum
+Rendern aufzufinden:
 
   find_template settings.views, 'foo', Tilt[:haml] do |file|
-    puts "could be #{file}"
+    puts "könnte diese hier sein: #{file}"
   end
 
-This is not really useful. But it is useful that you can actually override this
-method to hook in your own lookup mechanism. For instance, if you want to be
-able to use more than one view directory:
+Das ist zwar nicht wirklich brauchbar, aber wenn man sie überschreibt, kann sie
+nützlich werden, um eigene Nachschlagemechanismen einzubauen. Zum Beispiel 
+dann, wenn man mehr als nur ein view-Verzeichnis verwenden möchte:
 
   set :views, ['views', 'templates']
 
@@ -983,7 +994,8 @@ able to use more than one view directory:
     end
   end
 
-Another example would be to use different directories for different engines:
+Ein anderes Beispiel wäre es verschiedene Vereichnisse für verschiedene Engines
+zu verwenden:
 
   set :views, :sass => 'views/sass', :haml => 'templates', :default => 'views'
 
@@ -995,16 +1007,16 @@ Another example would be to use different directories for different engines:
     end
   end
 
-You can also easily wrap this up in an extension and share with others!
+Ebensogut könnte man eine Extension schreiben und diese dann mit anderen 
+teilen!
 
-Note that <tt>find_template</tt> does not check if the file really exists but
-rather calls the given block for all possible paths. This is not a performance
-issue, since +render+ will use +break+ as soon as a file is found. Also,
-template locations (and content) will be cached if you are not running in
-development mode. You should keep that in mind if you write a really crazy
-method.
-
-++
+Beachte, dass <tt>find_template</tt> nicht prüft, ob eine Datei tatsächlich 
+existiert. Es wird lediglich der angegebene Block aufgerufen und nach allen 
+möglichen Pfaden gesucht. Das ergibt kein Performanceproblem, da +render+ 
++block+ verwendet, sobald eine Datei gefunden wurde. Ebenso werden 
+Templatepfade samt Inhalt gecached, solange man nicht im Entwicklungsmodus ist.
+Das sollte man im Hinterkopf behalten, wenn man irgendwelche verrückten
+Methoden zusammenbastelt.
 
 == Konfiguration
 
@@ -1053,91 +1065,104 @@ Zugang zu diesen Einstellungen bekommt man über +settings+:
     ...
   end
 
---
-=== Available Settings
+=== Mögliche Einstellungen
 
-[absolute_redirects]  If disabled, Sinatra will allow relative redirects,
-                      however, Sinatra will no longer conform with RFC 2616
-                      (HTTP 1.1), which only allows absolute redirects.
+[absolute_redirects]  Wenn ausgeschaltet wird Sinatra relative Redirects 
+                      zulassen. Jedoch ist Sinatra dann nicht mehr mit RFC 2616
+                      (HTTP 1.1) konform, das nur absolute Redirects zulässt.
                       
-                      Enable if your app is running behind a reverse proxy that
-                      has not been set up properly. Note that the +url+ helper
-                      will still produce absolute URLs, unless you pass in
-                      +false+ as second parameter.
+                      Sollte eingeschaltet werden, wenn man hinter einem 
+                      Reverse Proxy ist, der nicht ordentlich eingerichtet ist.
+                      Beachte, dass die +url+ Helfermethode nach wie vor
+                      absolute URLs erstellen wird, es sei denn man gibt als
+                      zweiten Parameter +false+ an.
                       
-                      Disabled per default.
+                      Standardmäßig nicht aktiviert.
+                      
 
-[add_charsets]        mime types the <tt>content_type</tt> helper will
-                      automatically add the charset info to.
+[add_charsets]        Mime Types werden hier automatisch der Helfermethode
+                      <tt>content_type</tt> zugeordnet.
                       
-                      You should add to it rather than overriding this option:
+                      Es empfielt sich Werte hinzuzufügen anstellen von 
+                      überschreiben:
                       
                         settings.add_charsets << "application/foobar"
 
-[app_file]            main application file, used to detect project root,
-                      views and public folder and inline templates.
-
-[bind]                IP address to bind to (default: 0.0.0.0).
-                      Only used for built-in server.
-
-[default_encoding]    encoding to assume if unknown
-                      (defaults to <tt>"utf-8"</tt>).
-
-[dump_errors]         display errors in the log.
-
-[environment]         current environment, defaults to <tt>ENV['RACK_ENV']</tt>,
-                      or <tt>"development"</tt> if not available.
-
-[logging]             use the logger.
-
-[lock]                Places a lock around every request, only running
-                      processing on request per Ruby process concurrently.
+[app_file]            Hauptdatei der Applikation. Wird verwendet, um das
+                      Wurzel-, Inline-, View- und öffentliche Verzeichnis des 
+                      Projekts festzustellen.
                       
-                      Enabled if your app is not thread-safe.
-                      Disabled per default.
+[bind]                IP Address an die gebunden wird (Standardwert: 0.0.0.0).
+                      Wird nur für den eingebauten Server verwendet.
 
-[method_override]     use <tt>_method</tt> magic to allow put/delete forms in
-                      browsers that don't support it.
+[default_encoding]    Das Encoding, falls keines angegeben wurde.
+                      Standardwert ist <tt>"utf-8"</tt>.
 
-[port]                Port to listen on. Only used for built-in server.
+[dump_errors]         Fehler im Log anzeigen.
 
-[prefixed_redirects]  Whether or not to insert <tt>request.script_name</tt> into
-                      redirects if no absolute path is given. That way
-                      <tt>redirect '/foo'</tt> would behave like
-                      <tt>redirect to('/foo')</tt>. Disabled per default.
+[environment]         Momentane Umgebung. Standardmäßig auf 
+                      <tt>content_type</tt> eingestellt oder 
+                      <tt>"development"</tt> soweit ersteres nicht vorhanden.
 
-[public]              folder public files are served from
+[logging]             Den Logger verwenden.
 
-[reload_templates]    whether or not to reload templates between requests.
-                      Enabled in development mode and on Ruby 1.8.6 (to
-                      compensate a bug in Ruby causing a memory leak).
+[lock]                Jeder Request wird gelocked. Es kann nur ein Request pro
+                      Ruby Prozess gleichzeitig verarbeitet werden.
+                      
+                      Eingeschaltet wenn die Application Thread-Safe ist.
+                      Standardmäßig nicht aktiviert.
 
-[root]                project root folder.
+[method_override]     Verwende <tt>_method</tt>, um put/delete Formulardaten in
+                      Browsern zu verwenden, die dies normalerweise nicht
+                      unterstützen.
 
-[raise_errors]        raise exceptions (will stop application).
+[port]                Port für die Applikation. Wird nur im internen Server
+                      verwendet.
 
-[run]                 if enabled, Sinatra will handle starting the web server,
-                      do not enable if using rackup or other means.
+[prefixed_redirects]  Entscheidet, ob <tt>request.script_name</tt> in Redirects
+                      eingefügt wird oder nicht, wenn kein absoluter Pfad 
+                      angegeben ist. Auf diese Art und Weise verhält sich
+                      <tt>redirect '/foo'</tt> so als ob es ein 
+                      <tt>redirect to('/foo')</tt> wäre. 
+                      Standardmäßig nicht aktiviert.
 
-[running]             is the built-in server running now?
-                      do not change this setting!
+[public]              Das öffentliche Verzeichnis aus dem Daten zur Verfügung
+                      gestellt werden können.
 
-[server]              server or list of servers to use for built-in server.
-                      defaults to ['thin', 'mongrel', 'webrick'], order indicates
-                      priority.
+[reload_templates]    Entscheidet, ob Templates zwischen Anfragen neu geladen
+                      werden sollen oder nicht. Unter Ruby 1.8.6 ist es im
+                      Entwicklungsmodus eingeschaltet (um einen Fehler in Ruby
+                      auszugleichen, der ein Speicherleck verursacht).
 
-[sessions]            enable cookie based sessions.
+[root]                Wurzelverzeichnis des Projekts.
 
-[show_exceptions]     show a stack trace in the browser.
+[raise_errors]        Einen Ausnahmezustand aufrufen. Beendet die Applikation.
 
-[static]              Whether Sinatra should handle serving static files.
-                      Disable when using a Server able to do this on its own.
-                      Disabling will boost performance.
-                      Enabled per default.
+[run]                 Wenn aktiviert, wird Sinatra versuchen den Webserver zu 
+                      starten. Nicht verwenden, wenn Rackup oder anderes 
+                      verwendet werden soll.
 
-[views]               views folder.
+[running]             Läuft der eingebaute Server? Diese Einstellung nicht 
+                      ändern!
 
-++
+[server]              Server oder Liste von Servern die als eingebaute Server 
+                      zur Verfügung stehen.
+                      Standardmäßig auf ['thin', 'mongrel', 'webrick'] 
+                      voreingestellt. Die Anordnung gibt die Priorität vor.
+
+[sessions]            Sessions auf Cookiebasis aktivieren.
+
+[show_exceptions]     Stacktrace im Browser bei Fehlern anzeigen.
+
+[static]              Entscheidet, ob Sinatra statische Dateien zur Verfügung
+                      stellen soll oder nicht.
+                      Sollte nicht aktiviert werden, wenn ein Server verwendet
+                      wird, der dies auch selbständig erledigen kann.
+                      Deaktivieren wird die Performance erhöhen.
+                      Standardmäßig aktiviert.
+
+[views]               Verzeichnis der Views.
+
 == Fehlerbehandlung
 
 Error Handler laufen im selben Kontext wie Routen und Filter, was bedeutet,
@@ -1146,7 +1171,8 @@ verwendet werden können.
 
 === Nicht gefunden
 
-Wenn eine <tt>Sinatra::NotFound</tt> Exception geworfen wird oder der Statuscode 404 ist, wird der <tt>not_found</tt> Handler ausgeführt:
+Wenn eine <tt>Sinatra::NotFound</tt> Exception geworfen wird oder der 
+Statuscode 404 ist, wird der <tt>not_found</tt> Handler ausgeführt:
 
   not_found do
     'Seite kann nirgendwo gefunden werden.'
@@ -1154,8 +1180,8 @@ Wenn eine <tt>Sinatra::NotFound</tt> Exception geworfen wird oder der Statuscode
 
 === Fehler
 
-Der +error+ Handler wird immer ausgeführt, wenn eine Exception in einem Routenblock
-oder in einen Filter geworfen wurde. Die Exception kann über die
+Der +error+ Handler wird immer ausgeführt, wenn eine Exception in einem 
+Routenblock oder in einen Filter geworfen wurde. Die Exception kann über die
 <tt>sinatra.error</tt> Rack-Variable angesprochen werden:
 
   error do
@@ -1211,7 +1237,8 @@ Es kann aber auch der +content_type+ Helfer verwendet werden:
 
 == Rack Middleware
 
-Sinatra baut auf Rack[http://rack.rubyforge.org/], einem minimalen Standardinterface für Ruby Webframeworks. Eines der interessantesten
+Sinatra baut auf Rack[http://rack.rubyforge.org/], einem minimalen 
+Standardinterface für Ruby Webframeworks. Eines der interessantesten
 Features für Entwickler ist der Support von Middleware, die
 zwischen den Server und die Anwendung geschaltet wird und so HTTP
 Request und/oder Antwort überwachen und/oder manipulieren kann.
@@ -1284,7 +1311,8 @@ Das Definitieren einer Top-Level Anwendung funktioniert gut für
 Microanwendungen, hat aber Nachteile, wenn man wiederverwendbare Komponenten
 wie Middleware, Rails Metal, einfache Bibliotheken mit Server Komponenten
 oder auch Sinatra Erweiterungen bauen will.
-Die Top-Level DSL belastet den Objekt-Namespace und setzt einen Microanwendungsstil voraus (eine einzelne Anwendungsdatei, ./public und ./views
+Die Top-Level DSL belastet den Objekt-Namespace und setzt einen 
+Microanwendungsstil voraus (eine einzelne Anwendungsdatei, ./public und ./views
 Ordner, Logging, Exception-Detail-Seite, usw.). Genau hier kommt Sinatra::Base
 ins Spiel:
 
@@ -1307,7 +1335,8 @@ einer Bibliothek:
    MyApp.run! :host => 'localhost', :port => 9090
 
 Die Methoden der Sinatra::Base-Subklasse sind genau die selben wie die
-der Top-Level DSL. Die meisten Top-Level Anwendungen können mit nur zwei Veränderungen zu Sinatra::Base-Komponenten konvertiert werden:
+der Top-Level DSL. Die meisten Top-Level Anwendungen können mit nur zwei 
+Veränderungen zu Sinatra::Base-Komponenten konvertiert werden:
 
 * Die Datei sollte <tt>require 'sinatra/base'</tt> anstelle von
   <tt>require 'sinatra/base'</tt> aufrufen, ansonsten werden alle von
@@ -1315,28 +1344,33 @@ der Top-Level DSL. Die meisten Top-Level Anwendungen können mit nur zwei Verän
 * Alle Routen, Error Handler, Filter und Optionen der Applikation müssen in
   einer Subklasse von Sinatra::Base definiert werden.
 
-<tt>Sinatra::Base</tt> ist ein unbeschriebenes Blatt. Die meisten Optionen sind per default deaktiviert. Das betrifft auch den eingebauten Server. Siehe {Optionen und Konfiguration}[http://sinatra.github.com/configuration.html] für Details über mögliche Optionen.
+<tt>Sinatra::Base</tt> ist ein unbeschriebenes Blatt. Die meisten Optionen sind
+per default deaktiviert. Das betrifft auch den eingebauten Server. Siehe 
+{Optionen und Konfiguration}[http://sinatra.github.com/configuration.html] für
+Details über mögliche Optionen.
 
---
-=== Modular vs. Classic Style
+=== Modularer vs. klassischer Stil
 
-Contrary to common believes, there is nothing wrong with classic style. If it
-suits your application, you do not have to switch to a modular application.
+Entgegen häufiger Meinungen gibt es nichts gegen den klassischen Stil 
+einzuwenden. Solange es die Applikation nicht beeinträchtigt, besteht kein
+Grund eine modulare Applikation zu erstellen.
 
-There are only two downsides compared to modular style:
+Lediglich zwei Nachteile gegenüber dem modularen Stil sollten beachtet werden:
 
-* You may only have one Sinatra application per Ruby process - if you plan to
-  use more, switch to modular style.
+* Es kann nur eine Sinatra Applikation pro Ruby Prozess laufen. Sollten mehrere
+  zum Einsatz kommen, muss auf modular umgestiegen werden.
+  
+* Der klassische Stil füllt Object mit Delegationsmethoden. Sollte die 
+  Applikation als gem/Bibliothek zum Einsatz kommen, sollte auf modular
+  umgestiegen werden.
+  
+Es gibt keinen Grund, warum  man modulare und klassische Elemente nicht 
+vermischen sollte.
 
-* Classic style pollutes Object with delegator methods - if you plan to ship
-  your application in a library/gem, switch to modular style.
+Will man jedoch von einem Stil auf den anderen umsteigen, sollten einige 
+Unterschiede beachtet werden:
 
-There is no reason you cannot mix modular and classic style.
-
-If switching from one style to the other, you should be aware of slight
-differences in the setting:
-
-  Setting             Classic                 Modular
+  Szenario            Classic                 Modular
 
   app_file            file loading sinatra    nil
   run                 $0 == app_file          false
@@ -1345,65 +1379,65 @@ differences in the setting:
   inline_templates    true                    false
 
 
-=== Serving a Modular Application
+=== Eine modulare Applikation bereitstellen
 
-There are two common options for starting a modular app, actively starting with
+Es gibt zwei übliche Wege eine modulare Anwendung zu starten. Zum einen über
 <tt>run!</tt>:
 
-  # my_app.rb
+  # mein_app.rb
   require 'sinatra/base'
   
-  class MyApp < Sinatra::Base
-    # ... app code here ...
+  class MeinApp < Sinatra::Base
+    # ... Anwendungscode hierhin ...
     
-    # start the server if ruby file is executed directly
+    # starte den Server, wenn die Ruby Datei direkt ausgeführt wird
     run! if app_file == $0
   end
 
-Start with:
+Starte mit:
 
-  ruby my_app.rb
+  ruby mein_app.rb
 
-Or with a <tt>config.ru</tt>, which allows using any Rack handler:
+Oder über eine <tt>config.ru</tt>, die es erlaubt irgendeinen Rack Handler zu 
+verwenden:
 
   # config.ru
-  require 'my_app'
-  run MyApp
+  require 'mein_app'
+  run MeineApp
 
-Run:
+Starte:
 
   rackup -p 4567
 
-=== Using a Classic Style Application with a config.ru
+=== Eine klassische Anwendung mit einer config.ru verwenden
 
-Write your app file:
+Schreibe eine Anwendungsdatei:
 
   # app.rb
   require 'sinatra'
   
   get '/' do
-    'Hello world!'
+    'Hallo Welt!'
   end
 
-And a corresponding <tt>config.ru</tt>:
+Sowie eine dazugehörige <tt>config.ru</tt>:
 
   require 'app'
   run Sinatra::Application
 
-=== When to use a config.ru?
+=== Wann verwendet man eine config.ru?
 
-Good signs you probably want to use a <tt>config.ru</tt>:
+Anzeichen dafür, dass man eine <tt>config.ru</tt> braucht:
 
-* You want to deploy with a different Rack handler (Passenger, Unicorn,
+* Man möchte einen anderen Rack Handler verwenden (Passenger, Unicorn,
   Heroku, ...).
-* You want to use more than one subclass of <tt>Sinatra::Base</tt>.
-* You want to use Sinatra only for middleware, but not as endpoint.
+* Man möchte mehr als eine Subklasse von <tt>Sinatra::Base</tt>.
+* Man möchte Sinatra als Middleware verwenden, nicht als Endpoint.
 
-<b>There is no need to switch to a <tt>config.ru</tt> only because you
-switched to modular style, and you don't have to use modular style for running
-with a <tt>config.ru</tt>.</b>
-
-++
+<b>Es gibt keinen Grund eine <tt>config.ru</tt> zu verwenden, nur weil man eine
+Anwendung im modularen Stil betreiben möchte. Ebenso braucht man keine 
+Anwendung im modularen Stil, um eine <tt>config.ru</tt> verwenden zu können.
+</b>
 
 === Sinatra als Middleware nutzen
 
@@ -1484,7 +1518,11 @@ Man kann auf das Scope-Object (die Klasse) wie folgt zugreifen:
 
 === Anfrage- oder Instanzscope
 
-Für jede eingehende Anfrage wird eine neue Instanz der Anwendungsklasse erstellt und alle Handlers werden in diesem Scope ausgeführt. Aus diesem Scope heraus kann man auf `request` oder `session` zugreifen und Methoden wie `erb` oder `haml` aufrufen. Man kann mit der `settings` Methode außerdem auf den Anwengungsscope zugreifen.
+Für jede eingehende Anfrage wird eine neue Instanz der Anwendungsklasse 
+erstellt und alle Handlers werden in diesem Scope ausgeführt. Aus diesem Scope
+heraus kann man auf `request` oder `session` zugreifen und Methoden wie `erb` 
+oder `haml` aufrufen. Man kann mit der `settings` Methode außerdem auf den 
+Anwengungsscope zugreifen.
 
   class MyApp < Sinatra::Base
     # Hey, ich bin im Anwendungsscope!
@@ -1523,7 +1561,10 @@ Im Delegation-Scop befindet man sich:
 * Im Top-Level, wenn man <tt>require 'sinatra'</tt> aufgerufen hat.
 * In einem Objekt, dass mit dem `Sinatra::Delegator` mixin erweitert wurde.
 
-Schau am besten im Code nach: Hier ist {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/base.rb#L1064] definiert und wird in den {globalen Namespace eingebunden}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/main.rb#L25].
+Schau am besten im Code nach: Hier ist 
+{Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/base.rb#L1064] 
+definiert und wird in den 
+{globalen Namespace eingebunden}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/main.rb#L25].
 
 == Kommandozeile
 
@@ -1619,7 +1660,8 @@ so lauten:
 
 * {Projekt Website}[http://sinatra.github.com/] - Ergänzende Dokumentation,
   News und Links zu anderen Ressourcen.
-* {Hilfe beisteuern}[http://sinatra.github.com/contributing.html] - Einen Fehler gefunden? Brauchst du Hilfe? Hast du einen Patch?
+* {Hilfe beisteuern}[http://sinatra.github.com/contributing.html] - Einen 
+Fehler gefunden? Brauchst du Hilfe? Hast du einen Patch?
 * {Issue Tracker}[http://github.com/sinatra/sinatra/issues]
 * {Twitter}[http://twitter.com/sinatra]
 * {Mailingliste}[http://groups.google.com/group/sinatrarb]
