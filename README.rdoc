@@ -916,6 +916,23 @@ Or use a session:
     session[:secret]
   end
 
+=== Cache Control
+
+Setting your headers correctly is the foundation for proper HTTP caching.
+
+You can easily set the Cache-Control header with like this:
+
+  get '/' do
+    cache_control :public
+    "cache it!"
+  end
+
+Pro tip: Set up caching in a before filter.
+
+  before do
+    cache_control :public, :must_revalidate, :max_age => 60
+  end
+
 === Sending Files
 
 For sending files, you can use the <tt>send_file</tt> helper method:
