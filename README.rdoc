@@ -785,7 +785,7 @@ a duplicate, use <tt>call!</tt> instead of <tt>call</tt>.
 
 Check out the Rack specification if you want to learn more about <tt>call</tt>.
 
-=== Setting Body and Status Code
+=== Setting Body, Status Code and Headers
 
 It is possible and recommended to set the status code and response body with the
 return value of the route block. However, in some scenarios you might want to
@@ -804,12 +804,18 @@ access the body:
 It is also possible to pass a block to +body+, that will be executed by the Rack
 handler (this can be used to implement streaming, see "Return Values").
 
-Similar to +body+, you can also set the status code:
+Similar to +body+, you can also set the status code and headers:
 
   get '/foo' do
     status 418
-    halt "I'm a tea pot!"
+    headers \
+      "Allow"   => "BREW, POST, GET, PROPFIND, WHEN"
+      "Refresh" => "Refresh: 20; http://www.ietf.org/rfc/rfc2324.txt"
+    body "I'm a tea pot!"
   end
+
+Like +body+, +headers+ and +status+ with no arguments can be used to access
+their current values.
 
 === Generating URLs
 
