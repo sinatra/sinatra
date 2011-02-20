@@ -941,7 +941,7 @@ The options are:
 
 [disposition]
   used for Content-Disposition, possible values: +nil+ (default),
-  <tt>:attachement</tt> and <tt>:inline</tt>
+  <tt>:attachment</tt> and <tt>:inline</tt>
 
 [length]
   Content-Length header, defaults to file size.
