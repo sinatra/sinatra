@@ -393,10 +393,15 @@ module Sinatra
   # that will be rendered.
   #
   # Possible options are:
-  #   :layout       If set to false, no layout is rendered, otherwise
-  #                 the specified layout is used (Ignored for `sass` and `less`)
-  #   :locals       A hash with local variables that should be available
-  #                 in the template
+  #   :content_type   The content type to use, same arguments as content_type.
+  #   :layout         If set to false, no layout is rendered, otherwise
+  #                   the specified layout is used (Ignored for `sass` and `less`)
+  #   :layout_engine  Engine to use for rendering the layout.
+  #   :locals         A hash with local variables that should be available
+  #                   in the template
+  #   :scope          If set, template is evaluate with the binding of the given
+  #                   object rather than the application instance.
+  #   :views          Views directory to use.
   module Templates
     module ContentTyped
       attr_accessor :content_type
