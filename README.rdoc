@@ -17,6 +17,9 @@ Install the gem and run with:
 
 View at: http://localhost:4567
 
+It is recommended to also run <tt>gem install thin</tt>, which Sinatra will
+pick up if available.
+
 == Routes
 
 In Sinatra, a route is an HTTP method paired with an URL matching pattern.
