@@ -404,6 +404,7 @@ Ebenso ist es möglich Markdown mit BlueCloth anstelle von RDsicount zu parsen:
   end
 
 Das sollte <tt>./views/index.md</tt> mit BlueCloth rendern.
+
 === Textile-Templates
 
 Das +redcloth+ gem wird benötigt, um Textile-Templates rendern zu können:
@@ -646,34 +647,31 @@ verwendet. Durch <tt>:layout => false</tt> kann das Ausführen verhindert werden
     haml :index, :layout => !request.xhr?
   end
 
---
-=== Associating File Extensions
+=== Datieendungen zuordnen
 
-To associate a file extension with a template engine, use
-<tt>Tilt.register</tt>. For instance, if you like to use the file extension
-+tt+ for Textile templates, you can do the following:
+Um eine Dateiendung einer Template Engine zuzuordnen, benutzt man am besten
+<tt>Tilt.register</tt>. Wenn man zum Beispiel die Dateiendung +tt+ für Textile
+Templates nutzen möchte, so lässt sich das wie folgt bewerkstelligen:
 
   Tilt.register :tt, Tilt[:textile]
 
-=== Adding Your Own Template Engine
+=== Eine eigene Template Engine hinzufügen
 
-First, register your engine with Tilt, then create a rendering method:
+Zu allererst muss man die Engine bei Tilt registrieren und danach eine
+Rendering-Methode erstellen:
 
-  Tilt.register :myat, MyAwesomeTemplateEngine
+  Tilt.register :mtt, MeineTolleTemplateEngine
 
   helpers do
-    def myat(*args) render(:myat, *args) end
+    def mtt(*args) render(:mtt, *args) end
   end
 
   get '/' do
-    myat :index
+    mtt :index
   end
 
-Renders <tt>./views/index.myat</tt>. See https://github.com/rtomayko/tilt to
-learn more about Tilt.
-
-
-  ++
+Dieser Code rendert <tt>./views/application.mtt</tt>. Siehe
+https://github.com/rtomayko/tilt um mehr über Tilt zu lernen.
 
 == Filter
 
