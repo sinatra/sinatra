@@ -821,6 +821,18 @@ pasados a `halt`:
   redirect to('/bar'), 303
   redirect 'http://google.com', 'te confundiste de lugar, compañero'
 
+También podés redireccionar fácilmente de vuelta hacia la página desde donde
+vino el usuario con `redirect back`:
+
+  get '/foo' do
+    "<a href='/bar'>hacer algo</a>"
+  end
+
+  get '/bar' do
+    hacer_algo
+    redirect back
+  end
+
 Para pasar argumetnos con una redirección, podés agregarlo a la cadena de
 búsqueda:
 
