@@ -933,6 +933,30 @@ Pro tip: Set up caching in a before filter.
     cache_control :public, :must_revalidate, :max_age => 60
   end
 
+If you are using the +expires+ helper to set the corresponding header,
+<tt>Cache-Control</tt> will be set automatically for you:
+
+  before do
+    expires 500, :public, :must_revalidate
+  end
+
+To properly use caches, you should consider using +etag+ and +last_modified+.
+It is recommended to call those helpers *before* doing heavy lifting, as they
+will immediately flush a response if the client already has the current
+version in its cache.
+
+  get '/article/:id' do
+    @article = Article.find params[:id]
+    last_modified @article.updated_at
+    etag @article.sha1
+    erb :article
+  end
+
+It is also possible to use a
+{weak ETag}[http://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation]:
+
+  etag @article.sha1, :weak
+
 === Sending Files
 
 For sending files, you can use the <tt>send_file</tt> helper method:
