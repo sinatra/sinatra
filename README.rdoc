@@ -724,6 +724,37 @@ route handlers and templates:
     bar(params[:name])
   end
 
+=== Using Sessions
+
+A session is used to keep state during requests. If activated, you have one
+session hash per user session:
+
+  enable :sessions
+
+  get '/' do
+    "value = " << session[:value].inspect
+  end
+
+  get '/:value' do
+    session[:value] = params[:value]
+  end
+
+Note that <tt>enable :sessions</tt> actually stores all data in a cookie. This
+might not always be what you want (storing lots of data will increase your
+traffic, for instance). You can use any Rack session middleware, in order to
+do so, do *not* call <tt>enable :sessions</tt>, but instead pull in your
+middleware of choice how you would any other middleware:
+
+  use Rack::Session::Pool, :expire_after => 2592000
+
+  get '/' do
+    "value = " << session[:value].inspect
+  end
+
+  get '/:value' do
+    session[:value] = params[:value]
+  end
+
 === Halting
 
 To immediately stop a request within a filter or route use:
