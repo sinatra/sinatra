@@ -919,7 +919,7 @@ error handlers) through the <tt>request</tt> method:
     request.get?              # true (similar methods for other verbs)
     request.form_data?        # false
     request["SOME_HEADER"]    # value of SOME_HEADER header
-    request.referer           # the referrer of the client or '/'
+    request.referrer          # the referrer of the client or '/'
     request.user_agent        # user agent (used by :agent condition)
     request.cookies           # hash of browser cookies
     request.xhr?              # is this an ajax request?
