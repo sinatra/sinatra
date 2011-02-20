@@ -812,19 +812,19 @@ De manera similar, también podés asignar el código de estado:
 Podés redireccionar al navegador con el método `redirect`:
 
   get '/foo' do
-    redirect '/bar'
+    redirect to('/bar')
   end
 
 Cualquier parámetro adicional se utiliza de la misma manera que los argumentos
 pasados a `halt`:
 
-  redirect '/bar', 303
-  redirect '/bar', 'te confundiste de lugar, compañero'
+  redirect to('/bar'), 303
+  redirect 'http://google.com', 'te confundiste de lugar, compañero'
 
 Para pasar argumetnos con una redirección, podés agregarlo a la cadena de
 búsqueda:
 
-  redirect '/bar?suma=42'
+  redirect to('/bar?suma=42')
 
 O usar una sesión:
 
@@ -832,7 +832,7 @@ O usar una sesión:
 
   get '/foo' do
     session[:secreto] = 'foo'
-    redirect '/bar'
+    redirect to('/bar')
   end
 
   get '/bar' do
