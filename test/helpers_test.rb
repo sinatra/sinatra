@@ -47,7 +47,7 @@ class HelpersTest < Test::Unit::TestCase
   end
 
   describe 'redirect' do
-    it 'uses a 302 when only a path is given' do
+    it 'uses a 303 when only a path is given' do
       mock_app {
         get '/' do
           redirect '/foo'
@@ -56,7 +56,7 @@ class HelpersTest < Test::Unit::TestCase
       }
 
       get '/'
-      assert_equal 302, status
+      assert_equal 303, status
       assert_equal '', body
       assert_equal 'http://example.org/foo', response['Location']
     end
@@ -84,7 +84,7 @@ class HelpersTest < Test::Unit::TestCase
 
       request = Rack::MockRequest.new(@app)
       response = request.get('/try_redirect', 'HTTP_REFERER' => '/foo')
-      assert_equal 302, response.status
+      assert_equal 303, response.status
       assert_equal 'http://example.org/foo', response['Location']
     end
 

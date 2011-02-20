@@ -95,7 +95,9 @@ module Sinatra
 
     # Halt processing and redirect to the URI provided.
     def redirect(uri, *args)
-      status 302
+      # Browsers treat 302 like 303, even though it should rather be handled
+      # like 307. To show our good will, we use 303.
+      status 303
 
       # According to RFC 2616 section 14.30, "the field value consists of a
       # single absolute URI"
