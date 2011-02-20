@@ -833,7 +833,7 @@ vino el usuario con `redirect back`:
     redirect back
   end
 
-Para pasar argumetnos con una redirección, podés agregarlo a la cadena de
+Para pasar argumentos con una redirección, podés agregarlos a la cadena de
 búsqueda:
 
   redirect to('/bar?suma=42')
