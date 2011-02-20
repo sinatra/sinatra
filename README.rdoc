@@ -926,7 +926,8 @@ error handlers) through the <tt>request</tt> method:
     request.url               # "http://example.com/example/foo"
     request.path              # "/example/foo"
     request.ip                # client IP address
-    request.secure?           # false
+    request.secure?           # false (would be true over ssl)
+    request.forwarded?        # true (if running behind a reverse proxy)
     request.env               # raw env hash handed in by Rack
   end
 
