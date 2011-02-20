@@ -571,7 +571,7 @@ Renders the embedded template string.
 === Accessing Variables in Templates
 
 Templates are evaluated within the same context as route handlers. Instance
-variables set in route handlers are direcly accessible by templates:
+variables set in route handlers are directly accessible by templates:
 
   get '/:id' do
     @foo = Foo.find(params[:id])
@@ -643,7 +643,7 @@ To associate a file extension with a template engine, use
 
   Tilt.register :tt, Tilt[:textile]
 
-=== Adding You Own Template Engine
+=== Adding Your Own Template Engine
 
 First, register your engine with Tilt, then create a rendering method:
 
@@ -662,9 +662,9 @@ learn more about Tilt.
 
 == Filters
 
-Before filters are evaluated before each request within the same context as
-the routes will be and can modify the request and response. Instance variables
-set in filters are accessible by routes and templates:
++before+ filters are evaluated before each request within the same 
+context as the routes. They can modify the request and the response. Instance 
+variables set in these filters are accessible by routes and templates:
 
   before do
     @note = 'Hi!'
@@ -676,9 +676,9 @@ set in filters are accessible by routes and templates:
     params[:splat] #=> 'bar/baz'
   end
 
-After filter are evaluated after each request within the same context and can
-also modify the request and response. Instance variables set in before filters
-and routes are accessible by after filters:
++after+ filters are evaluated after each request within the same context
+and can also modify the request and the response. Instance variables set in 
++before+ filters and routes are accessible by +after+ filters:
 
   after do
     puts response.status
@@ -688,8 +688,8 @@ Note: Unless you use the +body+ method rather than just returning a String from
 the routes, the body will not yet be available in the after filter, since it is
 generated later on.
 
-Filters optionally taking a pattern, causing them to be evaluated only if the
-request path matches that pattern:
+Filters optionally taking a pattern will cause them to be evaluated only if 
+the request path matches the pattern:
 
   before '/protected/*' do
     authenticate!
@@ -699,7 +699,7 @@ request path matches that pattern:
     session[:last_slug] = slug
   end
 
-Like routes, filters also take conditions:
+Like routes, filters may also take conditions:
 
   before :agent => /Songbird/ do
     # ...
@@ -777,8 +777,8 @@ of calling another route. Simply use +call+ to achieve this:
   end
 
 Note that in the example above, you would ease testing and increase performance
-by simply moving <tt>"bar"</tt> into a helper used by both <tt>/foo</tt> and
-<tt>/bar</tt>.
+by simply moving <tt>"bar"</tt> into a helper method used by both <tt>/foo</tt>
+and <tt>/bar</tt>.
 
 If you want the request to be sent to the same application instance rather than
 a duplicate, use <tt>call!</tt> instead of <tt>call</tt>.
@@ -789,7 +789,7 @@ Check out the Rack specification if you want to learn more about <tt>call</tt>.
 
 It is possible and recommended to set the status code and response body with the
 return value of the route block. However, in some scenarios you might want to
-set the body at an arbritary point in the execution flow. You can do so with the
+set the body at an arbitrary point in the execution flow. You can do so with the
 +body+ helper method. If you do so, you can use that method from there on to
 access the body:
 
@@ -801,11 +801,10 @@ access the body:
     puts body
   end
 
-It is also possible to pass a block to body, that will be executed by the rack
-handler (this can be used to implement streaming, see
-"Return Values").
+It is also possible to pass a block to +body+, that will be executed by the Rack
+handler (this can be used to implement streaming, see "Return Values").
 
-Similar to the body, you can also set the status code:
+Similar to +body+, you can also set the status code:
 
   get '/foo' do
     status 418
@@ -874,7 +873,7 @@ For sending files, you can use the <tt>send_file</tt> helper method:
     send_file 'foo.png'
   end
 
-It also take a couple of options:
+It also takes a couple of options:
 
   send_file 'foo.png', :type => :jpg
 
@@ -920,7 +919,7 @@ error handlers) through the <tt>request</tt> method:
     request.get?              # true (similar methods for other verbs)
     request.form_data?        # false
     request["SOME_HEADER"]    # value of SOME_HEADER header
-    request.referer           # the referer of the client or '/'
+    request.referer           # the referrer of the client or '/'
     request.user_agent        # user agent (used by :agent condition)
     request.cookies           # hash of browser cookies
     request.xhr?              # is this an ajax request?
@@ -968,7 +967,7 @@ able to use more than one view directory:
     end
   end
 
-Another example would be using different directories for different engines:
+Another example would be to use different directories for different engines:
 
   set :views, :sass => 'views/sass', :haml => 'templates', :default => 'views'
 
@@ -1057,20 +1056,20 @@ You can access those options via <tt>settings</tt>:
                         settings.add_charsets << "application/foobar"
 
 [app_file]            main application file, used to detect project root,
-                      views and public folder and inline templates
+                      views and public folder and inline templates.
 
 [bind]                IP address to bind to (default: 0.0.0.0).
                       Only used for built-in server.
 
 [default_encoding]    encoding to assume if unknown
-                      (defaults to <tt>"utf-8"</tt>)
+                      (defaults to <tt>"utf-8"</tt>).
 
-[dump_errors]         display errors in the log
+[dump_errors]         display errors in the log.
 
 [environment]         current environment, defaults to <tt>ENV['RACK_ENV']</tt>,
-                      or <tt>"development"</tt> if not available
+                      or <tt>"development"</tt> if not available.
 
-[logging]             use the logger
+[logging]             use the logger.
 
 [lock]                Places a lock around every request, only running
                       processing on request per Ruby process concurrently.
@@ -1079,7 +1078,7 @@ You can access those options via <tt>settings</tt>:
                       Disabled per default.
 
 [method_override]     use <tt>_method</tt> magic to allow put/delete forms in
-                      browsers that don't support it
+                      browsers that don't support it.
 
 [port]                Port to listen on. Only used for built-in server.
 
@@ -1088,17 +1087,17 @@ You can access those options via <tt>settings</tt>:
                       <tt>redirect '/foo'</tt> would behave like
                       <tt>redirect to('/foo')</tt>. Disabled per default.
 
-[public]              folder public files are server from
+[public]              folder public files are served from
 
 [reload_templates]    whether or not to reload templates between requests.
-                      enabled in development mode and on Ruby 1.8.6 (to
-                      compensate a bug in Ruby causing a memory leak)
+                      Enabled in development mode and on Ruby 1.8.6 (to
+                      compensate a bug in Ruby causing a memory leak).
 
-[root]                project root folder
+[root]                project root folder.
 
-[raise_errors]        raise exceptions (will stop application)
+[raise_errors]        raise exceptions (will stop application).
 
-[run]                 if enabled, Sinatra will handle starting the webserver,
+[run]                 if enabled, Sinatra will handle starting the web server,
                       do not enable if using rackup or other means.
 
 [running]             is the built-in server running now?
@@ -1108,20 +1107,20 @@ You can access those options via <tt>settings</tt>:
                       defaults to ['thin', 'mongrel', 'webrick'], order indicates
                       priority.
 
-[sessions]            enable cookie based sessions
+[sessions]            enable cookie based sessions.
 
-[show_exceptions]     show a stacktrace in the browser
+[show_exceptions]     show a stack trace in the browser.
 
 [static]              Whether Sinatra should handle serving static files.
                       Disable when using a Server able to do this on its own.
                       Disabling will boost performance.
                       Enabled per default.
 
-[views]               views folder
+[views]               views folder.
 
 == Error Handling
 
-Error handlers run within the same context as routes and before filters, which
+Error handlers run within the same context as routes and +before+ filters, which
 means you get all the goodies it has to offer, like <tt>haml</tt>,
 <tt>erb</tt>, <tt>halt</tt>, etc.
 
@@ -1160,7 +1159,7 @@ You get this:
 
   So what happened was... something bad
 
-Alternatively, you can install error handler for a status code:
+Alternatively, you can install an error handler for a status code:
 
   error 403 do
     'Access forbidden'
@@ -1301,7 +1300,7 @@ for details on available options and their behavior.
 Contrary to common believes, there is nothing wrong with classic style. If it
 suits your application, you do not have to switch to a modular application.
 
-There are only two downsides compared to modulare style:
+There are only two downsides compared to modular style:
 
 * You may only have one Sinatra application per Ruby process - if you plan to
   use more, switch to modular style.
@@ -1325,7 +1324,7 @@ differences in the setting:
 
 === Serving a Modular Application
 
-There are two common options for starting a modular app, activly starting with
+There are two common options for starting a modular app, actively starting with
 <tt>run!</tt>:
 
   # my_app.rb
@@ -1334,7 +1333,7 @@ There are two common options for starting a modular app, activly starting with
   class MyApp < Sinatra::Base
     # ... app code here ...
     
-    # start the server if ruby file executed directly
+    # start the server if ruby file is executed directly
     run! if app_file == $0
   end
 
@@ -1530,13 +1529,13 @@ To get some of the latest features.
 
 === With Bundler
 If you want to run your application with the latest Sinatra, using
-{Bundler}[http://gembundler.com/] is the recommend way.
+{Bundler}[http://gembundler.com/] is the recommended way.
 
-First, install bundler, if you haven't:
+First, install bundler, if you haven't yet:
 
   gem install bundler
 
-Then, in you project directory, create a +Gemfile+:
+Then, in your project directory, create a +Gemfile+:
 
   source :rubygems
   gem 'sinatra', :git => "git://github.com/sinatra/sinatra.git"
