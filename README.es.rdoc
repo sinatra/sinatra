@@ -942,14 +942,15 @@ petición (filtros, rutas y manejadores de errores) a través del método
     request.get?              # verdadero (hay métodos análogos para los otros verbos)
     request.form_data?        # falso
     request["UNA_CABECERA"]   # valor de la cabecera UNA_CABECERA
-    request.referer           # la referencia del cliente o '/'
+    request.referrer          # la referencia del cliente o '/'
     request.user_agent        # user agent (usado por la condición :agent)
     request.cookies           # hash de las cookies del browser
     request.xhr?              # es una petición ajax?
     request.url               # "http://ejemplo.com/ejemplo/foo"
     request.path              # "/ejemplo/foo"
     request.ip                # dirección IP del cliente
-    request.secure?           # falso
+    request.secure?           # falso (sería verdadero sobre ssl)
+    request.forwarded?        # verdadero (si se está corriendo atrás de un proxy inverso)
     requuest.env              # hash de entorno directamente entregado por Rack
   end
 
