@@ -42,8 +42,6 @@
 
  * Improved error handling. (cactus, Konstantin Haase)
 
- * Use 303 instead of 302 for redirects. (Konstantin Haase)
-
  * Skip missing template engines in tests correctly. (cactus)
 
  * Sinatra now ships with a Gemfile for development dependencies, since it eases
