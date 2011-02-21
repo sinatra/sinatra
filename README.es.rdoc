@@ -741,6 +741,37 @@ pueden ser utilizados dentro de los manejadores de rutas y las plantillas:
     bar(params[:nombre])
   end
 
+=== Usando Sesiones
+
+Una sesión es usada para mantener el estado a través de distintas peticiones.
+Cuando están activadas, tenés un hash de sesión para cada sesión de usuario:
+
+  enable :sessions
+
+  get '/' do
+    "valor = " << session[:valor].inspect
+  end
+
+  get '/:valor' do
+    session[:valor] = params[:valor]
+  end
+
+Tené en cuenta que <tt>enable :sessions</tt> guarda todos los datos en una
+cookie, lo que no es siempre deseable (guardar muchos datos va a incrementar
+tu tráfico, por citar un ejemplo).  Podés usar cualquier middleware Rack para
+manejar sesiones, de la misma manera que usarías cualquier otro middleware,
+pero con la salvedad de que *no* tenés que llamar a <tt>enable :sessions</tt>:
+
+  use Rack::Session::Pool, :expire_after => 2592000
+
+  get '/' do
+    "valor = " << session[:valor].inspect
+  end
+
+  get '/:valor' do
+    session[:valor] = params[:valor]
+  end
+
 === Interrupción
 
 Para detener inmediatamente una petición dentro de un filtro o una ruta usá:
