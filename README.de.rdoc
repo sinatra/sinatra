@@ -799,7 +799,7 @@ Kopie der Instanz erzeugt werden soll, dann verwende +call!+ anstelle von
 
 Die Rack Spezifikationen enthalten weitere Informationen zu +call+.
 
-=== Body und Status Code setzen
+=== Body, Status Code und Header setzen
 
 Es ist möglich und empfohlen den Status Code sowie den Response Body mit einem
 Returnwert in der Route zu setzen. In manchen Situationen kann es jedoch sein,
@@ -819,11 +819,32 @@ Ebenso ist es möglich einen Block an +body+ weiterzureichen, der dann vom Rack
 Handler ausgeführt wird (lässt sich z.B. zur Umsetzung von Streaming einsetzen,
 siehe auch "Rückgabewerte").
 
-Vergleichbar mit +body+ lässt sich auch der Status Code setzen:
+Vergleichbar mit +body+ lassen sich auch Status Code und Header setzen:
 
   get '/foo' do
     status 418
+    headers \
+      "Allow"   => "BREW, POST, GET, PROPFIND, WHEN"
+      "Refresh" => "Refresh: 20; http://www.ietf.org/rfc/rfc2324.txt"
     halt "Ich bin ein Teekesselchen"
+  end
+
+Genau wie bei +body+, liest ein Aufrufen von +headers+ oder +status+ ohne
+Argumente den aktuellen Wert aus.
+
+== Mime-Types
+
+Wenn <tt>send_file</tt> oder statische Dateien verwendet werden, kann es
+vorkommen, dass Sinatra den Mime-Typ nicht kennt. Registriert wird dieser mit
++mime_type+ per Dateiendung:
+
+  mime_type :foo, 'text/foo'
+
+Es kann aber auch der +content_type+ Helfer verwendet werden:
+
+  get '/' do
+    content_type :foo
+    "foo foo foo"
   end
 
 === URLs generieren
@@ -907,7 +928,7 @@ Für <tt>send_file</tt> stehen einige Hash-Optionen zur Verfügung:
   
 [disposition]
   Verwendet für Content-Disposition. Mögliche Werte sind: +nil+ (Standard),
-  <tt>:attachement</tt> und <tt>:inline</tt>
+  <tt>:attachment</tt> und <tt>:inline</tt>
 
 [length]
   Content-Length Header. Standardwert ist die Dateigröße
@@ -937,14 +958,15 @@ zugreifen:
     request.get?              # true (ähnliche Methoden für andere Verben)
     request.form_data?        # false
     request["SOME_HEADER"]    # Wert des SOME_HEADER-headers
-    request.referer           # der Referrer des Clients oder '/'
+    request.referrer          # der Referrer des Clients oder '/'
     request.user_agent        # User Agent (genutzt von :agent-Bedingung)
     request.cookies           # Hash der Cookies
     request.xhr?              # Ist dies eine Ajax-Anfrage?
     request.url               # "http://example.com/example/foo"
     request.path              # "/example/foo"
     request.ip                # Client IP-Addresse
-    request.secure?           # false
+    request.secure?           # false (wäre true bei SSL)
+    request.forwarded?        # true (wenn hinter Reverse Proxy)
     requuest.env              # env-Hash den Rack durchreicht
   end
 
@@ -1215,18 +1237,6 @@ Oder ein Statuscode-Bereich:
 
 Sinatra setzt verschiedene <tt>not_found</tt> und <tt>error</tt>
 Handler in der Development Umgebung.
-
-== Mime-Types
-
-Wenn <tt>send_file</tt> oder statische Dateien verwendet werden, kann es
-vorkommen, dass Sinatra den Mime-Typ nicht kennt. Registriert wird dieser mit
-+mime_type+ per Dateiendung:
-
-  mime_type :foo, 'text/foo'
-
-Es kann aber auch der +content_type+ Helfer verwendet werden:
-
-  content_type :foo
 
 == Rack Middleware
 
