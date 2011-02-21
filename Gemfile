@@ -18,11 +18,16 @@ gem 'erubis', :group => 'erubis'
 gem 'less', :group => 'less'
 gem 'liquid', :group => 'liquid'
 gem 'RedCloth', :group => 'redcloth'
-gem 'rdoc', :group => 'rdoc'
 gem 'nokogiri', :group => 'nokogiri'
 gem 'slim', :group => 'slim'
 
-gem 'coffee-script', '>= 2.0', :group => 'coffee-script'
+
+if RUBY_VERSION > '1.8.6'
+  gem 'coffee-script', '>= 2.0', :group => 'coffee-script'
+  gem 'rdoc', :group => 'rdoc'
+else
+  gem 'rack', '~> 1.1.0'
+end
 
 platforms :ruby do
   gem 'rdiscount', :group => 'rdiscount'
