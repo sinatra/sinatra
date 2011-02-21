@@ -1660,6 +1660,62 @@ Options are:
   -s # specify rack server/handler (default is thin)
   -x # turn on the mutex lock (default is off)
 
+== Requirements
+
+It is recommended to install Sinatra on Ruby 1.8.7, 1.9.2, JRuby or Rubinius.
+
+The following Ruby versions are officially supported:
+
+[ Ruby 1.8.6 ]
+
+  It is not recommended to use 1.8.6 for Sinatra. However, it will be
+  officially supported until Sinatra 1.3.0 is released. RDoc and CoffeScript
+  templates are not supported by this Ruby version. 1.8.6 includes a major
+  memory leak in its Hash implementation, which is triggered by Sinatra
+  versions prior to 1.1.1. The current version explicitly prevents this leak
+  at the cost of performance. You will have to downgrade Rack to 1.1.x, as
+  Rack >= 1.2 no longer supports 1.8.6.
+
+[ Ruby 1.8.7 ]
+
+  1.8.7 is fully supported, however, if nothing is keeping you from it, we
+  recommend upgrading to 1.9.2 or switching to JRuby or Rubinius.
+
+[ Ruby 1.9.2 ]
+
+  1.9.2 is supported and recommended. Note that Radius and Markaby are
+  currently not 1.9 compatible. Do not use 1.9.2p0, it is known to cause
+  segmentation faults when using Sinatra.
+
+[ Rubinius ]
+
+  Rubinius is officially supported (Rubinius >= 1.2.1), with the exception
+  of Textile templates.
+
+[ JRuby ]
+
+  JRuby is officially supported (JRuby >= 1.5.6). No issues with third party
+  template libraries are known, however, if you choose to use JRuby, please
+  look into JRuby rack handlers, as the Thin web server is not (yet) supported
+  on JRuby.
+
+We also keep an eye on upcoming Ruby versions.
+
+The following Ruby implementations are not officially supported but still are
+known to run Sinatra:
+
+* Older versions of JRuby and Rubinius
+* MacRuby
+* Maglev
+* IronRuby
+* Ruby 1.9.0 and 1.9.1
+
+Not being officially supported means if things only break there and not on a
+supported platform, we assume it's not our issue but theirs.
+
+Sinatra should work on any operating system supported by the chosen Ruby
+implementation.
+
 == The Bleeding Edge
 If you would like to use Sinatra's latest bleeding code, feel free to run your
 application against the master branch, it should be rather stable.
