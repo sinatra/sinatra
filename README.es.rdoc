@@ -372,7 +372,7 @@ plantillas:
 
 Como no podés utilizar Ruby desde Markdown, no podés usar layouts escritos en
 Markdown. De todos modos, es posible usar un motor de renderizado para el
-layout distinto al de la plantilla pasando la opción `:layout_engine`:
+layout distinto al de la plantilla pasando la opción <tt>:layout_engine</tt>:
 
   get '/' do
     markdown :index, :layout_engine => :erb
@@ -432,7 +432,7 @@ plantillas:
 
 Como no podés utilizar Ruby desde Textile, no podés usar layouts escritos en
 Textile. De todos modos, es posible usar un motor de renderizado para el
-layout distinto al de la plantilla pasando la opción `:layout_engine`:
+layout distinto al de la plantilla pasando la opción <tt>:layout_engine</tt>:
 
   get '/' do
     textile :index, :layout_engine => :erb
@@ -478,7 +478,7 @@ plantillas:
 
 Como no podés utilizar Ruby desde RDoc, no podés usar layouts escritos en RDoc.
 De todos modos, es posible usar un motor de renderizado para el layout distinto
-al de la plantilla pasando la opción `:layout_engine`:
+al de la plantilla pasando la opción <tt>:layout_engine</tt>:
 
   get '/' do
     rdoc :index, :layout_engine => :erb
@@ -700,7 +700,7 @@ filtros after:
     puts response.status
   end
 
-Nota: A menos que usés el método `body` en lugar de simplemente devolver un
+Nota: A menos que usés el método +body+ en lugar de simplemente devolver un
 string desde una ruta, el cuerpo de la respuesta no va a estar disponible en
 un filtro after, debido a que todavía no se ha generado.
 
@@ -785,7 +785,7 @@ siguiente ruta que coincida. Si no coincide ninguna ruta, se devuelve un 404.
 Es posible, y se recomienda, asignar el código de estado y el cuerpo de una
 respuesta con el valor de retorno de una ruta.  De cualquier manera, en varios
 escenarios, puede que sea conveniente asignar el cuerpo en un punto arbitrario
-del flujo de ejecución con el método `body`.  A partir de ahí, podés usar ese
+del flujo de ejecución con el método +body+.  A partir de ahí, podés usar ese
 mismo método para acceder al cuerpo de la respuesta:
 
   get '/foo' do
@@ -809,31 +809,31 @@ De manera similar, también podés asignar el código de estado:
 
 === Generando URLs
 
-Para generar URLs deberías usar el método `url`.  Por ejemplo, en Haml:
+Para generar URLs deberías usar el método +url+.  Por ejemplo, en Haml:
 
   %a{:href => url('/foo')} foo
 
 Tiene en cuenta proxies inversos y encaminadores de Rack, si están presentes.
 
-Este método también puede invocarse mediante su alias `to`  (mirá un ejemplo
+Este método también puede invocarse mediante su alias +to+  (mirá un ejemplo
 [a continuación](#Redirección%20del%20Navegador)).
 
 === Redirección del Navegador
 
-Podés redireccionar al navegador con el método `redirect`:
+Podés redireccionar al navegador con el método +redirect+:
 
   get '/foo' do
     redirect to('/bar')
   end
 
 Cualquier parámetro adicional se utiliza de la misma manera que los argumentos
-pasados a `halt`:
+pasados a +halt+:
 
   redirect to('/bar'), 303
   redirect 'http://google.com', 'te confundiste de lugar, compañero'
 
 También podés redireccionar fácilmente de vuelta hacia la página desde donde
-vino el usuario con `redirect back`:
+vino el usuario con +redirect back+:
 
   get '/foo' do
     "<a href='/bar'>hacer algo</a>"
@@ -864,7 +864,7 @@ O usar una sesión:
 
 === Enviando Archivos
 
-Para enviar archivos, podés usar el método `send_file`:
+Para enviar archivos, podés usar el método <tt>send_file</tt>:
 
   get '/' do
     send_file 'foo.png'
@@ -902,7 +902,7 @@ peticiones de rango.
 
 El objeto de la petición entrante puede ser accedido desde el nivel de la
 petición (filtros, rutas y manejadores de errores) a través del método
-`request`:
+<tt>request</tt>:
 
   # app corriendo en http://ejemplo.com/ejemplo
   get '/foo' do
@@ -1401,11 +1401,11 @@ disponibles.
 Cada aplicación Sinatra es una subclase de Sinatra::Base. Si estás usando el
 DSL de top-level (<tt>require 'sinatra'</tt>), entonces esta clase es
 Sinatra::Application, de otra manera es la subclase que creaste explícitamente.
-Al nivel de la clase tenés métodos como `get` o `before`, pero no podés acceder
-a los objetos `request` o `session`, ya que hay una única clase de la
+Al nivel de la clase tenés métodos como +get+ o +before+, pero no podés acceder
+a los objetos +request+ o +session+, ya que hay una única clase de la
 aplicación para todas las peticiones.
 
-Las opciones creadas utilizando `set` son métodos al nivel de la clase:
+Las opciones creadas utilizando +set+ son métodos al nivel de la clase:
 
     class MiApp < Sinatra::Base
       # Ey, estoy en el ámbito de la aplicación!
@@ -1421,21 +1421,21 @@ Tenés la ligadura al ámbito de la aplicación dentro de:
 
 * El cuerpo de la clase de tu aplicación
 * Métodos definidos por extensiones
-* El bloque pasado a `helpers`
-* Procs/bloques usados como el valor para `set`
+* El bloque pasado a +helpers+
+* Procs/bloques usados como el valor para +set+
 
 Este ámbito puede alcanzarse de las siguientes maneras:
 
 * A través del objeto pasado a los bloques de configuración (<tt>configure { |c| ...}</tt>)
-* Llamando a `settings` desde dentro del ámbito de la petición
+* Llamando a +settings+ desde dentro del ámbito de la petición
 
 === Ámbito de Petición/Instancia
 
 Para cada petición entrante, una nueva instancia de la clase de tu aplicación
 es creada y todos los bloques de rutas son ejecutados en ese ámbito. Desde este
-ámbito podés acceder a los objetos `request` y `session` o llamar a los métodos
-de renderización como `erb` o `haml`. Podés acceder al ámbito de la aplicación
-desde el ámbito de la petición utilizando `settings`:
+ámbito podés acceder a los objetos +request+ y +session+ o llamar a los métodos
+de renderización como +erb+ o +haml+. Podés acceder al ámbito de la aplicación
+desde el ámbito de la petición utilizando +settings+:
 
   class MiApp < Sinatra::Base
     # Ey, estoy en el ámbito de la aplicación!
@@ -1465,13 +1465,13 @@ El ámbito de delegación solo reenvía métodos al ámbito de clase. De cualqui
 manera, no se comporta 100% como el ámbito de clase porque no tenés la ligadura
 de la clase: únicamente métodos marcados explícitamente para delegación están
 disponibles y no compartís variables/estado con el ámbito de clase (léase:
-tenés un `self` diferente). Podés agregar delegaciones de método llamando a
+tenés un +self+ diferente). Podés agregar delegaciones de método llamando a
 <tt>Sinatra::Delegator.delegate :nombre_del_metodo</tt>.
 
 Tenés la ligadura al ámbito de delegación dentro de:
 
 * La ligadura del top-level, si hiciste <tt>require "sinatra"</tt>
-* Un objeto extendido con el mixin `Sinatra::Delegator`
+* Un objeto extendido con el mixin <tt>Sinatra::Delegator</tt>
 
 Pegale una mirada al código: acá está el
 {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
