@@ -1023,6 +1023,23 @@ El objeto <tt>request.body</tt> es una instancia de IO o StringIO:
     "Hola #{datos['nombre']}!"
   end
 
+=== Archivos Adjuntos
+
+Podés usar el método helper +attachment+ para indicarle al navegador que
+almacene la respuesta en el disco en lugar de mostrarla en pantalla.
+
+  get '/' do
+    attachment
+    "guardalo!"
+  end
+
+También podés pasarle un nombre de archivo:
+
+  get '/' do
+    attachment "info.txt"
+    "guardalo!"
+  end
+
 === Buscando los Archivos de las Plantillas
 
 El helper <tt>find_template</tt> se utiliza para encontrar los archivos de las
