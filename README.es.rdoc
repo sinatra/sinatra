@@ -963,7 +963,7 @@ Estas opciones son:
 
 [disposition]
   se utiliza para el encabezado Content-Disposition, y puede tomar alguno de los
-  siguientes valores: +nil+ (por defecto), <tt>:attachement</tt> e
+  siguientes valores: +nil+ (por defecto), <tt>:attachment</tt> e
   <tt>:inline</tt>
 
 [length]
