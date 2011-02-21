@@ -154,6 +154,47 @@ De esa manera podemos, por ejemplo, implementar fácilmente un streaming:
 
     get('/') { Stream.new }
 
+=== Comparadores de Rutas Personalizados
+
+Como se mostró anteriormente, Sinatra permite utilizar Strings y expresiones
+regulares para definir las rutas.  Sin embargo, la cosa no termina ahí.  Podés
+definir tus propios comparadores muy fácilmente:
+
+  class PattronCualquieraMenos
+    Match = Struct.new(:captures)
+
+    def initialize(excepto)
+      @excepto  = excepto
+      @caputras = Match.new([])
+    end
+
+    def match(str)
+      @caputras unless @excepto === str
+    end
+  end
+
+  def cualquiera_menos(patron)
+    PatronCualquieraMenos.new(patron)
+  end
+
+  get cualquiera_menos("/index") do
+    # ...
+  end
+
+Tené en cuenta que el ejemplo anterior es un poco rebuscado.  Un resultado
+similar puede conseguirse más sencillamente:
+
+  get // do
+    pass if request.path_info == "/index"
+    # ...
+  end
+
+O, usando un lookahead negativo:
+
+  get %r{^(?!/index$)} do
+    # ...
+  end
+
 == Archivos Estáticos
 
 Los archivos estáticos son servidos desde el directorio público
