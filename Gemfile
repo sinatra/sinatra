@@ -4,7 +4,7 @@
 # development dependencies of our dependencies, and those are not conflict free.
 # So, here we are, `bundle install`.
 #
-# If you have issues with on gem: `bundle install --without-coffee-script`.
+# If you have issues with a gem: `bundle install --without-coffee-script`.
 
 RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
 
