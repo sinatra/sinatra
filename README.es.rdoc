@@ -804,7 +804,7 @@ lugar de a otra, usá <tt>call!</tt> en lugar de <tt>call</tt>.
 En la especificación de Rack podés encontrar más información sobre
 <tt>call</tt>.
 
-=== Asignando el Cuerpo y el Código de Estado de una Respuesta
+=== Asignando el Código de Estado, los Encabezados y el Cuerpo de una Respuesta
 
 Es posible, y se recomienda, asignar el código de estado y el cuerpo de una
 respuesta con el valor de retorno de una ruta.  De cualquier manera, en varios
@@ -823,12 +823,18 @@ mismo método para acceder al cuerpo de la respuesta:
 También es posible pasarle un bloque a +body+, que será ejecutado por el Rack
 handler (podés usar esto para implementar streaming, mirá "Valores de retorno").
 
-De manera similar, también podés asignar el código de estado:
+De manera similar, también podés asignar el código de estado y encabezados:
 
   get '/foo' do
     status 418
-    halt "I'm a teapot"
+    headers \
+      "Allow"   => "BREW, POST, GET, PROPFIND, WHEN"
+      "Refresh" => "Refresh: 20; http://www.ietf.org/rfc/rfc2324.txt"
+    body "I'm a tea pot!"
   end
+
+También, al igual que +body+, tanto +status+ como +headers+ pueden utilizarse
+para obtener sus valores cuando no se les pasa argumentos.
 
 === Generando URLs
 
