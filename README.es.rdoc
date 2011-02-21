@@ -1023,6 +1023,21 @@ También es posible usar una
 
   etag @articulo.sha1, :weak
 
+Estos helpers no van a cachear nada por vos, sino que van a facilitar la
+información necesaria para poder hacerlo.  Si estás buscando soluciones rápidas
+de cacheo, mirá {rack-cache}[http://rtomayko.github.com/rack-cache/]:
+
+  require "rack/cache"
+  require "sinatra"
+
+  use Rack::Cache
+
+  get '/' do
+    cache_control :public, :max_age => 36000
+    sleep 5
+    "hola"
+  end
+
 === Enviando Archivos
 
 Para enviar archivos, podés usar el método <tt>send_file</tt>:
