@@ -151,6 +151,47 @@ That way we can for instance easily implement a streaming example:
 
     get('/') { Stream.new }
 
+=== Custom Route Matchers
+
+As shown above, Sinatra ships with built-in support for using String patterns
+and regular expressions as route matches. However, it does not stop there. You
+can easily define your own matchers:
+
+  class AllButPattern
+    Match = Struct.new(:captures)
+
+    def initialize(except)
+      @except   = except
+      @caputres = Match.new([])
+    end
+
+    def match(str)
+      @caputres unless @except === str
+    end
+  end
+
+  def all_but(pattern)
+    AllButPattern.new(pattern)
+  end
+
+  get all_but("/index") do
+    # ...
+  end
+
+Note that the above example might be over-engineered, as it can also be
+expressed as:
+
+  get // do
+    pass if request.path_info == "/index"
+    # ...
+  end
+
+Or, using negative look ahead:
+
+  get %r{^(?!/index$)} do
+    # ...
+  end
+
 == Static Files
 
 Static files are served from the <tt>./public</tt> directory. You can specify
