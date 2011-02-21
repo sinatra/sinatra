@@ -725,7 +725,7 @@ also modify the request and response. Instance variables set in before filters
 and routes are accessible by after filters:
 
   after do
-    put response.status
+    puts response.status
   end
 
 Note: Unless you use the +body+ method rather than just returning a String from
