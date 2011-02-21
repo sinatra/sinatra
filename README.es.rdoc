@@ -1263,6 +1263,34 @@ desactivadas por defecto, incluyendo el servidor incorporado. Mirá
 {Opciones y Configuraciones}[http://sinatra.github.com/configuration.html]
 para detalles sobre las opciones disponibles y su comportamiento.
 
+=== Estilo Modular vs. Clásico
+
+Contrariamente a la creencia popular, no hay nada de malo con el estilo clásico.
+Si se ajusta a tu aplicación, no es necesario que la cambies a una modular.
+
+Existen tan solo dos desventajas en comparación con el estilo modular:
+
+* Solamente podés tener una aplicación Sinatra por proceso Ruby - si tenés
+  planificado usar más, cambiá al estilo modular.
+
+* El estilo clásico contamina Object con métodos delegadores - si tenés
+  planificado empaquetar tu aplicación en una librería/gem, cambiá al estilo
+  modular.
+
+No hay ninguna razón por la cuál no puedas mezclar los estilos modular y
+clásico.
+
+Cuando cambiés de un estilo al otro, tené en cuenta las sutiles diferencias
+entre sus configuraciones:
+
+  Configuración       Clásica                      Modular
+
+  app_file            archivo que carga sinatra    nil
+  run                 $0 == app_file               false
+  logging             true                         false
+  method_override     true                         false
+  inline_templates    true                         false
+
 === Sirviendo una Aplicación Modular
 
 Las dos opciones más comunes para iniciar una aplicación modular son, iniciarla
