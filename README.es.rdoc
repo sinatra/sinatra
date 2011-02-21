@@ -876,17 +876,23 @@ Además acepta un par de opciones:
 
 Estas opciones son:
 
-* <tt>:filename</tt> - nombre del archivo respondido, por defecto es el nombre
-  real del archivo.
-* <tt>:last_modified</tt> - valor para el encabezado Last-Modified, por defecto
-  toma el mtime del archivo.
-* <tt>:type</tt> - el content type que se va a utilizar, si no está presente se
-  intenta adivinar a partir de la extensión del archivo.
-* <tt>:disposition</tt> - se utiliza para el encabezado Content-Disposition, y
-  puede tomar alguno de los siguientes valores: +nil+ (por defecto),
-  <tt>:attachement</tt> e <tt>:inline</tt>
-* <tt>:length</tt> - encabezado Content-Length, por defecto toma el tamaño del
-  archivo.
+[filename]
+  nombre del archivo respondido, por defecto es el nombre real del archivo.
+
+[last_modified]
+  valor para el encabezado Last-Modified, por defecto toma el mtime del archivo.
+
+[type]
+  el content type que se va a utilizar, si no está presente se intenta adivinar
+  a partir de la extensión del archivo.
+
+[disposition]
+  se utiliza para el encabezado Content-Disposition, y puede tomar alguno de los
+  siguientes valores: +nil+ (por defecto), <tt>:attachement</tt> e
+  <tt>:inline</tt>
+
+[length]
+  encabezado Content-Length, por defecto toma el tamaño del archivo.
 
 Si el Rack handler lo soporta, se intentará no transmitir directamente desde el
 proceso de Ruby.  Si usás este método, Sinatra se va a encargar automáticamente
