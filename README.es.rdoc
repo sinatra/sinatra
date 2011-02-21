@@ -126,7 +126,7 @@ Podés definir tus propias condiciones fácilmente:
     "Lo siento, perdiste."
   end
 
-=== Valores de retorno
+=== Valores de Retorno
 
 El valor de retorno de un bloque de ruta determina al menos el cuerpo de la
 respuesta que se le pasa al cliente HTTP o al siguiente middleware en la pila
@@ -780,7 +780,7 @@ la petición usando <tt>pass</tt>:
 Se sale inmediatamente del bloque de la ruta y se le pasa el control a la
 siguiente ruta que coincida. Si no coincide ninguna ruta, se devuelve un 404.
 
-=== Asignando el cuerpo y el código de estado de una respuesta
+=== Asignando el Cuerpo y el Código de Estado de una Respuesta
 
 Es posible, y se recomienda, asignar el código de estado y el cuerpo de una
 respuesta con el valor de retorno de una ruta.  De cualquier manera, en varios
