@@ -1427,7 +1427,7 @@ The methods available to Sinatra::Base subclasses are exactly as those
 available via the top-level DSL. Most top-level apps can be converted to
 Sinatra::Base components with two modifications:
 
-* Your file should require +sinatra/base+ instead of +sinatra+;
+* Your file should require <tt>sinatra/base</tt> instead of +sinatra+;
   otherwise, all of Sinatra's DSL methods are imported into the main
   namespace.
 * Put your app's routes, error handlers, filters, and options in a subclass
@@ -1747,7 +1747,7 @@ Now you can run your app like this:
 
 === Roll Your Own
 Create a local clone and run your app with the <tt>sinatra/lib</tt> directory
-on the <tt>LOAD_PATH</tt>:
+on the <tt>$LOAD_PATH</tt>:
 
   cd myapp
   git clone git://github.com/sinatra/sinatra.git
