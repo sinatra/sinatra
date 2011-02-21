@@ -919,7 +919,7 @@ Range Requests.
 
 == Das Request-Objekt
 
-Auf das `request`-Objeket der eigehenden Anfrage kann man vom Anfragescope aus
+Auf das +request+-Objeket der eigehenden Anfrage kann man vom Anfragescope aus
 zugreifen:
 
   # App läuft unter http://example.com/example
@@ -1479,12 +1479,12 @@ Verfügung stehen.
 Jede Sinatra-Anwendung entspricht einer Sinatra::Base-Subklasse. Falls man die
 Top-Level-DSL verwendet (<tt>require 'sinatra'</tt>), so handelt es sich
 hierbei um Sinatra::Application, andernfalls is es jene Subklasse, die man
-explizit angelegt hat. Auf Klassenebene stehen Methoden wie `get` oder `before`
-zur Verfügung, man hat aber keinen Zugriff auf das `request`-Object oder die
-`session`, da nur eine einzige Klasse für alle eingehenden Anfragen genutzt
+explizit angelegt hat. Auf Klassenebene stehen Methoden wie +get+ oder +before+
+zur Verfügung, man hat aber keinen Zugriff auf das +request+-Object oder die
++session+, da nur eine einzige Klasse für alle eingehenden Anfragen genutzt
 wird.
 
-Optionen die via `set` gesetzt werden, sind Methoden auf Klassenebene:
+Optionen die via +set+ gesetzt werden, sind Methoden auf Klassenebene:
 
   class MyApp < Sinatra::Base
     # Hey, ich bin im Anwendungsscope!
@@ -1500,21 +1500,21 @@ Im Anwendungsscope befindet man sich:
 
 * In der Anwendungsklasse.
 * In Methoden die von Erweiterungen definiert werden.
-* Im Block, der an `helpers` übergeben wird.
-* In Procs und Blöcken die an `set` übergeben werden.
+* Im Block, der an +helpers+ übergeben wird.
+* In Procs und Blöcken die an +set+ übergeben werden.
 
 Man kann auf das Scope-Object (die Klasse) wie folgt zugreifen:
 
-* Über das Objekt, dass an den `configure`-Block übergeben wird (<tt>configure
+* Über das Objekt, dass an den +configure+-Block übergeben wird (<tt>configure
   { |c| ... }</tt>).
-* `settings` aus den anderen Scopes heraus.
+* +settings+ aus den anderen Scopes heraus.
 
 === Anfrage- oder Instanzscope
 
 Für jede eingehende Anfrage wird eine neue Instanz der Anwendungsklasse
 erstellt und alle Handlers werden in diesem Scope ausgeführt. Aus diesem Scope
-heraus kann man auf `request` oder `session` zugreifen und Methoden wie `erb`
-oder `haml` aufrufen. Man kann mit der `settings` Methode außerdem auf den
+heraus kann man auf +request+ oder +session+ zugreifen und Methoden wie +erb+
+oder +haml+ aufrufen. Man kann mit der +settings+ Methode außerdem auf den
 Anwengungsscope zugreifen.
 
   class MyApp < Sinatra::Base
@@ -1546,13 +1546,13 @@ weitergeleitet. Dieser verhält sich jedoch nicht 100%ig wie der Klassenscope,
 da man nicht die Bindung der Klasse besitzt: Nur Methoden, die explizit als
 delegierbar markiert wurden stehen hier zur Verfügung und man kann nicht auf
 die Variablen des Klassenscopes zugreifen (mit anderen Worten: man hat ein
-anderes `self`). Man kann mit <tt>Sinatra::Delegator.delegate
+anderes +self+). Man kann mit <tt>Sinatra::Delegator.delegate
 :methoden_name</tt> auch weitere Delegationen hinzufügen.
 
 Im Delegation-Scop befindet man sich:
 
 * Im Top-Level, wenn man <tt>require 'sinatra'</tt> aufgerufen hat.
-* In einem Objekt, dass mit dem `Sinatra::Delegator` mixin erweitert wurde.
+* In einem Objekt, dass mit dem <tt>Sinatra::Delegator</tt> mixin erweitert wurde.
 
 Schau am besten im Code nach: Hier ist
 {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/base.rb#L1064]
