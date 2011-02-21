@@ -676,10 +676,10 @@ para aprender más de Tilt.
 
 == Filtros
 
-Los filtros before son evaluados antes de cada petición dentro del mismo
-contexto que las rutas serán evaluadas y pueden modificar la petición y la
-respuesta. Las variables de instancia asignadas en los filtros son accesibles
-por las rutas y las plantillas:
+Los filtros +before+ son evaluados antes de cada petición dentro del mismo
+contexto que las rutas. Pueden modificar la petición y la respuesta.  Las
+variables de instancia asignadas en los filtros son accesibles por las rutas y
+las plantillas:
 
   before do
     @nota = 'Hey!'
@@ -691,10 +691,10 @@ por las rutas y las plantillas:
     params[:splat] #=> 'bar/baz'
   end
 
-Los filtros after son evaluados después de cada petición dentro del mismo
-contexto y también pueden modificar la petición y la respuesta. Las variables
-de instancia asignadas en los filtros before y rutas son accesibles por los
-filtros after:
+Los filtros +after+ son evaluados después de cada petición dentro del mismo
+contexto y también pueden modificar la petición y la respuesta.  Las variables
+de instancia asignadas en los filtros +before+ y en las rutas son accesibles por
+los filtros +after+:
 
   after do
     puts response.status
@@ -716,7 +716,7 @@ patrón:
     session[:ultimo_slug] = slug
   end
 
-Al igual que las rutas, los filtros también aceptan condiciones:
+Al igual que las rutas, los filtros también pueden aceptar condiciones:
 
   before :agent => /Songbird/ do
     # ...
@@ -820,9 +820,8 @@ mismo método para acceder al cuerpo de la respuesta:
     puts body
   end
 
-También es posible pasarle un bloque a body, que será ejecutado por el rack
-handler (podés usar esto para implementar streaming, mirá
-"Valores de retorno").
+También es posible pasarle un bloque a +body+, que será ejecutado por el Rack
+handler (podés usar esto para implementar streaming, mirá "Valores de retorno").
 
 De manera similar, también podés asignar el código de estado:
 
@@ -992,7 +991,7 @@ poder utilizar más de un directorio de vistas:
     end
   end
 
-Otro ejemplo consiste en usar directorios diferentes para los distintso motores
+Otro ejemplo consiste en usar directorios diferentes para los distintos motores
 de renderizado:
 
   set :views, :sass => 'vistas/sass', :haml => 'plantillas', :defecto => 'vistas'
@@ -1134,8 +1133,8 @@ Podés acceder a estas opciones utilizando el método <tt>settings</tt>:
                       iniciar el servidor web, no la habilités cuando estés
                       usando rackup o algún otro medio.
 
-[running]             indica si el servidor integrado está ejecutandose, no
-                      cambiés esta configuración!
+[running]             indica si el servidor integrado está ejecutandose, ¡no
+                      cambiés esta configuración!.
 
 [server]              servidor, o lista de servidores, para usar como servidor
                       integrado.  Por defecto: ['thin', 'mongrel', 'webrick'],
@@ -1143,7 +1142,7 @@ Podés acceder a estas opciones utilizando el método <tt>settings</tt>:
 
 [sessions]            habilita sesiones basadas en cookies.
 
-[show_exceptions]     muestra un stacktrace en el navegador.
+[show_exceptions]     muestra un stack trace en el navegador.
 
 [static]              define si Sinatra debe encargarse de servir archivos
                       estáticos.
@@ -1157,7 +1156,7 @@ Podés acceder a estas opciones utilizando el método <tt>settings</tt>:
 == Manejo de Errores
 
 Los manejadores de errores se ejecutan dentro del mismo contexto que las rutas
-y los filtros before, lo que significa que podés usar, por ejemplo,
+y los filtros +before+, lo que significa que podés usar, por ejemplo,
 <tt>haml</tt>, <tt>erb</tt>, <tt>halt</tt>, etc.
 
 === No encontrado <em>(Not Found)</em>
