@@ -18,6 +18,9 @@ Instalá la gem y ejecutá la aplicación con:
 
 Podés verla en: http://localhost:4567
 
+Es recomendable además ejecutar <tt>gem install thin</tt>, ya que Sinatra lo va
+a utilizar cuando esté disponible.
+
 == Rutas
 
 En Sinatra, una ruta está compuesta por un método HTTP y un patrón de una URL.
