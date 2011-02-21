@@ -798,7 +798,7 @@ mismo método para acceder al cuerpo de la respuesta:
 
 También es posible pasarle un bloque a body, que será ejecutado por el rack
 handler (podés usar esto para implementar streaming, mirá
-[Valores de retorno](#Valores%20de%20retorno)).
+"Valores de retorno").
 
 De manera similar, también podés asignar el código de estado:
 
@@ -816,7 +816,7 @@ Para generar URLs deberías usar el método +url+.  Por ejemplo, en Haml:
 Tiene en cuenta proxies inversos y encaminadores de Rack, si están presentes.
 
 Este método también puede invocarse mediante su alias +to+  (mirá un ejemplo
-[a continuación](#Redirección%20del%20Navegador)).
+a continuación).
 
 === Redirección del Navegador
 
