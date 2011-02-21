@@ -987,6 +987,100 @@ Podés acceder a estas opciones utilizando el método <tt>settings</tt>:
     ...
   end
 
+=== Configuraciones Disponibles
+
+[absolute_redirects]  si está deshabilitada, Sinatra va a permitir redirecciones
+                      relativas, sin embargo, como consecuencia de esto, va a
+                      dejar de cumplir con el RFC 2616 (HTTP 1.1), que solamente
+                      permite redirecciones absolutas.
+
+                      Activalo si tu apliación está corriendo atrás de un proxy
+                      inverso que no se ha configurado adecuadamente.  Notá que
+                      el helper +url+ va a seguir produciendo URLs absolutas, a
+                      menos que le pasés +false+ como segundo parámetro.
+
+                      Deshabilitada por defecto.
+
+[add_charsets]        tipos mime a los que el helper <tt>content_type</tt> les
+                      añade automáticamente el charset.
+
+                      En general, no deberías asignar directamente esta opción,
+                      sino añadirle los charsets que quieras:
+
+                        settings.add_charsets << "application/foobar"
+
+[app_file]            archivo principal de la aplicación, se utiliza para
+                      detectar la raíz del proyecto, el directorio de las vistas
+                      y el público así como las plantillas inline.
+
+[bind]                dirección IP que utilizará el servidor integrado (por
+                      defecto: 0.0.0.0).
+
+[default_encoding]    encoding utilizado cuando el mismo se desconoce (por
+                      defecto <tt>"utf-8"</tt>).
+
+[dump_errors]         mostrar errores en el log.
+
+[environment]         entorno actual, por defecto toma el valor de
+                      <tt>ENV['RACK_ENV']</tt>, o <tt>"development"</tt> si no
+                      está disponible.
+
+[logging]             define si se utiliza el logger.
+
+[lock]                coloca un lock alrededor de cada petición, procesando
+                      solamente una por proceso.
+
+                      Habilitá esta opción si tu aplicación no es thread-safe.
+                      Se encuentra deshabilitada por defecto.
+
+[method_override]     utiliza el parámetro <tt>_method</tt> para permtir
+                      formularios put/delete en navegadores que no los soportan.
+
+[port]                puerto en el que escuchará el servidor integrado.
+
+[prefixed_redirects]  define si inserta <tt>request.script_name</tt> en las
+                      redirecciones cuando no se proporciona un path absoluto.
+                      De esta manera, cuando está habilitada,
+                      <tt>redirect '/foo'</tt> se comporta de la misma manera
+                      que <tt>redirect to('/foo')</tt>.  Se encuentra
+                      deshabilitada por defecto.
+
+[public]              directorio desde donde se sirven los archivos públicos.
+
+[reload_templates]    define si se recargan las plantillas entre peticiones.
+
+                      Se encuentra activado en el entorno de desarrollo y en
+                      Ruby 1.8.6 (para compoensar un bug en Ruby que provoca una
+                      pérdida de memoria).
+
+[root]                directorio raíz del proyecto.
+
+[raise_errors]        elevar excepciones (detiene la aplicación).
+
+[run]                 cuando está habilitada, Sinatra se va a encargar de
+                      iniciar el servidor web, no la habilités cuando estés
+                      usando rackup o algún otro medio.
+
+[running]             indica si el servidor integrado está ejecutandose, no
+                      cambiés esta configuración!
+
+[server]              servidor, o lista de servidores, para usar como servidor
+                      integrado.  Por defecto: ['thin', 'mongrel', 'webrick'],
+                      el orden establece la prioridad.
+
+[sessions]            habilita sesiones basadas en cookies.
+
+[show_exceptions]     muestra un stacktrace en el navegador.
+
+[static]              define si Sinatra debe encargarse de servir archivos
+                      estáticos.
+
+                      Deshabilitala cuando usés un servidor capaz de hacerlo
+                      por sí solo, porque mejorará el rendimiento.  Se encuentra
+                      habilitada por defecto.
+
+[views]               directorio de las vistas.
+
 == Manejo de Errores
 
 Los manejadores de errores se ejecutan dentro del mismo contexto que las rutas
