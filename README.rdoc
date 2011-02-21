@@ -823,7 +823,7 @@ With headers:
 
 === Passing
 
-A route can put processing to the next matching route using <tt>pass</tt>:
+A route can punt processing to the next matching route using <tt>pass</tt>:
 
   get '/guess/:who' do
     pass unless params[:who] == 'Frank'
