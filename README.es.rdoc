@@ -1468,7 +1468,7 @@ métodos que los provistos por el DSL de top-level. La mayoría de las
 aplicaciones top-level se pueden convertir en componentes Sinatra::Base con
 dos modificaciones:
 
-* Tu archivo debe requerir +sinatra/base+ en lugar de +sinatra+; de otra
+* Tu archivo debe requerir <tt>sinatra/base</tt> en lugar de +sinatra+; de otra
   manera, todos los métodos del DSL de sinatra son importados dentro del
   espacio de nombres principal.
 * Poné las rutas, manejadores de errores, filtros y opciones de tu aplicación
@@ -1795,7 +1795,7 @@ Ahora podés arrancar tu aplicación así:
 === Con Git
 
 Cloná el repositorio localmente y ejecutá tu aplicación, asegurándote que el
-directorio <tt>sinatra/lib</tt> esté en el <tt>LOAD_PATH</tt>:
+directorio <tt>sinatra/lib</tt> esté en el <tt>$LOAD_PATH</tt>:
 
   cd miapp
   git clone git://github.com/sinatra/sinatra.git
