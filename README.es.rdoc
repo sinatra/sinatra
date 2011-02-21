@@ -971,6 +971,49 @@ El objeto <tt>request.body</tt> es una instancia de IO o StringIO:
     "Hola #{datos['nombre']}!"
   end
 
+=== Buscando los Archivos de las Plantillas
+
+El helper <tt>find_template</tt> se utiliza para encontrar los archivos de las
+plantillas que se van a renderizar:
+
+  find_template settings.views, 'foo', Tilt[:haml] do |archivo|
+    puts "podría ser #{archivo}"
+  end
+
+Si bien esto no es muy útil, lo interesante es que podés sobreescribir este
+método, y así enganchar tu propio mecanismo de búsqueda.  Por ejemplo, para
+poder utilizar más de un directorio de vistas:
+
+  set :views, ['vistas', 'plantillas']
+
+  helpers do
+    def find_template(views, name, engine, &block)
+      Array(views).each { |v| super(v, name, engine, &block) }
+    end
+  end
+
+Otro ejemplo consiste en usar directorios diferentes para los distintso motores
+de renderizado:
+
+  set :views, :sass => 'vistas/sass', :haml => 'plantillas', :defecto => 'vistas'
+
+  helpers do
+    def find_template(views, name, engine, &block)
+      _, folder = views.detect { |k,v| engine == Tilt[k] }
+      folder ||= views[:defecto]
+      super(folder, name, engine, &block)
+    end
+  end
+
+¡Es muy fácil convertir estos ejemplos en una extensión y compartirla!.
+
+Notá que <tt>find_template</tt> no verifica si un archivo existe realmente, sino
+que llama al bloque que recibe para cada path posible.  Esto no representa un
+problema de rendimiento debido a que +render+ va a usar +break+ ni bien
+encuentre un archivo que exista.  Además, las ubicaciones de las plantillas (y
+su contenido) se cachean cuando no estás en el modo de desarrollo.  Es bueno
+tener en cuenta lo anteiror si escribís un método medio loco.
+
 == Configuración
 
 Ejecutar una vez, en el inicio, en cualquier entorno:
