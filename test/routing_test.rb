@@ -778,6 +778,11 @@ class RoutingTest < Test::Unit::TestCase
   end
 
   it 'raises an ArgumentError with block arity > 1 and too many values' do
+    if RUBY_ENGINE == "rbx"
+      $stderr.puts "\npending test: #{__method__}, #{__FILE__}:#{__LINE__} "
+      next
+    end
+
     mock_app {
       get '/:foo/:bar/:baz' do |foo, bar|
         'quux'

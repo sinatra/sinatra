@@ -6,7 +6,9 @@
 #
 # If you have issues with on gem: `bundle install --without-coffee-script`.
 
-source :rubygems
+RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
+
+source :rubygems unless ENV['QUICK']
 gemspec
 
 gem 'rake'
@@ -17,7 +19,7 @@ gem 'builder', :group => 'builder'
 gem 'erubis', :group => 'erubis'
 gem 'less', :group => 'less'
 gem 'liquid', :group => 'liquid'
-gem 'RedCloth', :group => 'redcloth'
+gem 'RedCloth', :group => 'redcloth' unless RUBY_ENGINE == "rbx"
 gem 'nokogiri', :group => 'nokogiri'
 gem 'slim', :group => 'slim'
 
