@@ -937,6 +937,48 @@ O usar una sesión:
     session[:secreto]
   end
 
+=== Cache Control
+
+Asignar tus encabezados correctamente es el cimiento para realizar un cacheo
+HTTP correcto.
+
+Podés asignar el encabezado Cache-Control fácilmente:
+
+  get '/' do
+    cache_control :public
+    "cachealo!"
+  end
+
+Pro tip: configurar el cacheo en un filtro +before+.
+
+  before do
+    cache_control :public, :must_revalidate, :max_age => 60
+  end
+
+Si estás usando el helper +expires+ para definir el encabezado correspondiente,
+<tt>Cache-Control</tt> se va a definir automáticamente:
+
+  before do
+    expires 500, :public, :must_revalidate
+  end
+
+Para usar cachés adecuadamente, deberías considerar usar +etag+ y
++last_modified+.  Es recomendable que llames a estos helpers *antes* de hacer
+cualquier trabajo pesado, ya que van a enviar la respuesta inmediatamente si
+el cliente ya tiene la versión actual en su caché.
+
+  get '/articulo/:id' do
+    @articulo = Articulo.find params[:id]
+    last_modified @articulo.updated_at
+    etag @articulo.sha1
+    erb :articulo
+  end
+
+También es posible usar una
+{weak ETag}[http://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation]:
+
+  etag @articulo.sha1, :weak
+
 === Enviando Archivos
 
 Para enviar archivos, podés usar el método <tt>send_file</tt>:
