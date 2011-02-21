@@ -1667,7 +1667,6 @@ It is recommended to install Sinatra on Ruby 1.8.7, 1.9.2, JRuby or Rubinius.
 The following Ruby versions are officially supported:
 
 [ Ruby 1.8.6 ]
-
   It is not recommended to use 1.8.6 for Sinatra. However, it will be
   officially supported until Sinatra 1.3.0 is released. RDoc and CoffeScript
   templates are not supported by this Ruby version. 1.8.6 includes a major
@@ -1677,23 +1676,19 @@ The following Ruby versions are officially supported:
   Rack >= 1.2 no longer supports 1.8.6.
 
 [ Ruby 1.8.7 ]
-
   1.8.7 is fully supported, however, if nothing is keeping you from it, we
   recommend upgrading to 1.9.2 or switching to JRuby or Rubinius.
 
 [ Ruby 1.9.2 ]
-
   1.9.2 is supported and recommended. Note that Radius and Markaby are
   currently not 1.9 compatible. Do not use 1.9.2p0, it is known to cause
   segmentation faults when using Sinatra.
 
 [ Rubinius ]
-
   Rubinius is officially supported (Rubinius >= 1.2.1), with the exception
   of Textile templates.
 
 [ JRuby ]
-
   JRuby is officially supported (JRuby >= 1.5.6). No issues with third party
   template libraries are known, however, if you choose to use JRuby, please
   look into JRuby rack handlers, as the Thin web server is not (yet) supported
