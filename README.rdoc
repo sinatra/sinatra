@@ -1699,7 +1699,7 @@ The following Ruby versions are officially supported:
   segmentation faults when using Sinatra.
 
 [ Rubinius ]
-  Rubinius is officially supported (Rubinius >= 1.2.1), with the exception
+  Rubinius is officially supported (Rubinius >= 1.2.2), with the exception
   of Textile templates.
 
 [ JRuby ]

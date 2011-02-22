@@ -1743,7 +1743,7 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
   fallos de segmentación cuando se utiliza Sinatra.
 
 [ Rubinius ]
-  Rubinius es soportado oficialmente (Rubinius >= 1.2.1), con la excepción de
+  Rubinius es soportado oficialmente (Rubinius >= 1.2.2), con la excepción de
   las plantillas Textile.
 
 [ JRuby ]
