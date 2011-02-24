@@ -378,8 +378,9 @@ module Sinatra
     end
 
     ## Sugar for redirect (example:  redirect back)
-    def back ; request.referer ; end
-
+    def back
+      request.referer
+    end
   end
 
   # Template rendering methods. Each method takes the name of a template
