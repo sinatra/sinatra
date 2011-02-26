@@ -73,7 +73,7 @@ Gem::Specification.new do |s|
     test/templates_test.rb
     test/textile_test.rb
     test/views/a/in_a.str
-    test/views/ascii.haml
+    test/views/ascii.erb
     test/views/b/in_b.str
     test/views/calc.html.erb
     test/views/error.builder
@@ -113,7 +113,7 @@ Gem::Specification.new do |s|
     test/views/layout2.str
     test/views/layout2.test
     test/views/nested.str
-    test/views/utf8.haml
+    test/views/utf8.erb
   ]
   # = MANIFEST =
 
