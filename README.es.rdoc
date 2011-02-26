@@ -500,8 +500,8 @@ con el layout <tt>./views/post.haml</tt>.
 
 La gem/librería <tt>rdoc</tt> es necesaria para renderizar plantillas RDoc:
 
-  # Vas a necesitar requerir rdoc en tu app
-  require "rdoc"
+  # Vas a necesitar requerir rdoc/markup/to_html en tu app
+  require "rdoc/markup/to_html"
 
   get '/' do
     rdoc :index

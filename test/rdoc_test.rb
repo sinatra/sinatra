@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/helper'
 
 begin
-require 'rdoc'
+require 'rdoc/markup/to_html'
 
 class RdocTest < Test::Unit::TestCase
   def rdoc_app(&block)

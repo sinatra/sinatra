@@ -445,8 +445,8 @@ Sinatra — это предметно-ориентированный язык (D
 
 <tt>rdoc</tt> gem/библиотека необходима для рендеринга RDoc шаблонов:
 
-  # Вам нужно будет подключить rdoc в приложении
-  require "rdoc"
+  # Вам нужно будет подключить rdoc/markup/to_html в приложении
+  require "rdoc/markup/to_html"
 
   get '/' do
     rdoc :index

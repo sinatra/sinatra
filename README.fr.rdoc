@@ -374,8 +374,8 @@ Notez que vous pouvez également appeler la méthode textile au sein d'autres te
 
 Le gem RDoc est nécessaire pour utiliser la fonction de rendu RDoc:
 
-  # Chargez la bibliothèque rdoc dans votre application
-  require "rdoc"
+  # Chargez la bibliothèque rdoc/markup/to_html dans votre application
+  require "rdoc/markup/to_html"
 
   get '/' do
     rdoc :index

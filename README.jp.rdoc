@@ -369,8 +369,8 @@ textileからメソッドを呼び出すことも、localsに変数を渡すこ�
 
 RDocテンプレートを使うにはRDocライブラリが必要です:
 
-  # rdocを読み込みます
-  require "rdoc"
+  # rdoc/markup/to_htmlを読み込みます
+  require "rdoc/markup/to_html"
 
   get '/' do
     rdoc :index
