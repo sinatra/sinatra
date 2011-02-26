@@ -580,17 +580,18 @@ class HelpersTest < Test::Unit::TestCase
       assert ! response['Last-Modified']
     end
 
-    [Time, DateTime].each do |klass|
-      describe "with #{klass.name}" do
+    [Time.now, DateTime.now, Date.today, Time.now.to_i,
+      Struct.new(:to_time).new(Time.now) ].each do |last_modified_time|
+      describe "with #{last_modified_time.class.name}" do
         setup do
-          last_modified_time = klass.now
           mock_app do
             get '/' do
               last_modified last_modified_time
               'Boo!'
             end
           end
-          @last_modified_time = Time.parse last_modified_time.to_s
+          wrapper = Object.new.extend Sinatra::Helpers
+          @last_modified_time = wrapper.send :time_for, last_modified_time
         end
 
         # fixes strange missing test error when running complete test suite.
