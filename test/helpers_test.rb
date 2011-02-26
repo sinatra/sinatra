@@ -533,22 +533,40 @@ class HelpersTest < Test::Unit::TestCase
 
   describe 'expires' do
     setup do
-      mock_app {
-        get '/' do
+      mock_app do
+        get '/foo' do
           expires 60, :public, :no_cache
           'Hello World'
         end
-      }
+
+        get '/bar' do
+          expires Time.now
+        end
+
+        get '/baz' do
+          expires Time.at(0)
+        end
+      end
     end
 
     it 'sets the Cache-Control header' do
-      get '/'
+      get '/foo'
       assert_equal ['public', 'no-cache', 'max-age=60'], response['Cache-Control'].split(', ')
     end
 
     it 'sets the Expires header' do
-      get '/'
+      get '/foo'
       assert_not_nil response['Expires']
+    end
+
+    it 'allows passing time objects' do
+      get '/bar'
+      assert_not_nil response['Expires']
+    end
+
+    it 'allows passing time objects' do
+      get '/baz'
+      assert_equal 'Thu, 01 Jan 1970 00:00:00 GMT', response['Expires']
     end
   end
 
