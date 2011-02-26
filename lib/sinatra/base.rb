@@ -318,12 +318,12 @@ module Sinatra
     def expires(amount, *values)
       values << {} unless values.last.kind_of?(Hash)
 
-      if amount.respond_to?(:to_time)
-        max_age = amount.to_time - Time.now
-        time = amount.to_time
-      else
+      if Integer === amount
+        time    = Time.now + amount
         max_age = amount
-        time = Time.now + amount
+      else
+        time    = time_for amount
+        max_age = time - Time.now
       end
 
       values.last.merge!(:max_age => max_age)
@@ -341,14 +341,7 @@ module Sinatra
     # with a '304 Not Modified' response.
     def last_modified(time)
       return unless time
-      if time.respond_to?(:to_time)
-          time = time.to_time
-      else
-          ## make a best effort to convert something else to a time object
-          ## if this fails, this should throw an ArgumentError, then the
-          # rescue will result in an http 200, which should be safe
-          time = Time.parse(time.to_s)
-      end
+      time = time_for time
       response['Last-Modified'] = time.httpdate
       # compare based on seconds since epoch
       halt 304 if Time.httpdate(request.env['HTTP_IF_MODIFIED_SINCE']).to_i >= time.to_i
@@ -377,9 +370,38 @@ module Sinatra
       end
     end
 
-    ## Sugar for redirect (example:  redirect back)
+    # Sugar for redirect (example:  redirect back)
     def back
       request.referer
+    end
+
+    private
+
+    # Ruby 1.8 has no #to_time method.
+    # This can be removed and calls to it replaced with to_time,
+    # if 1.8 support is dropped.
+    def time_for(value)
+      if value.respond_to? :to_time
+        value.to_time
+      elsif Time === value
+        value
+      elsif value.respond_to? :new_offset
+        # DateTime#to_time does the same on 1.9
+        d = value.new_offset 0
+        t = Time.utc d.year, d.mon, d.mday, d.hour, d.min, d.sec + d.sec_fraction
+        t.getlocal
+      elsif value.respond_to? :mday
+        # Date#to_time does the same on 1.9
+        Time.local(value.year, value.mon, value.mday)
+      elsif Numeric === value
+        Time.at value
+      else
+        Time.parse value.to_s
+      end
+    rescue ArgumentError => boom
+      raise boom.to_s
+    rescue Exception
+      raise ArgumentError, "unable to convert #{value.inspect} to a Time object"
     end
   end
 
