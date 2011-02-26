@@ -460,6 +460,12 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal 'attachment; filename="file.txt"', response['Content-Disposition']
     end
 
+    it "sets the Content-Disposition header when :disposition set to 'inline'" do
+      send_file_app :disposition => 'inline'
+      get '/file.txt'
+      assert_equal 'inline', response['Content-Disposition']
+    end
+
     it "sets the Content-Disposition header when :filename provided" do
       send_file_app :filename => 'foo.txt'
       get '/file.txt'
