@@ -1258,8 +1258,7 @@ You can access those options via <tt>settings</tt>:
 [public]              folder public files are served from
 
 [reload_templates]    whether or not to reload templates between requests.
-                      Enabled in development mode and on Ruby 1.8.6 (to
-                      compensate a bug in Ruby causing a memory leak).
+                      Enabled in development mode.
 
 [root]                project root folder.
 
@@ -1674,20 +1673,9 @@ Options are:
   -s # specify rack server/handler (default is thin)
   -x # turn on the mutex lock (default is off)
 
-== Requirements
-
-It is recommended to install Sinatra on Ruby 1.8.7, 1.9.2, JRuby or Rubinius.
+== Requirement
 
 The following Ruby versions are officially supported:
-
-[ Ruby 1.8.6 ]
-  It is not recommended to use 1.8.6 for Sinatra. However, it will be
-  officially supported until Sinatra 1.3.0 is released. RDoc and CoffeScript
-  templates are not supported by this Ruby version. 1.8.6 includes a major
-  memory leak in its Hash implementation, which is triggered by Sinatra
-  versions prior to 1.1.1. The current version explicitly prevents this leak
-  at the cost of performance. You will have to downgrade Rack to 1.1.x, as
-  Rack >= 1.2 no longer supports 1.8.6.
 
 [ Ruby 1.8.7 ]
   1.8.7 is fully supported, however, if nothing is keeping you from it, we
@@ -1707,6 +1695,8 @@ The following Ruby versions are officially supported:
   template libraries are known, however, if you choose to use JRuby, please
   look into JRuby rack handlers, as the Thin web server is not (yet) supported
   on JRuby.
+
+<b>Ruby 1.8.6 is no longer supported.</b>
 
 We also keep an eye on upcoming Ruby versions.
 
