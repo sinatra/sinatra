@@ -507,17 +507,27 @@ class HelpersTest < Test::Unit::TestCase
 
   describe 'cache_control' do
     setup do
-      mock_app {
-        get '/' do
+      mock_app do
+        get '/foo' do
           cache_control :public, :no_cache, :max_age => 60.0
           'Hello World'
         end
-      }
+
+        get '/bar' do
+          cache_control :public, :no_cache
+          'Hello World'
+        end
+      end
     end
 
     it 'sets the Cache-Control header' do
-      get '/'
+      get '/foo'
       assert_equal ['public', 'no-cache', 'max-age=60'], response['Cache-Control'].split(', ')
+    end
+
+    it 'last argument does not have to be a hash' do
+      get '/bar'
+      assert_equal ['public', 'no-cache'], response['Cache-Control'].split(', ')
     end
   end
 
