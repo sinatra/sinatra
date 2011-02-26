@@ -15,8 +15,56 @@
  * Before and after filters now support conditions, both with and without
    patterns (`before '/api/*', :agent => /Songbird/`). (Konstantin Haase)
 
+ * Added a `url` helper method which constructs absolute URLs. Copes with
+   reverse proxies and Rack handlers correctly. Aliased to `to`, so you can
+   write `redirect to('/foo')`. (Konstantin Haase)
+
+ * If running on 1.9, patterns for routes and filters now support named
+   captures: `get(%r{/hi/(?<name>[^/?#]+)}) { "Hi #{params['name']}" }`.
+   (Steve Price)
+
+ * All rendering methods now take a `:scope` option, which renders them in
+   another context. Note that helpers and instance variables will be
+   unavailable if you use this feature. (Paul Walker)
+
+ * The behavior of `redirect` can now be configured with `absolute_redirects`
+   and `prefixed_redirects`. (Konstantin Haase)
+
  * `send_file` now allows overriding the Last-Modified header, which defaults
    to the file's mtime, by passing a `:last_modified` option. (Konstantin Haase)
+
+ * You can use your own template lookup method by defining `find_template`.
+   This allows, among other things, using more than one views folder.
+   (Konstantin Haase)
+
+ * Largely improved documentation. (burningTyger, Vasily Polovnyov, Gabriel
+   Andretta, Konstantin Haase)
+
+ * Improved error handling. (cactus, Konstantin Haase)
+
+ * Skip missing template engines in tests correctly. (cactus)
+
+ * Sinatra now ships with a Gemfile for development dependencies, since it eases
+   supporting different platforms, like JRuby. (Konstantin Haase)
+
+= 1.1.3 / Not Yet Released
+
+ * Fixed issues with `user_agent` condition if the user agent header is missing.
+   (Konstantin Haase)
+
+ * Fix some routing tests that have been skipped by accident (Ross A. Baker)
+
+ * Fix rendering issues with Builder and Nokogiri (Konstantin Haase)
+
+ * Replace last_modified helper with better implementation. (cactus,
+   Konstantin Haase)
+
+ * Fix issue with charset not being set when using `provides` condition.
+   (Konstantin Haase)
+
+ * Fix issue with `render` not picking up all alternative file extensions for
+   a rendering engine - it was not possible to register ".html.erb" without
+   tricks. (Konstantin Haase)
 
 = 1.1.2 / 2010-10-25
 

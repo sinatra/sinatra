@@ -36,6 +36,16 @@ Sinatra would not be possible:
 * Rick Olson (technoweenie) for the killer plug at RailsConf '08.
 * Steven Garcia for the amazing custom artwork you see on 404's and 500's
 * Pat Nakajima (nakajima) for fixing non-nested params in nested params Hash's.
+* Konstantin Haase for his hard work and ongoing commitment to improving
+  Sinatra, for 1.1.0, 1.2.0 and beyond..
+* Zachary Scott for adding Konstantin to the AUTHORS file. He also did help
+  writing the book, but mainly for adding Konstantin.
+* Gabriel Andretta for having people wonder whether our documentation is
+  actually in English or in Spanish.
+* Vasily Polovnyov, Nickolay Schwarz, Luciano Sousa, Wu Jiang, Mickael Riga,
+  Bernhard Essl, Janos Hardi, Kouhei Yanagita and "burningTyger" for willingly
+  translating whatever ends up in the README.
+* [Wordy](http://www.wordy.com/) for proofreading our README. 73e137d
 
 and last but not least:
 

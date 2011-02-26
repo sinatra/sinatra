@@ -1,4 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
+
+begin
 require 'builder'
 
 class BuilderTest < Test::Unit::TestCase
@@ -86,4 +88,8 @@ class BuilderTest < Test::Unit::TestCase
     }
     assert_raise(Errno::ENOENT) { get('/') }
   end
+end
+
+rescue LoadError
+  warn "#{$!.to_s}: skipping less tests"
 end

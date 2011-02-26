@@ -223,6 +223,49 @@ class TemplatesTest < Test::Unit::TestCase
     end
     assert_equal "Hello <%= 'World' %>!", body
   end
+
+  it "is possible to register another template" do
+    Tilt.register "html.erb", Tilt[:erb]
+    render_app { render :erb, :calc }
+    assert_equal '2', body
+  end
+
+  it "passes scope to the template" do
+    mock_app do
+      template :scoped do
+        'Hello <%= foo %>'
+      end
+
+      get '/' do
+        some_scope = Object.new
+        def some_scope.foo() 'World!' end
+        erb :scoped, :scope => some_scope
+      end
+    end
+
+    get '/'
+    assert ok?
+    assert_equal 'Hello World!', body
+  end
+
+  it "is possible to use custom logic for finding template files" do
+    mock_app do
+      set :views, ["a", "b"].map { |d| File.dirname(__FILE__) + '/views/' + d }
+      def find_template(views, name, engine, &block)
+        Array(views).each { |v| super(v, name, engine, &block) }
+      end
+
+      get('/:name') do
+        render :str, params[:name].to_sym
+      end
+    end
+
+    get '/in_a'
+    assert_body 'Gimme an A!'
+
+    get '/in_b'
+    assert_body 'Gimme a B!'
+  end
 end
 
 # __END__ : this is not the real end of the script.

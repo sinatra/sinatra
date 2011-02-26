@@ -8,9 +8,34 @@ module Sinatra
   # Be careful when you use this on public-facing sites as it could reveal
   # information helpful to attackers.
   class ShowExceptions < Rack::ShowExceptions
+    @@eats_errors = Object.new
+    def @@eats_errors.flush(*) end
+    def @@eats_errors.puts(*) end
+
     def initialize(app)
       @app      = app
       @template = ERB.new(TEMPLATE)
+    end
+
+    def call(env)
+      @app.call(env)
+    rescue Exception => e
+      errors, env["rack.errors"] = env["rack.errors"], @@eats_errors
+
+      if respond_to?(:prefers_plain_text?) and prefers_plain_text?(env)
+        content_type = "text/plain"
+        body = [dump_exception(e)]
+      else
+        content_type = "text/html"
+        body = pretty(env, e)
+      end
+
+      env["rack.errors"] = errors
+
+      [500,
+       {"Content-Type" => content_type,
+        "Content-Length" => Rack::Utils.bytesize(body.join).to_s},
+       body]
     end
 
     private

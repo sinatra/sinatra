@@ -6,6 +6,8 @@ require 'date'
 task :default => :test
 task :spec => :test
 
+CLEAN.include "**/*.rbc"
+
 def source_version
   line = File.read('lib/sinatra/base.rb')[/^\s*VERSION = .*/]
   line.match(/.*VERSION = '(.*)'/)[1]
@@ -121,7 +123,7 @@ if defined?(Gem)
     puts "updated #{f.name}"
   end
 
-  task 'release' => package('.gem') do
+  task 'release' => ['test', package('.gem')] do
     sh <<-SH
       gem install #{package('.gem')} --local &&
       gem push #{package('.gem')}  &&

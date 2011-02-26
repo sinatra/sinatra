@@ -111,6 +111,18 @@ class HelpersTest < Test::Unit::TestCase
       response = request.get('/', 'SERVER_PORT' => '444')
       assert_equal 'http://example.org:444/foo', response['Location']
     end
+
+    it 'works behind a reverse proxy' do
+      mock_app do
+        get '/' do
+          redirect '/foo'
+        end
+      end
+
+      request = Rack::MockRequest.new(@app)
+      response = request.get('/', 'HTTP_X_FORWARDED_HOST' => 'example.com', 'SERVER_PORT' => '8080')
+      assert_equal 'http://example.com/foo', response['Location']
+    end
   end
 
   describe 'error' do
@@ -599,6 +611,9 @@ class HelpersTest < Test::Unit::TestCase
             get '/compare', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'Sun, 26 Sep 2010 23:43:52 GMT' }
             assert_equal 200, status
             assert_equal 'foo', body
+            get '/compare', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'Sun, 26 Sep 2100 23:43:52 GMT' }
+            assert_equal 304, status
+            assert_equal '', body
           end
         end
 
@@ -688,6 +703,44 @@ class HelpersTest < Test::Unit::TestCase
       get '/foo', {}, 'HTTP_REFERER' => 'http://github.com'
       assert redirect?
       assert_equal "http://github.com", response.location
+    end
+  end
+
+  describe 'uri' do
+    it 'generates absolute urls' do
+      mock_app { get('/') { uri }}
+      get '/'
+      assert_equal 'http://example.org/', body
+    end
+
+    it 'includes path_info' do
+      mock_app { get('/:name') { uri }}
+      get '/foo'
+      assert_equal 'http://example.org/foo', body
+    end
+
+    it 'allows passing an alternative to path_info' do
+      mock_app { get('/:name') { uri '/bar' }}
+      get '/foo'
+      assert_equal 'http://example.org/bar', body
+    end
+
+    it 'includes script_name' do
+      mock_app { get('/:name') { uri '/bar' }}
+      get '/foo', {}, { "SCRIPT_NAME" => '/foo' }
+      assert_equal 'http://example.org/foo/bar', body
+    end
+
+    it 'is aliased to #url' do
+      mock_app { get('/') { url }}
+      get '/'
+      assert_equal 'http://example.org/', body
+    end
+
+    it 'is aliased to #to' do
+      mock_app { get('/') { to }}
+      get '/'
+      assert_equal 'http://example.org/', body
     end
   end
 

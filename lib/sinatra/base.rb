@@ -7,7 +7,7 @@ require 'sinatra/showexceptions'
 require 'tilt'
 
 module Sinatra
-  VERSION = '1.2.0.a'
+  VERSION = '1.2.0.c'
 
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
@@ -27,6 +27,10 @@ module Sinatra
       end
     else
       alias secure? ssl?
+    end
+
+    def forwarded?
+      @env.include? "HTTP_X_FORWARDED_HOST"
     end
 
     def route
@@ -91,23 +95,36 @@ module Sinatra
 
     # Halt processing and redirect to the URI provided.
     def redirect(uri, *args)
-      if not uri =~ /^https?:\/\//
-        # According to RFC 2616 section 14.30, "the field value consists of a
-        # single absolute URI"
-        abs_uri = "#{request.scheme}://#{request.host}"
-
-        if request.scheme == 'https' && request.port != 443 ||
-              request.scheme == 'http' && request.port != 80
-          abs_uri << ":#{request.port}"
-        end
-
-        uri = (abs_uri << uri)
-      end
-
       status 302
-      response['Location'] = uri
+
+      # According to RFC 2616 section 14.30, "the field value consists of a
+      # single absolute URI"
+      response['Location'] = url(uri, settings.absolute_redirects?, settings.prefixed_redirects?)
       halt(*args)
     end
+
+    # Generates the absolute URI for a given path in the app.
+    # Takes Rack routers and reverse proxies into account.
+    def uri(addr = nil, absolute = true, add_script_name = true)
+      return addr if addr =~ /^https?:\/\//
+      uri = [host = ""]
+      if absolute
+        host << 'http'
+        host << 's' if request.secure?
+        host << "://"
+        if request.forwarded? or request.port != (request.secure? ? 443 : 80)
+          host << request.host_with_port
+        else
+          host << request.host
+        end
+      end
+      uri << request.script_name.to_s if add_script_name
+      uri << (addr ? addr : request.path_info).to_s
+      File.join uri
+    end
+
+    alias url uri
+    alias to uri
 
     # Halt processing and return the error status provided.
     def error(code, body=nil)
@@ -324,10 +341,17 @@ module Sinatra
     # with a '304 Not Modified' response.
     def last_modified(time)
       return unless time
-      time = time.to_time if time.respond_to?(:to_time)
-      time = Time.parse time.strftime('%FT%T%:z') if time.respond_to?(:strftime)
-      response['Last-Modified'] = time.respond_to?(:httpdate) ? time.httpdate : time.to_s
-      halt 304 if Time.httpdate(request.env['HTTP_IF_MODIFIED_SINCE']) >= time
+      if time.respond_to?(:to_time)
+          time = time.to_time
+      else
+          ## make a best effort to convert something else to a time object
+          ## if this fails, this should throw an ArgumentError, then the
+          # rescue will result in an http 200, which should be safe
+          time = Time.parse(time.to_s)
+      end
+      response['Last-Modified'] = time.httpdate
+      # compare based on seconds since epoch
+      halt 304 if Time.httpdate(request.env['HTTP_IF_MODIFIED_SINCE']).to_i >= time.to_i
     rescue ArgumentError
     end
 
@@ -354,8 +378,9 @@ module Sinatra
     end
 
     ## Sugar for redirect (example:  redirect back)
-    def back ; request.referer ; end
-
+    def back
+      request.referer
+    end
   end
 
   # Template rendering methods. Each method takes the name of a template
@@ -367,10 +392,15 @@ module Sinatra
   # that will be rendered.
   #
   # Possible options are:
-  #   :layout       If set to false, no layout is rendered, otherwise
-  #                 the specified layout is used (Ignored for `sass` and `less`)
-  #   :locals       A hash with local variables that should be available
-  #                 in the template
+  #   :content_type   The content type to use, same arguments as content_type.
+  #   :layout         If set to false, no layout is rendered, otherwise
+  #                   the specified layout is used (Ignored for `sass` and `less`)
+  #   :layout_engine  Engine to use for rendering the layout.
+  #   :locals         A hash with local variables that should be available
+  #                   in the template
+  #   :scope          If set, template is evaluate with the binding of the given
+  #                   object rather than the application instance.
+  #   :views          Views directory to use.
   module Templates
     module ContentTyped
       attr_accessor :content_type
@@ -446,6 +476,15 @@ module Sinatra
       render :slim, template, options, locals
     end
 
+    # Calls the given block for every possible template file in views,
+    # named name.ext, where ext is registered on engine.
+    def find_template(views, name, engine)
+      Tilt.mappings.each do |ext, klass|
+        next unless klass == engine
+        yield ::File.join(views, "#{name}.#{ext}")
+      end
+    end
+
   private
     # logic shared between builder and nokogiri
     def render_ruby(engine, template, options={}, locals={}, &block)
@@ -469,17 +508,18 @@ module Sinatra
       layout          = @default_layout if layout.nil? or layout == true
       content_type    = options.delete(:content_type)  || options.delete(:default_content_type)
       layout_engine   = options.delete(:layout_engine) || engine
+      scope           = options.delete(:scope)         || self
 
       # compile and render template
       layout_was      = @default_layout
       @default_layout = false
       template        = compile_template(engine, data, options, views)
-      output          = template.render(self, locals, &block)
+      output          = template.render(scope, locals, &block)
       @default_layout = layout_was
 
       # render layout
       if layout
-        options = options.merge(:views => views, :layout => false, :eat_errors => eat_errors)
+        options = options.merge(:views => views, :layout => false, :eat_errors => eat_errors, :scope => scope)
         catch(:layout_missing) { output = render(layout_engine, layout, options, locals) { output }}
       end
 
@@ -501,13 +541,14 @@ module Sinatra
             template.new(path, line.to_i, options) { body }
           else
             found = false
-            path = ::File.join(views, "#{data}.#{engine}")
-            Tilt.mappings.each do |ext, klass|
-              break if found = File.exists?(path)
-              next unless klass == template
-              path = ::File.join(views, "#{data}.#{ext}")
+            find_template(views, data, template) do |file|
+              path ||= file # keep the initial path rather than the last one
+              if found = File.exists?(file)
+                path = file
+                break
+              end
             end
-            throw :layout_missing if eat_errors and !found
+            throw :layout_missing if eat_errors and not found
             template.new(path, 1, options)
           end
         when data.is_a?(Proc) || data.is_a?(String)
@@ -1007,7 +1048,7 @@ module Sinatra
         condition do
           matching_types = (request.accept & types)
           unless matching_types.empty?
-            response.headers['Content-Type'] = matching_types.first
+            content_type matching_types.first
             true
           else
             false
@@ -1084,6 +1125,8 @@ module Sinatra
           [/^#{pattern}$/, keys]
         elsif path.respond_to?(:keys) && path.respond_to?(:match)
           [path, path.keys]
+        elsif path.respond_to?(:names) && path.respond_to?(:match)
+          [path, path.names]
         elsif path.respond_to? :match
           [path, keys]
         else
@@ -1279,6 +1322,9 @@ module Sinatra
     set :server, %w[thin mongrel webrick]
     set :bind, '0.0.0.0'
     set :port, 4567
+
+    set :absolute_redirects, true
+    set :prefixed_redirects, false
 
     set :app_file, nil
     set :root, Proc.new { app_file && File.expand_path(File.dirname(app_file)) }
