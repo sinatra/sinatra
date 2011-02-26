@@ -19,7 +19,6 @@ gem 'builder', :group => 'builder'
 gem 'erubis', :group => 'erubis'
 gem 'less', :group => 'less'
 gem 'liquid', :group => 'liquid'
-gem 'RedCloth', :group => 'redcloth' unless RUBY_ENGINE == "rbx"
 gem 'nokogiri', :group => 'nokogiri'
 gem 'slim', :group => 'slim'
 
@@ -39,4 +38,16 @@ platforms :ruby_18, :jruby do
   gem 'json', :group => 'coffee-script'
   gem 'markaby', :group => 'markaby'
   gem 'radius', :group => 'radius'
+end
+
+platforms :mri do
+  # bundler platforms are broken
+  next unless RUBY_ENGINE == 'ruby'
+  gem 'RedCloth', :group => 'redcloth'
+end
+
+platforms :mri_18 do
+  # bundler platforms are broken
+  next unless RUBY_ENGINE == 'ruby'
+  gem 'rcov', :group => 'rcov'
 end
