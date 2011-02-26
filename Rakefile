@@ -9,11 +9,14 @@ task :spec => :test
 CLEAN.include "**/*.rbc"
 
 def source_version
-  line = File.read('lib/sinatra/base.rb')[/^\s*VERSION = .*/]
-  line.match(/.*VERSION = '(.*)'/)[1]
+  @source_version ||= begin
+    line = File.read('lib/sinatra/base.rb')[/^\s*VERSION = .*/]
+    line.match(/.*VERSION = '(.*)'/)[1]
+  end
 end
 
 # SPECS ===============================================================
+
 task :test do
   ENV['LANG'] = 'C'
   ENV.delete 'LC_CTYPE'
@@ -24,19 +27,18 @@ Rake::TestTask.new(:test) do |t|
   t.ruby_opts = ['-rubygems'] if defined? Gem
   t.ruby_opts << '-I.'
 end
+
 # Rcov ================================================================
+
 namespace :test do
   desc 'Mesures test coverage'
   task :coverage do
     rm_f "coverage"
-    rcov = "rcov --text-summary -Ilib"
-    system("#{rcov} --no-html --no-color test/*_test.rb")
+    sh "rcov -Ilib test/*_test.rb"
   end
 end
 
 # Website =============================================================
-# Building docs requires HAML and the hanna gem:
-#   gem install mislav-hanna --source=http://gems.github.com
 
 desc 'Generate RDoc under doc/api'
 task 'doc'     => ['doc:api']
@@ -44,6 +46,7 @@ task('doc:api') { sh "yardoc -o doc/api" }
 CLEAN.include 'doc/api'
 
 # README ===============================================================
+
 task :add_template, [:name] do |t, args|
   Dir.glob('README.*') do |file|
     code = File.read(file)
