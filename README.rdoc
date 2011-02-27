@@ -821,6 +821,10 @@ With headers:
 
   halt 402, {'Content-Type' => 'text/plain'}, 'revenge'
 
+It is of course possible to combine a template with +halt+:
+
+  halt erb(:error)
+
 === Passing
 
 A route can punt processing to the next matching route using <tt>pass</tt>:
