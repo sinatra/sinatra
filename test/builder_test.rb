@@ -91,5 +91,5 @@ class BuilderTest < Test::Unit::TestCase
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping less tests"
+  warn "#{$!.to_s}: skipping builder tests"
 end
