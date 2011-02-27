@@ -461,7 +461,7 @@ mit <tt>./views/post.haml</tt> als Layout rendern.
 Das +rdoc+ gem wird benötigt, um RDoc-Templates rendern zu können:
 
   # RDoc muss eingebunden werden
-  require "rdoc"
+  require "rdoc/markup/to_html"
 
   get '/' do
     rdoc :index

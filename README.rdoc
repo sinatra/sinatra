@@ -491,8 +491,8 @@ template) with <tt>./views/post.haml</tt> as layout.
 
 The <tt>rdoc</tt> gem/library is required to render RDoc templates:
 
-  # You'll need to require rdoc in your app
-  require "rdoc"
+  # You'll need to require rdoc/markup/to_html in your app
+  require "rdoc/markup/to_html"
 
   get '/' do
     rdoc :index
@@ -820,6 +820,10 @@ Or both:
 With headers:
 
   halt 402, {'Content-Type' => 'text/plain'}, 'revenge'
+
+It is of course possible to combine a template with +halt+:
+
+  halt erb(:error)
 
 === Passing
 

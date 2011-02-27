@@ -460,6 +460,12 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal 'attachment; filename="file.txt"', response['Content-Disposition']
     end
 
+    it "sets the Content-Disposition header when :disposition set to 'inline'" do
+      send_file_app :disposition => 'inline'
+      get '/file.txt'
+      assert_equal 'inline', response['Content-Disposition']
+    end
+
     it "sets the Content-Disposition header when :filename provided" do
       send_file_app :filename => 'foo.txt'
       get '/file.txt'
@@ -501,38 +507,66 @@ class HelpersTest < Test::Unit::TestCase
 
   describe 'cache_control' do
     setup do
-      mock_app {
-        get '/' do
+      mock_app do
+        get '/foo' do
           cache_control :public, :no_cache, :max_age => 60.0
           'Hello World'
         end
-      }
+
+        get '/bar' do
+          cache_control :public, :no_cache
+          'Hello World'
+        end
+      end
     end
 
     it 'sets the Cache-Control header' do
-      get '/'
+      get '/foo'
       assert_equal ['public', 'no-cache', 'max-age=60'], response['Cache-Control'].split(', ')
+    end
+
+    it 'last argument does not have to be a hash' do
+      get '/bar'
+      assert_equal ['public', 'no-cache'], response['Cache-Control'].split(', ')
     end
   end
 
   describe 'expires' do
     setup do
-      mock_app {
-        get '/' do
+      mock_app do
+        get '/foo' do
           expires 60, :public, :no_cache
           'Hello World'
         end
-      }
+
+        get '/bar' do
+          expires Time.now
+        end
+
+        get '/baz' do
+          expires Time.at(0)
+        end
+      end
     end
 
     it 'sets the Cache-Control header' do
-      get '/'
+      get '/foo'
       assert_equal ['public', 'no-cache', 'max-age=60'], response['Cache-Control'].split(', ')
     end
 
     it 'sets the Expires header' do
-      get '/'
+      get '/foo'
       assert_not_nil response['Expires']
+    end
+
+    it 'allows passing time objects' do
+      get '/bar'
+      assert_not_nil response['Expires']
+    end
+
+    it 'allows passing time objects' do
+      get '/baz'
+      assert_equal 'Thu, 01 Jan 1970 00:00:00 GMT', response['Expires']
     end
   end
 
@@ -546,17 +580,18 @@ class HelpersTest < Test::Unit::TestCase
       assert ! response['Last-Modified']
     end
 
-    [Time, DateTime].each do |klass|
-      describe "with #{klass.name}" do
+    [Time.now, DateTime.now, Date.today, Time.now.to_i,
+      Struct.new(:to_time).new(Time.now) ].each do |last_modified_time|
+      describe "with #{last_modified_time.class.name}" do
         setup do
-          last_modified_time = klass.now
           mock_app do
             get '/' do
               last_modified last_modified_time
               'Boo!'
             end
           end
-          @last_modified_time = Time.parse last_modified_time.to_s
+          wrapper = Object.new.extend Sinatra::Helpers
+          @last_modified_time = wrapper.send :time_for, last_modified_time
         end
 
         # fixes strange missing test error when running complete test suite.
