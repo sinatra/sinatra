@@ -66,6 +66,20 @@ task :add_template, [:name] do |t, args|
   end
 end
 
+# Thanks in announcement ===============================================
+
+team = ["Ryan Tomayko", "Blake Mizerany", "Simon Rozet", "Konstantin Haase"]
+desc "list of contributors: rake thanks[1.1.0..master,1.1.0..1.1.x]"
+task :thanks, [:release,:backports] do |t, a|
+  a.with_defaults :release => "1.1.0..master", :backports => "1.1.0..1.1.x"
+  included = `git log --format=format:"%aN\t%s" #{a.release}`.lines.to_a
+  excluded = `git log --format=format:"%aN\t%s" #{a.backports}`.lines.to_a
+  commits = (included - excluded).group_by { |c| c[/^[^\t]+/] }
+  authors = commits.keys.sort_by { |n| - commits[n].size } - team
+  puts authors[0..-2].join(', ') << " and " << authors.last,
+    "(based on commits included in #{a.release}, but not in #{a.backports})"
+end
+
 # PACKAGING ============================================================
 
 if defined?(Gem)
