@@ -316,6 +316,13 @@ First, register your engine with Tilt, then create a rendering method:
 Renders <tt>./views/index.myat</tt>. See https://github.com/rtomayko/tilt to
 learn more about Tilt.
 
+=== Template Cookbook Recipes
+
+There are a number of recipes included in the {Sinatra
+Book}[http://sinatra-book.gittr.com/#views] for templating, as well as
+{community contributed
+recipes}[https://github.com/sinatra/sinatra-book-contrib/tree/master/views].
+
 == Filters
 
 Before filters are evaluated before each request within the same
