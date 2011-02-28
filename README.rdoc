@@ -1435,3 +1435,5 @@ If you install gems as root, the last step should be
 * {Twitter}[http://twitter.com/sinatra]
 * {Mailing List}[http://groups.google.com/group/sinatrarb/topics]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] on http://freenode.net
+* {Sinatra Book}[http://sinatra-book.gittr.com] Cookbook Tutorial
+* {Sinatra Book Contrib}[http://sinatra-book-contrib.com/] Community contributed recipes
