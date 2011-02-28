@@ -998,12 +998,7 @@ Sinatra makes building Rack middleware pipelines a cinch via a top-level
 
 The semantics of +use+ are identical to those defined for the
 Rack::Builder[http://rack.rubyforge.org/doc/classes/Rack/Builder.html] DSL
-(most frequently used from rackup files). For example, the +use+ method
-accepts multiple/variable args as well as blocks:
-
-  use Rack::Auth::Basic do |username, password|
-    username == 'admin' && password == 'secret'
-  end
+(most frequently used from rackup files). 
 
 Rack is distributed with a variety of standard middleware for logging,
 debugging, URL routing, authentication, and session handling. Sinatra uses
