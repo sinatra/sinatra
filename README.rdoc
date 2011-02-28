@@ -1049,6 +1049,13 @@ recommended:
 NOTE: The built-in Sinatra::Test module and Sinatra::TestHarness class
 are deprecated as of the 0.9.2 release.
 
+=== Testing Cookbook Recipes
+
+You can find some excellent tutorials on testing in the {Sinatra
+Book}[http://sinatra-book.gittr.com/#testing], as well as {community
+contributed
+recipes}[https://github.com/sinatra/sinatra-book-contrib/tree/master/testing].
+
 == Sinatra::Base - Middleware, Libraries, and Modular Apps
 
 Defining your app at the top-level works well for micro-apps but has
