@@ -1005,6 +1005,14 @@ debugging, URL routing, authentication, and session handling. Sinatra uses
 many of these components automatically based on configuration so you
 typically don't have to +use+ them explicitly.
 
+=== Middleware Cookbook Recipes
+
+There are some excellent recipes in the [Sinatra
+Book]{http://sinatra-book.gittr.com/#middleware}, as well as {community
+contributed
+recipes}[https://github.com/sinatra/sinatra-book-contrib/tree/master/middleware],
+for using middleware with Sinatra.
+
 == Testing
 
 Sinatra tests can be written using any Rack-based testing library
