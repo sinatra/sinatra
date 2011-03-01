@@ -838,6 +838,10 @@ Con cabeceras:
 
   halt 402, { 'Content-Type' => 'text/plain' }, 'venganza'
 
+Obviamente, es posible utilizar +halt+ con una plantilla:
+
+  halt erb(:error)
+
 === Paso
 
 Una ruta puede pasarle el procesamiento a la siguiente ruta que coincida con
