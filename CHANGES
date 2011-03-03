@@ -1,4 +1,4 @@
-= 1.2.0 / Not Yet Released
+= 1.2.0 / 2011-03-03
 
  * Added `slim` rendering method for rendering Slim templates. (Steve
    Hodgkiss)
