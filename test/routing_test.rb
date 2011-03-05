@@ -949,4 +949,15 @@ class RoutingTest < Test::Unit::TestCase
     assert ok?
     assert_equal 'bar in baseclass', body
   end
+
+  it "adds hostname condition when it is in options" do
+    mock_app {
+      get '/foo', :host => 'host' do
+        'foo'
+      end
+    }
+
+    get '/foo'
+    assert not_found?
+  end
 end
