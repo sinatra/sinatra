@@ -1792,7 +1792,7 @@ If you install gems as root, the last step should be
 
 == Versioning
 
-Sinatra follows [Semantic Versioning](http://semver.org/), both SemVer and
+Sinatra follows {Semantic Versioning}[http://semver.org/], both SemVer and
 SemVerTag.
 
 == Further Reading
