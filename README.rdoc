@@ -1790,6 +1790,11 @@ If you install gems as root, the last step should be
 
   sudo rake install
 
+== Versioning
+
+Sinatra follows [Semantic Versioning](http://semver.org/), both SemVer and
+SemVerTag.
+
 == Further Reading
 
 * {Project Website}[http://www.sinatrarb.com/] - Additional documentation,
