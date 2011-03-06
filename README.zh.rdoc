@@ -162,11 +162,11 @@ Rack body对象或者HTTP状态码：
 
     def initialize(except)
       @except   = except
-      @caputres = Match.new([])
+      @captures = Match.new([])
     end
 
     def match(str)
-      @caputres unless @except === str
+      @captures unless @except === str
     end
   end
 
