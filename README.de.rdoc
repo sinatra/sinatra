@@ -18,10 +18,13 @@ Einfach via +rubygems+ installieren und starten:
 
 Die Seite kann nun unter http://localhost:4567 betrachtet werden.
 
+Es wird empfohlen den Thin Server via <tt>gem install thin</tt> zu installieren,
+den Sinatra, soweit vorhanden, dann automatisch verwendet.
+
 == Routen
 
 In Sinatra wird eine Route durch eine HTTP-Methode und ein URL-Muster
-definiert. Jeder dieser Routen wird ein Ruby-Block zugeordnet.
+definiert. Jeder dieser Routen wird ein Ruby-Block zugeordnet:
 
   get '/' do
     .. zeige etwas ..
@@ -62,7 +65,7 @@ Man kann auf diese auch mit Blockparametern zugreifen:
   end
 
 Routenmuster können auch mit Splat- oder Wildcardparametern über das
-<tt>params[:splat]</tt> Array angesprochen werden.
+<tt>params[:splat]</tt> Array angesprochen werden:
 
   get '/sag/*/zu/*' do
     # passt auf /sag/hallo/zu/welt
@@ -155,6 +158,46 @@ Damit lässt sich relativ einfach Streaming implementieren:
     end
 
     get('/') { Stream.new }
+
+===Eigene Routenmuster 
+Wie oben schon beschrieben, ist Sinatra von Haus aus mit Unterstützung für 
+String Muster und Reguläre Ausdrücke zum Abgleichen von Routen ausgestattet.
+Das muss aber noch nicht alles sein, man kann ohne größeren Aufwand auch 
+eigene Routenmuster erstellen:
+
+  class AllButPattern
+    Match = Struct.new(:captures)
+
+    def initialize(except)
+      @except   = except
+      @captures = Match.new([])
+    end
+
+    def match(str)
+      @captures unless @except === str
+    end
+  end
+
+  def all_but(pattern)
+    AllButPattern.new(pattern)
+  end
+
+  get all_but("/index") do
+    # ...
+  end
+
+Beachte, dass das obige Beispiel etwas übertrieben wirkt. Es geht auch leichter:
+
+  get // do
+    pass if request.path_info == "/index"
+    # ...
+  end
+
+Oder unter Verwendung eines negativen look ahead:
+
+  get %r{^(?!/index$)} do
+    # ...
+  end
 
 == Statische Dateien
 
@@ -407,6 +450,7 @@ Ebenso ist es möglich Markdown mit BlueCloth anstelle von RDiscount zu parsen:
   end
 
 Das sollte <tt>./views/index.md</tt> mit BlueCloth rendern.
+
 === Textile-Templates
 
 Das +redcloth+ gem wird benötigt, um Textile-Templates rendern zu können:
@@ -460,7 +504,7 @@ mit <tt>./views/post.haml</tt> als Layout rendern.
 
 Das +rdoc+ gem wird benötigt, um RDoc-Templates rendern zu können:
 
-  # RDoc muss eingebunden werden
+  # rdoc/markup/to_html muss eingebunden werden
   require "rdoc/markup/to_html"
 
   get '/' do
@@ -643,13 +687,13 @@ werden:
   end
 
 Wenn ein Template mit dem Namen "layout" existiert, wird es bei jedem Aufruf
-verwendet. Durch <tt>:layout => false</tt> kann das Ausführen verhindert werden.
+verwendet. Durch <tt>:layout => false</tt> kann das Ausführen verhindert werden:
 
   get '/' do
     haml :index, :layout => !request.xhr?
   end
 
-=== Datieendungen zuordnen
+=== Dateiendungen zuordnen
 
 Um eine Dateiendung einer Template Engine zuzuordnen, benutzt man am besten
 <tt>Tilt.register</tt>. Wenn man zum Beispiel die Dateiendung +tt+ für Textile
@@ -673,7 +717,8 @@ Rendering-Methode erstellen:
   end
 
 Dieser Code rendert <tt>./views/application.mtt</tt>. Siehe
-https://github.com/rtomayko/tilt um mehr über Tilt zu lernen.
+github.com/rtomayko/tilt[https://github.com/rtomayko/tilt], 
+um mehr über Tilt zu lernen.
 
 == Filter
 
@@ -736,6 +781,37 @@ definiert, die in Routen und Templates verwendet werden können:
     bar(params[:name])
   end
 
+===Sessions verwenden
+Sessions werden verwendet, um Zustände zwischen den Requests zu speichern.
+Sind sie aktiviert, hat man einen Session Hash pro Benutzer Session:
+
+  enable :sessions
+
+  get '/' do
+    "value = " << session[:value].inspect
+  end
+
+  get '/:value' do
+    session[:value] = params[:value]
+  end
+
+Beachte, dass <tt>enable :sessions</tt> alle Daten in einem Cookie speichert.
+Unter Umständen kann dies negative Effekte haben, z.B. verursachen viele Daten
+höheren, teilweise überflüssigen Traffic. Um das zu vermeiden, kann man eine
+Rack Session Middleware verwenden. Dann aber *nicht* <tt>enable :sessions</tt>
+aufrufen, sondern die Middleware wie üblich in das Programm einbinden:
+
+  use Rack::Session::Pool, :expire_after => 2592000
+
+  get '/' do
+    "value = " << session[:value].inspect
+  end
+
+  get '/:value' do
+    session[:value] = params[:value]
+  end
+
+
 == Anhalten
 
 Zum sofortigen stoppen eines Request in einem Filter oder einer Route:
@@ -757,6 +833,10 @@ Oder beides:
 Sogar mit Headers:
 
   halt 402, {'Content-Type' => 'text/plain'}, 'Rache'
+
+Natürlich ist es auch möglich ein Template mit +halt+ zu verwenden:
+
+  halt erb(:error)
 
 == Weiterspringen
 
@@ -868,7 +948,7 @@ werden:
     redirect to('/bar')
   end
 
-Weitere Parameter werden wie Argumente der +halt+ Methode behandelt:+:
+Weitere Parameter werden wie Argumente der +halt+ Methode behandelt:
 
   redirect to('/bar'), 303
   redirect 'http://google.com', 'Hier bist Du falsch'
@@ -985,6 +1065,23 @@ Der <tt>request.body</tt> ist einn IO- oder StringIO-Objekt:
     request.body.rewind  # falls schon jemand davon gelesen hat
     daten = JSON.parse request.body.read
     "Hallo #{daten['name']}!"
+  end
+
+=== Anhänge
+
+Damit der Browser erkennt, dass ein Response gespeichert werden soll und nicht
+im Browser angezeigt wird, kann der +attachment+ Helfer verwendet werden:
+
+  get '/' do
+    attachment
+    "Speichern!"
+  end
+
+Ebenso kann man einen Dateinamen als Parameter hinzufügen:
+
+  get '/' do
+    attachment "info.txt"
+    "Speichern!"
   end
 
 
@@ -1232,7 +1329,7 @@ Alternativ kann ein Error Handler auch für Statuscode definiert werden:
 Oder ein Statuscode-Bereich:
 
   error 400..510 do
-    'Boom'
+    'Bums'
   end
 
 Sinatra setzt verschiedene <tt>not_found</tt> und <tt>error</tt>
@@ -1448,7 +1545,7 @@ Es ist nicht nur möglich andere Rack-Middleware mit Sinatra zu nutzen, man
 kann außerdem jede Sinatra-Anwendung selbst als Middlware vor jeden beliebigen
 Rack-Endpunkt hängen. Bei diesem Endpunkt muss es sich nicht um eine andere
 Sinatra-Anwendung handen, es kann jede andere Rack-Anwendung sein
-(Rails/Ramaze/Camping/...).
+(Rails/Ramaze/Camping/...):
 
   require 'sinatra/base'
 
@@ -1525,7 +1622,7 @@ Für jede eingehende Anfrage wird eine neue Instanz der Anwendungsklasse
 erstellt und alle Handlers werden in diesem Scope ausgeführt. Aus diesem Scope
 heraus kann man auf +request+ oder +session+ zugreifen und Methoden wie +erb+
 oder +haml+ aufrufen. Man kann mit der +settings+ Methode außerdem auf den
-Anwengungsscope zugreifen.
+Anwengungsscope zugreifen:
 
   class MyApp < Sinatra::Base
     # Hey, ich bin im Anwendungsscope!
@@ -1562,7 +1659,8 @@ anderes +self+). Man kann mit <tt>Sinatra::Delegator.delegate
 Im Delegation-Scop befindet man sich:
 
 * Im Top-Level, wenn man <tt>require 'sinatra'</tt> aufgerufen hat.
-* In einem Objekt, dass mit dem <tt>Sinatra::Delegator</tt> mixin erweitert wurde.
+* In einem Objekt, dass mit dem <tt>Sinatra::Delegator</tt> mixin erweitert 
+  wurde.
 
 Schau am besten im Code nach: Hier ist
 {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/base.rb#L1064]
@@ -1583,6 +1681,59 @@ Die Optionen sind:
   -e # Umgebung setzen (Standard ist development)
   -s # Rack Server/Handler setzen (Standard ist thin)
   -x # Mutex lock einschalten (Standard ist off)
+
+== Systemanforderungen
+
+Es wird empfohlen Sinatra unter Ruby 1.8.7, 1.9.2, JRuby oder Rubinius zu
+installieren.
+
+Die folgenden Versionen werden offiziell unterstützt:
+
+[ Ruby 1.8.6 ]
+  Es wird nicht empfohlen 1.8.6 für Sinatra einzusetzen. Trotzdem wird es
+  offiziell bis Sinatra 1.3.0 unterstützt werden. RDoc und CoffeeScript 
+  Templates werden in dieser Version nicht unterstützt. 1.8.6 hat ein größeres
+  Speicherleck in seiner Hash Implementation, das von Sinatra Versionen vor 
+  1.1.1 ausgelöst wird. Die aktuelle Version verhindert das zwar explizit, aber 
+  unter Einbussen in der Performance. Ebenso muss Sinatra mit Rack 1.1.x laufen,
+  da Rack >= 1.2 Ruby 1.8.6 nicht mehr unterstützt.
+
+[ Ruby 1.8.7 ]
+  1.8.7 wird vollständig unterstützt, aber solange nichts dagegen spricht, 
+  wird ein Update auf 1.9.2 oder ein Umstieg auf JRuby/Rubinius empfohlen.
+
+[ Ruby 1.9.2 ]
+  1.9.2 wird unterstützt und empfohlen. Beachte, dass Markaby und Radius
+  momentan noch nicht kompatibel sind mit 1.9. Version 1.9.0p0 sollte nicht
+  verwendet werden, da unter Sinatra immer wieder Segfaults auftreten.
+
+[ Rubinius ]
+  Rubinius (rbx >= 1.2.2) wird offiziell unter Ausnahme von Textile 
+  Templates unterstützt.
+
+[ JRuby ]
+  Jruby wird offiziell unterstützt (JRuby >= 1.5.6). Probleme mit Template 
+  Bibliotheken Dritter sind nicht bekannt. Falls JRuby zum Einsatz kommt, sollte
+  aber darauf geachtet werden, dass ein JRuby Rack Handler zum Einsatz kommen – 
+  der Thin Web Server wird bisher noch nicht unterstütz.
+
+Weiterhin werden wir auf kommende Ruby Versionen ein Auge haben.
+
+Die nachfolgend aufgeführten Ruby Implementationen werden offiziell nicht von 
+Sinatra unterstützt, funktionieren aber normalerweise:
+
+* Ältere Versionen von JRuby und Rubinius
+* MacRuby
+* Maglev
+* IronRuby
+* Ruby 1.9.0 und 1.9.1
+
+Nicht offiziell unterstützt bedeutet, dass wenn Sachen nicht funktionieren, 
+dann gehen wir davon aus, dass es nicht an Sinatra, sondern an der jeweiligen 
+Implentierung liegt.
+
+Sinatra sollte auf jedem Betriebssystem laufen, dass den gewählten Ruby 
+Interpreter unterstützt.
 
 == Der neueste Stand (The Bleeding Edge)
 Um auf dem neusten Stand zu bleiben, kannst Du den Master Branch verwenden. Er
@@ -1657,7 +1808,10 @@ so lauten:
 
   sudo rake install
 
+== Versionsverfahren
 
+Sinatra folgt dem sog. {Semantic Versioning}[http://semver.org/], d.h. SemVer 
+und SemVerTag.
 
 == Mehr
 
@@ -1669,3 +1823,4 @@ Fehler gefunden? Brauchst du Hilfe? Hast du einen Patch?
 * {Twitter}[http://twitter.com/sinatra]
 * {Mailingliste}[http://groups.google.com/group/sinatrarb]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] auf http://freenode.net
+

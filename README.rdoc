@@ -64,7 +64,7 @@ You can also access named parameters via block parameters:
   end
 
 Route patterns may also include splat (or wildcard) parameters, accessible
-via the <tt>params[:splat]</tt> array.
+via the <tt>params[:splat]</tt> array:
 
   get '/say/*/to/*' do
     # matches /say/hello/to/world
@@ -673,7 +673,7 @@ Templates may also be defined using the top-level <tt>template</tt> method:
 
 If a template named "layout" exists, it will be used each time a template
 is rendered. You can individually disable layouts by passing <tt>:layout => false</tt>
-or disable them by default via <tt>set :haml, :layout => false</tt>.
+or disable them by default via <tt>set :haml, :layout => false</tt>:
 
   get '/' do
     haml :index, :layout => !request.xhr?
@@ -974,7 +974,7 @@ You can easily set the Cache-Control header with like this:
     "cache it!"
   end
 
-Pro tip: Set up caching in a before filter.
+Pro tip: Set up caching in a before filter:
 
   before do
     cache_control :public, :must_revalidate, :max_age => 60
@@ -990,7 +990,7 @@ If you are using the +expires+ helper to set the corresponding header,
 To properly use caches, you should consider using +etag+ and +last_modified+.
 It is recommended to call those helpers *before* doing heavy lifting, as they
 will immediately flush a response if the client already has the current
-version in its cache.
+version in its cache:
 
   get '/article/:id' do
     @article = Article.find params[:id]
@@ -1105,7 +1105,7 @@ The <tt>request.body</tt> is an IO or StringIO object:
 === Attachments
 
 You can use the +attachment+ helper to tell the browser the response should be
-stored on disk rather than displayed in the browser.
+stored on disk rather than displayed in the browser:
 
   get '/' do
     attachment
@@ -1546,7 +1546,7 @@ with a <tt>config.ru</tt>.</b>
 Not only is Sinatra able to use other Rack middleware, any Sinatra application
 can in turn be added in front of any Rack endpoint as middleware itself. This
 endpoint could be another Sinatra application, or any other Rack-based
-application (Rails/Ramaze/Camping/...).
+application (Rails/Ramaze/Camping/...):
 
   require 'sinatra/base'
   
@@ -1686,7 +1686,7 @@ The following Ruby versions are officially supported:
 
 [ Ruby 1.8.6 ]
   It is not recommended to use 1.8.6 for Sinatra. However, it will be
-  officially supported until Sinatra 1.3.0 is released. RDoc and CoffeScript
+  officially supported until Sinatra 1.3.0 is released. RDoc and CoffeeScript
   templates are not supported by this Ruby version. 1.8.6 includes a major
   memory leak in its Hash implementation, which is triggered by Sinatra
   versions prior to 1.1.1. The current version explicitly prevents this leak
@@ -1805,3 +1805,4 @@ SemVerTag.
 * {Twitter}[http://twitter.com/sinatra]
 * {Mailing List}[http://groups.google.com/group/sinatrarb/topics]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] on http://freenode.net
+
