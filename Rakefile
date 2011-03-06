@@ -144,8 +144,8 @@ if defined?(Gem)
     sh <<-SH
       gem install #{package('.gem')} --local &&
       gem push #{package('.gem')}  &&
-      git add sinatra.gemspec &&
-      git commit --allow-empty -m '#{source_version} release'  &&
+      git commit --allow-empty -a -m '#{source_version} release'  &&
+      git tag -s v#{source_version} -m '#{source_version} release'  &&
       git tag -s #{source_version} -m '#{source_version} release'  &&
       git push && (git push sinatra || true) &&
       git push --tags && (git push sinatra --tags || true)
