@@ -162,11 +162,11 @@ can easily define your own matchers:
 
     def initialize(except)
       @except   = except
-      @caputres = Match.new([])
+      @captures = Match.new([])
     end
 
     def match(str)
-      @caputres unless @except === str
+      @captures unless @except === str
     end
   end
 
@@ -1792,7 +1792,7 @@ If you install gems as root, the last step should be
 
 == Versioning
 
-Sinatra follows [Semantic Versioning](http://semver.org/), both SemVer and
+Sinatra follows {Semantic Versioning}[http://semver.org/], both SemVer and
 SemVerTag.
 
 == Further Reading
