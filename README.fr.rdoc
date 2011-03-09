@@ -67,7 +67,7 @@ ceci:
   end
 
 Une route peut contenir un splat (caractère joker), accessible par
-l'intermédiaire de la liste <tt>params[:splat]</tt>.
+l'intermédiaire de la liste <tt>params[:splat]</tt>:
 
   get '/dire/*/a/*' do
     # répondrait à /dire/bonjour/a/monde
@@ -171,7 +171,7 @@ facilement définir vos propres masques :
 
     def initialize(except)
       @except   = except
-      @caputres = Masque.new([])
+      @captures = Masque.new([])
     end
 
     def match(str)
@@ -711,7 +711,7 @@ Les templates peuvent aussi être définis grâce à la méthode de haut niveau
 Si un template nommé "layout" existe, il sera utilisé à chaque fois qu'un
 template sera affiché. Vous pouvez désactivez les layouts au cas par cas en
 passant <tt>:layout => false</tt> ou bien les désactiver par défaut au moyen
-de <tt>set :haml, :layout => false</tt>.
+de <tt>set :haml, :layout => false</tt>:
 
   get '/' do
     haml :index, :layout => !request.xhr?
@@ -1030,7 +1030,7 @@ Vous pouvez facilement définir l'entête Cache-Control de la manière suivante 
     "met le en cache !"
   end
 
-Conseil de pro : définir le cache dans un filtre +before+.
+Conseil de pro : définir le cache dans un filtre +before+:
 
   before do
     cache_control :public, :must_revalidate, :max_age => 60
@@ -1046,7 +1046,7 @@ Si vous utilisez la méthode +expires+ pour définir l'entête correspondant,
 Pour utiliser correctement les caches, vous devriez utiliser +etag+ et
 +last_modified+. Il est recommandé d'utiliser ces méthodes *avant* de faire
 d'important modifications, car elles vont immédiatement déclencher la réponse
-si le client a déjà la version courante dans son cache.
+si le client a déjà la version courante dans son cache:
 
   get '/article/:id' do
     @article = Article.find params[:id]
@@ -1169,7 +1169,7 @@ peuvent également être modifiées:
 === Fichiers joints
 
 Vous pouvez utiliser la méthode +attachment+ pour indiquer au navigateur que
-la réponse devrait être stockée sur le disque plutôt qu'affichée.
+la réponse devrait être stockée sur le disque plutôt qu'affichée:
 
   get '/' do
     attachment
@@ -1638,7 +1638,7 @@ Non seulement Sinatra peut utiliser d'autres middlewares Rack, il peut
 également être à son tour utilisé au-dessus de n'importe quel +endpoint+ Rack
 en tant que middleware. Ce +endpoint+ peut très bien être une autre
 application Sinatra, ou n'importe quelle application basée sur Rack
-(Rails/Ramaze/Camping/...).
+(Rails/Ramaze/Camping/...):
 
   require 'sinatra/base'
 
@@ -1784,7 +1784,7 @@ Les versions suivantes de Ruby sont officiellement supportées :
 [ Ruby 1.8.6 ]
   Il n'est pas recommandé d'utiliser 1.8.6 pour Sinatra. Toutefois, ce sera
   officiellement supporté jusqu'à l'arrivée Sinatra 1.3.0. Les templates RDoc
-  et CoffeScript ne sont pas supportés par cette version de Ruby. 1.8.6
+  et CoffeeScript ne sont pas supportés par cette version de Ruby. 1.8.6
   contient un défaut majeur de fuite de mémoire dans l'implémentation de Hash,
   qui est déclenché par les versions de Sinatra antérieure à 1.1.1. La version
   actuelle prévient explicitement ce risque au prix de la performance. Vous
@@ -1894,6 +1894,11 @@ Vous pouvez construire la gem vous-même :
 Si vous installez les gems en tant que +root+, la dernière étape sera :
 
   sudo rake install
+
+== Versions
+
+Sinatra se conforme aux {versions sémantiques}[http://semver.org/], aussi bien
+SemVer que SemVerTag.
 
 == Mais encore
 
