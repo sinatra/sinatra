@@ -66,7 +66,7 @@ También podés acceder a los parámetros nombrados usando parámetros de bloque
   end
 
 Los patrones de ruta también pueden incluir parámetros splat (o wildcard),
-accesibles a través del arreglo <tt>params[:splat]</tt>.
+accesibles a través del arreglo <tt>params[:splat]</tt>:
 
   get '/decir/*/al/*' do
     # coincide con /decir/hola/al/mundo
@@ -165,11 +165,11 @@ definir tus propios comparadores muy fácilmente:
 
     def initialize(excepto)
       @excepto  = excepto
-      @caputras = Match.new([])
+      @capturas = Match.new([])
     end
 
     def match(str)
-      @caputras unless @excepto === str
+      @capturas unless @excepto === str
     end
   end
 
@@ -687,7 +687,7 @@ Las plantillas también pueden ser definidas usando el método top-level
 Si existe una plantilla con el nombre "layout", va a ser usada cada vez que
 una plantilla es renderizada. Podés desactivar los layouts individualmente
 pasando <tt>:layout => false</tt> o globalmente con
-<tt>set :haml, :layout => false</tt>.
+<tt>set :haml, :layout => false</tt>:
 
   get '/' do
     haml :index, :layout => !request.xhr?
@@ -997,7 +997,7 @@ Podés asignar el encabezado Cache-Control fácilmente:
     "cachealo!"
   end
 
-Pro tip: configurar el cacheo en un filtro +before+.
+Pro tip: configurar el cacheo en un filtro +before+:
 
   before do
     cache_control :public, :must_revalidate, :max_age => 60
@@ -1013,7 +1013,7 @@ Si estás usando el helper +expires+ para definir el encabezado correspondiente,
 Para usar cachés adecuadamente, deberías considerar usar +etag+ y
 +last_modified+.  Es recomendable que llames a estos helpers *antes* de hacer
 cualquier trabajo pesado, ya que van a enviar la respuesta inmediatamente si
-el cliente ya tiene la versión actual en su caché.
+el cliente ya tiene la versión actual en su caché:
 
   get '/articulo/:id' do
     @articulo = Articulo.find params[:id]
@@ -1131,7 +1131,7 @@ El objeto <tt>request.body</tt> es una instancia de IO o StringIO:
 === Archivos Adjuntos
 
 Podés usar el método helper +attachment+ para indicarle al navegador que
-almacene la respuesta en el disco en lugar de mostrarla en pantalla.
+almacene la respuesta en el disco en lugar de mostrarla en pantalla:
 
   get '/' do
     attachment
@@ -1589,7 +1589,7 @@ iniciarla con <tt>config.ru</tt>.</b>
 Sinatra no solo es capaz de usar otro Rack middleware, sino que a su vez,
 cualquier aplicación Sinatra puede ser agregada delante de un endpoint Rack
 como middleware. Este endpoint puede ser otra aplicación Sinatra, o cualquier
-aplicación basada en Rack (Rails/Ramaze/Camping/...).
+aplicación basada en Rack (Rails/Ramaze/Camping/...):
 
   require 'sinatra/base'
 
@@ -1837,6 +1837,11 @@ Podés construir la gem vos mismo:
 Si instalás tus gems como root, el último paso debería ser
 
   sudo rake install
+
+== Versionado
+
+Sinatra utiliza el {Versionado Semántico}[http://semver.org/],
+siguiendo las especificaciones SemVer y SemVerTag.
 
 == Lecturas Recomendadas
 
