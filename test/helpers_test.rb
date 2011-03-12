@@ -779,6 +779,36 @@ class HelpersTest < Test::Unit::TestCase
     end
   end
 
+  describe 'logger' do
+    it 'logging works when logging is enabled' do
+      mock_app do
+        enable :logging
+        get '/' do
+          logger.info "Program started"
+          logger.warn "Nothing to do!"
+        end
+      end
+      io = StringIO.new
+      get '/', {}, 'rack.errors' => io
+      assert io.string.include?("INFO -- : Program started")
+      assert io.string.include?("WARN -- : Nothing to do")
+    end
+
+    it 'logging works when logging is disable, but no output is produced' do
+      mock_app do
+        disable :logging
+        get '/' do
+          logger.info "Program started"
+          logger.warn "Nothing to do!"
+        end
+      end
+      io = StringIO.new
+      get '/', {}, 'rack.errors' => io
+      assert !io.string.include?("INFO -- : Program started")
+      assert !io.string.include?("WARN -- : Nothing to do")
+    end
+  end
+
   module ::HelperOne; def one; '1'; end; end
   module ::HelperTwo; def two; '2'; end; end
 
