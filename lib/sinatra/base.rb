@@ -1232,10 +1232,10 @@ module Sinatra
       # an instance of this class as end point.
       def build(*args, &bk)
         builder = Rack::Builder.new
-        builder.use Rack::Session::Cookie if sessions?
-        builder.use Rack::CommonLogger    if logging?
-        builder.use Rack::MethodOverride  if method_override?
-        builder.use ShowExceptions        if show_exceptions?
+        builder.use Rack::Session::Pool  if sessions?
+        builder.use Rack::CommonLogger   if logging?
+        builder.use Rack::MethodOverride if method_override?
+        builder.use ShowExceptions       if show_exceptions?
         middleware.each { |c,a,b| builder.use(c, *a, &b) }
         builder.run new!(*args, &bk)
         builder
