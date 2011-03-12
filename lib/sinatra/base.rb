@@ -1232,10 +1232,9 @@ module Sinatra
       # an instance of this class as end point.
       def build(*args, &bk)
         builder = Rack::Builder.new
-        builder.use Rack::Session::Pool  if sessions?
-        builder.use Rack::CommonLogger   if logging?
-        builder.use Rack::MethodOverride if method_override?
-        builder.use ShowExceptions       if show_exceptions?
+        builder.use Rack::CommonLogger    if logging?
+        builder.use Rack::MethodOverride  if method_override?
+        builder.use ShowExceptions        if show_exceptions?
         middleware.each { |c,a,b| builder.use(c, *a, &b) }
         builder.run new!(*args, &bk)
         builder
@@ -1246,6 +1245,11 @@ module Sinatra
       end
 
     private
+      def setup_sessions(builder)
+        return unless sessions?
+        builder.use Rack::Session::Cookie, :secret => session_secret
+      end
+
       def detect_rack_handler
         servers = Array(server)
         servers.each do |server_name|
@@ -1341,6 +1345,9 @@ module Sinatra
     set :method_override, false
     set :default_encoding, "utf-8"
     set :add_charset, [/^text\//, 'application/javascript', 'application/xml', 'application/xhtml+xml']
+
+    # explicitly generating this eagerly to play nice with preforking
+    set :session_secret, '%x' % rand(2**255)
 
     class << self
       alias_method :methodoverride?, :method_override?

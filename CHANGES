@@ -1,9 +1,7 @@
 = 1.2.1 / Not Yet Release
 
- * Switched default session middleware from `Rack::Session::Cookies` to
-   `Rack::Session::Pool`, to improve security. Using `Rack::Session::Cookies`
-   without a secret allows injecting arbitrary objects into sessions an, in a
-   worst case scenario, might lead to code injection. (Konstantin Haase)
+ * Use a generated session secret when using `enable :sessions`. (Konstantin
+   Haase)
 
 = 1.2.0 / 2011-03-03
 
