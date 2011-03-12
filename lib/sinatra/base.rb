@@ -1218,19 +1218,27 @@ module Sinatra
         @prototype ||= new
       end
 
+      # Create a new instance without middleware in front of it.
+      alias new! new unless method_defined? :new!
+
       # Create a new instance of the class fronted by its middleware
       # pipeline. The object is guaranteed to respond to #call but may not be
       # an instance of the class new was called on.
       def new(*args, &bk)
+        build(*args, &bk).to_app
+      end
+
+      # Creates a Rack::Builder instance with all the middleware set up and
+      # an instance of this class as end point.
+      def build(*args, &bk)
         builder = Rack::Builder.new
         builder.use Rack::Session::Cookie if sessions?
         builder.use Rack::CommonLogger    if logging?
         builder.use Rack::MethodOverride  if method_override?
         builder.use ShowExceptions        if show_exceptions?
         middleware.each { |c,a,b| builder.use(c, *a, &b) }
-
-        builder.run super
-        builder.to_app
+        builder.run new!(*args, &bk)
+        builder
       end
 
       def call(env)
