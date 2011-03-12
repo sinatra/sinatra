@@ -71,7 +71,7 @@ class BaseTest < Test::Unit::TestCase
     end
 
     it 'exposes the downstream app' do
-      middleware = TestMiddleware.new(app)
+      middleware = TestMiddleware.new!(app)
       assert_same app, middleware.app
     end
 

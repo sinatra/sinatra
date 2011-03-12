@@ -38,7 +38,7 @@ class RequestTest < Test::Unit::TestCase
       'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
       'rack.input' => StringIO.new('foo=bar')
     )
-    params = Sinatra::Base.new.send(:indifferent_hash).replace(request.params)
+    params = Sinatra::Base.new!.send(:indifferent_hash).replace(request.params)
     dumped = Marshal.dump(request.params)
     assert_equal 'bar', Marshal.load(dumped)['foo']
   end

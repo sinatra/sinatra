@@ -112,7 +112,7 @@ class SettingsTest < Test::Unit::TestCase
   end
 
   it 'is accessible from instances via #settings' do
-    assert_equal :foo, @base.new.settings.environment
+    assert_equal :foo, @base.new!.settings.environment
   end
 
   it 'is accessible from class via #settings' do
