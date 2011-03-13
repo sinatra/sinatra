@@ -896,6 +896,29 @@ Similar to the body, you can also set the status code and headers:
 Like +body+, +headers+ and +status+ with no arguments can be used to access
 their current values.
 
+=== Logging
+
+In the request scope, the +logger+ helper exposes a +Logger+ instance:
+
+  get '/' do
+    logger.info "loading data"
+    # ...
+  end
+
+This logger will automatically take your Rack handler's logging settings into
+account. If logging is disabled, this method will return a dummy object, so
+you do not have to worry in your routes and filters about it.
+
+Note that logging is only enabled for <tt>Sinatra::Application</tt> by
+default, so if you inherit from <tt>Sinatra::Base</tt>, you probably want to
+enable it yourself:
+
+  class MyApp < Sinatra::Base
+    configure(:production, :development) do
+      enable :logging
+    end
+  end
+
 === Mime Types
 
 When using <tt>send_file</tt> or static files you may have mime types Sinatra
