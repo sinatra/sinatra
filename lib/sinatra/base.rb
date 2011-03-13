@@ -1232,6 +1232,7 @@ module Sinatra
       # an instance of this class as end point.
       def build(*args, &bk)
         builder = Rack::Builder.new
+        setup_sessions builder
         builder.use Rack::CommonLogger    if logging?
         builder.use Rack::MethodOverride  if method_override?
         builder.use ShowExceptions        if show_exceptions?

@@ -25,6 +25,12 @@ class Sinatra::Base
   include Test::Unit::Assertions
 end
 
+class Rack::Builder
+  def include?(middleware)
+    @ins.any? { |m| p m ; middleware === m }
+  end
+end
+
 Sinatra::Base.set :environment, :test
 
 class Test::Unit::TestCase

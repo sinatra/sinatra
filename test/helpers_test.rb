@@ -255,6 +255,35 @@ class HelpersTest < Test::Unit::TestCase
       follow_redirect!
       assert_equal 'hi bar', body
     end
+
+    it 'inserts session middleware' do
+      mock_app do
+        enable :sessions
+        get '/' do
+          assert env['rack.session']
+          assert env['rack.session.options']
+          'ok'
+        end
+      end
+
+      get '/'
+      assert_body 'ok'
+    end
+
+    it 'sets a default session secret' do
+      mock_app do
+        enable :sessions
+        get '/' do
+          secret = env['rack.session.options'][:secret]
+          assert secret
+          assert_equal secret, settings.session_secret
+          'ok'
+        end
+      end
+
+      get '/'
+      assert_body 'ok'
+    end
   end
 
   describe 'mime_type' do
