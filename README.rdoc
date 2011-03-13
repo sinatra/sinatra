@@ -799,6 +799,13 @@ middleware of choice how you would any other middleware:
     session[:value] = params[:value]
   end
 
+To improve security, the session data in the cookie is signed with a session
+secret. A random secret is generate for you by Sinatra. However, since this
+secret will change with every start of your application, you might want to
+set the secret yourself, so all your application instances share it:
+
+  set :session_secret, 'super secret'
+
 === Halting
 
 To immediately stop a request within a filter or route use:
