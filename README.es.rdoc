@@ -816,6 +816,15 @@ pero con la salvedad de que *no* tenés que llamar a <tt>enable :sessions</tt>:
     session[:valor] = params[:valor]
   end
 
+Para incrementar la seguridad, los datos de la sesión almacenados en
+la cookie son firmados con un secreto de sesión.  Este secreto, es
+generado aleatoriamente por Sinatra.  De cualquier manera, hay que
+tener en cuenta que cada vez que inicies la aplicación se va a generar
+uno nuevo.  Así, si querés que todas las instancias de tu aplicación
+compartan un único secreto, tenés que definirlo vos:
+
+  set :session_secret, 'super secreto'
+
 === Interrupción
 
 Para detener inmediatamente una petición dentro de un filtro o una ruta usá:
