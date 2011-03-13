@@ -1,3 +1,8 @@
+= 1.2.1 / Not Yet Release
+
+ * Use a generated session secret when using `enable :sessions`. (Konstantin
+   Haase)
+
 = 1.2.0 / 2011-03-03
 
  * Added `slim` rendering method for rendering Slim templates. (Steve
