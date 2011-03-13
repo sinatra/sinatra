@@ -1,3 +1,9 @@
+= 1.3.0 / Not Yet Release
+
+ * Set up `Rack::Logger` or `Rack::NullLogger` depending on whether logging
+   was enabled or not. Also, expose that logger with the `logger` helper
+   method. (Konstantin Haase)
+
 = 1.2.1 / Not Yet Release
 
  * Use a generated session secret when using `enable :sessions`. (Konstantin
