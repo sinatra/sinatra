@@ -542,7 +542,7 @@ module Sinatra
       # render layout
       if layout
         options = options.merge(:views => views, :layout => false, :eat_errors => eat_errors, :scope => scope)
-        catch(:layout_missing) { output = render(layout_engine, layout, options, locals) { output }}
+        catch(:layout_missing) { return render(layout_engine, layout, options, locals) { output } }
       end
 
       output.extend(ContentTyped).content_type = content_type if content_type

@@ -224,6 +224,14 @@ class TemplatesTest < Test::Unit::TestCase
     assert_equal "Hello <%= 'World' %>!", body
   end
 
+  it "does not leak the content type to the template" do
+    render_app :str => { :layout_engine => :erb } do
+      settings.template(:layout) { 'Hello <%= yield %>!' }
+      render :str, "<%= 'World' %>", :content_type => :txt
+    end
+    assert_equal "text/html;charset=utf-8", headers['Content-Type']
+  end
+
   it "is possible to register another template" do
     Tilt.register "html.erb", Tilt[:erb]
     render_app { render :erb, :calc }

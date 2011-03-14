@@ -3,6 +3,11 @@
  * Use a generated session secret when using `enable :sessions`. (Konstantin
    Haase)
 
+ * Fixed a bug where the wrong content type was used if no content type was
+   set and a template engine was used with a different engine for the layout
+   with different default content types, say Less embedded in Slim.
+   (Konstantin Haase)
+
 = 1.2.0 / 2011-03-03
 
  * Added `slim` rendering method for rendering Slim templates. (Steve
