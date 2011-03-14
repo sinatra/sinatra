@@ -811,6 +811,13 @@ aufrufen, sondern die Middleware wie üblich in das Programm einbinden:
     session[:value] = params[:value]
   end
 
+Um die Sicherheit zu erhöhen, können Cookies, die Session Daten führen, mit 
+einem sogenannten Session Secret versehen werden. Da sich jedoch dieses 
+Geheimwort bei jedem Neustart der Applikation automatisch ändert, ist es 
+sinnvoll selber eins zu wählen, damit alle Instanzen der Applikation sich das 
+gleiche Session Sectret teilen:
+
+  set :session_secret, 'super secret'
 
 == Anhalten
 
