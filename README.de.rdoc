@@ -815,7 +815,7 @@ Um die Sicherheit zu erhöhen, werden Cookies, die Session-Daten führen, mit
 einem sogenannten Session Secret signiert. Da sich jedoch dieses Geheimwort
 bei jedem Neustart der Applikation automatisch ändert, ist es sinnvoll selber
 eins zu wählen, damit alle Instanzen der Applikation sich das gleiche Session
-Sectret teilen:
+Secret teilen:
 
   set :session_secret, 'super secret'
 
