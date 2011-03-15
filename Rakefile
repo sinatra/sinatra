@@ -80,6 +80,21 @@ task :thanks, [:release,:backports] do |t, a|
     "(based on commits included in #{a.release}, but not in #{a.backports})"
 end
 
+task :authors, [:format, :sep] do |t, a|
+  a.with_defaults :format => "%s (%d)", :sep => ', '
+  authors = Hash.new { |h,k| h[k] = 0 }
+  blake   = "Blake Mizerany"
+  mapping = {
+    "blake.mizerany@gmail.com" => blake, "bmizerany" => blake,
+    "a_user@mac.com" => blake, "ichverstehe" => "Harry Vangberg",
+    "Wu Jiang (nouse)" => "Wu Jiang" }
+  `git shortlog -s`.lines.map do |line|
+    num, name = line.split("\t", 2).map(&:strip)
+    authors[mapping[name] || name] += num.to_i
+  end
+  puts authors.sort_by { |n,c| -c }.map { |e| a.format % e }.join(a.sep)
+end
+
 # PACKAGING ============================================================
 
 if defined?(Gem)
