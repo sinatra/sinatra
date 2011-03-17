@@ -1710,14 +1710,15 @@ The following Ruby versions are officially supported:
   segmentation faults when using Sinatra.
 
 [ Rubinius ]
-  Rubinius is officially supported (Rubinius >= 1.2.2), with the exception
-  of Textile templates.
+  Rubinius is officially supported (Rubinius >= 1.2.3), everything, including
+  all template languages, works.
 
 [ JRuby ]
-  JRuby is officially supported (JRuby >= 1.5.6). No issues with third party
+  JRuby is officially supported (JRuby >= 1.6.0). No issues with third party
   template libraries are known, however, if you choose to use JRuby, please
-  look into JRuby rack handlers, as the Thin web server is not (yet) supported
-  on JRuby.
+  look into JRuby rack handlers, as the Thin web server is not fully supported
+  on JRuby. JRuby's support for C extensions is still experimental, which only
+  affects RDiscount at the moment.
 
 We also keep an eye on upcoming Ruby versions.
 
@@ -1725,13 +1726,15 @@ The following Ruby implementations are not officially supported but still are
 known to run Sinatra:
 
 * Older versions of JRuby and Rubinius
-* MacRuby
-* Maglev
-* IronRuby
+* MacRuby, Maglev, IronRuby
 * Ruby 1.9.0 and 1.9.1
 
 Not being officially supported means if things only break there and not on a
 supported platform, we assume it's not our issue but theirs.
+
+We also run our CI against ruby-head (the upcoming 1.9.3), but we can't
+guarantee anything, since it is constantly moving. Expect 1.9.3p0 to be
+supported.
 
 Sinatra should work on any operating system supported by the chosen Ruby
 implementation.

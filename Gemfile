@@ -21,6 +21,7 @@ gem 'less', :group => 'less'
 gem 'liquid', :group => 'liquid'
 gem 'nokogiri', :group => 'nokogiri'
 gem 'slim', :group => 'slim'
+gem 'RedCloth', :group => 'redcloth'
 
 
 if RUBY_VERSION > '1.8.6'
@@ -38,12 +39,6 @@ platforms :ruby_18, :jruby do
   gem 'json', :group => 'coffee-script'
   gem 'markaby', :group => 'markaby'
   gem 'radius', :group => 'radius'
-end
-
-platforms :mri do
-  # bundler platforms are broken
-  next unless RUBY_ENGINE == 'ruby'
-  gem 'RedCloth', :group => 'redcloth'
 end
 
 platforms :mri_18 do
