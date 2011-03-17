@@ -1,12 +1,15 @@
-= 1.2.1 / Not Yet Release
+= 1.2.1 / 2011-03-17
 
  * Use a generated session secret when using `enable :sessions`. (Konstantin
    Haase)
 
- * Fixed a bug where the wrong content type was used if no content type was
-   set and a template engine was used with a different engine for the layout
-   with different default content types, say Less embedded in Slim.
-   (Konstantin Haase)
+ * Fixed a bug where the wrong content type was used if no content type was set
+   and a template engine was used with a different engine for the layout with
+   different default content types, say Less embedded in Slim. (Konstantin
+   Haase)
+
+ * README translations improved (Gabriel Andretta, burningTyger, Sylvain Desvé,
+   Gregor Schmidt)
 
 = 1.2.0 / 2011-03-03
 
