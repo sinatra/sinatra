@@ -23,7 +23,7 @@ class RegexpLookAlike
 end
 
 class RoutingTest < Test::Unit::TestCase
-  %w[get put post delete options].each do |verb|
+  %w[get put post delete options patch].each do |verb|
     it "defines #{verb.upcase} request handlers with #{verb}" do
       mock_app {
         send verb, '/hello' do
