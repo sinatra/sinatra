@@ -237,7 +237,7 @@ Das +haml+-Gem wird benötigt, um Haml-Templates rendern zu können:
 
 Dieser Code rendert <tt>./views/index.haml</tt>.
 
-{Haml's Optionen}[http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options]
+{Hamls Optionen}[http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options]
 können global durch die Sinatra-Konfiguration gesetzt werden,
 siehe {Optionen und Konfiguration}[http://www.sinatrarb.com/configuration.html],
 und individuell überschrieben werden.
