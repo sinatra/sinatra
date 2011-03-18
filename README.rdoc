@@ -34,13 +34,17 @@ Each route is associated with a block:
   end
 
   put '/' do
-    .. update something ..
+    .. replace something ..
+  end
+
+  patch '/' do
+    .. modify something ..
   end
 
   delete '/' do
     .. annihilate something ..
   end
-  
+
   options '/' do
     .. appease something ..
   end
