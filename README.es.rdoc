@@ -1756,14 +1756,16 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
   fallos de segmentación cuando se utiliza Sinatra.
 
 [ Rubinius ]
-  Rubinius es soportado oficialmente (Rubinius >= 1.2.2), con la excepción de
-  las plantillas Textile.
+  Rubinius es soportado oficialmente (Rubinius >= 1.2.3).  Todo
+  funciona correctamente, incluyendo los lenguajes de plantillas.
 
 [ JRuby ]
-  JRuby es soportado oficialmente (JRuby >= 1.5.6).  No se conocen problemas con
-  librerías de plantillas de terceras partes.  Sin embargo, si elegís usar
-  JRuby, deberías examinar sus Rack handlers porque el servidor web Thin no es
-  soportado actualmente.
+  JRuby es soportado oficialmente (JRuby >= 1.6.0).  No se conocen
+  problemas con librerías de plantillas de terceras partes.  Sin
+  embargo, si elegís usar JRuby, deberías examinar sus Rack handlers
+  porque el servidor web Thin no es soportado completamente.  El
+  soporte de JRuby para extensiones C se encuentra en una etapa
+  experimental, sin embargo, de momento solo RDiscount se ve afectada.
 
 Siempre le prestamos atención a las nuevas versiones de Ruby.
 
@@ -1771,14 +1773,17 @@ Las siguientes implementaciones de Ruby no se encuentran soportadas
 oficialmente.  De cualquier manera, pueden ejecutar Sinatra:
 
 * Versiones anteriores de JRuby y Rubinius
-* MacRuby
-* Maglev
-* IronRuby
+* MacRuby, Maglev e IronRuby
 * Ruby 1.9.0 y 1.9.1
 
 No estar soportada oficialmente, significa que si las cosas solamente se rompen
 ahí y no en una plataforma soportada, asumimos que no es nuestro problema sino
 el suyo.
+
+Nuestro servidor CI también se ejecuta sobre ruby-head (que será la
+próxima versión 1.9.3).  Como está en movimiento constante, no podemos
+garantizar nada.  De todas formas, podés contar con que 1.9.3-p0 sea
+soportada.
 
 Sinatra debería funcionar en cualquier sistema operativo soportado por la
 implementación de Ruby elegida.
