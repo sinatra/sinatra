@@ -2,6 +2,8 @@
 
  * Added support for HTTP PATCH requests. (Konstantin Haase)
 
+ * Important: 1.8.6 support has been dropped. (Konstantin Haase)
+
 = 1.2.1 / 2011-03-17
 
  * Use a generated session secret when using `enable :sessions`. (Konstantin
