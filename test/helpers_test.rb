@@ -284,6 +284,19 @@ class HelpersTest < Test::Unit::TestCase
       get '/'
       assert_body 'ok'
     end
+
+    it 'accepts an options hash' do
+      mock_app do
+        set :sessions, :foo => :bar
+        get '/' do
+          assert_equal env['rack.session.options'][:foo], :bar
+          'ok'
+        end
+      end
+
+      get '/'
+      assert_body 'ok'
+    end
   end
 
   describe 'mime_type' do

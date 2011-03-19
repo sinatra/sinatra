@@ -810,6 +810,11 @@ set the secret yourself, so all your application instances share it:
 
   set :session_secret, 'super secret'
 
+If you want to configure it further, you may also store a hash with options in
+the +sessions+ setting:
+
+  set :sessions, :domain => 'foo.com'
+
 === Halting
 
 To immediately stop a request within a filter or route use:

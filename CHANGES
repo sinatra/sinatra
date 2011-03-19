@@ -2,6 +2,8 @@
 
  * Added support for HTTP PATCH requests. (Konstantin Haase)
 
+ * The sessions setting now may be an options hash. (Konstantin Haase)
+
  * Important: 1.8.6 support has been dropped. (Konstantin Haase)
 
 = 1.2.1 / 2011-03-17
