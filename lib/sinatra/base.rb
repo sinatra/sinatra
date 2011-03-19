@@ -765,8 +765,7 @@ module Sinatra
       public_dir = File.expand_path(public_dir)
 
       path = File.expand_path(public_dir + unescape(request.path_info))
-      return if path[0, public_dir.length] != public_dir
-      return unless File.file?(path)
+      return unless path.start_with?(public_dir) and File.file?(path)
 
       env['sinatra.static_file'] = path
       send_file path, :disposition => nil
@@ -1368,7 +1367,7 @@ module Sinatra
     set :app_file, nil
     set :root, Proc.new { app_file && File.expand_path(File.dirname(app_file)) }
     set :views, Proc.new { root && File.join(root, 'views') }
-    set :reload_templates, Proc.new { development? or RUBY_VERSION < '1.8.7' }
+    set :reload_templates, Proc.new { development? }
     set :lock, false
 
     set :public, Proc.new { root && File.join(root, 'public') }

@@ -1,5 +1,5 @@
 # Why use bundler?
-# Well, not all development dependencies install on all rubies. Moreover, `gem 
+# Well, not all development dependencies install on all rubies. Moreover, `gem
 # install sinatra --development` doesn't work, as it will also try to install
 # development dependencies of our dependencies, and those are not conflict free.
 # So, here we are, `bundle install`.
@@ -22,14 +22,8 @@ gem 'liquid', :group => 'liquid'
 gem 'nokogiri', :group => 'nokogiri'
 gem 'slim', :group => 'slim'
 gem 'RedCloth', :group => 'redcloth'
-
-
-if RUBY_VERSION > '1.8.6'
-  gem 'coffee-script', '>= 2.0', :group => 'coffee-script'
-  gem 'rdoc', :group => 'rdoc'
-else
-  gem 'rack', '~> 1.1.0'
-end
+gem 'coffee-script', '>= 2.0', :group => 'coffee-script'
+gem 'rdoc', :group => 'rdoc'
 
 platforms :ruby do
   gem 'rdiscount', :group => 'rdiscount'
@@ -43,6 +37,6 @@ end
 
 platforms :mri_18 do
   # bundler platforms are broken
-  next unless RUBY_ENGINE == 'ruby'
+  next if RUBY_ENGINE != 'ruby' or RUBY_VERSION > "1.8"
   gem 'rcov', :group => 'rcov'
 end
