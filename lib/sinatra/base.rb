@@ -1094,6 +1094,7 @@ module Sinatra
       def delete(path, opts={}, &bk)  route 'DELETE',  path, opts, &bk end
       def head(path, opts={}, &bk)    route 'HEAD',    path, opts, &bk end
       def options(path, opts={}, &bk) route 'OPTIONS', path, opts, &bk end
+      def patch(path, opts={}, &bk)   route 'PATCH',   path, opts, &bk end
 
     private
       def route(verb, path, options={}, &block)
