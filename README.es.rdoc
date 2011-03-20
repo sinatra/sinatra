@@ -829,6 +829,11 @@ compartan un único secreto, tenés que definirlo vos:
 
   set :session_secret, 'super secreto'
 
+Si necesitás una configuración más específica, +sessions+ acepta un
+Hash con opciones:
+
+  set :sessions, :domain => 'foo.com'
+
 === Interrupción
 
 Para detener inmediatamente una petición dentro de un filtro o una ruta usá:
