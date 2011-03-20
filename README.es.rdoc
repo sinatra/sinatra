@@ -35,7 +35,11 @@ Cada ruta se asocia con un bloque:
   end
 
   put '/' do
-    .. actualizar algo ..
+    .. reemplazar algo ..
+  end
+
+  patch '/' do
+    .. modificar algo ..
   end
 
   delete '/' do
