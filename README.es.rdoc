@@ -1309,9 +1309,7 @@ Podés acceder a estas opciones utilizando el método <tt>settings</tt>:
 
 [reload_templates]    define si se recargan las plantillas entre peticiones.
 
-                      Se encuentra activado en el entorno de desarrollo y en
-                      Ruby 1.8.6 (para compoensar un bug en Ruby que provoca una
-                      pérdida de memoria).
+                      Se encuentra activado en el entorno de desarrollo.
 
 [root]                directorio raíz del proyecto.
 
@@ -1734,21 +1732,9 @@ Las opciones son:
   -s # especifica el servidor/manejador rack (thin es usado por defecto)
   -x # activa el mutex lock (está desactivado por defecto)
 
-== Requerimientos
-
-Se recomienda instalar Sinatra en Ruby 1.8.7, 1.9.2, JRuby o Rubinius.
+== Versiones de Ruby Soportadas
 
 Las siguientes versiones de Ruby son soportadas oficialmente:
-
-[ Ruby 1.8.6 ]
-  No se recomienda utilizar Sinatra en 1.8.6. Sin embargo, esta versión será
-  soportada oficialmente hasta que se libere Sinatra 1.3.0.  RDoc y CoffeeScript
-  no son soportadas por esta versión de Ruby. 1.8.6 contiene una falla
-  importante de pérdida de memoria en su implementación de Hash, que afecta a
-  las versiones de Sinatra anteriores a 1.1.1.  La versión actual evita
-  explícitamente esta falla a expensas de una disminución del rendimiento.  Por
-  último, Rack >= 1.2 dejó de soportar 1.8.6, por lo que vas a tener que usar
-  alguna versión 1.1.x.
 
 [ Ruby 1.8.7 ]
   1.8.7 es soportado completamente.  Sin embargo, si no hay nada que te lo
@@ -1771,6 +1757,8 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
   soporte de JRuby para extensiones C se encuentra en una etapa
   experimental, sin embargo, de momento solo RDiscount se ve afectada.
 
+<b>Hemos dejado de soportar Ruby 1.8.6.</b>
+
 Siempre le prestamos atención a las nuevas versiones de Ruby.
 
 Las siguientes implementaciones de Ruby no se encuentran soportadas
@@ -1779,6 +1767,7 @@ oficialmente.  De cualquier manera, pueden ejecutar Sinatra:
 * Versiones anteriores de JRuby y Rubinius
 * MacRuby, Maglev e IronRuby
 * Ruby 1.9.0 y 1.9.1
+* Ruby 1.8.6 con {backports}[https://github.com/marcandre/backports/#readme]
 
 No estar soportada oficialmente, significa que si las cosas solamente se rompen
 ahí y no en una plataforma soportada, asumimos que no es nuestro problema sino
