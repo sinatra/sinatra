@@ -15,6 +15,15 @@ def source_version
   end
 end
 
+def prev_feature
+  source_version.gsub(/^(\d\.)(\d+)\..*$/) { $1 + ($2.to_i - 1).to_s }
+end
+
+def prev_version
+  return prev_feature + '.0' if source_version.end_with? '.0'
+  source_version.gsub(/\d+$/) { |s| s.to_i - 1 }
+end
+
 # SPECS ===============================================================
 
 task :test do
@@ -69,13 +78,14 @@ end
 # Thanks in announcement ===============================================
 
 team = ["Ryan Tomayko", "Blake Mizerany", "Simon Rozet", "Konstantin Haase"]
-desc "list of contributors: rake thanks[1.1.0..master,1.1.0..1.1.x]"
+desc "list of contributors"
 task :thanks, [:release,:backports] do |t, a|
-  a.with_defaults :release => "1.1.0..master", :backports => "1.1.0..1.1.x"
+  a.with_defaults :release => "#{prev_version}..HEAD",
+    :backports => "#{prev_feature}.0..#{prev_feature}.x"
   included = `git log --format=format:"%aN\t%s" #{a.release}`.lines.to_a
   excluded = `git log --format=format:"%aN\t%s" #{a.backports}`.lines.to_a
-  commits = (included - excluded).group_by { |c| c[/^[^\t]+/] }
-  authors = commits.keys.sort_by { |n| - commits[n].size } - team
+  commits  = (included - excluded).group_by { |c| c[/^[^\t]+/] }
+  authors  = commits.keys.sort_by { |n| - commits[n].size } - team
   puts authors[0..-2].join(', ') << " and " << authors.last,
     "(based on commits included in #{a.release}, but not in #{a.backports})"
 end
