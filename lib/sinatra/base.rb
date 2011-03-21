@@ -106,7 +106,7 @@ module Sinatra
     # Generates the absolute URI for a given path in the app.
     # Takes Rack routers and reverse proxies into account.
     def uri(addr = nil, absolute = true, add_script_name = true)
-      return addr if addr =~ /^https?:\/\//
+      return addr if addr =~ /\A[A-z][A-z0-9\+\.\-]*:/
       uri = [host = ""]
       if absolute
         host << 'http'
