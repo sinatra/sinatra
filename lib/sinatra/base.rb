@@ -99,7 +99,7 @@ module Sinatra
 
       # According to RFC 2616 section 14.30, "the field value consists of a
       # single absolute URI"
-      response['Location'] = url(uri, settings.absolute_redirects?, settings.prefixed_redirects?)
+      response['Location'] = uri(uri, settings.absolute_redirects?, settings.prefixed_redirects?)
       halt(*args)
     end
 
