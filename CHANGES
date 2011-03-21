@@ -2,6 +2,10 @@
 
  * Added support for HTTP PATCH requests. (Konstantin Haase)
 
+ * Set up `Rack::Logger` or `Rack::NullLogger` depending on whether logging
+   was enabled or not. Also, expose that logger with the `logger` helper
+   method. (Konstantin Haase)
+
  * The sessions setting now may be an options hash. (Konstantin Haase)
 
  * Important: 1.8.6 support has been dropped. It is still usable if you use the

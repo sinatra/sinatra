@@ -138,6 +138,11 @@ module Sinatra
       request.session
     end
 
+    # Access shared logger object.
+    def logger
+      request.logger
+    end
+
     # Look up a media type by file extension in Rack's mime registry.
     def mime_type(type)
       Base.mime_type(type)
@@ -1221,10 +1226,10 @@ module Sinatra
       # an instance of this class as end point.
       def build(*args, &bk)
         builder = Rack::Builder.new
+        setup_logging  builder
         setup_sessions builder
-        builder.use Rack::CommonLogger    if logging?
-        builder.use Rack::MethodOverride  if method_override?
-        builder.use ShowExceptions        if show_exceptions?
+        builder.use Rack::MethodOverride if method_override?
+        builder.use ShowExceptions       if show_exceptions?
         middleware.each { |c,a,b| builder.use(c, *a, &b) }
         builder.run new!(*args, &bk)
         builder
@@ -1235,6 +1240,19 @@ module Sinatra
       end
 
     private
+      def setup_logging(builder)
+        if logging?
+          builder.use Rack::CommonLogger
+          if logging.respond_to? :to_int
+            builder.use Rack::Logger, logging
+          else
+            builder.use Rack::Logger
+          end
+        else
+          builder.use Rack::NullLogger
+        end
+      end
+
       def setup_sessions(builder)
         return unless sessions?
         options = { :secret => session_secret }
