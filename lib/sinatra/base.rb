@@ -1,8 +1,7 @@
 require 'thread'
 require 'time'
 require 'uri'
-require 'rack'
-require 'rack/builder'
+require 'sinatra/rack'
 require 'sinatra/showexceptions'
 require 'tilt'
 
@@ -17,17 +16,7 @@ module Sinatra
       @env['HTTP_ACCEPT'].to_s.split(',').map { |a| a.split(';')[0].strip }
     end
 
-    if Rack.release <= "1.2"
-      # Whether or not the web server (or a reverse proxy in front of it) is
-      # using SSL to communicate with the client.
-      def secure?
-        @env['HTTPS'] == 'on' or
-        @env['HTTP_X_FORWARDED_PROTO'] == 'https' or
-        @env['rack.url_scheme'] == 'https'
-      end
-    else
-      alias secure? ssl?
-    end
+    alias secure? ssl?
 
     def forwarded?
       @env.include? "HTTP_X_FORWARDED_HOST"
