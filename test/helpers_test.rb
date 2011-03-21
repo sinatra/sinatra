@@ -123,6 +123,34 @@ class HelpersTest < Test::Unit::TestCase
       response = request.get('/', 'HTTP_X_FORWARDED_HOST' => 'example.com', 'SERVER_PORT' => '8080')
       assert_equal 'http://example.com/foo', response['Location']
     end
+
+    it 'accepts absolute URIs' do
+      mock_app do
+        get '/' do
+          redirect 'http://google.com'
+          fail 'redirect should halt'
+        end
+      end
+
+      get '/'
+      assert_equal 302, status
+      assert_equal '', body
+      assert_equal 'http://google.com', response['Location']
+    end
+
+    it 'accepts absolute URIs with a different schema' do
+      mock_app do
+        get '/' do
+          redirect 'mailto:jsmith@example.com'
+          fail 'redirect should halt'
+        end
+      end
+
+      get '/'
+      assert_equal 302, status
+      assert_equal '', body
+      assert_equal 'mailto:jsmith@example.com', response['Location']
+    end
   end
 
   describe 'error' do
@@ -793,6 +821,18 @@ class HelpersTest < Test::Unit::TestCase
       mock_app { get('/:name') { uri '/bar' }}
       get '/foo', {}, { "SCRIPT_NAME" => '/foo' }
       assert_equal 'http://example.org/foo/bar', body
+    end
+
+    it 'handles absolute URIs' do
+      mock_app { get('/') { uri 'http://google.com' }}
+      get '/'
+      assert_equal 'http://google.com', body
+    end
+
+    it 'handles different protocols' do
+      mock_app { get('/') { uri 'mailto:jsmith@example.com' }}
+      get '/'
+      assert_equal 'mailto:jsmith@example.com', body
     end
 
     it 'is aliased to #url' do
