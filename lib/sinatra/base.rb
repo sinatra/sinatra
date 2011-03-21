@@ -1449,7 +1449,7 @@ module Sinatra
       end
     end
 
-    delegate :get, :put, :post, :delete, :head, :options, :template, :layout,
+    delegate :get, :patch, :put, :post, :delete, :head, :options, :template, :layout,
              :before, :after, :error, :not_found, :configure, :set, :mime_type,
              :enable, :disable, :use, :development?, :test?, :production?,
              :helpers, :settings
