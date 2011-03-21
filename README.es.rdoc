@@ -933,6 +933,31 @@ De manera similar, también podés asignar el código de estado y encabezados:
 También, al igual que +body+, tanto +status+ como +headers+ pueden utilizarse
 para obtener sus valores cuando no se les pasa argumentos.
 
+=== Log (Registro)
+
+En el ámbito de la petición, el helper +logger+ (registrador) expone
+una instancia de +Logger+:
+
+  get '/' do
+    logger.info "cargando datos"
+    # ...
+  end
+
+Este logger tiene en cuenta la configuración de logueo de tu Rack
+handler.  Si el logueo está desactivado, este método va a devolver un
+objeto que se comporta como un logger pero que en realidad no hace
+nada.  Así, no vas a tener que preocuparte por esta situación.
+
+Tené en cuenta que el logueo está habilitado por defecto únicamente
+para <tt>Sinatra::Application</tt>.  Si heredaste de
+<tt>Sinatra::Base</tt>, probablemente quieras habilitarlo manualmente:
+
+  class MiApp < Sinatra::Base
+    configure(:production, :development) do
+      enable :logging
+    end
+  end
+
 === Tipos Mime
 
 Cuando usás <tt>send_file</tt> o archivos estáticos tal vez tengas tipos mime
