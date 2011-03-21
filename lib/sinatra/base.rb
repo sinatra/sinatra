@@ -1442,7 +1442,7 @@ module Sinatra
       methods.each do |method_name|
         eval <<-RUBY, binding, '(__DELEGATE__)', 1
           def #{method_name}(*args, &b)
-            ::Sinatra::Application.send(#{method_name.inspect}, *args, &b)
+            ::Sinatra::Delegator.target.send(#{method_name.inspect}, *args, &b)
           end
           private #{method_name.inspect}
         RUBY
@@ -1453,6 +1453,12 @@ module Sinatra
              :before, :after, :error, :not_found, :configure, :set, :mime_type,
              :enable, :disable, :use, :development?, :test?, :production?,
              :helpers, :settings
+
+    class << self
+      attr_accessor :target
+    end
+
+    self.target = Application
   end
 
   # Create a new Sinatra application. The block is evaluated in the new app's
