@@ -11,12 +11,14 @@
  * Important: 1.8.6 support has been dropped. It is still usable if you use the
    backports gem, but no longer officially supported. (Konstantin Haase)
 
- * URIs passed to the `url` helper or `redirect` may now use any schema to be
-   identified as absolute URIs, not only `http` or `https`. (Konstantin Haase)
-
  * It is now possible to use a different target class for the top level DLS (aka
    classic style) than `Sinatra::Application` by setting `Delegator.target`.
    This was mainly introduced to ease testing. (Konstantin Haase)
+
+= 1.2.2 / Not Yet Released
+
+* URIs passed to the `url` helper or `redirect` may now use any schema to be
+  identified as absolute URIs, not only `http` or `https`. (Konstantin Haase)
 
 = 1.2.1 / 2011-03-17
 
