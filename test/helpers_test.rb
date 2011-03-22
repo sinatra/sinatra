@@ -616,6 +616,10 @@ class HelpersTest < Test::Unit::TestCase
         get '/baz' do
           expires Time.at(0)
         end
+
+        get '/boom' do
+          expires '1000'
+        end
       end
     end
 
@@ -637,6 +641,10 @@ class HelpersTest < Test::Unit::TestCase
     it 'allows passing time objects' do
       get '/baz'
       assert_equal 'Thu, 01 Jan 1970 00:00:00 GMT', response['Expires']
+    end
+
+    it 'fails when Time.parse raises an ArgumentError' do
+      assert_raise(RuntimeError) { get '/boom' }
     end
   end
 
