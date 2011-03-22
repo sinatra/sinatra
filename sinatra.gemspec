@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'sinatra'
-  s.version = '1.2.1'
-  s.date = '2011-03-17'
+  s.version = '1.3.0.a'
+  s.date = '2011-03-22'
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
     README.hu.rdoc
     README.jp.rdoc
     README.pt-br.rdoc
+    README.pt-pt.rdoc
     README.rdoc
     README.ru.rdoc
     README.zh.rdoc
@@ -33,12 +34,14 @@ Gem::Specification.new do |s|
     lib/sinatra/images/404.png
     lib/sinatra/images/500.png
     lib/sinatra/main.rb
+    lib/sinatra/rack.rb
     lib/sinatra/showexceptions.rb
     sinatra.gemspec
     test/base_test.rb
     test/builder_test.rb
     test/coffee_test.rb
     test/contest.rb
+    test/delegator_test.rb
     test/encoding_test.rb
     test/erb_test.rb
     test/erubis_test.rb
