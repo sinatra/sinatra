@@ -643,9 +643,10 @@ module Sinatra
       self.class.settings
     end
 
-    alias_method :options, :settings
-    class << self
-      alias_method :options, :settings
+    def options
+      warn "Sinatra::Base#options is deprecated and will be removed, " \
+        "use #settings insetad.\n\tfrom #{caller.first}"
+      settings
     end
 
     # Exit the current block, halts any further processing
