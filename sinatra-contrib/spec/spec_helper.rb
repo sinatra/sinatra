@@ -1,8 +1,3 @@
-require 'forwardable'
-
-module TestHelpers
-end
-
 require 'sinatra/contrib'
 
 RSpec.configure do |config|
