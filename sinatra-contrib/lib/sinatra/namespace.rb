@@ -8,8 +8,17 @@ module Sinatra
         extend NamespacedMethods
         @base, @extensions = base, []
         @pattern, @conditions = compile(pattern, conditions)
+
         namespace = self
         before { extend namespace }
+        define_method(:error_block!) do |*keys|
+          if block = keys.inject(nil) { |b,k| b ||= namespace.errors[k] }
+            instance_eval(&block)
+          else
+            super(*keys)
+          end
+        end
+
         class_eval(&block)
       end
     end
@@ -43,6 +52,18 @@ module Sinatra
           extend extension
           extension.registered(self) if extension.respond_to?(:registered)
         end
+      end
+
+      def errors
+        @errors ||= {}
+      end
+
+      def not_found(&block)
+        error(404, &block)
+      end
+
+      def error(codes = Exception, &block)
+        [*codes].each { |c| errors[c] = block }
       end
 
       private

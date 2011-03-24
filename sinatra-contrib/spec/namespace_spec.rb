@@ -464,8 +464,29 @@ describe Sinatra::Namespace do
       end
 
       describe 'error handlers' do
-        it "should allow custom error handlers with not found"
-        it "should allow custom error handlers with error"
+        it "should allow custom error handlers with not found" do
+          namespace('/de') do
+            not_found { 'nicht gefunden' }
+          end
+          send(verb, '/foo').status.should == 404
+          last_response.body.should_not    == 'nicht gefunden' unless verb == :head
+          get('/en/foo').status.should     == 404
+          last_response.body.should_not    == 'nicht gefunden' unless verb == :head
+          get('/de/foo').status.should     == 404
+          last_response.body.should        == 'nicht gefunden' unless verb == :head
+        end
+
+        it "should allow custom error handlers with error" do
+          namespace('/de') do
+            error(404) { 'nicht gefunden' }
+          end
+          send(verb, '/foo').status.should == 404
+          last_response.body.should_not    == 'nicht gefunden' unless verb == :head
+          get('/en/foo').status.should     == 404
+          last_response.body.should_not    == 'nicht gefunden' unless verb == :head
+          get('/de/foo').status.should     == 404
+          last_response.body.should        == 'nicht gefunden' unless verb == :head
+        end
       end
 
       describe 'templates' do
