@@ -66,6 +66,11 @@ module Sinatra
         [*codes].each { |c| errors[c] = block }
       end
 
+      def respond_to(*args)
+        return @conditions[:provides] || base.respond_to if args.empty?
+        @conditions[:provides] = args
+      end
+
       private
 
       def app

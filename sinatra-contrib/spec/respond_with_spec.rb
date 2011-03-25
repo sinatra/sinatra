@@ -262,5 +262,19 @@ describe Sinatra::RespondWith do
       req('/b', :html).should_not be_ok
       req('/b', :json).should be_ok
     end
+
+    it 'plays well with namespaces' do
+      respond_app do
+        register Sinatra::Namespace
+        namespace '/a' do
+          respond_to :json
+          get { 'json' }
+        end
+        get('/b') { 'anything' }
+      end
+
+      req('/a', :html).should_not be_ok
+      req('/b', :html).should be_ok
+    end
   end
 end

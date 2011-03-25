@@ -108,7 +108,7 @@ module Sinatra
       result
     end
 
-    def respond_to(*formats, &block)
+    def respond_to(*formats)
       if formats.any?
         @respond_to ||= []
         @respond_to.concat formats
