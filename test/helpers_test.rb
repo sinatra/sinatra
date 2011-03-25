@@ -442,6 +442,28 @@ class HelpersTest < Test::Unit::TestCase
       get '/'
       assert tests_ran
     end
+
+    it 'handles already present params' do
+      mock_app do
+        get '/' do
+          content_type 'foo/bar;level=1', :charset => 'utf-8'
+          'ok'
+        end
+      end
+      get '/'
+      assert_equal 'foo/bar;level=1, charset=utf-8', response['Content-Type']
+    end
+
+    it 'does not add charset if present' do
+      mock_app do
+        get '/' do
+          content_type 'text/plain;charset=utf-16'
+          'ok'
+        end
+      end
+      get '/'
+      assert_equal 'text/plain;charset=utf-16', response['Content-Type']
+    end
   end
 
   describe 'send_file' do
