@@ -17,6 +17,19 @@
 
 = 1.2.2 / Not Yet Released
 
+ * The `:provides => :js` condition now matches both `application/javascript`
+   and `text/javascript`. The `:provides => :xml` condition now matches both
+   `application/xml` and `text/xml`. The `Content-Type` header is set
+   accordingly. If the client accepts both, the `application/*` version is
+   preferred, since the `text/*` versions are deprecated. (Konstantin Haase)
+
+ * The `provides` condition now handles wildcards in `Accept` headers correctly.
+   Thus `:provides => :html` matches `text/html`, `text/*` and `*/*`.
+   (Konstantin Haase)
+
+ * When parsing `Accept` headers, `Content-Type` preferences are honored
+   according to RFC 2616 section 14.1. (Konstantin Haase)
+
  * URIs passed to the `url` helper or `redirect` may now use any schema to be
    identified as absolute URIs, not only `http` or `https`. (Konstantin Haase)
 
