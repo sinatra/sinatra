@@ -241,5 +241,26 @@ describe Sinatra::RespondWith do
   end
 
   describe :respond_to do
+    it 'acts as global provides condition' do
+      respond_app do
+        respond_to :json, :html
+        get('/a') { 'ok' }
+        get('/b') { 'ok' }
+      end
+
+      req('/b', :xml).should_not be_ok
+      req('/b', :html).should be_ok
+    end
+
+    it 'still allows provides' do
+      respond_app do
+        respond_to :json, :html
+        get('/a') { 'ok' }
+        get('/b', :provides => :json) { 'ok' }
+      end
+
+      req('/b', :html).should_not be_ok
+      req('/b', :json).should be_ok
+    end
   end
 end
