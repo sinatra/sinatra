@@ -2,11 +2,8 @@ require 'backports'
 require_relative 'spec_helper'
 
 describe Sinatra::ConfigFile do
-  attr_accessor :settings
   def config_file(*args, &block)
-    test = self
     mock_app do
-      test.settings = settings
       register Sinatra::ConfigFile
       set :root, File.expand_path('../config_file', __FILE__)
       instance_eval(&block) if block

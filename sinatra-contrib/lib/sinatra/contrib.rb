@@ -21,6 +21,7 @@ module Sinatra
 
     ##
     # Stuff that aren't Sinatra extensions, technically.
+    autoload :Extension
     autoload :TestHelpers
   end
 

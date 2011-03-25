@@ -21,13 +21,20 @@ module Sinatra
 
     include Rack::Test::Methods
     extend Forwardable
+    attr_accessor :settings
 
     def_delegators :last_response, :body, :headers, :status, :errors
     def_delegators :app, :configure, :set, :enable, :disable, :use, :helpers, :register
     def_delegators :current_session, :env_for
 
     def mock_app(base = Sinatra::Base, &block)
-      @app = Sinatra.new(base, &block)
+      inner = nil
+      @app  = Sinatra.new(base) do
+        inner = self
+        class_eval(&block)
+      end
+      @settings = inner
+      app
     end
 
     def app=(base)
