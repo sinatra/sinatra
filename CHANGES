@@ -15,6 +15,9 @@
    classic style) than `Sinatra::Application` by setting `Delegator.target`.
    This was mainly introduced to ease testing. (Konstantin Haase)
 
+ * Added `request.accept?` and `request.preferred_type` to ease dealing with
+   `Accept` headers. (Konstantin Haase)
+
 = 1.2.2 / Not Yet Released
 
  * The `:provides => :js` condition now matches both `application/javascript`
