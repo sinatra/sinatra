@@ -13,9 +13,22 @@ module Sinatra
   class Request < Rack::Request
     # Returns an array of acceptable media types for the response
     def accept
-      @env['HTTP_ACCEPT'].to_s.split(',').map { |a| a.split(';')[0].strip }
+      @env['sinatra.accept'] ||= begin
+        entries = @env['HTTP_ACCEPT'].to_s.split(',')
+        entries.map { |e| accept_entry(e) }.sort_by(&:last).map(&:first)
+      end
     end
 
+    def preferred_type(*types)
+      return accept.first if types.empty?
+      types.flatten!
+      accept.detect do |pattern|
+        type = types.detect { |t| File.fnmatch(pattern, t) }
+        return type if type
+      end
+    end
+
+    alias accept? preferred_type
     alias secure? ssl?
 
     def forwarded?
@@ -32,6 +45,15 @@ module Sinatra
     def path_info=(value)
       @route = nil
       super
+    end
+
+    private
+
+    def accept_entry(entry)
+      type, *options = entry.gsub(/\s/, '').split(';')
+      quality = 0 # we sort smalles first
+      options.delete_if { |e| quality = 1 - e[2..-1].to_f if e.start_with? 'q=' }
+      [type, [quality, type.count('*'), 1 - options.size]]
     end
   end
 
@@ -150,7 +172,8 @@ module Sinatra
 
     # Set the Content-Type of the response body given a media type or file
     # extension.
-    def content_type(type, params={})
+    def content_type(type = nil, params={})
+      return response['Content-Type'] unless type
       default = params.delete :default
       mime_type = mime_type(type) || default
       fail "Unknown media type: %p" % type if mime_type.nil?
@@ -1007,6 +1030,14 @@ module Sinatra
         Rack::Mime::MIME_TYPES[type] = value
       end
 
+      # provides all mime types matching type, including deprecated types:
+      #   mime_types :html # => ['text/html']
+      #   mime_types :js   # => ['application/javascript', 'text/javascript']
+      def mime_types(type)
+        type = mime_type type
+        type =~ /^application\/(xml|javascript)$/ ? [type, "text/#$1"] : [type]
+      end
+
       # Define a before filter; runs before all requests within the same
       # context as route handlers and may access/modify the request and
       # response.
@@ -1059,12 +1090,11 @@ module Sinatra
 
       # Condition for matching mimetypes. Accepts file extensions.
       def provides(*types)
-        types.map! { |t| mime_type(t) }
-
+        types.map! { |t| mime_types(t) }
+        types.flatten!
         condition do
-          matching_types = (request.accept & types)
-          unless matching_types.empty?
-            content_type matching_types.first
+          if type = request.preferred_type(types)
+            content_type(type)
             true
           else
             false
