@@ -54,6 +54,10 @@ module Sinatra
         end
       end
 
+      def invoke_hook(name, *args)
+        @extensions.each { |e| e.send(name, *args) if e.respond_to?(name) }
+      end
+
       def errors
         @errors ||= {}
       end
@@ -108,7 +112,14 @@ module Sinatra
       def prefixed(method, pattern = nil, conditions = {}, &block)
         default = '*' if method == :before or method == :after
         pattern, conditions = compile pattern, conditions, default
-        base.send(method, pattern, conditions, &block)
+        result = base.send(method, pattern, conditions, &block)
+        invoke_hook :route_added, method.to_s.upcase, pattern, block
+        result
+      end
+
+      def method_missing(meth, *args, &block)
+        return super if args.any? or block or not base.respond_to? meth
+        base.send meth
       end
     end
 

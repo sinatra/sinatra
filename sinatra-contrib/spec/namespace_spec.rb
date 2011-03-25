@@ -496,9 +496,49 @@ describe Sinatra::Namespace do
       end
 
       describe 'extensions' do
-        it 'allows registering extensions for a namespace only'
-        it 'triggers route_added hook'
-        it 'prevents changing app global settings'
+        it 'allows read access to settings' do
+          value = nil
+          mock_app do
+            set :foo, 42
+            namespace '/foo' do
+              value = foo
+            end
+          end
+          value.should == 42
+        end
+
+        it 'allows registering extensions for a namespace only' do
+          a = b = nil
+          extension = Module.new { define_method(:views) { "CUSTOM!!!" } }
+          mock_app do
+            namespace '/' do
+              register extension
+              a = views
+            end
+            b = views
+          end
+          a.should == 'CUSTOM!!!'
+          b.should_not == 'CUSTOM!!!'
+        end
+
+        it 'triggers route_added hook' do
+          route = nil
+          extension = Module.new
+          extension.singleton_class.class_eval do
+            define_method(:route_added) { |*r| route = r }
+          end
+          mock_app do
+            namespace '/f' do
+              register extension
+              get('oo') { }
+            end
+            get('/bar') { }
+          end
+          route[1].should == '/foo'
+        end
+
+        it 'prevents changing app global settings' do
+        end
       end
     end
   end
