@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.summary       = s.description
 
-  s.add_dependency "sinatra", "~> 1.2.0"
+  s.add_dependency "sinatra", "~> 1.2.2"
   s.add_dependency "backports", ">= 2.0"
 
   s.add_development_dependency "rspec", "~> 2.3"

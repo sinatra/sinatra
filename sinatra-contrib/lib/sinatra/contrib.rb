@@ -10,6 +10,7 @@ module Sinatra
       register :ConfigFile
       register :Decompile
       register :Namespace
+      register :RespondWith
       helpers :LinkHeader
     end
 
