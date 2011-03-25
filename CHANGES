@@ -16,6 +16,10 @@
  * URIs passed to the `url` helper or `redirect` may now use any schema to be
    identified as absolute URIs, not only `http` or `https`. (Konstantin Haase)
 
+ * Handles `Content-Type` strings that already contain parameters correctly in
+   `content_type` (example: `content_type "text/plain; charset=utf-16"`).
+   (Konstantin Haase)
+
 = 1.2.1 / 2011-03-17
 
  * Use a generated session secret when using `enable :sessions`. (Konstantin

@@ -186,7 +186,11 @@ module Sinatra
       unless params.include? :charset or settings.add_charset.all? { |p| not p === mime_type }
         params[:charset] = params.delete('charset') || settings.default_encoding
       end
-      mime_type << ";#{params.map { |kv| kv.join('=') }.join(', ')}" unless params.empty?
+      params.delete :charset if mime_type.include? 'charset'
+      unless params.empty?
+        mime_type << (mime_type.include?(';') ? ', ' : ';')
+        mime_type << params.map { |kv| kv.join('=') }.join(', ')
+      end
       response['Content-Type'] = mime_type
     end
 
