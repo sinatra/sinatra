@@ -538,6 +538,7 @@ describe Sinatra::Namespace do
         end
 
         it 'prevents changing app global settings' do
+          proc { namespace('/') { set :foo, :bar }}.should raise_error
         end
       end
     end
