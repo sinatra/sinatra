@@ -1261,10 +1261,10 @@ module Sinatra
       # an instance of this class as end point.
       def build(*args, &bk)
         builder = Rack::Builder.new
-        setup_logging  builder
-        setup_sessions builder
         builder.use Rack::MethodOverride if method_override?
         builder.use ShowExceptions       if show_exceptions?
+        setup_logging  builder
+        setup_sessions builder
         middleware.each { |c,a,b| builder.use(c, *a, &b) }
         builder.run new!(*args, &bk)
         builder
