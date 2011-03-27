@@ -1,3 +1,5 @@
+require 'sinatra/base'
+
 module Sinatra
   ##
   # Small extension for the Sinatra[http://sinatrarb.com] web framework
