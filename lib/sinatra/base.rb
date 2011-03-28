@@ -580,8 +580,8 @@ module Sinatra
         template = Tilt[engine]
         raise "Template engine not found: #{engine}" if template.nil?
 
-        case
-        when data.is_a?(Symbol)
+        case data
+        when Symbol
           body, path, line = settings.templates[data]
           if body
             body = body.call if body.respond_to?(:call)
@@ -598,7 +598,7 @@ module Sinatra
             throw :layout_missing if eat_errors and not found
             template.new(path, 1, options)
           end
-        when data.is_a?(Proc) || data.is_a?(String)
+        when Proc, String
           body = data.is_a?(String) ? Proc.new { data } : data
           path, line = settings.caller_locations.first
           template.new(path, line.to_i, options, &body)
