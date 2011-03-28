@@ -37,6 +37,11 @@ describe Sinatra::ContentFor do
           body.should == "foo"
         end
 
+        it 'renders blocks more than once' do
+          get('/multiple_yields/same_key').should be_ok
+          body.should == "foofoofoo"
+        end
+
         it 'does not render a block with a different key' do
           get('/different_key').should be_ok
           body.should == ""
@@ -45,6 +50,11 @@ describe Sinatra::ContentFor do
         it 'renders multiple blocks with the same key'do
           get('/multiple_blocks').should be_ok
           body.should == "foobarbaz"
+        end
+
+        it 'renders multiple blocks more than once' do
+          get('/multiple_yields/multiple_blocks').should be_ok
+          body.should == "foobarbazfoobarbazfoobarbaz"
         end
 
         it 'passes values to the blocks' do
