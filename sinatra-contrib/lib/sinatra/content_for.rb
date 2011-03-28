@@ -9,7 +9,7 @@ module Sinatra
   #       <chunk of="html">...</chunk>
   #     <% end %>
   #
-  #     <% yield_content :some_key %>
+  #     <%= yield_content :some_key %>
   #
   # This allows you to capture blocks inside views to be rendered later
   # in this request. For example, to populate different parts of your
@@ -22,12 +22,6 @@ module Sinatra
   #       %chunk{ :of => "html" } ...
   #
   #     = yield_content :some_key
-  #
-  # <b>Note</b> that with ERB <tt>yield_content</tt> is called <b>without</b>
-  # an '=' block (<tt><%= %></tt>), but with Haml it uses <tt>= yield_content</tt>.
-  #
-  # Using an '=' block in ERB will output the content twice for each block,
-  # so if you have problems with that, make sure to check for this.
   #
   # == Usage
   #
@@ -64,14 +58,15 @@ module Sinatra
     # Your blocks can also receive values, which are passed to them
     # by <tt>yield_content</tt>
     def content_for(key, &block)
-      content_blocks[key.to_sym] << block
+      @current_engine ||= :ruby
+      content_blocks[key.to_sym] << [@current_engine, block]
     end
 
     # Render the captured blocks for a given key. For example:
     #
     #     <head>
     #       <title>Example</title>
-    #       <% yield_content :head %>
+    #       <%= yield_content :head %>
     #     </head>
     #
     # Would render everything you declared with <tt>content_for 
@@ -80,24 +75,37 @@ module Sinatra
     # You can also pass values to the content blocks by passing them
     # as arguments after the key:
     #
-    #     <% yield_content :head, 1, 2 %>
+    #     <%= yield_content :head, 1, 2 %>
     #
     # Would pass <tt>1</tt> and <tt>2</tt> to all the blocks registered
     # for <tt>:head</tt>.
-    #
-    # *NOTICE* that you call this without an <tt>=</tt> sign. IE, 
-    # in a <tt><% %></tt> block, and not in a <tt><%= %></tt> block.
     def yield_content(key, *args)
-      content_blocks[key.to_sym].map do |content| 
-        if respond_to?(:block_is_haml?) && block_is_haml?(content)
-          capture_haml(*args, &content)
-        else
-          content.call(*args)
-        end
-      end.join
+      content_blocks[key.to_sym].map { |e,b| capture(e, args, b) }.join
+    end
+
+    def self.capture(name, template = nil)
+      @capture ||= {}
+      @capture[name] = template if template
+      @capture[name]
     end
 
     private
+
+    # generated templates will be cached by Sinatra in production
+    capture :haml, "= capture_haml(*args, &block)"
+    capture :erb, "<% block.call(*args) %>"
+
+    def capture(engine, args, block)
+      render(engine, Sinatra::ContentFor.capture(engine), {},
+        :args => args, :block => block)
+    end
+
+    def render(engine, *)
+      @current_engine, engine_was = engine.to_sym, @current_engine
+      super
+    ensure
+      @current_engine = engine_was
+    end
 
     def content_blocks
       @content_blocks ||= Hash.new {|h,k| h[k] = [] }

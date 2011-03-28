@@ -11,10 +11,6 @@ describe Sinatra::ContentFor do
           super.gsub(/\s/, '')
         end
 
-        before do
-          pending "different layout engines not supported yet" unless inner == outer
-        end
-
         before :all do
           begin
             require inner
