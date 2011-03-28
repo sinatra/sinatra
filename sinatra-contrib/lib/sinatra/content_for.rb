@@ -92,7 +92,7 @@ module Sinatra
     private
 
     # generated templates will be cached by Sinatra in production
-    capture :haml,   "= capture_haml(*args, &block)"
+    capture :haml,   "!= capture_haml(*args, &block)"
     capture :erb,    "<% block.call(*args) %>"
     capture :erubis, "<% eval '_buf.clear', block.binding %><%= block.call(*args) %>"
 
