@@ -1584,6 +1584,45 @@ application (Rails/Ramaze/Camping/...):
     get('/') { "Hello #{session['user_name']}." }
   end
 
+=== Dynamic Application Creation
+
+Sometimes you want to create new applications at runtime without having to
+assign them to a constant, you can do this with `Sinatra.new`:
+
+  require 'sinatra/base'
+  my_app = Sinatra.new { get('/') { "hi" } }
+  my_app.run!
+
+It takes the application to inherit from as optional argument:
+
+  require 'sinatra/base'
+
+  controller = Sinatra.new do
+    enable :logging
+    helpers MyHelpers
+  end
+
+  map('/a') do
+    run Sinatra.new(controller) { get('/') { 'a' } }
+  end
+
+  map('/b') do
+    run Sinatra.new(controller) { get('/') { 'b' } }
+  end
+
+This is especially useful for testing Sinatra extensions or using Sinatra in
+your own library.
+
+This also makes using Sinatra as middleware extremely easy:
+
+  require 'sinatra/base'
+
+  use Sinatra do
+    get('/') { ... }
+  end
+
+  run RailsProject::Application
+
 == Scopes and Binding
 
 The scope you are currently in determines what methods and variables are
@@ -1616,6 +1655,7 @@ You have the application scope binding inside:
 * Methods defined by extensions
 * The block passed to +helpers+
 * Procs/blocks used as value for +set+
+* The block passed to <tt>Sinatra.new</tt>
 
 You can reach the scope object (the class) like this:
 
