@@ -2,8 +2,8 @@ require 'backports'
 require_relative 'spec_helper'
 
 describe Sinatra::ContentFor do
-  # TODO: erubis slim liquid radius markaby builder nokogiri
-  engines = %w[erb haml]
+  # TODO: slim liquid radius markaby builder nokogiri
+  engines = %w[erb erubis haml]
   engines.each do |inner|
     engines.each do |outer|
       describe "#{inner.capitalize} templates with #{outer.capitalize} layouts" do
