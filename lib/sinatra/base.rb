@@ -582,7 +582,7 @@ module Sinatra
 
         case
         when data.is_a?(Symbol)
-          body, path, line = self.class.templates[data]
+          body, path, line = settings.templates[data]
           if body
             body = body.call if body.respond_to?(:call)
             template.new(path, line.to_i, options) { body }
@@ -600,7 +600,7 @@ module Sinatra
           end
         when data.is_a?(Proc) || data.is_a?(String)
           body = data.is_a?(String) ? Proc.new { data } : data
-          path, line = self.class.caller_locations.first
+          path, line = settings.caller_locations.first
           template.new(path, line.to_i, options, &body)
         else
           raise ArgumentError
@@ -706,13 +706,13 @@ module Sinatra
 
   private
     # Run filters defined on the class and all superclasses.
-    def filter!(type, base = self.class)
+    def filter!(type, base = settings)
       filter! type, base.superclass if base.superclass.respond_to?(:filters)
       base.filters[type].each { |block| instance_eval(&block) }
     end
 
     # Run routes defined on the class and all superclasses.
-    def route!(base=self.class, pass_block=nil)
+    def route!(base = settings, pass_block=nil)
       if routes = base.routes[@request.request_method]
         routes.each do |pattern, keys, conditions, block|
           pass_block = process_route(pattern, keys, conditions) do
@@ -886,7 +886,7 @@ module Sinatra
     # Find an custom error block for the key(s) specified.
     def error_block!(*keys)
       keys.each do |key|
-        base = self.class
+        base = settings
         while base.respond_to?(:errors)
           if block = base.errors[key]
             # found a handler, eval and return result
