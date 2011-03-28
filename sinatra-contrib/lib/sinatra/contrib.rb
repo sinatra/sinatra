@@ -11,6 +11,7 @@ module Sinatra
       register :Decompile
       register :Namespace
       register :RespondWith
+      helpers :ContentFor
       helpers :LinkHeader
     end
 
