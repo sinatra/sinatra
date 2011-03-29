@@ -1,3 +1,4 @@
+require 'backports'
 require 'sinatra/base'
 require 'sinatra/decompile'
 
@@ -6,20 +7,31 @@ module Sinatra
     def self.new(base, pattern, conditions = {}, &block)
       Module.new do
         extend NamespacedMethods
-        @base, @extensions = base, []
+        include InstanceMethods
+        @base, @extensions    = base, []
         @pattern, @conditions = compile(pattern, conditions)
-
+        @templates            = Hash.new { |h,k| @base.templates[k] }
         namespace = self
-        before { extend namespace }
-        define_method(:error_block!) do |*keys|
-          if block = keys.inject(nil) { |b,k| b ||= namespace.errors[k] }
-            instance_eval(&block)
-          else
-            super(*keys)
-          end
-        end
-
+        before { extend(@namespace = namespace) }
         class_eval(&block)
+      end
+    end
+
+    module InstanceMethods
+      def settings
+        @namespace
+      end
+
+      def template_cache
+        super.fetch(:nested, @namespace) { Tilt::Cache.new }
+      end
+
+      def error_block!(*keys)
+        if block = keys.inject(nil) { |b,k| b ||= @namespace.errors[k] }
+          instance_eval(&block)
+        else
+          super
+        end
       end
     end
 
@@ -32,7 +44,7 @@ module Sinatra
     module NamespacedMethods
       include SharedMethods
       include Sinatra::Decompile
-      attr_reader :base
+      attr_reader :base, :templates
 
       def self.prefixed(*names)
         names.each { |n| define_method(n) { |*a, &b| prefixed(n, *a, &b) }}
@@ -73,6 +85,30 @@ module Sinatra
       def respond_to(*args)
         return @conditions[:provides] || base.respond_to if args.empty?
         @conditions[:provides] = args
+      end
+
+      def set(key, value = self, &block)
+        raise ArgumentError, "may not set #{key}" if key != :views
+        return key.each { |k,v| set(k, v) } if block.nil? and value == self
+        block ||= proc { value }
+        singleton_class.send(:define_method, key, &block)
+      end
+
+      def enable(*opts)
+        opts.each { |key| set(key, true) }
+      end
+
+      def disable(*opts)
+        opts.each { |key| set(key, false) }
+      end
+
+      def template(name, &block)
+        filename, line = caller_locations.first
+        templates[name] = [block, filename, line.to_i]
+      end
+
+      def layout(name=:layout, &block)
+        template name, &block
       end
 
       private
@@ -118,8 +154,7 @@ module Sinatra
       end
 
       def method_missing(meth, *args, &block)
-        return super if args.any? or block or not base.respond_to? meth
-        base.send meth
+        base.send(meth, *args, &block)
       end
     end
 

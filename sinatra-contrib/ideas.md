@@ -23,5 +23,3 @@
 
 * Extend `sinatra-content-for` to support Liquid, Radius, Markaby, Nokogiri and
   Builder. At least the first two probably involve patching Tilt.
-
-* Have `sinatra-namespace` support namespace local templates.

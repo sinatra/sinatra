@@ -490,9 +490,86 @@ describe Sinatra::Namespace do
       end
 
       describe 'templates' do
-        it "allows to define nested templates"
-        it "allows to define nested layouts"
-        it "allows setting a different views directory"
+        it "allows using templates from the base" do
+          mock_app do
+            template(:foo) { 'hi' }
+            send(verb, '/') { erb :foo }
+            namespace '/foo' do
+              send(verb) { erb :foo }
+            end
+          end
+
+          if verb != :head
+            send(verb, '/').body.should == "hi"
+            send(verb, '/foo').body.should == "hi"
+          end
+        end
+
+        it "allows to define nested templates" do
+          mock_app do
+            template(:foo) { 'hi' }
+            send(verb, '/') { erb :foo }
+            namespace '/foo' do
+              template(:foo) { 'ho' }
+              send(verb) { erb :foo }
+            end
+          end
+
+          if verb != :head
+            send(verb, '/').body.should == "hi"
+            send(verb, '/foo').body.should == "ho"
+          end
+        end
+
+        it "allows to define nested layouts" do
+          mock_app do
+            layout { 'Hello <%= yield %>!' }
+            template(:foo) { 'World' }
+            send(verb, '/') { erb :foo }
+            namespace '/foo' do
+              layout { 'Hi <%= yield %>!' }
+              send(verb) { erb :foo }
+            end
+          end
+
+          if verb != :head
+            send(verb, '/').body.should == "Hello World!"
+            send(verb, '/foo').body.should == "Hi World!"
+          end
+        end
+
+        it "allows using templates from the base" do
+          mock_app do
+            layout { "he said: <%= yield %>" }
+            template(:foo) { 'hi' }
+            send(verb, '/') { erb :foo }
+            namespace '/foo' do
+              template(:foo) { 'ho' }
+              send(verb) { erb :foo }
+            end
+          end
+
+          if verb != :head
+            send(verb, '/').body.should == "he said: hi"
+            send(verb, '/foo').body.should == "he said: ho"
+          end
+        end
+
+        it "allows setting a different views directory" do
+          mock_app do
+            set :views, File.expand_path('../namespace', __FILE__)
+            send(verb, '/') { erb :foo }
+            namespace('/foo') do
+              set :views, File.expand_path('../namespace/nested', __FILE__)
+              send(verb) { erb :foo }
+            end
+          end
+
+          if verb != :head
+            send(verb, '/').body.should == "hi\n"
+            send(verb, '/foo').body.should == "ho\n"
+          end
+        end
       end
 
       describe 'extensions' do
