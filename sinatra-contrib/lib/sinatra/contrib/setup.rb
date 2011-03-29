@@ -38,6 +38,12 @@ module Sinatra
       extend Loader
     end
 
+    module All
+      def self.registered(base)
+        base.register Common, Custom
+      end
+    end
+
     extend Loader
     def self.registered(base)
       base.register Common, Custom

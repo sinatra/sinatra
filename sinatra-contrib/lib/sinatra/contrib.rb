@@ -18,6 +18,7 @@ module Sinatra
     ##
     # Other extensions you don't want to be loaded unless needed.
     module Custom
+      # register :Compass
     end
 
     ##
