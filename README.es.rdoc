@@ -1665,6 +1665,48 @@ aplicación basada en Rack (Rails/Ramaze/Camping/...):
     get('/') { "Hola #{session['nombre_de_usuario']}." }
   end
 
+=== Creación Dinámica de Aplicaciones
+
+Puede que en algunas ocasiones quieras crear nuevas aplicaciones en
+tiempo de ejecución sin tener que asignarlas a una constante.  Para
+esto tenés `Sinatra.new`:
+
+  require 'sinatra/base'
+  mi_app = Sinatra.new { get('/') { "hola" } }
+  mi_app.run!
+
+Acepta como argumento opcional una aplicación desde la que se
+heredará:
+
+  require 'sinatra/base'
+
+  controller = Sinatra.new do
+    enable :logging
+    helpers MisHelpers
+  end
+
+  map('/a') do
+    run Sinatra.new(controller) { get('/') { 'a' } }
+  end
+
+  map('/b') do
+    run Sinatra.new(controller) { get('/') { 'b' } }
+  end
+
+Construir aplicaciones de esta forma resulta especialmente útil para
+testear extensiones Sinatra o para usar Sinatra en tus librerías.
+
+Por otro lado, hace extremadamente sencillo usar Sinatra como
+middleware:
+
+  require 'sinatra/base'
+
+  use Sinatra do
+    get('/') { ... }
+  end
+
+  run ProyectoRails::Application
+
 == Ámbitos y Ligaduras
 
 El ámbito en el que te encontrás determina que métodos y variables están
