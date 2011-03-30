@@ -75,24 +75,22 @@ module Sinatra
       content_blocks[key.to_sym].map { |e,b| capture(e, args, b) }.join
     end
 
-    def self.capture(name, template = nil)
+    def self.capture
       @capture ||= {}
-      @capture[name] = template if template
-      @capture[name]
     end
 
     private
 
     # generated templates will be cached by Sinatra in production
-    capture :haml,   "!= capture_haml(*args, &block)"
-    capture :erb,    "<% yield(*args) %>"
-    capture :erubis, "<%= yield(*args) %>"
-    capture :slim,   "== yield(*args)"
+    capture[:haml]   = "!= capture_haml(*args, &block)"
+    capture[:erb]    = "<% yield(*args) %>"
+    capture[:erubis] = "<%= yield(*args) %>"
+    capture[:slim]   = "== yield(*args)"
 
     def capture(engine, args, block)
       @_out_buf, buf_was = nil, @_out_buf
       eval '_buf.clear if defined? _buf', block.binding
-      render(engine, Sinatra::ContentFor.capture(engine), {}, :args => args, :block => block, &block)
+      render(engine, Sinatra::ContentFor.capture.fetch(engine), {}, :args => args, :block => block, &block)
     ensure
       @_out_buf = buf_was
     end
