@@ -50,10 +50,7 @@ module Sinatra
     end
 
     def route
-      @route ||= begin
-        path = Rack::Utils.unescape(path_info)
-        path.empty? ? "/" : path
-      end
+      @route ||= Rack::Utils.unescape(path_info)
     end
 
     def path_info=(value)
@@ -746,7 +743,9 @@ module Sinatra
     # Returns pass block.
     def process_route(pattern, keys, conditions)
       @original_params ||= @params
-      if match = pattern.match(@request.route)
+      route = @request.route
+      route = '/' if route.empty? and not settings.empty_path_info?
+      if match = pattern.match(route)
         values = match.captures.to_a
         params =
           if keys.any?
@@ -1136,6 +1135,7 @@ module Sinatra
       def route(verb, path, options={}, &block)
         # Because of self.options.host
         host_name(options.delete(:host)) if options.key?(:host)
+        enable :empty_path_info if path == "" and empty_path_info.nil?
 
         block, pattern, keys, conditions = compile! verb, path, block, options
         invoke_hook(:route_added, verb, path, block)
@@ -1400,6 +1400,7 @@ module Sinatra
 
     set :absolute_redirects, true
     set :prefixed_redirects, false
+    set :empty_path_info, nil
 
     set :app_file, nil
     set :root, Proc.new { app_file && File.expand_path(File.dirname(app_file)) }
