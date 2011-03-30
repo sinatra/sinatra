@@ -28,8 +28,6 @@ Currently included:
 * `sinatra/content_for`: Adds Rails-style `content_for` helpers to Haml, Erb,
   Erubis and Slim.
 
-* `sinatra/decompile`: Recreates path patterns from Sinatra's internal data
-  structures (used by other extensions)/
 
 * `sinatra/link_header`: Helpers for generating `link` HTML tags and
   corresponding `Link` HTTP headers. Adds `link`, `stylesheet` and `prefetch`
@@ -49,7 +47,12 @@ To be included soon:
 ## Custom Extensions
 
 These extensions may add additional dependencies and enhance the behavior of the
-existing APIS.
+existing APIs.
+
+Currently included:
+
+* `sinatra/decompile`: Recreates path patterns from Sinatra's internal data
+  structures (used by other extensions)/
 
 To be included soon:
 

@@ -8,7 +8,6 @@ module Sinatra
     # Sinatra::Application by default.
     module Common
       register :ConfigFile
-      register :Decompile
       register :Namespace
       register :RespondWith
       helpers :ContentFor
@@ -19,6 +18,7 @@ module Sinatra
     # Other extensions you don't want to be loaded unless needed.
     module Custom
       # register :Compass
+      register :Decompile
     end
 
     ##
