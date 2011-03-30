@@ -2,6 +2,89 @@ require 'sinatra/base'
 require 'json' unless String.method_defined? :to_json
 
 module Sinatra
+  ##
+  # = Sinatra::RespondWith
+  #
+  # This extensions lets Sinatra automatically choose what template to render or
+  # action to perform depending on the request's Accept header.
+  #
+  # Example:
+  #
+  #   # Without Sinatra::RespondWith
+  #   get '/' do
+  #     data = { :name => 'example' }
+  #     request.accept.each do |type|
+  #       case type
+  #       when 'text/html'
+  #         halt haml(:index, :locals => data)
+  #       when 'text/json'
+  #         halt data.to_json
+  #       when 'application/atom+xml'
+  #         halt nokogiri(:'index.atom', :locals => data)
+  #       when 'application/xml', 'text/xml'
+  #         halt nokogiri(:'index.xml', :locals => data)
+  #       when 'text/plain'
+  #         'just an example'
+  #       end
+  #     end
+  #     error 406
+  #   end
+  #
+  #   # With Sinatra::RespondWith
+  #   get '/' do
+  #     respond_with :index, :name => 'example' do
+  #       f.txt { 'just an example' }
+  #     end
+  #   end
+  #
+  # Both helper methods +respond_to+ and +respond_with+ let you define custom
+  # handlers like the one above for +text/plain+. +respond_with+ additionally
+  # takes a template name and/or an object to offer the following default
+  # behavior:
+  #
+  # * If a template name is given, search for a template called
+  #   +name.format.engine+ (+index.xml.nokogiri+ in the above example).
+  # * If a template name is given, search for a templated called +name.engine+
+  #   for engines known to result in the requested format (+index.haml+).
+  # * If a file extension associated with the mime type is known to Sinatra, and
+  #   the object responds to +to_extension+, call that method and use the result
+  #   (+data.to_json+).
+  #
+  # == Security
+  #
+  # Since methods are triggered based on client input, this can lead to security
+  # issues (but not as seviere as those might apear in the first place: keep in
+  # mind that only known file extensions are used). You therefore should limit
+  # the possible formats you serve.
+  #
+  # This is possible with the +provides+ condition:
+  #
+  #   get '/', :provides => [:html, :json, :xml, :atom] do
+  #     respond_with :index, :name => 'example'
+  #   end
+  #
+  # However, since you have to set +provides+ for every route, this extension
+  # adds a app global (class method) `respond_to`, that let's you define content
+  # types for all routes:
+  #
+  #   respond_to :html, :json, :xml, :atom
+  #   get('/a') { respond_with :index, :name => 'a' }
+  #   get('/b') { respond_with :index, :name => 'b' }
+  #
+  # == Custom Types
+  #
+  # Use the +on+ method for defining actions for custom types:
+  #
+  #   get '/' do
+  #     respond_to do |f|
+  #       f.xml { nokogiri :index }
+  #       f.on('application/custom') { custom_action }
+  #       f.on('text/*') { data.to_s }
+  #       f.on('*/*') { "matches everything" }
+  #     end
+  #   end
+  #
+  # Definition order does not matter.
   module RespondWith
     class Format
       def initialize(app)
