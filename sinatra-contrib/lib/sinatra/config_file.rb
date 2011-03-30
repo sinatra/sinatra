@@ -2,6 +2,11 @@ require 'sinatra/base'
 require 'yaml'
 
 module Sinatra
+  ##
+  # = Sinatra::ConfigFile
+  #
+  # Extension to load configruation from YAML files.
+  # Automatically detects if files contain env specific configuration.
   module ConfigFile
     def self.registered(base)
       base.set :environments, %w[test production development]
