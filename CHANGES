@@ -21,7 +21,7 @@
    (Konstantin Haase)
 
  * If a route with an empty pattern is defined (`get("") { ... }`) requests with
-   an empty patch info match this route instead of "/". (Konstantin Haase)
+   an empty path info match this route instead of "/". (Konstantin Haase)
 
 = 1.2.1 / 2011-03-17
 
