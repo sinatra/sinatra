@@ -40,6 +40,9 @@
    `content_type` (example: `content_type "text/plain; charset=utf-16"`).
    (Konstantin Haase)
 
+ * If a route with an empty pattern is defined (`get("") { ... }`) requests with
+   an empty patch info match this route instead of "/". (Konstantin Haase)
+
 = 1.2.1 / 2011-03-17
 
  * Use a generated session secret when using `enable :sessions`. (Konstantin
