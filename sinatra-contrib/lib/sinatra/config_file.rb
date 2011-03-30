@@ -42,4 +42,7 @@ module Sinatra
       end
     end
   end
+
+  register ConfigFile
+  Delegator.delegate :config_file
 end
