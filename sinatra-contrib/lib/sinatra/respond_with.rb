@@ -151,4 +151,7 @@ module Sinatra
       base.helpers Helpers
     end
   end
+
+  register RespondWith
+  Delegator.delegate :respond_to
 end
