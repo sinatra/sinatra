@@ -2,6 +2,8 @@ require 'sinatra/base'
 
 module Sinatra
   ##
+  # = Sinatra::ContentFor
+  #
   # Small extension for the Sinatra[http://sinatrarb.com] web framework
   # that allows you to use the following helpers in your views:
   #
@@ -23,12 +25,7 @@ module Sinatra
   #
   #     = yield_content :some_key
   #
-  # == Usage
-  #
-  # If you're writing "classic" style apps, then requring
-  # <tt>sinatra/content_for</tt> should be enough. If you're writing
-  # "classy" apps, then you also need to call
-  # <tt>helpers Sinatra::ContentFor</tt> in your app definition.
+  # Supported engines: Erb, Erubis, Haml and Slim.
   #
   # == And how is this useful?
   #
@@ -38,11 +35,6 @@ module Sinatra
   # your layout, inside the <head> tag, and each view can call
   # <tt>content_for</tt> setting the appropriate set of tags that should
   # be added to the layout.
-  #
-  # == Credits
-  #
-  # Code by foca[http://github.com/foca], inspired on the Ruby on Rails
-  # helpers with the same name. Haml support by mattly[http://github.com/mattly].
   module ContentFor
     # Capture a block of content to be rendered later. For example:
     #
