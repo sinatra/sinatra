@@ -39,4 +39,5 @@ platforms :mri_18 do
   # bundler platforms are broken
   next if RUBY_ENGINE != 'ruby' or RUBY_VERSION > "1.8"
   gem 'rcov', :group => 'rcov'
+  gem 'therubyracer', :group => 'coffee-script'
 end
