@@ -94,9 +94,9 @@ module Sinatra
       def on(type, &block)
         @app.settings.mime_types(type).each do |mime|
           case mime
-          when '*/*'           then @default     = block
+          when '*/*'            then @default     = block
           when /^([^\/]+)\/\*$/ then @generic[$1] = block
-          else                      @map[mime]   = block
+          else                       @map[mime]   = block
           end
         end
       end
