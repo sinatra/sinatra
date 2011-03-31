@@ -1525,4 +1525,9 @@ module Sinatra
   def self.helpers(*extensions, &block)
     Delegator.target.helpers(*extensions, &block)
   end
+
+  # Use the middleware for classic applications.
+  def self.use(*args, &block)
+    Delegator.target.use(*args, &block)
+  end
 end

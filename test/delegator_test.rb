@@ -100,6 +100,13 @@ class DelegatorTest < Test::Unit::TestCase
     assert_equal app.last_call, ["helpers", mixin.to_s ]
   end
 
+
+  it "registers helpers with the delegation target" do
+    app, mixin = mirror, Module.new
+    Sinatra.use mixin
+    assert_equal app.last_call, ["use", mixin.to_s ]
+  end
+
   delegates 'get'
   delegates 'patch'
   delegates 'put'
