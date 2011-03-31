@@ -46,7 +46,7 @@ class DelegatorTest < Test::Unit::TestCase
 
   def delegate(&block)
     assert Sinatra::Delegator.target != Sinatra::Application
-    Object.new.extend(Sinatra::Delegator).instance_eval(&block)
+    Object.new.extend(Sinatra::Delegator).instance_eval(&block) if block
     Sinatra::Delegator.target
   end
 
@@ -86,6 +86,18 @@ class DelegatorTest < Test::Unit::TestCase
     assert response.ok?
     assert_equal 'World!', response['X-Hello']
     assert_equal '', response.body
+  end
+
+  it "registers extensions with the delegation target" do
+    app, mixin = mirror, Module.new
+    Sinatra.register mixin
+    assert_equal app.last_call, ["register", mixin.to_s ]
+  end
+
+  it "registers helpers with the delegation target" do
+    app, mixin = mirror, Module.new
+    Sinatra.helpers mixin
+    assert_equal app.last_call, ["helpers", mixin.to_s ]
   end
 
   delegates 'get'
