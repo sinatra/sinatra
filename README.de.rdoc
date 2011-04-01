@@ -851,6 +851,11 @@ teilen:
 
   set :session_secret, 'super secret'
 
+Zur weiteren Konfiguration kann man einen Hash mit Optionen in den +sessions+
+Einstellungen ablegen.
+
+  set :sessions, :domain => 'foo.com'
+
 
 == Anhalten
 
@@ -954,6 +959,31 @@ Vergleichbar mit +body+ lassen sich auch Status-Code und Header setzen:
 
 Genau wie bei +body+ liest ein Aufrufen von +headers+ oder +status+ ohne
 Argumente den aktuellen Wert aus.
+
+=== Logger
+
+Im Geltungsbereich eines Request stellt die +logger+ Helfer-Methode eine
++Logger+ Instanz zur Verfügung:
+
+  get '/' do
+    logger.info "es passiert gerade etwas"
+    # ...
+  end
+
+Der Logger übernimmt dabei automatisch alle im Rack-Handler eingestellten Log-
+Vorgaben. Ist Loggen ausgeschaltet, gibt die Methode ein Leerobjekt zurück.
+In den Routen und Filtern muss man sich also nicht weiter darum kümmern.
+
+
+Beachte, dass das Loggen standardmäßig nur für <tt>Sinatra::Application</tt>
+voreingestellt ist. Wird über <tt>Sinatra::Base</tt> vererbt, muss es erst
+aktiviert werden:
+
+  class MyApp < Sinatra::Base
+    configure(:production, :development) do
+      enable :logging
+    end
+  end
 
 
 == Mime-Types
@@ -1073,29 +1103,33 @@ zugegriffen werden:
 
   # App läuft unter http://example.com/example
   get '/foo' do
-    request.body              # Request-Body des Clients (siehe unten)
-    request.scheme            # "http"
-    request.script_name       # "/example"
-    request.path_info         # "/foo"
-    request.port              # 80
-    request.request_method    # "GET"
-    request.query_string      # ""
-    request.content_length    # Länge von request.body
-    request.media_type        # Media-Type von request.body
-    request.host              # "example.com"
-    request.get?              # true (ähnliche Methoden für andere Verben)
-    request.form_data?        # false
-    request["SOME_HEADER"]    # Wert des SOME_HEADER-Headers
-    request.referrer          # der Referrer des Clients oder '/'
-    request.user_agent        # User-Agent (genutzt von :agent-Bedingung)
-    request.cookies           # Hash der Cookies
-    request.xhr?              # Ist dies eine Ajax-Anfrage?
-    request.url               # "http://example.com/example/foo"
-    request.path              # "/example/foo"
-    request.ip                # Client-IP-Addresse
-    request.secure?           # false (wäre true bei SSL)
-    request.forwarded?        # true (wenn hinter Reverse-Proxy)
-    requuest.env              # env-Hash, den Rack durchreicht
+    t = %w[text/css text/html application/javascript]
+    request.accept              # ['text/html', '*/*']
+    request.accept? 'text/xml'  # true
+    request.preferred_type(t)   # 'text/html'
+    request.body                # Request-Body des Client (siehe unten)
+    request.scheme              # "http"
+    request.script_name         # "/example"
+    request.path_info           # "/foo"
+    request.port                # 80
+    request.request_method      # "GET"
+    request.query_string        # ""
+    request.content_length      # Länge des request.body
+    request.media_type          # Medientypus von request.body
+    request.host                # "example.com"
+    request.get?                # true (ähnliche Methoden für andere Verben)
+    request.form_data?          # false
+    request["IRGENDEIN_HEADER"] # Wert von IRGENDEIN_HEADER header
+    request.referrer            # Der Referrer des Clients oder '/'
+    request.user_agent          # User-Agent (verwendet in der :agent Bedingung)
+    request.cookies             # Hash des Browser-Cookies
+    request.xhr?                # Ist das hier ein Ajax-Request?
+    request.url                 # "http://example.com/example/foo"
+    request.path                # "/example/foo"
+    request.ip                  # IP-Adresse des Clients
+    request.secure?             # false (true wenn SSL)
+    request.forwarded?          # true (Wenn es hinter einem Reverse-Proxy verwendet wird)
+    request.env                 # vollständiger env-Hash von Rack übergeben
   end
 
 Manche Optionen, wie etwa <tt>script_name</tt> oder <tt>path_info</tt>, sind
@@ -1292,10 +1326,7 @@ Diese Einstellungen sind über +settings+ erreichbar:
 [public]              Das öffentliche Verzeichnis, aus dem Daten zur Verfügung
                       gestellt werden können.
 
-[reload_templates]    Entscheidet, ob Templates zwischen Anfragen neu geladen
-                      werden sollen oder nicht. Unter Ruby 1.8.6 ist es im
-                      Entwicklungsmodus eingeschaltet (um einen Fehler in Ruby
-                      auszugleichen, der ein Speicherleck verursacht).
+[reload_templates]    Im development-Modus aktiviert.
 
 [root]                Wurzelverzeichnis des Projekts.
 
@@ -1638,6 +1669,47 @@ andere Sinatra-Anwendung handeln, es kann jede andere Rack-Anwendung sein
     get('/') { "Hallo #{session['user_name']}." }
   end
 
+=== Dynamische Applikationserstellung
+
+Manche Situationen erfordern die Erstellung neuer Applikationen zur Laufzeit,
+ohne dass sie einer Konstanten zugeordnet werden. Dies lässt sich mit 
+`Sinatra.new` erreichen:
+
+  require 'sinatra/base'
+  my_app = Sinatra.new { get('/') { "hallo" } }
+  my_app.run!
+
+
+Die Applikation kann mit Hilfe eines optionalen Parameters erstellt werden:
+
+  require 'sinatra/base'
+
+  controller = Sinatra.new do
+    enable :logging
+    helpers MyHelpers
+  end
+
+  map('/a') do
+    run Sinatra.new(controller) { get('/') { 'a' } }
+  end
+
+  map('/b') do
+    run Sinatra.new(controller) { get('/') { 'b' } }
+  end
+
+Das ist besonders dann interessant, wenn Sinatra-Erweiterungen getestet werden
+oder Sinatra in einer Bibliothek Verwendung findet.
+
+Ebenso lassen sich damit hervorragend Sinatra-Middlewares erstellen:
+
+  require 'sinatra/base'
+
+  use Sinatra do
+    get('/') { ... }
+  end
+
+  run RailsProject::Application
+
 
 == Geltungsbereich und Bindung
 
@@ -1672,6 +1744,7 @@ Im Anwendungs-Scope befindet man sich:
 * In Methoden, die von Erweiterungen definiert werden.
 * Im Block, der an +helpers+ übergeben wird.
 * In Procs und Blöcken, die an +set+ übergeben werden.
+* Der an <tt>Sinatra.new</tt> übergebene Block
 
 Auf das Scope-Objekt (die Klasse) kann wie folgt zugegriffen werden:
 
@@ -1751,19 +1824,7 @@ Die Optionen sind:
 
 == Systemanforderungen
 
-Es wird empfohlen, Sinatra unter Ruby 1.8.7, 1.9.2, JRuby oder Rubinius zu
-installieren.
-
 Die folgenden Versionen werden offiziell unterstützt:
-
-[ Ruby 1.8.6 ]
-  Es wird nicht empfohlen, 1.8.6 für Sinatra einzusetzen. Trotzdem wird es
-  offiziell bis Sinatra 1.3.0 unterstützt werden. RDoc- und CoffeeScript- 
-  Templates werden in dieser Version nicht unterstützt. 1.8.6 hat ein größeres
-  Speicherleck in seiner Hash-Implementation, das von Sinatra-Versionen vor 
-  1.1.1 ausgelöst wird. Die aktuelle Version verhindert das zwar explizit, aber 
-  unter Einbußen in der Performance. Ebenso muss Sinatra mit Rack 1.1.x laufen,
-  da Rack >= 1.2 Ruby 1.8.6 nicht mehr unterstützt.
 
 [ Ruby 1.8.7 ]
   1.8.7 wird vollständig unterstützt, aber solange nichts dagegen spricht, 
@@ -1786,6 +1847,8 @@ Die folgenden Versionen werden offiziell unterstützt:
   Unterstützung für C-Erweiterungen sind zur Zeit noch experimenteller Natur,
   betrifft im Moment aber nur RDiscount.
 
+<b>Ruby 1.8.6 wird nicht weiter unterstützt.</b>
+
 Weiterhin werden wir auf kommende Ruby-Versionen ein Auge haben.
 
 Die nachfolgend aufgeführten Ruby-Implementationen werden offiziell nicht von 
@@ -1794,6 +1857,7 @@ Sinatra unterstützt, funktionieren aber normalerweise:
 * Ältere Versionen von JRuby und Rubinius
 * MacRuby, Maglev, IronRuby
 * Ruby 1.9.0 und 1.9.1
+* Ruby 1.8.6 mit {backports}[https://github.com/marcandre/backports/#readme]
 
 Nicht offiziell unterstützt bedeutet, dass wenn Sachen nicht funktionieren, 
 wir davon ausgehen, dass es nicht an Sinatra sondern an der jeweiligen 
