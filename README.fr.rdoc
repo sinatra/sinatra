@@ -36,6 +36,10 @@ Chaque route est associée à un bloc:
   end
 
   put '/' do
+    .. remplacer quelque chose ..
+  end
+
+  patch '/' do
     .. changer quelque chose ..
   end
 
@@ -842,6 +846,19 @@ choix comme vous le feriez pour n'importe quel autre +middleware+ :
     session[:valeur] = params[:valeur]
   end
 
+Pour renforcer la sécurité, les données de session dans le cookie sont signées
+avec une clé secrète de session. Une clé secrète est générée pour vous au
+hasard par Sinatra. Toutefois, comme cette clé change à chaque démarrage de
+votre application, vous pouvez définir cette clé vous-même afin que toutes
+les instances de votre application la partage:
+
+  set :session_secret, 'super secret'
+
+Si vous souhaitez avoir plus de contrôle, vous pouvez également enregistrer un
++hash+ avec des options lors de la configuration de +sessions+:
+
+  set :sessions, :domain => 'foo.com'
+
 == Halt
 
 Pour arrêter immédiatement la requête dans un filtre ou un gestionnaire de
@@ -947,6 +964,31 @@ retour et les entêtes :
 
 Comme +body+, +headers+ et +status+ peuvent être utilisés sans arguments
 pour accéder à leurs valeurs.
+
+=== Journalisation (Logging)
+
+Dans le contexte de la requête, la méthode utilitaire +logger+ expose une
+instance de +logger+:
+
+  get '/' do
+    logger.info "chargement des données"
+    # ...
+  end
+
+Ce +logger+ va automatiquement prendre en compte les paramètres de
+configuration pour la journalisation de votre gestionnaire Rack. Si la
+journalisation est désactivée, cette méthode renverra un objet factice et
+vous n'avez pas à vous en inquiéter dans vos routes en le filtrant.
+
+Notez que la journalisation est seulement activée par défaut pour
+<tt>Sinatra::Application</tt>, donc si vous héritez de <tt>Sinatra::Base</tt>,
+vous aurez à l'activer vous-même:
+
+  class MonApp < Sinatra::Base
+    configure(:production, :development) do
+      enable :logging
+    end
+  end
 
 === Types Mime
 
@@ -1121,32 +1163,36 @@ de la requête (filtres, routes, gestionnaires d'erreur) au moyen de la méthode
 
   # application tournant à l'adresse http://exemple.com/exemple
   get '/foo' do
-    request.body              # corps de la requête envoyée par le client
-                              # (voir ci-dessous)
-    request.scheme            # "http"
-    request.script_name       # "/exemple"
-    request.path_info         # "/foo"
-    request.port              # 80
-    request.request_method    # "GET"
-    request.query_string      # ""
-    request.content_length    # taille de request.body
-    request.media_type        # type de média pour request.body
-    request.host              # "exemple.com"
-    request.get?              # true (méthodes similaires pour les autres
-                              # verbes HTTP)
-    request.form_data?        # false
-    request["UN_ENTETE"]      # valeur de l'entête UN_ENTETE
-    request.referer           # référant du client ou '/'
-    request.user_agent        # user agent (utilisé par la condition :agent)
-    request.cookies           # tableau contenant les cookies du navigateur
-    request.xhr?              # requête AJAX ?
-    request.url               # "http://exemple.com/exemple/foo"
-    request.path              # "/exemple/foo"
-    request.ip                # adresse IP du client
-    request.secure?           # false
-    request.forwarded?        # vrai (si on est derrière un proxy inverse)
-    request.env               # tableau brut de l'environnement fourni par
-                              # Rack
+    t = %w[text/css text/html application/javascript]
+    request.accept              # ['text/html', '*/*']
+    request.accept? 'text/xml'  # true
+    request.preferred_type(t)   # 'text/html'
+    request.body                # corps de la requête envoyée par le client
+                                # (voir ci-dessous)
+    request.scheme              # "http"
+    request.script_name         # "/exemple"
+    request.path_info           # "/foo"
+    request.port                # 80
+    request.request_method      # "GET"
+    request.query_string        # ""
+    request.content_length      # taille de request.body
+    request.media_type          # type de média pour request.body
+    request.host                # "exemple.com"
+    request.get?                # true (méthodes similaires pour les autres
+                                # verbes HTTP)
+    request.form_data?          # false
+    request["UN_ENTETE"]        # valeur de l'entête UN_ENTETE
+    request.referer             # référant du client ou '/'
+    request.user_agent          # user agent (utilisé par la condition :agent)
+    request.cookies             # tableau contenant les cookies du navigateur
+    request.xhr?                # requête AJAX ?
+    request.url                 # "http://exemple.com/exemple/foo"
+    request.path                # "/exemple/foo"
+    request.ip                  # adresse IP du client
+    request.secure?             # false
+    request.forwarded?          # vrai (si on est derrière un proxy inverse)
+    request.env                 # tableau brut de l'environnement fourni par
+                                # Rack
   end
 
 Certaines options, telles que <tt>script_name</tt> ou <tt>path_info</tt>
@@ -1339,9 +1385,7 @@ Vous pouvez accéder à ces paramètres via <tt>settings</tt> :
 [public]              dossier duquel les fichiers publics sont servis
 
 [reload_templates]    si oui ou non les templates doivent être rechargés
-                      entre les requêtes. Activé en mode développement
-                      et sur Ruby 1.8.6 (pour compenser un bug Ruby
-                      occasionnant une fuite de mémoire).
+                      entre les requêtes. Activé en mode développement.
 
 [root]                dossier racine du projet.
 
@@ -1669,6 +1713,46 @@ application Sinatra, ou n'importe quelle application basée sur Rack
     get('/') { "Bonjour #{session['nom_utilisateur']}." }
   end
 
+=== Création dynamique d'applications
+
+Il se peut que vous ayez besoin de créer une nouvelle application à l'exécution
+sans avoir à les assigner à une constante, vous pouvez le faire grâce à
+`Sinatra.new`:
+
+  require 'sinatra/base'
+  mon_app = Sinatra.new { get('/') { "salut" } }
+  mon_app.run!
+
+L'application dont elle hérite peut être passé en argument optionnel:
+
+  require 'sinatra/base'
+
+  controleur = Sinatra.new do
+    enable :logging
+    helpers MyHelpers
+  end
+
+  map('/a') do
+    run Sinatra.new(controleur) { get('/') { 'a' } }
+  end
+
+  map('/b') do
+    run Sinatra.new(controleur) { get('/') { 'b' } }
+  end
+
+C'est notamment utile pour tester des extensions à Sinatra ou bien pour
+utiliser Sinatra dans votre propre bibliothèque.
+
+Cela permet également d'utiliser très facilement Sinatra comme middleware:
+
+  require 'sinatra/base'
+
+  use Sinatra do
+    get('/') { ... }
+  end
+
+  run RailsProject::Application
+
 == Contextes et Binding
 
 Le contexte dans lequel vous êtes détermine les méthodes et variables
@@ -1702,6 +1786,7 @@ Vous avez le binding du contexte de l'application dans:
 * Les méthodes définies par les extensions
 * Le bloc passé à `helpers`
 * Les procs/blocs utilisés comme argument pour `set`
+* Le bloc passé à <tt>Sinatra.new</tt>
 
 Vous pouvez atteindre ce contexte (donc la classe) de la façon suivante:
 
@@ -1776,20 +1861,7 @@ Les options sont:
 
 == Configuration nécessaire
 
-Il est recommandé d'installer Sinatra sur Ruby 1.8.7, 1.9.2, JRuby ou
-Rubinius.
-
 Les versions suivantes de Ruby sont officiellement supportées :
-
-[ Ruby 1.8.6 ]
-  Il n'est pas recommandé d'utiliser 1.8.6 pour Sinatra. Toutefois, ce sera
-  officiellement supporté jusqu'à l'arrivée Sinatra 1.3.0. Les templates RDoc
-  et CoffeeScript ne sont pas supportés par cette version de Ruby. 1.8.6
-  contient un défaut majeur de fuite de mémoire dans l'implémentation de Hash,
-  qui est déclenché par les versions de Sinatra antérieure à 1.1.1. La version
-  actuelle prévient explicitement ce risque au prix de la performance. Vous
-  devrez utiliser Rack 1.1.x dans la mesure où Rack >= 1.2 ne supporte plus
-  1.8.6.
 
 [ Ruby 1.8.7 ]
   1.8.7 est complètement supporté, toutefois si rien ne vous y retient, nous
@@ -1801,14 +1873,18 @@ Les versions suivantes de Ruby sont officiellement supportées :
   réputé causer des erreurs de segmentation lorque Sinatra est utilisé.
 
 [ Rubinius ]
-  Rubinius est officiellement supporté (Rubinius >= 1.2.2), à l'exception
-  des templates Textile.
+  Rubinius est officiellement supporté (Rubinius >= 1.2.3), tout fonctionne,
+  y compris tous les langages de template.
 
 [ JRuby ]
-  JRuby est officiellement supporté (JRuby >= 1.5.6). Aucune anomalie avec
+  JRuby est officiellement supporté (JRuby >= 1.6.0). Aucune anomalie avec
   des bibliothèques de templates tierces ne sont connues. Toutefois, si vous
   choisissez JRuby, alors tournez vous vers des gestionnaires Rack JRuby car
-  le serveur Thin n'est pas (encore) supporté par JRuby.
+  le serveur Thin n'est pas complètement supporté par JRuby. Le support des
+  extensions C dans JRuby est encore expérimental, ce qui n'affecte que
+  RDiscount.
+
+<b>Ruby 1.8.6 n'est plus supporté.</b>
 
 Nous gardons également un oeil sur les versions Ruby à venir.
 
@@ -1816,14 +1892,17 @@ Les implémentations Ruby suivantes ne sont pas officiellement supportées mais
 sont toujours connues comme permettant à Sinatra de fonctionner :
 
 * Plus anciennes versions de JRuby et Rubinius
-* MacRuby
-* Maglev
-* IronRuby
+* MacRuby, Maglev, IronRuby
 * Ruby 1.9.0 et 1.9.1
+* Ruby 1.8.6 avec {backports}[https://github.com/marcandre/backports/#readme]
 
 Ne pas être officiellement supporté signifie que si les choses se passent mal
 sur ces plateformes et non sur celles supportées, nous considérons que
 l'anomalie est de le ressort, pas du nôtre.
+
+Nous faisons également notre intégration continue (CI) avec ruby-head (la
+future 1.9.3), mais nous ne pouvons rien garantir étant donné que c'est
+constant mouvement. Vous pouvez vous attendre à ce que 1.9.3p0 soit supporté.
 
 Sinatra devrait fonctionner sur n'importe quel système d'exploitation
 supportant l'implémentation Ruby choisie.
