@@ -174,7 +174,7 @@ TEMPLATE = <<-HTML # :nodoc:
 <body>
   <div id="wrap">
     <div id="header">
-      <img src="/__sinatra__/500.png" alt="application error" height="161" width="313" />
+      <img src="<%= env['SCRIPT_NAME'] %>/__sinatra__/500.png" alt="application error" height="161" width="313" />
       <div id="summary">
         <h1><strong><%=h exception.class %></strong> at <strong><%=h path %>
           </strong></h1>
