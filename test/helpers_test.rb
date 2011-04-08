@@ -442,6 +442,28 @@ class HelpersTest < Test::Unit::TestCase
       get '/'
       assert tests_ran
     end
+
+    it 'handles already present params' do
+      mock_app do
+        get '/' do
+          content_type 'foo/bar;level=1', :charset => 'utf-8'
+          'ok'
+        end
+      end
+      get '/'
+      assert_equal 'foo/bar;level=1, charset=utf-8', response['Content-Type']
+    end
+
+    it 'does not add charset if present' do
+      mock_app do
+        get '/' do
+          content_type 'text/plain;charset=utf-16'
+          'ok'
+        end
+      end
+      get '/'
+      assert_equal 'text/plain;charset=utf-16', response['Content-Type']
+    end
   end
 
   describe 'send_file' do
@@ -716,7 +738,7 @@ class HelpersTest < Test::Unit::TestCase
             get '/compare', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'Sun, 26 Sep 2010 23:43:52 GMT' }
             assert_equal 200, status
             assert_equal 'foo', body
-            get '/compare', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'Sun, 26 Sep 2100 23:43:52 GMT' }
+            get '/compare', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'Sun, 26 Sep 2030 23:43:52 GMT' }
             assert_equal 304, status
             assert_equal '', body
           end

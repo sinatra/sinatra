@@ -48,7 +48,6 @@ Gem::Specification.new do |s|
     test/extensions_test.rb
     test/filter_test.rb
     test/haml_test.rb
-    test/hello.mab
     test/helper.rb
     test/helpers_test.rb
     test/less_test.rb

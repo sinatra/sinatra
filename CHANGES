@@ -15,10 +15,36 @@
    classic style) than `Sinatra::Application` by setting `Delegator.target`.
    This was mainly introduced to ease testing. (Konstantin Haase)
 
+ * Added `request.accept?` and `request.preferred_type` to ease dealing with
+   `Accept` headers. (Konstantin Haase)
+
 = 1.2.2 / Not Yet Released
+
+ * The `:provides => :js` condition now matches both `application/javascript`
+   and `text/javascript`. The `:provides => :xml` condition now matches both
+   `application/xml` and `text/xml`. The `Content-Type` header is set
+   accordingly. If the client accepts both, the `application/*` version is
+   preferred, since the `text/*` versions are deprecated. (Konstantin Haase)
+
+ * The `provides` condition now handles wildcards in `Accept` headers correctly.
+   Thus `:provides => :html` matches `text/html`, `text/*` and `*/*`.
+   (Konstantin Haase)
+
+ * When parsing `Accept` headers, `Content-Type` preferences are honored
+   according to RFC 2616 section 14.1. (Konstantin Haase)
 
  * URIs passed to the `url` helper or `redirect` may now use any schema to be
    identified as absolute URIs, not only `http` or `https`. (Konstantin Haase)
+
+ * Handles `Content-Type` strings that already contain parameters correctly in
+   `content_type` (example: `content_type "text/plain; charset=utf-16"`).
+   (Konstantin Haase)
+
+ * If a route with an empty pattern is defined (`get("") { ... }`) requests with
+   an empty path info match this route instead of "/". (Konstantin Haase)
+
+ * In development environment, when running under a nested path, the image URIs
+   on the error pages are set properly. (Konstantin Haase)
 
 = 1.2.1 / 2011-03-17
 

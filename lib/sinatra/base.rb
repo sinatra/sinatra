@@ -11,11 +11,28 @@ module Sinatra
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
   class Request < Rack::Request
-    # Returns an array of acceptable media types for the response
-    def accept
-      @env['HTTP_ACCEPT'].to_s.split(',').map { |a| a.split(';')[0].strip }
+    def self.new(env)
+      env['sinatra.request'] ||= super
     end
 
+    # Returns an array of acceptable media types for the response
+    def accept
+      @env['sinatra.accept'] ||= begin
+        entries = @env['HTTP_ACCEPT'].to_s.split(',')
+        entries.map { |e| accept_entry(e) }.sort_by(&:last).map(&:first)
+      end
+    end
+
+    def preferred_type(*types)
+      return accept.first if types.empty?
+      types.flatten!
+      accept.detect do |pattern|
+        type = types.detect { |t| File.fnmatch(pattern, t) }
+        return type if type
+      end
+    end
+
+    alias accept? preferred_type
     alias secure? ssl?
 
     def forwarded?
@@ -23,15 +40,21 @@ module Sinatra
     end
 
     def route
-      @route ||= begin
-        path = Rack::Utils.unescape(path_info)
-        path.empty? ? "/" : path
-      end
+      @route ||= Rack::Utils.unescape(path_info)
     end
 
     def path_info=(value)
       @route = nil
       super
+    end
+
+    private
+
+    def accept_entry(entry)
+      type, *options = entry.gsub(/\s/, '').split(';')
+      quality = 0 # we sort smalles first
+      options.delete_if { |e| quality = 1 - e[2..-1].to_f if e.start_with? 'q=' }
+      [type, [quality, type.count('*'), 1 - options.size]]
     end
   end
 
@@ -150,7 +173,8 @@ module Sinatra
 
     # Set the Content-Type of the response body given a media type or file
     # extension.
-    def content_type(type, params={})
+    def content_type(type = nil, params={})
+      return response['Content-Type'] unless type
       default = params.delete :default
       mime_type = mime_type(type) || default
       fail "Unknown media type: %p" % type if mime_type.nil?
@@ -158,7 +182,11 @@ module Sinatra
       unless params.include? :charset or settings.add_charset.all? { |p| not p === mime_type }
         params[:charset] = params.delete('charset') || settings.default_encoding
       end
-      mime_type << ";#{params.map { |kv| kv.join('=') }.join(', ')}" unless params.empty?
+      params.delete :charset if mime_type.include? 'charset'
+      unless params.empty?
+        mime_type << (mime_type.include?(';') ? ', ' : ';')
+        mime_type << params.map { |kv| kv.join('=') }.join(', ')
+      end
       response['Content-Type'] = mime_type
     end
 
@@ -549,9 +577,9 @@ module Sinatra
         template = Tilt[engine]
         raise "Template engine not found: #{engine}" if template.nil?
 
-        case
-        when data.is_a?(Symbol)
-          body, path, line = self.class.templates[data]
+        case data
+        when Symbol
+          body, path, line = settings.templates[data]
           if body
             body = body.call if body.respond_to?(:call)
             template.new(path, line.to_i, options) { body }
@@ -567,9 +595,9 @@ module Sinatra
             throw :layout_missing if eat_errors and not found
             template.new(path, 1, options)
           end
-        when data.is_a?(Proc) || data.is_a?(String)
+        when Proc, String
           body = data.is_a?(String) ? Proc.new { data } : data
-          path, line = self.class.caller_locations.first
+          path, line = settings.caller_locations.first
           template.new(path, line.to_i, options, &body)
         else
           raise ArgumentError
@@ -643,9 +671,10 @@ module Sinatra
       self.class.settings
     end
 
-    alias_method :options, :settings
-    class << self
-      alias_method :options, :settings
+    def options
+      warn "Sinatra::Base#options is deprecated and will be removed, " \
+        "use #settings insetad.\n\tfrom #{caller.first}"
+      settings
     end
 
     # Exit the current block, halts any further processing
@@ -674,13 +703,13 @@ module Sinatra
 
   private
     # Run filters defined on the class and all superclasses.
-    def filter!(type, base = self.class)
+    def filter!(type, base = settings)
       filter! type, base.superclass if base.superclass.respond_to?(:filters)
       base.filters[type].each { |block| instance_eval(&block) }
     end
 
     # Run routes defined on the class and all superclasses.
-    def route!(base=self.class, pass_block=nil)
+    def route!(base = settings, pass_block=nil)
       if routes = base.routes[@request.request_method]
         routes.each do |pattern, keys, conditions, block|
           pass_block = process_route(pattern, keys, conditions) do
@@ -710,7 +739,9 @@ module Sinatra
     # Returns pass block.
     def process_route(pattern, keys, conditions)
       @original_params ||= @params
-      if match = pattern.match(@request.route)
+      route = @request.route
+      route = '/' if route.empty? and not settings.empty_path_info?
+      if match = pattern.match(route)
         values = match.captures.to_a
         params =
           if keys.any?
@@ -854,7 +885,7 @@ module Sinatra
     # Find an custom error block for the key(s) specified.
     def error_block!(*keys)
       keys.each do |key|
-        base = self.class
+        base = settings
         while base.respond_to?(:errors)
           if block = base.errors[key]
             # found a handler, eval and return result
@@ -1006,6 +1037,14 @@ module Sinatra
         Rack::Mime::MIME_TYPES[type] = value
       end
 
+      # provides all mime types matching type, including deprecated types:
+      #   mime_types :html # => ['text/html']
+      #   mime_types :js   # => ['application/javascript', 'text/javascript']
+      def mime_types(type)
+        type = mime_type type
+        type =~ /^application\/(xml|javascript)$/ ? [type, "text/#$1"] : [type]
+      end
+
       # Define a before filter; runs before all requests within the same
       # context as route handlers and may access/modify the request and
       # response.
@@ -1058,12 +1097,11 @@ module Sinatra
 
       # Condition for matching mimetypes. Accepts file extensions.
       def provides(*types)
-        types.map! { |t| mime_type(t) }
-
+        types.map! { |t| mime_types(t) }
+        types.flatten!
         condition do
-          matching_types = (request.accept & types)
-          unless matching_types.empty?
-            content_type matching_types.first
+          if type = request.preferred_type(types)
+            content_type(type)
             true
           else
             false
@@ -1093,6 +1131,7 @@ module Sinatra
       def route(verb, path, options={}, &block)
         # Because of self.options.host
         host_name(options.delete(:host)) if options.key?(:host)
+        enable :empty_path_info if path == "" and empty_path_info.nil?
 
         block, pattern, keys, conditions = compile! verb, path, block, options
         invoke_hook(:route_added, verb, path, block)
@@ -1226,10 +1265,10 @@ module Sinatra
       # an instance of this class as end point.
       def build(*args, &bk)
         builder = Rack::Builder.new
-        setup_logging  builder
-        setup_sessions builder
         builder.use Rack::MethodOverride if method_override?
         builder.use ShowExceptions       if show_exceptions?
+        setup_logging  builder
+        setup_sessions builder
         middleware.each { |c,a,b| builder.use(c, *a, &b) }
         builder.run new!(*args, &bk)
         builder
@@ -1342,7 +1381,7 @@ module Sinatra
       end
     else
       def self.force_encoding(data, *) data end
-      end
+    end
 
     reset!
 
@@ -1372,6 +1411,7 @@ module Sinatra
 
     set :absolute_redirects, true
     set :prefixed_redirects, false
+    set :empty_path_info, nil
 
     set :app_file, nil
     set :root, Proc.new { app_file && File.expand_path(File.dirname(app_file)) }
@@ -1410,7 +1450,7 @@ module Sinatra
         </head>
         <body>
           <h2>Sinatra doesn't know this ditty.</h2>
-          <img src='/__sinatra__/404.png'>
+          <img src='#{uri "/__sinatra__/404.png"}'>
           <div id="c">
             Try this:
             <pre>#{request.request_method.downcase} '#{request.path_info}' do\n  "Hello World"\nend</pre>
@@ -1478,11 +1518,16 @@ module Sinatra
 
   # Extend the top-level DSL with the modules provided.
   def self.register(*extensions, &block)
-    Application.register(*extensions, &block)
+    Delegator.target.register(*extensions, &block)
   end
 
   # Include the helper modules provided in Sinatra's request context.
   def self.helpers(*extensions, &block)
-    Application.helpers(*extensions, &block)
+    Delegator.target.helpers(*extensions, &block)
+  end
+
+  # Use the middleware for classic applications.
+  def self.use(*args, &block)
+    Delegator.target.use(*args, &block)
   end
 end

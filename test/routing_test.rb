@@ -93,12 +93,28 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal "<h1>Not Found</h1>", response.body
   end
 
-  it 'matches empty PATH_INFO to "/"' do
-    mock_app {
+  it 'matches empty PATH_INFO to "/" if no route is defined for ""' do
+    mock_app do
       get '/' do
         'worked'
       end
-    }
+    end
+
+    get '/', {}, "PATH_INFO" => ""
+    assert ok?
+    assert_equal 'worked', body
+  end
+
+  it 'matches empty PATH_INFO to "" if a route is defined for ""' do
+    mock_app do
+      get '/' do
+        'did not work'
+      end
+
+      get '' do
+        'worked'
+      end
+    end
 
     get '/', {}, "PATH_INFO" => ""
     assert ok?
@@ -722,6 +738,77 @@ class RoutingTest < Test::Unit::TestCase
     get '/'
     assert ok?
     assert_equal 'default', body
+  end
+
+  it 'respects user agent prefferences for the content type' do
+    mock_app { get('/', :provides => [:png, :html]) { content_type }}
+    get '/', {}, { 'HTTP_ACCEPT' => 'image/png;q=0.5,text/html;q=0.8' }
+    assert_body 'text/html;charset=utf-8'
+    get '/', {}, { 'HTTP_ACCEPT' => 'image/png;q=0.8,text/html;q=0.5' }
+    assert_body 'image/png'
+  end
+
+  it 'accepts generic types' do
+    mock_app do
+      get('/', :provides => :xml) { content_type }
+      get('/') { 'no match' }
+    end
+    get '/'
+    assert_body 'no match'
+    get '/', {}, { 'HTTP_ACCEPT' => 'foo/*' }
+    assert_body 'no match'
+    get '/', {}, { 'HTTP_ACCEPT' => 'application/*' }
+    assert_body 'application/xml;charset=utf-8'
+    get '/', {}, { 'HTTP_ACCEPT' => '*/*' }
+    assert_body 'application/xml;charset=utf-8'
+  end
+
+  it 'prefers concrete over partly generic types' do
+    mock_app { get('/', :provides => [:png, :html]) { content_type }}
+    get '/', {}, { 'HTTP_ACCEPT' => 'image/*, text/html' }
+    assert_body 'text/html;charset=utf-8'
+    get '/', {}, { 'HTTP_ACCEPT' => 'image/png, text/*' }
+    assert_body 'image/png'
+  end
+
+  it 'prefers concrete over fully generic types' do
+    mock_app { get('/', :provides => [:png, :html]) { content_type }}
+    get '/', {}, { 'HTTP_ACCEPT' => '*/*, text/html' }
+    assert_body 'text/html;charset=utf-8'
+    get '/', {}, { 'HTTP_ACCEPT' => 'image/png, */*' }
+    assert_body 'image/png'
+  end
+
+  it 'prefers partly generic over fully generic types' do
+    mock_app { get('/', :provides => [:png, :html]) { content_type }}
+    get '/', {}, { 'HTTP_ACCEPT' => '*/*, text/*' }
+    assert_body 'text/html;charset=utf-8'
+    get '/', {}, { 'HTTP_ACCEPT' => 'image/*, */*' }
+    assert_body 'image/png'
+  end
+
+  it 'respects quality with generic types' do
+    mock_app { get('/', :provides => [:png, :html]) { content_type }}
+    get '/', {}, { 'HTTP_ACCEPT' => 'image/*;q=1, text/html;q=0' }
+    assert_body 'image/png'
+    get '/', {}, { 'HTTP_ACCEPT' => 'image/png;q=0.5, text/*;q=0.7' }
+    assert_body 'text/html;charset=utf-8'
+  end
+
+  it 'accepts both text/javascript and application/javascript for js' do
+    mock_app { get('/', :provides => :js) { content_type }}
+    get '/', {}, { 'HTTP_ACCEPT' => 'application/javascript' }
+    assert_body 'application/javascript;charset=utf-8'
+    get '/', {}, { 'HTTP_ACCEPT' => 'text/javascript' }
+    assert_body 'text/javascript;charset=utf-8'
+  end
+
+  it 'accepts both text/xml and application/xml for xml' do
+    mock_app { get('/', :provides => :xml) { content_type }}
+    get '/', {}, { 'HTTP_ACCEPT' => 'application/xml' }
+    assert_body 'application/xml;charset=utf-8'
+    get '/', {}, { 'HTTP_ACCEPT' => 'text/xml' }
+    assert_body 'text/xml;charset=utf-8'
   end
 
   it 'passes a single url param as block parameters when one param is specified' do

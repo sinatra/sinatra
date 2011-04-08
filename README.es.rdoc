@@ -1129,29 +1129,33 @@ petición (filtros, rutas y manejadores de errores) a través del método
 
   # app corriendo en http://ejemplo.com/ejemplo
   get '/foo' do
-    request.body              # cuerpo de la petición enviado por el cliente (ver más abajo)
-    request.scheme            # "http"
-    request.script_name       # "/ejemplo"
-    request.path_info         # "/foo"
-    request.port              # 80
-    request.request_method    # "GET"
-    request.query_string      # ""
-    request.content_length    # longitud de request.body
-    request.media_type        # tipo de medio de request.body
-    request.host              # "ejemplo.com"
-    request.get?              # verdadero (hay métodos análogos para los otros verbos)
-    request.form_data?        # falso
-    request["UNA_CABECERA"]   # valor de la cabecera UNA_CABECERA
-    request.referrer          # la referencia del cliente o '/'
-    request.user_agent        # user agent (usado por la condición :agent)
-    request.cookies           # hash de las cookies del browser
-    request.xhr?              # es una petición ajax?
-    request.url               # "http://ejemplo.com/ejemplo/foo"
-    request.path              # "/ejemplo/foo"
-    request.ip                # dirección IP del cliente
-    request.secure?           # falso (sería verdadero sobre ssl)
-    request.forwarded?        # verdadero (si se está corriendo atrás de un proxy inverso)
-    requuest.env              # hash de entorno directamente entregado por Rack
+    t = %w[text/css text/html application/javascript]
+    request.accept              # ['text/html', '*/*']
+    request.accept? 'text/xml'  # true
+    request.preferred_type(t)   # 'text/html'
+    request.body                # cuerpo de la petición enviado por el cliente (ver más abajo)
+    request.scheme              # "http"
+    request.script_name         # "/ejemplo"
+    request.path_info           # "/foo"
+    request.port                # 80
+    request.request_method      # "GET"
+    request.query_string        # ""
+    request.content_length      # longitud de request.body
+    request.media_type          # tipo de medio de request.body
+    request.host                # "ejemplo.com"
+    request.get?                # true (hay métodos análogos para los otros verbos)
+    request.form_data?          # false
+    request["UNA_CABECERA"]     # valor de la cabecera UNA_CABECERA
+    request.referrer            # la referencia del cliente o '/'
+    request.user_agent          # user agent (usado por la condición :agent)
+    request.cookies             # hash de las cookies del browser
+    request.xhr?                # es una petición ajax?
+    request.url                 # "http://ejemplo.com/ejemplo/foo"
+    request.path                # "/ejemplo/foo"
+    request.ip                  # dirección IP del cliente
+    request.secure?             # false (sería true sobre ssl)
+    request.forwarded?          # true (si se está corriendo atrás de un proxy inverso)
+    requuest.env                # hash de entorno directamente entregado por Rack
   end
 
 Algunas opciones, como <tt>script_name</tt> o <tt>path_info</tt> pueden
@@ -1660,6 +1664,48 @@ aplicación basada en Rack (Rails/Ramaze/Camping/...):
 
     get('/') { "Hola #{session['nombre_de_usuario']}." }
   end
+
+=== Creación Dinámica de Aplicaciones
+
+Puede que en algunas ocasiones quieras crear nuevas aplicaciones en
+tiempo de ejecución sin tener que asignarlas a una constante.  Para
+esto tenés `Sinatra.new`:
+
+  require 'sinatra/base'
+  mi_app = Sinatra.new { get('/') { "hola" } }
+  mi_app.run!
+
+Acepta como argumento opcional una aplicación desde la que se
+heredará:
+
+  require 'sinatra/base'
+
+  controller = Sinatra.new do
+    enable :logging
+    helpers MisHelpers
+  end
+
+  map('/a') do
+    run Sinatra.new(controller) { get('/') { 'a' } }
+  end
+
+  map('/b') do
+    run Sinatra.new(controller) { get('/') { 'b' } }
+  end
+
+Construir aplicaciones de esta forma resulta especialmente útil para
+testear extensiones Sinatra o para usar Sinatra en tus librerías.
+
+Por otro lado, hace extremadamente sencillo usar Sinatra como
+middleware:
+
+  require 'sinatra/base'
+
+  use Sinatra do
+    get('/') { ... }
+  end
+
+  run ProyectoRails::Application
 
 == Ámbitos y Ligaduras
 
