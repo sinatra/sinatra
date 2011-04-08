@@ -1439,7 +1439,7 @@ module Sinatra
         </head>
         <body>
           <h2>Sinatra doesn't know this ditty.</h2>
-          <img src='/__sinatra__/404.png'>
+          <img src='#{uri "/__sinatra__/404.png"}'>
           <div id="c">
             Try this:
             <pre>#{request.request_method.downcase} '#{request.path_info}' do\n  "Hello World"\nend</pre>

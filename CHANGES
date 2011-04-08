@@ -23,6 +23,9 @@
  * If a route with an empty pattern is defined (`get("") { ... }`) requests with
    an empty path info match this route instead of "/". (Konstantin Haase)
 
+ * In development environment, when running under a nested path, the image URIs
+   on the error pages are set properly. (Konstantin Haase)
+
 = 1.2.1 / 2011-03-17
 
  * Use a generated session secret when using `enable :sessions`. (Konstantin
