@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
 
   s.name = 'sinatra'
   s.version = '1.3.0'
-  s.date = '2011-03-28'
+  s.date = '2011-04-08'
 
   s.description = "Classy web-development dressed in a DSL"
   s.summary     = "Classy web-development dressed in a DSL"
@@ -48,7 +48,6 @@ Gem::Specification.new do |s|
     test/extensions_test.rb
     test/filter_test.rb
     test/haml_test.rb
-    test/hello.mab
     test/helper.rb
     test/helpers_test.rb
     test/less_test.rb
