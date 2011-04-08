@@ -1,4 +1,4 @@
-= 1.2.2 / Not Yet Released
+= 1.2.2 / 2011-04-08
 
  * The `:provides => :js` condition now matches both `application/javascript`
    and `text/javascript`. The `:provides => :xml` condition now matches both
