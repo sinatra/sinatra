@@ -7,6 +7,7 @@ module Sinatra
     # or breaks if external dependencies are missing. Will extend
     # Sinatra::Application by default.
     module Common
+      register :Reloader
       register :ConfigFile
       register :Namespace
       register :RespondWith
