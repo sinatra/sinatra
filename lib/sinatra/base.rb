@@ -346,7 +346,7 @@ module Sinatra
       values << {} unless values.last.kind_of?(Hash)
 
       if amount.is_a? Integer
-        time    = Time.now + amount
+        time    = Time.now + amount.to_i
         max_age = amount
       else
         time    = time_for amount
