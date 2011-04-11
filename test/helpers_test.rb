@@ -679,7 +679,7 @@ class HelpersTest < Test::Unit::TestCase
     end
 
     it 'fails when Time.parse raises an ArgumentError' do
-      assert_raise(RuntimeError) { get '/boom' }
+      assert_raise(ArgumentError) { get '/boom' }
     end
   end
 

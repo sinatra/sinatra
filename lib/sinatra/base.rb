@@ -421,7 +421,7 @@ module Sinatra
         Time.parse value.to_s
       end
     rescue ArgumentError => boom
-      raise boom.to_s
+      raise boom
     rescue Exception
       raise ArgumentError, "unable to convert #{value.inspect} to a Time object"
     end
