@@ -18,6 +18,9 @@
  * Added `request.accept?` and `request.preferred_type` to ease dealing with
    `Accept` headers. (Konstantin Haase)
 
+ * Helpers dealing with time, like `expires`, handle objects that pretend to be
+   numbers, lik `ActiveSupport::Duration`, better. (Konstantin Haase)
+
 = 1.2.2 / 2011-04-08
 
  * The `:provides => :js` condition now matches both `application/javascript`
