@@ -2,6 +2,13 @@ require File.dirname(__FILE__) + '/helper'
 
 begin
 require 'coffee-script'
+require 'execjs'
+
+begin
+  ExecJS.compile '1'
+rescue Exception
+  raise LoadError, 'unable to execute JavaScript'
+end
 
 class CoffeeTest < Test::Unit::TestCase
   def coffee_app(options = {}, &block)
