@@ -1,7 +1,7 @@
 = 1.2.3 / Not Yet Released
 
  * Helpers dealing with time, like `expires`, handle objects that pretend to be
-   numbers, lik `ActiveSupport::Duration`, better. (Konstantin Haase)
+   numbers, like `ActiveSupport::Duration`, better. (Konstantin Haase)
 
 = 1.2.2 / 2011-04-08
 
