@@ -646,6 +646,10 @@ class HelpersTest < Test::Unit::TestCase
           expires obj, :public, :no_cache
           'Hello World'
         end
+
+        get '/boom' do
+          expires '1000'
+        end
       end
     end
 
@@ -672,6 +676,10 @@ class HelpersTest < Test::Unit::TestCase
     it 'accepts values pretending to be a Numeric (like ActiveSupport::Duration)' do
       get '/blah'
       assert_equal ['public', 'no-cache', 'max-age=60'], response['Cache-Control'].split(', ')
+    end
+
+    it 'fails when Time.parse raises an ArgumentError' do
+      assert_raise(RuntimeError) { get '/boom' }
     end
   end
 
