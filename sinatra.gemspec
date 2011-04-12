@@ -125,7 +125,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'tilt', '>= 1.2.2', '< 2.0'
   s.add_development_dependency 'shotgun', '~> 0.6'
 
-  s.has_rdoc = true
   s.homepage = "http://sinatra.rubyforge.org"
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Sinatra", "--main", "README.rdoc"]
   s.require_paths = %w[lib]
