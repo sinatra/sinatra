@@ -7,7 +7,7 @@ require 'sinatra/showexceptions'
 require 'tilt'
 
 module Sinatra
-  VERSION = '1.2.2'
+  VERSION = '1.2.3'
 
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
