@@ -65,7 +65,7 @@ class CoffeeTest < Test::Unit::TestCase
     mock_app {
       get('/') { coffee :no_such_template }
     }
-    assert_raise(Errno::ENOENT, ArgumentError) { get('/') }
+    assert_raise(Errno::ENOENT) { get('/') }
   end
 
   it "passes coffee options to the coffee engine" do
