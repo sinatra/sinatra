@@ -8,12 +8,21 @@ describe Sinatra::Reloader do
   end
 
   def app_file_path
-    File.join(tmp_dir, 'app.rb')
+    File.join(tmp_dir, "example_app_#{@@example_app_counter}.rb")
+  end
+
+  def app_name
+    "ExampleApp#{@@example_app_counter}"
+  end
+
+  def app_const
+    Module.const_get(app_name)
   end
 
   def write_app_file(options={})
     options[:routes] ||= ['get("/foo") { erb :foo }']
     options[:inline_templates] ||= nil
+    options[:name] ||= app_name
 
     File.open(app_file_path, 'w') do |f|
       template_path = File.expand_path('../reloader/app.rb.erb', __FILE__)
@@ -30,16 +39,23 @@ describe Sinatra::Reloader do
     end until original_mtime != File.mtime(app_file_path)
   end
 
-  before(:each) do
-    FileUtils.rm_rf(tmp_dir)
+  def build_and_require_example_app(options={})
+    @@example_app_counter ||= 0
+    @@example_app_counter += 1
+
     FileUtils.mkdir_p(tmp_dir)
-    write_app_file(
+    write_app_file(options)
+    $LOADED_FEATURES.delete app_file_path
+    require app_file_path
+    self.app = app_const
+  end
+
+
+  before(:each) do
+    build_and_require_example_app(
       :routes => ['get("/foo") { erb :foo }'],
       :inline_templates => { :foo => 'foo' }
     )
-    $LOADED_FEATURES.delete app_file_path
-    require app_file_path
-    self.app = App
   end
 
   after(:all) { FileUtils.rm_rf(tmp_dir) }

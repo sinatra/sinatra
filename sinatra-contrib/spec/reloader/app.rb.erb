@@ -1,4 +1,4 @@
-class App < Sinatra::Base
+class <%= name %> < Sinatra::Base
   register Sinatra::Reloader
 <% unless inline_templates.nil? %>
   enable :inline_templates
