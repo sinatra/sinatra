@@ -523,8 +523,9 @@ module Sinatra
     # Calls the given block for every possible template file in views,
     # named name.ext, where ext is registered on engine.
     def find_template(views, name, engine)
-      Tilt.mappings.each do |ext, klass|
-        next unless klass == engine
+      yield ::File.join(views, "#{name}.#{@preferred_extension}")
+      Tilt.mappings.each do |ext, engines|
+        next unless ext != @preferred_extension and Array(engines).include? engine
         yield ::File.join(views, "#{name}.#{ext}")
       end
     end
@@ -585,6 +586,7 @@ module Sinatra
             template.new(path, line.to_i, options) { body }
           else
             found = false
+            @preferred_extension = engine.to_s
             find_template(views, data, template) do |file|
               path ||= file # keep the initial path rather than the last one
               if found = File.exists?(file)

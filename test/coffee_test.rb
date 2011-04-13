@@ -23,7 +23,7 @@ class CoffeeTest < Test::Unit::TestCase
   it 'renders inline Coffee strings' do
     coffee_app { coffee "alert 'Aye!'\n" }
     assert ok?
-    assert_equal "(function() {\n  alert('Aye!');\n}).call(this);\n", body
+    assert body.include?("alert('Aye!');")
   end
 
   it 'defaults content type to javascript' do
@@ -52,38 +52,35 @@ class CoffeeTest < Test::Unit::TestCase
   it 'renders .coffee files in views path' do
     coffee_app { coffee :hello }
     assert ok?
-    assert_equal "(function() {\n  alert(\"Aye!\");\n}).call(this);\n", body
+    assert_include body, "alert(\"Aye!\");"
   end
 
   it 'ignores the layout option' do
     coffee_app { coffee :hello, :layout => :layout2 }
     assert ok?
-    assert_equal "(function() {\n  alert(\"Aye!\");\n}).call(this);\n", body
+    assert_include body, "alert(\"Aye!\");"
   end
 
   it "raises error if template not found" do
     mock_app {
       get('/') { coffee :no_such_template }
     }
-    assert_raise(Errno::ENOENT) { get('/') }
+    assert_raise(Errno::ENOENT, ArgumentError) { get('/') }
   end
 
   it "passes coffee options to the coffee engine" do
-    coffee_app {
-      coffee "alert 'Aye!'\n",
-        :no_wrap => true
-    }
+    coffee_app { coffee "alert 'Aye!'\n", :no_wrap => true }
     assert ok?
     assert_equal "alert('Aye!');", body
   end
 
   it "passes default coffee options to the coffee engine" do
-    mock_app {
+    mock_app do
       set :coffee, :no_wrap => true # default coffee style is :nested
       get '/' do
         coffee "alert 'Aye!'\n"
       end
-    }
+    end
     get '/'
     assert ok?
     assert_equal "alert('Aye!');", body
