@@ -345,7 +345,7 @@ module Sinatra
     def expires(amount, *values)
       values << {} unless values.last.kind_of?(Hash)
 
-      if Integer === amount
+      if amount.is_a? Integer
         time    = Time.now + amount
         max_age = amount
       else
@@ -410,7 +410,7 @@ module Sinatra
     def time_for(value)
       if value.respond_to? :to_time
         value.to_time
-      elsif Time === value
+      elsif value.is_a? Time
         value
       elsif value.respond_to? :new_offset
         # DateTime#to_time does the same on 1.9
@@ -420,7 +420,7 @@ module Sinatra
       elsif value.respond_to? :mday
         # Date#to_time does the same on 1.9
         Time.local(value.year, value.mon, value.mday)
-      elsif Numeric === value
+      elsif value.is_a? Numeric
         Time.at value
       else
         Time.parse value.to_s
