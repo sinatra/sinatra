@@ -506,7 +506,7 @@ module Sinatra
           else
             found = false
             Tilt.mappings.each do |ext, klass|
-              next unless klass == template
+              next unless Array(klass).include? template
               path = ::File.join(views, "#{data}.#{ext}")
               break if found = File.exists?(path)
             end
