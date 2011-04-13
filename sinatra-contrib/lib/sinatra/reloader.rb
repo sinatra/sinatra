@@ -14,38 +14,46 @@ module Sinatra
     end
 
     class Watcher
-      @path_watcher_map ||= Hash.new { |hash, key| hash[key] = new(key) }
+      class List
+        @app_list_map = Hash.new { |hash, key| hash[key] = new }
 
-      def self.watcher_for(path)
-        @path_watcher_map[Pathname.new(path).expand_path.to_s]
-      end
+        def self.for(app)
+          @app_list_map[app]
+        end
 
-      def self.watch_file(path)
-        watcher_for(path)
-      end
+        def initialize
+          @path_watcher_map = Hash.new do |hash, key|
+            hash[key] = Watcher.new(key)
+          end
+        end
 
-      def self.watch_route(route)
-        watcher_for(route.source_location).routes << route
-      end
+        def watch_route(route)
+          watcher_for(route.source_location).routes << route
+        end
 
-      def self.watch_inline_templates(path, app)
-        watcher_for(path).inline_templates(app)
-      end
+        def watch_inline_templates(path)
+          watcher_for(path).inline_templates
+        end
 
-      def self.ignore(path)
-        watcher_for(path).ignore
-      end
+        def ignore(path)
+          watcher_for(path).ignore
+        end
 
-      def self.watchers
-        @path_watcher_map.values
-      end
+        def watcher_for(path)
+          @path_watcher_map[Pathname.new(path).expand_path.to_s]
+        end
+        alias watch_file watcher_for
 
-      def self.updated
-        watchers.find_all(&:updated?)
+        def watchers
+          @path_watcher_map.values
+        end
+
+        def updated
+          watchers.find_all(&:updated?)
+        end
       end
 
       attr_reader :path, :routes, :mtime
-      attr_writer :app
 
       def initialize(path)
         @path, @routes = path, []
@@ -53,16 +61,15 @@ module Sinatra
       end
 
       def updated?
-        !ignored? && mtime != File.mtime(path)
+        !ignore? && mtime != File.mtime(path)
       end
 
       def update
         @mtime = File.mtime(path)
       end
 
-      def inline_templates(app)
+      def inline_templates
         @inline_templates = true
-        @app = app
       end
 
       def inline_templates?
@@ -73,12 +80,8 @@ module Sinatra
         @ignore = true
       end
 
-      def ignored?
+      def ignore?
         !!@ignore
-      end
-
-      def app
-        @app || (routes.first.app unless routes.empty?) || Sinatra::Application
       end
     end
 
@@ -86,16 +89,14 @@ module Sinatra
       klass.extend BaseMethods
       klass.extend ExtensionMethods
       klass.enable :reload_templates
-      klass.before { Reloader.perform }
+      klass.before { Reloader.perform(klass) }
     end
 
-    def self.perform
-      Watcher.updated.each do |watcher|
-        if watcher.inline_templates?
-          watcher.app.set(:inline_templates, watcher.path)
-        end
+    def self.perform(klass)
+      Watcher::List.for(klass).updated.each do |watcher|
+        klass.set(:inline_templates, watcher.path) if watcher.inline_templates?
         watcher.routes.each do |route|
-          watcher.app.deactivate_route(route.verb, route.signature)
+          klass.deactivate_route(route.verb, route.signature)
         end
         $LOADED_FEATURES.delete(watcher.path)
         require watcher.path
@@ -108,7 +109,7 @@ module Sinatra
         source_location = block.respond_to?(:source_location) ?
           block.source_location.first : caller_files.first
         super.tap do |signature|
-          Watcher.watch_route Route.new(
+          Watcher::List.for(self).watch_route Route.new(
              :app             => self,
              :source_location => source_location,
              :verb            => verb,
@@ -120,7 +121,7 @@ module Sinatra
       def iniline_templates=(file=nil)
         file = (file.nil? || file == true) ?
           (caller_files.first || File.expand_path($0)) : file
-        Watcher.watch_inline_templates(file, self)
+        Watcher::List.for(self).watch_inline_templates(file)
         super
       end
     end
@@ -131,11 +132,11 @@ module Sinatra
       end
 
       def also_reload(glob)
-        Dir[glob].each { |path| Watcher.watch_file(path) }
+        Dir[glob].each { |path| Watcher::List.for(self).watch_file(path) }
       end
 
       def dont_reload(glob)
-        Dir[glob].each { |path| Watcher.ignore(path) }
+        Dir[glob].each { |path| Watcher::List.for(self).ignore(path) }
       end
     end
   end

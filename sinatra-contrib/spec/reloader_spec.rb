@@ -116,7 +116,6 @@ describe Sinatra::Reloader do
     end
 
     it "doesn't interfere with other application's reloading policy" do
-      pending
       app_const.dont_reload '**/*.rb'
       setup_example_app(:routes => ['get("/foo") { "foo" }'])
       update_app_file(:routes => ['get("/foo") { "bar" }'])
@@ -157,7 +156,6 @@ describe Sinatra::Reloader do
     end
 
     it "doesn't interfere with other application's reloading policy" do
-      pending
       app_const.also_reload '**/*.rb'
       setup_example_app(:routes => ['get("/foo") { Foo.foo }'])
       get('/foo').body.should == 'foo'
