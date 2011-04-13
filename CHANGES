@@ -18,7 +18,7 @@
  * Added `request.accept?` and `request.preferred_type` to ease dealing with
    `Accept` headers. (Konstantin Haase)
 
-= 1.2.3 / Not Yet Released
+= 1.2.3 / 2011-04-13
 
  * This release is compatible with Tilt 1.3, it will still work with Tilt 1.2.2,
    however, if you want to use a newer Tilt version, you have to upgrade to at
@@ -116,6 +116,10 @@
 
  * Sinatra now ships with a Gemfile for development dependencies, since it eases
    supporting different platforms, like JRuby. (Konstantin Haase)
+
+= 1.1.4 / 2011-04-13
+
+ * Compatible with Tilt 1.3. (Konstantin Haase)
 
 = 1.1.3 / 2011-02-20
 
