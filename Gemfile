@@ -7,12 +7,22 @@
 # If you have issues with a gem: `bundle install --without-coffee-script`.
 
 RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
+TILT_REPO = "git://github.com/rtomayko/tilt.git"
 
 source :rubygems unless ENV['QUICK']
 gemspec
 
 gem 'rake'
 gem 'rack-test', '>= 0.5.6'
+
+# Allows stuff like `tilt=1.2.2 bundle install` or `tilt=master ...`.
+# Used by the CI.
+tilt = ENV['tilt'].dup || 'stable'
+tilt.sub! 'tilt-', ''
+if tilt != 'stable'
+  tilt = {:git => TILT_REPO, :branch => tilt} unless tilt =~ /(\d+\.)+\d+/
+  gem 'tilt', tilt
+end
 
 gem 'haml', '>= 3.0', :group => 'haml'
 gem 'builder', :group => 'builder'
@@ -39,5 +49,4 @@ platforms :mri_18 do
   # bundler platforms are broken
   next if RUBY_ENGINE != 'ruby' or RUBY_VERSION > "1.8"
   gem 'rcov', :group => 'rcov'
-  gem 'therubyracer', :group => 'coffee-script'
 end

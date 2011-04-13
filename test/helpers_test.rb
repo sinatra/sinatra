@@ -638,6 +638,18 @@ class HelpersTest < Test::Unit::TestCase
         get '/baz' do
           expires Time.at(0)
         end
+
+        get '/blah' do
+          obj = Object.new
+          def obj.method_missing(*a, &b) 60.send(*a, &b) end
+          def obj.is_a?(thing) 60.is_a?(thing) end
+          expires obj, :public, :no_cache
+          'Hello World'
+        end
+
+        get '/boom' do
+          expires '1000'
+        end
       end
     end
 
@@ -659,6 +671,15 @@ class HelpersTest < Test::Unit::TestCase
     it 'allows passing time objects' do
       get '/baz'
       assert_equal 'Thu, 01 Jan 1970 00:00:00 GMT', response['Expires']
+    end
+
+    it 'accepts values pretending to be a Numeric (like ActiveSupport::Duration)' do
+      get '/blah'
+      assert_equal ['public', 'no-cache', 'max-age=60'], response['Cache-Control'].split(', ')
+    end
+
+    it 'fails when Time.parse raises an ArgumentError' do
+      assert_raise(ArgumentError) { get '/boom' }
     end
   end
 

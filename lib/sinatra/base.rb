@@ -340,8 +340,8 @@ module Sinatra
     def expires(amount, *values)
       values << {} unless values.last.kind_of?(Hash)
 
-      if Integer === amount
-        time    = Time.now + amount
+      if amount.is_a? Integer
+        time    = Time.now + amount.to_i
         max_age = amount
       else
         time    = time_for amount
@@ -405,7 +405,7 @@ module Sinatra
     def time_for(value)
       if value.respond_to? :to_time
         value.to_time
-      elsif Time === value
+      elsif value.is_a? Time
         value
       elsif value.respond_to? :new_offset
         # DateTime#to_time does the same on 1.9
@@ -415,13 +415,13 @@ module Sinatra
       elsif value.respond_to? :mday
         # Date#to_time does the same on 1.9
         Time.local(value.year, value.mon, value.mday)
-      elsif Numeric === value
+      elsif value.is_a? Numeric
         Time.at value
       else
         Time.parse value.to_s
       end
     rescue ArgumentError => boom
-      raise boom.to_s
+      raise boom
     rescue Exception
       raise ArgumentError, "unable to convert #{value.inspect} to a Time object"
     end
@@ -523,8 +523,9 @@ module Sinatra
     # Calls the given block for every possible template file in views,
     # named name.ext, where ext is registered on engine.
     def find_template(views, name, engine)
-      Tilt.mappings.each do |ext, klass|
-        next unless klass == engine
+      yield ::File.join(views, "#{name}.#{@preferred_extension}")
+      Tilt.mappings.each do |ext, engines|
+        next unless ext != @preferred_extension and Array(engines).include? engine
         yield ::File.join(views, "#{name}.#{ext}")
       end
     end
@@ -585,6 +586,7 @@ module Sinatra
             template.new(path, line.to_i, options) { body }
           else
             found = false
+            @preferred_extension = engine.to_s
             find_template(views, data, template) do |file|
               path ||= file # keep the initial path rather than the last one
               if found = File.exists?(file)

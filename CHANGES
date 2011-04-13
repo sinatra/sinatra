@@ -11,14 +11,23 @@
  * Important: 1.8.6 support has been dropped. It is still usable if you use the
    backports gem, but no longer officially supported. (Konstantin Haase)
 
- * It is now possible to use a different target class for the top level DLS (aka
+ * It is now possible to use a different target class for the top level DSL (aka
    classic style) than `Sinatra::Application` by setting `Delegator.target`.
    This was mainly introduced to ease testing. (Konstantin Haase)
 
  * Added `request.accept?` and `request.preferred_type` to ease dealing with
    `Accept` headers. (Konstantin Haase)
 
-= 1.2.2 / Not Yet Released
+= 1.2.3 / 2011-04-13
+
+ * This release is compatible with Tilt 1.3, it will still work with Tilt 1.2.2,
+   however, if you want to use a newer Tilt version, you have to upgrade to at
+   least this version of Sinatra. (Konstantin Haase)
+
+ * Helpers dealing with time, like `expires`, handle objects that pretend to be
+   numbers, like `ActiveSupport::Duration`, better. (Konstantin Haase)
+
+= 1.2.2 / 2011-04-08
 
  * The `:provides => :js` condition now matches both `application/javascript`
    and `text/javascript`. The `:provides => :xml` condition now matches both
@@ -107,6 +116,10 @@
 
  * Sinatra now ships with a Gemfile for development dependencies, since it eases
    supporting different platforms, like JRuby. (Konstantin Haase)
+
+= 1.1.4 / 2011-04-13
+
+ * Compatible with Tilt 1.3. (Konstantin Haase)
 
 = 1.1.3 / 2011-02-20
 
