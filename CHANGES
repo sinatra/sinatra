@@ -1,5 +1,9 @@
 = 1.2.3 / Not Yet Released
 
+ * This release is compatible with Tilt 1.3, it will still work with Tilt 1.2.2,
+   however, if you want to use a newer Tilt version, you have to upgrade to at
+   least this version of Sinatra. (Konstantin Haase)
+
  * Helpers dealing with time, like `expires`, handle objects that pretend to be
    numbers, like `ActiveSupport::Duration`, better. (Konstantin Haase)
 
