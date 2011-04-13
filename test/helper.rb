@@ -65,6 +65,10 @@ class Test::Unit::TestCase
     assert_equal value.lstrip.gsub(/\s*\n\s*/, ""), body.lstrip.gsub(/\s*\n\s*/, "")
   end
 
+  def assert_include(str, substr)
+    assert str.include?(substr), "expected #{str.inspect} to include #{substr.inspect}"
+  end
+
   # Delegate other missing methods to response.
   def method_missing(name, *args, &block)
     if response && response.respond_to?(name)
