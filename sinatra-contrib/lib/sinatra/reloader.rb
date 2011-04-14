@@ -1,5 +1,3 @@
-require 'pathname'
-
 module Sinatra
   module Reloader
     class Route
@@ -40,7 +38,7 @@ module Sinatra
         end
 
         def watcher_for(path)
-          @path_watcher_map[Pathname.new(path).expand_path.to_s]
+          @path_watcher_map[File.expand_path(path)]
         end
         alias watch_file watcher_for
 
