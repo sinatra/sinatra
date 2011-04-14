@@ -1296,7 +1296,8 @@ module Sinatra
 
       def setup_sessions(builder)
         return unless sessions?
-        options = { :secret => session_secret }
+        options = {}
+        options[:secret] = session_secret if session_secret?
         options.merge! sessions.to_hash if sessions.respond_to? :to_hash
         builder.use Rack::Session::Cookie, options
       end

@@ -313,6 +313,20 @@ class HelpersTest < Test::Unit::TestCase
       assert_body 'ok'
     end
 
+    it 'allows disabling session secret' do
+      mock_app do
+        enable :sessions
+        disable :session_secret
+        get '/' do
+          assert !env['rack.session.options'].include?(:session_secret)
+          'ok'
+        end
+      end
+
+        get '/'
+        assert_body 'ok'
+    end
+
     it 'accepts an options hash' do
       mock_app do
         set :sessions, :foo => :bar
