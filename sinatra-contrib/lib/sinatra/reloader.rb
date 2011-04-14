@@ -139,8 +139,8 @@ module Sinatra
     def self.registered(klass)
       klass.extend BaseMethods
       klass.extend ExtensionMethods
-      klass.enable :reload_templates
       klass.set(:reloader) { klass.development? }
+      klass.set(:reload_templates) { klass.reloader? }
       klass.before do
         if klass.reloader?
           if Reloader.thread_safe?
