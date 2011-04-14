@@ -1478,8 +1478,8 @@ There are only two downsides compared with modular style:
 
 There is no reason you cannot mix modular and classic style.
 
-If switching from one style to the other, you should be aware of slight
-differences in the setting:
+If switching from one style to the other, you should be aware of slightly
+different default settings:
 
   Setting             Classic                 Modular
 
