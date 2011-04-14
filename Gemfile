@@ -17,7 +17,7 @@ gem 'rack-test', '>= 0.5.6'
 
 # Allows stuff like `tilt=1.2.2 bundle install` or `tilt=master ...`.
 # Used by the CI.
-tilt = ENV['tilt'].dup || 'stable'
+tilt = (ENV['tilt'] || 'stable').dup
 tilt.sub! 'tilt-', ''
 if tilt != 'stable'
   tilt = {:git => TILT_REPO, :branch => tilt} unless tilt =~ /(\d+\.)+\d+/
