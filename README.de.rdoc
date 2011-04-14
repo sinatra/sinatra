@@ -1883,10 +1883,10 @@ die so installiert werden:
 === Mit Bundler
 
 Wenn die Applikation mit der neuesten Version von Sinatra und
-{Bundler}[http://gembundler.com/] genutzt werden soll, schlagen wir folgenden
-Weg vor:
+{Bundler}[http://gembundler.com/] genutzt werden soll, empfehlen wir den
+nachfolgenden Weg.
 
-Soweit Bundler noch nicht installiert ist, folgendes:
+Soweit Bundler noch nicht installiert ist:
 
   gem install bundler
 
