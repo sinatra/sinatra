@@ -89,7 +89,8 @@ module Sinatra
       klass.extend BaseMethods
       klass.extend ExtensionMethods
       klass.enable :reload_templates
-      klass.before { Reloader.perform(klass) }
+      klass.set(:reloader) { klass.development? }
+      klass.before { Reloader.perform(klass) if klass.reloader? }
     end
 
     def self.perform(klass)

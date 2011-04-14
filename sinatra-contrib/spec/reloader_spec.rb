@@ -52,6 +52,7 @@ describe Sinatra::Reloader do
     $LOADED_FEATURES.delete app_file_path
     require app_file_path
     self.app = app_const
+    app_const.enable :reloader
   end
 
   after(:all) { FileUtils.rm_rf(tmp_dir) }
