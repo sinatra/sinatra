@@ -131,9 +131,9 @@ module Sinatra
         end
       end
 
-      def iniline_templates=(file=nil)
+      def inline_templates=(file=nil)
         file = (file.nil? || file == true) ?
-          (caller_files.first || File.expand_path($0)) : file
+          (caller_files[1] || File.expand_path($0)) : file
         Watcher::List.for(self).watch_inline_templates(file)
         super
       end

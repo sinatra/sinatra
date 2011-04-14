@@ -87,11 +87,28 @@ describe Sinatra::Reloader do
       get('/foo').status.should == 404
     end
 
-    it "reloads inline templates" do
+    it "reloads inline templates in the app file" do
       update_app_file(
         :routes => ['get("/foo") { erb :foo }'],
         :inline_templates => { :foo => 'bar' }
       )
+      get('/foo').body.should == 'bar'
+    end
+
+    it "reloads inline templates in other file" do
+      setup_example_app(:routes => ['get("/foo") { erb :foo }'])
+      template_file_path = File.join(tmp_dir, 'templates.rb')
+      File.open(template_file_path, 'w') do |f|
+        f.write "__END__\n\n@@foo\nfoo"
+      end
+      require template_file_path
+      app_const.inline_templates= template_file_path
+      get('/foo').body.should == 'foo'
+      update_file(template_file_path) do |path|
+        File.open(path, 'w') do |f|
+          f.write "__END__\n\n@@foo\nbar"
+        end
+      end
       get('/foo').body.should == 'bar'
     end
   end
