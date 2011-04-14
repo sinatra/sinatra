@@ -90,7 +90,15 @@ module Sinatra
       klass.extend ExtensionMethods
       klass.enable :reload_templates
       klass.set(:reloader) { klass.development? }
-      klass.before { Reloader.perform(klass) if klass.reloader? }
+      klass.before do
+        if klass.reloader?
+          if Reloader.thread_safe?
+            Thread.exclusive { Reloader.perform(klass) }
+          else
+            Reloader.perform(klass)
+          end
+        end
+      end
     end
 
     def self.perform(klass)
@@ -103,6 +111,10 @@ module Sinatra
         require watcher.path
         watcher.update
       end
+    end
+
+    def self.thread_safe?
+      Thread and Thread.list.size > 1 and Thread.respond_to?(:exclusive)
     end
 
     module BaseMethods
