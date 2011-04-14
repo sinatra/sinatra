@@ -3,22 +3,37 @@ require_relative 'spec_helper'
 require 'fileutils'
 
 describe Sinatra::Reloader do
+  # Returns the temporary directory.
   def tmp_dir
     File.expand_path('../../tmp', __FILE__)
   end
 
+  # Returns the path of the Sinatra application file created by
+  # +setup_example_app+.
   def app_file_path
     File.join(tmp_dir, "example_app_#{@@example_app_counter}.rb")
   end
 
+  # Returns the name of the Sinatra application created by
+  # +setup_example_app+: 'ExampleApp1' for the first application,
+  # 'ExampleApp2' fo the second one, and so on...
   def app_name
     "ExampleApp#{@@example_app_counter}"
   end
 
+  # Returns the (constant of the) Sinatra application created by
+  # +setup_example_app+.
   def app_const
     Module.const_get(app_name)
   end
 
+  # Writes a file with a Sinatra application using the template
+  # located at <tt>specs/reloader/app.rb.erb</tt>.  It expects an
+  # +options+ hash, with an array of strings containing the
+  # application's routes (+:routes+ key), a hash with the inline
+  # template's names as keys and the bodys as values
+  # (+:inline_templates+ key) and an optional application name
+  # (+:name+) otherwise +app_name+ is used.
   def write_app_file(options={})
     options[:routes] ||= ['get("/foo") { erb :foo }']
     options[:inline_templates] ||= nil
@@ -31,10 +46,15 @@ describe Sinatra::Reloader do
     end
   end
 
+  # Modifies a file created using +write_app_file+, ensuring its mtime
+  # is changed.  The +options+ are the same that +write_app_file+
+  # expects.
   def update_app_file(options={})
     update_file(app_file_path) { write_app_file(options) }
   end
 
+  # Runs the block it recives until the file located at +path+ changes
+  # its mtime.
   def update_file(path)
     original_mtime = File.mtime(path)
     begin
@@ -43,6 +63,9 @@ describe Sinatra::Reloader do
     end until original_mtime != File.mtime(path)
   end
 
+  # Writes a Sinatra application to a file, requires the file, sets
+  # the new application as the one being tested and enables the
+  # reloader.
   def setup_example_app(options={})
     @@example_app_counter ||= 0
     @@example_app_counter += 1
