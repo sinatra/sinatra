@@ -1464,6 +1464,7 @@ module Sinatra
     set :logging, Proc.new { ! test? }
     set :method_override, true
     set :run, Proc.new { ! test? }
+    set :session_secret, Proc.new { super() unless development? }
 
     def self.register(*extensions, &block) #:nodoc:
       added_methods = extensions.map {|m| m.public_instance_methods }.flatten
