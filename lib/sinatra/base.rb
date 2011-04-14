@@ -521,7 +521,7 @@ module Sinatra
     def find_template(views, name, engine)
       yield ::File.join(views, "#{name}.#{@preferred_extension}")
       Tilt.mappings.each do |ext, engines|
-        next unless ext != @preferred_extension and Array(engines).include? engine
+        next unless ext != @preferred_extension and engines.include? engine
         yield ::File.join(views, "#{name}.#{ext}")
       end
     end
