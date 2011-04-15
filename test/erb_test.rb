@@ -45,7 +45,7 @@ class ERBTest < Test::Unit::TestCase
       erb 'Hello World', :layout => :layout2
     }
     assert ok?
-    assert_equal "ERB Layout!\nHello World\n", body
+    assert_body "ERB Layout!\nHello World"
   end
 
   it "renders erb with blocks" do
