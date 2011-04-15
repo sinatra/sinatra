@@ -34,6 +34,24 @@ class SettingsTest < Test::Unit::TestCase
     assert !@base.respond_to?(:fiz)
   end
 
+  it 'raises an error without value and block' do
+    assert_raise(ArgumentError) { @base.set(:fiz) }
+    assert !@base.respond_to?(:fiz)
+  end
+
+  it 'allows setting a value to the app class' do
+    @base.set :base, @base
+    assert @base.respond_to?(:base)
+    assert_equal @base, @base.base
+  end
+
+  it 'raises an error with the app class as value and a block' do
+    assert_raise ArgumentError do
+      @base.set(:fiz, @base) { 'baz' }
+    end
+    assert !@base.respond_to?(:fiz)
+  end
+
   it "sets multiple settings with a Hash" do
     @base.set :foo => 1234,
         :bar => 'Hello World',
