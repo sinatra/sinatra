@@ -36,6 +36,7 @@ gem 'coffee-script', '>= 2.0', :group => 'coffee-script'
 gem 'rdoc', :group => 'rdoc'
 gem 'kramdown', :group => 'kramdown'
 gem 'maruku', :group => 'maruku'
+gem 'creole', :group => 'creole'
 
 platforms :ruby do
   gem 'rdiscount', :group => 'rdiscount'

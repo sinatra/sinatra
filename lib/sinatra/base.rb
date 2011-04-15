@@ -518,6 +518,10 @@ module Sinatra
       render :slim, template, options, locals
     end
 
+    def creole(template, options={}, locals={})
+      render :creole, template, options, locals
+    end
+
     # Calls the given block for every possible template file in views,
     # named name.ext, where ext is registered on engine.
     def find_template(views, name, engine)
