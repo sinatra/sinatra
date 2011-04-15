@@ -323,8 +323,8 @@ class HelpersTest < Test::Unit::TestCase
         end
       end
 
-        get '/'
-        assert_body 'ok'
+      get '/'
+      assert_body 'ok'
     end
 
     it 'accepts an options hash' do
