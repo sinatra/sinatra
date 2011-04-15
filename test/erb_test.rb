@@ -1,12 +1,25 @@
 require File.dirname(__FILE__) + '/helper'
 
 class ERBTest < Test::Unit::TestCase
+  def engine
+    Tilt::ERBTemplate
+  end
+
+  def setup
+    Tilt.prefer engine, :erb
+    super
+  end
+
   def erb_app(&block)
     mock_app {
       set :views, File.dirname(__FILE__) + '/views'
       get '/', &block
     }
     get '/'
+  end
+
+  it 'uses the correct engine' do
+    assert_equal engine, Tilt[:erb]
   end
 
   it 'renders inline ERB strings' do
@@ -78,4 +91,14 @@ class ERBTest < Test::Unit::TestCase
     assert ok?
     assert_equal '<outer><inner>hi</inner></outer>', body
   end
+end
+
+
+begin
+  require 'erubis'
+  class ErubisTest < ERBTest
+    def engine; Tilt::ErubisTemplate end
+  end
+rescue LoadError
+  warn "#{$!.to_s}: skipping erubis tests"
 end
