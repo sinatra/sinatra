@@ -179,15 +179,15 @@ module Sinatra
       # defined route.
       def route(verb, path, options={}, &block)
         source_location = block.respond_to?(:source_location) ?
-          block.source_location.first : caller_files.first
-        super.tap do |signature|
-          Watcher::List.for(self).watch_route Route.new(
-             :app             => self,
-             :source_location => source_location,
-             :verb            => verb,
-             :signature       => signature
-           )
-        end
+          block.source_location.first : caller_files[1]
+        signature = super
+        Watcher::List.for(self).watch_route Route.new(
+           :app             => self,
+           :source_location => source_location,
+           :verb            => verb,
+           :signature       => signature
+        )
+        signature
       end
 
       # Does everything Sinatra::Base#inline_templates= does, but it
