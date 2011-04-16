@@ -56,7 +56,7 @@ describe Sinatra::Reloader do
   # Runs the block it recives until the file located at +path+ changes
   # its mtime.
   def update_file(path)
-    original_mtime = File.mtime(path)
+    original_mtime = File.exist?(path) ? File.mtime(path) : Time.at(0)
     begin
       yield(path)
       sleep 0.1
@@ -168,8 +168,10 @@ describe Sinatra::Reloader do
     before(:each) do
       setup_example_app(:routes => ['get("/foo") { Foo.foo }'])
       @foo_path = File.join(tmp_dir, 'foo.rb')
-      File.open(@foo_path, 'w') do |f|
-        f.write 'class Foo; def self.foo() "foo" end end'
+      update_file(@foo_path) do
+        File.open(@foo_path, 'w') do |f|
+          f.write 'class Foo; def self.foo() "foo" end end'
+        end
       end
       $LOADED_FEATURES.delete @foo_path
       require @foo_path
