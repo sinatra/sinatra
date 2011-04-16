@@ -100,7 +100,7 @@ module Sinatra
       # Indicates whether or not the file being watched has been
       # modified.
       def updated?
-        !ignore? && mtime != File.mtime(path)
+        !ignore? && !removed? && mtime != File.mtime(path)
       end
 
       # Updates the file being watched mtime.
@@ -129,6 +129,12 @@ module Sinatra
       # watched should be ignored.
       def ignore?
         !!@ignore
+      end
+
+      # Indicates whether or not the file being watched has been
+      # removed.
+      def removed?
+        !File.exist?(path)
       end
     end
 

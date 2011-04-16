@@ -130,6 +130,12 @@ describe Sinatra::Reloader do
       end
       get('/foo').body.should == 'bar'
     end
+
+    it "doesn't try to reload a removed file" do
+      update_app_file(:routes => ['get("/foo") { "i shall not be reloaded" }'])
+      FileUtils.rm app_file_path
+      get('/foo').body.should == 'foo'
+    end
   end
 
   describe ".dont_reload" do
@@ -186,6 +192,14 @@ describe Sinatra::Reloader do
         f.write 'class Foo; def self.foo() "bar" end end'
       end
       get('/foo').body.should == 'bar'
+    end
+
+    it "doesn't try to reload a removed file" do
+      update_file(@foo_path) do |f|
+        f.write 'class Foo; def self.foo() "bar" end end'
+      end
+      FileUtils.rm @foo_path
+      get('/foo').body.should == 'foo'
     end
 
     it "doesn't interfere with other application's reloading policy" do
