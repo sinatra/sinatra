@@ -34,31 +34,29 @@ describe Sinatra::Reloader do
   # template's names as keys and the bodys as values
   # (+:inline_templates+ key) and an optional application name
   # (+:name+) otherwise +app_name+ is used.
+  #
+  # It ensures to change the written file's mtime when it already
+  # exists.
   def write_app_file(options={})
     options[:routes] ||= ['get("/foo") { erb :foo }']
     options[:inline_templates] ||= nil
     options[:name] ||= app_name
 
-    File.open(app_file_path, 'w') do |f|
+    update_file(app_file_path) do |f|
       template_path = File.expand_path('../reloader/app.rb.erb', __FILE__)
       template = Tilt.new(template_path, nil, :trim => '<>')
       f.write template.render(Object.new, options)
     end
   end
 
-  # Modifies a file created using +write_app_file+, ensuring its mtime
-  # is changed.  The +options+ are the same that +write_app_file+
-  # expects.
-  def update_app_file(options={})
-    update_file(app_file_path) { write_app_file(options) }
-  end
+  alias update_app_file write_app_file
 
-  # Runs the block it recives until the file located at +path+ changes
-  # its mtime.
-  def update_file(path)
+  # It calls <tt>File.open(path, 'w', &block)</tt> all the times
+  # needed to change the file's mtime.
+  def update_file(path, &block)
     original_mtime = File.exist?(path) ? File.mtime(path) : Time.at(0)
     begin
-      yield(path)
+      File.open(path, 'w', &block)
       sleep 0.1
     end until original_mtime != File.mtime(path)
   end
@@ -127,10 +125,8 @@ describe Sinatra::Reloader do
       require template_file_path
       app_const.inline_templates= template_file_path
       get('/foo').body.should == 'foo'
-      update_file(template_file_path) do |path|
-        File.open(path, 'w') do |f|
-          f.write "__END__\n\n@@foo\nbar"
-        end
+      update_file(template_file_path) do |f|
+        f.write "__END__\n\n@@foo\nbar"
       end
       get('/foo').body.should == 'bar'
     end
@@ -168,10 +164,8 @@ describe Sinatra::Reloader do
     before(:each) do
       setup_example_app(:routes => ['get("/foo") { Foo.foo }'])
       @foo_path = File.join(tmp_dir, 'foo.rb')
-      update_file(@foo_path) do
-        File.open(@foo_path, 'w') do |f|
-          f.write 'class Foo; def self.foo() "foo" end end'
-        end
+      update_file(@foo_path) do |f|
+        f.write 'class Foo; def self.foo() "foo" end end'
       end
       $LOADED_FEATURES.delete @foo_path
       require @foo_path
@@ -180,20 +174,16 @@ describe Sinatra::Reloader do
 
     it "allows to specify a file to be reloaded" do
       get('/foo').body.should == 'foo'
-      update_file(@foo_path) do |path|
-        File.open(path, 'w') do |f|
-          f.write 'class Foo; def self.foo() "bar" end end'
-        end
+      update_file(@foo_path) do |f|
+        f.write 'class Foo; def self.foo() "bar" end end'
       end
       get('/foo').body.should == 'bar'
     end
 
     it "allows to specify glob to reaload matching files" do
       get('/foo').body.should == 'foo'
-      update_file(@foo_path) do |path|
-        File.open(path, 'w') do |f|
-          f.write 'class Foo; def self.foo() "bar" end end'
-        end
+      update_file(@foo_path) do |f|
+        f.write 'class Foo; def self.foo() "bar" end end'
       end
       get('/foo').body.should == 'bar'
     end
@@ -202,10 +192,8 @@ describe Sinatra::Reloader do
       app_const.also_reload '**/*.rb'
       setup_example_app(:routes => ['get("/foo") { Foo.foo }'])
       get('/foo').body.should == 'foo'
-      update_file(@foo_path) do |path|
-        File.open(path, 'w') do |f|
-          f.write 'class Foo; def self.foo() "bar" end end'
-        end
+      update_file(@foo_path) do |f|
+        f.write 'class Foo; def self.foo() "bar" end end'
       end
       get('/foo').body.should == 'foo'
     end
