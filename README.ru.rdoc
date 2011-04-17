@@ -859,7 +859,7 @@ Thin - это более производительный и функциона�
 
   get '/foo' do
     status, headers, body = call env.merge("PATH_INFO" => '/bar')
-    [status, body.upcase]
+    [status, headers, body.map(&:upcase)]
   end
 
   get '/bar' do

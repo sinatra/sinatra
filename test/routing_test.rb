@@ -1043,6 +1043,23 @@ class RoutingTest < Test::Unit::TestCase
     assert not_found?
   end
 
+  it 'allows using call to fire another request internally' do
+    mock_app do
+      get '/foo' do
+        status, headers, body = call env.merge("PATH_INFO" => '/bar')
+        [status, headers, body.map(&:upcase)]
+      end
+
+      get '/bar' do
+        "bar"
+      end
+    end
+
+    get '/foo'
+    assert ok?
+    assert_body "BAR"
+  end
+
   it 'plays well with other routing middleware' do
     middleware = Sinatra.new
     inner_app  = Sinatra.new { get('/foo') { 'hello' } }

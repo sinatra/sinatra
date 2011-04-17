@@ -909,7 +909,7 @@ anderen Route gefordert wird. Um das zu erreichen, lässt sich +call+ nutzen:
 
   get '/foo' do
     status, headers, body = call env.merge("PATH_INFO" => '/bar')
-    [status, body.upcase]
+    [status, headers, body.map(&:upcase)]
   end
 
   get '/bar' do
