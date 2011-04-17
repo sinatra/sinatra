@@ -1897,9 +1897,13 @@ SemVer und SemVerTag.
 * {Projekt-Website}[http://sinatra.github.com/] - Ergänzende Dokumentation,
   News und Links zu anderen Ressourcen.
 * {Hilfe beisteuern}[http://sinatra.github.com/contributing.html] - Einen
-Fehler gefunden? Brauchst du Hilfe? Hast du einen Patch?
+  Fehler gefunden? Brauchst du Hilfe? Hast du einen Patch?
 * {Issue-Tracker}[http://github.com/sinatra/sinatra/issues]
 * {Twitter}[http://twitter.com/sinatra]
 * {Mailing-Liste}[http://groups.google.com/group/sinatrarb]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] auf http://freenode.net
+
+* API Dokumentation für die {aktuelle Version}[http://rubydoc.info/gems/sinatra]	
+  oder für {HEAD}[http://rubydoc.info/github/sinatra/sinatra] auf 
+  http://rubydoc.info
 
