@@ -894,7 +894,7 @@ souhaitez obtenir le résultat d'une autre route. Pour cela, utilisez
 simplement +call+ :
 
   get '/foo' do
-    status, headers, body = call request.env.merge("PATH_INFO" => '/bar')
+    status, headers, body = call env.merge("PATH_INFO" => '/bar')
     [status, body.upcase]
   end
 
@@ -1399,7 +1399,7 @@ variable Rack <tt>sinatra.error</tt>:
 Erreur sur mesure:
 
   error MonErreurSurMesure do
-    'Donc il est arrivé ceci...' + request.env['sinatra.error'].message
+    'Donc il est arrivé ceci...' + env['sinatra.error'].message
   end
 
 Donc si ceci arrive:
