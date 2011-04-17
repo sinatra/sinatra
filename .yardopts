@@ -1,3 +1,4 @@
 --readme README.rdoc
 --title 'Sinatra API Documentation'
+--charset utf-8
 'lib/**/*.rb' - '*.rdoc'

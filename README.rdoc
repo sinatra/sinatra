@@ -852,8 +852,8 @@ Sometimes +pass+ is not what you want, instead you would like to get the result
 of calling another route. Simply use +call+ to achieve this:
 
   get '/foo' do
-    status, headers, body = call request.env.merge("PATH_INFO" => '/bar')
-    [status, body.upcase]
+    status, headers, body = call env.merge("PATH_INFO" => '/bar')
+    [status, headers, body.map(&:upcase)]
   end
 
   get '/bar' do
@@ -1349,7 +1349,7 @@ block or a filter. The exception object can be obtained from the
 Custom errors:
 
   error MyCustomError do
-    'So what happened was...' + request.env['sinatra.error'].message
+    'So what happened was...' + env['sinatra.error'].message
   end
 
 Then, if this happens:

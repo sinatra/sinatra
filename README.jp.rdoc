@@ -713,7 +713,7 @@ body部を指定することもできます ...
 エラーをカスタマイズする場合は、
 
   error MyCustomError do
-    'エラーメッセージ...' + request.env['sinatra.error'].message
+    'エラーメッセージ...' + env['sinatra.error'].message
   end
 
 と書いておいて,下記のように呼び出します。

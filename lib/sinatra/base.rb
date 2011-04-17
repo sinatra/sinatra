@@ -362,7 +362,7 @@ module Sinatra
       time = time_for time
       response['Last-Modified'] = time.httpdate
       # compare based on seconds since epoch
-      halt 304 if Time.httpdate(request.env['HTTP_IF_MODIFIED_SINCE']).to_i >= time.to_i
+      halt 304 if Time.httpdate(env['HTTP_IF_MODIFIED_SINCE']).to_i >= time.to_i
     rescue ArgumentError
     end
 
@@ -698,7 +698,7 @@ module Sinatra
     # Forward the request to the downstream app -- middleware only.
     def forward
       fail "downstream app not set" unless @app.respond_to? :call
-      status, headers, body = @app.call(@request.env)
+      status, headers, body = @app.call env
       @response.status = status
       @response.body = body
       @response.headers.merge! headers
@@ -950,14 +950,15 @@ module Sinatra
 
       # Sets an option to the given value.  If the value is a proc,
       # the proc will be called every time the option is accessed.
-      def set(option, value=self, &block)
-        raise ArgumentError if block && value != self
+      def set(option, value = (not_set = true), &block)
+        raise ArgumentError if block and !not_set
         value = block if block
         if value.kind_of?(Proc)
           metadef(option, &value)
           metadef("#{option}?") { !!__send__(option) }
           metadef("#{option}=") { |val| metadef(option, &Proc.new{val}) }
-        elsif value == self && option.respond_to?(:each)
+        elsif not_set
+          raise ArgumentError unless option.respond_to?(:each)
           option.each { |k,v| set(k, v) }
         elsif respond_to?("#{option}=")
           __send__ "#{option}=", value
@@ -1495,6 +1496,7 @@ module Sinatra
       methods.each do |method_name|
         eval <<-RUBY, binding, '(__DELEGATE__)', 1
           def #{method_name}(*args, &b)
+            return super if respond_to? #{method_name.inspect}
             ::Sinatra::Delegator.target.send(#{method_name.inspect}, *args, &b)
           end
           private #{method_name.inspect}

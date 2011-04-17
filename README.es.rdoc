@@ -896,8 +896,8 @@ Cuando querés obtener el resultado de la llamada a una ruta, +pass+ no te va a
 servir.  Para lograr esto, podés usar +call+:
 
   get '/foo' do
-    status, headers, body = call request.env.merge("PATH_INFO" => '/bar')
-    [status, body.upcase]
+    status, headers, body = call env.merge("PATH_INFO" => '/bar')
+    [status, headers, body.map(&:upcase)]
   end
 
   get '/bar' do
@@ -1414,7 +1414,7 @@ obtener de la variable Rack <tt>sinatra.error</tt>:
 Errores personalizados:
 
   error MiErrorPersonalizado do
-    'Lo que pasó fue...' request.env['sinatra.error'].message
+    'Lo que pasó fue...' + env['sinatra.error'].message
   end
 
 Entonces, si pasa esto:

@@ -686,10 +686,10 @@ class RoutingTest < Test::Unit::TestCase
   it "filters by accept header" do
     mock_app {
       get '/', :provides => :xml do
-        request.env['HTTP_ACCEPT']
+        env['HTTP_ACCEPT']
       end
       get '/foo', :provides => :html do
-        request.env['HTTP_ACCEPT']
+        env['HTTP_ACCEPT']
       end
     }
 
@@ -714,7 +714,7 @@ class RoutingTest < Test::Unit::TestCase
 
     mock_app {
       get '/', :provides => types do
-        request.env['HTTP_ACCEPT']
+        env['HTTP_ACCEPT']
       end
     }
 
@@ -729,7 +729,7 @@ class RoutingTest < Test::Unit::TestCase
   it 'degrades gracefully when optional accept header is not provided' do
     mock_app {
       get '/', :provides => :xml do
-        request.env['HTTP_ACCEPT']
+        env['HTTP_ACCEPT']
       end
       get '/' do
         'default'
@@ -1043,8 +1043,24 @@ class RoutingTest < Test::Unit::TestCase
     assert not_found?
   end
 
+  it 'allows using call to fire another request internally' do
+    mock_app do
+      get '/foo' do
+        status, headers, body = call env.merge("PATH_INFO" => '/bar')
+        [status, headers, body.map(&:upcase)]
+      end
 
-  it 'is plays well with other routing middleware' do
+      get '/bar' do
+        "bar"
+      end
+    end
+
+    get '/foo'
+    assert ok?
+    assert_body "BAR"
+  end
+
+  it 'plays well with other routing middleware' do
     middleware = Sinatra.new
     inner_app  = Sinatra.new { get('/foo') { 'hello' } }
     builder    = Rack::Builder.new do
