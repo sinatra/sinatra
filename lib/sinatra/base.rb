@@ -451,7 +451,7 @@ module Sinatra
     end
 
     def erubis(template, options={}, locals={})
-      warn "Sinatra::Templates#erubis is deprecated and will be removed, use #erb insetad.\n" \
+      warn "Sinatra::Templates#erubis is deprecated and will be removed, use #erb instead.\n" \
         "If you have Erubis installed, it will be used automatically.\n\tfrom #{caller.first}"
       render :erubis, template, options, locals
     end
