@@ -1,13 +1,6 @@
 class DelegatorTest < Test::Unit::TestCase
   class Mirror
     attr_reader :last_call
-
-    Sinatra::Delegator.private_instance_methods.each do |method|
-      define_method(method) do |*a, &b|
-        method_missing(method, *a, &b)
-      end
-    end
-
     def method_missing(*a, &b)
       @last_call = [*a.map(&:to_s)]
       @last_call << b if b
