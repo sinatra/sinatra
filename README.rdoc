@@ -1750,6 +1750,8 @@ SemVerTag.
 * {Twitter}[http://twitter.com/sinatra]
 * {Mailing List}[http://groups.google.com/group/sinatrarb/topics]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] on http://freenode.net
+* {Sinatra Book}[http://sinatra-book.gittr.com] Cookbook Tutorial
+* {Sinatra Book Contrib}[http://sinatra-book-contrib.com/] Community contributed recipes
 * API documentation for the {latest release}[http://rubydoc.info/gems/sinatra]
   or the {current HEAD}[http://rubydoc.info/github/sinatra/sinatra] on
   http://rubydoc.info/
