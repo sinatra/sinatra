@@ -1,6 +1,13 @@
 class DelegatorTest < Test::Unit::TestCase
   class Mirror
     attr_reader :last_call
+
+    Sinatra::Delegator.private_instance_methods.each do |method|
+      define_method(method) do |*a, &b|
+        method_missing(method, *a, &b)
+      end
+    end
+
     def method_missing(*a, &b)
       @last_call = [*a.map(&:to_s)]
       @last_call << b if b
@@ -100,11 +107,60 @@ class DelegatorTest < Test::Unit::TestCase
     assert_equal app.last_call, ["helpers", mixin.to_s ]
   end
 
-
   it "registers helpers with the delegation target" do
     app, mixin = mirror, Module.new
     Sinatra.use mixin
     assert_equal app.last_call, ["use", mixin.to_s ]
+  end
+
+  it "should work with method_missing proxies for options" do
+    mixin = Module.new do
+      def method_missing(method, *args, &block)
+        return super unless method.to_sym == :options
+        {:some => :option}
+      end
+    end
+
+    app = mirror
+    def app.options(arg, *rest) "yay" end
+
+    a = b = c = nil
+    delegate do
+      extend mixin
+      a, b, c = options, options(1), options(1, 2)
+    end
+
+    assert_equal({:some => :option}, a)
+    assert_equal("yay", b)
+    assert_equal("yay", c)
+  end
+
+  it "should work with method_missing proxies for methods arity > 0" do
+    mixin = Module.new do
+      def method_missing(method, *args, &block)
+        return super unless method.to_sym == :options
+        {:some => :option}
+      end
+    end
+
+    app = mirror
+    def app.options(arg) "yay" end
+
+    a = b = c = nil
+    delegate do
+      extend mixin
+      a, b, c = options, options(1), options(1, 2)
+    end
+
+    assert_equal({:some => :option}, a)
+    assert_equal("yay", b)
+    assert_equal({:some => :option}, c)
+  end
+
+  it "should not raise a NameError for methods not handled by a proxy" do
+    app = mirror
+    def app.options(arg) "yay" end
+    assert_raises(ArgumentError) { delegate { options }}
   end
 
   delegates 'get'

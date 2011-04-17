@@ -1490,6 +1490,14 @@ module Sinatra
       methods.each do |method_name|
         eval <<-RUBY, binding, '(__DELEGATE__)', 1
           def #{method_name}(*args, &b)
+            arity = ::Sinatra::Delegator.target.method(#{method_name.inspect}).arity
+            if arity < 0 ? args.size < -arity - 1 : args.size != arity
+              begin
+                return super
+              rescue NameError => e
+                raise e unless e.message.include? #{method_name.to_s.inspect}
+              end
+            end
             ::Sinatra::Delegator.target.send(#{method_name.inspect}, *args, &b)
           end
           private #{method_name.inspect}
