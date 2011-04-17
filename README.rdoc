@@ -209,10 +209,82 @@ Note that the public directory name is not included in the URL. A file
 
 == Views / Templates
 
+Each template language is exposed as via its own rendering method. These
+methods simply return a string:
+
+  get '/' do
+    erb :index
+  end
+
+This renders <tt>views/index.erb</tt>.
+
+Instead of a template name, you can also just pass in the template content
+directly:
+
+  get '/' do
+    code = "<%= Time.now >"
+    erb code
+  end
+
+Templates take a second argument, the options hash:
+
+  get '/' do
+    erb :index, :layout => :post
+  end
+
+This will render <tt>views/index.erb</tt> embedded in the
+<tt>views/post.erb</tt> (default is <tt>views/layout.erb</tt>, if it exists).
+
+Any options not understood by Sinatra will be passed on to the template
+engine:
+
+  get '/' do
+    haml :index, :format => :html5
+  end
+
+You can also set options per template language in general:
+
+  set :haml, :format => :html5
+
+  get '/' do
+    haml :index
+  end
+
+Options passed to the render method override options set via +set+.
+
+Available Options:
+
+[locals]
+  List of locals passed to the document. Handy with partials.
+  Example: <tt>erb "<%= foo %>", :locals => {:foo => "bar"}</tt>
+
+[default_encoding]
+  String encoding to use if uncertain. Defaults to
+  <tt>settings.default_encoding</tt>.
+
+[views]
+  Views folder to load templates from. Defaults to <tt>settings.views</tt>.
+
+[layout]
+  Whether to use a layout (+true+ or +false+), if it's a Symbol, specifies
+  what template to use. Example: <tt>erb :index, :layout => request.xhr?</tt>
+
+[content_type]
+  Content-Type the template produces, default depends on template language.
+
+[scope]
+  Scope to render template under. Defaults to the application instance. If you
+  change this, instance variables and helper methods will not be available.
+
+[layout_engine]
+  Template engine to use for rendering the layout. Useful for languages that
+  do not support layouts otherwise. Defaults to the engine used for the
+  temple. Example: <tt>set :rdoc, :layout_engine => :erb</tt>
+
 Templates are assumed to be located directly under the <tt>./views</tt>
 directory. To use a different views directory:
 
-  set :views, File.dirname(__FILE__) + '/templates'
+  set :views, settings.root + '/templates'
 
 One important thing to remember is that you always have to reference
 templates with symbols, even if they're in a subdirectory (in this
@@ -220,160 +292,84 @@ case, use <tt>:'subdir/template'</tt>). You must use a symbol because
 otherwise rendering methods will render any strings passed to them
 directly.
 
+=== Available Template Languages
+
+Some languages have multiple implementations. To specify what implementation
+to use (and to be thread-safe), you should simply require it first:
+
+  require 'rdiscount' # or require 'bluecloth'
+  get('/') { markdown :index }
+
 === Haml Templates
 
-The <tt>haml</tt> gem/library is required to render HAML templates:
-
-  # You'll need to require haml in your app
-  require 'haml'
-
-  get '/' do
-    haml :index
-  end
-
-Renders <tt>./views/index.haml</tt>.
-
-{Haml's options}[http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options]
-can be set globally through Sinatra's configurations,
-see {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
-and overridden on an individual basis.
-
-  set :haml, :format => :html5 # default Haml format is :xhtml
-
-  get '/' do
-    haml :index, :format => :html4 # overridden
-  end
-
+Dependency::        {haml}[http://haml-lang.com/]
+File Extensions::   <tt>.haml</tt>
+Example::           <tt>haml :index, :format => :html5</tt>
 
 === Erb Templates
 
-  # You'll need to require erb in your app
-  require 'erb'
-
-  get '/' do
-    erb :index
-  end
-
-Renders <tt>./views/index.erb</tt>.
+Dependency::        {erubis}[http://www.kuwata-lab.com/erubis/] or
+                    erb (included in Ruby)
+File Extensions::   <tt>.erb</tt>, <tt>.rhtml</tt> or <tt>.erubis</tt> (Erubis
+                    only)
+Example::           <tt>erb :index</tt>
 
 === Builder Templates
 
-The <tt>builder</tt> gem/library is required to render builder templates:
+Dependency::        {builder}[http://builder.rubyforge.org/]
+File Extensions::   <tt>.builder</tt>
+Example::           <tt>builder { |xml| xml.em "hi" }</tt>
 
-  # You'll need to require builder in your app
-  require 'builder'
-
-  get '/' do
-    builder :index
-  end
-
-Renders <tt>./views/index.builder</tt>.
+It also takes a block for inline templates (see example).
 
 === Nokogiri Templates
 
-The <tt>nokogiri</tt> gem/library is required to render nokogiri templates:
+Dependency::        {nokogiri}[http://nokogiri.org/]
+File Extensions::   <tt>.nokogiri</tt>
+Example::           <tt>builder { |xml| xml.em "hi" }</tt>
 
-  # You'll need to require nokogiri in your app
-  require 'nokogiri'
-
-  get '/' do
-    nokogiri :index
-  end
-
-Renders <tt>./views/index.nokogiri</tt>.
+It also takes a block for inline templates (see example).
 
 === Sass Templates
 
-The <tt>haml</tt> or <tt>sass</tt> gem/library is required to render Sass templates:
+Dependency::        {sass}[http://sass-lang.com/]
+File Extensions::   <tt>.sass</tt>
+Example::           <tt>sass :stylesheet, :style => :expanded</tt>
 
-  # You'll need to require haml or sass in your app
-  require 'sass'
+Up until version 3.0, Sass is included in the +haml+ gem.
 
-  get '/stylesheet.css' do
-    sass :stylesheet
-  end
+=== SCSS Templates
 
-Renders <tt>./views/stylesheet.sass</tt>.
+Dependency::        {sass}[http://sass-lang.com/]
+File Extensions::   <tt>.scss</tt>
+Example::           <tt>scss :stylesheet, :style => :expanded</tt>
 
-{Sass's options}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
-can be set globally through Sinatra's configurations,
-see {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
-and overridden on an individual basis.
-
-  set :sass, :style => :compact # default Sass style is :nested
-
-  get '/stylesheet.css' do
-    sass :stylesheet, :style => :expanded # overridden
-  end
-
-=== Scss Templates
-
-The <tt>haml</tt> or <tt>sass</tt> gem/library is required to render Scss templates:
-
-  # You'll need to require haml or sass in your app
-  require 'sass'
-
-  get '/stylesheet.css' do
-    scss :stylesheet
-  end
-
-Renders <tt>./views/stylesheet.scss</tt>.
-
-{Scss's options}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
-can be set globally through Sinatra's configurations,
-see {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
-and overridden on an individual basis.
-
-  set :scss, :style => :compact # default Scss style is :nested
-
-  get '/stylesheet.css' do
-    scss :stylesheet, :style => :expanded # overridden
-  end
+Up until version 3.0, SCSS is included in the +haml+ gem.
 
 === Less Templates
 
-The <tt>less</tt> gem/library is required to render Less templates:
-
-  # You'll need to require less in your app
-  require 'less'
-
-  get '/stylesheet.css' do
-    less :stylesheet
-  end
-
-Renders <tt>./views/stylesheet.less</tt>.
+Dependency::        {less}[http://www.lesscss.org/]
+File Extensions::   <tt>.less</tt>
+Example::           <tt>less :stylesheet</tt>
 
 === Liquid Templates
 
-The <tt>liquid</tt> gem/library is required to render Liquid templates:
-
-  # You'll need to require liquid in your app
-  require 'liquid'
-
-  get '/' do
-    liquid :index
-  end
-
-Renders <tt>./views/index.liquid</tt>.
+Dependency::        {liquid}[http://www.liquidmarkup.org/]
+File Extensions::   <tt>.liquid</tt>
+Example::           <tt>liquid :index, :locals => { :key => 'value' }</tt>
 
 Since you cannot call Ruby methods (except for +yield+) from a Liquid
-template, you almost always want to pass locals to it:
-
-  liquid :index, :locals => { :key => 'value' }
+template, you almost always want to pass locals to it.
 
 === Markdown Templates
 
-The <tt>rdiscount</tt> gem/library is required to render Markdown templates:
-
-  # You'll need to require rdiscount in your app
-  require "rdiscount"
-  
-  get '/' do
-    markdown :index
-  end
-
-Renders <tt>./views/index.markdown</tt> (+md+ and +mkd+ are also valid file
-extensions).
+Dependency::        {rdiscount}[https://github.com/rtomayko/rdiscount],
+                    {redcarpet}[https://github.com/tanoku/redcarpet],
+                    {bluecloth}[http://deveiate.org/projects/BlueCloth],
+                    {kramdown}[http://kramdown.rubyforge.org/] *or*
+                    {maruku}[http://maruku.rubyforge.org/]
+File Extensions::   <tt>.markdown</tt>, <tt>.mkd</tt> and <tt>.md</tt>
+Example::           <tt>markdown :index, :layout_engine => :erb</tt>
 
 It is not possible to call methods from markdown, nor to pass locals to it.
 You therefore will usually use it in combination with another rendering
@@ -388,52 +384,13 @@ Note that you may also call the +markdown+ method from within other templates:
 
 Since you cannot call Ruby from Markdown, you cannot use layouts written in
 Markdown. However, it is possible to use another rendering engine for the
-template than for the layout by passing the <tt>:layout_engine</tt> option:
-
-  get '/' do
-    markdown :index, :layout_engine => :erb
-  end
-
-This will render <tt>./views/index.md</tt> with <tt>./views/layout.erb</tt> as
-layout.
-
-Remember that you can set such rendering options globally:
-
-  set :markdown, :layout_engine => :haml, :layout => :post
-
-  get '/' do
-    markdown :index
-  end
-
-This will render <tt>./views/index.md</tt> (and any other Markdown template)
-with <tt>./views/post.haml</tt> as layout.
-
-It is also possible to parse Markdown with BlueCloth rather than RDiscount:
-
-  require 'bluecloth'
-  
-  Tilt.register 'markdown', BlueClothTemplate
-  Tilt.register 'mkd',      BlueClothTemplate
-  Tilt.register 'md',       BlueClothTemplate
-  
-  get '/' do
-    markdown :index
-  end
-
-Renders <tt>./views/index.md</tt> with BlueCloth.
+template than for the layout by passing the <tt>:layout_engine</tt> option.
 
 === Textile Templates
 
-The <tt>RedCloth</tt> gem/library is required to render Textile templates:
-
-  # You'll need to require redcloth in your app
-  require "redcloth"
-
-  get '/' do
-    textile :index
-  end
-
-Renders <tt>./views/index.textile</tt>.
+Dependency::        {RedCloth}[http://redcloth.org/]
+File Extensions::   <tt>.textile</tt>
+Example::           <tt>textile :index, :layout_engine => :erb</tt>
 
 It is not possible to call methods from textile, nor to pass locals to it. You
 therefore will usually use it in combination with another rendering engine:
@@ -447,38 +404,13 @@ Note that you may also call the +textile+ method from within other templates:
 
 Since you cannot call Ruby from Textile, you cannot use layouts written in
 Textile. However, it is possible to use another rendering engine for the
-template than for the layout by passing the <tt>:layout_engine</tt> option:
-
-  get '/' do
-    textile :index, :layout_engine => :erb
-  end
-
-This will render <tt>./views/index.textile</tt> with
-<tt>./views/layout.erb</tt> as layout.
-
-Remember that you can set such rendering options globally:
-
-  set :textile, :layout_engine => :haml, :layout => :post
-
-  get '/' do
-    textile :index
-  end
-
-This will render <tt>./views/index.textile</tt> (and any other Textile
-template) with <tt>./views/post.haml</tt> as layout.
+template than for the layout by passing the <tt>:layout_engine</tt> option.
 
 === RDoc Templates
 
-The <tt>rdoc</tt> gem/library is required to render RDoc templates:
-
-  # You'll need to require rdoc/markup/to_html in your app
-  require "rdoc/markup/to_html"
-
-  get '/' do
-    rdoc :index
-  end
-
-Renders <tt>./views/index.rdoc</tt>.
+Dependency::        {rdoc}[http://rdoc.rubyforge.org/]
+File Extensions::   <tt>.rdoc</tt>
+Example::           <tt>textile :README, :layout_engine => :erb</tt>
 
 It is not possible to call methods from rdoc, nor to pass locals to it. You
 therefore will usually use it in combination with another rendering engine:
@@ -492,110 +424,57 @@ Note that you may also call the +rdoc+ method from within other templates:
 
 Since you cannot call Ruby from RDoc, you cannot use layouts written in
 RDoc. However, it is possible to use another rendering engine for the
-template than for the layout by passing the <tt>:layout_engine</tt> option:
-
-  get '/' do
-    rdoc :index, :layout_engine => :erb
-  end
-
-This will render <tt>./views/index.rdoc</tt> with <tt>./views/layout.erb</tt> as
-layout.
-
-Remember that you can set such rendering options globally:
-
-  set :rdoc, :layout_engine => :haml, :layout => :post
-
-  get '/' do
-    rdoc :index
-  end
-
-This will render <tt>./views/index.rdoc</tt> (and any other RDoc template)
-with <tt>./views/post.haml</tt> as layout.
+template than for the layout by passing the <tt>:layout_engine</tt> option.
 
 === Radius Templates
 
-The <tt>radius</tt> gem/library is required to render Radius templates:
+Dependency::        {radius}[http://radius.rubyforge.org/]
+File Extensions::   <tt>.radius</tt>
+Example::           <tt>radius :index, :locals => { :key => 'value' }</tt>
 
-  # You'll need to require radius in your app
-  require 'radius'
-
-  get '/' do
-    radius :index
-  end
-
-Renders <tt>./views/index.radius</tt>.
-
-Since you cannot call Ruby methods (except for +yield+) from a Radius
-template, you almost always want to pass locals to it:
-
-  radius :index, :locals => { :key => 'value' }
+Since you cannot call Ruby methods directly from a Radius template, you almost
+always want to pass locals to it.
 
 === Markaby Templates
 
-The <tt>markaby</tt> gem/library is required to render Markaby templates:
+Dependency::        {markaby}[http://markaby.github.com/]
+File Extensions::   <tt>.mab</tt>
+Example::           <tt>markaby { h1 "Welcome!" }</tt>
 
-  # You'll need to require markaby in your app
-  require 'markaby'
-
-  get '/' do
-    markaby :index
-  end
-
-Renders <tt>./views/index.mab</tt>.
-
-You may also use inline Markaby:
-
-  get '/' do
-    markaby { h1 "Welcome!" }
-  end
+It also takes a block for inline templates (see example).
 
 === Slim Templates
 
-The <tt>slim</tt> gem/library is required to render Slim templates:
-
-  # You'll need to require slim in your app
-  require 'slim'
-
-  get '/' do
-    slim :index
-  end
-
-Renders <tt>./views/index.slim</tt>.
+Dependency::        {slim}[http://slim-lang.com/]
+File Extensions::   <tt>.slim</tt>
+Example::           <tt>slim :index</tt>
 
 === Creole Templates
 
-The <tt>creole</tt> gem/library is required to render Creole templates:
+Dependency::        {creole}[https://github.com/minad/creole]
+File Extensions::   <tt>.creole</tt>
+Example::           <tt>creole :wiki, :layout_engine => :erb</tt>
 
-  # You'll need to require creole in your app
-  require 'creole'
+It is not possible to call methods from creole, nor to pass locals to it. You
+therefore will usually use it in combination with another rendering engine:
 
-  get '/' do
-    creole :index
-  end
+  erb :overview, :locals => { :text => creole(:introduction) }
 
-Renders <tt>./views/index.creole</tt>.
+Note that you may also call the +creole+ method from within other templates:
+
+  %h1 Hello From Haml!
+  %p= creole(:greetings)
+
+Since you cannot call Ruby from Creole, you cannot use layouts written in
+Creole. However, it is possible to use another rendering engine for the
+template than for the layout by passing the <tt>:layout_engine</tt> option.
 
 === CoffeeScript Templates
 
-The <tt>coffee-script</tt> gem/library and at least <b>one</b> of the
-following options to execute JavaScript:
-
-* +node+ (from Node.js) in your path
-* you must be running on OSX
-* +therubyracer+ gem/library
-
-See http://github.com/josh/ruby-coffee-script for an updated list of options.
-
-Now you can render CoffeeScript templates:
-
-  # You'll need to require coffee-script in your app
-  require 'coffee-script'
-
-  get '/application.js' do
-    coffee :application
-  end
-
-Renders <tt>./views/application.coffee</tt>.
+Dependency::        {coffee-script}[https://github.com/josh/ruby-coffee-script]
+                    and a {way to execute javascript}[https://github.com/sstephenson/execjs/blob/master/README.md#readme]
+File Extensions::   <tt>.coffee</tt>
+Example::           <tt>coffee :index</tt>
 
 === Embedded Templates
 
