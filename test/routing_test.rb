@@ -1042,4 +1042,19 @@ class RoutingTest < Test::Unit::TestCase
     get '/foo'
     assert not_found?
   end
+
+
+  it 'is plays well with other routing middleware' do
+    middleware = Sinatra.new
+    inner_app  = Sinatra.new { get('/foo') { 'hello' } }
+    builder    = Rack::Builder.new do
+      use middleware
+      map('/test') { run inner_app }
+    end
+
+    @app = builder.to_app
+    get '/test/foo'
+    assert ok?
+    assert_body 'hello'
+  end
 end

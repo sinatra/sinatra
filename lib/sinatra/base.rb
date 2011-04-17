@@ -12,10 +12,6 @@ module Sinatra
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
   class Request < Rack::Request
-    def self.new(env)
-      env['sinatra.request'] ||= super
-    end
-
     # Returns an array of acceptable media types for the response
     def accept
       @env['sinatra.accept'] ||= begin
