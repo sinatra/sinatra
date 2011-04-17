@@ -1043,8 +1043,7 @@ class RoutingTest < Test::Unit::TestCase
     assert not_found?
   end
 
-
-  it 'is plays well with other routing middleware' do
+  it 'plays well with other routing middleware' do
     middleware = Sinatra.new
     inner_app  = Sinatra.new { get('/foo') { 'hello' } }
     builder    = Rack::Builder.new do
