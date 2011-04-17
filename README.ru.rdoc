@@ -858,7 +858,7 @@ Thin - это более производительный и функциона�
 вызова другого обработчика маршрута. В таком случае просто используйте +call+:
 
   get '/foo' do
-    status, headers, body = call request.env.merge("PATH_INFO" => '/bar')
+    status, headers, body = call env.merge("PATH_INFO" => '/bar')
     [status, body.upcase]
   end
 
@@ -1349,7 +1349,7 @@ Thin - это более производительный и функциона�
 Частные ошибки:
 
   error MyCustomError do
-    'So what happened was...' + request.env['sinatra.error'].message
+    'So what happened was...' + env['sinatra.error'].message
   end
 
 Тогда, если это произошло:

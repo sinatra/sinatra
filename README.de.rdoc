@@ -908,7 +908,7 @@ Manchmal entspricht +pass+ nicht den Anforderungen, wenn das Ergebnis einer
 anderen Route gefordert wird. Um das zu erreichen, lässt sich +call+ nutzen:
 
   get '/foo' do
-    status, headers, body = call request.env.merge("PATH_INFO" => '/bar')
+    status, headers, body = call env.merge("PATH_INFO" => '/bar')
     [status, body.upcase]
   end
 
@@ -1388,7 +1388,7 @@ Routen-Block oder in einem Filter geworfen wurde. Die Exception kann über die
 Benutzerdefinierte Fehler:
 
   error MeinFehler do
-    'Au weia, ' + request.env['sinatra.error'].message
+    'Au weia, ' + env['sinatra.error'].message
   end
 
 Dann, wenn das passiert:

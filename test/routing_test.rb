@@ -686,10 +686,10 @@ class RoutingTest < Test::Unit::TestCase
   it "filters by accept header" do
     mock_app {
       get '/', :provides => :xml do
-        request.env['HTTP_ACCEPT']
+        env['HTTP_ACCEPT']
       end
       get '/foo', :provides => :html do
-        request.env['HTTP_ACCEPT']
+        env['HTTP_ACCEPT']
       end
     }
 
@@ -714,7 +714,7 @@ class RoutingTest < Test::Unit::TestCase
 
     mock_app {
       get '/', :provides => types do
-        request.env['HTTP_ACCEPT']
+        env['HTTP_ACCEPT']
       end
     }
 
@@ -729,7 +729,7 @@ class RoutingTest < Test::Unit::TestCase
   it 'degrades gracefully when optional accept header is not provided' do
     mock_app {
       get '/', :provides => :xml do
-        request.env['HTTP_ACCEPT']
+        env['HTTP_ACCEPT']
       end
       get '/' do
         'default'

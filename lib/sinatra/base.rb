@@ -362,7 +362,7 @@ module Sinatra
       time = time_for time
       response['Last-Modified'] = time.httpdate
       # compare based on seconds since epoch
-      halt 304 if Time.httpdate(request.env['HTTP_IF_MODIFIED_SINCE']).to_i >= time.to_i
+      halt 304 if Time.httpdate(env['HTTP_IF_MODIFIED_SINCE']).to_i >= time.to_i
     rescue ArgumentError
     end
 
@@ -692,7 +692,7 @@ module Sinatra
     # Forward the request to the downstream app -- middleware only.
     def forward
       fail "downstream app not set" unless @app.respond_to? :call
-      status, headers, body = @app.call(@request.env)
+      status, headers, body = @app.call env
       @response.status = status
       @response.body = body
       @response.headers.merge! headers

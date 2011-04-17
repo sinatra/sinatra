@@ -843,7 +843,7 @@ Session被用来在请求之间保持状态。如果被激活，每一个用户�
 。简单的使用 +call+ 可以做到这一点:
 
   get '/foo' do
-    status, headers, body = call request.env.merge("PATH_INFO" => '/bar')
+    status, headers, body = call env.merge("PATH_INFO" => '/bar')
     [status, body.upcase]
   end
 
@@ -1314,7 +1314,7 @@ Sinatra会自动处理range请求。
 自定义错误：
 
   error MyCustomError do
-    'So what happened was...' + request.env['sinatra.error'].message
+    'So what happened was...' + env['sinatra.error'].message
   end
 
 那么，当这个发生的时候：
