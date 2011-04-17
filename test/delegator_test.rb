@@ -163,6 +163,24 @@ class DelegatorTest < Test::Unit::TestCase
     assert_raises(ArgumentError) { delegate { options }}
   end
 
+  it "should not swallow any NameErrors" do
+    mixin = Module.new do
+      def method_missing(method, *args, &block)
+        return super unless method.to_sym == :options
+        foobar
+      end
+    end
+
+    app = mirror
+    def app.options(arg) "yay" end
+    assert_raises NameError do
+      delegate do
+        extend mixin
+        options
+      end
+    end
+  end
+
   delegates 'get'
   delegates 'patch'
   delegates 'put'
