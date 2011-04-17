@@ -18,6 +18,8 @@
  * Added `request.accept?` and `request.preferred_type` to ease dealing with
    `Accept` headers. (Konstantin Haase)
 
+= 1.2.4 / Not Yet Released
+
  * Sinatra::Application (classic style) does not use a session secret in
    development mode, so sessions are not invalidated after every request when
    using Shotgun. (Konstantin Haase)
