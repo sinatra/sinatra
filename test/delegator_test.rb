@@ -115,70 +115,23 @@ class DelegatorTest < Test::Unit::TestCase
 
   it "should work with method_missing proxies for options" do
     mixin = Module.new do
+      def respond_to?(method, *)
+        method.to_sym == :options or super
+      end
+
       def method_missing(method, *args, &block)
         return super unless method.to_sym == :options
         {:some => :option}
       end
     end
 
-    app = mirror
-    def app.options(arg, *rest) "yay" end
-
-    a = b = c = nil
-    delegate do
+    value = nil
+    mirror do
       extend mixin
-      a, b, c = options, options(1), options(1, 2)
+      value = options
     end
 
-    assert_equal({:some => :option}, a)
-    assert_equal("yay", b)
-    assert_equal("yay", c)
-  end
-
-  it "should work with method_missing proxies for methods arity > 0" do
-    mixin = Module.new do
-      def method_missing(method, *args, &block)
-        return super unless method.to_sym == :options
-        {:some => :option}
-      end
-    end
-
-    app = mirror
-    def app.options(arg) "yay" end
-
-    a = b = c = nil
-    delegate do
-      extend mixin
-      a, b, c = options, options(1), options(1, 2)
-    end
-
-    assert_equal({:some => :option}, a)
-    assert_equal("yay", b)
-    assert_equal({:some => :option}, c)
-  end
-
-  it "should not raise a NameError for methods not handled by a proxy" do
-    app = mirror
-    def app.options(arg) "yay" end
-    assert_raises(ArgumentError) { delegate { options }}
-  end
-
-  it "should not swallow any NameErrors" do
-    mixin = Module.new do
-      def method_missing(method, *args, &block)
-        return super unless method.to_sym == :options
-        foobar
-      end
-    end
-
-    app = mirror
-    def app.options(arg) "yay" end
-    assert_raises NameError do
-      delegate do
-        extend mixin
-        options
-      end
-    end
+    assert_equal({:some => :option}, value)
   end
 
   delegates 'get'
