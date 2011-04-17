@@ -1,9 +1,17 @@
 = 1.2.4 / Not Yet Released
 
+ * Sinatra::Application (classic style) does not use a session secret in
+   development mode, so sessions are not invalidated after every request when
+   using Shotgun. (Konstantin Haase)
+
  * The request object was shared between multiple Sinatra instances in the
    same middleware chain. This caused issues if any non-sinatra routing
    happend in-between two of those instances. The caching was reverted. See
    GH#239 for more infos. (Konstantin Haase)
+
+ * Fixes issues where the top level DSL was interfering with method_missing
+   proxies. This issue surfaced when Rails 3 was used with older Sass versions
+   and Sinatra >= 1.2.0. (Konstantin Haase)
 
 = 1.2.3 / 2011-04-13
 
