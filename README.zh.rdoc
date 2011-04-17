@@ -844,7 +844,7 @@ Session被用来在请求之间保持状态。如果被激活，每一个用户�
 
   get '/foo' do
     status, headers, body = call env.merge("PATH_INFO" => '/bar')
-    [status, body.upcase]
+    [status, headers, body.map(&:upcase)]
   end
 
   get '/bar' do
