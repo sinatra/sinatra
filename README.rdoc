@@ -1328,7 +1328,8 @@ You can access those options via <tt>settings</tt>:
 [static]              Whether Sinatra should handle serving static files.
                       Disable when using a Server able to do this on its own.
                       Disabling will boost performance.
-                      Enabled per default.
+                      Enabled per default in classic style, disabled for
+                      modular apps.
 
 [views]               views folder.
 
@@ -1523,6 +1524,7 @@ different default settings:
   logging             true                    false
   method_override     true                    false
   inline_templates    true                    false
+  static              true                    false
 
 
 === Serving a Modular Application
