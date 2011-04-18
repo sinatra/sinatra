@@ -22,7 +22,6 @@ Die Seite kann nun unter http://localhost:4567 betrachtet werden.
 Es wird empfohlen, den Thin-Server via <tt>gem install thin</tt> zu 
 installieren, den Sinatra dann, soweit vorhanden, automatisch verwendet.
 
-
 == Routen
 
 In Sinatra wird eine Route durch eine HTTP-Methode und ein URL-Muster
@@ -91,7 +90,6 @@ Und auch hier können Block-Parameter genutzt werden:
     "Hallo, #{c}!"
   end
 
-
 === Bedingungen
 
 An Routen können eine Vielzahl von Bedingungen angehängt werden, die erfüllt
@@ -132,7 +130,6 @@ Es können auch andere Bedingungen relativ einfach hinzugefügt werden:
     "Tut mir leid, verloren."
   end
 
-
 === Rückgabewerte
 
 Durch den Rückgabewert eines Routen-Blocks wird mindestens der Response-Body
@@ -161,7 +158,6 @@ Damit lässt sich relativ einfach Streaming implementieren:
     end
 
     get('/') { Stream.new }
-
 
 === Eigene Routen-Muster 
 
@@ -205,7 +201,6 @@ Oder unter Verwendung eines negativen look ahead:
     # ...
   end
 
-
 == Statische Dateien
 
 Statische Dateien werden aus dem <tt>./public</tt>-Ordner ausgeliefert. Es ist
@@ -217,7 +212,6 @@ setzt:
 Zu beachten ist, dass der Ordnername public nicht Teil der URL ist. Die Datei
 <tt>./public/css/style.css</tt> ist unter
 <tt>http://example.com/css/style.css</tt> zu finden.
-
 
 == Views/Templates
 
@@ -231,7 +225,6 @@ Eine wichtige Sache, die man sich hierbei merken sollte, ist, dass man immer
 mit Symbols auf Templates verweisen sollte, auch wenn sich ein Template in 
 einem Unterordner befindet (in diesen Fall <tt>:'subdir/template'</tt>).
 Rendering-Methoden rendern jeden String direkt.
-
 
 === Haml-Templates
 
@@ -257,7 +250,6 @@ und individuell überschrieben werden.
     haml :index, :format => :html4 # überschrieben
   end
 
-
 === Erb-Templates
 
   # erb muss eingebunden werden
@@ -268,7 +260,6 @@ und individuell überschrieben werden.
   end
 
 Dieser Code rendert <tt>./views/index.erb</tt>.
-
 
 === Erubis
 
@@ -294,7 +285,6 @@ Es ist auch möglich, Erb durch Erubis zu ersetzen:
 
 Dieser Code rendert ebenfalls <tt>./views/index.erb</tt>.
 
-
 === Builder-Templates
 
 Das +builder+-Gem wird benötigt, um Builder-Templates rendern zu können:
@@ -308,7 +298,6 @@ Das +builder+-Gem wird benötigt, um Builder-Templates rendern zu können:
 
 Dieser Code rendert <tt>./views/index.builder</tt>.
 
-
 === Nokogiri-Templates
 
 Das +nokogiri+-Gem wird benötigt, um Nokogiri-Templates rendern zu können:
@@ -321,7 +310,6 @@ Das +nokogiri+-Gem wird benötigt, um Nokogiri-Templates rendern zu können:
   end
 
 Dieser Code rendert <tt>./views/index.nokogiri</tt>.
-
 
 === Sass-Templates
 
@@ -347,7 +335,6 @@ und individuell überschrieben werden.
     sass :stylesheet, :style => :expanded # überschrieben
   end
 
-
 === SCSS-Templates
 
 Das +haml+- oder +sass+-Gem wird benötigt, um SCSS-Templates rendern zu können:
@@ -372,7 +359,6 @@ individuell überschrieben werden.
     scss :stylesheet, :style => :expanded # überschrieben
   end
 
-
 === Less-Templates
 
 Das +less+-Gem wird benötigt, um Less-Templates rendern zu können:
@@ -385,7 +371,6 @@ Das +less+-Gem wird benötigt, um Less-Templates rendern zu können:
   end
 
 Dieser Code rendert <tt>./views/stylesheet.less</tt>.
-
 
 === Liquid-Templates
 
@@ -404,7 +389,6 @@ Da aus Liquid-Templates heraus keine Methoden (abgesehen von +yield+)
 aufgerufen werden können, ist es möglich, +locals+ zu übergeben:
 
   liquid :index, :locals => { :key => 'value' }
-
 
 === Markdown-Templates
 
@@ -469,7 +453,6 @@ Ebenso ist es möglich, Markdown mit BlueCloth anstelle von RDiscount zu parsen:
 
 Das sollte <tt>./views/index.md</tt> mit BlueCloth rendern.
 
-
 === Textile-Templates
 
 Das +redcloth+-Gem wird benötigt, um Textile-Templates rendern zu können:
@@ -518,7 +501,6 @@ Denk daran, dass solche Einstellungen auch global gesetzt werden können:
 Das wird <tt>./views/index.textile</tt> (und jedes andere Markdown-Template)
 mit <tt>./views/post.haml</tt> als Layout rendern.
 
-
 === RDoc-Templates
 
 Das +rdoc+-Gem wird benötigt, um RDoc-Templates rendern zu können:
@@ -566,7 +548,6 @@ Denk daran, dass solche Einstellungen auch global gesetzt werden können:
 Das wird <tt>./views/index.rdoc</tt> (und jedes andere Markdown-Template) mit
 <tt>./views/post.haml</tt> als Layout rendern.
 
-
 === Radius-Templates
 
 Das +radius+-Gem wird benötigt, um Radius-Templates rendern zu können:
@@ -585,7 +566,6 @@ aufgerufen werden können, es es möglich, +locals+ zu übergeben:
 
   radius :index, :locals => { :key => 'value' }
 
-
 === Markaby-Templates
 
 Das +markaby+-Gem wird benötigt, um Markaby-Templates rendern zu können:
@@ -599,7 +579,6 @@ Das +markaby+-Gem wird benötigt, um Markaby-Templates rendern zu können:
 
 Dieser Code rendert <tt>./views/index.mab</tt>.
 
-
 === Slim-Templates
 
 Das +slim+-Gem wird benötigt, um Slim-Templates rendern zu können:
@@ -612,7 +591,6 @@ Das +slim+-Gem wird benötigt, um Slim-Templates rendern zu können:
   end
 
 Dieser Code rendert <tt>./views/index.slim</tt>.
-
 
 === CoffeeScript-Templates
 
@@ -637,7 +615,6 @@ Nun können CoffeeScript-Templates in der Applikation gerendert werden:
 
 Dieser Code rendert <tt>./views/application.coffee</tt>.
 
-
 === Inline-Templates
 
   get '/' do
@@ -645,7 +622,6 @@ Dieser Code rendert <tt>./views/application.coffee</tt>.
   end
 
 Rendert den Inline-Template-String.
-
 
 === Auf Variablen in Templates zugreifen
 
@@ -666,7 +642,6 @@ Oder durch einen expliziten Hash von lokalen Variablen:
 
 Dies wird typischerweise bei Verwendung von Subtemplates (partials) in anderen
 Templates eingesetzt.
-
 
 === Inline-Templates
 
@@ -691,7 +666,6 @@ Anmerkung: Inline-Templates, die in der Datei definiert sind, die <tt>require
 'sinatra'</tt> aufruft, werden automatisch geladen. Um andere Inline-Templates
 in anderen Dateien aufzurufen, muss explizit <tt>enable :inline_templates</tt> 
 verwendet werden.
-
 
 === Benannte Templates
 
@@ -718,7 +692,6 @@ werden:
     haml :index, :layout => !request.xhr?
   end
 
-
 === Dateiendungen zuordnen
 
 Um eine Dateiendung einer Template-Engine zuzuordnen, kann 
@@ -727,7 +700,6 @@ Textile-Templates genutzt werden soll, lässt sich dies wie folgt
 bewerkstelligen:
 
   Tilt.register :tt, Tilt[:textile]
-
 
 === Eine eigene Template-Engine hinzufügen
 
@@ -747,7 +719,6 @@ Rendering-Methode erstellt werden:
 Dieser Code rendert <tt>./views/application.mtt</tt>. Siehe
 github.com/rtomayko/tilt[https://github.com/rtomayko/tilt], um mehr über Tilt 
 zu lernen.
-
 
 == Filter
 
@@ -796,7 +767,6 @@ werden:
     # ...
   end
 
-
 == Helfer
 
 Durch die Top-Level <tt>helpers</tt>-Methode werden sogenannte Helfer-Methoden
@@ -811,7 +781,6 @@ definiert, die in Routen und Templates verwendet werden können:
   get '/:name' do
     bar(params[:name])
   end
-
 
 === Sessions verwenden
 Sessions werden verwendet, um Zustände zwischen den Requests zu speichern.
@@ -856,7 +825,6 @@ Einstellungen ablegen.
 
   set :sessions, :domain => 'foo.com'
 
-
 == Anhalten
 
 Zum sofortigen Stoppen eines Request in einem Filter oder einer Route:
@@ -883,7 +851,6 @@ Natürlich ist es auch möglich, ein Template mit +halt+ zu verwenden:
 
   halt erb(:error)
 
-
 == Weiterspringen
 
 Eine Route kann mittels <tt>pass</tt> zu der nächsten passenden Route springen:
@@ -900,7 +867,6 @@ Eine Route kann mittels <tt>pass</tt> zu der nächsten passenden Route springen:
 Der Block wird sofort verlassen und es wird nach der nächsten treffenden Route
 gesucht. Ein 404-Fehler wird zurückgegeben, wenn kein treffendes Routen-Muster
 gefunden wird.
-
 
 === Eine andere Route ansteuern
 
@@ -925,7 +891,6 @@ Kopie der Instanz erzeugt werden soll, kann <tt>call!</tt> anstelle von
 +call+ verwendet werden.
 
 Die Rack-Spezifikationen enthalten weitere Informationen zu +call+.
-
 
 === Body, Status-Code und Header setzen
 
@@ -974,7 +939,6 @@ Der Logger übernimmt dabei automatisch alle im Rack-Handler eingestellten Log-
 Vorgaben. Ist Loggen ausgeschaltet, gibt die Methode ein Leerobjekt zurück.
 In den Routen und Filtern muss man sich also nicht weiter darum kümmern.
 
-
 Beachte, dass das Loggen standardmäßig nur für <tt>Sinatra::Application</tt>
 voreingestellt ist. Wird über <tt>Sinatra::Base</tt> vererbt, muss es erst
 aktiviert werden:
@@ -984,7 +948,6 @@ aktiviert werden:
       enable :logging
     end
   end
-
 
 == Mime-Types
 
@@ -1001,7 +964,6 @@ Es kann aber auch der +content_type+-Helfer verwendet werden:
     "foo foo foo"
   end
 
-
 === URLs generieren
 
 Zum Generieren von URLs sollte die +url+-Helfer-Methode genutzen werden, so 
@@ -1013,7 +975,6 @@ Soweit vorhanden, wird Rücksicht auf Proxys und Rack-Router genommen.
 
 Diese Methode ist ebenso über das Alias +to+ zu erreichen (siehe Beispiel
 unten).
-
 
 === Browser-Umleitung
 
@@ -1059,7 +1020,6 @@ oder eine Session verwendet werden:
     session[:secret]
   end
 
-
 === Dateien versenden
 
 Zum Versenden von Dateien kann die <tt>send_file</tt>-Helfer-Methode verwendet
@@ -1094,7 +1054,6 @@ Soweit vom Rack-Handler unterstützt, werden neben der Übertragung über den
 Ruby-Prozess auch andere Möglichkeiten genutzt. Bei Verwendung der
 <tt>send_file</tt>-Helfer-Methode kümmert sich Sinatra selbstständig um die
 Range-Requests.
-
 
 == Das Request-Objekt
 
@@ -1149,7 +1108,6 @@ Der <tt>request.body</tt> ist ein IO- oder StringIO-Objekt:
     "Hallo #{daten['name']}!"
   end
 
-
 === Anhänge
 
 Damit der Browser erkennt, dass ein Response gespeichert und nicht im Browser
@@ -1166,7 +1124,6 @@ Ebenso kann eine Dateiname als Parameter hinzugefügt werden:
     attachment "info.txt"
     "Speichern!"
   end
-
 
 === Nachschlagen von Template-Dateien
 
@@ -1212,7 +1169,6 @@ möglichen Pfaden gesucht. Das ergibt kein Performance-Problem, da +render+
 Template-Pfade samt Inhalt gecached, solange nicht im Entwicklungsmodus
 gearbeitet wird. Das sollte im Hinterkopf behalten werden, wenn irgendwelche
 verrückten Methoden zusammenbastelt werden.
-
 
 == Konfiguration
 
@@ -1260,7 +1216,6 @@ Diese Einstellungen sind über +settings+ erreichbar:
     settings.foo  # => 'bar'
     ...
   end
-
 
 === Mögliche Einstellungen
 
@@ -1357,13 +1312,11 @@ Diese Einstellungen sind über +settings+ erreichbar:
 
 [views]               Verzeichnis der Views.
 
-
 == Fehlerbehandlung
 
 Error-Handler laufen in demselben Kontext wie Routen und Filter, was bedeutet,
 dass alle Goodies wie <tt>haml</tt>, <tt>erb</tt>, <tt>halt</tt>, etc.
 verwendet werden können.
-
 
 === Nicht gefunden
 
@@ -1373,7 +1326,6 @@ Statuscode 404 ist, wird der <tt>not_found</tt>-Handler ausgeführt:
   not_found do
     'Seite kann nirgendwo gefunden werden.'
   end
-
 
 === Fehler
 
@@ -1420,7 +1372,6 @@ Oder ein Status-Code-Bereich:
 Sinatra setzt verschiedene <tt>not_found</tt>- und <tt>error</tt>-Handler in
 der Development-Umgebung.
 
-
 == Rack-Middleware
 
 Sinatra baut auf Rack[http://rack.rubyforge.org/], einem minimalistischen
@@ -1456,7 +1407,6 @@ URL-Routing, Authentifizierung und Session-Verarbeitung. Sinatra verwendet
 viele von diesen Komponenten automatisch, abhängig von der Konfiguration. So 
 muss +use+ häufig nicht explizit verwendet werden.
 
-
 == Testen
 
 Sinatra-Tests können mit jedem auf Rack aufbauendem Test-Framework geschrieben
@@ -1491,7 +1441,6 @@ werden. {Rack::Test}[http://gitrdoc.com/brynary/rack-test] wird empfohlen:
 
 Anmerkung: Das eingebaute Sinatra::Test-Modul und die 
 Sinatra::TestHarness-Klasse werden seit Version 0.9.2 nicht mehr unterstützt.
-
 
 == Sinatra::Base - Middleware, Bibliotheken und modulare Anwendungen
 
@@ -1538,7 +1487,6 @@ per Standard deaktiviert. Das betrifft auch den eingebauten Server. Siehe
 {Optionen und Konfiguration}[http://sinatra.github.com/configuration.html] für
 Details über mögliche Optionen.
 
-
 === Modularer vs. klassischer Stil
 
 Entgegen häufiger Meinungen gibt es nichts gegen den klassischen Stil
@@ -1567,7 +1515,6 @@ Unterschiede beachtet werden:
   logging             true                    false
   method_override     true                    false
   inline_templates    true                    false
-
 
 === Eine modulare Applikation bereitstellen
 
@@ -1599,7 +1546,6 @@ Starte:
 
   rackup -p 4567
 
-
 === Eine klassische Anwendung mit einer config.ru verwenden
 
 Schreibe eine Anwendungsdatei:
@@ -1616,7 +1562,6 @@ sowie eine dazugehörige <tt>config.ru</tt>-Datei:
   require 'app'
   run Sinatra::Application
 
-
 === Wann sollte eine config.ru-Datei verwendet werden?
 
 Anzeichen dafür, dass eine <tt>config.ru</tt>-Datei gebraucht wird:
@@ -1630,7 +1575,6 @@ Anzeichen dafür, dass eine <tt>config.ru</tt>-Datei gebraucht wird:
 eine Anwendung im modularen Stil betrieben werden soll. Ebenso wird keine 
 Anwendung mit modularem Stil benötigt, um eine <tt>config.ru</tt>-Datei zu 
 verwenden.</b>
-
 
 === Sinatra als Middleware nutzen
 
@@ -1679,7 +1623,6 @@ ohne dass sie einer Konstanten zugeordnet werden. Dies lässt sich mit
   my_app = Sinatra.new { get('/') { "hallo" } }
   my_app.run!
 
-
 Die Applikation kann mit Hilfe eines optionalen Parameters erstellt werden:
 
   require 'sinatra/base'
@@ -1710,12 +1653,10 @@ Ebenso lassen sich damit hervorragend Sinatra-Middlewares erstellen:
 
   run RailsProject::Application
 
-
 == Geltungsbereich und Bindung
 
 Der Geltungsbereich (Scope) legt fest, welche Methoden und Variablen zur
 Verfügung stehen.
-
 
 === Anwendungs- oder Klassen-Scope
 
@@ -1752,7 +1693,6 @@ Auf das Scope-Objekt (die Klasse) kann wie folgt zugegriffen werden:
   { |c| ... }</tt>).
 * +settings+ aus den anderen Scopes heraus.
 
-
 === Anfrage- oder Instanz-Scope
 
 Für jede eingehende Anfrage wird eine neue Instanz der Anwendungs-Klasse
@@ -1783,7 +1723,6 @@ Im Anfrage-Scope befindet man sich:
 * In Helfer-Methoden
 * In Templates
 
-
 === Delegation-Scope
 
 Vom Delegation-Scope aus werden Methoden einfach an den Klassen-Scope
@@ -1805,7 +1744,6 @@ Schau am besten im Code nach: Hier ist
 definiert und wird in den
 {globalen Namespace eingebunden}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/main.rb#L25].
 
-
 == Kommandozeile
 
 Sinatra-Anwendungen können direkt von der Kommandozeile aus gestartet werden:
@@ -1820,7 +1758,6 @@ Die Optionen sind:
   -e # Umgebung setzen (Standard ist development)
   -s # Rack-Server/Handler setzen (Standard ist thin)
   -x # Mutex-Lock einschalten (Standard ist off)
-
 
 == Systemanforderungen
 
@@ -1871,14 +1808,13 @@ Zeit für nichts garantiert werden. Es kann aber erwartet werden, dass Ruby
 Sinatra sollte auf jedem Betriebssystem laufen, dass den gewählten Ruby-
 Interpreter unterstützt.
 
-
 == Der neueste Stand (The Bleeding Edge)
+
 Um auf dem neusten Stand zu bleiben, kann der Master-Branch verwendet werden.
 Er sollte recht stabil sein. Ebenso gibt es von Zeit zu Zeit prerelease Gems, 
 die so installiert werden:
   
   gem install sinatra --pre
-
 
 === Mit Bundler
 
@@ -1934,7 +1870,6 @@ Um Sinatra-Code von Zeit zu Zeit zu aktualisieren:
   cd myproject/sinatra
   git pull
 
-
 === Gem erstellen
 
 Aus der eigenen lokalen Kopie kann nun auch ein globales Gem gebaut werden:
@@ -1949,12 +1884,10 @@ folgendermaßen lauten:
 
   sudo rake install
 
-
 == Versions-Verfahren
 
 Sinatra folgt dem sogenannten {Semantic Versioning}[http://semver.org/], d.h. 
 SemVer und SemVerTag.
-
 
 == Mehr
 
@@ -1967,7 +1900,7 @@ SemVer und SemVerTag.
 * {Mailing-Liste}[http://groups.google.com/group/sinatrarb]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] auf http://freenode.net
 
-* API Dokumentation für die {aktuelle Version}[http://rubydoc.info/gems/sinatra]	
-  oder für {HEAD}[http://rubydoc.info/github/sinatra/sinatra] auf 
+* API Dokumentation für die {aktuelle Version}[http://rubydoc.info/gems/sinatra]
+  oder für {HEAD}[http://rubydoc.info/github/sinatra/sinatra] auf
   http://rubydoc.info
 
