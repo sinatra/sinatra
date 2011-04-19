@@ -1367,9 +1367,11 @@ Podés acceder a estas opciones utilizando el método <tt>settings</tt>:
 [static]              define si Sinatra debe encargarse de servir archivos
                       estáticos.
 
-                      Deshabilitala cuando usés un servidor capaz de hacerlo
-                      por sí solo, porque mejorará el rendimiento.  Se encuentra
-                      habilitada por defecto.
+                      Deshabilitala cuando usés un servidor capaz de
+                      hacerlo por sí solo, porque mejorará el
+                      rendimiento.  Se encuentra habilitada por
+                      defecto en el estilo clásico y desactivado en el
+                      el modular.
 
 [views]               directorio de las vistas.
 
@@ -1570,6 +1572,7 @@ entre sus configuraciones:
   logging             true                         false
   method_override     true                         false
   inline_templates    true                         false
+  static              true                         false
 
 === Sirviendo una Aplicación Modular
 
