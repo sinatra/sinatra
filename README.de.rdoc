@@ -1020,6 +1020,65 @@ oder eine Session verwendet werden:
     session[:secret]
   end
 
+
+=== Cache einsetzen
+
+Ein sinnvolles Einstellen von Header-Daten ist die Grundlage für ein 
+ordentliches HTTP-Caching.
+
+Der Cache-Control-Header lässt sich ganz einfach einstellen:
+
+  get '/' do
+    cache_control :public
+    "schon gecached!"
+  end
+
+Profitipp: Caching im before-Filter aktivieren
+
+  before do
+    cache_control :public, :must_revalidate, :max_age => 60
+  end
+
+Bei Verwendung der +expires+-Helfermethode zum Setzen des gleichnamigen
+Headers, wird <tt>Cache-Control</tt> automatisch eigestellt:
+
+  before do
+    expires 500, :public, :must_revalidate
+  end
+
+Um alles richtig zu machen, sollten auch +etag+ und +last_modified+ verwendet
+werden. Es wird empfohlen, dass diese Helfer aufgerufen werden *bevor* die
+eigentliche Arbeit anfängt, da sie jedes Response direkt löschen, wenn der 
+Client eine aktuelle Version im Cache vorhält:
+
+  get '/article/:id' do
+    @article = Article.find params[:id]
+    last_modified @article.updated_at
+    etag @article.sha1
+    erb :article
+  end
+
+ebenso ist es möglich einen 
+{schwachen ETag}[http://de.wikipedia.org/wiki/HTTP_ETag] zu verwenden:
+
+  etag @article.sha1, :weak
+
+Diese Helfer führen nicht das eigentliche Caching aus, sondern geben die dafür
+notwendigen Informationen an den Cache weiter. Für schnelle Cache-Lösungen 
+bietet sich z.B. {rack-cache}[http://rtomayko.github.com/rack-cache/] an:
+
+  require "rack/cache"
+  require "sinatra"
+  
+  use Rack::Cache
+  
+  get '/' do
+    cache_control :public, :max_age => 36000
+    sleep 5
+    "hello"
+  end
+
+
 === Dateien versenden
 
 Zum Versenden von Dateien kann die <tt>send_file</tt>-Helfer-Methode verwendet
