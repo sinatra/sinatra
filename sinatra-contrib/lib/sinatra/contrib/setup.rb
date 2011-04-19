@@ -25,7 +25,8 @@ module Sinatra
 
       def registered(base)
         @extensions.each do |meth, list|
-          base.send(meth, *list.map { |n| Sinatra.const_get n })
+          list = list.map { |name| Sinatra.const_get name }
+          base.send(meth, *list) unless base == ::Sinatra::Application
         end
       end
     end
