@@ -1023,7 +1023,7 @@ oder eine Session verwendet werden:
 
 === Cache einsetzen
 
-Ein sinnvolles Einstellen von Header-Daten ist die Grundlage für ein 
+Ein sinnvolles Einstellen von Header-Daten ist die Grundlage für ein
 ordentliches HTTP-Caching.
 
 Der Cache-Control-Header lässt sich ganz einfach einstellen:
@@ -1048,7 +1048,7 @@ Headers, wird <tt>Cache-Control</tt> automatisch eigestellt:
 
 Um alles richtig zu machen, sollten auch +etag+ und +last_modified+ verwendet
 werden. Es wird empfohlen, dass diese Helfer aufgerufen werden *bevor* die
-eigentliche Arbeit anfängt, da sie jedes Response direkt löschen, wenn der 
+eigentliche Arbeit anfängt, da sie sofort eine Antwort senden, wenn der
 Client eine aktuelle Version im Cache vorhält:
 
   get '/article/:id' do
@@ -1058,13 +1058,13 @@ Client eine aktuelle Version im Cache vorhält:
     erb :article
   end
 
-ebenso ist es möglich einen 
+ebenso ist es möglich einen
 {schwachen ETag}[http://de.wikipedia.org/wiki/HTTP_ETag] zu verwenden:
 
   etag @article.sha1, :weak
 
 Diese Helfer führen nicht das eigentliche Caching aus, sondern geben die dafür
-notwendigen Informationen an den Cache weiter. Für schnelle Cache-Lösungen 
+notwendigen Informationen an den Cache weiter. Für schnelle Cache-Lösungen
 bietet sich z.B. {rack-cache}[http://rtomayko.github.com/rack-cache/] an:
 
   require "rack/cache"
@@ -1077,7 +1077,6 @@ bietet sich z.B. {rack-cache}[http://rtomayko.github.com/rack-cache/] an:
     sleep 5
     "hello"
   end
-
 
 === Dateien versenden
 
