@@ -1,11 +1,10 @@
 # Run `rake sinatra-contrib.gemspec` to update the gemspec.
 Gem::Specification.new do |s|
-  s.name          = "sinatra-contrib"
-  s.version       = "1.2.0"
-  s.description   = "Collection of useful Sinatra extensions"
-  s.homepage      = "http://github.com/sinatra/sinatra-contrib"
-  s.require_paths = ["lib"]
-  s.summary       = s.description
+  s.name        = "sinatra-contrib"
+  s.version     = "1.2.0"
+  s.description = "Collection of useful Sinatra extensions"
+  s.homepage    = "http://github.com/sinatra/sinatra-contrib"
+  s.summary     = s.description
 
   # generated from git shortlog -sn
   s.authors = [
