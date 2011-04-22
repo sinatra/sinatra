@@ -1,14 +1,100 @@
+# Run `rake sinatra-contrib.gemspec` to update the gemspec.
 Gem::Specification.new do |s|
   s.name          = "sinatra-contrib"
   s.version       = "1.2.0"
   s.description   = "Collection of useful Sinatra extensions"
-  s.authors       = ["Konstantin Haase"]
-  s.email         = "konstantin.mailinglists@googlemail.com"
-  s.files         = Dir["**/*.{rb,md}"] << "LICENSE"
-  s.has_rdoc      = 'yard'
-  s.homepage      = "http://github.com/rkh/#{s.name}"
+  s.homepage      = "http://github.com/sinatra/sinatra-contrib"
   s.require_paths = ["lib"]
   s.summary       = s.description
+
+  # generated from git shortlog -sn
+  s.authors = [
+    "Konstantin Haase",
+    "Gabriel Andretta",
+    "Nicolas Sanguinetti",
+    "Matt Lyon"
+  ]
+
+  # generated from git shortlog -sne
+  s.email = [
+    "konstantin.mailinglists@googlemail.com",
+    "ohhgabriel@gmail.com",
+    "contacto@nicolassanguinetti.info",
+    "matt@flowerpowered.com"
+  ]
+
+  # generated from git ls-files
+  s.files = [
+    ".gitignore",
+    "Gemfile",
+    "Gemfile.lock",
+    "LICENSE",
+    "README.md",
+    "Rakefile",
+    "ideas.md",
+    "lib/sinatra/config_file.rb",
+    "lib/sinatra/content_for.rb",
+    "lib/sinatra/contrib.rb",
+    "lib/sinatra/contrib/all.rb",
+    "lib/sinatra/contrib/setup.rb",
+    "lib/sinatra/contrib/version.rb",
+    "lib/sinatra/decompile.rb",
+    "lib/sinatra/extension.rb",
+    "lib/sinatra/link_header.rb",
+    "lib/sinatra/namespace.rb",
+    "lib/sinatra/reloader.rb",
+    "lib/sinatra/respond_with.rb",
+    "lib/sinatra/test_helpers.rb",
+    "sinatra-contrib.gemspec",
+    "spec/config_file/key_value.yml",
+    "spec/config_file/missing_env.yml",
+    "spec/config_file/with_envs.yml",
+    "spec/config_file/with_nested_envs.yml",
+    "spec/config_file_spec.rb",
+    "spec/content_for/different_key.erb",
+    "spec/content_for/different_key.erubis",
+    "spec/content_for/different_key.haml",
+    "spec/content_for/different_key.slim",
+    "spec/content_for/layout.erb",
+    "spec/content_for/layout.erubis",
+    "spec/content_for/layout.haml",
+    "spec/content_for/layout.slim",
+    "spec/content_for/multiple_blocks.erb",
+    "spec/content_for/multiple_blocks.erubis",
+    "spec/content_for/multiple_blocks.haml",
+    "spec/content_for/multiple_blocks.slim",
+    "spec/content_for/multiple_yields.erb",
+    "spec/content_for/multiple_yields.erubis",
+    "spec/content_for/multiple_yields.haml",
+    "spec/content_for/multiple_yields.slim",
+    "spec/content_for/passes_values.erb",
+    "spec/content_for/passes_values.erubis",
+    "spec/content_for/passes_values.haml",
+    "spec/content_for/passes_values.slim",
+    "spec/content_for/same_key.erb",
+    "spec/content_for/same_key.erubis",
+    "spec/content_for/same_key.haml",
+    "spec/content_for/same_key.slim",
+    "spec/content_for/takes_values.erb",
+    "spec/content_for/takes_values.erubis",
+    "spec/content_for/takes_values.haml",
+    "spec/content_for/takes_values.slim",
+    "spec/content_for_spec.rb",
+    "spec/decompile_spec.rb",
+    "spec/extension_spec.rb",
+    "spec/link_header_spec.rb",
+    "spec/namespace/foo.erb",
+    "spec/namespace/nested/foo.erb",
+    "spec/namespace_spec.rb",
+    "spec/reloader/app.rb.erb",
+    "spec/reloader_spec.rb",
+    "spec/respond_with/bar.erb",
+    "spec/respond_with/bar.json.erb",
+    "spec/respond_with/foo.html.erb",
+    "spec/respond_with/not_html.sass",
+    "spec/respond_with_spec.rb",
+    "spec/spec_helper.rb"
+  ]
 
   s.add_dependency "sinatra", "~> 1.2.2"
   s.add_dependency "backports", ">= 2.0"
