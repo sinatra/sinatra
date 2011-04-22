@@ -88,11 +88,8 @@ module Sinatra
     capture[:slim]   = "== yield(*args)"
 
     def capture(engine, args, block)
-      @_out_buf, buf_was = nil, @_out_buf
       eval '_buf.clear if defined? _buf', block.binding
       render(engine, Sinatra::ContentFor.capture.fetch(engine), {}, :args => args, :block => block, &block)
-    ensure
-      @_out_buf = buf_was
     end
 
     def render(engine, *)
