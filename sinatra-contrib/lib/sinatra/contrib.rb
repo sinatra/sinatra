@@ -11,6 +11,8 @@ module Sinatra
       register :ConfigFile
       register :Namespace
       register :RespondWith
+
+      helpers :Capture
       helpers :ContentFor
       helpers :LinkHeader
     end

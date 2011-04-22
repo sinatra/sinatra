@@ -1,4 +1,5 @@
 require 'sinatra/base'
+require 'sinatra/capture'
 
 module Sinatra
   ##
@@ -36,6 +37,8 @@ module Sinatra
   # <tt>content_for</tt> setting the appropriate set of tags that should
   # be added to the layout.
   module ContentFor
+    include Capture
+
     # Capture a block of content to be rendered later. For example:
     #
     #     <% content_for :head do %>
@@ -50,8 +53,7 @@ module Sinatra
     # Your blocks can also receive values, which are passed to them
     # by <tt>yield_content</tt>
     def content_for(key, &block)
-      @current_engine ||= :ruby
-      content_blocks[key.to_sym] << [@current_engine, block]
+      content_blocks[key.to_sym] << capture_later(&block)
     end
 
     # Render the captured blocks for a given key. For example:
@@ -72,32 +74,11 @@ module Sinatra
     # Would pass <tt>1</tt> and <tt>2</tt> to all the blocks registered
     # for <tt>:head</tt>.
     def yield_content(key, *args)
-      content_blocks[key.to_sym].map { |e,b| capture(e, args, b) }.join
-    end
-
-    def self.capture
-      @capture ||= {}
+      opts = { :args => args }
+      content_blocks[key.to_sym].map { |c| capture c.merge(opts) }.join
     end
 
     private
-
-    # generated templates will be cached by Sinatra in production
-    capture[:haml]   = "!= capture_haml(*args, &block)"
-    capture[:erb]    = "<% yield(*args) %>"
-    capture[:erubis] = "<%= yield(*args) %>"
-    capture[:slim]   = "== yield(*args)"
-
-    def capture(engine, args, block)
-      eval '_buf.clear if defined? _buf', block.binding
-      render(engine, Sinatra::ContentFor.capture.fetch(engine), {}, :args => args, :block => block, &block)
-    end
-
-    def render(engine, *)
-      @current_engine, engine_was = engine.to_sym, @current_engine
-      super
-    ensure
-      @current_engine = engine_was
-    end
 
     def content_blocks
       @content_blocks ||= Hash.new {|h,k| h[k] = [] }

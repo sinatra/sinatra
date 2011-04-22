@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
     "README.md",
     "Rakefile",
     "ideas.md",
+    "lib/sinatra/capture.rb",
     "lib/sinatra/config_file.rb",
     "lib/sinatra/content_for.rb",
     "lib/sinatra/contrib.rb",
