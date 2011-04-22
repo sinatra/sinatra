@@ -30,7 +30,7 @@ task 'sinatra-contrib.gemspec' do
   fields = {
     :authors => `git shortlog -sn`.scan(/[^\d\s].*/),
     :email   => `git shortlog -sne`.scan(/[^<]+@[^>]+/),
-    :files   => `git ls-files`.split("\n")
+    :files   => `git ls-files`.split("\n").reject { |f| f =~ /^(\.|Gemfile)/ }
   }
 
   fields.each do |field, values|

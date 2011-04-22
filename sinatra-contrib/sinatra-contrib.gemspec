@@ -25,9 +25,6 @@ Gem::Specification.new do |s|
 
   # generated from git ls-files
   s.files = [
-    ".gitignore",
-    "Gemfile",
-    "Gemfile.lock",
     "LICENSE",
     "README.md",
     "Rakefile",
