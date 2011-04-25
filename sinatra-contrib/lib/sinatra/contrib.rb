@@ -14,6 +14,7 @@ module Sinatra
 
       helpers :Capture
       helpers :ContentFor
+      helpers :EngineTracking
       helpers :LinkHeader
     end
 

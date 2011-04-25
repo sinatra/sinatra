@@ -1,18 +1,16 @@
 require 'sinatra/base'
+require 'sinatra/engine_tracking'
 
 module Sinatra
   module Capture
+    include Sinatra::EngineTracking
+
     DUMMIES = {
       Tilt::HamlTemplate   => "!= capture_haml(*args, &block)",
       Tilt::ERBTemplate    => "<% yield(*args) %>",
       Tilt::ErubisTemplate => "<%= yield(*args) %>",
       :slim                => "== yield(*args)"
     }
-
-    def call!(env)
-      @current_engine = :ruby
-      super
-    end
 
     def capture(options = {}, &block)
       opts   = { :block  => block, :args => [] }.merge options
@@ -30,15 +28,6 @@ module Sinatra
     def capture_later(options = {}, &block)
       opts = { :block => block, :args => [], :engine => @current_engine }
       opts.merge options
-    end
-
-    private
-
-    def render(engine, *)
-      @current_engine, engine_was = engine.to_sym, @current_engine
-      super
-    ensure
-      @current_engine = engine_was
     end
   end
 
