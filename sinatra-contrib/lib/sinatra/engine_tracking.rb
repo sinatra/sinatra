@@ -72,13 +72,17 @@ module Sinatra
       super
     end
 
+    def with_engine(engine)
+      @current_engine, engine_was = engine.to_sym, @current_engine
+      yield
+    ensure
+      @current_engine = engine_was
+    end
+
     private
 
     def render(engine, *)
-      @current_engine, engine_was = engine.to_sym, @current_engine
-      super
-    ensure
-      @current_engine = engine_was
+      with_engine(engine) { super }
     end
   end
 
