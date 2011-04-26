@@ -336,15 +336,11 @@ Dependency::        {sass}[http://sass-lang.com/]
 File Extensions::   <tt>.sass</tt>
 Example::           <tt>sass :stylesheet, :style => :expanded</tt>
 
-Up until version 3.0, Sass is included in the +haml+ gem.
-
 === SCSS Templates
 
 Dependency::        {sass}[http://sass-lang.com/]
 File Extensions::   <tt>.scss</tt>
 Example::           <tt>scss :stylesheet, :style => :expanded</tt>
-
-Up until version 3.0, SCSS is included in the +haml+ gem.
 
 === Less Templates
 
