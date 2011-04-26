@@ -87,20 +87,20 @@ describe Sinatra::Reloader do
     end
 
     it "doesn't mess up the application" do
-      get('/foo').body.should == 'foo'
+      get('/foo').body.strip.should == 'foo'
     end
 
     it "knows when a route has been modified" do
       update_app_file(:routes => ['get("/foo") { "bar" }'])
-      get('/foo').body.should == 'bar'
+      get('/foo').body.strip.should == 'bar'
     end
 
     it "knows when a route has been added" do
       update_app_file(
         :routes => ['get("/foo") { "foo" }', 'get("/bar") { "bar" }']
       )
-      get('/foo').body.should == 'foo'
-      get('/bar').body.should == 'bar'
+      get('/foo').body.strip.should == 'foo'
+      get('/bar').body.strip.should == 'bar'
     end
 
     it "knows when a route has been removed" do
@@ -113,7 +113,7 @@ describe Sinatra::Reloader do
         :routes => ['get("/foo") { erb :foo }'],
         :inline_templates => { :foo => 'bar' }
       )
-      get('/foo').body.should == 'bar'
+      get('/foo').body.strip.should == 'bar'
     end
 
     it "reloads inline templates in other file" do
@@ -124,17 +124,17 @@ describe Sinatra::Reloader do
       end
       require template_file_path
       app_const.inline_templates= template_file_path
-      get('/foo').body.should == 'foo'
+      get('/foo').body.strip.should == 'foo'
       update_file(template_file_path) do |f|
         f.write "__END__\n\n@@foo\nbar"
       end
-      get('/foo').body.should == 'bar'
+      get('/foo').body.strip.should == 'bar'
     end
 
     it "doesn't try to reload a removed file" do
       update_app_file(:routes => ['get("/foo") { "i shall not be reloaded" }'])
       FileUtils.rm app_file_path
-      get('/foo').body.should == 'foo'
+      get('/foo').body.strip.should == 'foo'
     end
   end
 
@@ -149,20 +149,20 @@ describe Sinatra::Reloader do
     it "allows to specify a file to stop from being reloaded" do
       app_const.dont_reload app_file_path
       update_app_file(:routes => ['get("/foo") { "bar" }'])
-      get('/foo').body.should == 'foo'
+      get('/foo').body.strip.should == 'foo'
     end
 
     it "allows to specify a glob to stop matching files from being reloaded" do
       app_const.dont_reload '**/*.rb'
       update_app_file(:routes => ['get("/foo") { "bar" }'])
-      get('/foo').body.should == 'foo'
+      get('/foo').body.strip.should == 'foo'
     end
 
     it "doesn't interfere with other application's reloading policy" do
       app_const.dont_reload '**/*.rb'
       setup_example_app(:routes => ['get("/foo") { "foo" }'])
       update_app_file(:routes => ['get("/foo") { "bar" }'])
-      get('/foo').body.should == 'bar'
+      get('/foo').body.strip.should == 'bar'
     end
   end
 
@@ -179,19 +179,19 @@ describe Sinatra::Reloader do
     end
 
     it "allows to specify a file to be reloaded" do
-      get('/foo').body.should == 'foo'
+      get('/foo').body.strip.should == 'foo'
       update_file(@foo_path) do |f|
         f.write 'class Foo; def self.foo() "bar" end end'
       end
-      get('/foo').body.should == 'bar'
+      get('/foo').body.strip.should == 'bar'
     end
 
     it "allows to specify glob to reaload matching files" do
-      get('/foo').body.should == 'foo'
+      get('/foo').body.strip.should == 'foo'
       update_file(@foo_path) do |f|
         f.write 'class Foo; def self.foo() "bar" end end'
       end
-      get('/foo').body.should == 'bar'
+      get('/foo').body.strip.should == 'bar'
     end
 
     it "doesn't try to reload a removed file" do
@@ -199,17 +199,17 @@ describe Sinatra::Reloader do
         f.write 'class Foo; def self.foo() "bar" end end'
       end
       FileUtils.rm @foo_path
-      get('/foo').body.should == 'foo'
+      get('/foo').body.strip.should == 'foo'
     end
 
     it "doesn't interfere with other application's reloading policy" do
       app_const.also_reload '**/*.rb'
       setup_example_app(:routes => ['get("/foo") { Foo.foo }'])
-      get('/foo').body.should == 'foo'
+      get('/foo').body.strip.should == 'foo'
       update_file(@foo_path) do |f|
         f.write 'class Foo; def self.foo() "bar" end end'
       end
-      get('/foo').body.should == 'foo'
+      get('/foo').body.strip.should == 'foo'
     end
   end
 end

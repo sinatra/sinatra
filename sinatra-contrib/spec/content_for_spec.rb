@@ -9,6 +9,8 @@ describe Sinatra::ContentFor do
     end.new!
   end
 
+  Tilt.prefer Tilt::ERBTemplate
+
   extend Forwardable
   def_delegators :subject, :content_for, :yield_content
   def render(engine, template)

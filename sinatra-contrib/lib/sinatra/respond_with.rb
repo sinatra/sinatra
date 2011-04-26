@@ -167,7 +167,9 @@ module Sinatra
           settings.template_engines[ext].each { |e| possible << [e, name] }
         end
         possible.each do |engine, template|
-          find_template(settings.views, template, Tilt[engine]) do |file|
+          # not exactly like Tilt[engine], but does not trigger a require
+          klass = Tilt.mappings[Tilt.normalize(engine)].first
+          find_template(settings.views, template, klass) do |file|
             next unless File.exist? file
             return settings.rendering_method(engine) << template.to_sym
           end

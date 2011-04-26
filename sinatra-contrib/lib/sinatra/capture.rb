@@ -7,11 +7,12 @@ module Sinatra
     include Sinatra::EngineTracking
 
     DUMMIES = {
-      Tilt::HamlTemplate   => "!= capture_haml(*args, &block)",
-      Tilt::ERBTemplate    => "<% @capture = yield(*args) %>",
-      Tilt::ErubisTemplate => "<%= yield(*args) %>",
-      :slim                => "== yield(*args)"
+      :haml => "!= capture_haml(*args, &block)",
+      :erb  => "<% @capture = yield(*args) %>",
+      :slim => "== yield(*args)"
     }
+
+    DUMMIES[:erubis] = DUMMIES[:erb]
 
     def capture(*args, &block)
       @capture = nil
@@ -19,7 +20,7 @@ module Sinatra
         result = block[*args]
       else
         clean_up = eval '_buf, @_buf_was = "", _buf if defined?(_buf)', block.binding
-        dummy    = DUMMIES[Tilt[current_engine]] || DUMMIES.fetch(current_engine)
+        dummy    = DUMMIES.fetch(current_engine)
         options  = { :layout => false, :locals => {:args => args, :block => block }}
         result   = render(current_engine, dummy, options, &block)
       end
