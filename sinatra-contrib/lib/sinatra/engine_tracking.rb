@@ -2,6 +2,8 @@ require 'sinatra/base'
 
 module Sinatra
   module EngineTracking
+    attr_reader :current_engine
+
     def erb?
       @current_engine == :erb
     end

@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require 'sinatra/engine_tracking'
+require 'backports'
 
 module Sinatra
   module Capture
@@ -7,27 +8,27 @@ module Sinatra
 
     DUMMIES = {
       Tilt::HamlTemplate   => "!= capture_haml(*args, &block)",
-      Tilt::ERBTemplate    => "<% yield(*args) %>",
+      Tilt::ERBTemplate    => "<% @capture = yield(*args) %>",
       Tilt::ErubisTemplate => "<%= yield(*args) %>",
       :slim                => "== yield(*args)"
     }
 
-    def capture(options = {}, &block)
-      opts   = { :block  => block, :args => [] }.merge options
-      engine = opts.delete(:engine)  || @current_engine
-      block  = opts[:block]
-      if engine == :ruby
-        block[*opts[:args]]
+    def capture(*args, &block)
+      if current_engine == :ruby
+        block[*args]
       else
-        dummy = DUMMIES[Tilt[engine]] || DUMMIES.fetch(engine)
-        eval '_buf.clear if defined? _buf', block.binding
-        render(engine, dummy, {}, opts, &block)
+        eval '_buf.try(:clear) if defined? _buf', block.binding
+        dummy    = DUMMIES[Tilt[current_engine]] || DUMMIES.fetch(current_engine)
+        @capture = nil
+        result   = render(current_engine, dummy, {}, {:args => args, :block => block}, &block)
+        result   = @capture if result.strip.empty? and @capture
+        result
       end
     end
 
-    def capture_later(options = {}, &block)
-      opts = { :block => block, :args => [], :engine => @current_engine }
-      opts.merge options
+    def capture_later(&block)
+      engine = current_engine
+      proc { |*a| with_engine(engine) { @capture = capture(*a, &block) }}
     end
   end
 

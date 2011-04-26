@@ -74,8 +74,7 @@ module Sinatra
     # Would pass <tt>1</tt> and <tt>2</tt> to all the blocks registered
     # for <tt>:head</tt>.
     def yield_content(key, *args)
-      opts = { :args => args }
-      content_blocks[key.to_sym].map { |c| capture c.merge(opts) }.join
+      content_blocks[key.to_sym].map { |b| capture(*args, &b) }.join
     end
 
     private
