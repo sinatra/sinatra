@@ -1,3 +1,5 @@
+require 'sinatra/base'
+
 module Sinatra
   # Extension to reload modified files.  In the development
   # environment, it will automatically require files defining routes
