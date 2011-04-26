@@ -69,6 +69,10 @@ module Sinatra
       @current_engine == :slim
     end
 
+    def creole?
+      @current_engine == :creole
+    end
+
     def call!(env)
       @current_engine = :ruby
       super
