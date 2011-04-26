@@ -651,16 +651,7 @@ module Sinatra
         end
       end
 
-      status, header, body = @response.finish
-
-      # On HEAD requests, if the Content-Length is "0", assume
-      # it was calculated erroneously for a manual HEAD response
-      # and remove it entirely.
-      if @env['REQUEST_METHOD'] == 'HEAD'
-        header.delete('Content-Length') if header['Content-Length'] == '0'
-      end
-
-      [status, header, body]
+      @response.finish
     end
 
     # Access settings defined with Base.set.
