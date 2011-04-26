@@ -1,5 +1,5 @@
 require 'sinatra/base'
-require 'json' unless String.method_defined? :to_json
+require 'json' unless Hash.method_defined? :to_json
 
 module Sinatra
   ##
