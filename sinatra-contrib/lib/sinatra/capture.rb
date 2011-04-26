@@ -14,16 +14,18 @@ module Sinatra
     }
 
     def capture(*args, &block)
+      @capture = nil
       if current_engine == :ruby
-        block[*args]
+        result = block[*args]
       else
-        eval '_buf.try(:clear) if defined? _buf', block.binding
+        clean_up = eval '_buf, @_buf_was = "", _buf if defined?(_buf)', block.binding
         dummy    = DUMMIES[Tilt[current_engine]] || DUMMIES.fetch(current_engine)
-        @capture = nil
-        result   = render(current_engine, dummy, {}, {:args => args, :block => block}, &block)
-        result   = @capture if result.strip.empty? and @capture
-        result
+        options  = { :layout => false, :locals => {:args => args, :block => block }}
+        result   = render(current_engine, dummy, options, &block)
       end
+      result.strip.empty? && @capture ? @capture : result
+    ensure
+      eval '_buf = @_buf_was if defined?(_buf)', block.binding if clean_up
     end
 
     def capture_later(&block)

@@ -73,7 +73,7 @@ module Sinatra
       @current_engine == :creole
     end
 
-    def call!(env)
+    def initialize(*)
       @current_engine = :ruby
       super
     end
