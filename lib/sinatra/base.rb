@@ -652,17 +652,7 @@ module Sinatra
         end
       end
 
-      status, header, body = @response.finish
-
-      # Never produce a body on HEAD requests. Do retain the Content-Length
-      # unless it's "0", in which case we assume it was calculated erroneously
-      # for a manual HEAD response and remove it entirely.
-      if @env['REQUEST_METHOD'] == 'HEAD'
-        body = []
-        header.delete('Content-Length') if header['Content-Length'] == '0'
-      end
-
-      [status, header, body]
+      @response.finish
     end
 
     # Access settings defined with Base.set.
@@ -1272,6 +1262,7 @@ module Sinatra
         builder = Rack::Builder.new
         builder.use Rack::MethodOverride if method_override?
         builder.use ShowExceptions       if show_exceptions?
+        builder.use Rack::Head
         setup_logging  builder
         setup_sessions builder
         middleware.each { |c,a,b| builder.use(c, *a, &b) }
