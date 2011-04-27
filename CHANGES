@@ -5,6 +5,11 @@
  * Support for Creole templates, Creole is a standardized wiki markup,
    supported by many wiki implementations. (Konstanin Haase)
 
+ * The `erubis` method has been deprecated. If Erubis is available, Sinatra
+   will automatically use it for rendering ERB templates. `require 'erb'`
+   explicitly to prevent that behavior. (Magnus Holm, Ryan Tomayko, Konstantin
+   Haase)
+
  * Set up `Rack::Logger` or `Rack::NullLogger` depending on whether logging
    was enabled or not. Also, expose that logger with the `logger` helper
    method. (Konstantin Haase)
