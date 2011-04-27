@@ -25,6 +25,7 @@ if tilt != 'stable'
 end
 
 gem 'haml', '>= 3.0', :group => 'haml'
+gem 'sass', :group => 'sass'
 gem 'builder', :group => 'builder'
 gem 'erubis', :group => 'erubis'
 gem 'less', :group => 'less'
