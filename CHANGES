@@ -13,6 +13,9 @@
    proxies. This issue surfaced when Rails 3 was used with older Sass versions
    and Sinatra >= 1.2.0. (Konstantin Haase)
 
+ * Remove HEAD request logic and let Rack::Head handle it instead. (Paolo
+   "Nusco" Perrotta)
+
 = 1.2.3 / 2011-04-13
 
  * This release is compatible with Tilt 1.3, it will still work with Tilt 1.2.2,
