@@ -40,7 +40,8 @@ gem 'creole', :group => 'creole'
 
 platforms :ruby do
   gem 'rdiscount', :group => 'rdiscount'
-  gem 'bluecloth', :group => 'bluecloth'
+  ## bluecloth is broken
+  #gem 'bluecloth', :group => 'bluecloth'
 end
 
 platforms :ruby_18, :jruby do
