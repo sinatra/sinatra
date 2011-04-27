@@ -592,6 +592,19 @@ Das +slim+-Gem wird benötigt, um Slim-Templates rendern zu können:
 
 Dieser Code rendert <tt>./views/index.slim</tt>.
 
+=== Creole-Templates
+
+Das +creole+-Gem wird benötigt, um Creole-Templates rendern zu können:
+
+  # creole muss eingebunden werden
+  require 'creole'
+
+  get '/' do
+    creole :index
+  end
+
+Dieser Code rendert <tt>./views/index.creole</tt>.
+
 === CoffeeScript-Templates
 
 Das <tt>coffee-script</tt>-Gem und mindestens eine der folgenden Optionen 

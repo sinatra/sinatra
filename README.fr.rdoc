@@ -618,6 +618,20 @@ Le gem slim est nécessaire pour utiliser la fonction de rendu Slim:
 
 Utilisera <tt>./views/index.slim</tt>.
 
+=== Templates Creole
+
+Le gem <tt>creole</tt> est nécessaire pour utiliser la fonction de rendu
+Creole:
+
+  # Chargez la bibliothèque creole dans votre application
+  require 'creole'
+
+  get '/' do
+    creole :index
+  end
+
+Utilisera <tt>./views/index.creole</tt>.
+
 === Templates CoffeeScript
 
 Le gem <tt>coffee-script</tt> est nécessaire ainsi que l'<b>une</b> des

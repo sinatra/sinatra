@@ -256,30 +256,6 @@ and overridden on an individual basis.
 
 Renders <tt>./views/index.erb</tt>.
 
-=== Erubis Templates
-
-The <tt>erubis</tt> gem/library is required to render Erubis templates:
-
-  # You'll need to require erubis in your app
-  require 'erubis'
-
-  get '/' do
-    erubis :index
-  end
-
-Renders <tt>./views/index.erubis</tt>.
-
-It is also possible to replace Erb with Erubis:
-
-  require 'erubis'
-  Tilt.register :erb, Tilt[:erubis]
-  
-  get '/' do
-    erb :index
-  end
-
-Renders <tt>./views/index.erb</tt> with Erubis.
-
 === Builder Templates
 
 The <tt>builder</tt> gem/library is required to render builder templates:
@@ -585,6 +561,19 @@ The <tt>slim</tt> gem/library is required to render Slim templates:
   end
 
 Renders <tt>./views/index.slim</tt>.
+
+=== Creole Templates
+
+The <tt>creole</tt> gem/library is required to render Creole templates:
+
+  # You'll need to require creole in your app
+  require 'creole'
+
+  get '/' do
+    creole :index
+  end
+
+Renders <tt>./views/index.creole</tt>.
 
 === CoffeeScript Templates
 

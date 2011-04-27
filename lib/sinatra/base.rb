@@ -451,6 +451,8 @@ module Sinatra
     end
 
     def erubis(template, options={}, locals={})
+      warn "Sinatra::Templates#erubis is deprecated and will be removed, use #erb instead.\n" \
+        "If you have Erubis installed, it will be used automatically.\n\tfrom #{caller.first}"
       render :erubis, template, options, locals
     end
 
@@ -516,12 +518,16 @@ module Sinatra
       render :slim, template, options, locals
     end
 
+    def creole(template, options={}, locals={})
+      render :creole, template, options, locals
+    end
+
     # Calls the given block for every possible template file in views,
     # named name.ext, where ext is registered on engine.
     def find_template(views, name, engine)
       yield ::File.join(views, "#{name}.#{@preferred_extension}")
       Tilt.mappings.each do |ext, engines|
-        next unless ext != @preferred_extension and Array(engines).include? engine
+        next unless ext != @preferred_extension and engines.include? engine
         yield ::File.join(views, "#{name}.#{ext}")
       end
     end

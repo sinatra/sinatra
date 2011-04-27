@@ -597,6 +597,19 @@ La gem/librería <tt>slim</tt> es necesaria para renderizar plantillas Slim:
 
 Renderiza <tt>./views/index.slim</tt>.
 
+=== Plantillas Creole
+
+La gem/librería <tt>creole</tt> es necesaria para renderizar plantillas Creole:
+
+  # Vas a necesitar requerir creole en tu app
+  require 'creole'
+
+  get '/' do
+    creole :index
+  end
+
+Renderiza <tt>./views/index.creole</tt>.
+
 === Plantillas CoffeeScript
 
 La gem/librería <tt>coffee-script</tt> y al menos <b>una</b> de las siguientes

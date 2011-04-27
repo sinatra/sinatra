@@ -34,9 +34,13 @@ gem 'slim', :group => 'slim'
 gem 'RedCloth', :group => 'redcloth'
 gem 'coffee-script', '>= 2.0', :group => 'coffee-script'
 gem 'rdoc', :group => 'rdoc'
+gem 'kramdown', :group => 'kramdown'
+gem 'maruku', :group => 'maruku'
+gem 'creole', :group => 'creole'
 
 platforms :ruby do
   gem 'rdiscount', :group => 'rdiscount'
+  gem 'bluecloth', :group => 'bluecloth'
 end
 
 platforms :ruby_18, :jruby do

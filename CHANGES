@@ -2,6 +2,9 @@
 
  * Added support for HTTP PATCH requests. (Konstantin Haase)
 
+ * Support for Creole templates, Creole is a standardized wiki markup,
+   supported by many wiki implementations. (Konstanin Haase)
+
  * Set up `Rack::Logger` or `Rack::NullLogger` depending on whether logging
    was enabled or not. Also, expose that logger with the `logger` helper
    method. (Konstantin Haase)
