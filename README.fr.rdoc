@@ -618,6 +618,20 @@ Le gem slim est nécessaire pour utiliser la fonction de rendu Slim:
 
 Utilisera <tt>./views/index.slim</tt>.
 
+=== Templates Creole
+
+Le gem <tt>creole</tt> est nécessaire pour utiliser la fonction de rendu
+Creole:
+
+  # Chargez la bibliothèque creole dans votre application
+  require 'creole'
+
+  get '/' do
+    creole :index
+  end
+
+Utilisera <tt>./views/index.creole</tt>.
+
 === Templates CoffeeScript
 
 Le gem <tt>coffee-script</tt> est nécessaire ainsi que l'<b>une</b> des
@@ -911,8 +925,8 @@ souhaitez obtenir le résultat d'une autre route. Pour cela, utilisez
 simplement +call+ :
 
   get '/foo' do
-    status, headers, body = call request.env.merge("PATH_INFO" => '/bar')
-    [status, body.upcase]
+    status, headers, body = call env.merge("PATH_INFO" => '/bar')
+    [status, headers, body.map(&:upcase)]
   end
 
   get '/bar' do
@@ -1443,7 +1457,7 @@ variable Rack <tt>sinatra.error</tt>:
 Erreur sur mesure:
 
   error MonErreurSurMesure do
-    'Donc il est arrivé ceci...' + request.env['sinatra.error'].message
+    'Donc il est arrivé ceci...' + env['sinatra.error'].message
   end
 
 Donc si ceci arrive:

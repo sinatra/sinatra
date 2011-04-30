@@ -17,7 +17,7 @@ gem 'rack-test', '>= 0.5.6'
 
 # Allows stuff like `tilt=1.2.2 bundle install` or `tilt=master ...`.
 # Used by the CI.
-tilt = ENV['tilt'].dup || 'stable'
+tilt = (ENV['tilt'] || 'stable').dup
 tilt.sub! 'tilt-', ''
 if tilt != 'stable'
   tilt = {:git => TILT_REPO, :branch => tilt} unless tilt =~ /(\d+\.)+\d+/
@@ -25,6 +25,7 @@ if tilt != 'stable'
 end
 
 gem 'haml', '>= 3.0', :group => 'haml'
+gem 'sass', :group => 'sass'
 gem 'builder', :group => 'builder'
 gem 'erubis', :group => 'erubis'
 gem 'less', :group => 'less'
@@ -34,9 +35,14 @@ gem 'slim', :group => 'slim'
 gem 'RedCloth', :group => 'redcloth'
 gem 'coffee-script', '>= 2.0', :group => 'coffee-script'
 gem 'rdoc', :group => 'rdoc'
+gem 'kramdown', :group => 'kramdown'
+gem 'maruku', :group => 'maruku'
+gem 'creole', :group => 'creole'
 
 platforms :ruby do
   gem 'rdiscount', :group => 'rdiscount'
+  ## bluecloth is broken
+  #gem 'bluecloth', :group => 'bluecloth'
 end
 
 platforms :ruby_18, :jruby do

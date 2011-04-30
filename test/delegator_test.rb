@@ -100,11 +100,37 @@ class DelegatorTest < Test::Unit::TestCase
     assert_equal app.last_call, ["helpers", mixin.to_s ]
   end
 
-
   it "registers helpers with the delegation target" do
     app, mixin = mirror, Module.new
     Sinatra.use mixin
     assert_equal app.last_call, ["use", mixin.to_s ]
+  end
+
+  it "should work with method_missing proxies for options" do
+    mixin = Module.new do
+      def respond_to?(method, *)
+        method.to_sym == :options or super
+      end
+
+      def method_missing(method, *args, &block)
+        return super unless method.to_sym == :options
+        {:some => :option}
+      end
+    end
+
+    value = nil
+    mirror do
+      extend mixin
+      value = options
+    end
+
+    assert_equal({:some => :option}, value)
+  end
+
+  it "delegates crazy method names" do
+    Sinatra::Delegator.delegate "foo:bar:"
+    method = mirror { send "foo:bar:" }.last_call.first
+    assert_equal "foo:bar:", method
   end
 
   delegates 'get'

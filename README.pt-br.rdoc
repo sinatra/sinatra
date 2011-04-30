@@ -431,7 +431,7 @@ Rack <tt>sinatra.error</tt>:
 Erros customizados:
 
   error MeuErroCustomizado do
-    'Então que aconteceu foi...' + request.env['sinatra.error'].message
+    'Então que aconteceu foi...' + env['sinatra.error'].message
   end
 
 Então, se isso acontecer:

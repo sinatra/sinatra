@@ -44,7 +44,6 @@ Gem::Specification.new do |s|
     test/delegator_test.rb
     test/encoding_test.rb
     test/erb_test.rb
-    test/erubis_test.rb
     test/extensions_test.rb
     test/filter_test.rb
     test/haml_test.rb
@@ -80,7 +79,6 @@ Gem::Specification.new do |s|
     test/views/calc.html.erb
     test/views/error.builder
     test/views/error.erb
-    test/views/error.erubis
     test/views/error.haml
     test/views/error.sass
     test/views/explicitly_nested.str
@@ -88,7 +86,6 @@ Gem::Specification.new do |s|
     test/views/hello.builder
     test/views/hello.coffee
     test/views/hello.erb
-    test/views/hello.erubis
     test/views/hello.haml
     test/views/hello.less
     test/views/hello.liquid
@@ -105,7 +102,6 @@ Gem::Specification.new do |s|
     test/views/hello.textile
     test/views/layout2.builder
     test/views/layout2.erb
-    test/views/layout2.erubis
     test/views/layout2.haml
     test/views/layout2.liquid
     test/views/layout2.mab
@@ -123,7 +119,7 @@ Gem::Specification.new do |s|
 
   s.extra_rdoc_files = %w[README.rdoc README.de.rdoc README.jp.rdoc README.fr.rdoc README.es.rdoc README.hu.rdoc README.zh.rdoc LICENSE]
   s.add_dependency 'rack', '~> 1.2'
-  s.add_dependency 'tilt', '~> 1.2', '>= 1.2.2'
+  s.add_dependency 'tilt', '~> 1.3'
   s.add_development_dependency 'shotgun', '~> 0.6'
 
   s.homepage = "http://sinatra.rubyforge.org"

@@ -11,10 +11,6 @@ module Sinatra
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
   class Request < Rack::Request
-    def self.new(env)
-      env['sinatra.request'] ||= super
-    end
-
     # Returns an array of acceptable media types for the response
     def accept
       @env['sinatra.accept'] ||= begin
@@ -366,7 +362,7 @@ module Sinatra
       time = time_for time
       response['Last-Modified'] = time.httpdate
       # compare based on seconds since epoch
-      halt 304 if Time.httpdate(request.env['HTTP_IF_MODIFIED_SINCE']).to_i >= time.to_i
+      halt 304 if Time.httpdate(env['HTTP_IF_MODIFIED_SINCE']).to_i >= time.to_i
     rescue ArgumentError
     end
 
@@ -455,6 +451,8 @@ module Sinatra
     end
 
     def erubis(template, options={}, locals={})
+      warn "Sinatra::Templates#erubis is deprecated and will be removed, use #erb instead.\n" \
+        "If you have Erubis installed, it will be used automatically.\n\tfrom #{caller.first}"
       render :erubis, template, options, locals
     end
 
@@ -520,12 +518,16 @@ module Sinatra
       render :slim, template, options, locals
     end
 
+    def creole(template, options={}, locals={})
+      render :creole, template, options, locals
+    end
+
     # Calls the given block for every possible template file in views,
     # named name.ext, where ext is registered on engine.
     def find_template(views, name, engine)
       yield ::File.join(views, "#{name}.#{@preferred_extension}")
       Tilt.mappings.each do |ext, engines|
-        next unless ext != @preferred_extension and Array(engines).include? engine
+        next unless ext != @preferred_extension and engines.include? engine
         yield ::File.join(views, "#{name}.#{ext}")
       end
     end
@@ -650,17 +652,7 @@ module Sinatra
         end
       end
 
-      status, header, body = @response.finish
-
-      # Never produce a body on HEAD requests. Do retain the Content-Length
-      # unless it's "0", in which case we assume it was calculated erroneously
-      # for a manual HEAD response and remove it entirely.
-      if @env['REQUEST_METHOD'] == 'HEAD'
-        body = []
-        header.delete('Content-Length') if header['Content-Length'] == '0'
-      end
-
-      [status, header, body]
+      @response.finish
     end
 
     # Access settings defined with Base.set.
@@ -696,7 +688,7 @@ module Sinatra
     # Forward the request to the downstream app -- middleware only.
     def forward
       fail "downstream app not set" unless @app.respond_to? :call
-      status, headers, body = @app.call(@request.env)
+      status, headers, body = @app.call env
       @response.status = status
       @response.body = body
       @response.headers.merge! headers
@@ -948,14 +940,15 @@ module Sinatra
 
       # Sets an option to the given value.  If the value is a proc,
       # the proc will be called every time the option is accessed.
-      def set(option, value=self, &block)
-        raise ArgumentError if block && value != self
+      def set(option, value = (not_set = true), &block)
+        raise ArgumentError if block and !not_set
         value = block if block
         if value.kind_of?(Proc)
           metadef(option, &value)
           metadef("#{option}?") { !!__send__(option) }
           metadef("#{option}=") { |val| metadef(option, &Proc.new{val}) }
-        elsif value == self && option.respond_to?(:each)
+        elsif not_set
+          raise ArgumentError unless option.respond_to?(:each)
           option.each { |k,v| set(k, v) }
         elsif respond_to?("#{option}=")
           __send__ "#{option}=", value
@@ -1269,6 +1262,7 @@ module Sinatra
         builder = Rack::Builder.new
         builder.use Rack::MethodOverride if method_override?
         builder.use ShowExceptions       if show_exceptions?
+        builder.use Rack::Head
         setup_logging  builder
         setup_sessions builder
         middleware.each { |c,a,b| builder.use(c, *a, &b) }
@@ -1296,7 +1290,8 @@ module Sinatra
 
       def setup_sessions(builder)
         return unless sessions?
-        options = { :secret => session_secret }
+        options = {}
+        options[:secret] = session_secret if session_secret?
         options.merge! sessions.to_hash if sessions.respond_to? :to_hash
         builder.use Rack::Session::Cookie, options
       end
@@ -1451,7 +1446,7 @@ module Sinatra
           </style>
         </head>
         <body>
-          <h2>Sinatra doesn't know this ditty.</h2>
+          <h2>Sinatra doesn&rsquo;t know this ditty.</h2>
           <img src='#{uri "/__sinatra__/404.png"}'>
           <div id="c">
             Try this:
@@ -1475,6 +1470,7 @@ module Sinatra
     set :logging, Proc.new { ! test? }
     set :method_override, true
     set :run, Proc.new { ! test? }
+    set :session_secret, Proc.new { super() unless development? }
 
     def self.register(*extensions, &block) #:nodoc:
       added_methods = extensions.map {|m| m.public_instance_methods }.flatten
@@ -1489,12 +1485,11 @@ module Sinatra
   module Delegator #:nodoc:
     def self.delegate(*methods)
       methods.each do |method_name|
-        eval <<-RUBY, binding, '(__DELEGATE__)', 1
-          def #{method_name}(*args, &b)
-            ::Sinatra::Delegator.target.send(#{method_name.inspect}, *args, &b)
-          end
-          private #{method_name.inspect}
-        RUBY
+        define_method(method_name) do |*args, &block|
+          return super(*args, &block) if respond_to? method_name
+          Delegator.target.send(method_name, *args, &block)
+        end
+        private method_name
       end
     end
 

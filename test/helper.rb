@@ -65,6 +65,11 @@ class Test::Unit::TestCase
     assert_equal value.lstrip.gsub(/\s*\n\s*/, ""), body.lstrip.gsub(/\s*\n\s*/, "")
   end
 
+  def assert_like(a,b)
+    pattern = /\s*\n\s*| id=['"][^"']*["']/
+    assert_equal a.strip.gsub(pattern, ""), b.strip.gsub(pattern, "")
+  end
+
   def assert_include(str, substr)
     assert str.include?(substr), "expected #{str.inspect} to include #{substr.inspect}"
   end
@@ -76,6 +81,8 @@ class Test::Unit::TestCase
     else
       super
     end
+  rescue Rack::Test::Error
+    super
   end
 
   # Also check response since we delegate there.

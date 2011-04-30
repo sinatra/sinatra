@@ -432,6 +432,19 @@ Slimテンプレートを使うにはslimライブラリが必要です:
 
 <tt>./views/index.slim</tt>を表示します。
 
+=== Creole テンプレート
+
+Creoleテンプレートを使うにはcreoleライブラリが必要です:
+
+  # creoleを読み込みます
+  require 'creole'
+
+  get '/' do
+    creole :index
+  end
+
+<tt>./views/index.creole</tt>を表示します。
+
 === CoffeeScript テンプレート
 
 CoffeeScriptテンプレートを表示するにはcoffee-scriptライブラリと`coffee`バイナリが必要です:
@@ -700,7 +713,7 @@ body部を指定することもできます ...
 エラーをカスタマイズする場合は、
 
   error MyCustomError do
-    'エラーメッセージ...' + request.env['sinatra.error'].message
+    'エラーメッセージ...' + env['sinatra.error'].message
   end
 
 と書いておいて,下記のように呼び出します。

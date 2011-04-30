@@ -597,6 +597,19 @@ La gem/librería <tt>slim</tt> es necesaria para renderizar plantillas Slim:
 
 Renderiza <tt>./views/index.slim</tt>.
 
+=== Plantillas Creole
+
+La gem/librería <tt>creole</tt> es necesaria para renderizar plantillas Creole:
+
+  # Vas a necesitar requerir creole en tu app
+  require 'creole'
+
+  get '/' do
+    creole :index
+  end
+
+Renderiza <tt>./views/index.creole</tt>.
+
 === Plantillas CoffeeScript
 
 La gem/librería <tt>coffee-script</tt> y al menos <b>una</b> de las siguientes
@@ -883,8 +896,8 @@ Cuando querés obtener el resultado de la llamada a una ruta, +pass+ no te va a
 servir.  Para lograr esto, podés usar +call+:
 
   get '/foo' do
-    status, headers, body = call request.env.merge("PATH_INFO" => '/bar')
-    [status, body.upcase]
+    status, headers, body = call env.merge("PATH_INFO" => '/bar')
+    [status, headers, body.map(&:upcase)]
   end
 
   get '/bar' do
@@ -1367,9 +1380,11 @@ Podés acceder a estas opciones utilizando el método <tt>settings</tt>:
 [static]              define si Sinatra debe encargarse de servir archivos
                       estáticos.
 
-                      Deshabilitala cuando usés un servidor capaz de hacerlo
-                      por sí solo, porque mejorará el rendimiento.  Se encuentra
-                      habilitada por defecto.
+                      Deshabilitala cuando usés un servidor capaz de
+                      hacerlo por sí solo, porque mejorará el
+                      rendimiento.  Se encuentra habilitada por
+                      defecto en el estilo clásico y desactivado en el
+                      el modular.
 
 [views]               directorio de las vistas.
 
@@ -1401,7 +1416,7 @@ obtener de la variable Rack <tt>sinatra.error</tt>:
 Errores personalizados:
 
   error MiErrorPersonalizado do
-    'Lo que pasó fue...' request.env['sinatra.error'].message
+    'Lo que pasó fue...' + env['sinatra.error'].message
   end
 
 Entonces, si pasa esto:
@@ -1570,6 +1585,7 @@ entre sus configuraciones:
   logging             true                         false
   method_override     true                         false
   inline_templates    true                         false
+  static              true                         false
 
 === Sirviendo una Aplicación Modular
 
@@ -1936,3 +1952,7 @@ siguiendo las especificaciones SemVer y SemVerTag.
 * {Twitter}[http://twitter.com/sinatra]
 * {Lista de Correo}[http://groups.google.com/group/sinatrarb/topics]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] en http://freenode.net
+* Documentación de la API para la
+  {última versión liberada}[http://rubydoc.info/gems/sinatra] o para la
+  {rama de desarrollo actual}[http://rubydoc.info/github/sinatra/sinatra]
+  en http://rubydoc.info/

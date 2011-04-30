@@ -2,6 +2,14 @@
 
  * Added support for HTTP PATCH requests. (Konstantin Haase)
 
+ * Support for Creole templates, Creole is a standardized wiki markup,
+   supported by many wiki implementations. (Konstanin Haase)
+
+ * The `erubis` method has been deprecated. If Erubis is available, Sinatra
+   will automatically use it for rendering ERB templates. `require 'erb'`
+   explicitly to prevent that behavior. (Magnus Holm, Ryan Tomayko, Konstantin
+   Haase)
+
  * Set up `Rack::Logger` or `Rack::NullLogger` depending on whether logging
    was enabled or not. Also, expose that logger with the `logger` helper
    method. (Konstantin Haase)
@@ -17,6 +25,30 @@
 
  * Added `request.accept?` and `request.preferred_type` to ease dealing with
    `Accept` headers. (Konstantin Haase)
+
+= 1.2.4 / 2011-04-30
+
+ * Sinatra::Application (classic style) does not use a session secret in
+   development mode, so sessions are not invalidated after every request when
+   using Shotgun. (Konstantin Haase)
+
+ * The request object was shared between multiple Sinatra instances in the
+   same middleware chain. This caused issues if any non-sinatra routing
+   happend in-between two of those instances, or running a request twice
+   against an application (described in the README). The caching was reverted.
+   See GH#239 and GH#256 for more infos. (Konstantin Haase)
+
+ * Fixes issues where the top level DSL was interfering with method_missing
+   proxies. This issue surfaced when Rails 3 was used with older Sass versions
+   and Sinatra >= 1.2.0. (Konstantin Haase)
+
+ * Sinatra::Delegator.delegate is now able to delegate any method names, even
+   those containing special characters. This allows better integration into
+   other programming languages on Rubinius (probably on the JVM, too), like
+   Fancy. (Konstantin Haase)
+
+ * Remove HEAD request logic and let Rack::Head handle it instead. (Paolo
+   "Nusco" Perrotta)
 
 = 1.2.3 / 2011-04-13
 

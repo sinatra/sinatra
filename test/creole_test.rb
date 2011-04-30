@@ -1,10 +1,10 @@
 require File.dirname(__FILE__) + '/helper'
 
 begin
-require 'rdoc/markup/to_html'
+require 'creole'
 
-class RdocTest < Test::Unit::TestCase
-  def rdoc_app(&block)
+class CreoleTest < Test::Unit::TestCase
+  def creole_app(&block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
       get '/', &block
@@ -12,35 +12,35 @@ class RdocTest < Test::Unit::TestCase
     get '/'
   end
 
-  it 'renders inline rdoc strings' do
-    rdoc_app { rdoc '= Hiya' }
+  it 'renders inline creole strings' do
+    creole_app { creole '= Hiya' }
     assert ok?
     assert_body "<h1>Hiya</h1>"
   end
 
-  it 'renders .rdoc files in views path' do
-    rdoc_app { rdoc :hello }
+  it 'renders .creole files in views path' do
+    creole_app { creole :hello }
     assert ok?
-    assert_body "<h1>Hello From RDoc</h1>"
+    assert_body "<h1>Hello From Creole</h1>"
   end
 
   it "raises error if template not found" do
-    mock_app { get('/') { rdoc :no_such_template } }
+    mock_app { get('/') { creole :no_such_template } }
     assert_raise(Errno::ENOENT) { get('/') }
   end
 
   it "renders with inline layouts" do
     mock_app do
       layout { 'THIS. IS. #{yield.upcase}!' }
-      get('/') { rdoc 'Sparta', :layout_engine => :str }
+      get('/') { creole 'Sparta', :layout_engine => :str }
     end
     get '/'
     assert ok?
-    assert_like 'THIS. IS.<P>SPARTA</P>!', body
+    assert_like 'THIS. IS. <P>SPARTA</P>!', body
   end
 
   it "renders with file layouts" do
-    rdoc_app { rdoc 'Hello World', :layout => :layout2, :layout_engine => :erb }
+    creole_app { creole 'Hello World', :layout => :layout2, :layout_engine => :erb }
     assert ok?
     assert_body "ERB Layout!\n<p>Hello World</p>"
   end
@@ -48,7 +48,7 @@ class RdocTest < Test::Unit::TestCase
   it "can be used in a nested fashion for partials and whatnot" do
     mock_app do
       template(:inner) { "hi" }
-      template(:outer) { "<outer><%= rdoc :inner %></outer>" }
+      template(:outer) { "<outer><%= creole :inner %></outer>" }
       get '/' do
         erb :outer
       end
@@ -61,5 +61,5 @@ class RdocTest < Test::Unit::TestCase
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping rdoc tests"
+  warn "#{$!.to_s}: skipping creole tests"
 end

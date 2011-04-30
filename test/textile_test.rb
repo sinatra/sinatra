@@ -28,6 +28,36 @@ class TextileTest < Test::Unit::TestCase
     mock_app { get('/') { textile :no_such_template } }
     assert_raise(Errno::ENOENT) { get('/') }
   end
+
+  it "renders with inline layouts" do
+    mock_app do
+      layout { 'THIS. IS. #{yield.upcase}!' }
+      get('/') { textile 'Sparta', :layout_engine => :str }
+    end
+    get '/'
+    assert ok?
+    assert_like 'THIS. IS. <P>SPARTA</P>!', body
+  end
+
+  it "renders with file layouts" do
+    textile_app { textile 'Hello World', :layout => :layout2, :layout_engine => :erb }
+    assert ok?
+    assert_body "ERB Layout!\n<p>Hello World</p>"
+  end
+
+  it "can be used in a nested fashion for partials and whatnot" do
+    mock_app do
+      template(:inner) { "hi" }
+      template(:outer) { "<outer><%= textile :inner %></outer>" }
+      get '/' do
+        erb :outer
+      end
+    end
+
+    get '/'
+    assert ok?
+    assert_like '<outer><p>hi</p></outer>', body
+  end
 end
 
 rescue LoadError
