@@ -127,6 +127,12 @@ class DelegatorTest < Test::Unit::TestCase
     assert_equal({:some => :option}, value)
   end
 
+  it "delegates crazy method names" do
+    Sinatra::Delegator.delegate "foo:bar:"
+    method = mirror { send "foo:bar:" }.last_call.first
+    assert_equal "foo:bar:", method
+  end
+
   delegates 'get'
   delegates 'patch'
   delegates 'put'
