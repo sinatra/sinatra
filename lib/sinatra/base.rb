@@ -1428,7 +1428,7 @@ module Sinatra
           </style>
         </head>
         <body>
-          <h2>Sinatra doesn’t know this ditty.</h2>
+          <h2>Sinatra doesn&rsquo;t know this ditty.</h2>
           <img src='#{uri "/__sinatra__/404.png"}'>
           <div id="c">
             Try this:
