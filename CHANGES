@@ -6,12 +6,18 @@
 
  * The request object was shared between multiple Sinatra instances in the
    same middleware chain. This caused issues if any non-sinatra routing
-   happend in-between two of those instances. The caching was reverted. See
-   GH#239 for more infos. (Konstantin Haase)
+   happend in-between two of those instances, or running a request twice
+   against an application (described in the README). The caching was reverted.
+   See GH#239 and GH#256 for more infos. (Konstantin Haase)
 
  * Fixes issues where the top level DSL was interfering with method_missing
    proxies. This issue surfaced when Rails 3 was used with older Sass versions
    and Sinatra >= 1.2.0. (Konstantin Haase)
+
+ * Sinatra::Delegator.delegate is now able to delegate any method names, even
+   those containing special characters. This allows better integration into
+   other programming languages on Rubinius (probably on the JVM, too), like
+   Fancy. (Konstantin Haase)
 
  * Remove HEAD request logic and let Rack::Head handle it instead. (Paolo
    "Nusco" Perrotta)
