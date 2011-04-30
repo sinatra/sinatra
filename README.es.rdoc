@@ -1636,7 +1636,7 @@ aplicación basada en Rack (Rails/Ramaze/Camping/...):
 
 Puede que en algunas ocasiones quieras crear nuevas aplicaciones en
 tiempo de ejecución sin tener que asignarlas a una constante.  Para
-esto tenés `Sinatra.new`:
+esto tenés <tt>Sinatra.new</tt>:
 
   require 'sinatra/base'
   mi_app = Sinatra.new { get('/') { "hola" } }

@@ -1587,7 +1587,7 @@ application (Rails/Ramaze/Camping/...):
 === Dynamic Application Creation
 
 Sometimes you want to create new applications at runtime without having to
-assign them to a constant, you can do this with `Sinatra.new`:
+assign them to a constant, you can do this with <tt>Sinatra.new</tt>:
 
   require 'sinatra/base'
   my_app = Sinatra.new { get('/') { "hi" } }
