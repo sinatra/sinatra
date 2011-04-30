@@ -1688,7 +1688,7 @@ andere Sinatra-Anwendung handeln, es kann jede andere Rack-Anwendung sein
 
 Manche Situationen erfordern die Erstellung neuer Applikationen zur Laufzeit,
 ohne dass sie einer Konstanten zugeordnet werden. Dies lässt sich mit 
-`Sinatra.new` erreichen:
+<tt>Sinatra.new</tt> erreichen:
 
   require 'sinatra/base'
   my_app = Sinatra.new { get('/') { "hallo" } }

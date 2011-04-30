@@ -1731,7 +1731,7 @@ application Sinatra, ou n'importe quelle application basée sur Rack
 
 Il se peut que vous ayez besoin de créer une nouvelle application à l'exécution
 sans avoir à les assigner à une constante, vous pouvez le faire grâce à
-`Sinatra.new`:
+<tt>Sinatra.new</tt>:
 
   require 'sinatra/base'
   mon_app = Sinatra.new { get('/') { "salut" } }
