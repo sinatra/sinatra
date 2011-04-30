@@ -1467,13 +1467,11 @@ module Sinatra
   module Delegator #:nodoc:
     def self.delegate(*methods)
       methods.each do |method_name|
-        eval <<-RUBY, binding, '(__DELEGATE__)', 1
-          def #{method_name}(*args, &b)
-            return super if respond_to? #{method_name.inspect}
-            ::Sinatra::Application.send(#{method_name.inspect}, *args, &b)
-          end
-          private #{method_name.inspect}
-        RUBY
+        define_method(method_name) do |*args, &block|
+          return super(*args, &block) if respond_to? method_name
+          ::Sinatra::Application.send(method_name, *args, &block)
+        end
+        private method_name
       end
     end
 
