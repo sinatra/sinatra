@@ -1,3 +1,7 @@
+= 1.2.5 / 2011-04-30
+
+ * Restore compatibility with Ruby 1.8.6. (Konstantin Haase)
+
 = 1.2.4 / 2011-04-30
 
  * Sinatra::Application (classic style) does not use a session secret in

@@ -7,7 +7,7 @@ require 'sinatra/showexceptions'
 require 'tilt'
 
 module Sinatra
-  VERSION = '1.2.4'
+  VERSION = '1.2.5'
 
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
@@ -59,7 +59,7 @@ module Sinatra
     def accept_entry(entry)
       type, *options = entry.gsub(/\s/, '').split(';')
       quality = 0 # we sort smalles first
-      options.delete_if { |e| quality = 1 - e[2..-1].to_f if e.start_with? 'q=' }
+      options.delete_if { |e| quality = 1 - e[2..-1].to_f if e =~ /^q=/ }
       [type, [quality, type.count('*'), 1 - options.size]]
     end
   end
@@ -1467,7 +1467,9 @@ module Sinatra
   module Delegator #:nodoc:
     def self.delegate(*methods)
       methods.each do |method_name|
-        define_method(method_name) do |*args, &block|
+        define_method(method_name) do |*args|
+          # On Ruby 1.8.6, blocks cannot take block arguments directly.
+          block = Proc.new if block_given?
           return super(*args, &block) if respond_to? method_name
           ::Sinatra::Application.send(method_name, *args, &block)
         end

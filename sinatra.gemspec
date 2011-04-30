@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'sinatra'
-  s.version = '1.2.4'
+  s.version = '1.2.5'
   s.date = '2011-04-30'
 
   s.description = "Classy web-development dressed in a DSL"
