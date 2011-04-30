@@ -26,7 +26,7 @@
  * Added `request.accept?` and `request.preferred_type` to ease dealing with
    `Accept` headers. (Konstantin Haase)
 
-= 1.2.4 / Not Yet Released
+= 1.2.4 / 2011-04-30
 
  * Sinatra::Application (classic style) does not use a session secret in
    development mode, so sessions are not invalidated after every request when
