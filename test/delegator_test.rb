@@ -128,7 +128,6 @@ class DelegatorTest < Test::Unit::TestCase
   end
 
   delegates 'get'
-  delegates 'patch'
   delegates 'put'
   delegates 'post'
   delegates 'delete'
