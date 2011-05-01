@@ -38,6 +38,13 @@ class Test::Unit::TestCase
 
   class << self
     alias_method :it, :test
+    alias_method :section, :context
+  end
+
+  def self.example(desc = nil, &block)
+    @example_count = 0 unless instance_variable_defined? :@example_count
+    @example_count += 1
+    it(desc || "Example #{@example_count}", &block)
   end
 
   alias_method :response, :last_response
@@ -72,6 +79,14 @@ class Test::Unit::TestCase
 
   def assert_include(str, substr)
     assert str.include?(substr), "expected #{str.inspect} to include #{substr.inspect}"
+  end
+
+  def options(uri, params = {}, env = {}, &block)
+    request(uri, env.merge(:method => "OPTIONS", :params => params), &block)
+  end
+
+  def patch(uri, params = {}, env = {}, &block)
+    request(uri, env.merge(:method => "PATCH", :params => params), &block)
   end
 
   # Delegate other missing methods to response.
