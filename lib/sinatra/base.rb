@@ -7,7 +7,7 @@ require 'sinatra/showexceptions'
 require 'tilt'
 
 module Sinatra
-  VERSION = '1.2.5'
+  VERSION = '1.2.6'
 
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
@@ -1465,13 +1465,26 @@ module Sinatra
   # methods to be delegated to the Sinatra::Application class. Used primarily
   # at the top-level.
   module Delegator #:nodoc:
+    TEMPLATE = <<-RUBY
+      def %1$s(*args, &b)
+        return super if respond_to? :%1$s
+        ::Sinatra::Delegator.target.send("%2$s", *args, &b)
+      end
+    RUBY
+
     def self.delegate(*methods)
       methods.each do |method_name|
-        define_method(method_name) do |*args|
-          # On Ruby 1.8.6, blocks cannot take block arguments directly.
-          block = Proc.new if block_given?
-          return super(*args, &block) if respond_to? method_name
-          ::Sinatra::Application.send(method_name, *args, &block)
+        # Replaced with way shorter and better implementation in 1.3.0
+        # using define_method instead, however, blocks cannot take block
+        # arguments on 1.8.6.
+        begin
+          code = TEMPLATE % [method_name, method_name]
+          eval code, binding, '(__DELEGATE__)', 1
+        rescue SyntaxError
+          code  = TEMPLATE % [:_delegate, method_name]
+          eval code, binding, '(__DELEGATE__)', 1
+          alias_method method_name, :_delegate
+          undef_method :_delegate
         end
         private method_name
       end
@@ -1481,6 +1494,12 @@ module Sinatra
              :before, :after, :error, :not_found, :configure, :set, :mime_type,
              :enable, :disable, :use, :development?, :test?, :production?,
              :helpers, :settings
+
+    class << self
+      attr_accessor :target
+    end
+
+    self.target = Application
   end
 
   # Create a new Sinatra application. The block is evaluated in the new app's
@@ -1493,11 +1512,11 @@ module Sinatra
 
   # Extend the top-level DSL with the modules provided.
   def self.register(*extensions, &block)
-    Application.register(*extensions, &block)
+    Delegator.target.register(*extensions, &block)
   end
 
   # Include the helper modules provided in Sinatra's request context.
   def self.helpers(*extensions, &block)
-    Application.helpers(*extensions, &block)
+    Delegator.target.helpers(*extensions, &block)
   end
 end
