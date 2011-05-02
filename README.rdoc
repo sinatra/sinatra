@@ -1397,7 +1397,7 @@ typically don't have to +use+ them explicitly.
 == Testing
 
 Sinatra tests can be written using any Rack-based testing library
-or framework. {Rack::Test}[http://gitrdoc.com/brynary/rack-test] is
+or framework. {Rack::Test}[http://rdoc.info/github/brynary/rack-test/master/frames] is
 recommended:
 
   require 'my_sinatra_app'
