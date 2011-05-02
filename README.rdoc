@@ -1565,7 +1565,7 @@ application (Rails/Ramaze/Camping/...):
     get('/login') { haml :login }
     
     post('/login') do
-      if params[:name] = 'admin' and params[:password] = 'admin'
+      if 'admin' == params[:name] && 'admin' == params[:password]
         session['user_name'] = params[:name]
       else
         redirect '/login'
