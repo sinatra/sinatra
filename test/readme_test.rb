@@ -2,12 +2,10 @@
 require File.dirname(__FILE__) + '/helper'
 
 class ReadmeTest < Test::Unit::TestCase
-  section "Sinatra" do
-    example do
-      mock_app { get('/') { 'Hello world!' } }
-      get '/'
-      assert_body 'Hello world!'
-    end
+  example do
+    mock_app { get('/') { 'Hello world!' } }
+    get '/'
+    assert_body 'Hello world!'
   end
 
   section "Routes" do
