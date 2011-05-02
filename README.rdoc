@@ -1659,7 +1659,6 @@ known to run Sinatra:
 * Older versions of JRuby and Rubinius
 * MacRuby, Maglev, IronRuby
 * Ruby 1.9.0 and 1.9.1
-* Ruby 1.8.6 with {backports}[https://github.com/marcandre/backports/#readme]
 
 Not being officially supported means if things only break there and not on a
 supported platform, we assume it's not our issue but theirs.
