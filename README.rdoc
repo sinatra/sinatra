@@ -1636,7 +1636,7 @@ The following Ruby versions are officially supported:
 [ Ruby 1.9.2 ]
   1.9.2 is supported and recommended. Note that Radius and Markaby are
   currently not 1.9 compatible. Do not use 1.9.2p0, it is known to cause
-  segmentation faults when using Sinatra.
+  segmentation faults when running Sinatra.
 
 [ Rubinius ]
   Rubinius is officially supported (Rubinius >= 1.2.3), everything, including
@@ -1671,6 +1671,7 @@ Sinatra should work on any operating system supported by the chosen Ruby
 implementation.
 
 == The Bleeding Edge
+
 If you would like to use Sinatra's latest bleeding code, feel free to run your
 application against the master branch, it should be rather stable.
 
@@ -1681,6 +1682,7 @@ We also push out prerelease gems from time to time, so you can do a
 To get some of the latest features.
 
 === With Bundler
+
 If you want to run your application with the latest Sinatra, using
 {Bundler}[http://gembundler.com/] is the recommended way.
 
@@ -1706,6 +1708,7 @@ Now you can run your app like this:
   bundle exec ruby myapp.rb
 
 === Roll Your Own
+
 Create a local clone and run your app with the <tt>sinatra/lib</tt> directory
 on the <tt>$LOAD_PATH</tt>:
 
