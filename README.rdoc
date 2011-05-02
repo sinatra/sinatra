@@ -494,7 +494,7 @@ Or, specify an explicit Hash of local variables:
 
   get '/:id' do
     foo = Foo.find(params[:id])
-    haml '%h1= foo.name', :locals => { :foo => foo }
+    haml '%h1= bar.name', :locals => { :bar => foo }
   end
 
 This is typically used when rendering templates as partials from within
