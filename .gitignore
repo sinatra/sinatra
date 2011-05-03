@@ -8,4 +8,5 @@
 \#*
 .emacs*
 .redcar*
+.sass-cache
 Gemfile.lock
