@@ -3,10 +3,10 @@ require File.dirname(__FILE__) + '/helper'
 class SettingsTest < Test::Unit::TestCase
   setup do
     @base = Sinatra.new(Sinatra::Base)
-    @base.set :environment, :foo
+    @base.set :environment => :foo, :app_file => nil
 
     @application = Sinatra.new(Sinatra::Application)
-    @application.set :environment, :foo
+    @application.set :environment => :foo, :app_file => nil
   end
 
   it 'sets settings to literal values' do
@@ -358,9 +358,13 @@ class SettingsTest < Test::Unit::TestCase
   end
 
   describe 'app_file' do
-    it 'is nil' do
-      assert_nil @base.app_file
-      assert_nil @application.app_file
+    it 'is nil for base classes' do
+      assert_nil Sinatra::Base.app_file
+      assert_nil Sinatra::Application.app_file
+    end
+
+    it 'defaults to the file subclassing' do
+      assert_equal __FILE__, Sinatra.new.app_file
     end
   end
 

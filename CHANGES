@@ -10,6 +10,9 @@
    explicitly to prevent that behavior. (Magnus Holm, Ryan Tomayko, Konstantin
    Haase)
 
+ * `settings.app_file` now defaults to the file subclassing `Sinatra::Base` in
+   modular applications. (Konstantin Haase)
+
  * Set up `Rack::Logger` or `Rack::NullLogger` depending on whether logging
    was enabled or not. Also, expose that logger with the `logger` helper
    method. (Konstantin Haase)

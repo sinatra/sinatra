@@ -1382,7 +1382,7 @@ different default settings:
 
   Setting             Classic                 Modular
 
-  app_file            file loading sinatra    nil
+  app_file            file loading sinatra    file subclassing Sinatra::Base
   run                 $0 == app_file          false
   logging             true                    false
   method_override     true                    false

@@ -1310,6 +1310,7 @@ module Sinatra
 
       def inherited(subclass)
         subclass.reset!
+        subclass.set :app_file, caller_files.first unless subclass.app_file?
         super
       end
 
@@ -1471,6 +1472,7 @@ module Sinatra
     set :method_override, true
     set :run, Proc.new { ! test? }
     set :session_secret, Proc.new { super() unless development? }
+    set :app_file, nil
 
     def self.register(*extensions, &block) #:nodoc:
       added_methods = extensions.map {|m| m.public_instance_methods }.flatten
