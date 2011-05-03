@@ -7,7 +7,6 @@
 # If you have issues with a gem: `bundle install --without-coffee-script`.
 
 RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
-TILT_REPO = "git://github.com/rtomayko/tilt.git"
 
 source :rubygems unless ENV['QUICK']
 gemspec
@@ -17,11 +16,13 @@ gem 'rack-test', '>= 0.5.6'
 
 # Allows stuff like `tilt=1.2.2 bundle install` or `tilt=master ...`.
 # Used by the CI.
-tilt = (ENV['tilt'] || 'stable').dup
-tilt.sub! 'tilt-', ''
-if tilt != 'stable'
-  tilt = {:git => TILT_REPO, :branch => tilt} unless tilt =~ /(\d+\.)+\d+/
-  gem 'tilt', tilt
+github = "git://github.com/%s.git"
+repos = { 'tilt' => github % "rtomayko/tilt", 'rack' => github % "rack/rack" }
+%w[tilt rack].each do |lib|
+  dep = (ENV[lib] || 'stable').sub "#{lib}-", ''
+  next if dep == 'stable'
+  dep = {:git => repos[lib], :branch => dep} unless dep =~ /(\d+\.)+\d+/
+  gem lib, dep
 end
 
 gem 'haml', '>= 3.0', :group => 'haml'
