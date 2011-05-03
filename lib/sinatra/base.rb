@@ -667,7 +667,7 @@ module Sinatra
 
     def options
       warn "Sinatra::Base#options is deprecated and will be removed, " \
-        "use #settings insetad.\n\tfrom #{caller.first}"
+        "use #settings instead.\n\tfrom #{caller.first}"
       settings
     end
 
