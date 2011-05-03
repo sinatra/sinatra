@@ -20,10 +20,11 @@ repos = { 'tilt' => github % "rtomayko/tilt", 'rack' => github % "rack/rack" }
   dep = (ENV[lib] || 'stable').sub "#{lib}-", ''
   dep = nil if dep == 'stable'
   dep = {:git => repos[lib], :branch => dep} unless dep =~ /(\d+\.)+\d+/
+  dep ||= '~> 1.1.0' if lib == 'rack' and RUBY_VERSION == '1.8.6'
   gem lib, dep
 end
 
-gem 'haml', '>= 3.0', :group => 'haml'
+gem 'haml', '~> 3.0.0', :group => 'haml'
 gem 'builder', :group => 'builder'
 gem 'erubis', :group => 'erubis'
 gem 'less', :group => 'less'
@@ -32,12 +33,9 @@ gem 'nokogiri', :group => 'nokogiri'
 gem 'slim', :group => 'slim'
 gem 'RedCloth', :group => 'redcloth' if RUBY_VERSION < "1.9.3"
 
-
 if RUBY_VERSION > '1.8.6'
   gem 'coffee-script', '>= 2.0', :group => 'coffee-script'
   gem 'rdoc', :group => 'rdoc'
-else
-  gem 'rack', '~> 1.1.0'
 end
 
 platforms :ruby do
