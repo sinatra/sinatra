@@ -7,9 +7,7 @@
 # If you have issues with a gem: `bundle install --without-coffee-script`.
 
 RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
-
 source :rubygems unless ENV['QUICK']
-gemspec
 
 gem 'rake'
 gem 'rack-test', '>= 0.5.6'
@@ -20,7 +18,7 @@ github = "git://github.com/%s.git"
 repos = { 'tilt' => github % "rtomayko/tilt", 'rack' => github % "rack/rack" }
 %w[tilt rack].each do |lib|
   dep = (ENV[lib] || 'stable').sub "#{lib}-", ''
-  next if dep == 'stable'
+  dep = nil if dep == 'stable'
   dep = {:git => repos[lib], :branch => dep} unless dep =~ /(\d+\.)+\d+/
   gem lib, dep
 end
