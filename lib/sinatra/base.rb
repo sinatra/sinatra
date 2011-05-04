@@ -4,6 +4,7 @@ require 'uri'
 require 'sinatra/rack'
 require 'sinatra/showexceptions'
 require 'tilt'
+require 'securerandom'
 
 module Sinatra
   VERSION = '1.3.0'
@@ -1394,7 +1395,7 @@ module Sinatra
     set :add_charset, [/^text\//, 'application/javascript', 'application/xml', 'application/xhtml+xml']
 
     # explicitly generating this eagerly to play nice with preforking
-    set :session_secret, '%x' % rand(2**255)
+    set :session_secret, '%x' % SecureRandom.random_number(2**255)
 
     class << self
       alias_method :methodoverride?, :method_override?

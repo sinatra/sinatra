@@ -29,6 +29,8 @@
  * Added `request.accept?` and `request.preferred_type` to ease dealing with
    `Accept` headers. (Konstantin Haase)
 
+ * Uses SecureRandom to generate default session secret. (Konstantin Haase)
+
 = 1.2.6 / 2011-05-01
 
  * Fix broken delegation, backport delegation tests from Sinatra 1.3.
