@@ -1395,7 +1395,12 @@ module Sinatra
     set :add_charset, [/^text\//, 'application/javascript', 'application/xml', 'application/xhtml+xml']
 
     # explicitly generating this eagerly to play nice with preforking
-    set :session_secret, '%x' % SecureRandom.random_number(2**255)
+    begin
+      set :session_secret, '%x' % SecureRandom.random_number(2**255)
+    rescue RangeError
+      warn "SecureRandom support broken on #{RUBY_ENGINE}, falling back to rand"
+      set :session_secret, '%x' % rand(2**255)
+    end
 
     class << self
       alias_method :methodoverride?, :method_override?
