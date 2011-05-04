@@ -4,7 +4,6 @@ require 'uri'
 require 'sinatra/rack'
 require 'sinatra/showexceptions'
 require 'tilt'
-require 'securerandom'
 
 module Sinatra
   VERSION = '1.3.0'
@@ -1394,8 +1393,14 @@ module Sinatra
     set :default_encoding, "utf-8"
     set :add_charset, [/^text\//, 'application/javascript', 'application/xml', 'application/xhtml+xml']
 
-    # explicitly generating this eagerly to play nice with preforking
-    set :session_secret, SecureRandom.hex(64)
+    # explicitly generating a session secret eagerly to play nice with preforking
+    begin
+      require 'securerandom'
+      set :session_secret, SecureRandom.hex(64)
+    rescue LoadError, NotImplementedError
+      # SecureRandom raises a NotImplementedError if no random device is available
+      set :session_secret, "%064x" % Kernel.rand(2**256-1)
+    end
 
     class << self
       alias_method :methodoverride?, :method_override?
