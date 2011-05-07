@@ -267,7 +267,7 @@ Available Options:
 
 [layout]
   Whether to use a layout (+true+ or +false+), if it's a Symbol, specifies
-  what template to use. Example: <tt>erb :index, :layout => request.xhr?</tt>
+  what template to use. Example: <tt>erb :index, :layout => !request.xhr?</tt>
 
 [content_type]
   Content-Type the template produces, default depends on template language.
