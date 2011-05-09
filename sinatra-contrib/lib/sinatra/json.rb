@@ -10,14 +10,21 @@ module Sinatra
   # Per default it's using its own, rather simple encoder.
   # You can easily change that:
   #
+  #   # will automatically pick up JSON
   #   require 'json'
-  #   set :json_encoder, JSON
   #
+  #   # will automatically pick up Yajl::Encoder
   #   require 'yajl'
-  #   set :json_encoder, Yajl::Encoder
   #
+  #   # doesn't know Whatever, so you'll have to set it explicitely
   #   require 'whatever'
+  #   set :json_encoder, Whatever
+  #
+  #   # Have #json simply call #to_json
   #   set :json_encoder, :to_json
+  #
+  #   # Or, you know, any method
+  #   set :json_encoder, :my_fancy_json_method
   #
   # It will automatically set the content type to "application/json"
   # You can easily change that:
