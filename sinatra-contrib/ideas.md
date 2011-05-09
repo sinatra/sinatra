@@ -23,3 +23,7 @@
 
 * Extend `sinatra-content-for` to support Liquid, Radius, Markaby, Nokogiri and
   Builder. At least the first two probably involve patching Tilt.
+
+* Rewrite of `sinatra-compass`?
+
+* Helpers for HTML escaping and such.

@@ -23,26 +23,30 @@ installed with this gem.
 
 Currently included:
 
+* `sinatra/capture`: Let's you capture the content of blocks in templates.
+
 * `sinatra/config_file`: Allows loading configuration from yaml files.
 
 * `sinatra/content_for`: Adds Rails-style `content_for` helpers to Haml, Erb,
   Erubis and Slim.
 
+* `sinatra/csrf`: Protects your Sinatra application from CSRF attacks.
+
+* `sinatra/engine_tracking`: Adds methods like `haml?` that allow helper
+  methods to check whether they are called from within a template.
+
+* `sinatra/json`: Adds a `#json` helper method to return JSON documents.
 
 * `sinatra/link_header`: Helpers for generating `link` HTML tags and
   corresponding `Link` HTTP headers. Adds `link`, `stylesheet` and `prefetch`
   helper methods.
 
+* `sinatra/namespace`: Adds namespace support to Sinatra.
+
 * `sinatra/respond_with`: Choose action and/or template depending automatically
   depending on the incoming request. Adds helpers `respond_to` and
   `respond_with`.
 
-
-To be included soon:
-
-* Helpers for CSS/JS generation (currently in `sinatra-support`)
-
-* Rewrite of `sinatra-reloader`
 
 ## Custom Extensions
 
@@ -52,11 +56,9 @@ existing APIs.
 Currently included:
 
 * `sinatra/decompile`: Recreates path patterns from Sinatra's internal data
-  structures (used by other extensions)/
+  structures (used by other extensions).
 
-To be included soon:
-
-* Rewrite of `sinatra-compass`
+* `sinatra/reloader`: Automatically reloads Ruby files on code changes.
 
 ## Other Tools
 
@@ -90,9 +92,13 @@ A single extension (example: sinatra-content-for):
 
     require 'sinatra/base'
     require 'sinatra/content_for'
+    require 'sinatra/csrf'
     
     class MyApp < Sinatra::Base
-      register Sinatra::ContentFor
+      # Note: Some modules are extensions, some helpers, see the specific
+      # documentation or the source
+      helpers Sinatra::ContentFor
+      register Sinatra::CSRF
     end
 
 Common extensions:
