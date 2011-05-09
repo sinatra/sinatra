@@ -111,4 +111,5 @@ describe Sinatra::JSON do
   describe('JSON')    { it_should_behave_like "a json encoder", "json", "::JSON"        }
   describe('OkJson')  { it_should_behave_like "a json encoder", nil,    "OkJson"        }
   describe('to_json') { it_should_behave_like "a json encoder", "json", ":to_json"      }
+  describe('without') { it_should_behave_like "a json encoder", nil,    "Sinatra::JSON" }
 end

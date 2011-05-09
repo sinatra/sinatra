@@ -64,7 +64,13 @@ module Sinatra
     end
   end
 
-  Base.set :json_encoder, Sinatra::JSON
+  Base.set :json_encoder do
+    return Yajl::Encoder if defined? Yajl::Encoder
+    return JSON if defined? JSON
+    return :to_json if {}.respond_to? :to_json and [].respond_to? :to_json
+    Sinatra::JSON
+  end
+
   Base.set :json_content_type, :json
   helpers JSON
 end
