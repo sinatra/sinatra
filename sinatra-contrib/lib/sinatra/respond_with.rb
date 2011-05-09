@@ -32,7 +32,7 @@ module Sinatra
   #
   #   # With Sinatra::RespondWith
   #   get '/' do
-  #     respond_with :index, :name => 'example' do
+  #     respond_with :index, :name => 'example' do |f|
   #       f.txt { 'just an example' }
   #     end
   #   end
