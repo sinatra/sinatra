@@ -297,6 +297,21 @@ class HelpersTest < Test::Unit::TestCase
       get '/'
       assert_body 'ok'
     end
+
+    it 'sets a default session secret' do
+      mock_app do
+        enable :sessions
+        get '/' do
+          secret = env['rack.session.options'][:secret]
+          assert secret
+          assert_equal secret, settings.session_secret
+          'ok'
+        end
+      end
+
+      get '/'
+      assert_body 'ok'
+    end
   end
 
   describe 'mime_type' do
