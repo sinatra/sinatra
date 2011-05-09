@@ -1,5 +1,5 @@
 require 'sinatra/base'
-require 'json' unless Hash.method_defined? :to_json
+require 'sinatra/json'
 
 module Sinatra
   ##
@@ -125,6 +125,8 @@ module Sinatra
     end
 
     module Helpers
+      include Sinatra::JSON
+
       def respond_with(template, object = nil, &block)
         object, template = template, nil unless Symbol === template
         format = Format.new(self)
@@ -142,6 +144,7 @@ module Sinatra
           end
           if object
             exts.each do |ext|
+              halt json(object) if ext == :json
               next unless meth = "to_#{ext}" and object.respond_to? meth
               halt(*object.send(meth))
             end

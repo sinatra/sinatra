@@ -1,5 +1,6 @@
 require 'backports'
 require_relative 'spec_helper'
+require_relative 'okjson'
 
 describe Sinatra::RespondWith do
   def provides(*args)
@@ -161,7 +162,7 @@ describe Sinatra::RespondWith do
     describe "default behavior" do
       it 'converts objects to json out of the box' do
         respond_with 'a' => 'b'
-        req(:json).body.should == {'a' => 'b'}.to_json
+        OkJson.decode(req(:json).body).should == {'a' => 'b'}
       end
 
       it 'handles multiple routes correctly' do
@@ -169,9 +170,9 @@ describe Sinatra::RespondWith do
           get('/') { respond_with 'a' => 'b' }
           get('/:name') { respond_with 'a' => params[:name] }
         end
-        req('/',  :json).body.should == {'a' => 'b'}.to_json
-        req('/b', :json).body.should == {'a' => 'b'}.to_json
-        req('/c', :json).body.should == {'a' => 'c'}.to_json
+        OkJson.decode(req('/',  :json).body).should == {'a' => 'b'}
+        OkJson.decode(req('/b', :json).body).should == {'a' => 'b'}
+        OkJson.decode(req('/c', :json).body).should == {'a' => 'c'}
       end
 
       it "calls to_EXT if available" do
@@ -206,16 +207,24 @@ describe Sinatra::RespondWith do
         body.should be_empty
       end
 
-      it 'falls back to to_EXT if no template is found' do
+      it 'falls back to #json if no template is found' do
         respond_with :foo, :name => 'World'
         req(:json).should be_ok
-        body.should == {:name => 'World'}.to_json
+        OkJson.decode(body).should == {'name' => 'World'}
       end
 
-      it 'favors templates over to_EXT' do
+      it 'favors templates over #json' do
         respond_with :bar, :name => 'World'
         req(:json).should be_ok
         body.should == 'json!'
+      end
+
+      it 'falls back to to_EXT if no template is found' do
+        object = {:name => 'World'}
+        def object.to_pdf; "hi" end
+        respond_with :foo, object
+        req(:pdf).should be_ok
+        body.should == "hi"
       end
     end
 
