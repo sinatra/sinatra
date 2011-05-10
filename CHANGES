@@ -19,8 +19,7 @@
 
  * The sessions setting now may be an options hash. (Konstantin Haase)
 
- * Important: 1.8.6 support has been dropped. It is still usable if you use the
-   backports gem, but no longer officially supported. (Konstantin Haase)
+ * Important: 1.8.6 support has been dropped. (Konstantin Haase)
 
  * It is now possible to use a different target class for the top level DSL (aka
    classic style) than `Sinatra::Application` by setting `Delegator.target`.
