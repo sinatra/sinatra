@@ -31,7 +31,7 @@ gem 'less', :group => 'less'
 gem 'liquid', :group => 'liquid'
 gem 'nokogiri', :group => 'nokogiri'
 gem 'slim', :group => 'slim'
-gem 'RedCloth', :group => 'redcloth' if RUBY_VERSION < "1.9.3"
+gem 'RedCloth', :group => 'redcloth' if RUBY_VERSION < "1.9.3" and RUBY_ENGINE != 'macruby'
 
 if RUBY_VERSION > '1.8.6'
   gem 'coffee-script', '>= 2.0', :group => 'coffee-script'
