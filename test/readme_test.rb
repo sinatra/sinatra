@@ -1,5 +1,5 @@
 # Tests to check if all the README examples work.
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path('../helper', __FILE__)
 
 class ReadmeTest < Test::Unit::TestCase
   example do

@@ -1,5 +1,5 @@
 # encoding: UTF-8
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path('../helper', __FILE__)
 require 'erb'
 
 class BaseTest < Test::Unit::TestCase
