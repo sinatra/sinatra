@@ -19,7 +19,7 @@ repos = { 'tilt' => github % "rtomayko/tilt", 'rack' => github % "rack/rack" }
 %w[tilt rack].each do |lib|
   dep = (ENV[lib] || 'stable').sub "#{lib}-", ''
   dep = nil if dep == 'stable'
-  dep = {:git => repos[lib], :branch => dep} unless dep =~ /(\d+\.)+\d+/
+  dep = {:git => repos[lib], :branch => dep} if dep and dep !~ /(\d+\.)+\d+/
   gem lib, dep
 end
 
