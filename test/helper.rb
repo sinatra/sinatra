@@ -73,7 +73,7 @@ class Test::Unit::TestCase
   end
 
   def assert_like(a,b)
-    pattern = /\s*\n\s*| id=['"][^"']*["']/
+    pattern = /id=['"][^"']*["']|\s+/
     assert_equal a.strip.gsub(pattern, ""), b.strip.gsub(pattern, "")
   end
 

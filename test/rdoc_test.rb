@@ -36,7 +36,7 @@ class RdocTest < Test::Unit::TestCase
     end
     get '/'
     assert ok?
-    assert_like 'THIS. IS.<P>SPARTA</P>!', body
+    assert_like 'THIS. IS. <P>SPARTA</P>!', body
   end
 
   it "renders with file layouts" do
