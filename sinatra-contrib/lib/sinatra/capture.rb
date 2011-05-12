@@ -19,14 +19,17 @@ module Sinatra
       if current_engine == :ruby
         result = block[*args]
       else
-        clean_up = eval '_buf, @_buf_was = "", _buf if defined?(_buf)', block.binding
-        dummy    = DUMMIES.fetch(current_engine)
-        options  = { :layout => false, :locals => {:args => args, :block => block }}
-        result   = render(current_engine, dummy, options, &block)
+        buffer     = eval '_buf if defined?(_buf)', block.binding
+        old_buffer = buffer.dup if buffer
+        dummy      = DUMMIES.fetch(current_engine)
+        options    = { :layout => false, :locals => {:args => args, :block => block }}
+
+        buffer.try :clear
+        result = render(current_engine, dummy, options, &block)
       end
       result.strip.empty? && @capture ? @capture : result
     ensure
-      eval '_buf = @_buf_was if defined?(_buf)', block.binding if clean_up
+      buffer.try :replace, old_buffer
     end
 
     def capture_later(&block)
