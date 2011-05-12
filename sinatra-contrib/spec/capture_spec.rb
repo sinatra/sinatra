@@ -22,23 +22,11 @@ describe Sinatra::Capture do
     lang = engine == :erubis ? :erb : engine
 
     it "captures content" do
-      begin
-        render(engine, "simple_#{lang}").should == "Say Hello World!"
-      rescue => e
-        t = Tilt[:slim].new { subject.settings.templates[:"nested_#{lang}"][0] }
-        puts t.send(:precompiled, [])
-        raise e
-      end
+      render(engine, "simple_#{lang}").should == "Say Hello World!"
     end
 
     it "allows nested captures" do
-      begin
-        render(engine, "nested_#{lang}").should == "Say Hello World!"
-      rescue => e
-        t = Tilt[:slim].new { subject.settings.templates[:"nested_#{lang}"][0] }
-        puts t.send(:precompiled, [])
-        raise e
-      end
+      render(engine, "nested_#{lang}").should == "Say Hello World!"
     end
   end
 
