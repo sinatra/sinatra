@@ -29,7 +29,7 @@ module Sinatra
 
     class Middleware
       extend Forwardable
-      def_delegators :@base, :csrf_protection?, :csrf_protection, :test?, :development?
+      def_delegators :@base, :csrf_protection?, :csrf_protection, :development?
 
       def initialize(app, base)
         @app, @base = app, base
@@ -57,10 +57,10 @@ module Sinatra
       end
 
       def safe?(r)
-        checks.any? { |c| send("safe_#{m}?", r) }
+        checks.any? { |c| send("safe_#{c}?", r) }
       end
 
-      def safe_method?(r)
+      def safe_verb?(r)
         SAFE_METHODS.include? r.request_method
       end
 
@@ -74,17 +74,18 @@ module Sinatra
       end
 
       def safe_referrer?(r)
-        URI.parse(r.referrer.to_s).host == r.host
+        return false if r.referrer.nil? or r.referrer.empty?
+        host = URI.parse(r.referrer.to_s).host
+        host.nil? or host == r.host
       end
 
       alias safe_referer? safe_referrer?
 
       def safe_optional_referrer?(r)
-        r.referrer.nil? or safe_referrer?(r)
+        r.referrer.nil? or r.referrer.empty? or safe_referrer?(r)
       end
 
       def response(r)
-        fail error if test?
         response = Rack::Response.new
         response.status = 412
         if development?
