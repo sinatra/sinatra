@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
     "Konstantin Haase",
     "Gabriel Andretta",
     "Nicolas Sanguinetti",
+    "Eliot Shepard",
     "Matt Lyon"
   ]
 
@@ -19,6 +20,7 @@ Gem::Specification.new do |s|
     "konstantin.mailinglists@googlemail.com",
     "ohhgabriel@gmail.com",
     "contacto@nicolassanguinetti.info",
+    "eshepard@slower.net",
     "matt@flowerpowered.com"
   ]
 
