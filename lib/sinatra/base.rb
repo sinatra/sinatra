@@ -60,6 +60,7 @@ module Sinatra
   # http://rack.rubyforge.org/doc/classes/Rack/Response/Helpers.html
   class Response < Rack::Response
     def body=(value)
+      value = value.body while value.respond_to? :body and value.body != value
       @body = value.respond_to?(:to_str) ? [value.to_str] : value
     end
 

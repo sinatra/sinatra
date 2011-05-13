@@ -39,4 +39,14 @@ class ResponseTest < Test::Unit::TestCase
     assert_equal '14', headers['Content-Length']
     assert_equal @response.body, body.body
   end
+
+  it 'does not nest a Sinatra::Response' do
+    @response.body = Sinatra::Response.new ["foo"]
+    assert_equal @response.body, ["foo"]
+  end
+
+  it 'does not nest a Rack::Response' do
+    @response.body = Rack::Response.new ["foo"]
+    assert_equal @response.body, ["foo"]
+  end
 end
