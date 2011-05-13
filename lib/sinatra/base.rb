@@ -60,7 +60,7 @@ module Sinatra
   # http://rack.rubyforge.org/doc/classes/Rack/Response/Helpers.html
   class Response < Rack::Response
     def body=(value)
-      @body = value.respond_to?(:each) ? value : [value.to_str]
+      @body = value.respond_to?(:to_str) ? [value.to_str] : value
     end
 
     def each
