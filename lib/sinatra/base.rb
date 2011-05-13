@@ -35,15 +35,6 @@ module Sinatra
       @env.include? "HTTP_X_FORWARDED_HOST"
     end
 
-    def route
-      @route ||= Rack::Utils.unescape(path_info)
-    end
-
-    def path_info=(value)
-      @route = nil
-      super
-    end
-
     private
 
     def accept_entry(entry)
@@ -636,7 +627,6 @@ module Sinatra
       @response = Response.new
       @params   = indifferent_params(@request.params)
       template_cache.clear if settings.reload_templates
-      force_encoding(@request.route)
       force_encoding(@params)
 
       @response['Content-Type'] = nil
@@ -732,10 +722,10 @@ module Sinatra
     # Returns pass block.
     def process_route(pattern, keys, conditions)
       @original_params ||= @params
-      route = @request.route
+      route = @request.path_info
       route = '/' if route.empty? and not settings.empty_path_info?
       if match = pattern.match(route)
-        values = match.captures.to_a
+        values = match.captures.to_a.map { |v| force_encoding URI.decode(v) if v }
         params =
           if keys.any?
             keys.zip(values).inject({}) do |hash,(k,v)|
@@ -1158,19 +1148,16 @@ module Sinatra
         keys = []
         if path.respond_to? :to_str
           special_chars = %w{. + ( ) $}
-          pattern =
-            path.to_str.gsub(/((:\w+)|[\*#{special_chars.join}])/) do |match|
-              case match
-              when "*"
-                keys << 'splat'
-                "(.*?)"
-              when *special_chars
-                Regexp.escape(match)
-              else
-                keys << $2[1..-1]
-                "([^/?#]+)"
-              end
+          pattern = path.to_str.gsub(/[^\?\%\\\/\:\*\w]/) { |c| encoded(c) }
+          pattern.gsub! /((:\w+)|\*)/ do |match|
+            if match == "*"
+              keys << 'splat'
+              "(.*?)"
+            else
+              keys << $2[1..-1]
+              "([^/?#]+)"
             end
+          end
           [/^#{pattern}$/, keys]
         elsif path.respond_to?(:keys) && path.respond_to?(:match)
           [path, path.keys]
@@ -1181,6 +1168,13 @@ module Sinatra
         else
           raise TypeError, path
         end
+      end
+
+      def encoded(char)
+        enc = URI.encode(char)
+        enc = "(?:#{Regexp.escape enc}|#{URI.encode char, /./})" if enc == char
+        enc = "(?:#{enc}|#{encoded('+')})" if char == " "
+        enc
       end
 
     public
