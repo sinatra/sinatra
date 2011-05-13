@@ -59,6 +59,20 @@ module Sinatra
   # http://rack.rubyforge.org/doc/classes/Rack/Response.html
   # http://rack.rubyforge.org/doc/classes/Rack/Response/Helpers.html
   class Response < Rack::Response
+    def body=(value)
+      @body = value.respond_to?(:each) ? value : [value.to_str]
+    end
+
+    def each
+      block_given? ? super : enum_for(:each)
+    end
+
+    def finish
+      if body.respond_to? :to_ary and not [204, 304].include?(status.to_i)
+        headers["Content-Length"] = body.inject(0) { |l, p| l + Rack::Utils.bytesize(p) }.to_s
+      end
+      super
+    end
   end
 
   class NotFound < NameError #:nodoc:
@@ -627,9 +641,10 @@ module Sinatra
       @response['Content-Type'] = nil
       invoke { dispatch! }
       invoke { error_block!(response.status) }
+
       unless @response['Content-Type']
-        if body.respond_to?(:to_ary) and body.first.respond_to? :content_type
-          content_type body.first.content_type
+        if body.respond_to? :to_ary and body[0].respond_to? :content_type
+          content_type body[0].content_type
         else
           content_type :html
         end

@@ -22,7 +22,7 @@ class ResponseTest < Test::Unit::TestCase
   it 'writes to body' do
     @response.body = 'Hello'
     @response.write ' World'
-    assert_equal 'Hello World', @response.body
+    assert_equal 'Hello World', @response.body.join
   end
 
   [204, 304].each do |status_code|
@@ -37,6 +37,6 @@ class ResponseTest < Test::Unit::TestCase
     @response.body = ['Hello', 'World!', '✈']
     status, headers, body = @response.finish
     assert_equal '14', headers['Content-Length']
-    assert_equal @response.body, body
+    assert_equal @response.body, body.body
   end
 end
