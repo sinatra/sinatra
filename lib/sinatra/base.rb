@@ -69,13 +69,13 @@ module Sinatra
   # http://rack.rubyforge.org/doc/classes/Rack/Response.html
   # http://rack.rubyforge.org/doc/classes/Rack/Response/Helpers.html
   class Response < Rack::Response
-    def finish
-      @body = block if block_given?
+    def finish(&block)
       if [204, 304].include?(status.to_i)
         header.delete "Content-Type"
+        header.delete "Content-Length"
         [status.to_i, header.to_hash, []]
       else
-        body = @body || []
+        body = block || @body || []
         body = [body] if body.respond_to? :to_str
         if body.respond_to?(:to_ary)
           header["Content-Length"] = body.to_ary.
