@@ -102,9 +102,7 @@ module Sinatra
       return addr if addr =~ /\A[A-z][A-z0-9\+\.\-]*:/
       uri = [host = ""]
       if absolute
-        host << 'http'
-        host << 's' if request.secure?
-        host << "://"
+        host << "http#{'s' if request.secure?}://"
         if request.forwarded? or request.port != (request.secure? ? 443 : 80)
           host << request.host_with_port
         else
