@@ -9,36 +9,34 @@
 # Rack is freely distributable under the terms of an MIT-style license.
 # See http://www.opensource.org/licenses/mit-license.php.
 require 'rack'
+require 'rack/response'
+require 'rack/request'
+require 'rack/logger'
+require 'rack/methodoverride'
 
-if Rack.release <= "1.2"
-  require 'rack/request'
-  require 'rack/logger'
-  require 'rack/methodoverride'
+module Rack
+  class Request
+    def ssl?
+      @env['HTTPS'] == 'on' or
+      @env['HTTP_X_FORWARDED_PROTO'] == 'https' or
+      @env['rack.url_scheme'] == 'https'
+    end unless method_defined? :ssl?
+  end
 
-  module Rack
-    class Request
-      def ssl?
-        @env['HTTPS'] == 'on' or
-        @env['HTTP_X_FORWARDED_PROTO'] == 'https' or
-        @env['rack.url_scheme'] == 'https'
-      end
-    end
+  class Logger
+    # In Rack 1.2 and earlier, Rack::Logger called env['rack.errors'].close,
+    # which is forbidden in the SPEC and made it impossible to use Rack::Lint.
+    # Also, it might close your log file after the first request, potentially
+    # crashing your web server.
+    def call(env)
+      logger = ::Logger.new(env['rack.errors'])
+      logger.level = @level
+      env['rack.logger'] = logger
+      @app.call(env)
+    end if Rack.release <= "1.2"
+  end
 
-    class Logger
-      # In Rack 1.2 and earlier, Rack::Logger called env['rack.errors'].close,
-      # which is forbidden in the SPEC and made it impossible to use Rack::Lint.
-      # Also, it might close your log file after the first request, potentially
-      # crashing your web server.
-      def call(env)
-        logger = ::Logger.new(env['rack.errors'])
-        logger.level = @level
-        env['rack.logger'] = logger
-        @app.call(env)
-      end
-    end
-
-    class MethodOverride
-      HTTP_METHODS << "PATCH"
-    end
+  class MethodOverride
+    HTTP_METHODS << "PATCH" unless HTTP_METHODS.include? "PATCH"
   end
 end
