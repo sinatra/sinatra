@@ -38,8 +38,10 @@ gem 'kramdown', :group => 'kramdown'
 gem 'maruku', :group => 'maruku'
 gem 'creole', :group => 'creole'
 
-platforms :ruby do
+unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1"
+  # C extensions
   gem 'rdiscount', :group => 'rdiscount'
+
   ## bluecloth is broken
   #gem 'bluecloth', :group => 'bluecloth'
 end

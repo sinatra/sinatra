@@ -1842,7 +1842,7 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
   funciona correctamente, incluyendo los lenguajes de plantillas.
 
 [ JRuby ]
-  JRuby es soportado oficialmente (JRuby >= 1.6.0).  No se conocen
+  JRuby es soportado oficialmente (JRuby >= 1.6.1).  No se conocen
   problemas con librerías de plantillas de terceras partes.  Sin
   embargo, si elegís usar JRuby, deberías examinar sus Rack handlers
   porque el servidor web Thin no es soportado completamente.  El

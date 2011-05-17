@@ -1649,7 +1649,7 @@ The following Ruby versions are officially supported:
   all template languages, works.
 
 [ JRuby ]
-  JRuby is officially supported (JRuby >= 1.6.0). No issues with third party
+  JRuby is officially supported (JRuby >= 1.6.1). No issues with third party
   template libraries are known, however, if you choose to use JRuby, please
   look into JRuby rack handlers, as the Thin web server is not fully supported
   on JRuby. JRuby's support for C extensions is still experimental, which only

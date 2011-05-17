@@ -1848,7 +1848,7 @@ Die folgenden Versionen werden offiziell unterstützt:
   unterstützt.
 
 [ JRuby ]
-  JRuby wird offiziell unterstützt (JRuby >= 1.6.0). Probleme mit Template- 
+  JRuby wird offiziell unterstützt (JRuby >= 1.6.1). Probleme mit Template-
   Bibliotheken Dritter sind nicht bekannt. Falls JRuby zum Einsatz kommt, 
   sollte aber darauf geachtet werden, dass ein JRuby-Rack-Handler zum Einsatz 
   kommt – der Thin-Web-Server wird bisher nicht unterstütz. JRubys 
