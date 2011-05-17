@@ -41,6 +41,7 @@ gem 'creole', :group => 'creole'
 unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1"
   # C extensions
   gem 'rdiscount', :group => 'rdiscount'
+  gem 'redcarpet', :group => 'redcarpet'
 
   ## bluecloth is broken
   #gem 'bluecloth', :group => 'bluecloth'
