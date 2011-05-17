@@ -67,6 +67,12 @@ Sinatraでは、ルートはHTTPメソッドとURLマッチングパターンが
     params[:splat] # => ["path/to/file", "xml"]
   end
 
+ブロックパラーメータを使用した場合:
+
+  get '/download/*.*' do |path, ext|
+    [path, ext] # => ["path/to/file", "xml"]
+  end
+
 正規表現を使ったルート:
 
   get %r{/hello/([\w]+)} do
