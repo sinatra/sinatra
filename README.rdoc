@@ -80,6 +80,12 @@ via the <tt>params[:splat]</tt> array:
     params[:splat] # => ["path/to/file", "xml"]
   end
 
+Or with block parameters:
+
+  get '/download/*.*' do |path, ext|
+    [path, ext] # => ["path/to/file", "xml"]
+  end
+
 Route matching with Regular Expressions:
 
   get %r{/hello/([\w]+)} do
