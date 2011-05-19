@@ -44,7 +44,7 @@ definiert. Jeder dieser Routen wird ein Ruby-Block zugeordnet:
   end
   
   options '/' do
-    .. lege etwas fest ..
+    .. zeige, was wir können ..
   end
 
 Die Routen werden in der Reihenfolge durchlaufen, in der sie definiert wurden.
@@ -78,6 +78,12 @@ Routen-Muster können auch mit Splat- oder Wildcard-Parametern über das
     params[:splat] # => ["pfad/zu/datei", "xml"]
   end
 
+Oder mit Block-Parametern:
+
+  get '/download/*.*' do |pfad, endung|
+    [pfad, endung] # => ["Pfad/zu/Datei", "xml"]
+  end
+  
 Routen mit regulären Ausdrücken sind auch möglich:
 
   get %r{/hallo/([\w]+)} do
@@ -313,7 +319,7 @@ Dieser Code rendert <tt>./views/index.nokogiri</tt>.
 
 === Sass-Templates
 
-Das +haml+- oder +sass+-Gem wird benötigt, um Sass-Templates rendern zu können:
+Das +sass+-Gem wird benötigt, um Sass-Templates rendern zu können:
 
   # sass muss eingebunden werden
   require 'sass'
@@ -337,7 +343,7 @@ und individuell überschrieben werden.
 
 === SCSS-Templates
 
-Das +haml+- oder +sass+-Gem wird benötigt, um SCSS-Templates rendern zu können:
+Das +sass+-Gem wird benötigt, um SCSS-Templates rendern zu können:
 
   # sass muss eingebunden werden
   require 'sass'
@@ -650,7 +656,7 @@ Oder durch einen expliziten Hash von lokalen Variablen:
 
   get '/:id' do
     foo = Foo.find(params[:id])
-    haml '%h1= foo.name', :locals => { :foo => foo }
+    haml '%h1= bar.name', :locals => { :bar => foo }
   end
 
 Dies wird typischerweise bei Verwendung von Subtemplates (partials) in anderen
@@ -702,7 +708,7 @@ verwendet. Durch <tt>:layout => false</tt> kann das Ausführen verhindert
 werden:
 
   get '/' do
-    haml :index, :layout => !request.xhr?
+    haml :index, :layout => request.xhr?
   end
 
 === Dateiendungen zuordnen
@@ -968,8 +974,10 @@ Wenn <tt>send_file</tt> oder statische Dateien verwendet werden, kann es
 vorkommen, dass Sinatra den Mime-Typ nicht kennt. Registriert wird dieser mit
 +mime_type+ per Dateiendung:
 
-  mime_type :foo, 'text/foo'
-
+  configure do
+    mime_type :foo, 'text/foo'
+  end
+  
 Es kann aber auch der +content_type+-Helfer verwendet werden:
 
   get '/' do
@@ -1478,10 +1486,17 @@ URL-Routing, Authentifizierung und Session-Verarbeitung. Sinatra verwendet
 viele von diesen Komponenten automatisch, abhängig von der Konfiguration. So 
 muss +use+ häufig nicht explizit verwendet werden.
 
+Hilfreiche Middleware gibt es z.B. hier:
+{rack}[https://github.com/rack/rack/tree/master/lib/rack],
+{rack-contrib}[https://github.com/rack/rack-contrib#readme],
+mit {CodeRack}[http://coderack.org/] oder im
+{Rack wiki}[https://github.com/rack/rack/wiki/List-of-Middleware].
+
 == Testen
 
 Sinatra-Tests können mit jedem auf Rack aufbauendem Test-Framework geschrieben
-werden. {Rack::Test}[http://gitrdoc.com/brynary/rack-test] wird empfohlen:
+werden. {Rack::Test}[http://rdoc.info/github/brynary/rack-test/master/frames]
+wird empfohlen:
 
   require 'my_sinatra_app'
   require 'test/unit'
@@ -1510,9 +1525,6 @@ werden. {Rack::Test}[http://gitrdoc.com/brynary/rack-test] wird empfohlen:
     end
   end
 
-Anmerkung: Das eingebaute Sinatra::Test-Modul und die 
-Sinatra::TestHarness-Klasse werden seit Version 0.9.2 nicht mehr unterstützt.
-
 == Sinatra::Base - Middleware, Bibliotheken und modulare Anwendungen
 
 Das Definieren einer Top-Level-Anwendung funktioniert gut für 
@@ -1521,9 +1533,9 @@ Middleware, Rails Metal, einfache Bibliotheken mit Server-Komponenten oder auch
 Sinatra-Erweiterungen geschrieben werden sollen.
 
 Die Top-Level-DSL belastet den Objekt-Namespace und setzt einen
-Mikro-Anwendungsstil voraus (eine einzelne Anwendungsdatei, ./public und 
-./views Ordner, Logging, Exception-Detail-Seite, usw.). Genau hier kommt 
-Sinatra::Base ins Spiel:
+Mikro-Anwendungsstil voraus (eine einzelne Anwendungsdatei, <tt>./public</tt>
+und <tt>./views</tt> Ordner, Logging, Exception-Detail-Seite, usw.). Genau 
+hier kommt <tt>Sinatra::Base</tt> ins Spiel:
 
   require 'sinatra/base'
 
@@ -1543,15 +1555,15 @@ Server-Komponente einer Bibliothek:
 
    MyApp.run! :host => 'localhost', :port => 9090
 
-Die Methoden der Sinatra::Base-Subklasse sind genau dieselben wie die der 
-Top-Level-DSL. Die meisten Top-Level-Anwendungen können mit nur zwei 
-Veränderungen zu Sinatra::Base-Komponenten konvertiert werden:
+Die Methoden der <tt>Sinatra::Base</tt>-Subklasse sind genau dieselben wie die
+der Top-Level-DSL. Die meisten Top-Level-Anwendungen können mit nur zwei 
+Veränderungen zu <tt>Sinatra::Base</tt> konvertiert werden:
 
 * Die Datei sollte <tt>require 'sinatra/base'</tt> anstelle von
   <tt>require 'sinatra/base'</tt> aufrufen, ansonsten werden alle von
   Sinatras DSL-Methoden in den Top-Level-Namespace importiert.
 * Alle Routen, Error-Handler, Filter und Optionen der Applikation müssen in
-  einer Subklasse von Sinatra::Base definiert werden.
+  einer Subklasse von <tt>Sinatra::Base</tt> definiert werden.
 
 <tt>Sinatra::Base</tt> ist ein unbeschriebenes Blatt. Die meisten Optionen sind
 per Standard deaktiviert. Das betrifft auch den eingebauten Server. Siehe
@@ -1581,7 +1593,7 @@ Unterschiede beachtet werden:
 
   Szenario            Classic                 Modular
 
-  app_file            file loading sinatra    nil
+  app_file            sinatra ladende Datei   Sinatra::Base subklassierende Datei
   run                 $0 == app_file          false
   logging             true                    false
   method_override     true                    false
@@ -1663,7 +1675,7 @@ andere Sinatra-Anwendung handeln, es kann jede andere Rack-Anwendung sein
     get('/login') { haml :login }
   
     post('/login') do
-      if params[:name] = 'admin' and params[:password] = 'admin'
+      if params[:name] == 'admin' && params[:password] == 'admin'
         session['user_name'] = params[:name]
       else
         redirect '/login'
@@ -1731,12 +1743,13 @@ Verfügung stehen.
 
 === Anwendungs- oder Klassen-Scope
 
-Jede Sinatra-Anwendung entspricht einer Sinatra::Base-Subklasse. Falls die Top-
-Level-DSL verwendet wird (<tt>require 'sinatra'</tt>), handelt es sich um 
-Sinatra::Application, andernfalls ist es jene Subklasse, die explizit angelegt 
-wurde. Auf Klassenebene stehen Methoden wie +get+ oder +before+ zur Verfügung,
-es gibt aber keinen Zugriff auf das +request+-Object oder die +session+, da nur
-eine einzige Klasse für alle eingehenden Anfragen genutzt wird.
+Jede Sinatra-Anwendung entspricht einer <tt>Sinatra::Base</tt>-Subklasse. Falls
+die Top- Level-DSL verwendet wird (<tt>require 'sinatra'</tt>), handelt es sich
+um <tt>Sinatra::Application</tt>, andernfalls ist es jene Subklasse, die 
+explizit angelegt wurde. Auf Klassenebene stehen Methoden wie +get+ oder 
++before+ zur Verfügung, es gibt aber keinen Zugriff auf das +request+-Object 
+oder die +session+, da nur eine einzige Klasse für alle eingehenden Anfragen 
+genutzt wird.
 
 Optionen, die via +set+ gesetzt werden, sind Methoden auf Klassenebene:
 
@@ -1853,9 +1866,11 @@ Die folgenden Versionen werden offiziell unterstützt:
   sollte aber darauf geachtet werden, dass ein JRuby-Rack-Handler zum Einsatz 
   kommt – der Thin-Web-Server wird bisher nicht unterstütz. JRubys 
   Unterstützung für C-Erweiterungen sind zur Zeit noch experimenteller Natur,
-  betrifft im Moment aber nur RDiscount.
+  betrifft im Moment aber nur RDiscount und Redcarpet.
 
-<b>Ruby 1.8.6 wird nicht weiter unterstützt.</b>
+<b>Ruby 1.8.6 wird nicht weiter unterstützt.</b> Falls Sinatra trotzdem unter
+1.8.6 eingesetzt wird, muss Sinatra 1.2 verwendet werden, dass noch bis zum 
+Release von Sinatra 1.4.0 mit kleinen Bugfixes versorgt werden wird.
 
 Weiterhin werden wir auf kommende Ruby-Versionen ein Auge haben.
 
@@ -1865,7 +1880,6 @@ Sinatra unterstützt, funktionieren aber normalerweise:
 * Ältere Versionen von JRuby und Rubinius
 * MacRuby, Maglev, IronRuby
 * Ruby 1.9.0 und 1.9.1
-* Ruby 1.8.6 mit {backports}[https://github.com/marcandre/backports/#readme]
 
 Nicht offiziell unterstützt bedeutet, dass wenn Sachen nicht funktionieren, 
 wir davon ausgehen, dass es nicht an Sinatra sondern an der jeweiligen 
@@ -1964,13 +1978,15 @@ SemVer und SemVerTag.
 
 * {Projekt-Website}[http://sinatra.github.com/] - Ergänzende Dokumentation,
   News und Links zu anderen Ressourcen.
-* {Hilfe beisteuern}[http://sinatra.github.com/contributing.html] - Einen
+* {Mitmachen}[http://sinatra.github.com/contributing.html] - Einen
   Fehler gefunden? Brauchst du Hilfe? Hast du einen Patch?
 * {Issue-Tracker}[http://github.com/sinatra/sinatra/issues]
 * {Twitter}[http://twitter.com/sinatra]
 * {Mailing-Liste}[http://groups.google.com/group/sinatrarb]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] auf http://freenode.net
-
+* {Sinatra Book}[http://sinatra-book.gittr.com] Kochbuch Tutorial
+* {Sinatra Book Contrib}[http://sinatra-book-contrib.com/] Sinatra-Rezepte aus
+  der Community
 * API Dokumentation für die {aktuelle Version}[http://rubydoc.info/gems/sinatra]
   oder für {HEAD}[http://rubydoc.info/github/sinatra/sinatra] auf
   http://rubydoc.info
