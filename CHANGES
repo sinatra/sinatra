@@ -30,6 +30,16 @@
 
  * Uses SecureRandom to generate default session secret. (Konstantin Haase)
 
+= 1.2.7 (backports release) / Not Yet Released
+
+ * `Sinatra.run!` now prints to stderr rather than stdout. (Andrew Armenia)
+
+ * Automatic `app_file` detection now works in directories containing brackets
+   (Konstantin Haase)
+
+ * Improved documentation. (Emanuele Vicentini, Peter Higgins, Takanori
+   Ishikawa, Konstantin Haase)
+
 = 1.2.6 / 2011-05-01
 
  * Fix broken delegation, backport delegation tests from Sinatra 1.3.
@@ -162,7 +172,7 @@
  * Sinatra now ships with a Gemfile for development dependencies, since it eases
    supporting different platforms, like JRuby. (Konstantin Haase)
 
-= 1.1.4 / 2011-04-13
+= 1.1.4 (backports release) / 2011-04-13
 
  * Compatible with Tilt 1.3. (Konstantin Haase)
 
