@@ -78,6 +78,13 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 200, status
   end
 
+  it "it handles encoded slashes correctly" do
+    mock_app { get("/:a") { |a| a } }
+    get '/foo%2Fbar'
+    assert_equal 200, status
+    assert_body "foo/bar"
+  end
+
   it "overrides the content-type in error handlers" do
     mock_app {
       before { content_type 'text/plain' }
