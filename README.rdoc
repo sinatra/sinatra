@@ -1661,7 +1661,9 @@ The following Ruby versions are officially supported:
   on JRuby. JRuby's support for C extensions is still experimental, which only
   affects RDiscount and Redcarpet at the moment.
 
-<b>Ruby 1.8.6 is no longer supported.</b>
+<b>Ruby 1.8.6 is no longer supported.</b> If you want to run with 1.8.6,
+downgrade to Sinatra 1.2, which will receive bug fixes until Sinatra 1.4.0 is
+released.
 
 We also keep an eye on upcoming Ruby versions.
 
