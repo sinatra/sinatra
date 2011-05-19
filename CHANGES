@@ -10,6 +10,15 @@
    explicitly to prevent that behavior. (Magnus Holm, Ryan Tomayko, Konstantin
    Haase)
 
+ * Patterns now match against the escaped URLs rather than the unescaped
+   version. This makes Sinatra confirm with RFC 2396 section 2.2 and RFC 2616
+   section 3.2.3 (escaped reserved characters should not be treated like the
+   unescaped version), meaning that "/:name" will also match `/foo%2Fbar`, but
+   not `/foo/bar`. To avoid incompatibility, pattern matching has been adjusted.
+   Moreover, since we do no longer need to keep an unescaped version of
+   path_info around, we handle all changes to `env['PATH_INFO']` correctly.
+   (Konstantin Haase)
+
  * `settings.app_file` now defaults to the file subclassing `Sinatra::Base` in
    modular applications. (Konstantin Haase)
 
