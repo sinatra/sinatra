@@ -1,7 +1,7 @@
 = Sinatra
 
-*This is a backports release, if you have no reason to remain at Sinatra 1.2,
-please consider upgrading.*
+<i>This is a backports release. If you have no reason to remain at Sinatra 1.2,
+please consider upgrading.</i>
 
 Sinatra is a DSL for quickly creating web applications in Ruby with minimal
 effort:
