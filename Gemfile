@@ -29,14 +29,18 @@ gem 'builder', :group => 'builder'
 gem 'erubis', :group => 'erubis'
 gem 'less', :group => 'less'
 gem 'liquid', :group => 'liquid'
-gem 'nokogiri', :group => 'nokogiri'
 gem 'slim', :group => 'slim'
-gem 'RedCloth', :group => 'redcloth' if RUBY_VERSION < "1.9.3" and RUBY_ENGINE != 'macruby'
+gem 'RedCloth', :group => 'redcloth' if RUBY_VERSION < "1.9.3" and not RUBY_ENGINE.start_with? 'ma'
 gem 'coffee-script', '>= 2.0', :group => 'coffee-script'
 gem 'rdoc', :group => 'rdoc'
 gem 'kramdown', :group => 'kramdown'
 gem 'maruku', :group => 'maruku'
 gem 'creole', :group => 'creole'
+
+gem 'nokogiri', :group => 'nokogiri' if RUBY_ENGINE != 'maglev'
+#nokogiri_options = {:group => 'nokogiri'}
+#nokogiri_options[:git] = "https://github.com/MagLev/nokogiri.git" if RUBY_ENGINE == 'maglev'
+#gem 'nokogiri', nokogiri_options if RUBY_ENGINE != 'maglev'
 
 unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1"
   # C extensions
