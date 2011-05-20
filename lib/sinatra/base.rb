@@ -16,7 +16,7 @@ module Sinatra
     def accept
       @env['sinatra.accept'] ||= begin
         entries = @env['HTTP_ACCEPT'].to_s.split(',')
-        entries.map { |e| accept_entry(e) }.sort_by(&:last).map(&:first)
+        entries.map { |e| accept_entry(e) }.sort_by { |e| e.last }.map { |e| e.first }
       end
     end
 
