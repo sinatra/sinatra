@@ -1,5 +1,7 @@
 = 1.2.7 (backports release) / Not Yet Released
 
+ * Fix Ruby 1.8.6 issue with Accept header parsing. (Konstantin Haase)
+
  * `Sinatra.run!` now prints to stderr rather than stdout. (Andrew Armenia)
 
  * Automatic `app_file` detection now works in directories containing brackets
