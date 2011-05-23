@@ -31,5 +31,6 @@ Gem::Specification.new do |s|
 
   # dependencies
   s.add_dependency "rack"
+  s.add_development_dependency "rack-test"
   s.add_development_dependency "rspec", "~> 2.0"
 end
