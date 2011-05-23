@@ -1,20 +1,17 @@
+require 'rack/protection'
+
 module Rack
   module Protection
-    class XSSHeader
-      HEADERS = {
-        'X-XSS-Protection' => '1; mode=block',
-        'X-Frame-Options'  => 'sameorigin'
-      }
+    class XSSHeader < Base
+      default_options :xss_mode => :block
 
-      def initialize(app, options)
-        @app     = app
-        @headers = HEADERS.merge(options[:xss_headers] || {})
-        @headers.delete_if { |k,v| !v }
+      def header
+        { 'X-XSS-Protection' => "1; mode=#{options[:xss_mode]}" }
       end
 
       def call(env)
         status, headers, body = @app.call(env)
-        [status, @headers.merge(headers), body]
+        [status, header.merge(headers), body]
       end
     end
   end
