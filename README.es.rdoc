@@ -82,6 +82,12 @@ accesibles a través del arreglo <tt>params[:splat]</tt>:
     params[:splat] # => ["path/al/archivo", "xml"]
   end
 
+O, con parámetros de bloque:
+
+  get '/descargar/*.*' do |path, ext|
+    [path, ext] # => ["path/al/archivo", "xml"]
+  end
+
 Rutas con Expresiones Regulares:
 
   get %r{/hola/([\w]+)} do
