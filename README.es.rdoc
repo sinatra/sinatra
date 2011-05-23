@@ -519,7 +519,7 @@ O es posible especificar un Hash de variables locales explícitamente:
 
   get '/:id' do
     foo = Foo.find(params[:id])
-    haml '%h1= foo.nombre', :locals => { :foo => foo }
+    haml '%h1= bar.nombre', :locals => { :bar => foo }
   end
 
 Esto es usado típicamente cuando se renderizan plantillas como parciales desde
