@@ -1531,7 +1531,7 @@ aplicación basada en Rack (Rails/Ramaze/Camping/...):
     get('/login') { haml :login }
 
     post('/login') do
-      if params[:nombre] = 'admin' and params[:password] = 'admin'
+      if params[:nombre] == 'admin' && params[:password] == 'admin'
         session['nombre_de_usuario'] = params[:nombre]
       else
         redirect '/login'
