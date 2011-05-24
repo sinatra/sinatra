@@ -73,48 +73,60 @@ Currently included:
 
 A single extension (example: sinatra-content-for):
 
-    require 'sinatra'
-    require 'sinatra/content_for'
+``` ruby
+require 'sinatra'
+require 'sinatra/content_for'
+```
 
 Common extensions:
 
-    require 'sinatra'
-    require 'sinatra/contrib'
+``` ruby
+require 'sinatra'
+require 'sinatra/contrib'
+```
 
 All extensions:
 
-    require 'sinatra'
-    require 'sinatra/contrib/all'
+``` ruby
+require 'sinatra'
+require 'sinatra/contrib/all'
+```
 
 ## Modular Style
 
 A single extension (example: sinatra-content-for):
 
-    require 'sinatra/base'
-    require 'sinatra/content_for'
-    require 'sinatra/csrf'
-    
-    class MyApp < Sinatra::Base
-      # Note: Some modules are extensions, some helpers, see the specific
-      # documentation or the source
-      helpers Sinatra::ContentFor
-      register Sinatra::CSRF
-    end
+``` ruby
+require 'sinatra/base'
+require 'sinatra/content_for'
+require 'sinatra/csrf'
+
+class MyApp < Sinatra::Base
+  # Note: Some modules are extensions, some helpers, see the specific
+  # documentation or the source
+  helpers Sinatra::ContentFor
+  register Sinatra::CSRF
+end
+```
 
 Common extensions:
 
-    require 'sinatra/base'
-    require 'sinatra/contrib'
-    
-    class MyApp < Sinatra::Base
-      register Sinatra::Contrib
-    end
+``` ruby
+require 'sinatra/base'
+require 'sinatra/contrib'
+
+class MyApp < Sinatra::Base
+  register Sinatra::Contrib
+end
+```
 
 All extensions:
 
-    require 'sinatra/base'
-    require 'sinatra/contrib'
-    
-    class MyApp < Sinatra::Base
-      register Sinatra::Contrib
-    end
+``` ruby
+require 'sinatra/base'
+require 'sinatra/contrib'
+
+class MyApp < Sinatra::Base
+  register Sinatra::Contrib
+end
+```
