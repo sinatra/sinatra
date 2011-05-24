@@ -1826,6 +1826,9 @@ siguiendo las especificaciones SemVer y SemVerTag.
 * {Twitter}[http://twitter.com/sinatra]
 * {Lista de Correo}[http://groups.google.com/group/sinatrarb/topics]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] en http://freenode.net
+* {Sinatra Book}[http://sinatra-book.gittr.com] Tutorial (en inglés).
+* {Sinatra Book Contrib}[http://sinatra-book-contrib.com/] Recetas contribuidas
+  por la comunidad (en inglés).
 * Documentación de la API para la
   {última versión liberada}[http://rubydoc.info/gems/sinatra] o para la
   {rama de desarrollo actual}[http://rubydoc.info/github/sinatra/sinatra]
