@@ -2,6 +2,18 @@ require 'rack/protection'
 
 module Rack
   module Protection
+    ##
+    # Sets X-Frame-Options header to tell the browser avoid embedding the page
+    # in a frame.
+    #
+    # Prevented attack::   Clickjacking
+    # Supported browsers:: Internet Explorer 8, Firefox 3.6.9, Opera 10.50,
+    #                      Safari 4.0, Chrome 4.1.249.1042 and later
+    #
+    # Options:
+    # frame_options:: Defines who should be allowed to embed the page in a
+    #                 frame. Use :deny to forbid any embedding, :sameorigin
+    #                 to allow embedding from the same origin (default).
     class FrameOptions < XSSHeader
       default_options :frame_options => :sameorigin
       def header
