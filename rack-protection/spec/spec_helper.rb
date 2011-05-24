@@ -20,7 +20,7 @@ module TestHelpers
   end
 
   def mock_app(app = nil, &block)
-    app = block if block.arity == 1
+    app = block if app.nil? and block.arity == 1
     @app = app ? described_class.new(app) : Rack::Builder.new(&block).to_app
   end
 
