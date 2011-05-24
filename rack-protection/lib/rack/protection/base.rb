@@ -15,7 +15,7 @@ module Rack
       end
 
       def initialize(app, options = {})
-        @app, @options = app, options.merge(default_options)
+        @app, @options = app, default_options.merge(options)
       end
 
       def accepts?(env)
