@@ -3,6 +3,7 @@ require 'rack'
 
 module Rack
   module Protection
+    autoload :AccessControl,     'rack/protection/access_control'
     autoload :AuthenticityToken, 'rack/protection/authenticity_token'
     autoload :Base,              'rack/protection/base'
     autoload :EscapedParams,     'rack/protection/escaped_params'
