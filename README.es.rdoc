@@ -1362,7 +1362,7 @@ con {CodeRack}[http://coderack.org/] o en la
 
 Las pruebas para las aplicaciones Sinatra pueden ser escritas utilizando
 cualquier framework o librería de pruebas basada en Rack. Se recomienda usar
-{Rack::Test}[http://gitrdoc.com/brynary/rack-test]:
+{Rack::Test}[http://rdoc.info/github/brynary/rack-test/master/frames]:
 
   require 'mi_app_sinatra'
   require 'test/unit'
