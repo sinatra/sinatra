@@ -16,11 +16,12 @@ module TestHelpers
   attr_writer :app
 
   def app
-    @app ||= described_class.new(DummyApp)
+    @app || mock_app(DummyApp)
   end
 
-  def mock_app(&block)
-    @app = Rack::Builder.new(&block).to_app
+  def mock_app(app = nil, &block)
+    app = block if block.arity == 1
+    @app = app ? described_class.new(app) : Rack::Builder.new(&block).to_app
   end
 
   def env
