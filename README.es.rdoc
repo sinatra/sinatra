@@ -843,7 +843,9 @@ Cuando usás <tt>send_file</tt> o archivos estáticos tal vez tengas tipos mime
 que Sinatra no entiende. Usá +mime_type+ para registrarlos a través de la
 extensión de archivo:
 
-  mime_type :foo, 'text/foo'
+  configure do
+    mime_type :foo, 'text/foo'
+  end
 
 También lo podés usar con el ayudante +content_type+:
 
