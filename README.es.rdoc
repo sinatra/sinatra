@@ -1718,7 +1718,8 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
   embargo, si elegís usar JRuby, deberías examinar sus Rack handlers
   porque el servidor web Thin no es soportado completamente.  El
   soporte de JRuby para extensiones C se encuentra en una etapa
-  experimental, sin embargo, de momento solo RDiscount se ve afectada.
+  experimental, sin embargo, de momento solamente RDiscount y Redcarpted
+  se ven afectadas.
 
 <b>Hemos dejado de soportar Ruby 1.8.6.</b>
 
