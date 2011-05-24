@@ -6,6 +6,7 @@ module Rack
     # Prevented attack::   Clickjacking
     # Supported browsers:: Internet Explorer 8, Firefox 3.6.9, Opera 10.50,
     #                      Safari 4.0, Chrome 4.1.249.1042 and later
+    # More infos::         https://developer.mozilla.org/en/The_X-FRAME-OPTIONS_response_header
     #
     # Sets X-Frame-Options header to tell the browser avoid embedding the page
     # in a frame.
