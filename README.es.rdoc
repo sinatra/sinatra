@@ -1394,8 +1394,8 @@ reutilizables como Rack middleware, Rails metal, simple librerías con un
 componente de servidor, o incluso extensiones de Sinatra. El DSL de top-level
 contamina el espacio de nombres de Object y asume una configuración apropiada
 para micro-aplicaciones (por ejemplo, un único archivo de aplicación, los
-directorios ./public y ./views, logging, página con detalles de excepción,
-etc.). Ahí es donde Sinatra::Base entra en el juego:
+directorios <tt>./public</tt> y <tt>./views</tt>, logging, página con detalles
+de excepción, etc.). Ahí es donde <tt>Sinatra::Base</tt> entra en el juego:
 
   require 'sinatra/base'
 
@@ -1408,16 +1408,16 @@ etc.). Ahí es donde Sinatra::Base entra en el juego:
     end
   end
 
-Las subclases de Sinatra::Base tienen disponibles exactamente los mismos
-métodos que los provistos por el DSL de top-level. La mayoría de las
-aplicaciones top-level se pueden convertir en componentes Sinatra::Base con
-dos modificaciones:
+Las subclases de <tt>Sinatra::Base</tt> tienen disponibles exactamente los
+mismos métodos que los provistos por el DSL de top-level. La mayoría de las
+aplicaciones top-level se pueden convertir en componentes
+<tt>Sinatra::Base</tt> con dos modificaciones:
 
 * Tu archivo debe requerir <tt>sinatra/base</tt> en lugar de +sinatra+; de otra
   manera, todos los métodos del DSL de sinatra son importados dentro del
   espacio de nombres principal.
 * Poné las rutas, manejadores de errores, filtros y opciones de tu aplicación
-  en una subclase de Sinatra::Base.
+  en una subclase de <tt>Sinatra::Base</tt>.
 
 <tt>Sinatra::Base</tt> es una pizarra en blanco. La mayoría de las opciones están
 desactivadas por defecto, incluyendo el servidor incorporado. Mirá
@@ -1596,12 +1596,12 @@ disponibles.
 
 === Ámbito de Aplicación/Clase
 
-Cada aplicación Sinatra es una subclase de Sinatra::Base. Si estás usando el
-DSL de top-level (<tt>require 'sinatra'</tt>), entonces esta clase es
-Sinatra::Application, de otra manera es la subclase que creaste explícitamente.
-Al nivel de la clase tenés métodos como +get+ o +before+, pero no podés acceder
-a los objetos +request+ o +session+, ya que hay una única clase de la
-aplicación para todas las peticiones.
+Cada aplicación Sinatra es una subclase de <tt>Sinatra::Base</tt>. Si estás
+usando el DSL de top-level (<tt>require 'sinatra'</tt>), entonces esta clase es
+<tt>Sinatra::Application</tt>, de otra manera es la subclase que creaste
+explícitamente.  Al nivel de la clase tenés métodos como +get+ o +before+, pero
+no podés acceder a los objetos +request+ o +session+, ya que hay una única
+clase de la aplicación para todas las peticiones.
 
 Las opciones creadas utilizando +set+ son métodos al nivel de la clase:
 
