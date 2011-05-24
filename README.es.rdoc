@@ -1451,7 +1451,7 @@ entre sus configuraciones:
 
   Configuración       Clásica                      Modular
 
-  app_file            archivo que carga sinatra    nil
+  app_file            archivo que carga sinatra    archivo con la subclase de Sinatra::Base
   run                 $0 == app_file               false
   logging             true                         false
   method_override     true                         false
