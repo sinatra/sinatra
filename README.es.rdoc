@@ -1391,9 +1391,6 @@ cualquier framework o librería de pruebas basada en Rack. Se recomienda usar
     end
   end
 
-NOTA: El módulo Sinatra::Test y la clase Sinatra::TestHarness están
-deprecados a partir de la versión 0.9.2.
-
 == Sinatra::Base - Middleware, Librerías, y Aplicaciones Modulares
 
 Definir tu aplicación en el top-level funciona bien para micro-aplicaciones
