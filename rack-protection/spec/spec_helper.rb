@@ -25,6 +25,10 @@ module TestHelpers
     @app = Rack::Lint.new(app)
   end
 
+  def with_headers(headers)
+    proc { [200, {'Content-Type' => 'text/plain'}.merge(headers), ['ok']] }
+  end
+
   def env
     Thread.current[:last_env]
   end
