@@ -1721,7 +1721,10 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
   experimental, sin embargo, de momento solamente RDiscount y Redcarpted
   se ven afectadas.
 
-<b>Hemos dejado de soportar Ruby 1.8.6.</b>
+<b>Hemos dejado de soportar Ruby 1.8.6.</b> Si querés ejecutar Sinatra sobre
+1.8.6, podés utilizar la versión 1.2, pero tené en cuenta que una vez que
+Sinatra 1.4.0 sea liberado, ya no se corregirán los reportes de errores que se
+reciban.
 
 Siempre le prestamos atención a las nuevas versiones de Ruby.
 
@@ -1731,7 +1734,6 @@ oficialmente.  De cualquier manera, pueden ejecutar Sinatra:
 * Versiones anteriores de JRuby y Rubinius
 * MacRuby, Maglev e IronRuby
 * Ruby 1.9.0 y 1.9.1
-* Ruby 1.8.6 con {backports}[https://github.com/marcandre/backports/#readme]
 
 No estar soportada oficialmente, significa que si las cosas solamente se rompen
 ahí y no en una plataforma soportada, asumimos que no es nuestro problema sino
