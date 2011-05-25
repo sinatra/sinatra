@@ -21,7 +21,7 @@ module TestHelpers
 
   def mock_app(app = nil, &block)
     app  = block if app.nil? and block.arity == 1
-    app  = app ? described_class.new(app) : Rack::Builder.new(&block).to_app
+    app  = app ? Rack::Head.new(described_class.new(app)) : Rack::Builder.new(&block).to_app
     @app = Rack::Lint.new(app)
   end
 
@@ -71,6 +71,55 @@ shared_examples_for 'any rack application' do
   end
 
   it "should not interfere with normal head requests" do
+    head('/').should be_ok
+  end
+
+  it 'should not leak changes to env' do
+    klass    = described_class
+    detector = Struct.new(:app)
+
+    detector.send(:define_method, :call) do |env|
+      was = env.dup
+      res = app.call(env)
+      was.each do |k,v|
+        next if env[k] == v
+        fail "env[#{k.inspect}] changed from #{v.inspect} to #{env[k].inspect}"
+      end
+      res
+    end
+
+    mock_app do
+      use detector
+      use klass
+      run DummyApp
+    end
+
+    get('/').should be_ok
+  end
+
+  it 'allows passing on values in env' do
+    klass    = described_class
+    detector = Struct.new(:app)
+    changer  = Struct.new(:app)
+
+    detector.send(:define_method, :call) do |env|
+      res = app.call(env)
+      env['foo.bar'].should == 42
+      res
+    end
+
+    changer.send(:define_method, :call) do |env|
+      env['foo.bar'] = 42
+      app.call(env)
+    end
+
+    mock_app do
+      use detector
+      use klass
+      use changer
+      run DummyApp
+    end
+
     get('/').should be_ok
   end
 end
