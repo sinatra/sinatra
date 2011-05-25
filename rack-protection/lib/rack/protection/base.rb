@@ -1,13 +1,22 @@
 require 'rack/protection'
+require 'logger'
 
 module Rack
   module Protection
     class Base
-      DEFAULT_OPTIONS = { :reaction => :drop_session, :logging => true }
+      DEFAULT_OPTIONS = {
+        :reaction => :default_reaction, :logging => true, :status => 403,
+        :message => 'Forbidden'
+      }
+
       attr_reader :app, :options
 
       def self.default_options(options)
         define_method(:default_options) { super().merge(options) }
+      end
+
+      def self.default_reaction(reaction)
+        alias_method(:default_reaction, reaction)
       end
 
       def default_options
@@ -18,14 +27,19 @@ module Rack
         @app, @options = app, default_options.merge(options)
       end
 
+      def safe?(env)
+        %w[GET HEAD OPTIONS TRACE].include? env['REQUEST_METHOD']
+      end
+
       def accepts?(env)
         raise NotImplementedError, "#{self.class} implementation pending"
       end
 
       def call(env)
         unless accepts? env
+          warn env, "attack prevented by #{self.class}"
           result = send(options[:reaction], env)
-          return result if Array === result and result.size = 3
+          return result if Array === result and result.size == 3
         end
         app.call(env)
       end
@@ -36,8 +50,16 @@ module Rack
         l.warn(message)
       end
 
+      def deny(env)
+        [options[:status], {'Content-Type' => 'text/plain'}, [options[:message]]]
+      end
+
       def drop_session(env)
         env['rack.session'] = {}
+      end
+
+      def default_reaction(env)
+        fail "no default reaction given for #{self.class}"
       end
     end
   end

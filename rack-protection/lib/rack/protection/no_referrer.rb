@@ -15,6 +15,11 @@ module Rack
     #
     # Not Yet Implemented!
     class NoReferrer < Base
+      default_reaction :deny
+
+      def accepts?(env)
+        safe?(env) or (env['HTTP_REFERER'] and not env['HTTP_REFERER'].empty?)
+      end
     end
   end
 end
