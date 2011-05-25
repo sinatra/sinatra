@@ -82,6 +82,12 @@ accesibles a través del arreglo <tt>params[:splat]</tt>:
     params[:splat] # => ["path/al/archivo", "xml"]
   end
 
+O, con parámetros de bloque:
+
+  get '/descargar/*.*' do |path, ext|
+    [path, ext] # => ["path/al/archivo", "xml"]
+  end
+
 Rutas con Expresiones Regulares:
 
   get %r{/hola/([\w]+)} do
@@ -213,10 +219,92 @@ ejemplo, el archivo <tt>./public/css/style.css</tt> se accede a través de
 
 == Vistas / Plantillas
 
+Cada lenguaje de plantilla se expone a través de un método de renderizado que
+lleva su nombre.  Estos métodos simplemente devuelven un string:
+
+  get '/' do
+    erb :index
+  end
+
+Renderiza <tt>views/index.erb</tt>.
+
+En lugar del nombre de la plantilla podés proporcionar directamente el
+contenido de la misma:
+
+  get '/' do
+    codigo = "<%= Time.now %>"
+    erb codigo
+  end
+
+Los métodos de renderizado, aceptan además un segundo argumento, el hash de
+opciones:
+
+  get '/' do
+    erb :index, :layout => :post
+  end
+
+Renderiza <tt>views/index.erb</tt> embebido en <tt>views/post.erb</tt> (por
+defecto, la plantilla :index es embebida en <tt>views/layout.erb</tt> siempre y
+cuando este último archivo exista).
+
+Cualquier opción que Sinatra no entienda le será pasada al motor de renderizado
+de la plantilla:
+
+  get '/' do
+    haml :index, :format => :html5
+  end
+
+Además podés definir las opciones para un lenguaje de plantillas de forma
+general:
+
+  set :haml, :format => :html5
+
+  get '/' do
+    haml :index
+  end
+
+Las opciones pasadas al método de renderizado tienen precedencia sobre las
+definidas mediante +set+.
+
+Opciones disponibles:
+
+[locals]
+  Lista de variables locales pasadas al documento.  Resultan muy útiles cuando
+  se combinan con parciales.
+  Ejemplo: <tt>erb "<%= foo %>", :locals => {:foo => "bar"}</tt>
+
+[default_encoding]
+  Encoding utilizado cuando el de un string es dudoso.  Por defecto toma el
+  valor de <tt>settings.default_encoding</tt>.
+
+[views]
+  Directorio desde donde se cargan las vistas.  Por defecto toma el valor de
+  <tt>settings.views</tt>.
+
+[layout]
+  Si es +true+ o +false+ indica que se debe usar, o nó, un layout,
+  respectivamente.  También puede ser un símbolo que especifique qué plantilla
+  usar.  Ejemplo: <tt>erb :index, :layout => !request.xhr?</tt>
+
+[content_type]
+  Content-Type que produce la plantilla.  El valor por defecto depende de cada
+  lenguaje de plantillas.
+
+[scope]
+  Ámbito en el que se renderiza la plantilla.  Por defecto utiliza la instancia
+  de la aplicación.  Tené en cuenta que si cambiás esta opción las variables de
+  instancia y los helpers van a dejar de estar disponibles.
+
+[layout_engine]
+  Motor de renderizado de plantillas que usa para el layout.  Resulta
+  conveniente para lenguajes que no soportan layouts.  Por defecto toma el valor
+  del motor usado para renderizar la plantilla.
+  Ejemplo: <tt>set :rdoc, :layout_engine => :erb</tt>
+
 Se asume que las plantillas están ubicadas directamente bajo el directorio
 <tt>./views</tt>. Para usar un directorio de vistas diferente:
 
-  set :views, File.dirname(__FILE__) + '/plantillas'
+  set :views, settings.root + '/plantillas'
 
 Es importante acordarse que siempre tenés que referenciar a las plantillas con
 símbolos, incluso cuando se encuentran en un subdirectorio (en este caso tenés
@@ -224,188 +312,81 @@ que usar <tt>:'subdir/plantilla'</tt>). Tenés que usar un símbolo porque los
 métodos de renderización van a renderizar directamente cualquier string que se
 les pase como argumento.
 
+=== Lenguajes de Plantillas Disponibles
+
+Algunos lenguajes tienen varias implementaciones.  Para especificar que
+implementación usar (y para ser thread-safe), deberías requerirla antes de
+usarla:
+
+  require 'rdiscount' # o require 'bluecloth'
+  get('/') { markdown :index }
+
 === Plantillas Haml
 
-La gem/librería <tt>haml</tt> es necesaria para para renderizar plantillas HAML:
-
-  # Vas a necesitar requerir haml en tu app
-  require 'haml'
-
-  get '/' do
-    haml :index
-  end
-
-Renderiza <tt>./views/index.haml</tt>.
-
-Las {opciones de Haml}[http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options]
-pueden ser ajustadas globalmente a través de las configuraciones de Sinatra,
-ver {Opciones y Configuraciones}[http://www.sinatrarb.com/configuration.html],
-y reemplazadas individualmente.
-
-  set :haml, :format => :html5 # el formato por defecto de Haml es :xhtml
-
-  get '/' do
-    haml :index, :format => :html4 # reemplazado
-  end
+Dependencias::             {haml}[http://haml-lang.com/]
+Extensiones de Archivo::   <tt>.haml</tt>
+Ejemplo::                  <tt>haml :index, :format => :html5</tt>
 
 === Plantillas Erb
 
-  # Vas a necesitar requerir erb en tu app
-  require 'erb'
-
-  get '/' do
-    erb :index
-  end
-
-Renderiza <tt>./views/index.erb</tt>
-
-=== Plantillas Erubis
-
-La gem/librería <tt>erubis</tt> es necesaria para renderizar plantillas Erubis:
-
-  # Vas a necesitar requerir erubis en tu app
-  require 'erubis'
-
-  get '/' do
-    erubis :index
-  end
-
-Renderiza <tt>./views/index.erubis</tt>.
-
-También es posible reemplazar Erb con Erubis:
-
-  require 'erubis'
-  Tilt.register :erb, Tilt[:erubis]
-
-  get '/' do
-    erb :index
-  end
-
-Renderiza <tt>./views/index.erb</tt> con Erubis.
+Dependencias::             {erubis}[http://www.kuwata-lab.com/erubis/] o
+                           erb (incluida en Ruby)
+Extensiones de Archivo::   <tt>.erb</tt>, <tt>.rhtml</tt> o <tt>.erubis</tt>
+                           (solamente con Erubis)
+Ejemplo::                  <tt>erb :index</tt>
 
 === Plantillas Builder
 
-La gem/librería <tt>builder</tt> es necesaria para renderizar plantillas
-builder:
+Dependencias::             {builder}[http://builder.rubyforge.org/]
+Extensiones de Archivo::   <tt>.builder</tt>
+Ejemplo::                  <tt>builder { |xml| xml.em "hola" }</tt>
 
-  # Vas a necesitar requerir builder en tu app
-  require 'builder'
-
-  get '/' do
-    builder :index
-  end
-
-Renderiza <tt>./views/index.builder</tt>.
+Además, acepta un bloque con la definición de la plantilla (ver el ejemplo).
 
 === Plantillas Nokogiri
 
-La gem/librería <tt>nokogiri</tt> es necesaria para renderizar plantillas
-nokogiri:
+Dependencias::             {nokogiri}[http://nokogiri.org/]
+Extensiones de Archivo::   <tt>.nokogiri</tt>
+Ejemplo::                  <tt>nokogiri { |xml| xml.em "hola" }</tt>
 
-  # Vas a necesitar requerir nokogiri en tu app
-  require 'nokogiri'
-
-  get '/' do
-    nokogiri :index
-  end
-
-Renderiza <tt>./views/index.nokogiri</tt>.
+Además, acepta un bloque con la definición de la plantilla (ver el ejemplo).
 
 === Plantillas Sass
 
-La gem/librería <tt>haml</tt> o <tt>sass</tt> es necesaria para renderizar
-plantillas Sass:
+Dependencias::             {sass}[http://sass-lang.com/]
+Extensiones de Archivo::   <tt>.sass</tt>
+Ejemplo::                  <tt>sass :stylesheet, :style => :expanded</tt>
 
-  # Vas a necesitar requerir haml o sass en tu app
-  require 'sass'
+=== Plantillas SCSS
 
-  get '/stylesheet.css' do
-    sass :stylesheet
-  end
-
-Renderiza <tt>./views/stylesheet.sass</tt>.
-
-Las {opciones de Sass}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
-pueden ser ajustadas globalmente a través de las configuraciones de Sinatra,
-ver {Opciones y Configuraciones}[http://www.sinatrarb.com/configuration.html],
-y reemplazadas individualmente.
-
-  set :sass, :style => :compact # el estilo por defecto de Sass es :nested
-
-  get '/stylesheet.css' do
-    sass :stylesheet, :style => :expanded # reemplazado
-  end
-
-=== Plantillas Scss
-
-La gem/librería <tt>haml</tt> o <tt>sass</tt>es necesaria para renderizar
-plantillas Scss:
-
-  # Vas a necesitar requerir haml o sass en tu app
-  require 'sass'
-
-  get '/stylesheet.css' do
-    scss :stylesheet
-  end
-
-Renderiza <tt>./views/stylesheet.scss</tt>.
-
-Las {opciones de Scss}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
-pueden ser ajustadas globalmente a través de las configuraciones de Sinatra,
-ver {Opciones y Configuraciones}[http://www.sinatrarb.com/configuration.html],
-y reemplazadas individualmente.
-
-  set :scss, :style => :compact # el estilo por defecto de Sass es :nested
-
-  get '/stylesheet.css' do
-    scss :stylesheet, :style => :expanded # reemplazado
-  end
+Dependencias::             {scss}[http://sass-lang.com/]
+Extensiones de Archivo::   <tt>.scss</tt>
+Ejemplo::                  <tt>scss :stylesheet, :style => :expanded</tt>
 
 === Plantillas Less
 
-La gem/librería <tt>less</tt> es necesaria para renderizar plantillas Less:
-
-  # Vas a necesitar requerir less en tu app
-  require 'less'
-
-  get '/stylesheet.css' do
-    less :stylesheet
-  end
-
-Renderiza <tt>./views/stylesheet.less</tt>.
+Dependencias::             {less}[http://www.lesscss.org/]
+Extensiones de Archivo::   <tt>.less</tt>
+Ejemplo::                  <tt>less :stylesheet</tt>
 
 === Plantillas Liquid
 
-La gem/librería <tt>liquid</tt> es necesaria para renderizar plantillas Liquid:
+Dependencias::             {liquid}[http://www.liquidmarkup.org/]
+Extensiones de Archivo::   <tt>.liquid</tt>
+Ejemplo::                  <tt>liquid :index, :locals => { :clave => 'valor' }</tt>
 
-  # Vas a necesitar requerir liquid en tu app
-  require 'liquid'
-
-  get '/' do
-    liquid :index
-  end
-
-Renderiza <tt>./views/index.liquid</tt>.
-
-Como no vas a poder llamar a métodos de Ruby (excepto a +yield+) desde una
-plantilla Liquid, casi siempre vas a querer pasarle locales:
-
-  liquid :index, :locals => { :clave => 'valor' }
+Como no vas a poder llamar a métodos de Ruby (excepto por +yield+) desde una
+plantilla Liquid, casi siempre vas a querer pasarle locales.
 
 === Plantillas Markdown
 
-La gem/librería <tt>rdiscount</tt> es necesaria para renderizar plantillas
-Markdown:
-
-  # Vas a necesitar requerir rdiscount en tu app
-  require "rdiscount"
-
-  get '/' do
-    markdown :index
-  end
-
-Renderiza <tt>./views/index.markdown</tt> (+md+ y +mkd+ también son extensiones
-de archivo válidas).
+Dependencias::             {rdiscount}[https://github.com/rtomayko/rdiscount],
+                           {redcarpet}[https://github.com/tanoku/redcarpet],
+                           {bluecloth}[http://deveiate.org/projects/BlueCloth],
+                           {kramdown}[http://kramdown.rubyforge.org/] *o*
+                           {maruku}[http://maruku.rubyforge.org/]
+Extensiones de Archivo::   <tt>.markdown</tt>, <tt>.mkd</tt> y <tt>.md</tt>
+Ejemplo::                  <tt>markdown :index, :layout_engine => :erb</tt>
 
 No es posible llamar métodos desde markdown, ni pasarle locales. Por lo tanto,
 generalmente vas a usarlo en combinación con otro motor de renderizado:
@@ -420,52 +401,13 @@ plantillas:
 
 Como no podés utilizar Ruby desde Markdown, no podés usar layouts escritos en
 Markdown. De todos modos, es posible usar un motor de renderizado para el
-layout distinto al de la plantilla pasando la opción <tt>:layout_engine</tt>:
-
-  get '/' do
-    markdown :index, :layout_engine => :erb
-  end
-
-Renderiza <tt>./views/index.md</tt> con el layout <tt>./views/layout.erb</tt>.
-
-Recordá que podés asignar las opciones de renderizado globalmente:
-
-  set :markdown, :layout_engine => :haml, :layout => :post
-
-  get '/' do
-    markdown :index
-  end
-
-Renderiza <tt>./views/index.md</tt> (o cualquier otra plantilla Markdown) con
-el layout <tt>./views/post.haml</tt>.
-
-También es posible parsear Markdown con BlueCloth en lugar de RDiscount:
-
-  require 'bluecloth'
-
-  Tilt.register 'markdown', BlueClothTemplate
-  Tilt.register 'mkd',      BlueClothTemplate
-  Tilt.register 'md',       BlueClothTemplate
-
-  get '/' do
-    markdown :index
-  end
-
-Renderiza <tt>./views/index.md</tt> con BlueCloth.
+layout distinto al de la plantilla pasando la opción <tt>:layout_engine</tt>.
 
 === Plantillas Textile
 
-La gem/librería <tt>RedCloth</tt> es necesaria para renderizar plantillas
-Textile:
-
-  # Vas a necesitar requerir redcloth en tu app
-  require "redcloth"
-
-  get '/' do
-    textile :index
-  end
-
-Renderiza <tt>./views/index.textile</tt>.
+Dependencias::             {RedCloth}[http://redcloth.org/]
+Extensiones de Archivo::   <tt>.textile</tt>
+Ejemplo::                  <tt>textile :index, :layout_engine => :erb</tt>
 
 No es posible llamar métodos desde textile, ni pasarle locales. Por lo tanto,
 generalmente vas a usarlo en combinación con otro motor de renderizado:
@@ -480,38 +422,13 @@ plantillas:
 
 Como no podés utilizar Ruby desde Textile, no podés usar layouts escritos en
 Textile. De todos modos, es posible usar un motor de renderizado para el
-layout distinto al de la plantilla pasando la opción <tt>:layout_engine</tt>:
-
-  get '/' do
-    textile :index, :layout_engine => :erb
-  end
-
-Renderiza <tt>./views/index.textile</tt> con el layout
-<tt>./views/layout.erb</tt>.
-
-Recordá que podés asignar las opciones de renderizado globalmente:
-
-  set :textile, :layout_engine => :haml, :layout => :post
-
-  get '/' do
-    textile :index
-  end
-
-Renderiza <tt>./views/index.textile</tt> (o cualquier otra plantilla Textile)
-con el layout <tt>./views/post.haml</tt>.
+layout distinto al de la plantilla pasando la opción <tt>:layout_engine</tt>.
 
 === Plantillas RDoc
 
-La gem/librería <tt>rdoc</tt> es necesaria para renderizar plantillas RDoc:
-
-  # Vas a necesitar requerir rdoc/markup/to_html en tu app
-  require "rdoc/markup/to_html"
-
-  get '/' do
-    rdoc :index
-  end
-
-Renderiza <tt>./views/index.rdoc</tt>.
+Dependencias::             {rdoc}[http://rdoc.rubyforge.org/]
+Extensiones de Archivo::   <tt>.rdoc</tt>
+Ejemplo::                  <tt>textile :LEEME, :layout_engine => :erb</tt>
 
 No es posible llamar métodos desde rdoc, ni pasarle locales. Por lo tanto,
 generalmente vas a usarlo en combinación con otro motor de renderizado:
@@ -526,109 +443,58 @@ plantillas:
 
 Como no podés utilizar Ruby desde RDoc, no podés usar layouts escritos en RDoc.
 De todos modos, es posible usar un motor de renderizado para el layout distinto
-al de la plantilla pasando la opción <tt>:layout_engine</tt>:
-
-  get '/' do
-    rdoc :index, :layout_engine => :erb
-  end
-
-Renderiza <tt>./views/index.rdoc</tt> con el layout <tt>./views/layout.erb</tt>.
-
-Recordá que podés asignar las opciones de renderizado globalmente:
-
-  set :rdoc, :layout_engine => :haml, :layout => :post
-
-  get '/' do
-    rdoc :index
-  end
-
-Renderiza <tt>./views/index.rdoc</tt> (o cualquier otra plantilla RDoc) con el
-layout <tt>./views/post.haml</tt>.
+al de la plantilla pasando la opción <tt>:layout_engine</tt>.
 
 === Plantillas Radius
 
-La gem/librería <tt>radius</tt> es necesaria para renderizar plantillas Radius:
+Dependencias::             {radius}[http://radius.rubyforge.org/]
+Extensiones de Archivo::   <tt>.radius</tt>
+Ejemplo::                  <tt>radius :index, :locals => { :clave => 'valor' }</tt>
 
-  # Vas a necesitar requerir radius en tu app
-  require 'radius'
-
-  get '/' do
-    radius :index
-  end
-
-Renderiza <tt>./views/index.radius</tt>.
-
-Como no vas a poder llamar a métodos de Ruby (excepto a +yield+) desde una
-plantilla Radius, casi siempre vas a querer pasarle locales:
-
-  radius :index, :locals => { :clave => 'valor' }
+Como no vas a poder llamar a métodos de Ruby (excepto por +yield+) desde una
+plantilla Radius, casi siempre vas a querer pasarle locales.
 
 === Plantillas Markaby
 
-La gem/librería <tt>markaby</tt> es necesaria para renderizar plantillas
-Markaby:
+Dependencias::             {markaby}[http://markaby.github.com/]
+Extensiones de Archivo::   <tt>.mab</tt>
+Ejemplos::                 <tt>markaby { h1 "Bienvenido!" }</tt>
 
-  # Vas a necesitar requerir markaby en tu app
-  require 'markaby'
-
-  get '/' do
-    markaby :index
-  end
-
-Renderiza <tt>./views/index.mab</tt>.
-
-También podés usar Markaby inline:
-
-  get '/' do
-    markaby { h1 "Bienvenido!" }
-  end
-
+Además, acepta un bloque con la definición de la plantilla (ver el ejemplo).
 
 === Plantillas Slim
 
-La gem/librería <tt>slim</tt> es necesaria para renderizar plantillas Slim:
-
-  # Vas a necesitar requerir slim en tu app
-  require 'slim'
-
-  get '/' do
-    slim :index
-  end
-
-Renderiza <tt>./views/index.slim</tt>.
+Dependencias::             {slim}[http://slim-lang.com/]
+Extensiones de Archivo::   <tt>.slim</tt>
+Ejemplo::                  <tt>slim :index</tt>
 
 === Plantillas Creole
 
-La gem/librería <tt>creole</tt> es necesaria para renderizar plantillas Creole:
+Dependencias::             {creole}[https://github.com/minad/creole]
+Extensiones de Archivo::   <tt>.creole</tt>
+Ejemplo::                  <tt>creole :wiki, :layout_engine => :erb</tt>
 
-  # Vas a necesitar requerir creole en tu app
-  require 'creole'
+No es posible llamar métodos desde creole, ni pasarle locales. Por lo tanto,
+generalmente vas a usarlo en combinación con otro motor de renderizado:
 
-  get '/' do
-    creole :index
-  end
+  erb :resumen, :locals => { :texto => cerole(:introduccion) }
 
-Renderiza <tt>./views/index.creole</tt>.
+Tené en cuenta que también podés llamar al método +creole+ desde otras
+plantillas:
+
+  %h1 Hola Desde Haml!
+  %p= creole(:saludos)
+
+Como no podés utilizar Ruby desde Creole, no podés usar layouts escritos en
+Creloe.  De todos modos, es posible usar un motor de renderizado para el layout
+distinto al de la plantilla pasando la opción <tt>:layout_engine</tt>.
 
 === Plantillas CoffeeScript
 
-La gem/librería <tt>coffee-script</tt> y al menos <b>una</b> de las siguientes
-opciones para ejecutar JavaScript:
-
-* +node+ (de Node.js) en tu path
-* utilizar OSX
-* la gem/librería +therubyracer+
-
-son necesarios para renderizar plantillas CoffeeScript:
-
-  # Vas a necesitar requerir coffee-script en tu app
-  require 'coffee-script'
-
-  get '/application.js' do
-    coffee :application
-  end
-
-Renderiza <tt>./views/application.coffee</tt>.
+Dependencias::             {coffee-script}[https://github.com/josh/ruby-coffee-script]
+                           y un {mecanismo para ejecutar javascript}[https://github.com/sstephenson/execjs/blob/master/README.md#readme]
+Extensiones de Archivo::   <tt>.coffee</tt>
+Ejemplo::                  <tt>coffee :index</tt>
 
 === Plantillas Embebidas
 
@@ -653,7 +519,7 @@ O es posible especificar un Hash de variables locales explícitamente:
 
   get '/:id' do
     foo = Foo.find(params[:id])
-    haml '%h1= foo.nombre', :locals => { :foo => foo }
+    haml '%h1= bar.nombre', :locals => { :bar => foo }
   end
 
 Esto es usado típicamente cuando se renderizan plantillas como parciales desde
@@ -977,7 +843,9 @@ Cuando usás <tt>send_file</tt> o archivos estáticos tal vez tengas tipos mime
 que Sinatra no entiende. Usá +mime_type+ para registrarlos a través de la
 extensión de archivo:
 
-  mime_type :foo, 'text/foo'
+  configure do
+    mime_type :foo, 'text/foo'
+  end
 
 También lo podés usar con el ayudante +content_type+:
 
@@ -1484,11 +1352,17 @@ debugging, enrutamiento URL, autenticación, y manejo de sesiones. Sinatra
 usa muchos de estos componentes automáticamente de acuerdo a su configuración
 para que típicamente no tengas que usarlas (con +use+) explícitamente.
 
+Podés encontrar middleware útil en
+{rack}[https://github.com/rack/rack/tree/master/lib/rack],
+{rack-contrib}[https://github.com/rack/rack-contrib#readme],
+con {CodeRack}[http://coderack.org/] o en la
+{Rack wiki}[https://github.com/rack/rack/wiki/List-of-Middleware].
+
 == Pruebas
 
 Las pruebas para las aplicaciones Sinatra pueden ser escritas utilizando
 cualquier framework o librería de pruebas basada en Rack. Se recomienda usar
-{Rack::Test}[http://gitrdoc.com/brynary/rack-test]:
+{Rack::Test}[http://rdoc.info/github/brynary/rack-test/master/frames]:
 
   require 'mi_app_sinatra'
   require 'test/unit'
@@ -1517,9 +1391,6 @@ cualquier framework o librería de pruebas basada en Rack. Se recomienda usar
     end
   end
 
-NOTA: El módulo Sinatra::Test y la clase Sinatra::TestHarness están
-deprecados a partir de la versión 0.9.2.
-
 == Sinatra::Base - Middleware, Librerías, y Aplicaciones Modulares
 
 Definir tu aplicación en el top-level funciona bien para micro-aplicaciones
@@ -1528,8 +1399,8 @@ reutilizables como Rack middleware, Rails metal, simple librerías con un
 componente de servidor, o incluso extensiones de Sinatra. El DSL de top-level
 contamina el espacio de nombres de Object y asume una configuración apropiada
 para micro-aplicaciones (por ejemplo, un único archivo de aplicación, los
-directorios ./public y ./views, logging, página con detalles de excepción,
-etc.). Ahí es donde Sinatra::Base entra en el juego:
+directorios <tt>./public</tt> y <tt>./views</tt>, logging, página con detalles
+de excepción, etc.). Ahí es donde <tt>Sinatra::Base</tt> entra en el juego:
 
   require 'sinatra/base'
 
@@ -1542,16 +1413,16 @@ etc.). Ahí es donde Sinatra::Base entra en el juego:
     end
   end
 
-Las subclases de Sinatra::Base tienen disponibles exactamente los mismos
-métodos que los provistos por el DSL de top-level. La mayoría de las
-aplicaciones top-level se pueden convertir en componentes Sinatra::Base con
-dos modificaciones:
+Las subclases de <tt>Sinatra::Base</tt> tienen disponibles exactamente los
+mismos métodos que los provistos por el DSL de top-level. La mayoría de las
+aplicaciones top-level se pueden convertir en componentes
+<tt>Sinatra::Base</tt> con dos modificaciones:
 
 * Tu archivo debe requerir <tt>sinatra/base</tt> en lugar de +sinatra+; de otra
   manera, todos los métodos del DSL de sinatra son importados dentro del
   espacio de nombres principal.
 * Poné las rutas, manejadores de errores, filtros y opciones de tu aplicación
-  en una subclase de Sinatra::Base.
+  en una subclase de <tt>Sinatra::Base</tt>.
 
 <tt>Sinatra::Base</tt> es una pizarra en blanco. La mayoría de las opciones están
 desactivadas por defecto, incluyendo el servidor incorporado. Mirá
@@ -1580,7 +1451,7 @@ entre sus configuraciones:
 
   Configuración       Clásica                      Modular
 
-  app_file            archivo que carga sinatra    nil
+  app_file            archivo que carga sinatra    archivo con la subclase de Sinatra::Base
   run                 $0 == app_file               false
   logging             true                         false
   method_override     true                         false
@@ -1660,7 +1531,7 @@ aplicación basada en Rack (Rails/Ramaze/Camping/...):
     get('/login') { haml :login }
 
     post('/login') do
-      if params[:nombre] = 'admin' and params[:password] = 'admin'
+      if params[:nombre] == 'admin' && params[:password] == 'admin'
         session['nombre_de_usuario'] = params[:nombre]
       else
         redirect '/login'
@@ -1730,12 +1601,12 @@ disponibles.
 
 === Ámbito de Aplicación/Clase
 
-Cada aplicación Sinatra es una subclase de Sinatra::Base. Si estás usando el
-DSL de top-level (<tt>require 'sinatra'</tt>), entonces esta clase es
-Sinatra::Application, de otra manera es la subclase que creaste explícitamente.
-Al nivel de la clase tenés métodos como +get+ o +before+, pero no podés acceder
-a los objetos +request+ o +session+, ya que hay una única clase de la
-aplicación para todas las peticiones.
+Cada aplicación Sinatra es una subclase de <tt>Sinatra::Base</tt>. Si estás
+usando el DSL de top-level (<tt>require 'sinatra'</tt>), entonces esta clase es
+<tt>Sinatra::Application</tt>, de otra manera es la subclase que creaste
+explícitamente.  Al nivel de la clase tenés métodos como +get+ o +before+, pero
+no podés acceder a los objetos +request+ o +session+, ya que hay una única
+clase de la aplicación para todas las peticiones.
 
 Las opciones creadas utilizando +set+ son métodos al nivel de la clase:
 
@@ -1835,7 +1706,7 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
 [ Ruby 1.9.2 ]
   1.9.2 es soportado y recomendado.  Tené en cuenta que Radius y Markaby no
   son compatibles con 1.9 actualmente.  Además, no usés 1.9.2p0, porque produce
-  fallos de segmentación cuando se utiliza Sinatra.
+  fallos de segmentación cuando se ejecuta Sinatra.
 
 [ Rubinius ]
   Rubinius es soportado oficialmente (Rubinius >= 1.2.3).  Todo
@@ -1847,9 +1718,13 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
   embargo, si elegís usar JRuby, deberías examinar sus Rack handlers
   porque el servidor web Thin no es soportado completamente.  El
   soporte de JRuby para extensiones C se encuentra en una etapa
-  experimental, sin embargo, de momento solo RDiscount se ve afectada.
+  experimental, sin embargo, de momento solamente RDiscount y Redcarpted
+  se ven afectadas.
 
-<b>Hemos dejado de soportar Ruby 1.8.6.</b>
+<b>Hemos dejado de soportar Ruby 1.8.6.</b> Si querés ejecutar Sinatra sobre
+1.8.6, podés utilizar la versión 1.2, pero tené en cuenta que una vez que
+Sinatra 1.4.0 sea liberado, ya no se corregirán los reportes de errores que se
+reciban.
 
 Siempre le prestamos atención a las nuevas versiones de Ruby.
 
@@ -1859,7 +1734,6 @@ oficialmente.  De cualquier manera, pueden ejecutar Sinatra:
 * Versiones anteriores de JRuby y Rubinius
 * MacRuby, Maglev e IronRuby
 * Ruby 1.9.0 y 1.9.1
-* Ruby 1.8.6 con {backports}[https://github.com/marcandre/backports/#readme]
 
 No estar soportada oficialmente, significa que si las cosas solamente se rompen
 ahí y no en una plataforma soportada, asumimos que no es nuestro problema sino
@@ -1952,6 +1826,9 @@ siguiendo las especificaciones SemVer y SemVerTag.
 * {Twitter}[http://twitter.com/sinatra]
 * {Lista de Correo}[http://groups.google.com/group/sinatrarb/topics]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] en http://freenode.net
+* {Sinatra Book}[http://sinatra-book.gittr.com] Tutorial (en inglés).
+* {Sinatra Book Contrib}[http://sinatra-book-contrib.com/] Recetas contribuidas
+  por la comunidad (en inglés).
 * Documentación de la API para la
   {última versión liberada}[http://rubydoc.info/gems/sinatra] o para la
   {rama de desarrollo actual}[http://rubydoc.info/github/sinatra/sinatra]
