@@ -94,7 +94,7 @@ shared_examples_for 'any rack application' do
       run DummyApp
     end
 
-    get('/').should be_ok
+    get('/..', :foo => '<bar>').should be_ok
   end
 
   it 'allows passing on values in env' do
