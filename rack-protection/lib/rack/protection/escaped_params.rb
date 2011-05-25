@@ -10,15 +10,13 @@ module Rack
     #
     # Automatically escapes Rack::Request#params so they can be embedded in HTML
     # or JavaScript without any further issues. Calls +html_safe+ on the escaped
-    # strings if defined, to avoid double-escaping in Rails. It does only escape
-    # for embedding in HTML and Javascript by default, so you have to take care
-    # of URLs or SQL injection yourself.
+    # strings if defined, to avoid double-escaping in Rails.
     #
     # Options:
     # escape:: What escaping modes to use, should be Symbol or Array of Symbols.
-    #          Available: :html, :javascript, :url, default: [:html, :javascript]
+    #          Available: :html (default), :javascript, :url
     class EscapedParams < Base
-      default_options :escape => [:html, :javascript]
+      default_options :escape => :html
 
       def initialize(*)
         super

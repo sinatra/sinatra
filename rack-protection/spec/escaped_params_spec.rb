@@ -2,7 +2,7 @@ require File.expand_path('../spec_helper.rb', __FILE__)
 
 describe Rack::Protection::EscapedParams do
   it_behaves_like "any rack application"
-  
+
   context 'escaping' do
     it 'escapes html entities' do
       mock_app do |env|
