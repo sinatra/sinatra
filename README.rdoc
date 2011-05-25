@@ -332,7 +332,7 @@ It also takes a block for inline templates (see example).
 
 Dependency::        {nokogiri}[http://nokogiri.org/]
 File Extensions::   <tt>.nokogiri</tt>
-Example::           <tt>builder { |xml| xml.em "hi" }</tt>
+Example::           <tt>nokogiri { |xml| xml.em "hi" }</tt>
 
 It also takes a block for inline templates (see example).
 
