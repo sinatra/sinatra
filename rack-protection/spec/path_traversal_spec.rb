@@ -12,7 +12,7 @@ describe Rack::Protection::PathTraversal do
       it("does not touch #{path.inspect}") { get(path).body.should == path }
     end
 
-    {
+    { # yes, this is ugly, feel free to change that
       '/..' => '/', '/a/../b' => '/b', '/a/../b/' => '/b/', '/a/.' => '/a/',
       '/%2e.' => '/', '/a/%2e%2e/b' => '/b', '/a%2f%2e%2e%2fb/' => '/b/',
       '//' => '/', '/%2fetc%2fpasswd' => '/etc/passwd'
