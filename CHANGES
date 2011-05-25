@@ -28,7 +28,10 @@
 
  * The sessions setting now may be an options hash. (Konstantin Haase)
 
- * Important: 1.8.6 support has been dropped. (Konstantin Haase)
+ * Important: 1.8.6 support has been dropped. This version also depends on at
+   least Rack 1.3.0. This means that it is incompatible to Rails prior to 3.1.0.
+   Please use 1.2.x if you require an earlier version for Ruby or Rack, which we
+   will continue to supply with bug fixes. (Konstantin Haase)
 
  * It is now possible to use a different target class for the top level DSL (aka
    classic style) than `Sinatra::Application` by setting `Delegator.target`.

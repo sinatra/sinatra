@@ -1,7 +1,7 @@
 require 'thread'
 require 'time'
 require 'uri'
-require 'sinatra/rack'
+require 'rack'
 require 'sinatra/showexceptions'
 require 'tilt'
 
