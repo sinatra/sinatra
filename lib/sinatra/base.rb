@@ -1246,19 +1246,14 @@ module Sinatra
       # pipeline. The object is guaranteed to respond to #call but may not be
       # an instance of the class new was called on.
       def new(*args, &bk)
-        build(*args, &bk).to_app
+        build(Rack::Builder.new, *args, &bk).to_app
       end
 
       # Creates a Rack::Builder instance with all the middleware set up and
       # an instance of this class as end point.
-      def build(*args, &bk)
-        builder = Rack::Builder.new
-        builder.use Rack::MethodOverride if method_override?
-        builder.use ShowExceptions       if show_exceptions?
-        builder.use Rack::Head
-        setup_logging  builder
-        setup_sessions builder
-        middleware.each { |c,a,b| builder.use(c, *a, &b) }
+      def build(builder, *args, &bk)
+        setup_default_middleware builder
+        setup_middleware builder
         builder.run new!(*args, &bk)
         builder
       end
@@ -1268,6 +1263,18 @@ module Sinatra
       end
 
     private
+      def setup_default_middleware(builder)
+        builder.use ShowExceptions       if show_exceptions?
+        builder.use Rack::MethodOverride if method_override?
+        builder.use Rack::Head
+        setup_logging  builder
+        setup_sessions builder
+      end
+
+      def setup_middleware(builder)
+        middleware.each { |c,a,b| builder.use(c, *a, &b) }
+      end
+
       def setup_logging(builder)
         if logging?
           builder.use Rack::CommonLogger
