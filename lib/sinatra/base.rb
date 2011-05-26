@@ -802,8 +802,8 @@ module Sinatra
     end
 
     # Run the block with 'throw :halt' support and apply result to the response.
-    def invoke(&block)
-      res = catch(:halt) { instance_eval(&block) }
+    def invoke
+      res = catch(:halt) { yield }
       return if res.nil?
 
       case
