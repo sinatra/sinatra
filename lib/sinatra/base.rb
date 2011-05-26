@@ -227,7 +227,7 @@ module Sinatra
       # Checks for byte-ranges in the request and sets self.range appropriately.
       # Returns false if the ranges are unsatisfiable and the request should return 416.
       def parse_ranges(env, size)
-        r = Rack::Utils::byte_ranges(env, size)
+        r = Rack::Utils.byte_ranges(env, size)
         return false if r == []  # Unsatisfiable; report error
         @range = r[0] if r && r.length == 1  # Ignore multiple-range requests for now
         return true
