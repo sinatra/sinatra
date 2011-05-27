@@ -187,9 +187,6 @@ module Sinatra
 
     # Use the contents of the file at +path+ as the response body.
     def send_file(path, opts={})
-      stat = File.stat(path)
-      last_modified(opts[:last_modified] || stat.mtime)
-
       if opts[:type] or not response['Content-Type']
         content_type opts[:type] || File.extname(path), :default => 'application/octet-stream'
       end
@@ -200,56 +197,15 @@ module Sinatra
         response['Content-Disposition'] = 'inline'
       end
 
-      file_length = opts[:length] || stat.size
-      sf = StaticFile.open(path, 'rb')
-      if ! sf.parse_ranges(env, file_length)
-        response['Content-Range'] = "bytes */#{file_length}"
-        halt 416
-      elsif r=sf.range
-        response['Content-Range'] = "bytes #{r.begin}-#{r.end}/#{file_length}"
-        response['Content-Length'] = (r.end - r.begin + 1).to_s
-        halt 206, sf
-      else
-        response['Content-Length'] ||= file_length.to_s
-        halt sf
-      end
+      last_modified opts[:last_modified] if opts[:last_modified]
+
+      file      = Rack::File.new nil
+      file.path = path
+      result    = file.serving env
+      result[1].each { |k,v| headers[k] ||= v }
+      halt result[0], result[2]
     rescue Errno::ENOENT
       not_found
-    end
-
-    # Rack response body used to deliver static files. The file contents are
-    # generated iteratively in 8K chunks.
-    class StaticFile < ::File #:nodoc:
-      alias_method :to_path, :path
-
-      attr_accessor :range  # a Range or nil
-
-      # Checks for byte-ranges in the request and sets self.range appropriately.
-      # Returns false if the ranges are unsatisfiable and the request should return 416.
-      def parse_ranges(env, size)
-        r = Rack::Utils.byte_ranges(env, size)
-        return false if r == []  # Unsatisfiable; report error
-        @range = r[0] if r && r.length == 1  # Ignore multiple-range requests for now
-        return true
-      end
-
-      CHUNK_SIZE = 8192
-
-      def each
-        if @range
-          self.pos = @range.begin
-          length = @range.end - @range.begin + 1
-          while length > 0 && (buf = read([CHUNK_SIZE,length].min))
-            yield buf
-            length -= buf.length
-          end
-        else
-          rewind
-          while buf = read(CHUNK_SIZE)
-            yield buf
-          end
-        end
-      end
     end
 
     # Specify response freshness policy for HTTP caches (Cache-Control header).
