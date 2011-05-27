@@ -288,8 +288,8 @@ module Sinatra
     # When the current request includes an 'If-None-Match' header with a
     # matching etag, execution is immediately halted. If the request method is
     # GET or HEAD, a '304 Not Modified' response is sent.
-    def etag(value, kind=:strong)
-      raise TypeError, ":strong or :weak expected" if ![:strong,:weak].include?(kind)
+    def etag(value, kind = :strong)
+      raise ArgumentError, ":strong or :weak expected" unless [:strong,:weak].include?(kind)
       value = '"%s"' % value
       value = 'W/' + value if kind == :weak
       response['ETag'] = value

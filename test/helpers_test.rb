@@ -852,6 +852,16 @@ class HelpersTest < Test::Unit::TestCase
       get '/'
       assert_equal 'W/"FOO"', response['ETag']
     end
+
+    it 'raises an ArgumentError for an invalid strength' do
+      mock_app do
+        get '/' do
+          etag 'FOO', :w00t
+          "that's weak, dude."
+        end
+      end
+      assert_raise(ArgumentError) { get '/' }
+    end
   end
 
   describe 'back' do
