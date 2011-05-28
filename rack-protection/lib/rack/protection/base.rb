@@ -54,6 +54,16 @@ module Rack
         [options[:status], {'Content-Type' => 'text/plain'}, [options[:message]]]
       end
 
+      def session(env)
+        env['rack.session'] ||= {}
+      end
+
+      def random_string(secure = defined? SecureRandom)
+        secure ? SecureRandom.hex(32) : "%032x" % rand(2**128-1)
+      rescue NotImpelentedError
+        random_string false
+      end
+
       def drop_session(env)
         env['rack.session'] = {}
       end
