@@ -37,6 +37,16 @@ Rake::TestTask.new(:test) do |t|
   t.ruby_opts << '-I.'
 end
 
+Rake::TestTask.new(:"test:core") do |t|
+  core_tests = %w[base delegator encoding extensions filter
+     helpers mapped_error middleware radius rdoc
+     readme request response result route_added_hook
+     routing server settings sinatra static templates]
+  t.test_files = core_tests.map {|n| "test/#{n}_test.rb"}
+  t.ruby_opts = ["-rubygems"] if defined? Gem
+  t.ruby_opts << "-I."
+end
+
 # Rcov ================================================================
 
 namespace :test do
