@@ -147,9 +147,8 @@ if defined?(Gem)
     # read spec file and split out manifest section
     spec = File.read(f.name)
     head, manifest, tail = spec.split("  # = MANIFEST =\n")
-    # replace version and date
+    # replace version
     head.sub!(/\.version = '.*'/, ".version = '#{source_version}'")
-    head.sub!(/\.date = '.*'/, ".date = '#{Date.today.to_s}'")
     # determine file list from git ls-files
     files = `git ls-files`.
       split("\n").
