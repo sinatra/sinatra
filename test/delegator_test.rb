@@ -1,3 +1,5 @@
+require File.expand_path('../helper', __FILE__)
+
 class DelegatorTest < Test::Unit::TestCase
   class Mirror
     attr_reader :last_call
