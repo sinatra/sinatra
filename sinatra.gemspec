@@ -33,7 +33,6 @@ Gem::Specification.new do |s|
     lib/sinatra/images/404.png
     lib/sinatra/images/500.png
     lib/sinatra/main.rb
-    lib/sinatra/rack.rb
     lib/sinatra/showexceptions.rb
     sinatra.gemspec
     test/base_test.rb
