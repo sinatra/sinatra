@@ -15,6 +15,11 @@ module Rack
     #
     # Not Yet Implemented!
     class RemoteReferrer < Base
+      default_reaction :deny
+
+      def accepts?(env)
+        safe?(env) or referrer(env) == Request.new(env).host
+      end
     end
   end
 end

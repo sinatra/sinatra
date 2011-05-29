@@ -22,7 +22,6 @@ module Rack
         use EscapedParams,    options unless except.include? :escaped_params
         use FrameOptions,     options unless except.include? :frame_options
         use PathTraversal,    options unless except.include? :path_traversal
-        use RemoteReferrer,   options unless except.include? :remote_referrer
         use RemoteToken,      options unless except.include? :remote_token
         use SessionHijacking, options unless except.include? :session_hijacking
         use XSSHeader,        options unless except.include? :xss_header

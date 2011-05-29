@@ -1,5 +1,6 @@
 require 'rack/protection'
 require 'logger'
+require 'uri'
 
 module Rack
   module Protection
@@ -56,6 +57,11 @@ module Rack
 
       def session(env)
         env['rack.session'] ||= {}
+      end
+
+      def referrer(env)
+        ref = env['HTTP_REFERER']
+        URI.parse(ref).host || Request.new(env).host if ref and not ref.empty?
       end
 
       def random_string(secure = defined? SecureRandom)

@@ -14,6 +14,11 @@ module Rack
     #
     # Not Yet Implemented!
     class RemoteToken < AuthenticityToken
+      default_reaction :deny
+
+      def accepts?(env)
+        super or referrer(env) == Request.new(env).host
+      end
     end
   end
 end
