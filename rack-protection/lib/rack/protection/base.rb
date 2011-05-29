@@ -1,4 +1,5 @@
 require 'rack/protection'
+require 'digest'
 require 'logger'
 require 'uri'
 
@@ -6,8 +7,9 @@ module Rack
   module Protection
     class Base
       DEFAULT_OPTIONS = {
-        :reaction => :default_reaction, :logging => true, :status => 403,
-        :message => 'Forbidden'
+        :reaction    => :default_reaction, :logging   => true,
+        :message     => 'Forbidden',       :encryptor => Digest::SHA1,
+        :session_key => 'rack.session',    :status    => 403
       }
 
       attr_reader :app, :options
@@ -55,8 +57,17 @@ module Rack
         [options[:status], {'Content-Type' => 'text/plain'}, [options[:message]]]
       end
 
+      def session?(env)
+        env.include? options[:session_key]
+      end
+
       def session(env)
-        env['rack.session'] ||= {}
+        return env[options[:session_key]] if session? env
+        fail "you need to set up a session middleware *before* #{self.class}"
+      end
+
+      def drop_session(env)
+        session(env).clear if session? env
       end
 
       def referrer(env)
@@ -70,12 +81,12 @@ module Rack
         random_string false
       end
 
-      def drop_session(env)
-        env['rack.session'] = {}
-      end
-
       def default_reaction(env)
         fail "no default reaction given for #{self.class}"
+      end
+
+      def encrypt(value)
+        options[:encryptor].hexdigest value.to_s
       end
     end
   end

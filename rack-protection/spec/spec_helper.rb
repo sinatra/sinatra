@@ -20,9 +20,18 @@ module TestHelpers
   end
 
   def mock_app(app = nil, &block)
-    app  = block if app.nil? and block.arity == 1
-    app  = app ? Rack::Head.new(described_class.new(app)) : Rack::Builder.new(&block).to_app
-    @app = Rack::Lint.new(app)
+    app = block if app.nil? and block.arity == 1
+    if app
+      klass = described_class
+      mock_app do
+        use Rack::Head
+        use Rack::Session::Cookie
+        use klass
+        run app
+      end
+    else
+      @app = Rack::Lint.new Rack::Builder.new(&block).to_app
+    end
   end
 
   def with_headers(headers)
@@ -89,6 +98,8 @@ shared_examples_for 'any rack application' do
     end
 
     mock_app do
+      use Rack::Head
+      use Rack::Session::Cookie
       use detector
       use klass
       run DummyApp
@@ -114,6 +125,8 @@ shared_examples_for 'any rack application' do
     end
 
     mock_app do
+      use Rack::Head
+      use Rack::Session::Cookie
       use detector
       use klass
       use changer

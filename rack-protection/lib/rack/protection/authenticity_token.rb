@@ -16,10 +16,10 @@ module Rack
     class AuthenticityToken < Base
       def accepts?(env)
         return true if safe? env
-        request = Request.new env
+        session = session env
         token   = session[:csrf] ||= session['_csrf_token'] || random_string
         env['HTTP_X_CSRF_TOKEN'] == token or
-          request.params['authenticity_token'] == token
+          Request.new(env).params['authenticity_token'] == token
       end
     end
   end

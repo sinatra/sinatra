@@ -14,6 +14,24 @@ module Rack
     #
     # Not Yet Implemented!
     class SessionHijacking < Base
+      default_options :tracking_key => :tracking, :encrypt_tracking => true,
+        :track => %w[HTTP_USER_AGENT HTTP_ACCEPT_ENCODING HTTP_ACCEPT_LANGUAGE
+          HTTP_VERSION]
+
+      def accepts?(env)
+        session = session env
+        key     = options[:tracking_key]
+        if session.include? key
+          session[key].all? { |k,v| env[k] == encrypt(v) }
+        else
+          session[key] = {}
+          options[:track].each { |k| session[k] = encrypt(env[k]) }
+        end
+      end
+
+      def encrypt(value)
+        options[:encrypt_tracking] ? super(value) : value.to_s
+      end
     end
   end
 end
