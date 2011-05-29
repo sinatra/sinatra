@@ -46,7 +46,7 @@ module Sinatra
 
       def checks
         return @checks if defined? @checks
-        checks = [:verb, Array(*csrf_protection)]
+        checks = [:verb, *Array(csrf_protection)]
         checks.map! { |c| c == true ? :optional_referrer : c }
         checks.delete :verb if checks.delete :all_verbs
         @checks = checks
