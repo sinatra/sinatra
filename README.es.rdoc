@@ -1480,7 +1480,7 @@ Iniciar con:
 O, con un archivo <tt>config.ru</tt>, que permite usar cualquier handler Rack:
 
   # config.ru
-  require 'mi_app'
+  require './mi_app'
   run MiApp
 
 Después ejecutar:
@@ -1500,7 +1500,7 @@ Escribí el archivo de tu aplicación:
 
 Y el <tt>config.ru</tt> correspondiente:
 
-  require 'app'
+  require './app'
   run Sinatra::Application
 
 === ¿Cuándo Usar config.ru?

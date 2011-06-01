@@ -1499,7 +1499,7 @@ Ou alors avec un fichier <tt>config.ru</tt>, qui permet d'utiliser n'importe
 quel gestionnaire Rack :
 
   # config.ru
-  require 'my_app'
+  require './my_app'
   run MyApp
 
 Exécutez :
@@ -1519,7 +1519,7 @@ Ecrivez votre application :
 
 Et un fichier <tt>config.ru</tt> correspondant :
 
-  require 'app'
+  require './app'
   run Sinatra::Application
 
 === Quand utiliser un fichier config.ru ?
