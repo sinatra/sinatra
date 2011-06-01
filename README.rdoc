@@ -1526,7 +1526,7 @@ Start with:
 Or with a <tt>config.ru</tt>, which allows using any Rack handler:
 
   # config.ru
-  require 'my_app'
+  require './my_app'
   run MyApp
 
 Run:
@@ -1546,7 +1546,7 @@ Write your app file:
 
 And a corresponding <tt>config.ru</tt>:
 
-  require 'app'
+  require './app'
   run Sinatra::Application
 
 === When to use a config.ru?

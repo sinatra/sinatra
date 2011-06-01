@@ -1014,7 +1014,7 @@ DSL верхнего уровня загрязняет пространство 
 Rack-совместимый сервер приложений.
 
   # config.ru
-  require 'my_app'
+  require './my_app'
   run MyApp
 
 Запускаем:
@@ -1034,7 +1034,7 @@ Rack-совместимый сервер приложений.
 
 И соответствующий <tt>config.ru</tt>:
 
-  require 'app'
+  require './app'
   run Sinatra::Application
 
 === Когда использовать config.ru?

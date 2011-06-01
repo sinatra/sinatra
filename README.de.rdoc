@@ -1561,7 +1561,7 @@ Oder über eine <tt>config.ru</tt>-Datei, die es erlaubt, einen beliebigen
 Rack-Handler zu verwenden:
 
   # config.ru
-  require 'mein_app'
+  require './mein_app'
   run MeineApp
 
 Starte:
@@ -1582,7 +1582,7 @@ Schreibe eine Anwendungsdatei:
 
 sowie eine dazugehörige <tt>config.ru</tt>-Datei:
 
-  require 'app'
+  require './app'
   run Sinatra::Application
 
 

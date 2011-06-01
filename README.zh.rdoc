@@ -1500,7 +1500,7 @@ Sinatra::Base子类可用的方法实际上就是通过顶层 DSL
 或者使用一个 <tt>config.ru</tt>，允许你使用任何Rack处理器:
 
   # config.ru
-  require 'my_app'
+  require './my_app'
   run MyApp
 
 运行:
@@ -1520,7 +1520,7 @@ Sinatra::Base子类可用的方法实际上就是通过顶层 DSL
 
 加入相应的 <tt>config.ru</tt>:
 
-  require 'app'
+  require './app'
   run Sinatra::Application
 
 === 什么时候用 config.ru?
