@@ -1395,7 +1395,7 @@ module Sinatra
   #
   # The Application class should not be subclassed, unless you want to
   # inherit all settings, routes, handlers, and error pages from the
-  # top-level. Subclassing Sinatra::Base is heavily recommended for
+  # top-level. Subclassing Sinatra::Base is highly recommended for
   # modular applications.
   class Application < Base
     set :logging, Proc.new { ! test? }
