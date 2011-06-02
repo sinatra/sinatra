@@ -238,6 +238,11 @@ module Sinatra
 
       attr_accessor :range  # a Range or nil
 
+      def initialize(*args)
+        super(*args)
+        @range = nil
+      end
+
       # Checks for byte-ranges in the request and sets self.range appropriately.
       # Returns false if the ranges are unsatisfiable and the request should return 416.
       def parse_ranges(env, size)
