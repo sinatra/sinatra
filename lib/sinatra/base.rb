@@ -727,7 +727,7 @@ module Sinatra
       res = catch(:halt) { yield }
       res = [res] if Fixnum === res or String === res
       if Array === res and Fixnum === res.first
-        raise TypeError, "#{res.inspect} not supported" if res.length > 3
+        raise ArgumentError, "#{res.inspect} not supported" if res.length > 3
         status(res.shift)
         body(res.pop)
         headers(*res)
