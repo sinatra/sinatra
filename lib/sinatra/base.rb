@@ -617,7 +617,7 @@ module Sinatra
     # Run filters defined on the class and all superclasses.
     def filter!(type, base = settings)
       filter! type, base.superclass if base.superclass.respond_to?(:filters)
-      base.filters[type].each { |block| instance_eval(&block) }
+      base.filters[type].each { |block, *args| process_route(*args, &block) }
     end
 
     # Run routes defined on the class and all superclasses.
@@ -945,10 +945,8 @@ module Sinatra
 
       # add a filter
       def add_filter(type, path = nil, options = {}, &block)
-        return filters[type] << block unless path
         path, options = //, path if path.respond_to?(:each_pair)
-        block, *arguments = compile!(type, path, block, options)
-        add_filter(type) { process_route(*arguments, &block) }
+        filters[type] << compile!(type, path, block, options)
       end
 
       # Add a route condition. The route is considered non-matching when the
@@ -1032,7 +1030,7 @@ module Sinatra
 
         define_method(method_name, &block)
         unbound_method          = instance_method method_name
-        pattern, keys           = compile(path)
+        pattern, keys           = compile(path || //)
         conditions, @conditions = @conditions, []
         remove_method method_name
 
