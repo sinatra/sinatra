@@ -760,37 +760,28 @@ module Sinatra
       static! if settings.static? && (request.get? || request.head?)
       filter! :before
       route!
-    rescue NotFound => boom
-      handle_not_found!(boom)
     rescue ::Exception => boom
       handle_exception!(boom)
     ensure
       filter! :after unless env['sinatra.static_file']
     end
 
-    # Special treatment for 404s in order to play nice with cascades.
-    def handle_not_found!(boom)
-      @env['sinatra.error']          = boom
-      @response.status               = 404
-      @response.headers['X-Cascade'] = 'pass'
-      @response.body                 = ['<h1>Not Found</h1>']
-      error_block! boom.class, NotFound
-    end
-
     # Error handling during requests.
     def handle_exception!(boom)
       @env['sinatra.error'] = boom
-
       dump_errors!(boom) if settings.dump_errors?
       raise boom if settings.show_exceptions? and settings.show_exceptions != :after_handler
+      @response.status = boom.respond_to?(:code) ? Integer(boom.code) : 500
 
-      @response.status = 500
+      if @response.status == 404
+        @response.headers['X-Cascade'] = 'pass'
+        @response.body                 = ['<h1>Not Found</h1>']
+      end
+
       if res = error_block!(boom.class)
         res
-      elsif settings.raise_errors?
-        raise boom
-      else
-        error_block!(Exception)
+      elsif @response.status >= 500
+        settings.raise_errors? ? raise(boom) : error_block!(Exception)
       end
     end
 
