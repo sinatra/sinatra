@@ -360,6 +360,7 @@ module Sinatra
     end
 
     def initialize
+      super
       @default_layout = :layout
     end
 
