@@ -772,7 +772,8 @@ module Sinatra
         next base = base.superclass unless args = base.errors[key]
         return process_route(*args)
       end
-      false
+      return false unless key.respond_to? :superclass and key.superclass < Exception
+      error_block! key.superclass
     end
 
     def dump_errors!(boom)

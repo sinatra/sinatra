@@ -39,6 +39,36 @@ class MappedErrorTest < Test::Unit::TestCase
       assert_equal 'Exception!', body
     end
 
+    it 'walks down inheritance chain for errors' do
+      mock_app {
+        set :raise_errors, false
+        error(RuntimeError) { 'Exception!' }
+        get '/' do
+          raise FooError
+        end
+      }
+
+      get '/'
+      assert_equal 500, status
+      assert_equal 'Exception!', body
+    end
+
+    it 'favors subclass handler over superclass handler if available' do
+      mock_app {
+        set :raise_errors, false
+        error(Exception) { 'Exception!' }
+        error(FooError) { 'FooError!' }
+        error(RuntimeError) { 'Exception!' }
+        get '/' do
+          raise FooError
+        end
+      }
+
+      get '/'
+      assert_equal 500, status
+      assert_equal 'FooError!', body
+    end
+
     it "sets env['sinatra.error'] to the rescued exception" do
       mock_app {
         set :raise_errors, false
