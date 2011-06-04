@@ -673,7 +673,7 @@ module Sinatra
         @params = @original_params.merge(params)
         @block_params = values
         catch(:pass) do
-          conditions.each { |c| throw :pass if instance_eval(&c) == false }
+          conditions.each { |c| throw :pass if c.bind(self).call == false }
           block[self, @block_params]
         end
       end
@@ -945,8 +945,8 @@ module Sinatra
 
       # Add a route condition. The route is considered non-matching when the
       # block returns false.
-      def condition(&block)
-        @conditions << block
+      def condition(name = "#{caller.first[/`.*'/]} condition", &block)
+        @conditions << generate_method(name, &block)
       end
 
    private
@@ -1014,15 +1014,19 @@ module Sinatra
         extensions.each { |e| e.send(name, *args) if e.respond_to?(name) }
       end
 
+      def generate_method(method_name, &block)
+        define_method(method_name, &block)
+        method = instance_method method_name
+        remove_method method_name
+        method
+      end
+
       def compile!(verb, path, block, options = {})
         options.each_pair { |option, args| send(option, *args) }
-        method_name = "#{verb} #{path}"
-
-        define_method(method_name, &block)
-        unbound_method          = instance_method method_name
+        method_name             = "#{verb} #{path}"
+        unbound_method          = generate_method(method_name, &block)
         pattern, keys           = compile path
         conditions, @conditions = @conditions, []
-        remove_method method_name
 
         [ pattern, keys, conditions, block.arity != 0 ?
             proc { |a,p| unbound_method.bind(a).call(*p) } :
