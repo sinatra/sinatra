@@ -359,6 +359,10 @@ module Sinatra
       attr_accessor :content_type
     end
 
+    def initialize
+      @default_layout = :layout
+    end
+
     def erb(template, options={}, locals={})
       render :erb, template, options, locals
     end
@@ -462,7 +466,6 @@ module Sinatra
       # extract generic options
       locals          = options.delete(:locals) || locals         || {}
       views           = options.delete(:views)  || settings.views || "./views"
-      @default_layout = :layout if @default_layout.nil?
       layout          = options.delete(:layout)
       eat_errors      = layout.nil?
       layout          = @default_layout if layout.nil? or layout == true
@@ -533,6 +536,7 @@ module Sinatra
     attr_reader   :template_cache
 
     def initialize(app=nil)
+      super()
       @app = app
       @template_cache = Tilt::Cache.new
       yield self if block_given?
