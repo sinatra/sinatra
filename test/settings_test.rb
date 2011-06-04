@@ -222,27 +222,30 @@ class SettingsTest < Test::Unit::TestCase
     end
 
     it 'does not override app-specified error handling when set to :after_handler' do
-      klass = Sinatra.new(Sinatra::Application)
-      mock_app(klass) {
+      ran = false
+      mock_app do
         set :show_exceptions, :after_handler
-        
-        error RuntimeError do
-          'Big mistake !'
-        end
-        
-        get '/' do
-          raise RuntimeError
-        end  
-      }
-      
+        error(RuntimeError) { ran = true }
+        get('/') { raise RuntimeError }
+      end
+
       get '/'
       assert_equal 500, status
-
-      assert ! body.include?("<code>")
-      assert body.include? "Big mistake !"
-      
+      assert ran
     end
-    
+
+    it 'does catch any other exceptions when set to :after_handler' do
+      ran = false
+      mock_app do
+        set :show_exceptions, :after_handler
+        error(RuntimeError) { ran = true }
+        get('/') { raise ArgumentError }
+      end
+
+      get '/'
+      assert_equal 500, status
+      assert !ran
+    end
   end
 
   describe 'dump_errors' do

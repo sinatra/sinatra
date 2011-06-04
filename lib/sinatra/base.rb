@@ -754,36 +754,29 @@ module Sinatra
 
       if @response.status == 404
         @response.headers['X-Cascade'] = 'pass'
-        @response.body                 = ['<h1>Not Found</h1>']
+        @response.body = ['<h1>Not Found</h1>']
       end
 
       if res = error_block!(boom.class)
         res
       elsif @response.status >= 500
-        settings.raise_errors? ? raise(boom) : error_block!(Exception)
+        raise boom if settings.raise_errors? or settings.show_exceptions?
+        error_block! Exception
       end
     end
 
     # Find an custom error block for the key(s) specified.
-    def error_block!(*keys)
-      keys.each do |key|
-        base = settings
-        while base.respond_to?(:errors)
-          if block = base.errors[key]
-            # found a handler, eval and return result
-            return instance_eval(&block)
-          else
-            base = base.superclass
-          end
-        end
+    def error_block!(key)
+      base = settings
+      while base.respond_to?(:errors)
+        next base = base.superclass unless args = base.errors[key]
+        return process_route(*args)
       end
-      raise boom if settings.show_exceptions? and keys == Exception
-      nil
+      false
     end
 
     def dump_errors!(boom)
-      msg = ["#{boom.class} - #{boom.message}:",
-        *boom.backtrace].join("\n ")
+      msg = ["#{boom.class} - #{boom.message}:", *boom.backtrace].join("\n\t")
       @env['rack.errors'].puts(msg)
     end
 
@@ -859,8 +852,9 @@ module Sinatra
       # Define a custom error handler. Optionally takes either an Exception
       # class, or an HTTP status code to specify which errors should be
       # handled.
-      def error(codes=Exception, &block)
-        Array(codes).each { |code| @errors[code] = block }
+      def error(codes = Exception, &block)
+        args = compile! "ERROR", //, block
+        Array(codes).each { |c| @errors[c] = args }
       end
 
       # Sugar for `error(404) { ... }`
@@ -945,7 +939,7 @@ module Sinatra
       # add a filter
       def add_filter(type, path = nil, options = {}, &block)
         path, options = //, path if path.respond_to?(:each_pair)
-        filters[type] << compile!(type, path, block, options)
+        filters[type] << compile!(type, path || //, block, options)
       end
 
       # Add a route condition. The route is considered non-matching when the
@@ -1025,7 +1019,7 @@ module Sinatra
 
         define_method(method_name, &block)
         unbound_method          = instance_method method_name
-        pattern, keys           = compile(path || //)
+        pattern, keys           = compile path
         conditions, @conditions = @conditions, []
         remove_method method_name
 
