@@ -649,7 +649,7 @@ module Sinatra
     # Revert params afterwards.
     #
     # Returns pass block.
-    def process_route(pattern, keys, conditions, block = proc)
+    def process_route(pattern, keys, conditions, block = nil)
       @original_params ||= @params
       route = @request.path_info
       route = '/' if route.empty? and not settings.empty_path_info?
@@ -674,7 +674,7 @@ module Sinatra
         @block_params = values
         catch(:pass) do
           conditions.each { |c| throw :pass if c.bind(self).call == false }
-          block[self, @block_params]
+          block ? block[self, @block_params] : yield(self, @block_params)
         end
       end
     ensure
