@@ -617,7 +617,7 @@ module Sinatra
     # Run filters defined on the class and all superclasses.
     def filter!(type, base = settings)
       filter! type, base.superclass if base.superclass.respond_to?(:filters)
-      base.filters[type].each { |block, *args| process_route(*args, &block) }
+      base.filters[type].each { |args| process_route(*args) }
     end
 
     # Run routes defined on the class and all superclasses.
@@ -649,7 +649,7 @@ module Sinatra
     # Revert params afterwards.
     #
     # Returns pass block.
-    def process_route(pattern, keys, conditions)
+    def process_route(pattern, keys, conditions, block = proc)
       @original_params ||= @params
       route = @request.path_info
       route = '/' if route.empty? and not settings.empty_path_info?
@@ -673,9 +673,8 @@ module Sinatra
         @params = @original_params.merge(params)
         @block_params = values
         catch(:pass) do
-          conditions.each { |cond|
-            throw :pass if instance_eval(&cond) == false }
-          yield(self, @block_params)
+          conditions.each { |c| throw :pass if instance_eval(&c) == false }
+          block[self, @block_params]
         end
       end
     ensure
@@ -1012,12 +1011,8 @@ module Sinatra
         # Because of self.options.host
         host_name(options.delete(:host)) if options.key?(:host)
         enable :empty_path_info if path == "" and empty_path_info.nil?
-
-        block, pattern, keys, conditions = compile! verb, path, block, options
+        (@routes[verb] ||= []) << compile!(verb, path, block, options)
         invoke_hook(:route_added, verb, path, block)
-
-        (@routes[verb] ||= []).
-          push([pattern, keys, conditions, block]).last
       end
 
       def invoke_hook(name, *args)
@@ -1034,10 +1029,9 @@ module Sinatra
         conditions, @conditions = @conditions, []
         remove_method method_name
 
-        [ block.arity != 0 ?
+        [ pattern, keys, conditions, block.arity != 0 ?
             proc { |a,p| unbound_method.bind(a).call(*p) } :
-            proc { |a,p| unbound_method.bind(a).call },
-          pattern, keys, conditions ]
+            proc { |a,p| unbound_method.bind(a).call } ]
       end
 
       def compile(path)
