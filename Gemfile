@@ -27,7 +27,7 @@ end
 gem 'haml', '~> 3.0.0', :group => 'haml'
 gem 'builder', :group => 'builder'
 gem 'erubis', :group => 'erubis'
-gem 'less', :group => 'less'
+gem 'less', '~> 1.0', :group => 'less'
 gem 'liquid', :group => 'liquid'
 gem 'nokogiri', :group => 'nokogiri'
 gem 'slim', :group => 'slim'
