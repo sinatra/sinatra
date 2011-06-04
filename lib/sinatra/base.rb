@@ -725,34 +725,15 @@ module Sinatra
     # Run the block with 'throw :halt' support and apply result to the response.
     def invoke
       res = catch(:halt) { yield }
-      return if res.nil?
-
-      case
-      when res.respond_to?(:to_str)
-        @response.body = [res]
-      when res.respond_to?(:to_ary)
-        res = res.to_ary
-        if Fixnum === res.first
-          if res.length == 3
-            @response.status, headers, body = res
-            @response.body = body if body
-            headers.each { |k, v| @response.headers[k] = v } if headers
-          elsif res.length == 2
-            @response.status = res.first
-            @response.body   = res.last
-          else
-            raise TypeError, "#{res.inspect} not supported"
-          end
-        else
-          @response.body = res
-        end
-      when res.respond_to?(:each)
-        @response.body = res
-      when (100..599) === res
-        @response.status = res
+      res = [res] if Fixnum === res or String === res
+      if Array === res and Fixnum === res.first
+        raise TypeError, "#{res.inspect} not supported" if res.length > 3
+        status(res.shift)
+        body(res.pop)
+        headers(*res)
+      elsif res.respond_to? :each
+        body res
       end
-
-      res
     end
 
     # Dispatch a request with error handling.

@@ -221,9 +221,12 @@ class AfterFilterTest < Test::Unit::TestCase
     count = 2
     base = Class.new(Sinatra::Base)
     base.after { count *= 2 }
-    mock_app(base) {
-      get('/foo') { count += 2 }
-    }
+    mock_app(base) do
+      get('/foo') do
+        count += 2
+        "ok"
+      end
+    end
 
     get '/foo'
     assert_equal 8, count
