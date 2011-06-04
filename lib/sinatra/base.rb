@@ -624,8 +624,8 @@ module Sinatra
     def route!(base = settings, pass_block=nil)
       if routes = base.routes[@request.request_method]
         routes.each do |pattern, keys, conditions, block|
-          pass_block = process_route(pattern, keys, conditions) do
-            route_eval(&block)
+          pass_block = process_route(pattern, keys, conditions) do |*args|
+            route_eval { block[*args] }
           end
         end
       end
@@ -640,8 +640,8 @@ module Sinatra
     end
 
     # Run a route block and throw :halt with the result.
-    def route_eval(&block)
-      throw :halt, instance_eval(&block)
+    def route_eval
+      throw :halt, yield
     end
 
     # If the current request matches pattern and conditions, fill params
@@ -675,7 +675,7 @@ module Sinatra
         catch(:pass) do
           conditions.each { |cond|
             throw :pass if instance_eval(&cond) == false }
-          yield
+          yield(self, @block_params)
         end
       end
     ensure
@@ -948,9 +948,7 @@ module Sinatra
         return filters[type] << block unless path
         path, options = //, path if path.respond_to?(:each_pair)
         block, *arguments = compile!(type, path, block, options)
-        add_filter(type) do
-          process_route(*arguments) { instance_eval(&block) }
-        end
+        add_filter(type) { process_route(*arguments, &block) }
       end
 
       # Add a route condition. The route is considered non-matching when the
@@ -1039,8 +1037,8 @@ module Sinatra
         remove_method method_name
 
         [ block.arity != 0 ?
-            proc { unbound_method.bind(self).call(*@block_params) } :
-            proc { unbound_method.bind(self).call },
+            proc { |a,p| unbound_method.bind(a).call(*p) } :
+            proc { |a,p| unbound_method.bind(a).call },
           pattern, keys, conditions ]
       end
 
