@@ -37,14 +37,19 @@
    classic style) than `Sinatra::Application` by setting `Delegator.target`.
    This was mainly introduced to ease testing. (Konstantin Haase)
 
+ * Error handlers defined for an error class will now also handle subclasses of
+   that class, unless more specific error handlers exist. (Konstantin Haase)
+
+ * Error handling respects Exception#code, again. (Konstantin Haase)
+
+ * Changing a setting will merge hashes: `set(:x, :a => 1); set(:x :b => 2)`
+   will result in `{:a => 1, :b => 2}`. Use `set(:x, {:a => 1}, true)` to avoid
+   this behavior. (Konstantin Haase)
+
  * Added `request.accept?` and `request.preferred_type` to ease dealing with
    `Accept` headers. (Konstantin Haase)
 
  * Uses SecureRandom to generate default session secret. (Konstantin Haase)
-
-= 1.2.7 (backports release) / Not Yet Released
-
- * Fix Ruby 1.8.6 issue with Accept header parsing. (Konstantin Haase)
 
  * `Sinatra.run!` now prints to stderr rather than stdout. (Andrew Armenia)
 
@@ -53,6 +58,41 @@
 
  * Improved documentation. (Emanuele Vicentini, Peter Higgins, Takanori
    Ishikawa, Konstantin Haase)
+
+ * Also specify charset in Content-Type header for JSON. (Konstantin Haase)
+
+ * Rack handler names will not be converted to lower case internally, this
+   allows you to run Sinatra with custom Rack handlers, like Kirk or Mongrel2.
+   Example: `ruby app.rb -s Mongrel2` (Konstantin Haase)
+
+ * Middleware setup is now distributed across multiple methods, allowing Sinatra
+   extensions to easily hook into the setup process. (Konstantin Haase)
+
+ * Internal refactoring and minor performance improvements. (Konstantin Haase)
+
+= 1.2.7 (backports release) / Not Yet Released
+
+Custom changes:
+
+ * Fix Ruby 1.8.6 issue with Accept header parsing. (Konstantin Haase)
+
+Backported from 1.3.0:
+
+ * `Sinatra.run!` now prints to stderr rather than stdout. (Andrew Armenia)
+
+ * Automatic `app_file` detection now works in directories containing brackets
+   (Konstantin Haase)
+
+ * Improved documentation. (Emanuele Vicentini, Peter Higgins, Takanori
+   Ishikawa, Konstantin Haase)
+
+ * Also specify charset in Content-Type header for JSON. (Konstantin Haase)
+
+ * Rack handler names will not be converted to lower case internally, this
+   allows you to run Sinatra with custom Rack handlers, like Kirk or Mongrel2.
+   Example: `ruby app.rb -s Mongrel2` (Konstantin Haase)
+
+ * Fix uninitialized instance variable warning. (David Kellum)
 
 = 1.2.6 / 2011-05-01
 
