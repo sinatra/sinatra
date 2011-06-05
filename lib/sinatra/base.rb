@@ -1189,7 +1189,7 @@ module Sinatra
       # Makes the methods defined in the block and in the Modules given
       # in `extensions` available to the handlers and templates
       def helpers(*extensions, &block)
-        class_eval(&block)  if block_given?
+        class_eval(&block)   if block_given?
         include(*extensions) if extensions.any?
       end
 
