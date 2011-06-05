@@ -876,9 +876,11 @@ module Sinatra
       # Define a custom error handler. Optionally takes either an Exception
       # class, or an HTTP status code to specify which errors should be
       # handled.
-      def error(codes = Exception, &block)
-        args = compile! "ERROR", //, block
-        Array(codes).each { |c| @errors[c] = args }
+      def error(*codes, &block)
+        args  = compile! "ERROR", //, block
+        codes = codes.map { |c| Array(c) }.flatten
+        codes << Exception if codes.empty?
+        codes.each { |c| @errors[c] = args }
       end
 
       # Sugar for `error(404) { ... }`

@@ -202,6 +202,19 @@ class MappedErrorTest < Test::Unit::TestCase
       assert_equal 'Error: 507', body
     end
 
+    it 'allows passing more than one range' do
+      mock_app {
+        set :raise_errors, false
+        error(409..411, 503..509) { "Error: #{response.status}" }
+        get '/' do
+          [507, {}, 'A very special error']
+        end
+      }
+      get '/'
+      assert_equal 507, status
+      assert_equal 'Error: 507', body
+    end
+
     class FooError < RuntimeError
     end
 
