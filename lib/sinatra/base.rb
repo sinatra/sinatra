@@ -1,13 +1,17 @@
+# external dependencies
+require 'rack'
+require 'tilt'
+
+# stdlib dependencies
 require 'thread'
 require 'time'
 require 'uri'
-require 'rack'
+
+# other files we need
 require 'sinatra/showexceptions'
-require 'tilt'
+require 'sinatra/version'
 
 module Sinatra
-  VERSION = '1.3.0'
-
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
   class Request < Rack::Request

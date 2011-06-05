@@ -147,27 +147,6 @@ if defined?(Gem)
     SH
   end
 
-  task 'sinatra.gemspec' => FileList['{lib,test,compat}/**','Rakefile','CHANGES','*.rdoc'] do |f|
-    # read spec file and split out manifest section
-    spec = File.read(f.name)
-    head, manifest, tail = spec.split("  # = MANIFEST =\n")
-    # replace version
-    head.sub!(/\.version = '.*'/, ".version = '#{source_version}'")
-    # determine file list from git ls-files
-    files = `git ls-files`.
-      split("\n").
-      sort.
-      reject{ |file| file =~ /^\./ }.
-      reject { |file| file =~ /^doc/ }.
-      map{ |file| "    #{file}" }.
-      join("\n")
-    # piece file back together and write...
-    manifest = "  s.files = %w[\n#{files}\n  ]\n"
-    spec = [head,manifest,tail].join("  # = MANIFEST =\n")
-    File.open(f.name, 'w') { |io| io.write(spec) }
-    puts "updated #{f.name}"
-  end
-
   task 'release' => ['test', package('.gem')] do
     sh <<-SH
       gem install #{package('.gem')} --local &&
