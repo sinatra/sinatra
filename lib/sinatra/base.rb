@@ -1300,7 +1300,8 @@ module Sinatra
     set :logging, false
     set :method_override, false
     set :default_encoding, "utf-8"
-    set :add_charset, [/^text\//, 'application/javascript', 'application/xml', 'application/xhtml+xml']
+    set :add_charset, %w[javascript xml xhtml+xml json].map { |t| "application/#{t}" }
+    settings.add_charset << /^text\//
 
     # explicitly generating a session secret eagerly to play nice with preforking
     begin
