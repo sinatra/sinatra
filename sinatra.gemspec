@@ -1,7 +1,4 @@
 Gem::Specification.new do |s|
-  s.specification_version = 2 if s.respond_to? :specification_version=
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-
   s.name = 'sinatra'
   s.version = '1.3.0'
 
@@ -9,7 +6,7 @@ Gem::Specification.new do |s|
   s.summary     = "Classy web-development dressed in a DSL"
 
   s.authors = ["Blake Mizerany", "Ryan Tomayko", "Simon Rozet", "Konstantin Haase"]
-  s.email = "sinatrarb@googlegroups.com"
+  s.email   = "sinatrarb@googlegroups.com"
 
   # = MANIFEST =
   s.files = %w[
@@ -116,16 +113,13 @@ Gem::Specification.new do |s|
   ]
   # = MANIFEST =
 
-  s.test_files = s.files.select {|path| path =~ /^test\/.*_test.rb/}
-
-  s.extra_rdoc_files = %w[README.rdoc README.de.rdoc README.jp.rdoc README.fr.rdoc README.es.rdoc README.hu.rdoc README.zh.rdoc LICENSE]
   s.add_dependency 'rack', '~> 1.3'
   s.add_dependency 'tilt', '~> 1.3'
   s.add_development_dependency 'shotgun', '~> 0.6'
 
-  s.homepage = "http://sinatra.rubyforge.org"
-  s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Sinatra", "--main", "README.rdoc"]
-  s.require_paths = %w[lib]
+  s.test_files        = s.files.select { |p| p =~ /^test\/.*_test.rb/ }
+  s.extra_rdoc_files  = s.files.select { |p| p =~ /^README/ } << 'LICENSE'
+  s.homepage          = "http://sinatra.rubyforge.org"
+  s.rdoc_options      = %w[--line-numbers --inline-source --title Sinatra --main README.rdoc]
   s.rubyforge_project = 'sinatra'
-  s.rubygems_version = '1.1.1'
 end
