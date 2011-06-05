@@ -90,18 +90,22 @@ task :thanks, [:release,:backports] do |t, a|
     "(based on commits included in #{a.release}, but not in #{a.backports})"
 end
 
-task :authors, [:format, :sep] do |t, a|
-  a.with_defaults :format => "%s (%d)", :sep => ', '
+desc "list of authors"
+task :authors, [:commit_range, :format, :sep] do |t, a|
+  a.with_defaults :format => "%s (%d)", :sep => ", "
   authors = Hash.new { |h,k| h[k] = 0 }
   blake   = "Blake Mizerany"
+  overall = 0
   mapping = {
     "blake.mizerany@gmail.com" => blake, "bmizerany" => blake,
     "a_user@mac.com" => blake, "ichverstehe" => "Harry Vangberg",
     "Wu Jiang (nouse)" => "Wu Jiang" }
-  `git shortlog -s`.lines.map do |line|
+  `git shortlog -s #{a.commit_range}`.lines.map do |line|
     num, name = line.split("\t", 2).map(&:strip)
     authors[mapping[name] || name] += num.to_i
+    overall += num.to_i
   end
+  puts "#{overall} commits by #{authors.count} authors:"
   puts authors.sort_by { |n,c| -c }.map { |e| a.format % e }.join(a.sep)
 end
 
