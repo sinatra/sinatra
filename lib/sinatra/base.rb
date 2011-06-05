@@ -822,20 +822,43 @@ module Sinatra
 
       # Sets an option to the given value.  If the value is a proc,
       # the proc will be called every time the option is accessed.
-      def set(option, value = (not_set = true), &block)
+      def set(option, value = (not_set = true), ignore_setter = false, &block)
         raise ArgumentError if block and !not_set
-        value = block if block
-        if value.kind_of?(Proc)
-          metadef(option, &value)
-          metadef("#{option}?") { !!__send__(option) }
-          metadef("#{option}=") { |val| metadef(option, &Proc.new{val}) }
-        elsif not_set
+        value, not_set = block, false if block
+
+        if not_set
           raise ArgumentError unless option.respond_to?(:each)
           option.each { |k,v| set(k, v) }
-        elsif respond_to?("#{option}=")
-          __send__ "#{option}=", value
-        else
-          set option, Proc.new{value}
+          return self
+        end
+
+        if respond_to?("#{option}=") and not ignore_setter
+          return __send__("#{option}=", value)
+        end
+
+        setter = proc { |val| set option, val, true }
+        getter = proc { value }
+
+        case value
+        when Proc
+          getter = value
+        when Symbol, Fixnum, FalseClass, TrueClass, NilClass
+          # we have a lot of enable and disable calls, let's optimize those
+          class_eval "def self.#{option}() #{value.inspect} end"
+          getter = nil
+        when Hash
+          setter = proc do |val|
+            val = value.merge val if Hash === val
+            set option, val, true
+          end
+        end
+
+        (class << self; self; end).class_eval do
+          define_method("#{option}=", &setter) if setter
+          define_method(option,       &getter) if getter
+          unless method_defined? "#{option}?"
+            class_eval "def #{option}?() !!#{option} end"
+          end
         end
         self
       end
@@ -1210,11 +1233,6 @@ module Sinatra
         else
           yield
         end
-      end
-
-      def metadef(message, &block)
-        (class << self; self; end).
-          send :define_method, message, &block
       end
 
     public

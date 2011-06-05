@@ -115,6 +115,32 @@ class SettingsTest < Test::Unit::TestCase
     assert_equal 'oops', @base.foo
   end
 
+  it 'merges values of multiple set calls if those are hashes' do
+    @base.set :foo, :a => 1
+    sub = Class.new(@base)
+    sub.set :foo, :b => 2
+    assert_equal({:a => 1, :b => 2}, sub.foo)
+  end
+
+  it 'merging does not affect the superclass' do
+    @base.set :foo, :a => 1
+    sub = Class.new(@base)
+    sub.set :foo, :b => 2
+    assert_equal({:a => 1}, @base.foo)
+  end
+
+  it 'is possible to change a value from a hash to something else' do
+    @base.set :foo, :a => 1
+    @base.set :foo, :bar
+    assert_equal(:bar, @base.foo)
+  end
+
+  it 'merges values with values of the superclass if those are hashes' do
+    @base.set :foo, :a => 1
+    @base.set :foo, :b => 2
+    assert_equal({:a => 1, :b => 2}, @base.foo)
+  end
+
   it "sets multiple settings to true with #enable" do
     @base.enable :sessions, :foo, :bar
     assert @base.sessions
