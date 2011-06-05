@@ -1009,7 +1009,7 @@ Sinatraの開発版を使いたい場合は、ローカルに開発版を落と�
   git clone git://github.com/sinatra/sinatra.git
   ruby -Isinatra/lib myapp.rb
 
-<tt>sinatra/lib</tt>ディレクトリをto the<tt>LOAD_PATH</tt>に追加する方法もあります。
+<tt>sinatra/lib</tt>ディレクトリをアプリケーションの<tt>LOAD_PATH</tt>に追加する方法もあります。
 
   $LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
   require 'rubygems'
