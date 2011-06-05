@@ -10,8 +10,8 @@ CLEAN.include "**/*.rbc"
 
 def source_version
   @source_version ||= begin
-    line = File.read('lib/sinatra/base.rb')[/^\s*VERSION = .*/]
-    line.match(/.*VERSION = '(.*)'/)[1]
+    load './lib/sinatra/version.rb'
+    Sinatra::VERSION
   end
 end
 
