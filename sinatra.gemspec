@@ -5,10 +5,10 @@ Gem::Specification.new 'sinatra', Sinatra::VERSION do |s|
   s.summary           = s.description
   s.authors           = ["Blake Mizerany", "Ryan Tomayko", "Simon Rozet", "Konstantin Haase"]
   s.email             = "sinatrarb@googlegroups.com"
+  s.homepage          = "http://www.sinatrarb.com/"
   s.files             = `git ls-files`.split("\n")
   s.test_files        = s.files.select { |p| p =~ /^test\/.*_test.rb/ }
   s.extra_rdoc_files  = s.files.select { |p| p =~ /^README/ } << 'LICENSE'
-  s.homepage          = "http://sinatra.rubyforge.org"
   s.rdoc_options      = %w[--line-numbers --inline-source --title Sinatra --main README.rdoc]
 
   s.add_dependency 'rack', '~> 1.3'
