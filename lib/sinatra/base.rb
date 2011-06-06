@@ -708,6 +708,7 @@ module Sinatra
       return unless path.start_with?(public_dir) and File.file?(path)
 
       env['sinatra.static_file'] = path
+      cache_control *settings.static_cache_control if settings.static_cache_control?
       send_file path, :disposition => nil
     end
 
@@ -1339,6 +1340,7 @@ module Sinatra
 
     set :public, Proc.new { root && File.join(root, 'public') }
     set :static, Proc.new { public && File.exist?(public) }
+    set :static_cache_control, false
 
     error ::Exception do
       response.status = 500
