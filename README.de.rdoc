@@ -227,420 +227,213 @@ werden:
 
   set :views, File.dirname(__FILE__) + '/templates'
 
-Eine wichtige Sache, die man sich hierbei merken sollte, ist, dass man immer 
-mit Symbols auf Templates verweisen sollte, auch wenn sich ein Template in 
-einem Unterordner befindet (in diesen Fall <tt>:'subdir/template'</tt>).
+Es ist zu beachten, dass immer mit Symbolen auf Templates verwiesen werden 
+muss, auch dann, wenn sie sich in einem Unterordner befinden:
+
+  haml :'unterverzeichnis/template'
+
 Rendering-Methoden rendern jeden String direkt.
 
-=== Haml-Templates
+=== Verfügbare Templatesprachen
 
-Das +haml+-Gem wird benötigt, um Haml-Templates rendern zu können:
+Einige Sprachen haben mehrere Implementierungen. Um festzulegen, welche
+verwendet wird (und dann auch Thread-sicher ist), verwendet man am besten zu
+Beginn ein 'require':
 
-  # haml muss eingebunden werden
-  require 'haml'
+  require 'rdiscount' # oder require 'bluecloth'
+  get('/') { markdown :index }
 
-  get '/' do
-    haml :index
-  end
+=== Haml Templates
 
-Dieser Code rendert <tt>./views/index.haml</tt>.
+Abhängigkeit::        {haml}[http://haml-lang.com/]
+Dateierweiterungs::   <tt>.haml</tt>
+Beispiel::           <tt>haml :index, :format => :html5</tt>
 
-{Haml-Optionen}[http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options]
-können global durch die Sinatra-Konfiguration gesetzt werden,
-siehe {Optionen und Konfiguration}[http://www.sinatrarb.com/configuration.html],
-und individuell überschrieben werden.
+=== Erb Templates
 
-  set :haml, :format => :html5 # Standard-Haml-Format ist :xhtml
+Abhängigkeit::        {erubis}[http://www.kuwata-lab.com/erubis/] oder
+                    erb (included in Ruby)
+Dateierweiterungs::   <tt>.erb</tt>, <tt>.rhtml</tt> oder <tt>.erubis</tt> 
+                    (nur Erubis)
+Beispiel::           <tt>erb :index</tt>
 
-  get '/' do
-    haml :index, :format => :html4 # überschrieben
-  end
+=== Builder Templates
 
-=== Erb-Templates
+Abhängigkeit::        {builder}[http://builder.rubyforge.org/]
+Dateierweiterungs::   <tt>.builder</tt>
+Beispiel::           <tt>builder { |xml| xml.em "Hallo" }</tt>
 
-  # erb muss eingebunden werden
-  require 'erb'
+Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 
-  get '/' do
-    erb :index
-  end
+=== Nokogiri Templates
 
-Dieser Code rendert <tt>./views/index.erb</tt>.
+Abhängigkeit::        {nokogiri}[http://nokogiri.org/]
+Dateierweiterungs::   <tt>.nokogiri</tt>
+Beispiel::           <tt>nokogiri { |xml| xml.em "Hallo" }</tt>
 
-=== Erubis
+Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 
-Das +erubis+-Gem wird benötigt, um Erubis-Templates rendern zu können:
+=== Sass Templates
 
-  # erbubis muss eingebunden werden
-  require 'erubis'
+Abhängigkeit::        {sass}[http://sass-lang.com/]
+Dateierweiterungs::   <tt>.sass</tt>
+Beispiel::           <tt>sass :stylesheet, :style => :expanded</tt>
 
-  get '/' do
-    erubis :index
-  end
+=== SCSS Templates
 
-Dieser Code rendert <tt>./views/index.erubis</tt>.
+Abhängigkeit::        {sass}[http://sass-lang.com/]
+Dateierweiterungs::   <tt>.scss</tt>
+Beispiel::           <tt>scss :stylesheet, :style => :expanded</tt>
 
-Es ist auch möglich, Erb durch Erubis zu ersetzen:
+=== Less Templates
 
-  require 'erubis'
-  Tilt.register :erb, Tilt[:erubis]
-  
-  get '/' do
-    erb :index
-  end
+Abhängigkeit::        {less}[http://www.lesscss.org/]
+Dateierweiterungs::   <tt>.less</tt>
+Beispiel::           <tt>less :stylesheet</tt>
 
-Dieser Code rendert ebenfalls <tt>./views/index.erb</tt>.
+=== Liquid Templates
 
-=== Builder-Templates
+Abhängigkeit::        {liquid}[http://www.liquidmarkup.org/]
+Dateierweiterungs::   <tt>.liquid</tt>
+Beispiel::           <tt>liquid :index, :locals => { :key => 'Wert' }</tt>
 
-Das +builder+-Gem wird benötigt, um Builder-Templates rendern zu können:
+Da man aus dem Liquid-Template heraus keine Ruby-Methoden aufrufen kann 
+(ausgenommen +yield+), wird man üblicherweise locals verwenden wollen, mit 
+denen man Variablen weitergibt.
 
-  # builder muss eingebunden werden
-  require 'builder'
+=== Markdown Templates
 
-  get '/' do
-    builder :index
-  end
+Abhängigkeit::        {rdiscount}[https://github.com/rtomayko/rdiscount],
+                    {redcarpet}[https://github.com/tanoku/redcarpet],
+                    {bluecloth}[http://deveiate.org/projects/BlueCloth],
+                    {kramdown}[http://kramdown.rubyforge.org/] *oder*
+                    {maruku}[http://maruku.rubyforge.org/]
+Dateierweiterungs::   <tt>.markdown</tt>, <tt>.mkd</tt> und <tt>.md</tt>
+Beispiel::           <tt>markdown :index, :layout_engine => :erb</tt>
 
-Dieser Code rendert <tt>./views/index.builder</tt>.
+Da man aus den Markdown-Templates heraus keine Ruby-Methoden aufrufen und auch
+keine locals verwenden kann, wird man Markdown üblicherweise in Kombination mit
+anderen Renderern verwenden wollen:
 
-=== Nokogiri-Templates
+  erb :overview, :locals => { :text => markdown(:einfuehrung) }
 
-Das +nokogiri+-Gem wird benötigt, um Nokogiri-Templates rendern zu können:
+Beachte, dass man die +markdown+-Methode auch aus anderen Templates heraus
+aufrufen kann:
 
-  # nokogiri muss eingebunden werden
-  require 'nokogiri'
+  %h1 Gruß von Haml!
+  %p= markdown(:Grüsse)
 
-  get '/' do
-    nokogiri :index
-  end
+Da man Ruby nicht von Markdown heraus aufrufen kann, können auch Layouts nicht
+in Markdown geschrieben werden. Es ist aber möglich, einen Renderer für die 
+Templates zu verwenden und einen anderen für das Layout, indem die 
+<tt>:layout_engine</tt>-Option verwendet wird.
 
-Dieser Code rendert <tt>./views/index.nokogiri</tt>.
+=== Textile Templates
 
-=== Sass-Templates
+Abhängigkeit::        {RedCloth}[http://redcloth.org/]
+Dateierweiterungs::   <tt>.textile</tt>
+Beispiel::           <tt>textile :index, :layout_engine => :erb</tt>
 
-Das +sass+-Gem wird benötigt, um Sass-Templates rendern zu können:
+Da man aus dem Textile-Template heraus keine Ruby-Methoden aufrufen und auch
+keine locals verwenden kann, wird man Textile üblicherweise in Kombination mit
+anderen Renderern verwenden wollen:
 
-  # sass muss eingebunden werden
-  require 'sass'
+  erb :overview, :locals => { :text => textile(:einfuehrung) }
 
-  get '/stylesheet.css' do
-    sass :stylesheet
-  end
+Beachte, dass man die +textile+-Methode auch aus anderen Templates heraus
+aufrufen kann:
 
-Dieser Code rendert <tt>./views/stylesheet.sass</tt>.
+  %h1 Gruß von Haml!
+  %p= textile(:Grüsse)
 
-{Sass-Optionen}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
-können global durch die Sinatra-Konfiguration gesetzt werden, siehe 
-{Optionen und Konfiguration}[http://www.sinatrarb.com/configuration.html],
-und individuell überschrieben werden.
+Da man Ruby nicht von Textile heraus aufrufen kann, können auch Layouts nicht
+in Textile geschrieben werden. Es ist aber möglich, einen Renderer für die 
+Templates zu verwenden und einen anderen für das Layout, indem die 
+<tt>:layout_engine</tt>-Option verwendet wird.
 
-  set :sass, :style => :compact # Standard Sass-Style ist :nested
+=== RDoc Templates
 
-  get '/stylesheet.css' do
-    sass :stylesheet, :style => :expanded # überschrieben
-  end
+Abhängigkeit::        {rdoc}[http://rdoc.rubyforge.org/]
+Dateierweiterungs::   <tt>.rdoc</tt>
+Beispiel::           <tt>textile :README, :layout_engine => :erb</tt>
 
-=== SCSS-Templates
+Da man aus dem RDoc-Template heraus keine Ruby-Methoden aufrufen und auch
+keine locals verwenden kann, wird man RDoc üblicherweise in Kombination mit
+anderen Renderern verwenden wollen:
 
-Das +sass+-Gem wird benötigt, um SCSS-Templates rendern zu können:
+  erb :overview, :locals => { :text => rdoc(:einfuehrung) }
 
-  # sass muss eingebunden werden
-  require 'sass'
+Beachte, dass man die +rdoc+-Methode auch aus anderen Templates heraus
+aufrufen kann:
 
-  get '/stylesheet.css' do
-    scss :stylesheet
-  end
+  %h1 Gruß von Haml!
+  %p= rdoc(:Grüße)
 
-Dieser Code rendert <tt>./views/stylesheet.scss</tt>.
+Da man Ruby nicht von RDoc heraus aufrufen kann, können auch Layouts nicht
+in RDoc geschrieben werden. Es ist aber möglich, einen Renderer für die 
+Templates zu verwenden und einen anderen für das Layout, indem die 
+<tt>:layout_engine</tt>-Option verwendet wird.
 
-{SCSS-Optionen}[http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options]
-können global durch die Sinatra-Konfiguration gesetzt werden, siehe 
-{Optionen und Konfiguration}[http://www.sinatrarb.com/configuration.html], und
-individuell überschrieben werden.
+=== Radius Templates
 
-  set :scss, :style => :compact # Standard-SCSS-Style ist :nested
+Abhängigkeit::        {radius}[http://radius.rubyforge.org/]
+Dateierweiterungs::   <tt>.radius</tt>
+Beispiel::           <tt>radius :index, :locals => { :key => 'Wert' }</tt>
 
-  get '/stylesheet.css' do
-    scss :stylesheet, :style => :expanded # überschrieben
-  end
+Da man aus dem Radius-Template heraus keine Ruby-Methoden aufrufen kann, wird
+man üblicherweise locals verwenden wollen, mit denen man Variablen weitergibt.
 
-=== Less-Templates
+=== Markaby Templates
 
-Das +less+-Gem wird benötigt, um Less-Templates rendern zu können:
+Abhängigkeit::        {markaby}[http://markaby.github.com/]
+Dateierweiterungs::   <tt>.mab</tt>
+Beispiel::           <tt>markaby { h1 "Willkommen!" }</tt>
 
-  # less muss eingebunden werden
-  require 'less'
+Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 
-  get '/stylesheet.css' do
-    less :stylesheet
-  end
+=== Slim Templates
 
-Dieser Code rendert <tt>./views/stylesheet.less</tt>.
+Abhängigkeit::        {slim}[http://slim-lang.com/]
+Dateierweiterungs::   <tt>.slim</tt>
+Beispiel::           <tt>slim :index</tt>
 
-=== Liquid-Templates
+=== Creole Templates
 
-Das +liquid+-Gem wird benötigt, um Liquid-Templates rendern zu können:
+Abhängigkeit::        {creole}[https://github.com/minad/creole]
+Dateierweiterungs::   <tt>.creole</tt>
+Beispiel::           <tt>creole :wiki, :layout_engine => :erb</tt>
 
-  # liquid muss eingebunden werden
-  require 'liquid'
+Da man aus dem Creole-Template heraus keine Ruby-Methoden aufrufen und auch
+keine locals verwenden kann, wird man Creole üblicherweise in Kombination mit
+anderen Renderern verwenden wollen:
 
-  get '/' do
-    liquid :index
-  end
+  erb :overview, :locals => { :text => creole(:einfuehrung) }
 
-Dieser Code rendert <tt>./views/index.liquid</tt>.
+Beachte, dass man die +creole+-Methode auch aus anderen Templates heraus
+aufrufen kann:
 
-Da aus Liquid-Templates heraus keine Methoden (abgesehen von +yield+) 
-aufgerufen werden können, ist es möglich, +locals+ zu übergeben:
+  %h1 Gruß von Haml!
+  %p= creole(:Grüße)
 
-  liquid :index, :locals => { :key => 'value' }
+Da man Ruby nicht von Creole heraus aufrufen kann, können auch Layouts nicht
+in Creole geschrieben werden. Es ist aber möglich, einen Renderer für die 
+Templates zu verwenden und einen anderen für das Layout, indem die 
+<tt>:layout_engine</tt>-Option verwendet wird.
 
-=== Markdown-Templates
+=== CoffeeScript Templates
 
-Das +rdiscount+-Gem wird benötigt, um Markdown-Templates rendern zu können:
+Abhängigkeit::        {coffee-script}[https://github.com/josh/ruby-coffee-script]
+                    und eine {Möglichkeit JavaScript auszuführen}[https://github.com/sstephenson/execjs/blob/master/README.md#readme]
+Dateierweiterungs::   <tt>.coffee</tt>
+Beispiel::           <tt>coffee :index</tt>
 
-  # rdiscount muss eingebunden werden
-  require "rdiscount"
-
-  get '/' do
-    markdown :index
-  end
-
-Dieser Code rendert <tt>./views/index.markdown</tt> (+md+ und +mkd+ sind
-ebenfalls zulässige Dateiendungen).
-
-Da es weder möglich ist, Methoden aufzurufen, noch +locals+ zu übergeben, ist
-es am sinnvollsten, Markdown in Kombination mit einer anderen Template-Engine
-zu nutzen:
-
-  erb :overview, :locals => { :text => markdown(:introduction) }
-
-Es ist auch möglich, die +markdown+-Methode aus anderen Templates heraus
-aufzurufen:
-
-  %h1 Hallo von Haml!
-  %p= markdown(:greetings)
-
-Da man Ruby aus Markdown heraus nicht aufrufen kann, ist es nicht möglich, 
-Layouts zu verwenden, die in Markdown geschrieben sind. Es ist aber möglich, 
-einen anderen Renderer für das Template zu verwenden als für das Layout, indem
-man die <tt>:layout_engine</tt>-Option angibt:
-
-  get '/' do
-    markdown :index, :layout_engine => :erb
-  end
-
-Das wird <tt>./views/index.md</tt> mit <tt>./views/layout.erb</tt> als Layout
-rendern.
-
-Denk daran, dass solche Einstellungen auch global gesetzt werden können:
-
-  set :markdown, :layout_engine => :haml, :layout => :post
-
-  get '/' do
-    markdown :index
-  end
-
-Das wird <tt>./views/index.md</tt> (und jedes andere Markdown-Template) mit
-<tt>./views/post.haml</tt> als Layout rendern.
-
-Ebenso ist es möglich, Markdown mit BlueCloth anstelle von RDiscount zu parsen:
-
-  require 'bluecloth'
-  
-  Tilt.register 'markdown', BlueClothTemplate
-  Tilt.register 'mkd',      BlueClothTemplate
-  Tilt.register 'md',       BlueClothTemplate
-  
-  get '/' do
-    markdown :index
-  end
-
-Das sollte <tt>./views/index.md</tt> mit BlueCloth rendern.
-
-=== Textile-Templates
-
-Das +redcloth+-Gem wird benötigt, um Textile-Templates rendern zu können:
-
-  # redcloth muss eingebunden werden
-  require "redcloth"
-
-  get '/' do
-    textile :index
-  end
-
-Dieser Code rendert <tt>./views/index.textile</tt>.
-
-Da es weder möglich ist, Methoden aufzurufen, noch +locals+ zu übergeben, ist
-es sinnvoll, Textile in Kombination mit einer anderen Template-Engine zu 
-nutzen:
-
-  erb :overview, :locals => { :text => textile(:introduction) }
-
-Es ist auch möglich, die +textile+-Methode aus anderen Templates heraus
-aufzurufen:
-
-  %h1 Hallo von Haml!
-  %p= textile(:greetings)
-
-Da man Ruby aus Textile heraus nicht aufrufen kann, ist es nicht möglich, 
-Layouts zu verwenden, die in Textile geschrieben sind. Es ist aber möglich, 
-einen anderen Renderer für das Template zu verwenden als für das Layout, indem
-man die <tt>:layout_engine</tt>-Option angibt:
-
-  get '/' do
-    textile :index, :layout_engine => :erb
-  end
-
-Das wird <tt>./views/index.textile</tt> mit <tt>./views/layout.erb</tt> als 
-Layout rendern.
-
-Denk daran, dass solche Einstellungen auch global gesetzt werden können:
-
-  set :textile, :layout_engine => :haml, :layout => :post
-
-  get '/' do
-    textile :index
-  end
-
-Das wird <tt>./views/index.textile</tt> (und jedes andere Markdown-Template)
-mit <tt>./views/post.haml</tt> als Layout rendern.
-
-=== RDoc-Templates
-
-Das +rdoc+-Gem wird benötigt, um RDoc-Templates rendern zu können:
-
-  # rdoc/markup/to_html muss eingebunden werden
-  require "rdoc/markup/to_html"
-
-  get '/' do
-    rdoc :index
-  end
-
-Dieser Code rendert <tt>./views/index.rdoc</tt>.
-
-Da es weder möglich ist, Methoden aufzurufen, noch +locals+ zu übergeben, ist
-es sinnvoll, RDoc in Kombination mit einer anderen Template-Engine zu nutzen:
-
-  erb :overview, :locals => { :text => rdoc(:introduction) }
-
-Es ist auch möglich, die +rdoc+-Methode aus anderen Templates heraus
-aufzurufen:
-
-  %h1 Hallo von Haml!
-  %p= rdoc(:greetings)
-
-Da man Ruby aus RDoc heraus nicht aufrufen kann, ist es nicht möglich, Layouts
-zu verwenden, die in RDoc geschrieben sind. Es ist aber möglich, einen anderen
-Renderer für das Template zu verwenden als für das Layout, indem man die 
-<tt>:layout_engine</tt> option angibt:
-
-  get '/' do
-    rdoc :index, :layout_engine => :erb
-  end
-
-Das wird <tt>./views/index.rdoc</tt> mit <tt>./views/layout.erb</tt> als Layout
-rendern.
-
-Denk daran, dass solche Einstellungen auch global gesetzt werden können:
-
-  set :rdoc, :layout_engine => :haml, :layout => :post
-
-  get '/' do
-    rdoc :index
-  end
-
-Das wird <tt>./views/index.rdoc</tt> (und jedes andere Markdown-Template) mit
-<tt>./views/post.haml</tt> als Layout rendern.
-
-=== Radius-Templates
-
-Das +radius+-Gem wird benötigt, um Radius-Templates rendern zu können:
-
-  # radius muss eingebunden werden
-  require 'radius'
-
-  get '/' do
-    radius :index
-  end
-
-Dieser Code rendert <tt>./views/index.radius</tt>.
-
-Da aus Radius-Templates heraus keine Methoden (abgesehen von +yield+) 
-aufgerufen werden können, es es möglich, +locals+ zu übergeben:
-
-  radius :index, :locals => { :key => 'value' }
-
-=== Markaby-Templates
-
-Das +markaby+-Gem wird benötigt, um Markaby-Templates rendern zu können:
-
-  # markaby muss eingebunden werden
-  require 'markaby'
-
-  get '/' do
-    markaby :index
-  end
-
-Dieser Code rendert <tt>./views/index.mab</tt>.
-
-=== Slim-Templates
-
-Das +slim+-Gem wird benötigt, um Slim-Templates rendern zu können:
-
-  # slim muss eingebunden werden
-  require 'slim'
-
-  get '/' do
-    slim :index
-  end
-
-Dieser Code rendert <tt>./views/index.slim</tt>.
-
-=== Creole-Templates
-
-Das +creole+-Gem wird benötigt, um Creole-Templates rendern zu können:
-
-  # creole muss eingebunden werden
-  require 'creole'
-
-  get '/' do
-    creole :index
-  end
-
-Dieser Code rendert <tt>./views/index.creole</tt>.
-
-=== CoffeeScript-Templates
-
-Das <tt>coffee-script</tt>-Gem und mindestens eine der folgenden Optionen 
-werden benötigt, um JavaScript auf dem Server ausführen zu können:
-
-* +node+ (von Node.js) befindet sich im Pfad
-* du bist unter OS X
-* +therubyracer+ gem/library
-
-Siehe auch http://github.com/josh/ruby-coffee-script für eine vollständige
-Liste aller Optionen.
-
-Nun können CoffeeScript-Templates in der Applikation gerendert werden:
-
-  # coffee-script muss eingebunden werden
-  require 'coffee-script'
-
-  get '/application.js' do
-    coffee :application
-  end
-
-Dieser Code rendert <tt>./views/application.coffee</tt>.
-
-=== Inline-Templates
+=== Eingebettete Templates
 
   get '/' do
     haml '%div.title Hallo Welt'
   end
 
-Rendert den Inline-Template-String.
+Rendert den eingebetteten Template-String.
 
 === Auf Variablen in Templates zugreifen
 
@@ -1622,7 +1415,7 @@ Oder über eine <tt>config.ru</tt>-Datei, die es erlaubt, einen beliebigen
 Rack-Handler zu verwenden:
 
   # config.ru
-  require 'mein_app'
+  require './mein_app'
   run MeineApp
 
 Starte:
@@ -1642,7 +1435,7 @@ Schreibe eine Anwendungsdatei:
 
 sowie eine dazugehörige <tt>config.ru</tt>-Datei:
 
-  require 'app'
+  require './app'
   run Sinatra::Application
 
 === Wann sollte eine config.ru-Datei verwendet werden?
@@ -1874,7 +1667,7 @@ Release von Sinatra 1.4.0 mit kleinen Bugfixes versorgt werden wird.
 
 Weiterhin werden wir auf kommende Ruby-Versionen ein Auge haben.
 
-Die nachfolgend aufgeführten Ruby-Implementationen werden offiziell nicht von 
+Die nachfolgend aufgeführten Ruby-Implementierungen werden offiziell nicht von 
 Sinatra unterstützt, funktionieren aber normalerweise:
 
 * Ältere Versionen von JRuby und Rubinius
@@ -1990,4 +1783,3 @@ SemVer und SemVerTag.
 * API Dokumentation für die {aktuelle Version}[http://rubydoc.info/gems/sinatra]
   oder für {HEAD}[http://rubydoc.info/github/sinatra/sinatra] auf
   http://rubydoc.info
-
