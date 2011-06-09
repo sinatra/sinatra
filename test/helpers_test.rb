@@ -663,7 +663,7 @@ class HelpersTest < Test::Unit::TestCase
         end
 
         get '/boom' do
-          expires '1000'
+          expires '9999'
         end
       end
     end
