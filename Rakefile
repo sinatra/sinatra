@@ -2,6 +2,7 @@ require 'rake/clean'
 require 'rake/testtask'
 require 'fileutils'
 require 'date'
+require 'ci/reporter/rake/test_unit'
 
 task :default => :test
 task :spec => :test
