@@ -11,6 +11,7 @@ source :rubygems unless ENV['QUICK']
 
 gem 'rake', '~> 0.8.7'
 gem 'rack-test', '>= 0.5.6'
+gem 'ci_reporter'
 
 # Allows stuff like `tilt=1.2.2 bundle install` or `tilt=master ...`.
 # Used by the CI.
