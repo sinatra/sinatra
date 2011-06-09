@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path('../helper', __FILE__)
 
 class BeforeFilterTest < Test::Unit::TestCase
   it "executes filters in the order defined" do
@@ -221,9 +221,12 @@ class AfterFilterTest < Test::Unit::TestCase
     count = 2
     base = Class.new(Sinatra::Base)
     base.after { count *= 2 }
-    mock_app(base) {
-      get('/foo') { count += 2 }
-    }
+    mock_app(base) do
+      get('/foo') do
+        count += 2
+        "ok"
+      end
+    end
 
     get '/foo'
     assert_equal 8, count

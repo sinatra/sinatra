@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path('../helper', __FILE__)
 
 class FooError < RuntimeError
 end
@@ -37,6 +37,36 @@ class MappedErrorTest < Test::Unit::TestCase
       get '/'
       assert_equal 500, status
       assert_equal 'Exception!', body
+    end
+
+    it 'walks down inheritance chain for errors' do
+      mock_app {
+        set :raise_errors, false
+        error(RuntimeError) { 'Exception!' }
+        get '/' do
+          raise FooError
+        end
+      }
+
+      get '/'
+      assert_equal 500, status
+      assert_equal 'Exception!', body
+    end
+
+    it 'favors subclass handler over superclass handler if available' do
+      mock_app {
+        set :raise_errors, false
+        error(Exception) { 'Exception!' }
+        error(FooError) { 'FooError!' }
+        error(RuntimeError) { 'Exception!' }
+        get '/' do
+          raise FooError
+        end
+      }
+
+      get '/'
+      assert_equal 500, status
+      assert_equal 'FooError!', body
     end
 
     it "sets env['sinatra.error'] to the rescued exception" do
@@ -163,6 +193,19 @@ class MappedErrorTest < Test::Unit::TestCase
       mock_app {
         set :raise_errors, false
         error(500..550) { "Error: #{response.status}" }
+        get '/' do
+          [507, {}, 'A very special error']
+        end
+      }
+      get '/'
+      assert_equal 507, status
+      assert_equal 'Error: 507', body
+    end
+
+    it 'allows passing more than one range' do
+      mock_app {
+        set :raise_errors, false
+        error(409..411, 503..509) { "Error: #{response.status}" }
         get '/' do
           [507, {}, 'A very special error']
         end

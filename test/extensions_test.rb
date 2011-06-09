@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path('../helper', __FILE__)
 
 class ExtensionsTest < Test::Unit::TestCase
   module FooExtensions

@@ -1,5 +1,5 @@
 # I like coding: UTF-8
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path('../helper', __FILE__)
 
 # Helper method for easy route pattern matching testing
 def route_def(pattern)
@@ -76,6 +76,13 @@ class RoutingTest < Test::Unit::TestCase
     end
     get '/f%C3%B6%C3%B6'
     assert_equal 200, status
+  end
+
+  it "it handles encoded slashes correctly" do
+    mock_app { get("/:a") { |a| a } }
+    get '/foo%2Fbar'
+    assert_equal 200, status
+    assert_body "foo/bar"
   end
 
   it "overrides the content-type in error handlers" do
@@ -1047,7 +1054,7 @@ class RoutingTest < Test::Unit::TestCase
     mock_app do
       get '/foo' do
         status, headers, body = call env.merge("PATH_INFO" => '/bar')
-        [status, headers, body.map(&:upcase)]
+        [status, headers, body.each.map(&:upcase)]
       end
 
       get '/bar' do

@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path('../helper', __FILE__)
 
 class ResponseTest < Test::Unit::TestCase
   setup do
@@ -22,7 +22,7 @@ class ResponseTest < Test::Unit::TestCase
   it 'writes to body' do
     @response.body = 'Hello'
     @response.write ' World'
-    assert_equal 'Hello World', @response.body
+    assert_equal 'Hello World', @response.body.join
   end
 
   [204, 304].each do |status_code|
@@ -37,6 +37,16 @@ class ResponseTest < Test::Unit::TestCase
     @response.body = ['Hello', 'World!', '✈']
     status, headers, body = @response.finish
     assert_equal '14', headers['Content-Length']
-    assert_equal @response.body, body
+    assert_equal @response.body, body.body
+  end
+
+  it 'does not nest a Sinatra::Response' do
+    @response.body = Sinatra::Response.new ["foo"]
+    assert_equal @response.body, ["foo"]
+  end
+
+  it 'does not nest a Rack::Response' do
+    @response.body = Rack::Response.new ["foo"]
+    assert_equal @response.body, ["foo"]
   end
 end

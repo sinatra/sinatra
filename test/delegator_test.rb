@@ -1,3 +1,5 @@
+require File.expand_path('../helper', __FILE__)
+
 class DelegatorTest < Test::Unit::TestCase
   class Mirror
     attr_reader :last_call
@@ -10,18 +12,18 @@ class DelegatorTest < Test::Unit::TestCase
   def self.delegates(name)
     it "delegates #{name}" do
       m = mirror { send name }
-      assert_equal m.last_call, [name.to_s]
+      assert_equal [name.to_s], m.last_call
     end
 
     it "delegates #{name} with arguments" do
       m = mirror { send name, "foo", "bar" }
-      assert_equal m.last_call, [name.to_s, "foo", "bar"]
+      assert_equal [name.to_s, "foo", "bar"], m.last_call
     end
 
     it "delegates #{name} with block" do
       block = proc { }
       m = mirror { send(name, &block) }
-      assert_equal m.last_call, [name.to_s, block]
+      assert_equal [name.to_s, block], m.last_call
     end
   end
 
@@ -55,7 +57,7 @@ class DelegatorTest < Test::Unit::TestCase
   end
 
   it 'defaults to Sinatra::Application as target' do
-    assert_equal Sinatra::Delegator.target, Sinatra::Application
+    assert_equal Sinatra::Application, Sinatra::Delegator.target
   end
 
   %w[get put post delete options patch].each do |verb|
@@ -91,19 +93,19 @@ class DelegatorTest < Test::Unit::TestCase
   it "registers extensions with the delegation target" do
     app, mixin = mirror, Module.new
     Sinatra.register mixin
-    assert_equal app.last_call, ["register", mixin.to_s ]
+    assert_equal ["register", mixin.to_s], app.last_call
   end
 
   it "registers helpers with the delegation target" do
     app, mixin = mirror, Module.new
     Sinatra.helpers mixin
-    assert_equal app.last_call, ["helpers", mixin.to_s ]
+    assert_equal ["helpers", mixin.to_s], app.last_call
   end
 
   it "registers helpers with the delegation target" do
     app, mixin = mirror, Module.new
     Sinatra.use mixin
-    assert_equal app.last_call, ["use", mixin.to_s ]
+    assert_equal ["use", mixin.to_s], app.last_call
   end
 
   it "should work with method_missing proxies for options" do

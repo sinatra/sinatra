@@ -10,21 +10,98 @@
    explicitly to prevent that behavior. (Magnus Holm, Ryan Tomayko, Konstantin
    Haase)
 
+ * Patterns now match against the escaped URLs rather than the unescaped
+   version. This makes Sinatra confirm with RFC 2396 section 2.2 and RFC 2616
+   section 3.2.3 (escaped reserved characters should not be treated like the
+   unescaped version), meaning that "/:name" will also match `/foo%2Fbar`, but
+   not `/foo/bar`. To avoid incompatibility, pattern matching has been adjusted.
+   Moreover, since we do no longer need to keep an unescaped version of
+   path_info around, we handle all changes to `env['PATH_INFO']` correctly.
+   (Konstantin Haase)
+
+ * `settings.app_file` now defaults to the file subclassing `Sinatra::Base` in
+   modular applications. (Konstantin Haase)
+
  * Set up `Rack::Logger` or `Rack::NullLogger` depending on whether logging
    was enabled or not. Also, expose that logger with the `logger` helper
    method. (Konstantin Haase)
 
  * The sessions setting now may be an options hash. (Konstantin Haase)
 
- * Important: 1.8.6 support has been dropped. It is still usable if you use the
-   backports gem, but no longer officially supported. (Konstantin Haase)
+ * Important: 1.8.6 support has been dropped. This version also depends on at
+   least Rack 1.3.0. This means that it is incompatible to Rails prior to 3.1.0.
+   Please use 1.2.x if you require an earlier version for Ruby or Rack, which we
+   will continue to supply with bug fixes. (Konstantin Haase)
 
  * It is now possible to use a different target class for the top level DSL (aka
    classic style) than `Sinatra::Application` by setting `Delegator.target`.
    This was mainly introduced to ease testing. (Konstantin Haase)
 
+ * Error handlers defined for an error class will now also handle subclasses of
+   that class, unless more specific error handlers exist. (Konstantin Haase)
+
+ * Error handling respects Exception#code, again. (Konstantin Haase)
+
+ * Changing a setting will merge hashes: `set(:x, :a => 1); set(:x :b => 2)`
+   will result in `{:a => 1, :b => 2}`. Use `set(:x, {:a => 1}, true)` to avoid
+   this behavior. (Konstantin Haase)
+
  * Added `request.accept?` and `request.preferred_type` to ease dealing with
    `Accept` headers. (Konstantin Haase)
+
+ * Uses SecureRandom to generate default session secret. (Konstantin Haase)
+
+ * `Sinatra.run!` now prints to stderr rather than stdout. (Andrew Armenia)
+
+ * Automatic `app_file` detection now works in directories containing brackets
+   (Konstantin Haase)
+
+ * Improved documentation. (Emanuele Vicentini, Peter Higgins, Takanori
+   Ishikawa, Konstantin Haase)
+
+ * Also specify charset in Content-Type header for JSON. (Konstantin Haase)
+
+ * Rack handler names will not be converted to lower case internally, this
+   allows you to run Sinatra with custom Rack handlers, like Kirk or Mongrel2.
+   Example: `ruby app.rb -s Mongrel2` (Konstantin Haase)
+
+ * Middleware setup is now distributed across multiple methods, allowing Sinatra
+   extensions to easily hook into the setup process. (Konstantin Haase)
+
+ * Internal refactoring and minor performance improvements. (Konstantin Haase)
+
+= 1.2.7 (backports release) / Not Yet Released
+
+Custom changes:
+
+ * Fix Ruby 1.8.6 issue with Accept header parsing. (Konstantin Haase)
+
+Backported from 1.3.0:
+
+ * `Sinatra.run!` now prints to stderr rather than stdout. (Andrew Armenia)
+
+ * Automatic `app_file` detection now works in directories containing brackets
+   (Konstantin Haase)
+
+ * Improved documentation. (Emanuele Vicentini, Peter Higgins, Takanori
+   Ishikawa, Konstantin Haase)
+
+ * Also specify charset in Content-Type header for JSON. (Konstantin Haase)
+
+ * Rack handler names will not be converted to lower case internally, this
+   allows you to run Sinatra with custom Rack handlers, like Kirk or Mongrel2.
+   Example: `ruby app.rb -s Mongrel2` (Konstantin Haase)
+
+ * Fix uninitialized instance variable warning. (David Kellum)
+
+= 1.2.6 / 2011-05-01
+
+ * Fix broken delegation, backport delegation tests from Sinatra 1.3.
+   (Konstantin Haase)
+
+= 1.2.5 / 2011-04-30
+
+ * Restore compatibility with Ruby 1.8.6. (Konstantin Haase)
 
 = 1.2.4 / 2011-04-30
 
@@ -149,7 +226,7 @@
  * Sinatra now ships with a Gemfile for development dependencies, since it eases
    supporting different platforms, like JRuby. (Konstantin Haase)
 
-= 1.1.4 / 2011-04-13
+= 1.1.4 (backports release) / 2011-04-13
 
  * Compatible with Tilt 1.3. (Konstantin Haase)
 

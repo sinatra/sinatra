@@ -1,12 +1,12 @@
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path('../helper', __FILE__)
 
 class SettingsTest < Test::Unit::TestCase
   setup do
     @base = Sinatra.new(Sinatra::Base)
-    @base.set :environment, :foo
+    @base.set :environment => :foo, :app_file => nil
 
     @application = Sinatra.new(Sinatra::Application)
-    @application.set :environment, :foo
+    @application.set :environment => :foo, :app_file => nil
   end
 
   it 'sets settings to literal values' do
@@ -113,6 +113,32 @@ class SettingsTest < Test::Unit::TestCase
 
     @base.set :foo, 'bam'
     assert_equal 'oops', @base.foo
+  end
+
+  it 'merges values of multiple set calls if those are hashes' do
+    @base.set :foo, :a => 1
+    sub = Class.new(@base)
+    sub.set :foo, :b => 2
+    assert_equal({:a => 1, :b => 2}, sub.foo)
+  end
+
+  it 'merging does not affect the superclass' do
+    @base.set :foo, :a => 1
+    sub = Class.new(@base)
+    sub.set :foo, :b => 2
+    assert_equal({:a => 1}, @base.foo)
+  end
+
+  it 'is possible to change a value from a hash to something else' do
+    @base.set :foo, :a => 1
+    @base.set :foo, :bar
+    assert_equal(:bar, @base.foo)
+  end
+
+  it 'merges values with values of the superclass if those are hashes' do
+    @base.set :foo, :a => 1
+    @base.set :foo, :b => 2
+    assert_equal({:a => 1, :b => 2}, @base.foo)
   end
 
   it "sets multiple settings to true with #enable" do
@@ -222,27 +248,30 @@ class SettingsTest < Test::Unit::TestCase
     end
 
     it 'does not override app-specified error handling when set to :after_handler' do
-      klass = Sinatra.new(Sinatra::Application)
-      mock_app(klass) {
+      ran = false
+      mock_app do
         set :show_exceptions, :after_handler
-        
-        error RuntimeError do
-          'Big mistake !'
-        end
-        
-        get '/' do
-          raise RuntimeError
-        end  
-      }
-      
+        error(RuntimeError) { ran = true }
+        get('/') { raise RuntimeError }
+      end
+
       get '/'
       assert_equal 500, status
-
-      assert ! body.include?("<code>")
-      assert body.include? "Big mistake !"
-      
+      assert ran
     end
-    
+
+    it 'does catch any other exceptions when set to :after_handler' do
+      ran = false
+      mock_app do
+        set :show_exceptions, :after_handler
+        error(RuntimeError) { ran = true }
+        get('/') { raise ArgumentError }
+      end
+
+      get '/'
+      assert_equal 500, status
+      assert !ran
+    end
   end
 
   describe 'dump_errors' do
@@ -358,9 +387,13 @@ class SettingsTest < Test::Unit::TestCase
   end
 
   describe 'app_file' do
-    it 'is nil' do
-      assert_nil @base.app_file
-      assert_nil @application.app_file
+    it 'is nil for base classes' do
+      assert_nil Sinatra::Base.app_file
+      assert_nil Sinatra::Application.app_file
+    end
+
+    it 'defaults to the file subclassing' do
+      assert_equal __FILE__, Sinatra.new.app_file
     end
   end
 

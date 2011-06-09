@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path('../helper', __FILE__)
 
 begin
 require 'rdoc/markup/to_html'
@@ -36,7 +36,7 @@ class RdocTest < Test::Unit::TestCase
     end
     get '/'
     assert ok?
-    assert_like 'THIS. IS.<P>SPARTA</P>!', body
+    assert_like 'THIS. IS. <P>SPARTA</P>!', body
   end
 
   it "renders with file layouts" do

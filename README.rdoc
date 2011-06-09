@@ -80,6 +80,12 @@ via the <tt>params[:splat]</tt> array:
     params[:splat] # => ["path/to/file", "xml"]
   end
 
+Or with block parameters:
+
+  get '/download/*.*' do |path, ext|
+    [path, ext] # => ["path/to/file", "xml"]
+  end
+
 Route matching with Regular Expressions:
 
   get %r{/hello/([\w]+)} do
@@ -140,9 +146,12 @@ also accepted.
 You can return any object that would either be a valid Rack response, Rack
 body object or HTTP status code:
 
-* An Array with three elements: <tt>[status (Fixnum), headers (Hash), response body (responds to #each)]</tt>
-* An Array with two elements: <tt>[status (Fixnum), response body (responds to #each)]</tt>
-* An object that responds to <tt>#each</tt> and passes nothing but strings to the given block
+* An Array with three elements: <tt>[status (Fixnum), headers (Hash), response
+  body (responds to #each)]</tt>
+* An Array with two elements: <tt>[status (Fixnum), response body (responds to
+  #each)]</tt>
+* An object that responds to <tt>#each</tt> and passes nothing but strings to 
+  the given block
 * A Fixnum representing the status code
 
 That way we can, for instance, easily implement a streaming example:
@@ -207,6 +216,9 @@ Note that the public directory name is not included in the URL. A file
 <tt>./public/css/style.css</tt> is made available as
 <tt>http://example.com/css/style.css</tt>.
 
+Use the <tt>:static_cache_control</tt> setting (see below) to add
+<tt>Cache-Control</tt> header info.
+
 == Views / Templates
 
 Each template language is exposed as via its own rendering method. These
@@ -267,7 +279,7 @@ Available Options:
 
 [layout]
   Whether to use a layout (+true+ or +false+), if it's a Symbol, specifies
-  what template to use. Example: <tt>erb :index, :layout => request.xhr?</tt>
+  what template to use. Example: <tt>erb :index, :layout => !request.xhr?</tt>
 
 [content_type]
   Content-Type the template produces, default depends on template language.
@@ -326,7 +338,7 @@ It also takes a block for inline templates (see example).
 
 Dependency::        {nokogiri}[http://nokogiri.org/]
 File Extensions::   <tt>.nokogiri</tt>
-Example::           <tt>builder { |xml| xml.em "hi" }</tt>
+Example::           <tt>nokogiri { |xml| xml.em "hi" }</tt>
 
 It also takes a block for inline templates (see example).
 
@@ -494,7 +506,7 @@ Or, specify an explicit Hash of local variables:
 
   get '/:id' do
     foo = Foo.find(params[:id])
-    haml '%h1= foo.name', :locals => { :foo => foo }
+    haml '%h1= bar.name', :locals => { :bar => foo }
   end
 
 This is typically used when rendering templates as partials from within
@@ -540,8 +552,9 @@ Templates may also be defined using the top-level <tt>template</tt> method:
   end
 
 If a template named "layout" exists, it will be used each time a template
-is rendered. You can individually disable layouts by passing <tt>:layout => false</tt>
-or disable them by default via <tt>set :haml, :layout => false</tt>:
+is rendered. You can individually disable layouts by passing 
+<tt>:layout => false</tt> or disable them by default via 
+<tt>set :haml, :layout => false</tt>:
 
   get '/' do
     haml :index, :layout => !request.xhr?
@@ -653,7 +666,7 @@ session hash per user session:
 
 Note that <tt>enable :sessions</tt> actually stores all data in a cookie. This
 might not always be what you want (storing lots of data will increase your
-traffic, for instance). You can use any Rack session middleware, in order to
+traffic, for instance). You can use any Rack session middleware: in order to
 do so, do *not* call <tt>enable :sessions</tt>, but instead pull in your
 middleware of choice how you would any other middleware:
 
@@ -760,8 +773,8 @@ access the body:
     puts body
   end
 
-It is also possible to pass a block to +body+, which will be executed by the Rack
-handler (this can be used to implement streaming, see "Return Values").
+It is also possible to pass a block to +body+, which will be executed by the 
+Rack handler (this can be used to implement streaming, see "Return Values").
 
 Similar to the body, you can also set the status code and headers:
 
@@ -804,7 +817,9 @@ enable it yourself:
 When using <tt>send_file</tt> or static files you may have mime types Sinatra
 doesn't understand. Use +mime_type+ to register them by file extension:
 
-  mime_type :foo, 'text/foo'
+  configure do
+    mime_type :foo, 'text/foo'
+  end
 
 You can also use it with the +content_type+ helper:
 
@@ -908,8 +923,8 @@ It is also possible to use a
   etag @article.sha1, :weak
 
 These helpers will not do any caching for you, but rather feed the necessary
-information to your cache. If you are looking for a quick caching solutions, try
-{rack-cache}[http://rtomayko.github.com/rack-cache/]:
+information to your cache. If you are looking for a quick caching solutions, 
+try {rack-cache}[http://rtomayko.github.com/rack-cache/]:
 
   require "rack/cache"
   require "sinatra"
@@ -921,6 +936,9 @@ information to your cache. If you are looking for a quick caching solutions, try
     sleep 5
     "hello"
   end
+
+Use the <tt>:static_cache_control</tt> setting (see below) to add
+<tt>Cache-Control</tt> header info to static files.
 
 === Sending Files
 
@@ -1116,86 +1134,92 @@ You can access those options via <tt>settings</tt>:
 
 === Available Settings
 
-[absolute_redirects]  If disabled, Sinatra will allow relative redirects,
-                      however, Sinatra will no longer conform with RFC 2616
-                      (HTTP 1.1), which only allows absolute redirects.
-                      
-                      Enable if your app is running behind a reverse proxy that
-                      has not been set up properly. Note that the +url+ helper
-                      will still produce absolute URLs, unless you pass in
-                      +false+ as second parameter.
-                      
-                      Disabled per default.
+[absolute_redirects]   If disabled, Sinatra will allow relative redirects,
+                       however, Sinatra will no longer conform with RFC 2616
+                       (HTTP 1.1), which only allows absolute redirects.
 
-[add_charsets]        mime types the <tt>content_type</tt> helper will
-                      automatically add the charset info to.
-                      
-                      You should add to it rather than overriding this option:
-                      
-                        settings.add_charsets << "application/foobar"
+                       Enable if your app is running behind a reverse proxy that
+                       has not been set up properly. Note that the +url+ helper
+                       will still produce absolute URLs, unless you pass in
+                       +false+ as second parameter.
 
-[app_file]            main application file, used to detect project root,
-                      views and public folder and inline templates.
+                       Disabled per default.
 
-[bind]                IP address to bind to (default: 0.0.0.0).
-                      Only used for built-in server.
+[add_charsets]         mime types the <tt>content_type</tt> helper will
+                       automatically add the charset info to.
 
-[default_encoding]    encoding to assume if unknown
-                      (defaults to <tt>"utf-8"</tt>).
+                       You should add to it rather than overriding this option:
 
-[dump_errors]         display errors in the log.
+                         settings.add_charsets << "application/foobar"
 
-[environment]         current environment, defaults to <tt>ENV['RACK_ENV']</tt>,
-                      or <tt>"development"</tt> if not available.
+[app_file]             main application file, used to detect project root,
+                       views and public folder and inline templates.
 
-[logging]             use the logger.
+[bind]                 IP address to bind to (default: 0.0.0.0).
+                       Only used for built-in server.
 
-[lock]                Places a lock around every request, only running
-                      processing on request per Ruby process concurrently.
-                      
-                      Enabled if your app is not thread-safe.
-                      Disabled per default.
+[default_encoding]     encoding to assume if unknown
+                       (defaults to <tt>"utf-8"</tt>).
 
-[method_override]     use <tt>_method</tt> magic to allow put/delete forms in
-                      browsers that don't support it.
+[dump_errors]          display errors in the log.
 
-[port]                Port to listen on. Only used for built-in server.
+[environment]          current environment, defaults to <tt>ENV['RACK_ENV']</tt>,
+                       or <tt>"development"</tt> if not available.
 
-[prefixed_redirects]  Whether or not to insert <tt>request.script_name</tt> into
-                      redirects if no absolute path is given. That way
-                      <tt>redirect '/foo'</tt> would behave like
-                      <tt>redirect to('/foo')</tt>. Disabled per default.
+[logging]              use the logger.
 
-[public]              folder public files are served from
+[lock]                 Places a lock around every request, only running
+                       processing on request per Ruby process concurrently.
 
-[reload_templates]    whether or not to reload templates between requests.
-                      Enabled in development mode.
+                       Enabled if your app is not thread-safe.
+                       Disabled per default.
 
-[root]                project root folder.
+[method_override]      use <tt>_method</tt> magic to allow put/delete forms in
+                       browsers that don't support it.
 
-[raise_errors]        raise exceptions (will stop application).
+[port]                 Port to listen on. Only used for built-in server.
 
-[run]                 if enabled, Sinatra will handle starting the web server,
-                      do not enable if using rackup or other means.
+[prefixed_redirects]   Whether or not to insert <tt>request.script_name</tt> 
+                       into redirects if no absolute path is given. That way
+                       <tt>redirect '/foo'</tt> would behave like
+                       <tt>redirect to('/foo')</tt>. Disabled per default.
 
-[running]             is the built-in server running now?
-                      do not change this setting!
+[public]               folder public files are served from
 
-[server]              server or list of servers to use for built-in server.
-                      defaults to ['thin', 'mongrel', 'webrick'], order indicates
-                      priority.
+[reload_templates]     whether or not to reload templates between requests.
+                       Enabled in development mode.
 
-[sessions]            enable cookie based sessions.
+[root]                 project root folder.
 
-[show_exceptions]     show a stack trace in the browser.
+[raise_errors]         raise exceptions (will stop application).
 
-[static]              Whether Sinatra should handle serving static files.
-                      Disable when using a Server able to do this on its own.
-                      Disabling will boost performance.
-                      Enabled per default in classic style, disabled for
-                      modular apps.
+[run]                  if enabled, Sinatra will handle starting the web server,
+                       do not enable if using rackup or other means.
 
-[views]               views folder.
+[running]              is the built-in server running now?
+                       do not change this setting!
+
+[server]               server or list of servers to use for built-in server.
+                       defaults to ['thin', 'mongrel', 'webrick'], order 
+                       indicates priority.
+
+[sessions]             enable cookie based sessions.
+
+[show_exceptions]      show a stack trace in the browser.
+
+[static]               Whether Sinatra should handle serving static files.
+                       Disable when using a Server able to do this on its own.
+                       Disabling will boost performance.
+                       Enabled per default in classic style, disabled for
+                       modular apps.
+
+[static_cache_control] When Sinatra is serving static files, set this to add
+                       <tt>Cache-Control</tt> headers to the responses. Uses the
+                       +cache_control+ helper. Disabled by default.
+                       Use an explicit array when setting multiple values:
+                       <tt>set :static_cache_control, [:public, :max_age => 300]</tt>
+
+[views]                views folder.
 
 == Error Handling
 
@@ -1292,11 +1316,17 @@ debugging, URL routing, authentication, and session handling. Sinatra uses
 many of these components automatically based on configuration so you
 typically don't have to +use+ them explicitly.
 
+You can find useful middleware in
+{rack}[https://github.com/rack/rack/tree/master/lib/rack],
+{rack-contrib}[https://github.com/rack/rack-contrib#readme],
+with {CodeRack}[http://coderack.org/] or in the
+{Rack wiki}[https://github.com/rack/rack/wiki/List-of-Middleware].
+
 == Testing
 
 Sinatra tests can be written using any Rack-based testing library
-or framework. {Rack::Test}[http://gitrdoc.com/brynary/rack-test] is
-recommended:
+or framework. {Rack::Test}[http://rdoc.info/github/brynary/rack-test/master/frames] 
+is recommended:
 
   require 'my_sinatra_app'
   require 'test/unit'
@@ -1325,9 +1355,6 @@ recommended:
     end
   end
 
-NOTE: The built-in Sinatra::Test module and Sinatra::TestHarness class
-are deprecated as of the 0.9.2 release.
-
 == Sinatra::Base - Middleware, Libraries, and Modular Apps
 
 Defining your app at the top-level works well for micro-apps but has
@@ -1335,8 +1362,8 @@ considerable drawbacks when building reusable components such as Rack
 middleware, Rails metal, simple libraries with a server component, or
 even Sinatra extensions. The top-level DSL pollutes the Object namespace
 and assumes a micro-app style configuration (e.g., a single application
-file, ./public and ./views directories, logging, exception detail page,
-etc.). That's where Sinatra::Base comes into play:
+file, <tt>./public</tt> and <tt>./views</tt> directories, logging, exception
+detail page, etc.). That's where <tt>Sinatra::Base</tt> comes into play:
 
   require 'sinatra/base'
 
@@ -1349,15 +1376,15 @@ etc.). That's where Sinatra::Base comes into play:
     end
   end
 
-The methods available to Sinatra::Base subclasses are exactly as those
+The methods available to <tt>Sinatra::Base</tt> subclasses are exactly as those
 available via the top-level DSL. Most top-level apps can be converted to
-Sinatra::Base components with two modifications:
+<tt>Sinatra::Base</tt> components with two modifications:
 
 * Your file should require <tt>sinatra/base</tt> instead of +sinatra+;
   otherwise, all of Sinatra's DSL methods are imported into the main
   namespace.
 * Put your app's routes, error handlers, filters, and options in a subclass
-  of Sinatra::Base.
+  of <tt>Sinatra::Base</tt>.
 
 <tt>Sinatra::Base</tt> is a blank slate. Most options are disabled by default,
 including the built-in server. See {Options and Configuration}[http://sinatra.github.com/configuration.html]
@@ -1383,7 +1410,7 @@ different default settings:
 
   Setting             Classic                 Modular
 
-  app_file            file loading sinatra    nil
+  app_file            file loading sinatra    file subclassing Sinatra::Base
   run                 $0 == app_file          false
   logging             true                    false
   method_override     true                    false
@@ -1413,7 +1440,7 @@ Start with:
 Or with a <tt>config.ru</tt>, which allows using any Rack handler:
 
   # config.ru
-  require 'my_app'
+  require './my_app'
   run MyApp
 
 Run:
@@ -1433,7 +1460,7 @@ Write your app file:
 
 And a corresponding <tt>config.ru</tt>:
 
-  require 'app'
+  require './app'
   run Sinatra::Application
 
 === When to use a config.ru?
@@ -1464,7 +1491,7 @@ application (Rails/Ramaze/Camping/...):
     get('/login') { haml :login }
     
     post('/login') do
-      if params[:name] = 'admin' and params[:password] = 'admin'
+      if params[:name] == 'admin' && params[:password] == 'admin'
         session['user_name'] = params[:name]
       else
         redirect '/login'
@@ -1488,7 +1515,7 @@ application (Rails/Ramaze/Camping/...):
 === Dynamic Application Creation
 
 Sometimes you want to create new applications at runtime without having to
-assign them to a constant, you can do this with `Sinatra.new`:
+assign them to a constant, you can do this with <tt>Sinatra.new</tt>:
 
   require 'sinatra/base'
   my_app = Sinatra.new { get('/') { "hi" } }
@@ -1531,12 +1558,12 @@ available.
 
 === Application/Class Scope
 
-Every Sinatra application corresponds to a subclass of Sinatra::Base. If you
-are using the top-level DSL (<tt>require 'sinatra'</tt>), then this class is
-Sinatra::Application, otherwise it is the subclass you created explicitly. At
-class level you have methods like +get+ or +before+, but you cannot access the
-+request+ object or the +session+, as there only is a single application class
-for all requests.
+Every Sinatra application corresponds to a subclass of <tt>Sinatra::Base</tt>.
+If you are using the top-level DSL (<tt>require 'sinatra'</tt>), then this 
+class is <tt>Sinatra::Application</tt>, otherwise it is the subclass you 
+created explicitly. At class level you have methods like +get+ or +before+, but
+you cannot access the +request+ object or the +session+, as there only is a 
+single application class for all requests.
 
 Options created via +set+ are methods at class level:
 
@@ -1637,20 +1664,22 @@ The following Ruby versions are officially supported:
 [ Ruby 1.9.2 ]
   1.9.2 is supported and recommended. Note that Radius and Markaby are
   currently not 1.9 compatible. Do not use 1.9.2p0, it is known to cause
-  segmentation faults when using Sinatra.
+  segmentation faults when running Sinatra.
 
 [ Rubinius ]
   Rubinius is officially supported (Rubinius >= 1.2.3), everything, including
   all template languages, works.
 
 [ JRuby ]
-  JRuby is officially supported (JRuby >= 1.6.0). No issues with third party
+  JRuby is officially supported (JRuby >= 1.6.1). No issues with third party
   template libraries are known, however, if you choose to use JRuby, please
   look into JRuby rack handlers, as the Thin web server is not fully supported
   on JRuby. JRuby's support for C extensions is still experimental, which only
-  affects RDiscount at the moment.
+  affects RDiscount and Redcarpet at the moment.
 
-<b>Ruby 1.8.6 is no longer supported.</b>
+<b>Ruby 1.8.6 is no longer supported.</b> If you want to run with 1.8.6,
+downgrade to Sinatra 1.2, which will receive bug fixes until Sinatra 1.4.0 is
+released.
 
 We also keep an eye on upcoming Ruby versions.
 
@@ -1660,7 +1689,6 @@ known to run Sinatra:
 * Older versions of JRuby and Rubinius
 * MacRuby, Maglev, IronRuby
 * Ruby 1.9.0 and 1.9.1
-* Ruby 1.8.6 with {backports}[https://github.com/marcandre/backports/#readme]
 
 Not being officially supported means if things only break there and not on a
 supported platform, we assume it's not our issue but theirs.
@@ -1673,6 +1701,7 @@ Sinatra should work on any operating system supported by the chosen Ruby
 implementation.
 
 == The Bleeding Edge
+
 If you would like to use Sinatra's latest bleeding code, feel free to run your
 application against the master branch, it should be rather stable.
 
@@ -1683,6 +1712,7 @@ We also push out prerelease gems from time to time, so you can do a
 To get some of the latest features.
 
 === With Bundler
+
 If you want to run your application with the latest Sinatra, using
 {Bundler}[http://gembundler.com/] is the recommended way.
 
@@ -1708,6 +1738,7 @@ Now you can run your app like this:
   bundle exec ruby myapp.rb
 
 === Roll Your Own
+
 Create a local clone and run your app with the <tt>sinatra/lib</tt> directory
 on the <tt>$LOAD_PATH</tt>:
 
@@ -1749,8 +1780,8 @@ SemVerTag.
 * {Mailing List}[http://groups.google.com/group/sinatrarb/topics]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] on http://freenode.net
 * {Sinatra Book}[http://sinatra-book.gittr.com] Cookbook Tutorial
-* {Sinatra Book Contrib}[http://sinatra-book-contrib.com/] Community contributed recipes
+* {Sinatra Book Contrib}[http://sinatra-book-contrib.com/] Community 
+  contributed recipes
 * API documentation for the {latest release}[http://rubydoc.info/gems/sinatra]
   or the {current HEAD}[http://rubydoc.info/github/sinatra/sinatra] on
-  http://rubydoc.info/
-
+  http://rubydoc.info

@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path('../helper', __FILE__)
 require 'date'
 
 class HelpersTest < Test::Unit::TestCase
@@ -446,6 +446,7 @@ class HelpersTest < Test::Unit::TestCase
           assert_equal content_type(:xml),    'application/xml;charset=utf-8'
           assert_equal content_type(:xhtml),  'application/xhtml+xml;charset=utf-8'
           assert_equal content_type(:js),     'application/javascript;charset=utf-8'
+          assert_equal content_type(:json),   'application/json;charset=utf-8'
           assert_equal content_type(:bar),    'application/bar'
           assert_equal content_type(:png),    'image/png'
           assert_equal content_type(:baz),    'application/baz;charset=utf-8'
@@ -851,6 +852,16 @@ class HelpersTest < Test::Unit::TestCase
       }
       get '/'
       assert_equal 'W/"FOO"', response['ETag']
+    end
+
+    it 'raises an ArgumentError for an invalid strength' do
+      mock_app do
+        get '/' do
+          etag 'FOO', :w00t
+          "that's weak, dude."
+        end
+      end
+      assert_raise(ArgumentError) { get '/' }
     end
   end
 

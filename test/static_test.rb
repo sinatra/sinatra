@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path('../helper', __FILE__)
 
 class StaticTest < Test::Unit::TestCase
   setup do
@@ -154,4 +154,25 @@ class StaticTest < Test::Unit::TestCase
       assert_equal "bytes */#{length}",response['Content-Range'], "416 response should include actual length"
     end
   end
+
+  it 'does not include static cache control headers by default' do
+    env = Rack::MockRequest.env_for("/#{File.basename(__FILE__)}")
+    status, headers, body = @app.call(env)
+    assert !headers.has_key?('Cache-Control')
+  end
+
+  it 'sets cache control headers on static files if set' do
+    @app.set :static_cache_control, :public
+    env = Rack::MockRequest.env_for("/#{File.basename(__FILE__)}")
+    status, headers, body = @app.call(env)
+    assert headers.has_key?('Cache-Control')
+    assert_equal headers['Cache-Control'], 'public'
+
+    @app.set :static_cache_control, [:public, :must_revalidate, {:max_age => 300}]
+    env = Rack::MockRequest.env_for("/#{File.basename(__FILE__)}")
+    status, headers, body = @app.call(env)
+    assert headers.has_key?('Cache-Control')
+    assert_equal headers['Cache-Control'], 'public, must-revalidate, max-age=300'
+  end
+
 end

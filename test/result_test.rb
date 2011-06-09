@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path('../helper', __FILE__)
 
 class ResultTest < Test::Unit::TestCase
   it "sets response.body when result is a String" do
@@ -76,14 +76,14 @@ class ResultTest < Test::Unit::TestCase
     assert_equal 'formula of', body
   end
 
-  it "raises a TypeError when result is a non two or three tuple Array" do
+  it "raises a ArgumentError when result is a non two or three tuple Array" do
     mock_app {
       get '/' do
         [409, 'formula of', 'something else', 'even more']
       end
     }
 
-    assert_raise(TypeError) { get '/' }
+    assert_raise(ArgumentError) { get '/' }
   end
 
   it "sets status when result is a Fixnum status code" do
