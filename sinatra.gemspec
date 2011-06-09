@@ -1,4 +1,4 @@
-load './lib/sinatra/version.rb'
+Kernel.load './lib/sinatra/version.rb'
 
 Gem::Specification.new 'sinatra', Sinatra::VERSION do |s|
   s.description       = "Classy web-development dressed in a DSL"
