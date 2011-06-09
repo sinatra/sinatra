@@ -217,7 +217,7 @@ Note that the public directory name is not included in the URL. A file
 <tt>http://example.com/css/style.css</tt>.
 
 Use the <tt>:static_cache_control</tt> setting (see below) to add
-+Cache-Control+ header info.
+<tt>Cache-Control</tt> header info.
 
 == Views / Templates
 
@@ -938,7 +938,7 @@ try {rack-cache}[http://rtomayko.github.com/rack-cache/]:
   end
 
 Use the <tt>:static_cache_control</tt> setting (see below) to add
-+Cache-Control+ header info to static files.
+<tt>Cache-Control</tt> header info to static files.
 
 === Sending Files
 
@@ -1214,7 +1214,7 @@ You can access those options via <tt>settings</tt>:
                        modular apps.
 
 [static_cache_control] When Sinatra is serving static files, set this to add
-                       +Cache-Control+ headers to the responses. Uses the
+                       <tt>Cache-Control</tt> headers to the responses. Uses the
                        +cache_control+ helper. Disabled by default.
                        Use an explicit array when setting multiple values:
                        <tt>set :static_cache_control, [:public, :max_age => 300]</tt>
