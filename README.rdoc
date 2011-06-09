@@ -216,6 +216,9 @@ Note that the public directory name is not included in the URL. A file
 <tt>./public/css/style.css</tt> is made available as
 <tt>http://example.com/css/style.css</tt>.
 
+Use the <tt>:static_cache_control</tt> setting (see below) to add
++Cache-Control+ header info.
+
 == Views / Templates
 
 Each template language is exposed as via its own rendering method. These
@@ -934,6 +937,9 @@ try {rack-cache}[http://rtomayko.github.com/rack-cache/]:
     "hello"
   end
 
+Use the <tt>:static_cache_control</tt> setting (see below) to add
++Cache-Control+ header info to static files.
+
 === Sending Files
 
 For sending files, you can use the <tt>send_file</tt> helper method:
@@ -1128,86 +1134,92 @@ You can access those options via <tt>settings</tt>:
 
 === Available Settings
 
-[absolute_redirects]  If disabled, Sinatra will allow relative redirects,
-                      however, Sinatra will no longer conform with RFC 2616
-                      (HTTP 1.1), which only allows absolute redirects.
-                      
-                      Enable if your app is running behind a reverse proxy that
-                      has not been set up properly. Note that the +url+ helper
-                      will still produce absolute URLs, unless you pass in
-                      +false+ as second parameter.
-                      
-                      Disabled per default.
+[absolute_redirects]   If disabled, Sinatra will allow relative redirects,
+                       however, Sinatra will no longer conform with RFC 2616
+                       (HTTP 1.1), which only allows absolute redirects.
 
-[add_charsets]        mime types the <tt>content_type</tt> helper will
-                      automatically add the charset info to.
-                      
-                      You should add to it rather than overriding this option:
-                      
-                        settings.add_charsets << "application/foobar"
+                       Enable if your app is running behind a reverse proxy that
+                       has not been set up properly. Note that the +url+ helper
+                       will still produce absolute URLs, unless you pass in
+                       +false+ as second parameter.
 
-[app_file]            main application file, used to detect project root,
-                      views and public folder and inline templates.
+                       Disabled per default.
 
-[bind]                IP address to bind to (default: 0.0.0.0).
-                      Only used for built-in server.
+[add_charsets]         mime types the <tt>content_type</tt> helper will
+                       automatically add the charset info to.
 
-[default_encoding]    encoding to assume if unknown
-                      (defaults to <tt>"utf-8"</tt>).
+                       You should add to it rather than overriding this option:
 
-[dump_errors]         display errors in the log.
+                         settings.add_charsets << "application/foobar"
 
-[environment]         current environment, defaults to <tt>ENV['RACK_ENV']</tt>,
-                      or <tt>"development"</tt> if not available.
+[app_file]             main application file, used to detect project root,
+                       views and public folder and inline templates.
 
-[logging]             use the logger.
+[bind]                 IP address to bind to (default: 0.0.0.0).
+                       Only used for built-in server.
 
-[lock]                Places a lock around every request, only running
-                      processing on request per Ruby process concurrently.
-                      
-                      Enabled if your app is not thread-safe.
-                      Disabled per default.
+[default_encoding]     encoding to assume if unknown
+                       (defaults to <tt>"utf-8"</tt>).
 
-[method_override]     use <tt>_method</tt> magic to allow put/delete forms in
-                      browsers that don't support it.
+[dump_errors]          display errors in the log.
 
-[port]                Port to listen on. Only used for built-in server.
+[environment]          current environment, defaults to <tt>ENV['RACK_ENV']</tt>,
+                       or <tt>"development"</tt> if not available.
 
-[prefixed_redirects]  Whether or not to insert <tt>request.script_name</tt> 
-                      into redirects if no absolute path is given. That way
-                      <tt>redirect '/foo'</tt> would behave like
-                      <tt>redirect to('/foo')</tt>. Disabled per default.
+[logging]              use the logger.
 
-[public]              folder public files are served from
+[lock]                 Places a lock around every request, only running
+                       processing on request per Ruby process concurrently.
 
-[reload_templates]    whether or not to reload templates between requests.
-                      Enabled in development mode.
+                       Enabled if your app is not thread-safe.
+                       Disabled per default.
 
-[root]                project root folder.
+[method_override]      use <tt>_method</tt> magic to allow put/delete forms in
+                       browsers that don't support it.
 
-[raise_errors]        raise exceptions (will stop application).
+[port]                 Port to listen on. Only used for built-in server.
 
-[run]                 if enabled, Sinatra will handle starting the web server,
-                      do not enable if using rackup or other means.
+[prefixed_redirects]   Whether or not to insert <tt>request.script_name</tt> 
+                       into redirects if no absolute path is given. That way
+                       <tt>redirect '/foo'</tt> would behave like
+                       <tt>redirect to('/foo')</tt>. Disabled per default.
 
-[running]             is the built-in server running now?
-                      do not change this setting!
+[public]               folder public files are served from
 
-[server]              server or list of servers to use for built-in server.
-                      defaults to ['thin', 'mongrel', 'webrick'], order 
-                      indicates priority.
+[reload_templates]     whether or not to reload templates between requests.
+                       Enabled in development mode.
 
-[sessions]            enable cookie based sessions.
+[root]                 project root folder.
 
-[show_exceptions]     show a stack trace in the browser.
+[raise_errors]         raise exceptions (will stop application).
 
-[static]              Whether Sinatra should handle serving static files.
-                      Disable when using a Server able to do this on its own.
-                      Disabling will boost performance.
-                      Enabled per default in classic style, disabled for
-                      modular apps.
+[run]                  if enabled, Sinatra will handle starting the web server,
+                       do not enable if using rackup or other means.
 
-[views]               views folder.
+[running]              is the built-in server running now?
+                       do not change this setting!
+
+[server]               server or list of servers to use for built-in server.
+                       defaults to ['thin', 'mongrel', 'webrick'], order 
+                       indicates priority.
+
+[sessions]             enable cookie based sessions.
+
+[show_exceptions]      show a stack trace in the browser.
+
+[static]               Whether Sinatra should handle serving static files.
+                       Disable when using a Server able to do this on its own.
+                       Disabling will boost performance.
+                       Enabled per default in classic style, disabled for
+                       modular apps.
+
+[static_cache_control] When Sinatra is serving static files, set this to add
+                       +Cache-Control+ headers to the responses. Uses the
+                       +cache_control+ helper. Disabled by default.
+                       Use an explicit array when setting multiple values:
+                       <tt>set :static_cache_control, [:public, :max_age => 300]</tt>
+
+[views]                views folder.
 
 == Error Handling
 
