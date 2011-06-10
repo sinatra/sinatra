@@ -284,6 +284,10 @@ module Sinatra
         ranges
       end
 
+      def close
+        super unless closed?
+      end
+
       CHUNK_SIZE = 8192
 
       def each
