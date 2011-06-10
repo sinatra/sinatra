@@ -64,7 +64,10 @@ module Sinatra
     end
 
     def finish
-      if body.respond_to? :to_ary and not [204, 304].include?(status.to_i)
+      if status.to_i / 100 == 1
+        headers.delete "Content-Lenght"
+        headers.delete "Content-Type"
+      elsif body.respond_to? :to_ary and not [204, 304].include?(status.to_i)
         headers["Content-Length"] = body.inject(0) { |l, p| l + Rack::Utils.bytesize(p) }.to_s
       end
       super
