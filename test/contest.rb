@@ -35,19 +35,27 @@ end
 # block syntax. Adding setup or teardown instance methods defeats the purpose
 # of this library.
 class Test::Unit::TestCase
-  def self.setup(&block)
-    define_method :setup do
-      super(&block)
+  def self.setup(&block)     setup_blocks    << block  end
+  def self.teardown(&block)  teardown_blocks << block  end
+  def self.setup_blocks()    @setup_blocks    ||= []   end
+  def self.teardown_blocks() @teardown_blocks ||= []   end
+
+  def setup_blocks(base = self.class)
+    setup_blocks base.superclass if base.superclass.respond_to? :setup_blocks
+    base.setup_blocks.each do |block|
       instance_eval(&block)
     end
   end
 
-  def self.teardown(&block)
-    define_method :teardown do
+  def teardown_blocks(base = self.class)
+    teardown_blocks base.superclass if base.superclass.respond_to? :teardown_blocks
+    base.teardown_blocks.each do |block|
       instance_eval(&block)
-      super(&block)
     end
   end
+
+  alias setup setup_blocks
+  alias teardown teardown_blocks
 
   def self.context(*name, &block)
     subclass = Class.new(self)
