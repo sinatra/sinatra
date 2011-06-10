@@ -791,17 +791,15 @@ module Sinatra
       raise boom if settings.show_exceptions? and settings.show_exceptions != :after_handler
       @response.status = boom.respond_to?(:code) ? Integer(boom.code) : 500
 
-      if @response.status == 404
-        @response.headers['X-Cascade'] = 'pass'
-        @response.body = ['<h1>Not Found</h1>']
+      if not_found?
+        headers['X-Cascade'] = 'pass'
+        body '<h1>Not Found</h1>'
       end
 
-      if res = error_block!(boom.class)
-        res
-      elsif @response.status >= 500
-        raise boom if settings.raise_errors? or settings.show_exceptions?
-        error_block! Exception
-      end
+      res = error_block!(boom.class) || error_block!(status)
+      return res if res or not server_error?
+      raise boom if settings.raise_errors? or settings.show_exceptions?
+      error_block! Exception
     end
 
     # Find an custom error block for the key(s) specified.
