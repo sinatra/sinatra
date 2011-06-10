@@ -306,6 +306,29 @@ class SettingsTest < Test::Unit::TestCase
       get '/'
       assert body.include?("RuntimeError") && body.include?("settings_test.rb")
     end
+
+    it 'does not dump 404 errors' do
+      klass = Sinatra.new(Sinatra::Application)
+
+      mock_app(klass) {
+        enable :dump_errors
+        disable :raise_errors
+
+        error do
+          error = @env['rack.errors'].instance_variable_get(:@error)
+          error.rewind
+
+          error.read
+        end
+
+        get '/' do
+          raise Sinatra::NotFound
+        end
+      }
+
+      get '/'
+      assert !body.include?("NotFound") && !body.include?("settings_test.rb")
+    end
   end
 
   describe 'sessions' do
