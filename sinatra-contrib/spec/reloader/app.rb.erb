@@ -4,6 +4,10 @@ class <%= name %> < Sinatra::Base
   enable :inline_templates
 <% end %>
 
+<% middlewares.each do |middleware| %>
+  use <%= middleware %>
+<% end %>
+
 <% routes.each do |route| %>
   <%= route %>
 <% end %>

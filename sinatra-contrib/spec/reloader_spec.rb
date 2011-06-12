@@ -40,6 +40,7 @@ describe Sinatra::Reloader do
   def write_app_file(options={})
     options[:routes] ||= ['get("/foo") { erb :foo }']
     options[:inline_templates] ||= nil
+    options[:middlewares] ||= []
     options[:name] ||= app_name
 
     update_file(app_file_path) do |f|
@@ -145,6 +146,28 @@ describe Sinatra::Reloader do
         f.write "__END__\n\n@@foo\nbar"
       end
       get('/foo').body.strip.should == 'bar'
+    end
+  end
+
+  describe "default middleware reloading mechanism" do
+    it "knows when a middleware has been added" do
+      setup_example_app(:routes => ['get("/foo") { "foo" }'])
+      update_app_file(
+        :routes => ['get("/foo") { "foo" }'],
+        :middlewares => [Rack::Head]
+      )
+      get('/foo') # ...to perform the reload
+      app_const.middleware.should_not be_empty
+    end
+
+    it "knows when a middleware has been removed" do
+      setup_example_app(
+        :routes => ['get("/foo") { "foo" }'],
+        :middlewares => [Rack::Head]
+      )
+      update_app_file(:routes => ['get("/foo") { "foo" }'])
+      get('/foo') # ...to perform the reload
+      app_const.middleware.should be_empty
     end
   end
 

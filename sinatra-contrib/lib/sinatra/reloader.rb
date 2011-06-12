@@ -194,6 +194,17 @@ module Sinatra
         Watcher::List.for(self).watch_inline_templates(file)
         super
       end
+
+      # Does everything Sinatra::Base#use does, but it also tells the
+      # +Watcher::List+ for the Sinatra application to watch the
+      # middleware beign used.
+      def use(middleware, *args, &block)
+        path = caller_files[1] || File.expand_path($0)
+        Watcher::List.for(self).watch(path, Watcher::Element.new(
+          :middleware, [middleware, args, block]
+        ))
+        super
+      end
     end
 
     # Contains the methods that the extension adds to the Sinatra
@@ -206,6 +217,8 @@ module Sinatra
           verb      = element.representation[:verb]
           signature = element.representation[:signature]
           (routes[verb] ||= []).delete(signature)
+        when :middleware then
+          @middleware.delete(element.representation)
         end
       end
 
