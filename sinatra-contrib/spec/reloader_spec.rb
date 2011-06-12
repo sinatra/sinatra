@@ -78,7 +78,41 @@ describe Sinatra::Reloader do
 
   after(:all) { FileUtils.rm_rf(tmp_dir) }
 
-  describe "default reloading mechanism" do
+  describe "default route reloading mechanism" do
+    before(:each) do
+      setup_example_app(:routes => ['get("/foo") { "foo" }'])
+    end
+
+    it "doesn't mess up the application" do
+      get('/foo').body.should == 'foo'
+    end
+
+    it "knows when a route has been modified" do
+      update_app_file(:routes => ['get("/foo") { "bar" }'])
+      get('/foo').body.should == 'bar'
+    end
+
+    it "knows when a route has been added" do
+      update_app_file(
+        :routes => ['get("/foo") { "foo" }', 'get("/bar") { "bar" }']
+      )
+      get('/foo').body.should == 'foo'
+      get('/bar').body.should == 'bar'
+    end
+
+    it "knows when a route has been removed" do
+      update_app_file(:routes => ['get("/bar") { "bar" }'])
+      get('/foo').status.should == 404
+    end
+
+    it "doesn't try to reload a removed file" do
+      update_app_file(:routes => ['get("/foo") { "i shall not be reloaded" }'])
+      FileUtils.rm app_file_path
+      get('/foo').body.strip.should == 'foo'
+    end
+  end
+
+  describe "default inline templates reloading mechanism" do
     before(:each) do
       setup_example_app(
         :routes => ['get("/foo") { erb :foo }'],
@@ -88,24 +122,6 @@ describe Sinatra::Reloader do
 
     it "doesn't mess up the application" do
       get('/foo').body.strip.should == 'foo'
-    end
-
-    it "knows when a route has been modified" do
-      update_app_file(:routes => ['get("/foo") { "bar" }'])
-      get('/foo').body.strip.should == 'bar'
-    end
-
-    it "knows when a route has been added" do
-      update_app_file(
-        :routes => ['get("/foo") { "foo" }', 'get("/bar") { "bar" }']
-      )
-      get('/foo').body.strip.should == 'foo'
-      get('/bar').body.strip.should == 'bar'
-    end
-
-    it "knows when a route has been removed" do
-      update_app_file(:routes => ['get("/bar") { "bar" }'])
-      get('/foo').status.should == 404
     end
 
     it "reloads inline templates in the app file" do
@@ -129,12 +145,6 @@ describe Sinatra::Reloader do
         f.write "__END__\n\n@@foo\nbar"
       end
       get('/foo').body.strip.should == 'bar'
-    end
-
-    it "doesn't try to reload a removed file" do
-      update_app_file(:routes => ['get("/foo") { "i shall not be reloaded" }'])
-      FileUtils.rm app_file_path
-      get('/foo').body.strip.should == 'foo'
     end
   end
 
