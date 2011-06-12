@@ -7,27 +7,18 @@ module Sinatra
   # policy with +also_reload+ and +dont_reload+, to customize which
   # files should, and should not, be reloaded, respectively.
   module Reloader
-    # Represents a Sinatra route.
-    class Route
-      attr_accessor :app, :source_location, :verb, :signature
-
-      # Creates a new Route instance, it expects a hash with the
-      # Sinatra application (+:app+ key), the file in which the route
-      # is defined (+:source_location+ key), its verb (+:verb+ key)
-      # and its signature, or, in other words, the array used
-      # internally by Sinatra to identify the route (+:signature+
-      # key).
-      def initialize(attrs={})
-        self.app             = attrs[:app]
-        self.source_location = attrs[:source_location]
-        self.verb            = attrs[:verb]
-        self.signature       = attrs[:signature]
-      end
-    end
-
     # Watches a file so it can tell when it has been updated.  It also
     # knows the routes defined and if it contains inline templates.
     class Watcher
+      # Represents an element of a Sinatra application that needs to be
+      # reloaded.
+      #
+      # Its +representation+ attribute is there to allow to identify the
+      # element within an application, that is, to match it with its
+      # Sinatra's internal representation.
+      class Element < Struct.new(:type, :representation)
+      end
+
       # Collection of file +Watcher+ that can be associated with a
       # Sinatra application.  That way, we can know which files belong
       # to a given application and which files have been modified.  It
@@ -50,11 +41,11 @@ module Sinatra
           end
         end
 
-        # Lets the +Watcher+ for the file containing +route+ know that
-        # the +route+ is defined there, and adds the +Watcher+ to the
-        # +List+, if it isn't already there.
-        def watch_route(route)
-          watcher_for(route.source_location).routes << route
+        # Lets the +Watcher+ for the file localted at +path+ know that the
+        # +element+ is defined there, and adds the +Watcher+ to the +List+, if
+        # it isn't already there.
+        def watch(path, element)
+          watcher_for(path).elements << element
         end
 
         # Lets the +Watcher+ for the file located at +path+ know that
@@ -90,12 +81,12 @@ module Sinatra
         end
       end
 
-      attr_reader :path, :routes, :mtime
+      attr_reader :path, :elements, :mtime
 
       # Creates a new +Watcher+ instance for the file located at
       # +path+.
       def initialize(path)
-        @path, @routes = path, []
+        @path, @elements = path, []
         update
       end
 
@@ -165,9 +156,7 @@ module Sinatra
     def self.perform(klass)
       Watcher::List.for(klass).updated.each do |watcher|
         klass.set(:inline_templates, watcher.path) if watcher.inline_templates?
-        watcher.routes.each do |route|
-          klass.deactivate_route(route.verb, route.signature)
-        end
+        watcher.elements.each { |element| klass.deactivate(element) }
         $LOADED_FEATURES.delete(watcher.path)
         require watcher.path
         watcher.update
@@ -189,12 +178,9 @@ module Sinatra
         source_location = block.respond_to?(:source_location) ?
           block.source_location.first : caller_files[1]
         signature = super
-        Watcher::List.for(self).watch_route Route.new(
-           :app             => self,
-           :source_location => source_location,
-           :verb            => verb,
-           :signature       => signature
-        )
+        Watcher::List.for(self).watch(source_location, Watcher::Element.new(
+          :route, { :verb => verb, :signature => signature }
+        ))
         signature
       end
 
@@ -213,11 +199,14 @@ module Sinatra
     # Contains the methods that the extension adds to the Sinatra
     # application.
     module ExtensionMethods
-      # Deactivates the route with the corresponding +verb+ and
-      # +signature+ (this is the array Sinatra uses to store the
-      # routes internally).
-      def deactivate_route(verb, signature)
-        (routes[verb] ||= []).delete(signature)
+      # Removes the +element+ from the Sinatra application.
+      def deactivate(element)
+        case element.type
+        when :route then
+          verb      = element.representation[:verb]
+          signature = element.representation[:signature]
+          (routes[verb] ||= []).delete(signature)
+        end
       end
 
       # Indicates with a +glob+ which files should be reloaded if they
