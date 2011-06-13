@@ -291,7 +291,7 @@ Available Options:
 [layout_engine]
   Template engine to use for rendering the layout. Useful for languages that
   do not support layouts otherwise. Defaults to the engine used for the
-  temple. Example: <tt>set :rdoc, :layout_engine => :erb</tt>
+  template. Example: <tt>set :rdoc, :layout_engine => :erb</tt>
 
 Templates are assumed to be located directly under the <tt>./views</tt>
 directory. To use a different views directory:
