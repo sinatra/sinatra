@@ -217,6 +217,9 @@ Notá que el nombre del directorio público no está incluido en la URL. Por
 ejemplo, el archivo <tt>./public/css/style.css</tt> se accede a través de
 <tt>http://ejemplo.com/css/style.css</tt>.
 
+Usá la configuración <tt>:static_cache_control</tt> para agregar el encabezado
+<tt>Cache-Control</tt> (ver la sección de configuración para más detalles).
+
 == Vistas / Plantillas
 
 Cada lenguaje de plantilla se expone a través de un método de renderizado que
@@ -966,6 +969,10 @@ de cacheo, mirá {rack-cache}[http://rtomayko.github.com/rack-cache/]:
     "hola"
   end
 
+Usá la configuración <tt>:static_cache_control</tt> para agregar el encabezado
+<tt>Cache-Control</tt> a archivos estáticos (ver la sección de configuración
+para más detalles).
+
 === Enviando Archivos
 
 Para enviar archivos, podés usar el método <tt>send_file</tt>:
@@ -1164,97 +1171,106 @@ Podés acceder a estas opciones utilizando el método <tt>settings</tt>:
 
 === Configuraciones Disponibles
 
-[absolute_redirects]  si está deshabilitada, Sinatra va a permitir redirecciones
-                      relativas, sin embargo, como consecuencia de esto, va a
-                      dejar de cumplir con el RFC 2616 (HTTP 1.1), que solamente
-                      permite redirecciones absolutas.
+[absolute_redirects]   si está deshabilitada, Sinatra va a permitir
+                       redirecciones relativas, sin embargo, como consecuencia
+                       de esto, va a dejar de cumplir con el RFC 2616 (HTTP
+                       1.1), que solamente permite redirecciones absolutas.
 
-                      Activalo si tu apliación está corriendo atrás de un proxy
-                      inverso que no se ha configurado adecuadamente.  Notá que
-                      el helper +url+ va a seguir produciendo URLs absolutas, a
-                      menos que le pasés +false+ como segundo parámetro.
+                       Activalo si tu apliación está corriendo atrás de un proxy
+                       inverso que no se ha configurado adecuadamente.  Notá que
+                       el helper +url+ va a seguir produciendo URLs absolutas, a
+                       menos que le pasés +false+ como segundo parámetro.
 
-                      Deshabilitada por defecto.
+                       Deshabilitada por defecto.
 
-[add_charsets]        tipos mime a los que el helper <tt>content_type</tt> les
-                      añade automáticamente el charset.
+[add_charsets]         tipos mime a los que el helper <tt>content_type</tt> les
+                       añade automáticamente el charset.
 
-                      En general, no deberías asignar directamente esta opción,
-                      sino añadirle los charsets que quieras:
+                       En general, no deberías asignar directamente esta opción,
+                       sino añadirle los charsets que quieras:
 
-                        settings.add_charsets << "application/foobar"
+                         settings.add_charsets << "application/foobar"
 
-[app_file]            archivo principal de la aplicación, se utiliza para
-                      detectar la raíz del proyecto, el directorio de las vistas
-                      y el público así como las plantillas inline.
+[app_file]             archivo principal de la aplicación, se utiliza para
+                       detectar la raíz del proyecto, el directorio de las
+                       vistas y el público así como las plantillas inline.
 
-[bind]                dirección IP que utilizará el servidor integrado (por
-                      defecto: 0.0.0.0).
+[bind]                 dirección IP que utilizará el servidor integrado (por
+                       defecto: 0.0.0.0).
 
-[default_encoding]    encoding utilizado cuando el mismo se desconoce (por
-                      defecto <tt>"utf-8"</tt>).
+[default_encoding]     encoding utilizado cuando el mismo se desconoce (por
+                       defecto <tt>"utf-8"</tt>).
 
-[dump_errors]         mostrar errores en el log.
+[dump_errors]          mostrar errores en el log.
 
-[environment]         entorno actual, por defecto toma el valor de
-                      <tt>ENV['RACK_ENV']</tt>, o <tt>"development"</tt> si no
-                      está disponible.
+[environment]          entorno actual, por defecto toma el valor de
+                       <tt>ENV['RACK_ENV']</tt>, o <tt>"development"</tt> si no
+                       está disponible.
 
-[logging]             define si se utiliza el logger.
+[logging]              define si se utiliza el logger.
 
-[lock]                coloca un lock alrededor de cada petición, procesando
-                      solamente una por proceso.
+[lock]                 coloca un lock alrededor de cada petición, procesando
+                       solamente una por proceso.
 
-                      Habilitá esta opción si tu aplicación no es thread-safe.
-                      Se encuentra deshabilitada por defecto.
+                       Habilitá esta opción si tu aplicación no es thread-safe.
+                       Se encuentra deshabilitada por defecto.
 
-[method_override]     utiliza el parámetro <tt>_method</tt> para permtir
-                      formularios put/delete en navegadores que no los soportan.
+[method_override]      utiliza el parámetro <tt>_method</tt> para permtir
+                       formularios put/delete en navegadores que no los
+                       soportan.
 
-[port]                puerto en el que escuchará el servidor integrado.
+[port]                 puerto en el que escuchará el servidor integrado.
 
-[prefixed_redirects]  define si inserta <tt>request.script_name</tt> en las
-                      redirecciones cuando no se proporciona un path absoluto.
-                      De esta manera, cuando está habilitada,
-                      <tt>redirect '/foo'</tt> se comporta de la misma manera
-                      que <tt>redirect to('/foo')</tt>.  Se encuentra
-                      deshabilitada por defecto.
+[prefixed_redirects]   define si inserta <tt>request.script_name</tt> en las
+                       redirecciones cuando no se proporciona un path absoluto.
+                       De esta manera, cuando está habilitada,
+                       <tt>redirect '/foo'</tt> se comporta de la misma manera
+                       que <tt>redirect to('/foo')</tt>.  Se encuentra
+                       deshabilitada por defecto.
 
-[public]              directorio desde donde se sirven los archivos públicos.
+[public]               directorio desde donde se sirven los archivos públicos.
 
-[reload_templates]    define si se recargan las plantillas entre peticiones.
+[reload_templates]     define si se recargan las plantillas entre peticiones.
 
-                      Se encuentra activado en el entorno de desarrollo.
+                       Se encuentra activado en el entorno de desarrollo.
 
-[root]                directorio raíz del proyecto.
+[root]                 directorio raíz del proyecto.
 
-[raise_errors]        elevar excepciones (detiene la aplicación).
+[raise_errors]         elevar excepciones (detiene la aplicación).
 
-[run]                 cuando está habilitada, Sinatra se va a encargar de
-                      iniciar el servidor web, no la habilités cuando estés
-                      usando rackup o algún otro medio.
+[run]                  cuando está habilitada, Sinatra se va a encargar de
+                       iniciar el servidor web, no la habilités cuando estés
+                       usando rackup o algún otro medio.
 
-[running]             indica si el servidor integrado está ejecutandose, ¡no
-                      cambiés esta configuración!.
+[running]              indica si el servidor integrado está ejecutandose, ¡no
+                       cambiés esta configuración!.
 
-[server]              servidor, o lista de servidores, para usar como servidor
-                      integrado.  Por defecto: ['thin', 'mongrel', 'webrick'],
-                      el orden establece la prioridad.
+[server]               servidor, o lista de servidores, para usar como servidor
+                       integrado.  Por defecto: ['thin', 'mongrel', 'webrick'],
+                       el orden establece la prioridad.
 
-[sessions]            habilita sesiones basadas en cookies.
+[sessions]             habilita sesiones basadas en cookies.
 
-[show_exceptions]     muestra un stack trace en el navegador.
+[show_exceptions]      muestra un stack trace en el navegador.
 
-[static]              define si Sinatra debe encargarse de servir archivos
-                      estáticos.
+[static]               define si Sinatra debe encargarse de servir archivos
+                       estáticos.
 
-                      Deshabilitala cuando usés un servidor capaz de
-                      hacerlo por sí solo, porque mejorará el
-                      rendimiento.  Se encuentra habilitada por
-                      defecto en el estilo clásico y desactivado en el
-                      el modular.
+                       Deshabilitala cuando usés un servidor capaz de
+                       hacerlo por sí solo, porque mejorará el
+                       rendimiento.  Se encuentra habilitada por
+                       defecto en el estilo clásico y desactivado en el
+                       el modular.
 
-[views]               directorio de las vistas.
+[static_cache_control] cuando Sinatra está sirviendo archivos estáticos, y
+                       está opción está habilitada, les va a agregar encabezados
+                       <tt>Cache-Control</tt> a las respuestas.  Para esto
+                       utiliza el helper +cache_control+.  Se encuentra
+                       deshabilitada por defecto.  Notar que es necesario
+                       utilizar un array cuando se asignan múltiples valores: 
+                       <tt>set :static_cache_control, [:public, :max_age => 300]</tt>.
+
+[views]                directorio de las vistas.
 
 == Manejo de Errores
 
