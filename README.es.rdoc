@@ -209,9 +209,9 @@ O, usando un lookahead negativo:
 
 Los archivos estáticos son servidos desde el directorio público
 <tt>./public</tt>. Podés especificar una ubicación diferente ajustando la
-opción <tt>:public</tt>:
+opción <tt>:public_folder</tt>:
 
-  set :public, File.dirname(__FILE__) + '/estaticos'
+  set :public_folder, File.dirname(__FILE__) + '/estaticos'
 
 Notá que el nombre del directorio público no está incluido en la URL. Por
 ejemplo, el archivo <tt>./public/css/style.css</tt> se accede a través de
@@ -1228,7 +1228,7 @@ Podés acceder a estas opciones utilizando el método <tt>settings</tt>:
                        que <tt>redirect to('/foo')</tt>.  Se encuentra
                        deshabilitada por defecto.
 
-[public]               directorio desde donde se sirven los archivos públicos.
+[public_folder]        directorio desde donde se sirven los archivos públicos.
 
 [reload_templates]     define si se recargan las plantillas entre peticiones.
 

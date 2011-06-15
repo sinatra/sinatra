@@ -209,9 +209,9 @@ Ou bien en utilisant la forme négative :
 
 Par défaut, le dossier <tt>./public</tt> est utilisé pour servir les fichiers
 statiques. Vous pouvez changer ce dossier pour un autre nom grâce au paramètre
-<tt>:public</tt> :
+<tt>:public_folder</tt> :
 
-  set :public, File.dirname(__FILE__) + '/statique'
+  set :public_folder, File.dirname(__FILE__) + '/statique'
 
 Notez que le nom du dossier public n'est pas inclus dans l'URL. Un fichier
 sous <tt>./public/css/style.css</tt> est appelé avec l'URL : <tt>http://exemple.com/css/style.css</tt>.
@@ -1243,7 +1243,7 @@ Vous pouvez accéder à ces paramètres via <tt>settings</tt> :
                       comportera comme <tt>redirect to('/foo')</tt>.
                       Désactivé par défaut.
 
-[public]              dossier duquel les fichiers publics sont servis
+[public_folder]       dossier duquel les fichiers publics sont servis
 
 [reload_templates]    si oui ou non les templates doivent être rechargés
                       entre les requêtes. Activé en mode développement.

@@ -208,9 +208,9 @@ Or, using negative look ahead:
 == Static Files
 
 Static files are served from the <tt>./public</tt> directory. You can specify
-a different location by setting the <tt>:public</tt> option:
+a different location by setting the <tt>:public_folder</tt> option:
 
-  set :public, File.dirname(__FILE__) + '/static'
+  set :public_folder, File.dirname(__FILE__) + '/static'
 
 Note that the public directory name is not included in the URL. A file
 <tt>./public/css/style.css</tt> is made available as
@@ -1184,7 +1184,7 @@ You can access those options via <tt>settings</tt>:
                        <tt>redirect '/foo'</tt> would behave like
                        <tt>redirect to('/foo')</tt>. Disabled per default.
 
-[public]               folder public files are served from
+[public_folder]        folder public files are served from
 
 [reload_templates]     whether or not to reload templates between requests.
                        Enabled in development mode.

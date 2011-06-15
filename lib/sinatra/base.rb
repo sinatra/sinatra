@@ -408,7 +408,7 @@ module Sinatra
 
     def erubis(template, options={}, locals={})
       warn "Sinatra::Templates#erubis is deprecated and will be removed, use #erb instead.\n" \
-        "If you have Erubis installed, it will be used automatically.\n\tfrom #{caller.first}"
+        "If you have Erubis installed, it will be used automatically."
       render :erubis, template, options, locals
     end
 
@@ -623,7 +623,7 @@ module Sinatra
 
     def options
       warn "Sinatra::Base#options is deprecated and will be removed, " \
-        "use #settings instead.\n\tfrom #{caller.first}"
+        "use #settings instead."
       settings
     end
 
@@ -735,7 +735,7 @@ module Sinatra
     # Attempt to serve static files from public directory. Throws :halt when
     # a matching file is found, returns nil otherwise.
     def static!
-      return if (public_dir = settings.public).nil?
+      return if (public_dir = settings.public_folder).nil?
       public_dir = File.expand_path(public_dir)
 
       path = File.expand_path(public_dir + unescape(request.path_info))
@@ -1009,6 +1009,11 @@ module Sinatra
       # block returns false.
       def condition(name = "#{caller.first[/`.*'/]} condition", &block)
         @conditions << generate_method(name, &block)
+      end
+
+      def public=(value)
+        warn ":public is no longer used to avoid overloading Module#public, use :public_folder instead"
+        set(:public_folder, value)
       end
 
    private
@@ -1291,16 +1296,26 @@ module Sinatra
       # Like Kernel#caller but excluding certain magic entries and without
       # line / method information; the resulting array contains filenames only.
       def caller_files
-        caller_locations.
-          map { |file,line| file }
+        cleaned_caller(1).flatten
       end
 
       # Like caller_files, but containing Arrays rather than strings with the
       # first element being the file, and the second being the line.
       def caller_locations
+        cleaned_caller 2
+      end
+    
+    private
+      # used for deprecation warnings
+      def warn(message)
+        super message + "\n\tfrom #{cleaned_caller.first.join(':')}"
+      end
+
+      # Like Kernel#caller but excluding certain magic entries
+      def cleaned_caller(keep = 3)
         caller(1).
-          map    { |line| line.split(/:(?=\d|in )/)[0,2] }.
-          reject { |file,line| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
+          map    { |line| line.split(/:(?=\d|in )/, 3)[0,keep] }.
+          reject { |file, *_| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
       end
     end
 
@@ -1370,8 +1385,8 @@ module Sinatra
     set :reload_templates, Proc.new { development? }
     set :lock, false
 
-    set :public, Proc.new { root && File.join(root, 'public') }
-    set :static, Proc.new { public && File.exist?(public) }
+    set :public_folder, Proc.new { root && File.join(root, 'public') }
+    set :static, Proc.new { public_folder && File.exist?(public_folder) }
     set :static_cache_control, false
 
     error ::Exception do

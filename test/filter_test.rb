@@ -114,7 +114,7 @@ class BeforeFilterTest < Test::Unit::TestCase
     mock_app {
       before { ran_filter = true }
       set :static, true
-      set :public, File.dirname(__FILE__)
+      set :public_folder, File.dirname(__FILE__)
     }
     get "/#{File.basename(__FILE__)}"
     assert ok?
@@ -237,7 +237,7 @@ class AfterFilterTest < Test::Unit::TestCase
     mock_app {
       after { ran_filter = true }
       set :static, true
-      set :public, File.dirname(__FILE__)
+      set :public_folder, File.dirname(__FILE__)
     }
     get "/#{File.basename(__FILE__)}"
     assert ok?
