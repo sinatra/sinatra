@@ -334,6 +334,14 @@ class SettingsTest < Test::Unit::TestCase
       @application.set :root, File.dirname(__FILE__)
       assert @application.static?
     end
+
+    it 'is possible to use Module#public' do
+      @base.send(:define_method, :foo) { }
+      @base.send(:private, :foo)
+      assert !@base.method_defined?(:foo)
+      @base.send(:public, :foo)
+      assert @base.method_defined?(:foo)
+    end
   end
 
   describe 'bind' do

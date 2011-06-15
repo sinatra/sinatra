@@ -1081,6 +1081,15 @@ module Sinatra
         @conditions << block
       end
 
+      def public=(value)
+        set :public_folder, value
+      end
+
+      def public(*)
+        super
+        public_folder
+      end
+
    private
       # Condition for matching host name. Parameter might be String or Regexp.
       def host_name(pattern)
@@ -1411,7 +1420,7 @@ module Sinatra
     set :reload_templates, Proc.new { development? or RUBY_VERSION < '1.8.7' }
     set :lock, false
 
-    set :public, Proc.new { root && File.join(root, 'public') }
+    set :public_folder, Proc.new { root && File.join(root, 'public') }
     set :static, Proc.new { public && File.exist?(public) }
 
     error ::Exception do
