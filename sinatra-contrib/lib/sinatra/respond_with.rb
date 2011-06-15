@@ -24,7 +24,7 @@ module Sinatra
   #       when 'application/xml', 'text/xml'
   #         halt nokogiri(:'index.xml', :locals => data)
   #       when 'text/plain'
-  #         'just an example'
+  #         halt 'just an example'
   #       end
   #     end
   #     error 406
