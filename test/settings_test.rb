@@ -386,6 +386,25 @@ class SettingsTest < Test::Unit::TestCase
       @application.set :root, File.dirname(__FILE__)
       assert @application.static?
     end
+
+    it 'is possible to use Module#public' do
+      @base.send(:define_method, :foo) { }
+      @base.send(:private, :foo)
+      assert !@base.method_defined?(:foo)
+      @base.send(:public, :foo)
+      assert @base.method_defined?(:foo)
+    end
+
+    it 'is possible to use the keyword public in a sinatra app' do
+      app = Sinatra.new do
+        private
+        def priv; end
+        public
+        def pub; end
+      end
+      assert !app.method_defined?(:priv)
+      assert app.method_defined?(:pub)
+    end
   end
 
   describe 'bind' do
