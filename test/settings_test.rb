@@ -390,9 +390,9 @@ class SettingsTest < Test::Unit::TestCase
     it 'is possible to use Module#public' do
       @base.send(:define_method, :foo) { }
       @base.send(:private, :foo)
-      assert !@base.method_defined?(:foo)
+      assert !@base.public_method_defined?(:foo)
       @base.send(:public, :foo)
-      assert @base.method_defined?(:foo)
+      assert @base.public_method_defined?(:foo)
     end
 
     it 'is possible to use the keyword public in a sinatra app' do
@@ -402,8 +402,8 @@ class SettingsTest < Test::Unit::TestCase
         public
         def pub; end
       end
-      assert !app.method_defined?(:priv)
-      assert app.method_defined?(:pub)
+      assert !app.public_method_defined?(:priv)
+      assert app.public_method_defined?(:pub)
     end
   end
 
