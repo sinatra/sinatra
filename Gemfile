@@ -32,7 +32,7 @@ gem 'less', '~> 1.0', :group => 'less'
 gem 'liquid', :group => 'liquid' unless RUBY_ENGINE == 'maglev'
 gem 'slim', :group => 'slim'
 gem 'RedCloth', :group => 'redcloth' if RUBY_VERSION < "1.9.3" and not RUBY_ENGINE.start_with? 'ma'
-gem 'coffee-script', '>= 2.0', :group => 'coffee-script'
+gem 'coffee-script', '>= 2.0', :group => 'coffee-script' unless RUBY_ENGINE == 'maglev'
 gem 'rdoc', :group => 'rdoc'
 gem 'kramdown', :group => 'kramdown'
 gem 'maruku', :group => 'maruku'
@@ -50,6 +50,12 @@ unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1"
 
   ## bluecloth is broken
   #gem 'bluecloth', :group => 'bluecloth'
+end
+
+if RUBY_ENGINE == 'maglev'
+  gem 'json', :group => 'coffee-script'
+  gem 'markaby', :group => 'markaby'
+  gem 'radius', :group => 'radius'
 end
 
 platforms :ruby_18, :jruby do
