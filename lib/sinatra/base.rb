@@ -1287,7 +1287,8 @@ module Sinatra
         /rubygems\/custom_require\.rb$/,                 # rubygems require hacks
         /active_support/,                                # active_support require hacks
         /bundler(\/runtime)?\.rb/,                       # bundler require hacks
-        /<internal:/                                     # internal in ruby >= 1.9.2
+        /<internal:/,                                    # internal in ruby >= 1.9.2
+        /src\/kernel\/bootstrap\/[A-Z]/                  # maglev kernel files
       ]
 
       # add rubinius (and hopefully other VM impls) ignore patterns ...
@@ -1304,7 +1305,7 @@ module Sinatra
       def caller_locations
         cleaned_caller 2
       end
-    
+
     private
       # used for deprecation warnings
       def warn(message)
