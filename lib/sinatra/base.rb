@@ -1232,7 +1232,7 @@ module Sinatra
       def quit!(server, handler_name)
         # Use Thin's hard #stop! if available, otherwise just #stop.
         server.respond_to?(:stop!) ? server.stop! : server.stop
-        STDERR.puts "\n== Sinatra has ended his set (crowd applauds)" unless handler_name =~/cgi/i
+        $stderr.puts "\n== Sinatra has ended his set (crowd applauds)" unless handler_name =~/cgi/i
       end
 
       # Run the Sinatra app as a self-hosted server using
@@ -1241,14 +1241,14 @@ module Sinatra
         set options
         handler      = detect_rack_handler
         handler_name = handler.name.gsub(/.*::/, '')
-        STDERR.puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
+        $stderr.puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
           "on #{port} for #{environment} with backup from #{handler_name}" unless handler_name =~/cgi/i
         handler.run self, :Host => bind, :Port => port do |server|
           [:INT, :TERM].each { |sig| trap(sig) { quit!(server, handler_name) } }
           set :running, true
         end
       rescue Errno::EADDRINUSE => e
-        STDERR.puts "== Someone is already performing on port #{port}!"
+        $stderr.puts "== Someone is already performing on port #{port}!"
       end
 
       # The prototype instance used to process requests.

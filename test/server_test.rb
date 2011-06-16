@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/helper'
+require 'stringio'
 
 module Rack::Handler
   class Mock
@@ -25,11 +26,11 @@ class ServerTest < Test::Unit::TestCase
       set :bind, 'foo.local'
       set :port, 9001
     }
-    $stdout = File.open('/dev/null', 'wb')
+    $stderr = StringIO.new
   end
 
   def teardown
-    $stdout = STDOUT
+    $stderr = STDERR
   end
 
   it "locates the appropriate Rack handler and calls ::run" do
