@@ -593,6 +593,12 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal '<sinatra></sinatra>', body
     end 
     
+    it 'sets the Content-Type response header without extname' do
+      attachment_app('test')
+      get '/attachment'
+      assert_equal '<sinatra></sinatra>', body   
+    end
+    
   end
 
   describe 'send_file' do
