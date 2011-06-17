@@ -1381,7 +1381,7 @@ module Sinatra
       end
     else
       def self.force_encoding(data, *) data end
-      end
+    end
 
     reset!
 
