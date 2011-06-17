@@ -576,6 +576,25 @@ class HelpersTest < Test::Unit::TestCase
     end
   end
 
+  describe 'attachment' do
+    def attachment_app(filename=nil)
+      mock_app {       
+        get '/attachment' do
+          attachment filename
+          response.write("<sinatra></sinatra>")
+        end
+      }
+    end
+    
+    it 'sets the Content-Type response header' do
+      attachment_app('test.xml')
+      get '/attachment'
+      assert_equal 'application/xml;charset=utf-8', response['Content-Type']
+      assert_equal '<sinatra></sinatra>', body
+    end 
+    
+  end
+
   describe 'send_file' do
     setup do
       @file = File.dirname(__FILE__) + '/file.txt'

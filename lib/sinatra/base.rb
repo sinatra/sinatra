@@ -189,6 +189,7 @@ module Sinatra
       if filename
         params = '; filename="%s"' % File.basename(filename)
         response['Content-Disposition'] << params
+        content_type(File.extname(filename))
       end
     end
 
