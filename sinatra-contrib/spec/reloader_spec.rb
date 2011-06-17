@@ -41,6 +41,7 @@ describe Sinatra::Reloader do
     options[:routes] ||= ['get("/foo") { erb :foo }']
     options[:inline_templates] ||= nil
     options[:middlewares] ||= []
+    options[:filters] ||= []
     options[:name] ||= app_name
 
     update_file(app_file_path) do |f|
@@ -168,6 +169,52 @@ describe Sinatra::Reloader do
       update_app_file(:routes => ['get("/foo") { "foo" }'])
       get('/foo') # ...to perform the reload
       app_const.middleware.should be_empty
+    end
+  end
+
+  describe "default filter reloading mechanism" do
+    it "knows when a before filter has been added" do
+      setup_example_app(:routes => ['get("/foo") { "foo" }'])
+      expect {
+        update_app_file(
+          :routes => ['get("/foo") { "foo" }'],
+          :filters => ['before { @hi = "hi" }']
+        )
+        get('/foo') # ...to perform the reload
+      }.to change { app_const.filters[:before].size }.by(1)
+    end
+
+    it "knows when an after filter has been added" do
+      setup_example_app(:routes => ['get("/foo") { "foo" }'])
+      expect {
+        update_app_file(
+          :routes => ['get("/foo") { "foo" }'],
+          :filters => ['after { @bye = "bye" }']
+        )
+        get('/foo') # ...to perform the reload
+      }.to change { app_const.filters[:after].size }.by(1)
+    end
+
+    it "knows when a before filter has been removed" do
+      setup_example_app(
+        :routes => ['get("/foo") { "foo" }'],
+        :filters => ['before { @hi = "hi" }']
+      )
+      expect {
+        update_app_file(:routes => ['get("/foo") { "foo" }'])
+        get('/foo') # ...to perform the reload
+      }.to change { app_const.filters[:before].size }.by(-1)
+    end
+
+    it "knows when an after filter has been removed" do
+      setup_example_app(
+        :routes => ['get("/foo") { "foo" }'],
+        :filters => ['after { @bye = "bye" }']
+      )
+      expect {
+        update_app_file(:routes => ['get("/foo") { "foo" }'])
+        get('/foo') # ...to perform the reload
+      }.to change { app_const.filters[:after].size }.by(-1)
     end
   end
 

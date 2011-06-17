@@ -9,6 +9,10 @@ class <%= name %> < Sinatra::Base
   use <%= middleware %>
 <% end %>
 
+<% filters.each do |filter| %>
+  <%= filter %>
+<% end %>
+
 <% routes.each do |route| %>
   <%= route %>
 <% end %>

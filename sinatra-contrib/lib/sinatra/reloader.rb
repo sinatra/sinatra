@@ -136,6 +136,11 @@ module Sinatra
     # +ExtensionMethods+ and defines a before filter to +perform+ the
     # reload of the modified file.
     def self.registered(klass)
+      @reloader_loaded_in ||= {}
+      return if @reloader_loaded_in[klass]
+
+      @reloader_loaded_in[klass] = true
+
       klass.extend BaseMethods
       klass.extend ExtensionMethods
       klass.set(:reloader) { klass.development? }
@@ -205,6 +210,16 @@ module Sinatra
         ))
         super
       end
+
+      def add_filter(type, path = nil, options = {}, &block)
+        source_location = block.respond_to?(:source_location) ?
+          block.source_location.first : caller_files[1]
+        result = super
+        Watcher::List.for(self).watch(source_location, Watcher::Element.new(
+          :"#{type}_filter", filters[type].last
+        ))
+        result
+      end
     end
 
     # Contains the methods that the extension adds to the Sinatra
@@ -219,6 +234,10 @@ module Sinatra
           (routes[verb] ||= []).delete(signature)
         when :middleware then
           @middleware.delete(element.representation)
+        when :before_filter then
+          filters[:before].delete(element.representation)
+        when :after_filter then
+          filters[:after].delete(element.representation)
         end
       end
 
