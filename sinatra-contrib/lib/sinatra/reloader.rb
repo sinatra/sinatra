@@ -48,13 +48,6 @@ module Sinatra
           watcher_for(path).elements << element
         end
 
-        # Lets the +Watcher+ for the file located at +path+ know that
-        # it contains inline templates, and adds the +Watcher+ to the
-        # +List+, if it isn't already there.
-        def watch_inline_templates(path)
-          watcher_for(path).inline_templates
-        end
-
         # Tells the +Watcher+ for the file located at +path+ to ignore
         # the file changes, and adds the +Watcher+ to the +List+, if
         # it isn't already there.
@@ -101,15 +94,10 @@ module Sinatra
         @mtime = File.mtime(path)
       end
 
-      # Informs that the file being watched has inline templates.
-      def inline_templates
-        @inline_templates = true
-      end
-
       # Indicates whether or not the file being watched has inline
       # templates.
       def inline_templates?
-        !!@inline_templates
+        elements.any? { |element| element.type == :inline_templates }
       end
 
       # Informs that the modifications to the file being watched
@@ -293,13 +281,9 @@ module Sinatra
       # extension in its +registered+ method with every reload.
       def watch_element(path, type, representation=nil)
         list = Watcher::List.for(self)
-        if type == :inline_templates
-          list.watch_inline_templates(path)
-        else
-          element = Watcher::Element.new(type, representation)
-          list.watch(path, element)
-          list.watch(register_path, element) if registering_extension?
-        end
+        element = Watcher::Element.new(type, representation)
+        list.watch(path, element)
+        list.watch(register_path, element) if registering_extension?
       end
     end
   end
