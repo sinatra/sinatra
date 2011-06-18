@@ -1,6 +1,8 @@
-class <%= name %> < Sinatra::Base
+class <%= name %> < <%= parent %>
+<% if enable_reloader %>
   register Sinatra::Reloader
   enable :reloader
+<% end %>
 <% unless inline_templates.nil? %>
   enable :inline_templates
 <% end %>

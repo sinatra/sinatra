@@ -44,6 +44,8 @@ describe Sinatra::Reloader do
     options[:middlewares] ||= []
     options[:filters] ||= []
     options[:name] ||= app_name
+    options[:enable_reloader] = true unless options[:enable_reloader] === false
+    options[:parent] ||= 'Sinatra::Base'
 
     update_file(app_file_path) do |f|
       template_path = File.expand_path('../reloader/app.rb.erb', __FILE__)
@@ -387,4 +389,26 @@ describe Sinatra::Reloader do
       get('/foo').body.strip.should == 'foo'
     end
   end
+
+  it "automatically registers the reloader in the subclases" do
+    class ::Parent < Sinatra::Base
+      register Sinatra::Reloader
+      enable :reloader
+    end
+
+    setup_example_app(
+      :routes => ['get("/foo") { "foo" }'],
+      :enable_reloader => false,
+      :parent => 'Parent'
+    )
+
+    update_app_file(
+      :routes => ['get("/foo") { "bar" }'],
+      :enable_reloader => false,
+      :parent => 'Parent'
+    )
+
+    get('/foo').body.should == 'bar'
+  end
+
 end

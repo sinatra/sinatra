@@ -218,6 +218,14 @@ module Sinatra
         stop_registering_extension
         result
       end
+
+      # Does everything Sinatra::Base#register does and then registers
+      # the reloader in the +subclass+.
+      def inherited(subclass)
+        result = super
+        subclass.register Sinatra::Reloader
+        result
+      end
     end
 
     # Contains the methods that the extension adds to the Sinatra
