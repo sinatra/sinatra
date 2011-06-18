@@ -209,6 +209,9 @@ module Sinatra
         super
       end
 
+      # Does everything Sinatra::Base#add_filter does, but it also tells
+      # the +Watcher::List+ for the Sinatra application to watch the
+      # defined filter beign used.
       def add_filter(type, path = nil, options = {}, &block)
         source_location = block.respond_to?(:source_location) ?
           block.source_location.first : caller_files[1]
