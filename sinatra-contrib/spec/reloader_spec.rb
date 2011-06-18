@@ -40,6 +40,7 @@ describe Sinatra::Reloader do
   def write_app_file(options={})
     options[:routes] ||= ['get("/foo") { erb :foo }']
     options[:inline_templates] ||= nil
+    options[:extensions] ||= []
     options[:middlewares] ||= []
     options[:filters] ||= []
     options[:name] ||= app_name
@@ -215,6 +216,100 @@ describe Sinatra::Reloader do
         update_app_file(:routes => ['get("/foo") { "foo" }'])
         get('/foo') # ...to perform the reload
       }.to change { app_const.filters[:after].size }.by(-1)
+    end
+  end
+
+  describe "extension reloading" do
+    it "doesn't duplicate routes with every reload" do
+      module ::RouteExtension
+        def self.registered(klass)
+          klass.get('/bar') { 'bar' }
+        end
+      end
+
+      setup_example_app(
+        :routes => ['get("/foo") { "foo" }'],
+        :extensions => ['RouteExtension']
+      )
+
+      expect {
+        3.times do
+          update_app_file(
+            :routes => ['get("/foo") { "foo" }'],
+            :extensions => ['RouteExtension']
+          )
+          get('/foo') # ...to perform the reload
+        end
+      }.to_not change { app_const.routes['GET'].size }
+    end
+
+    it "doesn't duplicate middleware with every reload" do
+      module ::MiddlewareExtension
+        def self.registered(klass)
+          klass.use Rack::Head
+        end
+      end
+
+      setup_example_app(
+        :routes => ['get("/foo") { "foo" }'],
+        :extensions => ['MiddlewareExtension']
+      )
+
+      expect {
+        3.times do
+          update_app_file(
+            :routes => ['get("/foo") { "foo" }'],
+            :extensions => ['MiddlewareExtension']
+          )
+          get('/foo') # ...to perform the reload
+        end
+      }.to_not change { app_const.middleware.size }
+    end
+
+    it "doesn't duplicate before filters with every reload" do
+      module ::BeforeFilterExtension
+        def self.registered(klass)
+          klass.before { @hi = 'hi' }
+        end
+      end
+
+      setup_example_app(
+        :routes => ['get("/foo") { "foo" }'],
+        :extensions => ['BeforeFilterExtension']
+      )
+
+      expect {
+        3.times do
+          update_app_file(
+            :routes => ['get("/foo") { "foo" }'],
+            :extensions => ['BeforeFilterExtension']
+          )
+          get('/foo') # ...to perform the reload
+        end
+      }.to_not change { app_const.filters[:before].size }
+    end
+
+    it "doesn't duplicate after filters with every reload" do
+      module ::AfterFilterExtension
+        def self.registered(klass)
+          klass.after { @bye = 'bye' }
+        end
+      end
+
+      setup_example_app(
+        :routes => ['get("/foo") { "foo" }'],
+        :extensions => ['AfterFilterExtension']
+      )
+
+      expect {
+        3.times do
+          update_app_file(
+            :routes => ['get("/foo") { "foo" }'],
+            :extensions => ['AfterFilterExtension']
+          )
+          get('/foo') # ...to perform the reload
+        end
+      }.to_not change { app_const.filters[:after].size }
     end
   end
 

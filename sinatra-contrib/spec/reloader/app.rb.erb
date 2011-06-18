@@ -5,6 +5,10 @@ class <%= name %> < Sinatra::Base
   enable :inline_templates
 <% end %>
 
+<% extensions.each do |extension| %>
+  register <%= extension %>
+<% end %>
+
 <% middlewares.each do |middleware| %>
   use <%= middleware %>
 <% end %>

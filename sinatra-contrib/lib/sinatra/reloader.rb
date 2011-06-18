@@ -183,9 +183,9 @@ module Sinatra
         source_location = block.respond_to?(:source_location) ?
           block.source_location.first : caller_files[1]
         signature = super
-        Watcher::List.for(self).watch(source_location, Watcher::Element.new(
-          :route, { :verb => verb, :signature => signature }
-        ))
+        watch_element(
+          source_location, :route, { :verb => verb, :signature => signature }
+        )
         signature
       end
 
@@ -196,7 +196,7 @@ module Sinatra
       def inline_templates=(file=nil)
         file = (file.nil? || file == true) ?
           (caller_files[1] || File.expand_path($0)) : file
-        Watcher::List.for(self).watch_inline_templates(file)
+        watch_element(file, :inline_templates)
         super
       end
 
@@ -205,9 +205,7 @@ module Sinatra
       # middleware beign used.
       def use(middleware, *args, &block)
         path = caller_files[1] || File.expand_path($0)
-        Watcher::List.for(self).watch(path, Watcher::Element.new(
-          :middleware, [middleware, args, block]
-        ))
+        watch_element(path, :middleware, [middleware, args, block])
         super
       end
 
@@ -215,9 +213,18 @@ module Sinatra
         source_location = block.respond_to?(:source_location) ?
           block.source_location.first : caller_files[1]
         result = super
-        Watcher::List.for(self).watch(source_location, Watcher::Element.new(
-          :"#{type}_filter", filters[type].last
-        ))
+        watch_element(source_location, :"#{type}_filter", filters[type].last)
+        result
+      end
+
+      # Does everything Sinatra::Base#register does, but it also lets
+      # the reloader know that an extension is beign registered, because
+      # the elements defined in its +registered+ method need a special
+      # treatment.
+      def register(*extensions, &block)
+        start_registering_extension
+        result = super
+        stop_registering_extension
         result
       end
     end
@@ -252,6 +259,44 @@ module Sinatra
       # times.
       def dont_reload(glob)
         Dir[glob].each { |path| Watcher::List.for(self).ignore(path) }
+      end
+
+    private
+
+      attr_reader :register_path
+
+      # Indicates an extesion is beign registered.
+      def start_registering_extension
+        @register_path = caller_files[2]
+      end
+
+      # Indicates the extesion has been registered.
+      def stop_registering_extension
+        @register_path = nil
+      end
+
+      # Indicates whether or not an extension is being registered.
+      def registering_extension?
+        !register_path.nil?
+      end
+
+      # Builds a Watcher::Element from +type+ and +representation+ and
+      # tells the Watcher::List for the current application to watch it
+      # in the file located at +path+.
+      #
+      # If an extension is beign registered, it also tells the list to
+      # watch it in the file where the extesion has been registered.
+      # This prevents the duplication of the elements added by the
+      # extension in its +registered+ method with every reload.
+      def watch_element(path, type, representation=nil)
+        list = Watcher::List.for(self)
+        if type == :inline_templates
+          list.watch_inline_templates(path)
+        else
+          element = Watcher::Element.new(type, representation)
+          list.watch(path, element)
+          list.watch(register_path, element) if registering_extension?
+        end
       end
     end
   end
