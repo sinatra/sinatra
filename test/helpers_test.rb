@@ -596,6 +596,20 @@ class HelpersTest < Test::Unit::TestCase
     it 'sets the Content-Type response header without extname' do
       attachment_app('test')
       get '/attachment'
+      assert_equal 'text/html;charset=utf-8', response['Content-Type']
+      assert_equal '<sinatra></sinatra>', body   
+    end
+    
+    it 'sets the Content-Type response header without extname' do
+      mock_app do
+        get '/attachment' do
+          content_type :atom
+          attachment 'test.xml'
+          response.write("<sinatra></sinatra>")
+        end
+      end
+      get '/attachment'
+      assert_equal 'application/atom+xml', response['Content-Type']
       assert_equal '<sinatra></sinatra>', body   
     end
     
