@@ -55,7 +55,7 @@ module Sinatra
           watcher_for(path).inline_templates
         end
 
-        # Lets the +Watcher+ for the file located at +path+ to ignore
+        # Tells the +Watcher+ for the file located at +path+ to ignore
         # the file changes, and adds the +Watcher+ to the +List+, if
         # it isn't already there.
         def ignore(path)
