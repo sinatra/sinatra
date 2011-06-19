@@ -11,8 +11,6 @@ module Rack
     # the session if those properties change. This essentially prevents attacks
     # from Firesheep. Since all headers taken into consideration might be
     # spoofed, too, this will not prevent all hijacking attempts.
-    #
-    # Not Yet Implemented!
     class SessionHijacking < Base
       default_options :tracking_key => :tracking, :encrypt_tracking => true,
         :track => %w[HTTP_USER_AGENT HTTP_ACCEPT_ENCODING HTTP_ACCEPT_LANGUAGE

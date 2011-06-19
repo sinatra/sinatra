@@ -12,8 +12,6 @@ module Rack
     #
     # This middleware is not used when using the Rack::Protection collection,
     # since it renders web services unusable.
-    #
-    # Not Yet Implemented!
     class NoReferrer < Base
       default_reaction :deny
 

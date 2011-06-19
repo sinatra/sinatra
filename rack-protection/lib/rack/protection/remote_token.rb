@@ -11,8 +11,6 @@ module Rack
     # included in the session *or* the request comes from the same origin.
     #
     # Compatible with Rails and rack-csrf.
-    #
-    # Not Yet Implemented!
     class RemoteToken < AuthenticityToken
       default_reaction :deny
 

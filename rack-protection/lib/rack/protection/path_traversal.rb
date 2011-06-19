@@ -9,8 +9,6 @@ module Rack
     #
     # Unescapes '/' and '.', expands +path_info+.
     # Thus <tt>GET /foo/%2e%2e%2fbar</tt> becomes <tt>GET /bar</tt>.
-    #
-    # Not Yet Implemented!
     class PathTraversal < Base
       def call(env)
         path_was         = env["PATH_INFO"]

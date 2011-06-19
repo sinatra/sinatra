@@ -12,8 +12,6 @@ module Rack
     #
     # Combine with NoReferrer to also block remote requests from non-HTTP pages
     # (FTP/HTTPS/...).
-    #
-    # Not Yet Implemented!
     class RemoteReferrer < Base
       default_reaction :deny
 

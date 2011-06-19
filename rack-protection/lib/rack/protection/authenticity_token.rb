@@ -11,8 +11,6 @@ module Rack
     # included in the session.
     #
     # Compatible with Rails and rack-csrf.
-    #
-    # Not Yet Implemented!
     class AuthenticityToken < Base
       def accepts?(env)
         return true if safe? env
