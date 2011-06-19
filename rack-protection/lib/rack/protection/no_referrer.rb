@@ -16,7 +16,7 @@ module Rack
       default_reaction :deny
 
       def accepts?(env)
-        safe?(env) or referrer(env)
+        safe?(env) or not env['HTTP_REFERER'].to_s.empty?
       end
     end
   end
