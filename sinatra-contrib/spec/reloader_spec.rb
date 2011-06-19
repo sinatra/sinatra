@@ -235,13 +235,11 @@ describe Sinatra::Reloader do
       )
 
       expect {
-        3.times do
-          update_app_file(
-            :routes => ['get("/foo") { "foo" }'],
-            :extensions => ['RouteExtension']
-          )
-          get('/foo') # ...to perform the reload
-        end
+        update_app_file(
+          :routes => ['get("/foo") { "foo" }'],
+          :extensions => ['RouteExtension']
+        )
+        get('/foo') # ...to perform the reload
       }.to_not change { app_const.routes['GET'].size }
     end
 
@@ -258,13 +256,11 @@ describe Sinatra::Reloader do
       )
 
       expect {
-        3.times do
-          update_app_file(
-            :routes => ['get("/foo") { "foo" }'],
-            :extensions => ['MiddlewareExtension']
-          )
-          get('/foo') # ...to perform the reload
-        end
+        update_app_file(
+          :routes => ['get("/foo") { "foo" }'],
+          :extensions => ['MiddlewareExtension']
+        )
+        get('/foo') # ...to perform the reload
       }.to_not change { app_const.middleware.size }
     end
 
@@ -281,13 +277,11 @@ describe Sinatra::Reloader do
       )
 
       expect {
-        3.times do
-          update_app_file(
-            :routes => ['get("/foo") { "foo" }'],
-            :extensions => ['BeforeFilterExtension']
-          )
-          get('/foo') # ...to perform the reload
-        end
+        update_app_file(
+          :routes => ['get("/foo") { "foo" }'],
+          :extensions => ['BeforeFilterExtension']
+        )
+        get('/foo') # ...to perform the reload
       }.to_not change { app_const.filters[:before].size }
     end
 
@@ -304,13 +298,11 @@ describe Sinatra::Reloader do
       )
 
       expect {
-        3.times do
-          update_app_file(
-            :routes => ['get("/foo") { "foo" }'],
-            :extensions => ['AfterFilterExtension']
-          )
-          get('/foo') # ...to perform the reload
-        end
+        update_app_file(
+          :routes => ['get("/foo") { "foo" }'],
+          :extensions => ['AfterFilterExtension']
+        )
+        get('/foo') # ...to perform the reload
       }.to_not change { app_const.filters[:after].size }
     end
   end
