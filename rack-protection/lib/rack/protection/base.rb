@@ -41,10 +41,14 @@ module Rack
       def call(env)
         unless accepts? env
           warn env, "attack prevented by #{self.class}"
-          result = send(options[:reaction], env)
-          return result if Array === result and result.size == 3
+          result = react env
         end
-        app.call(env)
+        result or app.call(env)
+      end
+
+      def react(env)
+        result = send(options[:reaction], env)
+        result if Array === result and result.size == 3
       end
 
       def warn(env, message)
