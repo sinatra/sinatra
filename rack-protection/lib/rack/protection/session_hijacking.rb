@@ -12,6 +12,7 @@ module Rack
     # from Firesheep. Since all headers taken into consideration might be
     # spoofed, too, this will not prevent all hijacking attempts.
     class SessionHijacking < Base
+      default_reaction :drop_session
       default_options :tracking_key => :tracking, :encrypt_tracking => true,
         :track => %w[HTTP_USER_AGENT HTTP_ACCEPT_ENCODING HTTP_ACCEPT_LANGUAGE
           HTTP_VERSION]
@@ -20,10 +21,10 @@ module Rack
         session = session env
         key     = options[:tracking_key]
         if session.include? key
-          session[key].all? { |k,v| env[k] == encrypt(v) }
+          session[key].all? { |k,v| v == encrypt(env[k]) }
         else
           session[key] = {}
-          options[:track].each { |k| session[k] = encrypt(env[k]) }
+          options[:track].each { |k| session[key][k] = encrypt(env[k]) }
         end
       end
 
