@@ -9,7 +9,8 @@ module Rack
       DEFAULT_OPTIONS = {
         :reaction    => :default_reaction, :logging   => true,
         :message     => 'Forbidden',       :encryptor => Digest::SHA1,
-        :session_key => 'rack.session',    :status    => 403
+        :session_key => 'rack.session',    :status    => 403,
+        :allow_empty_referrer => true
       }
 
       attr_reader :app, :options
@@ -75,8 +76,9 @@ module Rack
       end
 
       def referrer(env)
-        ref = env['HTTP_REFERER']
-        URI.parse(ref).host || Request.new(env).host if ref and not ref.empty?
+        ref = env['HTTP_REFERER'].to_s
+        return if !options[:allow_empty_referrer] and ref.empty?
+        URI.parse(ref).host || Request.new(env).host
       end
 
       def random_string(secure = defined? SecureRandom)

@@ -10,7 +10,6 @@ module Rack
     autoload :FrameOptions,      'rack/protection/frame_options'
     autoload :IPSpoofing,        'rack/protection/ip_spoofing'
     autoload :JsonCsrf,          'rack/protection/json_csrf'
-    autoload :NoReferrer,        'rack/protection/no_referrer'
     autoload :PathTraversal,     'rack/protection/path_traversal'
     autoload :RemoteReferrer,    'rack/protection/remote_referrer'
     autoload :RemoteToken,       'rack/protection/remote_token'
@@ -18,7 +17,7 @@ module Rack
     autoload :XSSHeader,         'rack/protection/xss_header'
 
     def self.new(app, options = {})
-      # does not include: AuthenticityToken, FormToken and NoReferrer
+      # does not include: RemoteReferrer, AuthenticityToken and FormToken
       except = Array options[:except]
       Rack::Builder.new do
         use EscapedParams,    options unless except.include? :escaped_params

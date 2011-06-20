@@ -41,10 +41,8 @@ Prevented by:
 * `Rack::Protection::AuthenticityToken` (not included by `use Rack::Protection`)
 * `Rack::Protection::FormToken` (not included by `use Rack::Protection`)
 * `Rack::Protection::JsonCsrf`
-* `Rack::Protection::NoReferrer` (not included by `use Rack::Protection`)
 * `Rack::Protection::RemoteReferrer` (not included by `use Rack::Protection`)
 * `Rack::Protection::RemoteToken`
-
 ## Cross Site Scripting
 
 Prevented by:
