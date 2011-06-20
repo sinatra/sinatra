@@ -1,6 +1,25 @@
 require 'rack/protection'
 require 'rack/test'
 require 'forwardable'
+require 'stringio'
+
+if defined? Gem.loaded_specs and Gem.loaded_specs.include? 'rack'
+  version = Gem.loaded_specs['rack'].version.to_s
+else
+  version = Rack.release + '.0'
+end
+
+if version == "1.3"
+  Rack::Session::Abstract::ID.class_eval do
+    private
+    def prepare_session(env)
+      session_was                  = env[ENV_SESSION_KEY]
+      env[ENV_SESSION_KEY]         = SessionHash.new(self, env)
+      env[ENV_SESSION_OPTIONS_KEY] = OptionsHash.new(self, env, @default_options)
+      env[ENV_SESSION_KEY].merge! session_was if session_was
+    end
+  end
+end
 
 module DummyApp
   def self.call(env)
@@ -25,7 +44,7 @@ module TestHelpers
       klass = described_class
       mock_app do
         use Rack::Head
-        use Rack::Session::Cookie
+        use(Rack::Config) { |e| e['rack.session'] ||= {}}
         use klass
         run app
       end
@@ -99,7 +118,7 @@ shared_examples_for 'any rack application' do
 
     mock_app do
       use Rack::Head
-      use Rack::Session::Cookie
+      use(Rack::Config) { |e| e['rack.session'] ||= {}}
       use detector
       use klass
       run DummyApp
@@ -126,7 +145,7 @@ shared_examples_for 'any rack application' do
 
     mock_app do
       use Rack::Head
-      use Rack::Session::Cookie
+      use(Rack::Config) { |e| e['rack.session'] ||= {}}
       use detector
       use klass
       use changer
