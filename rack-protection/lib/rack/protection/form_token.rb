@@ -14,9 +14,10 @@ module Rack
     # since it might be a security issue, depending on your application
     #
     # Compatible with Rails and rack-csrf.
-    #
-    # Not Yet Implemented!
     class FormToken < AuthenticityToken
+      def accepts?(env)
+        env["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest" or super
+      end
     end
   end
 end
