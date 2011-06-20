@@ -8,6 +8,7 @@ module Rack
     autoload :EscapedParams,     'rack/protection/escaped_params'
     autoload :FormToken,         'rack/protection/form_token'
     autoload :FrameOptions,      'rack/protection/frame_options'
+    autoload :IPSpoofing,        'rack/protection/ip_spoofing'
     autoload :JsonCsrf,          'rack/protection/json_csrf'
     autoload :NoReferrer,        'rack/protection/no_referrer'
     autoload :PathTraversal,     'rack/protection/path_traversal'
@@ -22,6 +23,7 @@ module Rack
       Rack::Builder.new do
         use EscapedParams,    options unless except.include? :escaped_params
         use FrameOptions,     options unless except.include? :frame_options
+        use IPSpoofing,       options unless except.include? :ip_spoofing
         use JsonCsrf,         options unless except.include? :json_csrf
         use PathTraversal,    options unless except.include? :path_traversal
         use RemoteToken,      options unless except.include? :remote_token

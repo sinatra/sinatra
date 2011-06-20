@@ -70,6 +70,13 @@ Prevented by:
 
 * `Rack::Protection::SessionHijacking`
 
+## IP Spoofing
+
+
+Prevented by:
+
+* `Rack::Protection::IPSpoofing`
+
 # Installation
 
     gem install rack-protection
