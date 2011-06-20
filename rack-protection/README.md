@@ -78,7 +78,3 @@ Prevented by:
 # Installation
 
     gem install rack-protection
-
-# TODO
-
-* Implement pending specs (run `rake test` to see them)
