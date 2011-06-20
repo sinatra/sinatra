@@ -83,5 +83,4 @@ Prevented by:
 
 # TODO
 
-* More specs
-* Properly implement FormToken
+* Implement pending specs (run `rake test` to see them)
