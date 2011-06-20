@@ -10,7 +10,7 @@ module Rack
     # JSON GET APIs are volnurable to being embedded as JavaScript while the
     # Array prototype has been patched to track data. Checks the referrer
     # even on GET requests if the content type is JSON.
-    class JsonCsrf < AuthenticityToken
+    class JsonCsrf < Base
       default_reaction :deny
 
       def call(env)
