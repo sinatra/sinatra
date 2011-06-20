@@ -85,13 +85,11 @@ module Rack
         random_string false
       end
 
-      def default_reaction(env)
-        fail "no default reaction given for #{self.class}"
-      end
-
       def encrypt(value)
         options[:encryptor].hexdigest value.to_s
       end
+
+      alias default_reaction deny
     end
   end
 end
