@@ -189,6 +189,8 @@ module Sinatra
       if filename
         params = '; filename="%s"' % File.basename(filename)
         response['Content-Disposition'] << params
+        ext = File.extname(filename)
+        content_type(ext) unless response['Content-Type'] or ext.empty?
       end
     end
 
