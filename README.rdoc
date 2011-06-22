@@ -668,7 +668,7 @@ Note that <tt>enable :sessions</tt> actually stores all data in a cookie. This
 might not always be what you want (storing lots of data will increase your
 traffic, for instance). You can use any Rack session middleware: in order to
 do so, do *not* call <tt>enable :sessions</tt>, but instead pull in your
-middleware of choice how you would any other middleware:
+middleware of choice as you would any other middleware:
 
   use Rack::Session::Pool, :expire_after => 2592000
 
