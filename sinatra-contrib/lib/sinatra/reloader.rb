@@ -190,7 +190,7 @@ module Sinatra
 
       # Does everything Sinatra::Base#use does, but it also tells the
       # +Watcher::List+ for the Sinatra application to watch the
-      # middleware beign used.
+      # middleware being used.
       def use(middleware, *args, &block)
         path = caller_files[1] || File.expand_path($0)
         watch_element(path, :middleware, [middleware, args, block])
@@ -199,7 +199,7 @@ module Sinatra
 
       # Does everything Sinatra::Base#add_filter does, but it also tells
       # the +Watcher::List+ for the Sinatra application to watch the
-      # defined filter beign used.
+      # defined filter being used.
       def add_filter(type, path = nil, options = {}, &block)
         source_location = block.respond_to?(:source_location) ?
           block.source_location.first : caller_files[1]
@@ -221,7 +221,7 @@ module Sinatra
       end
 
       # Does everything Sinatra::Base#register does, but it also lets
-      # the reloader know that an extension is beign registered, because
+      # the reloader know that an extension is being registered, because
       # the elements defined in its +registered+ method need a special
       # treatment.
       def register(*extensions, &block)
@@ -280,7 +280,7 @@ module Sinatra
 
       attr_reader :register_path
 
-      # Indicates an extesion is beign registered.
+      # Indicates an extesion is being registered.
       def start_registering_extension
         @register_path = caller_files[2]
       end
@@ -299,7 +299,7 @@ module Sinatra
       # tells the Watcher::List for the current application to watch it
       # in the file located at +path+.
       #
-      # If an extension is beign registered, it also tells the list to
+      # If an extension is being registered, it also tells the list to
       # watch it in the file where the extesion has been registered.
       # This prevents the duplication of the elements added by the
       # extension in its +registered+ method with every reload.
