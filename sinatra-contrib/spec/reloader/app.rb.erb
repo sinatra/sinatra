@@ -19,6 +19,12 @@ class <%= name %> < <%= parent %>
   <%= filter %>
 <% end %>
 
+<% errors.each do |number, code| %>
+  error <%= number %> do
+    <%= code %>
+  end
+<% end %>
+
 <% routes.each do |route| %>
   <%= route %>
 <% end %>

@@ -208,6 +208,18 @@ module Sinatra
         result
       end
 
+      # Does everything Sinatra::Base#error does, but it also tells
+      # the +Watcher::List+ for the Sinatra application to watch the
+      # defined error handler.
+      def error(*codes, &block)
+        path = caller_files[1] || File.expand_path($0)
+        result = super
+        codes.each do |c|
+          watch_element(path, :error, :code => c, :handler => @errors[c])
+        end
+        result
+      end
+
       # Does everything Sinatra::Base#register does, but it also lets
       # the reloader know that an extension is beign registered, because
       # the elements defined in its +registered+ method need a special
@@ -244,6 +256,10 @@ module Sinatra
           filters[:before].delete(element.representation)
         when :after_filter then
           filters[:after].delete(element.representation)
+        when :error then
+          code    = element.representation[:code]
+          handler = element.representation[:handler]
+          @errors.delete(code) if @errors[code] == handler
         end
       end
 

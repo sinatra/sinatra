@@ -43,6 +43,7 @@ describe Sinatra::Reloader do
     options[:extensions] ||= []
     options[:middlewares] ||= []
     options[:filters] ||= []
+    options[:errors] ||= {}
     options[:name] ||= app_name
     options[:enable_reloader] = true unless options[:enable_reloader] === false
     options[:parent] ||= 'Sinatra::Base'
@@ -218,6 +219,41 @@ describe Sinatra::Reloader do
         update_app_file(:routes => ['get("/foo") { "foo" }'])
         get('/foo') # ...to perform the reload
       }.to change { app_const.filters[:after].size }.by(-1)
+    end
+  end
+
+  describe "error reloading" do
+    before do
+      setup_example_app(
+        :routes => ['get("/secret") { 403 }'],
+        :errors => { 403 => "'Access forbiden'" }
+      )
+    end
+
+    it "doesn't mess up the application" do
+      get('/secret').should be_client_error
+      get('/secret').body.strip.should == 'Access forbiden'
+    end
+
+    it "knows when a error has been added" do
+      update_app_file(:errors => { 404 => "'Nowhere'" })
+      get('/nowhere').should be_not_found
+      get('/nowhere').body.should == 'Nowhere'
+    end
+
+    it "knows when a error has been removed" do
+      update_app_file(:routes => ['get("/secret") { 403 }'])
+      get('/secret').should be_client_error
+      get('/secret').body.should_not == 'Access forbiden'
+    end
+
+    it "knows when a error has been modified" do
+      update_app_file(
+        :routes => ['get("/secret") { 403 }'],
+        :errors => { 403 => "'What are you doing here?'" }
+      )
+      get('/secret').should be_client_error
+      get('/secret').body.should == 'What are you doing here?'
     end
   end
 
