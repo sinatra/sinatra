@@ -1,17 +1,90 @@
 require 'sinatra/base'
 
 module Sinatra
-  # Extension to reload modified files.  In the development
-  # environment, it will automatically require files defining routes
-  # with every incoming request, but you can refine the reloading
-  # policy with +also_reload+ and +dont_reload+, to customize which
-  # files should, and should not, be reloaded, respectively.
+
+  # = Sinatra::Reloader
+  #
+  # Extension to reload modified files.  Useful during development,
+  # since it will automatically require files defining routes, filters,
+  # error handlers and inline templates, with every incoming request,
+  # but only if they have been updated.
+  #
+  # == Usage
+  #
+  # === Classic Application
+  #
+  # To enable the realoader in a classic application all you need to do is
+  # require it:
+  #
+  #     require "sinatra"
+  #     require "sinatra/reloader" if development?
+  #
+  #     # Your classic application code goes here...
+  #
+  # === Modular Application
+  #
+  # To enable the realoader in a modular application all you need to do is
+  # require it, and then, register it:
+  #
+  #     require "sinatra/base"
+  #     require "sinatra/reloader"
+  #
+  #     class MyApp < Sinatra::Base
+  #       configure :development do
+  #         register Sinatra::Reloader
+  #       end
+  #
+  #       # Your modular application code goes here...
+  #     end
+  #
+  # == Changing the Reloading Policy
+  #
+  # You can refine the reloading policy with +also_reload+ and
+  # +dont_reload+, to customize which files should, and should not, be
+  # reloaded, respectively.
+  #
+  # === Classic Application
+  #
+  # Simply call the methods:
+  #
+  #     require "sinatra"
+  #     require "sinatra/reloader" if development?
+  #
+  #     also_reload '/path/to/some/file'
+  #     dont_reload '/path/to/other/file'
+  #
+  #     # Your classic application code goes here...
+  #
+  # === Modular Application
+  #
+  # Call the methods inside the +configure+ block:
+  #
+  #     require "sinatra/base"
+  #     require "sinatra/reloader"
+  #
+  #     class MyApp < Sinatra::Base
+  #       configure :development do
+  #         register Sinatra::Reloader
+  #         also_reload '/path/to/some/file'
+  #         dont_reload '/path/to/other/file'
+  #       end
+  #
+  #       # Your modular application code goes here...
+  #     end
+  #
   module Reloader
-    # Watches a file so it can tell when it has been updated.  It also
-    # knows the routes defined and if it contains inline templates.
+
+    # Watches a file so it can tell when it has been updated, and what
+    # elements contains.
     class Watcher
-      # Represents an element of a Sinatra application that needs to be
-      # reloaded.
+
+      # Represents an element of a Sinatra application that may need to
+      # be reloaded.  An element could be:
+      # * a route
+      # * a filter
+      # * an error handler
+      # * a middleware
+      # * inline templates
       #
       # Its +representation+ attribute is there to allow to identify the
       # element within an application, that is, to match it with its
@@ -22,14 +95,13 @@ module Sinatra
       # Collection of file +Watcher+ that can be associated with a
       # Sinatra application.  That way, we can know which files belong
       # to a given application and which files have been modified.  It
-      # also provides a mechanism to inform a Watcher the routes
-      # defined in the file being watched, whether it has inline
-      # templates and if it changes should be ignored.
+      # also provides a mechanism to inform a Watcher the elements
+      # defined in the file being watched and if it changes should be
+      # ignored.
       class List
         @app_list_map = Hash.new { |hash, key| hash[key] = new }
 
-        # Returns (an creates if it doesn't exists) a +List+ for the
-        # application +app+.
+        # Returns the +List+ for the application +app+.
         def self.for(app)
           @app_list_map[app]
         end
@@ -42,8 +114,8 @@ module Sinatra
         end
 
         # Lets the +Watcher+ for the file localted at +path+ know that the
-        # +element+ is defined there, and adds the +Watcher+ to the +List+, if
-        # it isn't already there.
+        # +element+ is defined there, and adds the +Watcher+ to the +List+,
+        # if it isn't already there.
         def watch(path, element)
           watcher_for(path).elements << element
         end
@@ -76,15 +148,13 @@ module Sinatra
 
       attr_reader :path, :elements, :mtime
 
-      # Creates a new +Watcher+ instance for the file located at
-      # +path+.
+      # Creates a new +Watcher+ instance for the file located at +path+.
       def initialize(path)
         @path, @elements = path, []
         update
       end
 
-      # Indicates whether or not the file being watched has been
-      # modified.
+      # Indicates whether or not the file being watched has been modified.
       def updated?
         !ignore? && !removed? && mtime != File.mtime(path)
       end
@@ -112,17 +182,15 @@ module Sinatra
         !!@ignore
       end
 
-      # Indicates whether or not the file being watched has been
-      # removed.
+      # Indicates whether or not the file being watched has been removed.
       def removed?
         !File.exist?(path)
       end
     end
 
-    # When the extension is registed it extends the Sinatra
-    # application +klass+ with the modules +BaseMethods+ and
-    # +ExtensionMethods+ and defines a before filter to +perform+ the
-    # reload of the modified file.
+    # When the extension is registed it extends the Sinatra application
+    # +klass+ with the modules +BaseMethods+ and +ExtensionMethods+ and
+    # defines a before filter to +perform+ the reload of the modified files.
     def self.registered(klass)
       @reloader_loaded_in ||= {}
       return if @reloader_loaded_in[klass]
@@ -144,8 +212,8 @@ module Sinatra
       end
     end
 
-    # Reloads the modified files, adding, updating and removing routes
-    # and inline templates as apporpiate.
+    # Reloads the modified files, adding, updating and removing the
+    # needed elements.
     def self.perform(klass)
       Watcher::List.for(klass).updated.each do |watcher|
         klass.set(:inline_templates, watcher.path) if watcher.inline_templates?
@@ -161,12 +229,11 @@ module Sinatra
       Thread and Thread.list.size > 1 and Thread.respond_to?(:exclusive)
     end
 
-    # Contains the methods defined in Sinatra::Base that are
-    # overriden.
+    # Contains the methods defined in Sinatra::Base that are overriden.
     module BaseMethods
-      # Does everything Sinatra::Base#route does, but it also tells
-      # the +Watcher::List+ for the Sinatra application to watch the
-      # defined route.
+      # Does everything Sinatra::Base#route does, but it also tells the
+      # +Watcher::List+ for the Sinatra application to watch the defined
+      # route.
       def route(verb, path, options={}, &block)
         source_location = block.respond_to?(:source_location) ?
           block.source_location.first : caller_files[1]
@@ -177,10 +244,10 @@ module Sinatra
         signature
       end
 
-      # Does everything Sinatra::Base#inline_templates= does, but it
-      # also tells the +Watcher::List+ for the Sinatra application to
-      # watch the inline templates in +file+ or the file who made the
-      # call to his method.
+      # Does everything Sinatra::Base#inline_templates= does, but it also
+      # tells the +Watcher::List+ for the Sinatra application to watch the
+      # inline templates in +file+ or the file who made the call to this
+      # method.
       def inline_templates=(file=nil)
         file = (file.nil? || file == true) ?
           (caller_files[1] || File.expand_path($0)) : file
@@ -189,8 +256,8 @@ module Sinatra
       end
 
       # Does everything Sinatra::Base#use does, but it also tells the
-      # +Watcher::List+ for the Sinatra application to watch the
-      # middleware being used.
+      # +Watcher::List+ for the Sinatra application to watch the middleware
+      # being used.
       def use(middleware, *args, &block)
         path = caller_files[1] || File.expand_path($0)
         watch_element(path, :middleware, [middleware, args, block])
@@ -198,8 +265,8 @@ module Sinatra
       end
 
       # Does everything Sinatra::Base#add_filter does, but it also tells
-      # the +Watcher::List+ for the Sinatra application to watch the
-      # defined filter being used.
+      # the +Watcher::List+ for the Sinatra application to watch the defined
+      # filter.
       def add_filter(type, path = nil, options = {}, &block)
         source_location = block.respond_to?(:source_location) ?
           block.source_location.first : caller_files[1]
@@ -208,9 +275,9 @@ module Sinatra
         result
       end
 
-      # Does everything Sinatra::Base#error does, but it also tells
-      # the +Watcher::List+ for the Sinatra application to watch the
-      # defined error handler.
+      # Does everything Sinatra::Base#error does, but it also tells the
+      # +Watcher::List+ for the Sinatra application to watch the defined
+      # error handler.
       def error(*codes, &block)
         path = caller_files[1] || File.expand_path($0)
         result = super
@@ -220,10 +287,9 @@ module Sinatra
         result
       end
 
-      # Does everything Sinatra::Base#register does, but it also lets
-      # the reloader know that an extension is being registered, because
-      # the elements defined in its +registered+ method need a special
-      # treatment.
+      # Does everything Sinatra::Base#register does, but it also lets the
+      # reloader know that an extension is being registered, because the
+      # elements defined in its +registered+ method need a special treatment.
       def register(*extensions, &block)
         start_registering_extension
         result = super
@@ -231,8 +297,8 @@ module Sinatra
         result
       end
 
-      # Does everything Sinatra::Base#register does and then registers
-      # the reloader in the +subclass+.
+      # Does everything Sinatra::Base#register does and then registers the
+      # reloader in the +subclass+.
       def inherited(subclass)
         result = super
         subclass.register Sinatra::Reloader
@@ -240,8 +306,7 @@ module Sinatra
       end
     end
 
-    # Contains the methods that the extension adds to the Sinatra
-    # application.
+    # Contains the methods that the extension adds to the Sinatra application.
     module ExtensionMethods
       # Removes the +element+ from the Sinatra application.
       def deactivate(element)
@@ -269,9 +334,8 @@ module Sinatra
         Dir[glob].each { |path| Watcher::List.for(self).watch_file(path) }
       end
 
-      # Indicates with a +glob+ which files should not be reloaded
-      # event if they have been modified.  It can be called several
-      # times.
+      # Indicates with a +glob+ which files should not be reloaded even if
+      # they have been modified.  It can be called several times.
       def dont_reload(glob)
         Dir[glob].each { |path| Watcher::List.for(self).ignore(path) }
       end
@@ -285,7 +349,7 @@ module Sinatra
         @register_path = caller_files[2]
       end
 
-      # Indicates the extesion has been registered.
+      # Indicates the extesion has already been registered.
       def stop_registering_extension
         @register_path = nil
       end
