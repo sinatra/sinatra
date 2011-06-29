@@ -303,10 +303,19 @@ module Sinatra
       value = 'W/' + value if kind == :weak
       response['ETag'] = value
 
-      # Conditional GET check
-      if etags = env['HTTP_IF_NONE_MATCH']
-        etags = etags.split(/\s*,\s*/)
-        halt 304 if etags.include?(value) || etags.include?('*')
+      case request.request_method
+      when 'GET', 'HEAD'
+        # Conditional GET check
+        if etags = env['HTTP_IF_NONE_MATCH']
+          etags = etags.split(/\s*,\s*/)
+          halt 304 if etags.include?(value) || etags.include?('*')
+        end
+      when 'PUT', 'POST', 'DELETE'
+        # Conditional PUT/POST/DELETE
+        if etags = env['HTTP_IF_MATCH']
+          etags = etags.split(/\s*, \s*/)
+          halt 412 unless etags.include?(value) || etags.include?('*')
+        end
       end
     end
 
