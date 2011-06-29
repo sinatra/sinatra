@@ -39,6 +39,14 @@ module Sinatra
       @env.include? "HTTP_X_FORWARDED_HOST"
     end
 
+    def safe?
+      get? or head? or options? or trace?
+    end
+
+    def idempotent?
+      safe? or put? or delete?
+    end
+
     private
 
     def accept_entry(entry)
@@ -303,18 +311,12 @@ module Sinatra
       value = 'W/' + value if kind == :weak
       response['ETag'] = value
 
-      case env['REQUEST_METHOD']
-      when /^(GET)|(HEAD)$/
-        # Conditional GET check
-        if etags = env['HTTP_IF_NONE_MATCH']
-          etags = etags.split(/\s*,\s*/)
-          halt 304 if etags.include?(value) || etags.include?('*')
-        end
-      when /^(PUT)|(POST)|(DELETE)$/
-        # Conditional PUT/POST/DELETE
-        if etags = env['HTTP_IF_MATCH']
-          etags = etags.split(/\s*, \s*/)
-          halt 412 unless etags.include?(value) || etags.include?('*')
+      if etags = env['HTTP_IF_NONE_MATCH']
+        etags = etags.split(/\s*,\s*/)
+        if etags.include?(value) or etags.include?('*')
+          halt 304 if request.safe?
+        else
+          halt 412 unless request.safe?
         end
       end
     end

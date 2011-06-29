@@ -951,6 +951,11 @@ class HelpersTest < Test::Unit::TestCase
           etag 'FOO'
           'Boo!'
         end
+
+        post '/' do
+          etag 'FOO'
+          'Matches!'
+        end
       }
     end
 
@@ -963,6 +968,24 @@ class HelpersTest < Test::Unit::TestCase
       get '/'
       assert_equal 200, status
       assert_equal 'Boo!', body
+    end
+
+    it 'returns a body when posting with no If-None-Match header' do
+      post '/'
+      assert_equal 200, status
+      assert_equal 'Matches!', body
+    end
+
+    it 'returns a body when conditional post matches' do
+      post '/', {}, { 'HTTP_IF_NONE_MATCH' => '"FOO"' }
+      assert_equal 200, status
+      assert_equal 'Matches!', body
+    end
+
+    it 'halts with 412 when conditional post misses' do
+      post '/', {}, { 'HTTP_IF_NONE_MATCH' => '"BAR"' }
+      assert_equal 412, status
+      assert_equal '', body
     end
 
     it 'halts when a conditional GET matches' do
