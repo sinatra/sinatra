@@ -304,13 +304,13 @@ module Sinatra
       response['ETag'] = value
 
       case env['REQUEST_METHOD']
-      when /^(GET)|(HEAD)$/
+      when 'GET', 'HEAD'
         # Conditional GET check
         if etags = env['HTTP_IF_NONE_MATCH']
           etags = etags.split(/\s*,\s*/)
           halt 304 if etags.include?(value) || etags.include?('*')
         end
-      when /^(PUT)|(POST)|(DELETE)$/
+      when 'PUT', 'POST', 'DELETE'
         # Conditional PUT/POST/DELETE
         if etags = env['HTTP_IF_MATCH']
           etags = etags.split(/\s*, \s*/)
