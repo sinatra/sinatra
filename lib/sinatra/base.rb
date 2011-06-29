@@ -303,7 +303,7 @@ module Sinatra
       value = 'W/' + value if kind == :weak
       response['ETag'] = value
 
-      case env['REQUEST_METHOD']
+      case request.request_method
       when 'GET', 'HEAD'
         # Conditional GET check
         if etags = env['HTTP_IF_NONE_MATCH']
