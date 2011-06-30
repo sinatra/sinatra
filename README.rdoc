@@ -1523,6 +1523,7 @@ assign them to a constant, you can do this with <tt>Sinatra.new</tt>:
 
 It takes the application to inherit from as optional argument:
 
+  # config.ru
   require 'sinatra/base'
 
   controller = Sinatra.new do
