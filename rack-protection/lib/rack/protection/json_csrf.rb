@@ -7,7 +7,7 @@ module Rack
     # Supported browsers:: all
     # More infos::         http://flask.pocoo.org/docs/security/#json-security
     #
-    # JSON GET APIs are volnurable to being embedded as JavaScript while the
+    # JSON GET APIs are vulnerable to being embedded as JavaScript while the
     # Array prototype has been patched to track data. Checks the referrer
     # even on GET requests if the content type is JSON.
     class JsonCsrf < Base
