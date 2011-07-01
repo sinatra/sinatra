@@ -1520,6 +1520,7 @@ ohne dass sie einer Konstanten zugeordnet werden. Dies lässt sich mit
 
 Die Applikation kann mit Hilfe eines optionalen Parameters erstellt werden:
 
+  # config.ru
   require 'sinatra/base'
 
   controller = Sinatra.new do

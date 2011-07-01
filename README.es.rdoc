@@ -1581,6 +1581,7 @@ esto tenés <tt>Sinatra.new</tt>:
 Acepta como argumento opcional una aplicación desde la que se
 heredará:
 
+  # config.ru
   require 'sinatra/base'
 
   controller = Sinatra.new do
