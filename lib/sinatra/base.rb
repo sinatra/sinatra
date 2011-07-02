@@ -1188,16 +1188,20 @@ module Sinatra
       end
 
       # Run the Sinatra app as a self-hosted server using
-      # Thin, Mongrel or WEBrick (in that order)
+      # Thin, Mongrel or WEBrick (in that order). If given a block, will call
+      # with the constructed handler once we have taken the stage.
       def run!(options={})
         set options
         handler      = detect_rack_handler
         handler_name = handler.name.gsub(/.*::/, '')
-        $stderr.puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
-          "on #{port} for #{environment} with backup from #{handler_name}" unless handler_name =~/cgi/i
         handler.run self, :Host => bind, :Port => port do |server|
+          unless handler_name =~ /cgi/i
+            $stderr.puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
+            "on #{port} for #{environment} with backup from #{handler_name}"
+          end
           [:INT, :TERM].each { |sig| trap(sig) { quit!(server, handler_name) } }
           set :running, true
+          yield handler if block_given?
         end
       rescue Errno::EADDRINUSE => e
         $stderr.puts "== Someone is already performing on port #{port}!"
