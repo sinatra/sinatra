@@ -1585,6 +1585,7 @@ sans avoir à les assigner à une constante, vous pouvez le faire grâce à
 
 L'application dont elle hérite peut être passé en argument optionnel :
 
+  # config.ru
   require 'sinatra/base'
 
   controleur = Sinatra.new do
