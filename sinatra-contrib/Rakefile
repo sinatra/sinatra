@@ -9,7 +9,7 @@ namespace :doc do
     Dir.glob 'lib/sinatra/*.rb' do |file|
       excluded_files = %w[lib/sinatra/contrib.rb lib/sinatra/capture.rb lib/sinatra/engine_tracking.rb]
       next if excluded_files.include?(file)
-      doc  = File.read(file)[/^module Sinatra\n(  #[^\n]*\n)*/m].scan(/^ *#(?!#) ?(.*)\n/).join("\n")
+      doc  = File.read(file)[/^module Sinatra(\n)+(  #[^\n]*\n)*/m].scan(/^ *#(?!#) ?(.*)\n/).join("\n")
       file = "doc/#{file[4..-4].tr("/_", "-")}.rdoc"
       Dir.mkdir "doc" unless File.directory? "doc"
       puts "writing #{file}"
