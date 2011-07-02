@@ -1,0 +1,5 @@
+= Third Party issues
+
+* Nokogiri 1.5.0 does not work properly on JRuby
+* RedCloth does not work properly on the upcoming Ruby 1.9.3
+* BlueCloth randomly adds invalid bytes to generated strings
