@@ -10,7 +10,7 @@ namespace :doc do
       next if file == 'lib/sinatra/contrib.rb'
       doc  = File.read(file)[/^module Sinatra\n(  #[^\n]*\n)*/m].scan(/^ *#(?!#) ?(.*)\n/).join("\n")
       file = "doc/#{file[4..-4].tr("/_", "-")}.rdoc"
-      File.mkdir "doc" unless File.directory? "doc"
+      Dir.mkdir "doc" unless File.directory? "doc"
       puts "writing #{file}"
       File.open(file, "w") { |f| f << doc }
     end
