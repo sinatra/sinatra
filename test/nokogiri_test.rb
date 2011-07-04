@@ -15,7 +15,7 @@ class NokogiriTest < Test::Unit::TestCase
   it 'renders inline Nokogiri strings' do
     nokogiri_app { nokogiri 'xml' }
     assert ok?
-    assert_body %{<?xml version="1.0"?>\n}
+    assert_body %(<?xml version="1.0"?>\n)
   end
 
   it 'renders inline blocks' do
@@ -26,7 +26,7 @@ class NokogiriTest < Test::Unit::TestCase
       end
     end
     assert ok?
-    assert_body "<?xml version=\"1.0\"?>\n<couple>Frank &amp; Mary</couple>\n"
+    assert_body %(<?xml version="1.0"?>\n<couple>Frank &amp; Mary</couple>\n)
   end
 
   it 'renders .nokogiri files in views path' do
@@ -35,7 +35,7 @@ class NokogiriTest < Test::Unit::TestCase
       nokogiri :hello
     end
     assert ok?
-    assert_body %(<?xml version="1.0"?>\n<exclaim>You're my boy, Blue!</exclaim>\n)
+    assert_body "<?xml version=\"1.0\"?>\n<exclaim>You're my boy, Blue!</exclaim>\n"
   end
 
   it "renders with inline layouts" do
@@ -46,17 +46,16 @@ class NokogiriTest < Test::Unit::TestCase
     end
     get '/'
     assert ok?
-    assert_body "<?xml version=\"1.0\"?>\n<layout>\n  <em>Hello World</em>\n</layout>\n"
+    assert_body %(<?xml version="1.0"?>\n<layout>\n  <em>Hello World</em>\n</layout>\n)
   end
 
   it "renders with file layouts" do
     next if Tilt::VERSION <= "1.1"
     nokogiri_app do
-      @name = "Blue"
       nokogiri %(xml.em 'Hello World'), :layout => :layout2
     end
     assert ok?
-    assert_body "<?xml version=\"1.0\"?>\n<layout>\n  <em>Hello World</em>\n</layout>\n"
+    assert_body %(<?xml version="1.0"?>\n<layout>\n  <em>Hello World</em>\n</layout>\n)
   end
 
   it "raises error if template not found" do
