@@ -718,7 +718,7 @@ Si vous souhaitez avoir plus de contrôle, vous pouvez également enregistrer un
 
   set :sessions, :domain => 'foo.com'
 
-== Halt
+=== Halt
 
 Pour arrêter immédiatement la requête dans un filtre ou un gestionnaire de
 route :
@@ -745,7 +745,7 @@ Bien sûr il est possible de combiner un template avec +halt+ :
 
   halt erb(:erreur)
 
-== Passer
+=== Passer
 
 Une route peut passer le relais aux autres routes qui correspondent également
 avec <tt>pass</tt> :
@@ -1016,7 +1016,7 @@ Si le gestionnaire Rack le supporte, d'autres moyens que le +streaming+ via le
 processus Ruby seront utilisés. Si vous utilisez cette méthode, Sinatra gérera
 automatiquement les requêtes de type +range+.
 
-== Accéder à l'objet requête
+=== Accéder à l'objet requête
 
 L'objet correspondant à la requête envoyée peut être récupéré dans le contexte
 de la requête (filtres, routes, gestionnaires d'erreur) au moyen de la méthode
