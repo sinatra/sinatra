@@ -2,11 +2,12 @@
 <i>Attention : Ce document correspond à la traduction de la version anglaise et
 il n'est peut être plus à jour.</i>
 
-Sinatra est un DSL pour créer rapidement des applications web en Ruby et sans
-effort :
+Sinatra est un DSL pour créer rapidement et facilement des applications web en
+Ruby :
 
   # mon_application.rb
   require 'sinatra'
+
   get '/' do
     'Bonjour le monde !'
   end
@@ -18,14 +19,13 @@ Installez la gem et lancez avec :
 
 Le résultat est visible sur : http://localhost:4567
 
-Il est également recommandé d'exécuter <tt>gem install thin</tt>, que Sinatra
-utilisera si disponible.
+Il est recommandé d'exécuter également <tt>gem install thin</tt>, pour que
+Sinatra utilise le server Thin quand il est disponible.
 
 == Routes
 
 Dans Sinatra, une route est une méthode HTTP couplée à un masque (pattern)
-URL.
-Chaque route est associée à un bloc :
+URL. Chaque route est associée à un bloc :
 
   get '/' do
     .. montrer quelque chose ..
@@ -51,8 +51,8 @@ Chaque route est associée à un bloc :
     .. apaiser quelquechose ..
   end
 
-Les routes sont comparées dans l'ordre où elles ont été définies. La première
-route qui correspond à la requête est invoquée.
+Les routes sont évaluées  dans l'ordre où elles ont été définies. La première
+route qui correspond à la requête est appelée.
 
 Les masques peuvent inclure des paramètres nommés, accessibles par
 l'intermédiaire du hash <tt>params</tt> :
@@ -63,33 +63,39 @@ l'intermédiaire du hash <tt>params</tt> :
     "Bonjour #{params[:nom]} !"
   end
 
-Vous pouvez aussi les nommer directement dans les paramètres du bloc comme
-ceci :
+Vous pouvez aussi accéder aux paramètres nommés directement grâce aux
+paramètres du bloc comme ceci :
 
   get '/bonjour/:nom' do |n|
     "Bonjour #{n} !"
   end
 
 Une route peut contenir un splat (caractère joker), accessible par
-l'intermédiaire de la liste <tt>params[:splat]</tt> :
+l'intermédiaire du tableau <tt>params[:splat]</tt> :
 
   get '/dire/*/a/*' do
-    # répondrait à /dire/bonjour/a/monde
+    # répond à /dire/bonjour/a/monde
     params[:splat] # => ["bonjour", "monde"]
   end
 
   get '/telecharger/*.*' do
-    # répondrait à /telecharger/chemin/vers/fichier.xml
+    # répond à /telecharger/chemin/vers/fichier.xml
     params[:splat] # => ["chemin/vers/fichier", "xml"]
   end
 
-Une route peut s'exprimer avec une Expression Régulière :
+Ou par l'intermédiaire des paramètres du bloc :
+
+  get '/telecharger/*.*' do |chemin, ext|
+    [chemin, ext] # => ["path/to/file", "xml"]
+  end
+
+Une route peut aussi être définie par une Expression Régulière :
 
   get %r{/bonjour/([\w]+)} do
     "Bonjour, #{params[:captures].first} !"
   end
 
-Là aussi on peut utiliser les paramètres de bloc :
+Là encore on peut utiliser les paramètres de bloc :
 
   get %r{/bonjour/([\w]+)} do |c|
     "Bonjour, #{c} !"
@@ -136,24 +142,24 @@ Vous pouvez facilement définir vos propres conditions :
 
 === Valeurs de retour
 
-La valeur de retour d'un bloc définissant une route détermine le corps de la
-réponse qui sera transmise au client HTTP ou du moins au prochain middleware
-dans la pile Rack. Le plus généralement, il s'agit d'une chaîne de caractères,
+La valeur renvoyée par le bloc correspondant à une route constitue le corps de
+la réponse qui sera transmise au client HTTP ou du moins au prochain middleware
+dans la pile Rack. Le plus souvent, il s'agit d'une chaîne de caractères,
 comme dans les exemples précédents. Cependant, d'autres valeurs sont
 acceptées.
 
-Vous pouvez renvoyer n'importe quel objet qui soit une réponse Rack valide, un
-corps de réponse Rack ou un code retour HTTP :
+Vous pouvez renvoyer n'importe quel objet qu'il s'agisse d'une réponse Rack
+valide, d'un corps de réponse Rack ou d'un code statut HTTP :
 
-* Un tableau de 3 éléments : <tt>[code retour (Fixnum), entêtes (Hash), corps
-  de réponse (répondant à #each)]</tt>
-* Un tableau de 2 élements : <tt>[code retour (Fixnum), corps de réponse
+* Un tableau de 3 éléments : <tt>[code statut (Fixnum), entêtes (Hash), corps
+  de la réponse (répondant à #each)]</tt>
+* Un tableau de 2 élements : <tt>[code statut (Fixnum), corps de la réponse
   (répondant à #each)]</tt>
 * Un objet qui répond à <tt>#each</tt> et qui ne transmet que des chaînes de
   caractères au bloc fourni
-* Un Fixnum représentant le code retour
+* Un Fixnum représentant le code statut
 
-Ainsi, on peut facilement implémenter un streaming par exemple :
+Avec cela, on peut facilement implémenter un streaming par exemple :
 
     class Stream
       def each
@@ -165,9 +171,9 @@ Ainsi, on peut facilement implémenter un streaming par exemple :
 
 === Masques de route spécifiques
 
-Comme montré plus haut, Sinatra embarque le support pour l'utilisation de
-masques utilisant des chaînes de caractères ou des expressions régulières
-pour définir les routes. Toutefois, cela ne s'arrête pas là. Vous pouvez
+Comme cela a été vu auparavant, Sinatra offre la possibilité d'utiliser des
+masques sous forme de chaines de caractères ou des expressions régulières
+pour définir les routes. Mais il est possible de faire bien plus. Vous pouvez
 facilement définir vos propres masques :
 
   class MasqueToutSauf
@@ -191,7 +197,7 @@ facilement définir vos propres masques :
     # ...
   end
 
-Notez que l'exemple ci-dessus est bien trop compliqué et le même résultat
+Notez que l'exemple ci-dessus est bien trop compliqué et que le même résultat
 peut être obtenu avec :
 
   get // do
