@@ -418,7 +418,7 @@ template than for the layout by passing the <tt>:layout_engine</tt> option.
 
 Dependency::        {rdoc}[http://rdoc.rubyforge.org/]
 File Extensions::   <tt>.rdoc</tt>
-Example::           <tt>textile :README, :layout_engine => :erb</tt>
+Example::           <tt>rdoc :README, :layout_engine => :erb</tt>
 
 It is not possible to call methods from rdoc, nor to pass locals to it. You
 therefore will usually use it in combination with another rendering engine:
