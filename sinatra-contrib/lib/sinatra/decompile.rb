@@ -2,10 +2,46 @@ require 'sinatra/base'
 require 'backports'
 
 module Sinatra
-  ##
-  # Can be used as extension or stand-alone:
+
+  # = Sinatra::Decompile
   #
-  #   Sinatra::Decompile.decompile(...)
+  # <tt>Sinatra::Decompile</tt> is an extension that provides a method,
+  # conveniently called +decompile+, that will generate a String pattern for a
+  # given route.
+  #
+  # == Usage
+  #
+  # === Classic Application
+  #
+  # To use the extension in a classic application all you need to do is require
+  # it:
+  #
+  #     require "sinatra"
+  #     require "sinatra/decompile"
+  #
+  #     # Your classic application code goes here...
+  #
+  # This will add the +decompile+ method to the application/class scope, but
+  # you can also call it as <tt>Sinatra::Decompile.decompile</tt>.
+  #
+  # === Modular Application
+  #
+  # To use the extension in a modular application you need to require it, and
+  # then, tell the application you will use it:
+  #
+  #     require "sinatra/base"
+  #     require "sinatra/decompile"
+  #
+  #     class MyApp < Sinatra::Base
+  #       register Sinatra::Decompile
+  #
+  #       # The rest of your modular application code goes here...
+  #     end
+  #
+  # This will add the +decompile+ method to the application/class scope.  You
+  # can choose not to register the extension, but instead of calling
+  # +decompile+, you will need to call <tt>Sinatra::Decompile.decompile</tt>.
+  #
   module Decompile
     extend self
 
