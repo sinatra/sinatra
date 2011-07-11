@@ -57,10 +57,22 @@ class BaseTest < Test::Unit::TestCase
   end
 
   describe "Sinatra::Base as Rack middleware" do
+    class StrictRackReponse
+      def initialize(array)
+        @array = array
+      end
+      def each(&block)
+        @array.each(&block)
+      end
+      def to_ary
+        raise "calling me is evil, please don't!"
+      end
+    end
+
     app = lambda { |env|
       headers = {'X-Downstream' => 'true'}
       headers['X-Route-Missing'] = env['sinatra.route-missing'] || ''
-      [210, headers, ['Hello from downstream']] }
+      [210, headers, StrictRackReponse.new(['Hello from downstream'])] }
 
     class TestMiddleware < Sinatra::Base
     end
@@ -126,7 +138,9 @@ class BaseTest < Test::Unit::TestCase
         assert_nil res
         assert_equal 210, response.status
         assert_equal 'true', response['X-Downstream']
-        assert_equal ['Hello from downstream'], response.body
+        parts = []
+        response.body.each { |part| parts << part }
+        assert_equal ['Hello from downstream'], parts
         'Hello after explicit forward'
       end
     end

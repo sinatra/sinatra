@@ -75,8 +75,10 @@ module Sinatra
       if status.to_i / 100 == 1
         headers.delete "Content-Length"
         headers.delete "Content-Type"
-      elsif body.respond_to? :to_ary and not [204, 304].include?(status.to_i)
-        headers["Content-Length"] = body.inject(0) { |l, p| l + Rack::Utils.bytesize(p) }.to_s
+      elsif not [204, 304].include?(status.to_i)
+        length = 0
+        body.each { |part| length += Rack::Utils.bytesize(part) }
+        headers["Content-Length"] = length.to_s
       end
       super
     end
@@ -613,15 +615,21 @@ module Sinatra
       invoke { dispatch! }
       invoke { error_block!(response.status) }
 
-      unless @response['Content-Type']
-        if body.respond_to? :to_ary and body[0].respond_to? :content_type
-          content_type body[0].content_type
+      set_content_type! unless @response['Content-Type']
+
+      @response.finish
+    end
+
+    def set_content_type!
+      body.each do |part|
+        if part.respond_to? :content_type
+          content_type part.content_type
         else
           content_type :html
         end
+        return
       end
-
-      @response.finish
+      content_type :html
     end
 
     # Access settings defined with Base.set.
