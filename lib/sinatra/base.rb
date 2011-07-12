@@ -63,8 +63,8 @@ module Sinatra
   # http://rack.rubyforge.org/doc/classes/Rack/Response/Helpers.html
   class Response < Rack::Response
     def body=(value)
-      value = value.body while value.respond_to? :body and value.body != value
-      @body = value.respond_to?(:to_str) ? [value.to_str] : value
+      value = value.body while Rack::Response === value
+      @body = String === value ? [value.to_str] : value
     end
 
     def each
@@ -75,7 +75,7 @@ module Sinatra
       if status.to_i / 100 == 1
         headers.delete "Content-Length"
         headers.delete "Content-Type"
-      elsif body.respond_to? :to_ary and not [204, 304].include?(status.to_i)
+      elsif Array === body and not [204, 304].include?(status.to_i)
         headers["Content-Length"] = body.inject(0) { |l, p| l + Rack::Utils.bytesize(p) }.to_s
       end
       super
@@ -614,7 +614,7 @@ module Sinatra
       invoke { error_block!(response.status) }
 
       unless @response['Content-Type']
-        if body.respond_to? :to_ary and body[0].respond_to? :content_type
+        if Array === body and body[0].respond_to? :content_type
           content_type body[0].content_type
         else
           content_type :html
@@ -700,7 +700,7 @@ module Sinatra
     # Revert params afterwards.
     #
     # Returns pass block.
-    def process_route(pattern, keys, conditions, block = nil)
+    def process_route(pattern, keys, conditions, block = nil, values = nil)
       @original_params ||= @params
       route = @request.path_info
       route = '/' if route.empty? and not settings.empty_path_info?
