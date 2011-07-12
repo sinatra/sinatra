@@ -700,7 +700,7 @@ module Sinatra
     # Revert params afterwards.
     #
     # Returns pass block.
-    def process_route(pattern, keys, conditions, block = nil, values = nil)
+    def process_route(pattern, keys, conditions, block = nil)
       @original_params ||= @params
       route = @request.path_info
       route = '/' if route.empty? and not settings.empty_path_info?
