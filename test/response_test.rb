@@ -40,6 +40,15 @@ class ResponseTest < Test::Unit::TestCase
     assert_equal @response.body, body.body
   end
 
+  it 'does not call #to_ary or #inject on the body' do
+    object = Object.new
+    def object.inject(*) fail 'called' end
+    def object.to_ary(*) fail 'called' end
+    def object.each(*) end
+    @response.body = object
+    assert @response.finish
+  end
+
   it 'does not nest a Sinatra::Response' do
     @response.body = Sinatra::Response.new ["foo"]
     assert_equal @response.body, ["foo"]
