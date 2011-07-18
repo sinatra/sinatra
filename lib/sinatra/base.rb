@@ -90,8 +90,7 @@ module Sinatra
   module Helpers
     # Set or retrieve the response status code.
     def status(value=nil)
-      response.status = value if value
-      response.status
+      response.status ||= value
     end
 
     # Set or retrieve the response body. When a block is given,
