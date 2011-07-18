@@ -3,6 +3,116 @@ require 'sinatra/base'
 require 'sinatra/decompile'
 
 module Sinatra
+
+  # = Sinatra::Namespace
+  #
+  # <tt>Sinatra::Namespace</tt> is an extension that adds namespaces to an
+  # application.  This namespaces will allow you to share a path prefix for the
+  # routes within the namespace, and define filters, conditions and error
+  # handlers exclusively for them.  Besides that, you can also register helpers
+  # and extensions that will be used only within the namespace.
+  #
+  # == Usage
+  #
+  # Once you have loaded the extension (see below), you use the +namespace+
+  # method to define namespaces in your application.
+  #
+  # You can define a namespace by a path prefix:
+  #
+  #     namespace '/blog' do
+  #       get() { haml :blog }
+  #       get '/:entry_permalink' do
+  #         @entry = Entry.find_by_permalink!(params[:entry_permalink])
+  #         haml :entry
+  #       end
+  #
+  #       # More blog routes...
+  #     end
+  #
+  # by a condition:
+  #
+  #     namespace :host_name => 'localhost' do
+  #       get('/admin/dashboard') { haml :dashboard }
+  #       get('/admin/login')     { haml :login }
+  #
+  #       # More admin routes...
+  #     end
+  #
+  # or both:
+  #
+  #     namespace '/admin', :host_name => 'localhost' do
+  #       get('/dashboard')  { haml :dashboard }
+  #       get('/login')      { haml :login }
+  #       post('/login')     { login_user }
+  #
+  #       # More admin routes...
+  #     end
+  #
+  # When you define a filter or an error handler, or register an extension or a
+  # set of helpers within a namespace, they only affect the routes defined in
+  # it.  For instance, lets define a before filter to prevent the access of
+  # unauthorized users to the admin section of the application:
+  #
+  #     namespace '/admin' do
+  #       helpers AdminHelpers
+  #       before  { authenticate unless request.path_info == '/admin/login' }
+  #
+  #       get '/dashboard' do
+  #         # Only authenticated users can access here...
+  #         haml :dashboard
+  #       end
+  #
+  #       # More admin routes...
+  #     end
+  #
+  #     get '/' do
+  #       # Any user can access here...
+  #       haml :index
+  #     end
+  #
+  # Well, they actually also affect the nested namespaces:
+  #
+  #     namespace '/admin' do
+  #       helpers AdminHelpers
+  #       before  { authenticate unless request.path_info == '/admin/login' }
+  #
+  #       namespace '/users' do
+  #         get do
+  #           # Only authenticated users can access here...
+  #           @users = User.all
+  #           haml :users
+  #         end
+  #
+  #         # More user admin routes...
+  #       end
+  #
+  #       # More admin routes...
+  #     end
+  #
+  # === Classic Application Setup
+  #
+  # To be able to use namespaces in a classic application all you need to do is
+  # require the extension:
+  #
+  #     require "sinatra"
+  #     require "sinatra/namespace"
+  #
+  #     # The rest of your classic application code goes here...
+  #
+  # === Modular Application Setup
+  #
+  # To be able to use namespaces in a modular application all you need to do is
+  # require the extension, and then, register it:
+  #
+  #     require "sinatra/base"
+  #     require "sinatra/namespace"
+  #
+  #     class MyApp < Sinatra::Base
+  #       register Sinatra::Namespace
+  #
+  #       # The rest of your modular application code goes here...
+  #     end
+  #
   module Namespace
     def self.new(base, pattern, conditions = {}, &block)
       Module.new do
