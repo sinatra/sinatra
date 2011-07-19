@@ -6,19 +6,114 @@ class HelpersTest < Test::Unit::TestCase
     assert true
   end
 
+  def status_app(code, &block)
+    code += 1 if code == 204 or code == 304
+    block ||= proc { }
+    mock_app do
+      get '/' do
+        status code
+        instance_eval(&block).inspect
+      end
+    end
+    get '/'
+  end
+
   describe 'status' do
-    setup do
-      mock_app {
-        get '/' do
-          status 207
-          nil
-        end
-      }
+    it 'sets the response status code' do
+      status_app 207
+      assert_equal 207, response.status
+    end
+  end
+
+  describe 'not_found?' do
+    it 'is true for status == 404' do
+      status_app(404) { not_found? }
+      assert_body 'true'
     end
 
-    it 'sets the response status code' do
-      get '/'
-      assert_equal 207, response.status
+    it 'is false for status > 404' do
+      status_app(405) { not_found? }
+      assert_body 'false'
+    end
+
+    it 'is false for status < 404' do
+      status_app(403) { not_found? }
+      assert_body 'false'
+    end
+  end
+
+  describe 'informational?' do
+    it 'is true for 1xx status' do
+      status_app(100 + rand(100)) { informational? }
+      assert_body 'true'
+    end
+
+    it 'is false for status > 199' do
+      status_app(200 + rand(400)) { informational? }
+      assert_body 'false'
+    end
+  end
+
+  describe 'success?' do
+    it 'is true for 2xx status' do
+      status_app(200 + rand(100)) { success? }
+      assert_body 'true'
+    end
+
+    it 'is false for status < 200' do
+      status_app(100 + rand(100)) { success? }
+      assert_body 'false'
+    end
+
+    it 'is false for status > 299' do
+      status_app(300 + rand(300)) { success? }
+      assert_body 'false'
+    end
+  end
+
+  describe 'redirect?' do
+    it 'is true for 3xx status' do
+      status_app(300 + rand(100)) { redirect? }
+      assert_body 'true'
+    end
+
+    it 'is false for status < 300' do
+      status_app(200 + rand(100)) { redirect? }
+      assert_body 'false'
+    end
+
+    it 'is false for status > 399' do
+      status_app(400 + rand(200)) { redirect? }
+      assert_body 'false'
+    end
+  end
+
+  describe 'client_error?' do
+    it 'is true for 4xx status' do
+      status_app(400 + rand(100)) { client_error? }
+      assert_body 'true'
+    end
+
+    it 'is false for status < 400' do
+      status_app(200 + rand(200)) { client_error? }
+      assert_body 'false'
+    end
+
+    it 'is false for status > 499' do
+      status_app(500 + rand(100)) { client_error? }
+      assert_body 'false'
+    end
+  end
+
+  describe 'server_error?' do
+    it 'is true for 5xx status' do
+      status_app(500 + rand(100)) { server_error? }
+      assert_body 'true'
+    end
+
+    it 'is false for status < 500' do
+      status_app(200 + rand(300)) { server_error? }
+      assert_body 'false'
     end
   end
 
@@ -481,6 +576,45 @@ class HelpersTest < Test::Unit::TestCase
     end
   end
 
+  describe 'attachment' do
+    def attachment_app(filename=nil)
+      mock_app {       
+        get '/attachment' do
+          attachment filename
+          response.write("<sinatra></sinatra>")
+        end
+      }
+    end
+    
+    it 'sets the Content-Type response header' do
+      attachment_app('test.xml')
+      get '/attachment'
+      assert_equal 'application/xml;charset=utf-8', response['Content-Type']
+      assert_equal '<sinatra></sinatra>', body
+    end 
+    
+    it 'sets the Content-Type response header without extname' do
+      attachment_app('test')
+      get '/attachment'
+      assert_equal 'text/html;charset=utf-8', response['Content-Type']
+      assert_equal '<sinatra></sinatra>', body   
+    end
+    
+    it 'sets the Content-Type response header without extname' do
+      mock_app do
+        get '/attachment' do
+          content_type :atom
+          attachment 'test.xml'
+          response.write("<sinatra></sinatra>")
+        end
+      end
+      get '/attachment'
+      assert_equal 'application/atom+xml', response['Content-Type']
+      assert_equal '<sinatra></sinatra>', body   
+    end
+    
+  end
+
   describe 'send_file' do
     setup do
       @file = File.dirname(__FILE__) + '/file.txt'
@@ -663,7 +797,7 @@ class HelpersTest < Test::Unit::TestCase
         end
 
         get '/boom' do
-          expires '1000'
+          expires '9999'
         end
       end
     end
@@ -817,6 +951,11 @@ class HelpersTest < Test::Unit::TestCase
           etag 'FOO'
           'Boo!'
         end
+
+        post '/' do
+          etag 'FOO'
+          'Matches!'
+        end
       }
     end
 
@@ -829,6 +968,24 @@ class HelpersTest < Test::Unit::TestCase
       get '/'
       assert_equal 200, status
       assert_equal 'Boo!', body
+    end
+
+    it 'returns a body when posting with no If-None-Match header' do
+      post '/'
+      assert_equal 200, status
+      assert_equal 'Matches!', body
+    end
+
+    it 'returns a body when conditional post matches' do
+      post '/', {}, { 'HTTP_IF_NONE_MATCH' => '"FOO"' }
+      assert_equal 200, status
+      assert_equal 'Matches!', body
+    end
+
+    it 'halts with 412 when conditional post misses' do
+      post '/', {}, { 'HTTP_IF_NONE_MATCH' => '"BAR"' }
+      assert_equal 412, status
+      assert_equal '', body
     end
 
     it 'halts when a conditional GET matches' do

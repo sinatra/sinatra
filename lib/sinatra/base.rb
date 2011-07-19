@@ -39,6 +39,14 @@ module Sinatra
       @env.include? "HTTP_X_FORWARDED_HOST"
     end
 
+    def safe?
+      get? or head? or options? or trace?
+    end
+
+    def idempotent?
+      safe? or put? or delete?
+    end
+
     private
 
     def accept_entry(entry)
@@ -55,8 +63,8 @@ module Sinatra
   # http://rack.rubyforge.org/doc/classes/Rack/Response/Helpers.html
   class Response < Rack::Response
     def body=(value)
-      value = value.body while value.respond_to? :body and value.body != value
-      @body = value.respond_to?(:to_str) ? [value.to_str] : value
+      value = value.body while Rack::Response === value
+      @body = String === value ? [value.to_str] : value
     end
 
     def each
@@ -64,7 +72,10 @@ module Sinatra
     end
 
     def finish
-      if body.respond_to? :to_ary and not [204, 304].include?(status.to_i)
+      if status.to_i / 100 == 1
+        headers.delete "Content-Length"
+        headers.delete "Content-Type"
+      elsif Array === body and not [204, 304].include?(status.to_i)
         headers["Content-Length"] = body.inject(0) { |l, p| l + Rack::Utils.bytesize(p) }.to_s
       end
       super
@@ -186,6 +197,8 @@ module Sinatra
       if filename
         params = '; filename="%s"' % File.basename(filename)
         response['Content-Disposition'] << params
+        ext = File.extname(filename)
+        content_type(ext) unless response['Content-Type'] or ext.empty?
       end
     end
 
@@ -298,10 +311,13 @@ module Sinatra
       value = 'W/' + value if kind == :weak
       response['ETag'] = value
 
-      # Conditional GET check
       if etags = env['HTTP_IF_NONE_MATCH']
         etags = etags.split(/\s*,\s*/)
-        halt 304 if etags.include?(value) || etags.include?('*')
+        if etags.include?(value) or etags.include?('*')
+          halt 304 if request.safe?
+        else
+          halt 412 unless request.safe?
+        end
       end
     end
 
@@ -309,6 +325,37 @@ module Sinatra
     def back
       request.referer
     end
+
+    # whether or not the status is set to 1xx
+    def informational?
+      status.between? 100, 199
+    end
+
+    # whether or not the status is set to 2xx
+    def success?
+      status.between? 200, 299
+    end
+
+    # whether or not the status is set to 3xx
+    def redirect?
+      status.between? 300, 399
+    end
+
+    # whether or not the status is set to 4xx
+    def client_error?
+      status.between? 400, 499
+    end
+
+    # whether or not the status is set to 5xx
+    def server_error?
+      status.between? 500, 599
+    end
+
+    # whether or not the status is set to 404
+    def not_found?
+      status == 404
+    end
+
 
     private
 
@@ -374,7 +421,7 @@ module Sinatra
 
     def erubis(template, options={}, locals={})
       warn "Sinatra::Templates#erubis is deprecated and will be removed, use #erb instead.\n" \
-        "If you have Erubis installed, it will be used automatically.\n\tfrom #{caller.first}"
+        "If you have Erubis installed, it will be used automatically."
       render :erubis, template, options, locals
     end
 
@@ -567,7 +614,7 @@ module Sinatra
       invoke { error_block!(response.status) }
 
       unless @response['Content-Type']
-        if body.respond_to? :to_ary and body[0].respond_to? :content_type
+        if Array === body and body[0].respond_to? :content_type
           content_type body[0].content_type
         else
           content_type :html
@@ -589,7 +636,7 @@ module Sinatra
 
     def options
       warn "Sinatra::Base#options is deprecated and will be removed, " \
-        "use #settings instead.\n\tfrom #{caller.first}"
+        "use #settings instead."
       settings
     end
 
@@ -701,7 +748,7 @@ module Sinatra
     # Attempt to serve static files from public directory. Throws :halt when
     # a matching file is found, returns nil otherwise.
     def static!
-      return if (public_dir = settings.public).nil?
+      return if (public_dir = settings.public_folder).nil?
       public_dir = File.expand_path(public_dir)
 
       path = File.expand_path(public_dir + unescape(request.path_info))
@@ -753,21 +800,19 @@ module Sinatra
     # Error handling during requests.
     def handle_exception!(boom)
       @env['sinatra.error'] = boom
-      dump_errors!(boom) if settings.dump_errors?
+      status boom.respond_to?(:code) ? Integer(boom.code) : 500
+      dump_errors! boom if settings.dump_errors? and server_error?
       raise boom if settings.show_exceptions? and settings.show_exceptions != :after_handler
-      @response.status = boom.respond_to?(:code) ? Integer(boom.code) : 500
 
-      if @response.status == 404
-        @response.headers['X-Cascade'] = 'pass'
-        @response.body = ['<h1>Not Found</h1>']
+      if not_found?
+        headers['X-Cascade'] = 'pass'
+        body '<h1>Not Found</h1>'
       end
 
-      if res = error_block!(boom.class)
-        res
-      elsif @response.status >= 500
-        raise boom if settings.raise_errors? or settings.show_exceptions?
-        error_block! Exception
-      end
+      res = error_block!(boom.class) || error_block!(status)
+      return res if res or not server_error?
+      raise boom if settings.raise_errors? or settings.show_exceptions?
+      error_block! Exception
     end
 
     # Find an custom error block for the key(s) specified.
@@ -979,6 +1024,11 @@ module Sinatra
         @conditions << generate_method(name, &block)
       end
 
+      def public=(value)
+        warn ":public is no longer used to avoid overloading Module#public, use :public_folder instead"
+        set(:public_folder, value)
+      end
+
    private
       # Condition for matching host name. Parameter might be String or Regexp.
       def host_name(pattern)
@@ -1134,23 +1184,27 @@ module Sinatra
       def quit!(server, handler_name)
         # Use Thin's hard #stop! if available, otherwise just #stop.
         server.respond_to?(:stop!) ? server.stop! : server.stop
-        STDERR.puts "\n== Sinatra has ended his set (crowd applauds)" unless handler_name =~/cgi/i
+        $stderr.puts "\n== Sinatra has ended his set (crowd applauds)" unless handler_name =~/cgi/i
       end
 
       # Run the Sinatra app as a self-hosted server using
-      # Thin, Mongrel or WEBrick (in that order)
+      # Thin, Mongrel or WEBrick (in that order). If given a block, will call
+      # with the constructed handler once we have taken the stage.
       def run!(options={})
         set options
         handler      = detect_rack_handler
         handler_name = handler.name.gsub(/.*::/, '')
-        STDERR.puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
-          "on #{port} for #{environment} with backup from #{handler_name}" unless handler_name =~/cgi/i
         handler.run self, :Host => bind, :Port => port do |server|
+          unless handler_name =~ /cgi/i
+            $stderr.puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
+            "on #{port} for #{environment} with backup from #{handler_name}"
+          end
           [:INT, :TERM].each { |sig| trap(sig) { quit!(server, handler_name) } }
           set :running, true
+          yield handler if block_given?
         end
       rescue Errno::EADDRINUSE => e
-        STDERR.puts "== Someone is already performing on port #{port}!"
+        $stderr.puts "== Someone is already performing on port #{port}!"
       end
 
       # The prototype instance used to process requests.
@@ -1250,7 +1304,8 @@ module Sinatra
         /rubygems\/custom_require\.rb$/,                 # rubygems require hacks
         /active_support/,                                # active_support require hacks
         /bundler(\/runtime)?\.rb/,                       # bundler require hacks
-        /<internal:/                                     # internal in ruby >= 1.9.2
+        /<internal:/,                                    # internal in ruby >= 1.9.2
+        /src\/kernel\/bootstrap\/[A-Z]/                  # maglev kernel files
       ]
 
       # add rubinius (and hopefully other VM impls) ignore patterns ...
@@ -1259,16 +1314,26 @@ module Sinatra
       # Like Kernel#caller but excluding certain magic entries and without
       # line / method information; the resulting array contains filenames only.
       def caller_files
-        caller_locations.
-          map { |file,line| file }
+        cleaned_caller(1).flatten
       end
 
       # Like caller_files, but containing Arrays rather than strings with the
       # first element being the file, and the second being the line.
       def caller_locations
+        cleaned_caller 2
+      end
+
+    private
+      # used for deprecation warnings
+      def warn(message)
+        super message + "\n\tfrom #{cleaned_caller.first.join(':')}"
+      end
+
+      # Like Kernel#caller but excluding certain magic entries
+      def cleaned_caller(keep = 3)
         caller(1).
-          map    { |line| line.split(/:(?=\d|in )/)[0,2] }.
-          reject { |file,line| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
+          map    { |line| line.split(/:(?=\d|in )/, 3)[0,keep] }.
+          reject { |file, *_| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
       end
     end
 
@@ -1338,8 +1403,8 @@ module Sinatra
     set :reload_templates, Proc.new { development? }
     set :lock, false
 
-    set :public, Proc.new { root && File.join(root, 'public') }
-    set :static, Proc.new { public && File.exist?(public) }
+    set :public_folder, Proc.new { root && File.join(root, 'public') }
+    set :static, Proc.new { public_folder && File.exist?(public_folder) }
     set :static_cache_control, false
 
     error ::Exception do

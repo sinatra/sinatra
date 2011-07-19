@@ -26,16 +26,21 @@
    was enabled or not. Also, expose that logger with the `logger` helper
    method. (Konstantin Haase)
 
- * The sessions setting now may be an options hash. (Konstantin Haase)
+ * The sessions setting may be an options hash now. (Konstantin Haase)
 
- * Important: 1.8.6 support has been dropped. This version also depends on at
-   least Rack 1.3.0. This means that it is incompatible to Rails prior to 3.1.0.
-   Please use 1.2.x if you require an earlier version for Ruby or Rack, which we
-   will continue to supply with bug fixes. (Konstantin Haase)
+ * Important: Ruby 1.8.6 support has been dropped. This version also depends
+   on at least Rack 1.3.0. This means that it is incompatible to Rails prior
+   to 3.1.0. Please use 1.2.x if you require an earlier version of Ruby or
+   Rack, which we will continue to supply with bug fixes. (Konstantin Haase)
 
- * It is now possible to use a different target class for the top level DSL (aka
-   classic style) than `Sinatra::Application` by setting `Delegator.target`.
-   This was mainly introduced to ease testing. (Konstantin Haase)
+ * Renamed `:public` to `:public_folder` to avoid overriding Ruby's built-in
+   `public` method/keyword. `set(:public, ...)` is still possible but shows a
+   warning. (Konstantin Haase)
+
+ * It is now possible to use a different target class for the top level DSL
+   (aka classic style) than `Sinatra::Application` by setting
+   `Delegator.target`. This was mainly introduced to ease testing. (Konstantin
+   Haase)
 
  * Error handlers defined for an error class will now also handle subclasses of
    that class, unless more specific error handlers exist. (Konstantin Haase)
@@ -48,6 +53,13 @@
 
  * Added `request.accept?` and `request.preferred_type` to ease dealing with
    `Accept` headers. (Konstantin Haase)
+
+ * Added `:static_cache_control` setting to automatically set cache control
+   headers to static files. (Kenichi Nakamura)
+
+ * Added `informal?`, `success?`, `redirect?`, `client_error?`,
+   `server_error?` and `not_found?` helper methods to ease dealing with status
+   codes. (Konstantin Haase)
 
  * Uses SecureRandom to generate default session secret. (Konstantin Haase)
 
@@ -65,10 +77,14 @@
    allows you to run Sinatra with custom Rack handlers, like Kirk or Mongrel2.
    Example: `ruby app.rb -s Mongrel2` (Konstantin Haase)
 
- * Middleware setup is now distributed across multiple methods, allowing Sinatra
-   extensions to easily hook into the setup process. (Konstantin Haase)
+ * Middleware setup is now distributed across multiple methods, allowing
+   Sinatra extensions to easily hook into the setup process. (Konstantin
+   Haase)
 
  * Internal refactoring and minor performance improvements. (Konstantin Haase)
+
+ * Move Sinatra::VERSION to separate file, so it can be checked without
+   loading Sinatra. (Konstantin Haase)
 
 = 1.2.7 (backports release) / Not Yet Released
 

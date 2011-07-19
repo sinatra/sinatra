@@ -95,9 +95,9 @@ Rotas podem incluir uma variedade de condições correspondentes, por exemplo, o
 == Arquivos estáticos
 
 Arquivos estáticos são disponibilizados a partir do directório <tt>./public</tt>. Você pode especificar
-um local diferente através da opção <tt>:public</tt>
+um local diferente através da opção <tt>:public_folder</tt>
 
-  set :public, File.dirname(__FILE__) + '/estatico'
+  set :public_folder, File.dirname(__FILE__) + '/estatico'
 
 Note que o nome do directório público não é incluido no URL. Um arquivo
 <tt>./public/css/style.css</tt> é disponibilizado como

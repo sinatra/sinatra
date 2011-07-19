@@ -208,9 +208,9 @@ Or, using negative look ahead:
 == Static Files
 
 Static files are served from the <tt>./public</tt> directory. You can specify
-a different location by setting the <tt>:public</tt> option:
+a different location by setting the <tt>:public_folder</tt> option:
 
-  set :public, File.dirname(__FILE__) + '/static'
+  set :public_folder, File.dirname(__FILE__) + '/static'
 
 Note that the public directory name is not included in the URL. A file
 <tt>./public/css/style.css</tt> is made available as
@@ -291,7 +291,7 @@ Available Options:
 [layout_engine]
   Template engine to use for rendering the layout. Useful for languages that
   do not support layouts otherwise. Defaults to the engine used for the
-  temple. Example: <tt>set :rdoc, :layout_engine => :erb</tt>
+  template. Example: <tt>set :rdoc, :layout_engine => :erb</tt>
 
 Templates are assumed to be located directly under the <tt>./views</tt>
 directory. To use a different views directory:
@@ -418,7 +418,7 @@ template than for the layout by passing the <tt>:layout_engine</tt> option.
 
 Dependency::        {rdoc}[http://rdoc.rubyforge.org/]
 File Extensions::   <tt>.rdoc</tt>
-Example::           <tt>textile :README, :layout_engine => :erb</tt>
+Example::           <tt>rdoc :README, :layout_engine => :erb</tt>
 
 It is not possible to call methods from rdoc, nor to pass locals to it. You
 therefore will usually use it in combination with another rendering engine:
@@ -668,7 +668,7 @@ Note that <tt>enable :sessions</tt> actually stores all data in a cookie. This
 might not always be what you want (storing lots of data will increase your
 traffic, for instance). You can use any Rack session middleware: in order to
 do so, do *not* call <tt>enable :sessions</tt>, but instead pull in your
-middleware of choice how you would any other middleware:
+middleware of choice as you would any other middleware:
 
   use Rack::Session::Pool, :expire_after => 2592000
 
@@ -1184,7 +1184,7 @@ You can access those options via <tt>settings</tt>:
                        <tt>redirect '/foo'</tt> would behave like
                        <tt>redirect to('/foo')</tt>. Disabled per default.
 
-[public]               folder public files are served from
+[public_folder]        folder public files are served from
 
 [reload_templates]     whether or not to reload templates between requests.
                        Enabled in development mode.
@@ -1523,6 +1523,7 @@ assign them to a constant, you can do this with <tt>Sinatra.new</tt>:
 
 It takes the application to inherit from as optional argument:
 
+  # config.ru
   require 'sinatra/base'
 
   controller = Sinatra.new do
@@ -1785,3 +1786,4 @@ SemVerTag.
 * API documentation for the {latest release}[http://rubydoc.info/gems/sinatra]
   or the {current HEAD}[http://rubydoc.info/github/sinatra/sinatra] on
   http://rubydoc.info
+* {CI server}[http://ci.rkh.im/view/Sinatra/]

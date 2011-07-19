@@ -210,14 +210,17 @@ Oder unter Verwendung eines negativen look ahead:
 == Statische Dateien
 
 Statische Dateien werden aus dem <tt>./public</tt>-Ordner ausgeliefert. Es ist
-möglich, einen anderen Ort zu definieren, indem man die <tt>:public</tt>-Option
-setzt:
+möglich, einen anderen Ort zu definieren, indem man die
+<tt>:public_folder</tt>-Option setzt:
 
-  set :public, File.dirname(__FILE__) + '/static'
+  set :public_folder, File.dirname(__FILE__) + '/static'
 
 Zu beachten ist, dass der Ordnername public nicht Teil der URL ist. Die Datei
 <tt>./public/css/style.css</tt> ist unter
 <tt>http://example.com/css/style.css</tt> zu finden.
+
+Um den <tt>Cache-Control</tt>-Header mit Informationen zu versorgen, verwendet
+man die <tt>:static_cache_control</tt>-Einstellung (s.u.).
 
 == Views/Templates
 
@@ -891,6 +894,9 @@ bietet sich z.B. {rack-cache}[http://rtomayko.github.com/rack-cache/] an:
     sleep 5
     "hello"
   end
+  
+Um den <tt>Cache-Control</tt>-Header mit Informationen zu versorgen, verwendet
+man die <tt>:static_cache_control</tt>-Einstellung (s.u.).  
 
 === Dateien versenden
 
@@ -1091,98 +1097,111 @@ Diese Einstellungen sind über +settings+ erreichbar:
 
 === Mögliche Einstellungen
 
-[absolute_redirects]  Wenn ausgeschaltet, wird Sinatra relative Redirects
-                      zulassen. Jedoch ist Sinatra dann nicht mehr mit RFC 2616
-                      (HTTP 1.1) konform, das nur absolute Redirects zulässt.
+[absolute_redirects]    Wenn ausgeschaltet, wird Sinatra relative Redirects
+                        zulassen. Jedoch ist Sinatra dann nicht mehr mit RFC 
+                        2616 (HTTP 1.1) konform, das nur absolute Redirects 
+                        zulässt.
+
+                        Sollte eingeschaltet werden, wenn die Applikation
+                        hinter einem Reverse-Proxy liegt, der nicht ordentlich 
+                        eingerichtet ist. Beachte, dass die 
+                        +url+-Helfer-Methode nach wie vor absolute URLs 
+                        erstellen wird, es sei denn, es wird als zweiter 
+                        Parameter +false+ angegeben.
+
+                        Standardmäßig nicht aktiviert.
                       
-                      Sollte eingeschaltet werden, wenn die Applikation hinter
-                      einem Reverse-Proxy liegt, der nicht ordentlich 
-                      eingerichtet ist. Beachte, dass die +url+-Helfer-Methode
-                      nach wie vor absolute URLs erstellen wird, es sei denn, 
-                      es wird als zweiter Parameter +false+ angegeben.
+
+[add_charsets]          Mime-Types werden hier automatisch der Helfer-Methode
+                        <tt>content_type</tt> zugeordnet.
                       
-                      Standardmäßig nicht aktiviert.
+                        Es empfielt sich, Werte hinzuzufügen statt sie zu
+                        überschreiben:
                       
+                          settings.add_charsets << "application/foobar"
 
-[add_charsets]        Mime-Types werden hier automatisch der Helfer-Methode
-                      <tt>content_type</tt> zugeordnet.
+[app_file]              Hauptdatei der Applikation. Wird verwendet, um das
+                        Wurzel-, Inline-, View- und öffentliche Verzeichnis des
+                        Projekts festzustellen.
                       
-                      Es empfielt sich, Werte hinzuzufügen statt sie zu
-                      überschreiben:
+[bind]                  IP-Address, an die gebunden wird 
+                        (Standardwert: 0.0.0.0). Wird nur für den eingebauten 
+                        Server verwendet.
+
+[default_encoding]      Das Encoding, falls keines angegeben wurde.
+                        Standardwert ist <tt>"utf-8"</tt>.
+
+[dump_errors]           Fehler im Log anzeigen.
+
+[environment]           Momentane Umgebung. Standardmäßig auf
+                        <tt>content_type</tt> oder <tt>"development"</tt>
+                        eingestellt, soweit ersteres nicht vorhanden.
+
+[logging]               Den Logger verwenden.
+
+[lock]                  Jeder Request wird gelocked. Es kann nur ein Request
+                        pro Ruby-Prozess gleichzeitig verarbeitet werden.
                       
-                        settings.add_charsets << "application/foobar"
+                        Eingeschaltet, wenn die Applikation threadsicher ist.
+                        Standardmäßig nicht aktiviert.
 
-[app_file]            Hauptdatei der Applikation. Wird verwendet, um das
-                      Wurzel-, Inline-, View- und öffentliche Verzeichnis des
-                      Projekts festzustellen.
-                      
-[bind]                IP-Address, an die gebunden wird (Standardwert: 0.0.0.0).
-                      Wird nur für den eingebauten Server verwendet.
+[method_override]       Verwende <tt>_method</tt>, um put/delete-Formulardaten
+                        in Browsern zu verwenden, die dies normalerweise nicht
+                        unterstützen.
 
-[default_encoding]    Das Encoding, falls keines angegeben wurde.
-                      Standardwert ist <tt>"utf-8"</tt>.
+[port]                  Port für die Applikation. Wird nur im internen Server
+                        verwendet.
 
-[dump_errors]         Fehler im Log anzeigen.
+[prefixed_redirects]    Entscheidet, ob <tt>request.script_name</tt> in 
+                        Redirects eingefügt wird oder nicht, wenn kein 
+                        absoluter Pfad angegeben ist. Auf diese Weise verhält 
+                        sich <tt>redirect '/foo'</tt> so, als wäre es ein
+                        <tt>redirect to('/foo')</tt>. Standardmäßig nicht 
+                        aktiviert.
 
-[environment]         Momentane Umgebung. Standardmäßig auf
-                      <tt>content_type</tt> oder <tt>"development"</tt>
-                      eingestellt, soweit ersteres nicht vorhanden.
+[public_folder]         Das öffentliche Verzeichnis, aus dem Daten zur
+                        Verfügung gestellt werden können.
 
-[logging]             Den Logger verwenden.
+[reload_templates]      Im development-Modus aktiviert.
 
-[lock]                Jeder Request wird gelocked. Es kann nur ein Request pro
-                      Ruby-Prozess gleichzeitig verarbeitet werden.
-                      
-                      Eingeschaltet, wenn die Applikation threadsicher ist.
-                      Standardmäßig nicht aktiviert.
+[root]                  Wurzelverzeichnis des Projekts.
 
-[method_override]     Verwende <tt>_method</tt>, um put/delete-Formulardaten in
-                      Browsern zu verwenden, die dies normalerweise nicht
-                      unterstützen.
+[raise_errors]          Einen Ausnahmezustand aufrufen. Beendet die 
+                        Applikation.
 
-[port]                Port für die Applikation. Wird nur im internen Server
-                      verwendet.
+[run]                   Wenn aktiviert, wird Sinatra versuchen, den Webserver
+                        zu starten. Nicht verwenden, wenn Rackup oder anderes
+                        verwendet werden soll.
 
-[prefixed_redirects]  Entscheidet, ob <tt>request.script_name</tt> in Redirects
-                      eingefügt wird oder nicht, wenn kein absoluter Pfad
-                      angegeben ist. Auf diese Weise verhält sich
-                      <tt>redirect '/foo'</tt> so, als wäre es ein
-                      <tt>redirect to('/foo')</tt>.
-                      Standardmäßig nicht aktiviert.
+[running]               Läuft der eingebaute Server? Diese Einstellung nicht
+                        ändern!
 
-[public]              Das öffentliche Verzeichnis, aus dem Daten zur Verfügung
-                      gestellt werden können.
+[server]                Server oder Liste von Servern, die als eingebaute 
+                        Server zur Verfügung stehen.
+                        Standardmäßig auf ['thin', 'mongrel', 'webrick']
+                        voreingestellt. Die Anordnung gibt die Priorität vor.
 
-[reload_templates]    Im development-Modus aktiviert.
+[sessions]              Sessions auf Cookiebasis aktivieren.
 
-[root]                Wurzelverzeichnis des Projekts.
+[show_exceptions]       Stacktrace im Browser bei Fehlern anzeigen.
 
-[raise_errors]        Einen Ausnahmezustand aufrufen. Beendet die Applikation.
+[static]                Entscheidet, ob Sinatra statische Dateien zur Verfügung
+                        stellen soll oder nicht.
+                        Sollte nicht aktiviert werden, wenn ein Server 
+                        verwendet wird, der dies auch selbstständig erledigen 
+                        kann. Deaktivieren wird die Performance erhöhen.
+                        Standardmäßig aktiviert.
 
-[run]                 Wenn aktiviert, wird Sinatra versuchen, den Webserver zu
-                      starten. Nicht verwenden, wenn Rackup oder anderes
-                      verwendet werden soll.
+[static_cache_control]  Wenn Sinatra statische Daten zur Verfügung stellt, 
+                        können mit dieser Einstellung die +Cache-Control+ 
+                        Header zu den Responses hinzugefügt werden. Die 
+                        Einstellung verwendet dazu die +cache_control+
+                        Helfer-Methode. Standardmäßig deaktiviert.
+                        Ein Array wird verwendet, um mehrere Werte gleichzeitig
+                        zu übergeben:
+                        <tt>set :static_cache_control, [:public, :max_age => 300]</tt>                       
 
-[running]             Läuft der eingebaute Server? Diese Einstellung nicht
-                      ändern!
-
-[server]              Server oder Liste von Servern, die als eingebaute Server
-                      zur Verfügung stehen.
-                      Standardmäßig auf ['thin', 'mongrel', 'webrick']
-                      voreingestellt. Die Anordnung gibt die Priorität vor.
-
-[sessions]            Sessions auf Cookiebasis aktivieren.
-
-[show_exceptions]     Stacktrace im Browser bei Fehlern anzeigen.
-
-[static]              Entscheidet, ob Sinatra statische Dateien zur Verfügung
-                      stellen soll oder nicht.
-                      Sollte nicht aktiviert werden, wenn ein Server verwendet
-                      wird, der dies auch selbstständig erledigen kann.
-                      Deaktivieren wird die Performance erhöhen.
-                      Standardmäßig aktiviert.
-
-[views]               Verzeichnis der Views.
+[views]                 Verzeichnis der Views.
 
 == Fehlerbehandlung
 
@@ -1501,6 +1520,7 @@ ohne dass sie einer Konstanten zugeordnet werden. Dies lässt sich mit
 
 Die Applikation kann mit Hilfe eines optionalen Parameters erstellt werden:
 
+  # config.ru
   require 'sinatra/base'
 
   controller = Sinatra.new do

@@ -3,6 +3,12 @@ require 'rake/testtask'
 require 'fileutils'
 require 'date'
 
+# CI Reporter is only needed for the CI
+begin
+  require 'ci/reporter/rake/test_unit'
+rescue LoadError
+end
+
 task :default => :test
 task :spec => :test
 
@@ -77,7 +83,7 @@ task :add_template, [:name] do |t, args|
         puts "Liquid not found in #{file}"
       else
         puts "Adding section to #{file}"
-        template = template.gsub(/Liquid/, args.name.capitalize).gsub(/liquid/, args.name.downcase)        
+        template = template.gsub(/Liquid/, args.name.capitalize).gsub(/liquid/, args.name.downcase)
         code.gsub! /^(\s*===.*CoffeeScript)/, "\n" << template << "\n\\1"
         File.open(file, "w") { |f| f << code }
       end
@@ -102,7 +108,7 @@ end
 
 desc "list of authors"
 task :authors, [:commit_range, :format, :sep] do |t, a|
-  a.with_defaults :format => "%s (%d)", :sep => ", "
+  a.with_defaults :format => "%s (%d)", :sep => ", ", :commit_range => '--all'
   authors = Hash.new { |h,k| h[k] = 0 }
   blake   = "Blake Mizerany"
   overall = 0

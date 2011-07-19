@@ -6,6 +6,10 @@ end
 class FooNotFound < Sinatra::NotFound
 end
 
+class FooSpecialError < RuntimeError
+  def code; 501 end
+end
+
 class MappedErrorTest < Test::Unit::TestCase
   def test_default
     assert true
@@ -172,6 +176,17 @@ class MappedErrorTest < Test::Unit::TestCase
 
       get '/'
       assert_equal 'subclass', body
+    end
+
+    it 'honors Exception#code if present' do
+      mock_app do
+        set :raise_errors, false
+        error(501) { 'Foo!' }
+        get('/') { raise FooSpecialError }
+      end
+      get '/'
+      assert_equal 501, status
+      assert_equal 'Foo!', body
     end
   end
 
