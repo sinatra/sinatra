@@ -34,7 +34,11 @@ gem 'slim', :group => 'slim'
 gem 'RedCloth', :group => 'redcloth' if RUBY_VERSION < "1.9.3" and RUBY_ENGINE != 'macruby'
 
 if RUBY_VERSION > '1.8.6'
-  gem 'nokogiri', :group => 'nokogiri'
+  if RUBY_ENGINE == 'jruby'
+    gem 'nokogiri', '!= 1.5.0'
+  elsif RUBY_ENGINE != 'maglev'
+    gem 'nokogiri'
+  end
   gem 'coffee-script', '>= 2.0', :group => 'coffee-script'
   gem 'rdoc', :group => 'rdoc'
 end
