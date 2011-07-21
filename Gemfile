@@ -38,7 +38,11 @@ gem 'kramdown'
 gem 'maruku'
 gem 'creole'
 
-gem 'nokogiri' if RUBY_ENGINE != 'maglev'
+if RUBY_ENGINE == 'jruby'
+  gem 'nokogiri', '!= 1.5.0'
+elsif RUBY_ENGINE != 'maglev'
+  gem 'nokogiri'
+end
 
 unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1"
   # C extensions
