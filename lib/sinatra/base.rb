@@ -76,9 +76,9 @@ module Sinatra
         [status.to_i, header.to_hash, []]
       else
         body = block || @body || []
-        body = [body] if body.respond_to? :to_str
-        if body.respond_to?(:to_ary)
-          header["Content-Length"] = body.to_ary.
+        body = [body] if String === body
+        if Array === body
+          header["Content-Length"] = body.
             inject(0) { |len, part| len + Rack::Utils.bytesize(part) }.to_s
         end
         [status.to_i, header.to_hash, body]
@@ -656,7 +656,7 @@ module Sinatra
       invoke { dispatch! }
       invoke { error_block!(response.status) }
       unless @response['Content-Type']
-        if body.respond_to?(:to_ary) and body.first.respond_to? :content_type
+        if Array === body and body.first.respond_to? :content_type
           content_type body.first.content_type
         else
           content_type :html
@@ -823,8 +823,7 @@ module Sinatra
       case
       when res.respond_to?(:to_str)
         @response.body = [res]
-      when res.respond_to?(:to_ary)
-        res = res.to_ary
+      when Array === res
         if Fixnum === res.first
           if res.length == 3
             @response.status, headers, body = res
