@@ -801,8 +801,11 @@ module Sinatra
     def handle_exception!(boom)
       @env['sinatra.error'] = boom
       status boom.respond_to?(:code) ? Integer(boom.code) : 500
-      dump_errors! boom if settings.dump_errors? and server_error?
-      raise boom if settings.show_exceptions? and settings.show_exceptions != :after_handler
+
+      if server_error?
+        dump_errors! boom if settings.dump_errors?
+        raise boom if settings.show_exceptions? and settings.show_exceptions != :after_handler
+      end
 
       if not_found?
         headers['X-Cascade'] = 'pass'

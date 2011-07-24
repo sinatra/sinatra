@@ -112,12 +112,7 @@ class MappedErrorTest < Test::Unit::TestCase
     end
 
     it "never raises Sinatra::NotFound beyond the application" do
-      mock_app {
-        set :raise_errors, true
-        get '/' do
-          raise Sinatra::NotFound
-        end
-      }
+      mock_app(Sinatra::Application) { get('/') { raise Sinatra::NotFound }}
       assert_nothing_raised { get '/' }
       assert_equal 404, status
     end
