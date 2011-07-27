@@ -97,6 +97,12 @@ Or with a block parameter:
     "Hello, #{c}!"
   end
 
+Route patterns may have optional parameters:
+
+  get '/posts.?:format?' do
+    # matches "GET /posts" and any extension "GET /posts.json", "GET /posts.xml" etc.
+  end
+
 === Conditions
 
 Routes may include a variety of matching conditions, such as the user agent:
