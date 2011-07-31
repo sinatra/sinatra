@@ -252,7 +252,7 @@ TEMPLATE = <<-HTML # :nodoc:
 
     <div id="get">
       <h3 id="get-info">GET</h3>
-      <% unless req.GET.empty? %>
+      <% if req.GET and not req.GET.empty? %>
         <table class="req">
           <tr>
             <th>Variable</th>
@@ -273,7 +273,7 @@ TEMPLATE = <<-HTML # :nodoc:
 
     <div id="post">
       <h3 id="post-info">POST</h3>
-      <% unless req.POST.empty? %>
+      <% if req.POST and not req.POST.empty? %>
         <table class="req">
           <tr>
             <th>Variable</th>
