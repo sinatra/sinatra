@@ -431,7 +431,7 @@ layout distinto al de la plantilla pasando la opción <tt>:layout_engine</tt>.
 
 Dependencias::             {rdoc}[http://rdoc.rubyforge.org/]
 Extensiones de Archivo::   <tt>.rdoc</tt>
-Ejemplo::                  <tt>textile :LEEME, :layout_engine => :erb</tt>
+Ejemplo::                  <tt>rdoc :LEEME, :layout_engine => :erb</tt>
 
 No es posible llamar métodos desde rdoc, ni pasarle locales. Por lo tanto,
 generalmente vas a usarlo en combinación con otro motor de renderizado:
