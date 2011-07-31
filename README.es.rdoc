@@ -100,6 +100,13 @@ O con un parámetro de bloque:
     "Hola, #{c}!"
   end
 
+Los patrones de ruta pueden contener parámetros opcionales:
+
+  get '/posts.?:formato?' do
+    # coincide con "GET /posts" y además admite cualquier extensión, por
+    # ejemplo, "GET /posts.json", "GET /posts.xml", etc.
+  end
+
 === Condiciones
 
 Las rutas pueden incluir una variedad de condiciones de selección, como por
