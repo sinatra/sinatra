@@ -14,7 +14,7 @@ gemをインストールして動かしてみる。
   gem install sinatra
   ruby -rubygems myapp.rb
 
-http://localhost:4567 を見る。
+http://localhost:5678 を見る。
 
 == ルート
 
@@ -994,7 +994,7 @@ Sinatraアプリケーションは直接実行できます。
 オプション:
 
   -h # ヘルプ
-  -p # ポート指定(デフォルトは4567)
+  -p # ポート指定(デフォルトは5678)
   -o # ホスト指定(デフォルトは0.0.0.0)
   -e # 環境を指定 (デフォルトはdevelopment)
   -s # rackserver/handlerを指定 (デフォルトはthin)

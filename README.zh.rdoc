@@ -17,7 +17,7 @@ Sinatra是一个基于Ruby语言，以最小精力为代价快速创建web应用
   gem install sinatra
   ruby -rubygems myapp.rb
 
-在该地址查看： http://localhost:4567
+在该地址查看： http://localhost:5678
 
 推荐同时运行<tt>gem install thin</tt>，Sinatra会优先选择thin作为服务器。
 
@@ -1518,7 +1518,7 @@ Sinatra::Base子类可用的方法实际上就是通过顶层 DSL
 
 运行:
 
-  rackup -p 4567
+  rackup -p 5678
 
 === 使用config.ru运行传统方式的应用
 
@@ -1680,7 +1680,7 @@ Sinatra 应用可以被直接运行：
 选项是：
 
   -h # help
-  -p # 设定端口 (默认是 4567)
+  -p # 设定端口 (默认是 5678)
   -o # 设定主机名 (默认是 0.0.0.0)
   -e # 设定环境 (默认是 development)
   -s # 限定 rack 服务器/处理器 (默认是 thin)

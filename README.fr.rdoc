@@ -17,7 +17,7 @@ Installez la gem et lancez avec :
   gem install sinatra
   ruby -rubygems mon_application.rb
 
-Le résultat est visible sur : http://localhost:4567
+Le résultat est visible sur : http://localhost:5678
 
 Il est recommandé d'exécuter également <tt>gem install thin</tt>, pour que
 Sinatra utilise le server Thin quand il est disponible.
@@ -1510,7 +1510,7 @@ quel gestionnaire Rack :
 
 Exécutez :
 
-  rackup -p 4567
+  rackup -p 5678
 
 === Utiliser une application de style classique avec un fichier config.ru
 
@@ -1719,7 +1719,7 @@ Les applications en Sinatra peuvent être lancées directement :
 Les options sont :
 
   -h # aide
-  -p # déclare le port (4567 par défaut)
+  -p # déclare le port (5678 par défaut)
   -o # déclare l'hôte (0.0.0.0 par défaut)
   -e # déclare l'environnement (+development+ par défaut)
   -s # déclare le serveur/gestionnaire à utiliser (thin par défaut)

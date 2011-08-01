@@ -16,7 +16,7 @@ Instale a gem e execute como:
   sudo gem install sinatra
   ruby minhaapp.rb
 
-Acesse em: http://localhost:4567
+Acesse em: http://localhost:5678
 
 == Rotas
 
@@ -603,7 +603,7 @@ Aplicações Sinatra podem ser executadas diretamente:
 As opções são:
 
   -h # ajuda
-  -p # define a porta (padrão é 4567)
+  -p # define a porta (padrão é 5678)
   -o # define o host (padrão é 0.0.0.0)
   -e # define o ambiente (padrão é development)
   -s # especifica o servidor/manipulador rack (padrão é thin)

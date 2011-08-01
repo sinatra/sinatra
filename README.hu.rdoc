@@ -16,7 +16,7 @@ Telepítsd a gem-et és indítsd el az alkalmazást a következőképpen:
   sudo gem install sinatra
   ruby -rubygems myapp.rb
 
-Az alkalmazás elérhető lesz itt: http://localhost:4567
+Az alkalmazás elérhető lesz itt: http://localhost:5678
 
 == Útvonalak (routes)
 
@@ -563,7 +563,7 @@ Sinatra alkalmazásokat közvetlenül futtathatunk:
 Az alábbi kapcsolókat ismeri fel a rendszer:
 
   -h # segítség
-  -p # a port beállítása (alapértelmezés szerint ez a 4567-es)
+  -p # a port beállítása (alapértelmezés szerint ez a 5678-es)
   -e # a környezet beállítása (alapértelmezés szerint ez a development)
   -s # a rack szerver/handler beállítása (alapértelmezetten ez a thin)
   -x # a mutex lock bekapcsolása (alapértelmezetten ki van kapcsolva)
