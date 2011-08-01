@@ -100,6 +100,13 @@ O con un parámetro de bloque:
     "Hola, #{c}!"
   end
 
+Los patrones de ruta pueden contener parámetros opcionales:
+
+  get '/posts.?:formato?' do
+    # coincide con "GET /posts" y además admite cualquier extensión, por
+    # ejemplo, "GET /posts.json", "GET /posts.xml", etc.
+  end
+
 === Condiciones
 
 Las rutas pueden incluir una variedad de condiciones de selección, como por
@@ -431,7 +438,7 @@ layout distinto al de la plantilla pasando la opción <tt>:layout_engine</tt>.
 
 Dependencias::             {rdoc}[http://rdoc.rubyforge.org/]
 Extensiones de Archivo::   <tt>.rdoc</tt>
-Ejemplo::                  <tt>textile :LEEME, :layout_engine => :erb</tt>
+Ejemplo::                  <tt>rdoc :LEEME, :layout_engine => :erb</tt>
 
 No es posible llamar métodos desde rdoc, ni pasarle locales. Por lo tanto,
 generalmente vas a usarlo en combinación con otro motor de renderizado:
@@ -1850,3 +1857,4 @@ siguiendo las especificaciones SemVer y SemVerTag.
   {última versión liberada}[http://rubydoc.info/gems/sinatra] o para la
   {rama de desarrollo actual}[http://rubydoc.info/github/sinatra/sinatra]
   en http://rubydoc.info/
+* {Servidor de IC}[http://ci.rkh.im/view/Sinatra/]
