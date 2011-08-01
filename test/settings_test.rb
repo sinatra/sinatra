@@ -415,9 +415,9 @@ class SettingsTest < Test::Unit::TestCase
   end
 
   describe 'port' do
-    it 'defaults to 4567' do
-      assert_equal 4567, @base.port
-      assert_equal 4567, @application.port
+    it 'defaults to 5678' do
+      assert_equal 5678, @base.port
+      assert_equal 5678, @application.port
     end
   end
 
