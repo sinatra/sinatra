@@ -54,7 +54,7 @@ class SlimTest < Test::Unit::TestCase
   it "passes slim options to the slim engine" do
     mock_app {
       get '/' do
-        slim "! doctype html\nh1 Hello World", :format => :html4
+        slim "doctype html\nh1 Hello World", :format => :html4
       end
     }
     get '/'
@@ -66,7 +66,7 @@ class SlimTest < Test::Unit::TestCase
     mock_app {
       set :slim, {:format => :html4}
       get '/' do
-        slim "! doctype html\nh1 Hello World"
+        slim "doctype html\nh1 Hello World"
       end
     }
     get '/'
@@ -78,10 +78,10 @@ class SlimTest < Test::Unit::TestCase
     mock_app {
       set :slim, {:format => :html4}
       get '/' do
-        slim "! doctype html\nh1.header Hello World"
+        slim "doctype html\nh1.header Hello World"
       end
       get '/html5' do
-        slim "! doctype html\nh1.header Hello World", :format => :html5
+        slim "doctype html\nh1.header Hello World", :format => :html5
       end
     }
     get '/'
