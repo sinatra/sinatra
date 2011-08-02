@@ -1,4 +1,4 @@
-= Sinatra
+﻿= Sinatra
 <i>Attention : Ce document correspond à la traduction de la version anglaise et
 il n'est peut être plus à jour.</i>
 
@@ -99,6 +99,12 @@ Là encore on peut utiliser les paramètres de bloc :
 
   get %r{/bonjour/([\w]+)} do |c|
     "Bonjour, #{c} !"
+  end
+
+Les routes peuvent aussi comporter des paramètres optionnels :
+
+  get '/posts.?:format?' do
+    # répond à "GET /posts" et aussi à "GET /posts.json", "GET /posts.xml" etc...
   end
 
 === Conditions
@@ -213,45 +219,49 @@ Ou bien en utilisant la forme négative :
 
 == Fichiers statiques
 
-Par défaut, le dossier <tt>./public</tt> est utilisé pour servir les fichiers
-statiques. Vous pouvez changer ce dossier pour un autre nom grâce au paramètre
+Les fichiers du dossier <tt>./public</tt> sont servis de façon statique. Vous
+avez la possibilité d'utiliser un autre répertoire en définissant le paramètre
 <tt>:public_folder</tt> :
 
   set :public_folder, File.dirname(__FILE__) + '/statique'
 
-Notez que le nom du dossier public n'est pas inclus dans l'URL. Un fichier
-sous <tt>./public/css/style.css</tt> est appelé avec l'URL : <tt>http://exemple.com/css/style.css</tt>.
+Notez que le nom du dossier public n'apparait pas dans l'URL. Le fichier
+<tt>./public/css/style.css</tt> sera appelé via l'URL : 
+<tt>http://exemple.com/css/style.css</tt>.
+
+Utilisez le paramètre <tt>:static_cache_control</tt> pour ajouter l'information
+d'en-tête <tt>Cache-Control</tt> (voir plus loin).
 
 == Vues / Templates
 
-Chaque langage de template est exposé via sa propre méthode de rendu.
-Ces méthodes retournent tout simplement une chaîne de caractères.
+Chaqie langage de template est disponible via sa propre méthode de rendu,
+lesquelles renvoient tout simplement une chaîne de caractères.
 
   get '/' do
     erb :index
   end
 
-Ceci effectue le rendu de <tt>views/index.erb</tt>.
+Ceci effectue le rendu de la vue <tt>views/index.erb</tt>.
 
-Plutôt que le nom d'un template, vous pouvez directement passer le contenu du
-template :
+Plutôt que d'utiliser le nom d'un template, vous pouvez directement passer
+le contenu du template :
 
   get '/' do
     code = "<%= Time.now %>"
     erb code
   end
 
-Les templates prennent un second paramètre, un hash d'options :
+Les méthodes de templates acceptent un second paramètre, un hash d'options :
 
   get '/' do
     erb :index, :layout => :post
   end
 
-Cecie effectue le rendu de <tt>views/index.erb</tt> embarqué dans
-<tt>views/post.erb</tt> (<tt>views/layout.erb</tt> est la valeur par défaut
-si ce fichier existe).
+Ceci effectuera le rendu de la vue <tt>views/index.erb</tt> en l'intégrant
+au +layout+ <tt>views/post.erb</tt> (les vues Erb sont intégrées par défaut
+au +layout+ <tt>views/layout.erb</tt> quand ce fichier existe).
 
-Toute option que Sinatra ne comprends pas sera passée au moteur de rendu :
+Toute option que Sinatra ne comprend pas sera passée au moteur de rendu :
 
   get '/' do
     haml :index, :format => :html5
@@ -286,8 +296,8 @@ Options disponibles :
 
 [layout]
   S'il faut ou non utiliser un +layout+ (+true+ or +false+). Indique le
-  template à utiliser lorsque c'est un Symbol. Exemple : <tt>erb :index,
-  :layout => request.xhr?</tt>.
+  template à utiliser lorsque c'est un symbole. Exemple : <tt>erb :index,
+  :layout => !request.xhr?</tt>.
 
 [content_type]
   Content-Type que le template produit, dépend par défaut du langage de
@@ -308,17 +318,17 @@ Les templates sont supposés se trouver directement dans le dossier
 
   set :views, settings.root + '/templates'
 
-Il est important de noter que les templates sont toujours référencés
-sous forme de symboles, même s'il s'agit d'un sous-répertoire (dans ce
-cas, utilisez <tt>:'sous_repertoire/template'</tt>). Vous devez utiliser un
-symbole car les méthodes de rendu évalueront le contenu des chaînes de
+Il est important de se souvenir que les templates sont toujours référencés
+sous forme de symboles, même lorsqu'ils sont dans un sous-répertoire (dans
+ce cas, utilisez <tt>:'sous_repertoire/template'</tt>). Il faut utiliser
+un symbole car les méthodes de rendu évaluent le contenu des chaînes de
 caractères au lieu de les considérer comme un chemin vers un fichier.
 
 === Langages de template disponibles
 
 Certains langages ont plusieurs implémentations. Pour préciser l'implémentation
-à utiliser (et garantir l'aspect thread-safe), vous devriez simplement la
-charger au préalable :
+à utiliser (et garantir l'aspect thread-safe), vous devez simplement l'avoir
+chargée au préalable :
 
   require 'rdiscount' # ou require 'bluecloth'
   get('/') { markdown :index }
@@ -333,7 +343,7 @@ Exemple::                 <tt>haml :index, :format => :html5</tt>
 
 Dépendances::             {erubis}[http://www.kuwata-lab.com/erubis/] ou
                           erb (inclus avec Ruby)
-Extensions de fichier::   <tt>.erb</tt>, <tt>.rhtml</tt> or <tt>.erubis</tt>
+Extensions de fichier::   <tt>.erb</tt>, <tt>.rhtml</tt> ou <tt>.erubis</tt>
                           (Erubis seulement)
 Exemple::                 <tt>erb :index</tt>
 
@@ -341,7 +351,7 @@ Exemple::                 <tt>erb :index</tt>
 
 Dépendances::             {builder}[http://builder.rubyforge.org/]
 Extensions de fichier::   <tt>.builder</tt>
-Exemple::                 <tt>builder { |xml| xml.em "hi" }</tt>
+Exemple::                 <tt>builder { |xml| xml.em "salut" }</tt>
 
 Ce moteur accepte également un bloc pour des templates en ligne (voir exemple).
 
@@ -349,7 +359,7 @@ Ce moteur accepte également un bloc pour des templates en ligne (voir exemple).
 
 Dépendances::             {nokogiri}[http://nokogiri.org/]
 Extensions de fichier::   <tt>.nokogiri</tt>
-Exemple::                 <tt>builder { |xml| xml.em "hi" }</tt>
+Exemple::                 <tt>builder { |xml| xml.em "salut" }</tt>
 
 Ce moteur accepte également un bloc pour des templates en ligne (voir exemple).
 
@@ -387,10 +397,10 @@ Dépendances::             {rdiscount}[https://github.com/rtomayko/rdiscount],
                           {bluecloth}[http://deveiate.org/projects/BlueCloth],
                           {kramdown}[http://kramdown.rubyforge.org/] *ou*
                           {maruku}[http://maruku.rubyforge.org/]
-Extensions de fichier::   <tt>.markdown</tt>, <tt>.mkd</tt> and <tt>.md</tt>
+Extensions de fichier::   <tt>.markdown</tt>, <tt>.mkd</tt> et <tt>.md</tt>
 Exemple::                 <tt>markdown :index, :layout_engine => :erb</tt>
 
-Il n'est pas possible d'appeler des méthodes depuis markdown, ni même de lui
+Il n'est pas possible d'appeler des méthodes depuis markdown, ni de lui
 passer des variables locales. Par conséquent, il sera souvent utilisé en
 combinaison avec un autre moteur de rendu :
 
@@ -404,8 +414,8 @@ templates :
 
 Comme vous ne pouvez pas appeler de Ruby au sein de Markdown, vous ne pouvez
 pas utiliser de +layouts+ écrits en Markdown. Toutefois, il est possible
-d'utiliser un autre moteur de rendu pour le template que pour le +layout+ en
-utilisant l'option <tt>:layout_engine</tt>.
+d'utiliser un moteur de rendu différent pour le template et pour le +layout+
+en utilisant l'option <tt>:layout_engine</tt>.
 
 === Templates Textile
 
@@ -413,7 +423,7 @@ Dépendances::             {RedCloth}[http://redcloth.org/]
 Extensions de fichier::   <tt>.textile</tt>
 Exemple::                 <tt>textile :index, :layout_engine => :erb</tt>
 
-Il n'est pas possible d'appeler des méthodes depuis textile, ni même de lui
+Il n'est pas possible d'appeler des méthodes depuis textile, ni de lui
 passer des variables locales. Par conséquent, il sera souvent utilisé en
 combinaison avec un autre moteur de rendu :
 
@@ -427,16 +437,16 @@ templates :
 
 Comme vous ne pouvez pas appeler de Ruby au sein de Textile, vous ne pouvez
 pas utiliser de +layouts+ écrits en Textile. Toutefois, il est possible
-d'utiliser un autre moteur de rendu pour le template que pour le +layout+ en
-utilisant l'option <tt>:layout_engine</tt>.
+d'utiliser un moteur de rendu différent pour le template et pour le +layout+
+en utilisant l'option <tt>:layout_engine</tt>.
 
 === Templates RDoc
 
 Dépendances::             {rdoc}[http://rdoc.rubyforge.org/]
 Extensions de fichier::   <tt>.rdoc</tt>
-Exemple::                 <tt>textile :README, :layout_engine => :erb</tt>
+Exemple::                 <tt>rdoc :README, :layout_engine => :erb</tt>
 
-Il n'est pas possible d'appeler des méthodes depuis rdoc, ni même de lui
+Il n'est pas possible d'appeler des méthodes depuis rdoc, ni de lui
 passer des variables locales. Par conséquent, il sera souvent utilisé en
 combinaison avec un autre moteur de rendu :
 
@@ -450,8 +460,8 @@ templates :
 
 Comme vous ne pouvez pas appeler de Ruby au sein de RDoc, vous ne pouvez
 pas utiliser de +layouts+ écrits en RDoc. Toutefois, il est possible
-d'utiliser un autre moteur de rendu pour le template que pour le +layout+ en
-utilisant l'option <tt>:layout_engine</tt>.
+d'utiliser un moteur de rendu différent pour le template et pour le +layout+
+en utilisant l'option <tt>:layout_engine</tt>.
 
 === Templates Radius
 
@@ -460,7 +470,7 @@ Extensions de fichier::   <tt>.radius</tt>
 Exemple::                 <tt>radius :index, :locals => { :key => 'value' }</tt>
 
 Comme vous ne pouvez pas appeler de méthodes Ruby depuis un template Radius,
-vous aurez sûrement à lui passer des variables locales
+vous aurez sûrement à lui passer des variables locales.
 
 === Templates Markaby
 
@@ -482,7 +492,7 @@ Dépendances::             {creole}[https://github.com/minad/creole]
 Extensions de fichier::   <tt>.creole</tt>
 Exemple::                 <tt>creole :wiki, :layout_engine => :erb</tt>
 
-Il n'est pas possible d'appeler des méthodes depuis creole, ni même de lui
+Il n'est pas possible d'appeler des méthodes depuis creole, ni de lui
 passer des variables locales. Par conséquent, il sera souvent utilisé en
 combinaison avec un autre moteur de rendu :
 
@@ -496,8 +506,8 @@ templates :
 
 Comme vous ne pouvez pas appeler de Ruby au sein de Creole, vous ne pouvez
 pas utiliser de +layouts+ écrits en Creole. Toutefois, il est possible
-d'utiliser un autre moteur de rendu pour le template que pour le +layout+ en
-utilisant l'option <tt>:layout_engine</tt>.
+d'utiliser un moteur de rendu différent pour le template et pour le +layout+
+en utilisant l'option <tt>:layout_engine</tt>.
 
 === Templates CoffeeScript
 
@@ -512,7 +522,7 @@ Exemple::                 <tt>coffee :index</tt>
     haml '%div.title Bonjour le monde'
   end
 
-Générera le template embarqué spécifié dans la chaîne de caractères.
+Générera le code du template spécifié dans la chaîne de caractères.
 
 === Accéder aux variables dans un Template
 
