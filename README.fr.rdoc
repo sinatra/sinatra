@@ -1,4 +1,4 @@
-= Sinatra
+﻿= Sinatra
 <i>Attention : Ce document correspond à la traduction de la version anglaise et
 il n'est peut être plus à jour.</i>
 
@@ -99,6 +99,12 @@ Là encore on peut utiliser les paramètres de bloc :
 
   get %r{/bonjour/([\w]+)} do |c|
     "Bonjour, #{c} !"
+  end
+
+Les routes peuvent aussi comporter des paramètres optionnels :
+
+  get '/posts.?:format?' do
+    # répond à "GET /posts" et aussi à "GET /posts.json", "GET /posts.xml" etc...
   end
 
 === Conditions
