@@ -219,14 +219,18 @@ Ou bien en utilisant la forme négative :
 
 == Fichiers statiques
 
-Par défaut, le dossier <tt>./public</tt> est utilisé pour servir les fichiers
-statiques. Vous pouvez changer ce dossier pour un autre nom grâce au paramètre
+Les fichiers du dossier <tt>./public</tt> sont servis de façon statique. Vous
+avez la possibilité d'utiliser un autre répertoire en définissant le paramètre
 <tt>:public_folder</tt> :
 
   set :public_folder, File.dirname(__FILE__) + '/statique'
 
-Notez que le nom du dossier public n'est pas inclus dans l'URL. Un fichier
-sous <tt>./public/css/style.css</tt> est appelé avec l'URL : <tt>http://exemple.com/css/style.css</tt>.
+Notez que le nom du dossier public n'apparait pas dans l'URL. Le fichier
+<tt>./public/css/style.css</tt> sera appelé via l'URL : 
+<tt>http://exemple.com/css/style.css</tt>.
+
+Utilisez le paramètre <tt>:static_cache_control</tt> pour ajouter l'information
+d'en-tête <tt>Cache-Control</tt> (voir plus loin).
 
 == Vues / Templates
 
