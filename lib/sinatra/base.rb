@@ -700,12 +700,12 @@ module Sinatra
     # Revert params afterwards.
     #
     # Returns pass block.
-    def process_route(pattern, keys, conditions, block = nil, values = nil)
+    def process_route(pattern, keys, conditions, block = nil, values = [])
       @original_params ||= @params
       route = @request.path_info
       route = '/' if route.empty? and not settings.empty_path_info?
       if match = pattern.match(route)
-        values = match.captures.to_a.map { |v| force_encoding URI.decode(v) if v }
+        values += match.captures.to_a.map { |v| force_encoding URI.decode(v) if v }
         params =
           if keys.any?
             keys.zip(values).inject({}) do |hash,(k,v)|
@@ -801,29 +801,33 @@ module Sinatra
     def handle_exception!(boom)
       @env['sinatra.error'] = boom
       status boom.respond_to?(:code) ? Integer(boom.code) : 500
-      dump_errors! boom if settings.dump_errors? and server_error?
-      raise boom if settings.show_exceptions? and settings.show_exceptions != :after_handler
+
+      if server_error?
+        dump_errors! boom if settings.dump_errors?
+        raise boom if settings.show_exceptions? and settings.show_exceptions != :after_handler
+      end
 
       if not_found?
         headers['X-Cascade'] = 'pass'
         body '<h1>Not Found</h1>'
       end
 
-      res = error_block!(boom.class) || error_block!(status)
+      res = error_block!(boom.class, boom) || error_block!(status, boom)
       return res if res or not server_error?
       raise boom if settings.raise_errors? or settings.show_exceptions?
-      error_block! Exception
+      error_block! Exception, boom
     end
 
     # Find an custom error block for the key(s) specified.
-    def error_block!(key)
+    def error_block!(key, *block_params)
       base = settings
       while base.respond_to?(:errors)
         next base = base.superclass unless args = base.errors[key]
+        args += [block_params]
         return process_route(*args)
       end
       return false unless key.respond_to? :superclass and key.superclass < Exception
-      error_block! key.superclass
+      error_block!(key.superclass, *block_params)
     end
 
     def dump_errors!(boom)
