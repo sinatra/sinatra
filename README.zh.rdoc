@@ -897,7 +897,7 @@ Session被用来在请求之间保持状态。如果被激活，每一个用户�
   get '/foo' do
     status 418
     headers \
-      "Allow"   => "BREW, POST, GET, PROPFIND, WHEN"
+      "Allow"   => "BREW, POST, GET, PROPFIND, WHEN",
       "Refresh" => "Refresh: 20; http://www.ietf.org/rfc/rfc2324.txt"
     body "I'm a tea pot!"
   end

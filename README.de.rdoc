@@ -732,7 +732,7 @@ Vergleichbar mit +body+ lassen sich auch Status-Code und Header setzen:
   get '/foo' do
     status 418
     headers \
-      "Allow"   => "BREW, POST, GET, PROPFIND, WHEN"
+      "Allow"   => "BREW, POST, GET, PROPFIND, WHEN",
       "Refresh" => "Refresh: 20; http://www.ietf.org/rfc/rfc2324.txt"
     halt "Ich bin ein Teekesselchen"
   end
