@@ -15,7 +15,7 @@ module Rack
 
       def call(env)
         status, headers, body = app.call(env)
-        if headers['Content-Type'].to_s.split(';', 2).first.strip == 'application/json'
+        if headers['Content-Type'].to_s.split(';', 2).first =~ /^\s*application\/json\s*$/
           result = react(env) if referrer(env) != Request.new(env).host
         end
         result or [status, headers, body]

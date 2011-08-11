@@ -20,4 +20,13 @@ describe Rack::Protection::JsonCsrf do
       get('/', {}).should be_ok
     end
   end
+
+  describe 'not json response' do
+
+    it "accepts get requests with 304 headers" do
+      mock_app { |e| [304, {}, []]}
+      get('/', {}).status.should == 304
+    end
+
+  end
 end
