@@ -29,10 +29,14 @@ gem 'sass'
 gem 'builder'
 gem 'erubis'
 gem 'less', '~> 1.0'
-gem 'liquid' unless RUBY_ENGINE == 'maglev'
+if RUBY_ENGINE == "maglev"
+  gem 'liquid', :git => "https://github.com/Shopify/liquid.git"
+else
+  gem 'liquid'
+end
 gem 'slim'
 gem 'RedCloth' if RUBY_VERSION < "1.9.3" and not RUBY_ENGINE.start_with? 'ma'
-gem 'coffee-script', '>= 2.0' unless RUBY_ENGINE == 'maglev'
+gem 'coffee-script', '>= 2.0'
 gem 'rdoc'
 gem 'kramdown'
 gem 'maruku'
@@ -54,15 +58,15 @@ unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1"
 end
 
 if RUBY_ENGINE == 'maglev'
-  gem 'json'
+  gem 'json', :git => "https://github.com/MagLev/json.git"
   gem 'markaby'
   gem 'radius'
-end
-
-platforms :ruby_18, :jruby do
-  gem 'json'
-  gem 'markaby'
-  gem 'radius'
+else
+  platforms :ruby_18, :jruby do
+    gem 'json'
+    gem 'markaby'
+    gem 'radius'
+  end
 end
 
 platforms :mri_18 do
