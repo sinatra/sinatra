@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require 'backports'
+require 'uri'
 
 module Sinatra
 
@@ -73,8 +74,9 @@ module Sinatra
       keys, str     = keys.try(:dup), pattern.inspect
       return pattern unless str.start_with? '/' and str.end_with? '/'
       str.gsub! /^\/\^?|\$?\/$/, ''
+      str.gsub! encoded(' '), ' '
       return pattern if str =~ /^[\.\+]/
-      str.gsub! /\([^\(]*\)/ do |part|
+      str.gsub! /\([^\(\)]*\)/ do |part|
         case part
         when '(.*?)'
           return pattern if keys.shift != 'splat'
@@ -82,6 +84,10 @@ module Sinatra
         when '([^\/?#]+)'
           return pattern if keys.empty?
           ":" << keys.shift
+        when /^\(\?\:\\?(.)\|/
+          char = $1
+          return pattern unless encoded(char) == part
+          Regexp.escape(char)
         else
           return pattern
         end
@@ -90,6 +96,16 @@ module Sinatra
         return pattern if $1 != "\\"
         $2
       end
+    end
+
+    private
+
+    def encoded(char)
+      return super if defined? super
+      enc = URI.encode(char)
+      enc = "(?:#{Regexp.escape enc}|#{URI.encode char, /./})" if enc == char
+      enc = "(?:#{enc}|#{encoded('+')})" if char == " "
+      enc
     end
   end
 
