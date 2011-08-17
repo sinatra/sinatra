@@ -8,7 +8,7 @@ shared_examples_for "a json encoder" do |lib, const|
       require lib if lib
       @encoder = eval(const)
     rescue LoadError
-      pending 'unable to load #{lib}'
+      pending "unable to load #{lib}"
     end
   end
 
