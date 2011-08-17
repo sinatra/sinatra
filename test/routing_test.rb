@@ -1080,4 +1080,17 @@ class RoutingTest < Test::Unit::TestCase
     assert ok?
     assert_body 'hello'
   end
+
+  it 'returns the route signature' do
+    signature = list = nil
+
+    mock_app do
+      signature = post('/') { }
+      list = routes['POST']
+    end
+
+    assert_equal Array, signature.class
+    assert_equal 4, signature.length
+    assert list.include?(signature)
+  end
 end

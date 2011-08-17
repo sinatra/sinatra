@@ -1149,8 +1149,10 @@ module Sinatra
         # Because of self.options.host
         host_name(options.delete(:host)) if options.key?(:host)
         enable :empty_path_info if path == "" and empty_path_info.nil?
-        (@routes[verb] ||= []) << compile!(verb, path, block, options)
+        signature = compile!(verb, path, block, options)
+        (@routes[verb] ||= []) << signature
         invoke_hook(:route_added, verb, path, block)
+        signature
       end
 
       def invoke_hook(name, *args)
