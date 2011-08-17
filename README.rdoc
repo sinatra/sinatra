@@ -188,6 +188,9 @@ That way we can, for instance, easily implement a streaming example:
 
     get('/') { Stream.new }
 
+You can also use the +stream+ helper method (described below) to reduce boiler
+plate and embed the streaming logic in the route.
+
 === Custom Route Matchers
 
 As shown above, Sinatra ships with built-in support for using String patterns
@@ -813,6 +816,54 @@ Similar to the body, you can also set the status code and headers:
 Like +body+, +headers+ and +status+ with no arguments can be used to access
 their current values.
 
+=== Streaming Responses
+
+Sometimes you want to start sending out data while still generating parts of
+the response body. In extreme examples, you want to keep sending data until
+the client closes the connection. You can use the +stream+ helper to avoid
+creating your own wrapper:
+
+  get '/' do
+    stream do |out|
+      out << "It's gonna be legen -\n"
+      sleep 0.5
+      out << " (wait for it) \n"
+      sleep 1
+      out << "- dary!\n"
+    end
+  end
+
+This allows you to implement streaming APIs,
+{Server Sent Events}[http://dev.w3.org/html5/eventsource/] and can be used as
+basis for {WebSockets}[http://en.wikipedia.org/wiki/WebSocket]. It can also be
+used to increase throughput if some but not all content depends on a slow
+resource.
+
+Note that the streaming behavior, especially the number of concurrent request,
+highly depends on the web server used to serve the application. Some servers,
+like WEBRick, might not even support streaming at all. If the server does not
+support streaming, the body will be sent all at once after the block passed to
++stream+ finished executing.
+
+If the optional parameter is set to +false+, it will not call +close+ on the
+stream object, allowing you to close it at any later point in the execution
+flow. This only works on evented servers, like Thin and Rainbows. Other
+servers will still close the stream.
+
+  set :server, :thin
+  connections = []
+
+  get '/' do
+    # keep stream open
+    stream(false) { |out| connections << out }
+  end
+
+  post '/' do
+    # write to all open streams
+    connections.each { |out| out << params[:message] << "\n" }
+    "message sent"
+  end
+
 === Logging
 
 In the request scope, the +logger+ helper exposes a +Logger+ instance:
@@ -1242,6 +1293,9 @@ You can access those options via <tt>settings</tt>:
                        +cache_control+ helper. Disabled by default.
                        Use an explicit array when setting multiple values:
                        <tt>set :static_cache_control, [:public, :max_age => 300]</tt>
+
+[threaded]             If set to +true+, will tell Thin to use
+                       <tt>EventMachine.defer</tt> for processing the request.
 
 [views]                views folder.
 

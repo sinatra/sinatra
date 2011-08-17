@@ -78,7 +78,11 @@ module Sinatra
       elsif Array === body and not [204, 304].include?(status.to_i)
         headers["Content-Length"] = body.inject(0) { |l, p| l + Rack::Utils.bytesize(p) }.to_s
       end
-      super
+
+      # Rack::Response#finish sometimes returns self as response body. We don't want that.
+      status, headers, result = super
+      result = body if result == self
+      [status, headers, result]
     end
   end
 
@@ -223,6 +227,61 @@ module Sinatra
       halt result[0], result[2]
     rescue Errno::ENOENT
       not_found
+    end
+
+    # Class of the response body in case you use #stream.
+    #
+    # Three things really matter: The front and back block (back being the
+    # blog generating content, front the one sending it to the client) and
+    # the scheduler, integrating with whatever concurrency feature the Rack
+    # handler is using.
+    #
+    # Scheduler has to respond to defer and schedule.
+    class Stream
+      def self.schedule(*) yield end
+      def self.defer(*)    yield end
+
+      def initialize(scheduler = self.class, close = true, &back)
+        @back, @scheduler, @callback, @close = back.to_proc, scheduler, nil, close
+      end
+
+      def close
+        @scheduler.schedule { @callback.call if @callback }
+      end
+
+      def each(&front)
+        @front = front
+        @scheduler.defer do
+          begin
+            @back.call(self)
+          rescue Exception => e
+            @scheduler.schedule { raise e }
+          end
+          close if @close
+        end
+      end
+
+      def <<(data)
+        @scheduler.schedule { @front.call(data.to_s) }
+        self
+      end
+
+      def callback(&block)
+        @callback = block
+      end
+
+      alias errback callback
+    end
+
+    # Allows to start sending data to the client even though later parts of
+    # the response body have not yet been generated.
+    #
+    # The close parameter specifies whether Stream#close should be called
+    # after the block has been executed. This is only relevant for evented
+    # servers like Thin or Rainbows.
+    def stream(close = true, &block)
+      scheduler = env['async.callback'] ? EventMachine : Stream
+      body Stream.new(scheduler, close, &block)
     end
 
     # Specify response freshness policy for HTTP caches (Cache-Control header).
@@ -1204,8 +1263,9 @@ module Sinatra
             "on #{port} for #{environment} with backup from #{handler_name}"
           end
           [:INT, :TERM].each { |sig| trap(sig) { quit!(server, handler_name) } }
+          server.threaded = settings.threaded if server.respond_to? :threaded=
           set :running, true
-          yield handler if block_given?
+          yield server if block_given?
         end
       rescue Errno::EADDRINUSE => e
         $stderr.puts "== Someone is already performing on port #{port}!"
@@ -1277,7 +1337,7 @@ module Sinatra
         servers = Array(server)
         servers.each do |server_name|
           begin
-            return Rack::Handler.get(server_name)
+            return Rack::Handler.get(server_name.to_s)
           rescue LoadError
           rescue NameError
           end
@@ -1406,6 +1466,7 @@ module Sinatra
     set :views, Proc.new { root && File.join(root, 'views') }
     set :reload_templates, Proc.new { development? }
     set :lock, false
+    set :threaded, true
 
     set :public_folder, Proc.new { root && File.join(root, 'public') }
     set :static, Proc.new { public_folder && File.exist?(public_folder) }
