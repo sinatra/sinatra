@@ -8,8 +8,8 @@ module Sinatra
     # Sinatra::Application by default.
     module Common
       register :ConfigFile
-      register :CSRF
       register :Namespace
+      register :Protection
       register :RespondWith
 
       helpers :Capture
