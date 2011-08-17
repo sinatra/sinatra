@@ -243,11 +243,9 @@ module Sinatra
 
       def initialize(scheduler = self.class, close = true, &back)
         @back, @scheduler, @callback, @close = back.to_proc, scheduler, nil, close
-        super()
       end
 
       def close
-        return super if defined? super
         @scheduler.schedule { @callback.call if @callback }
       end
 
@@ -269,13 +267,10 @@ module Sinatra
       end
 
       def callback(&block)
-        return super if defined? super
         @callback = block
       end
 
-      def errback
-        super if defined? super
-      end
+      alias errback callback
     end
 
     # Allows to start sending data to the client even though later parts of
