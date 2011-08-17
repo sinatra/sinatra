@@ -47,7 +47,7 @@ describe Sinatra::JSON do
 
   it "sets the content type to 'application/json'" do
     mock_app { get('/') { json({}) } }
-    get('/')["Content-Type"].should == "application/json"
+    get('/')["Content-Type"].should include("application/json")
   end
 
   it "allows overriding content type with :content_type" do
