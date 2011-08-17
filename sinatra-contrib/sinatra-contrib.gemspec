@@ -1,7 +1,7 @@
 # Run `rake sinatra-contrib.gemspec` to update the gemspec.
 Gem::Specification.new do |s|
   s.name        = "sinatra-contrib"
-  s.version     = "1.2.0"
+  s.version     = "1.3.0"
   s.description = "Collection of useful Sinatra extensions"
   s.homepage    = "http://github.com/sinatra/sinatra-contrib"
   s.summary     = s.description
@@ -102,7 +102,7 @@ Gem::Specification.new do |s|
     "spec/spec_helper.rb"
   ]
 
-  s.add_dependency "sinatra",   "~> 1.2.3"
+  s.add_dependency "sinatra",   "~> 1.3.0"
   s.add_dependency "backports", ">= 2.0"
   s.add_dependency "tilt",      "~> 1.3"
   s.add_dependency "rack-test"
