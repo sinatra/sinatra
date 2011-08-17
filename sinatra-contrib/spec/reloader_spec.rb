@@ -418,7 +418,7 @@ describe Sinatra::Reloader do
     end
   end
 
-  it "automatically registers the reloader in the subclases" do
+  it "automatically registers the reloader in the subclasses" do
     class ::Parent < Sinatra::Base
       register Sinatra::Reloader
       enable :reloader
