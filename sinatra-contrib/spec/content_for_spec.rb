@@ -158,9 +158,9 @@ describe Sinatra::ContentFor do
               helpers Sinatra::ContentFor
               set inner, :layout_engine => outer
               set :views, File.expand_path("../content_for", __FILE__)
-              get('/:view') { send(inner, params[:view].to_sym) }
+              get('/:view') { render(inner, params[:view].to_sym) }
               get('/:layout/:view') do
-                send inner, params[:view].to_sym, :layout => params[:layout].to_sym
+                render inner, params[:view].to_sym, :layout => params[:layout].to_sym
               end
             end
           end
