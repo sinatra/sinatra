@@ -61,10 +61,9 @@ describe Sinatra::Reloader do
   # needed to change the file's mtime.
   def update_file(path, &block)
     original_mtime = File.exist?(path) ? File.mtime(path) : Time.at(0)
-    begin
-      File.open(path, 'w', &block)
-      sleep 0.1
-    end until original_mtime != File.mtime(path)
+    new_time = original_mtime + 1
+    File.open(path, 'w', &block)
+    File.utime(new_time, new_time, path)
   end
 
   # Writes a Sinatra application to a file, requires the file, sets
