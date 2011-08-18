@@ -17,6 +17,7 @@ module Sinatra
       helpers :EngineTracking
       helpers :JSON
       helpers :LinkHeader
+      helpers :Streaming
     end
 
     ##

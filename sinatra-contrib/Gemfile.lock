@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/sinatra/sinatra
-  revision: af6b4c5367f0e05c047186787fe961d3c195c5c8
+  revision: 962d3f549ec6b7a2adbbee8438f03b28cdf80d6f
   specs:
     sinatra (1.3.0)
       rack (~> 1.3)
@@ -11,6 +11,7 @@ PATH
   specs:
     sinatra-contrib (1.3.0)
       backports (>= 2.0)
+      eventmachine
       rack-protection
       rack-test
       sinatra (~> 1.3.0)
@@ -23,6 +24,7 @@ GEM
     diff-lcs (1.1.2)
     erubis (2.7.0)
     escape_utils (0.2.3)
+    eventmachine (0.12.10)
     haml (3.1.2)
     json (1.5.1)
     json (1.5.1-java)
