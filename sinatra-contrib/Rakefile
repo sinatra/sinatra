@@ -3,8 +3,9 @@ require 'open-uri'
 require 'yaml'
 
 desc "run specs"
-task(:spec) { ruby '-S rspec spec' }
+task(:spec) { ruby '-S rspec spec -c' }
 task(:test => :spec)
+task(:default => :spec)
 
 namespace :doc do
   task :readmes do
