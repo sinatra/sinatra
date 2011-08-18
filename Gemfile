@@ -44,6 +44,7 @@ gem 'creole'
 
 if RUBY_ENGINE == 'jruby'
   gem 'nokogiri', '!= 1.5.0'
+  gem 'jruby-openssl'
 elsif RUBY_ENGINE != 'maglev'
   gem 'nokogiri'
 end
