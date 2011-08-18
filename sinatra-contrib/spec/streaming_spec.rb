@@ -253,6 +253,12 @@ describe Sinatra::Streaming do
       end
     end
 
+    it 'accepts non-string objects' do
+      stream do |out|
+        out.write(12).should be == 2
+      end
+    end
+
     it 'should be aliased to syswrite' do
       stream { |out| out.syswrite('hi').should be == 2 }
       body.should be == 'hi'

@@ -145,7 +145,7 @@ module Sinatra
 
       def write(data)
         self << data
-        data.bytesize
+        data.to_s.bytesize
       end
 
       alias syswrite      write
