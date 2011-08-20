@@ -7,7 +7,7 @@ class HelpersTest < Test::Unit::TestCase
   end
 
   def status_app(code, &block)
-    code += 1 if code == 204 or code == 304
+    code += 2 if [204, 205, 304].include? code
     block ||= proc { }
     mock_app do
       get '/' do
