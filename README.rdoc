@@ -980,7 +980,7 @@ If you are using the +expires+ helper to set the corresponding header,
     expires 500, :public, :must_revalidate
   end
 
-To properly use caches, you should consider using +etag+ and +last_modified+.
+To properly use caches, you should consider using +etag+ or +last_modified+.
 It is recommended to call those helpers *before* doing heavy lifting, as they
 will immediately flush a response if the client already has the current
 version in its cache:
@@ -998,7 +998,7 @@ It is also possible to use a
   etag @article.sha1, :weak
 
 These helpers will not do any caching for you, but rather feed the necessary
-information to your cache. If you are looking for a quick caching solutions, 
+information to your cache. If you are looking for a quick reverse-proxy caching solution, 
 try {rack-cache}[http://rtomayko.github.com/rack-cache/]:
 
   require "rack/cache"
