@@ -6,6 +6,9 @@ Custom changes:
 
 Backported from 1.3.0:
 
+ * Ignore `to_ary` on response bodies. Fixes compatibility to Rails 3.1.
+   (Konstantin Haase)
+
  * `Sinatra.run!` now prints to stderr rather than stdout. (Andrew Armenia)
 
  * Automatic `app_file` detection now works in directories containing brackets
@@ -21,6 +24,12 @@ Backported from 1.3.0:
    Example: `ruby app.rb -s Mongrel2` (Konstantin Haase)
 
  * Fix uninitialized instance variable warning. (David Kellum)
+
+ * Command line options now complain if value passed to `-p` is not a valid
+   integer. (Konstantin Haase)
+
+ * Fix handling of broken query params when displaying exceptions. (Luke
+   Jahnke)
 
 = 1.2.6 / 2011-05-01
 
