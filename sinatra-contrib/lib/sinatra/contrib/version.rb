@@ -8,7 +8,7 @@ module Sinatra
       extend Comparable
 
       MAJOR     = 1
-      MINOR     = 2
+      MINOR     = 3
       TINY      = 0
       SIGNATURE = [MAJOR, MINOR, TINY]
       STRING    = SIGNATURE.join '.'
