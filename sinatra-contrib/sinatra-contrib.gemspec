@@ -1,7 +1,7 @@
 # Run `rake sinatra-contrib.gemspec` to update the gemspec.
 Gem::Specification.new do |s|
   s.name        = "sinatra-contrib"
-  s.version     = "1.3.0"
+  s.version     = "1.2.0"
   s.description = "Collection of useful Sinatra extensions"
   s.homepage    = "http://github.com/sinatra/sinatra-contrib"
   s.summary     = s.description
@@ -12,7 +12,8 @@ Gem::Specification.new do |s|
     "Gabriel Andretta",
     "Nicolas Sanguinetti",
     "Eliot Shepard",
-    "Matt Lyon"
+    "Matt Lyon",
+    "undr"
   ]
 
   # generated from git shortlog -sne
@@ -21,7 +22,8 @@ Gem::Specification.new do |s|
     "ohhgabriel@gmail.com",
     "contacto@nicolassanguinetti.info",
     "eshepard@slower.net",
-    "matt@flowerpowered.com"
+    "matt@flowerpowered.com",
+    "undr@yandex.ru"
   ]
 
   # generated from git ls-files
@@ -43,8 +45,10 @@ Gem::Specification.new do |s|
     "lib/sinatra/json.rb",
     "lib/sinatra/link_header.rb",
     "lib/sinatra/namespace.rb",
+    "lib/sinatra/protection.rb",
     "lib/sinatra/reloader.rb",
     "lib/sinatra/respond_with.rb",
+    "lib/sinatra/streaming.rb",
     "lib/sinatra/test_helpers.rb",
     "sinatra-contrib.gemspec",
     "spec/capture_spec.rb",
@@ -90,6 +94,7 @@ Gem::Specification.new do |s|
     "spec/namespace/nested/foo.erb",
     "spec/namespace_spec.rb",
     "spec/okjson.rb",
+    "spec/protection_spec.rb",
     "spec/reloader/app.rb.erb",
     "spec/reloader_spec.rb",
     "spec/respond_with/bar.erb",
@@ -97,7 +102,8 @@ Gem::Specification.new do |s|
     "spec/respond_with/foo.html.erb",
     "spec/respond_with/not_html.sass",
     "spec/respond_with_spec.rb",
-    "spec/spec_helper.rb"
+    "spec/spec_helper.rb",
+    "spec/streaming_spec.rb"
   ]
 
   s.add_dependency "sinatra",   "~> 1.3.0"
