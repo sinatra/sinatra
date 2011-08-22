@@ -163,7 +163,7 @@ la lista de parámetros:
   end
 
   get "/solo/administradores/", :autorizar => :administrador do
-    "Únicamente para aministradores!"
+    "Únicamente para administradores!"
   end
 
 === Valores de Retorno
