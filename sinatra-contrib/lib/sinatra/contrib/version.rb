@@ -32,7 +32,8 @@ module Sinatra
       end
 
       def self.respond_to?(meth, *)
-        meth.to_s !~ /^__|^to_str$/ and STRING.respond_to? meth unless super
+        return true if super
+        meth.to_s !~ /^__|^to_str$/ and STRING.respond_to? meth
       end
 
       def self.method_missing(meth, *args, &block)
