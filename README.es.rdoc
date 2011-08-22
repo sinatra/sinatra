@@ -146,6 +146,26 @@ Podés definir tus propias condiciones fácilmente:
     "Lo siento, perdiste."
   end
 
+Si tu condición acepta más de un argumento, podés pasarle un arreglo.  Al
+definir la condición puede resultarte conveniente utilizar el operador splat en
+la lista de parámetros:
+
+  set(:autorizar) do |*roles|   # <- mirá el splat
+    condition do
+      unless sesion_iniciada? && roles.any? {|rol| usuario_actual.tiene_rol? rol }
+        redirect "/iniciar_sesion/", 303
+      end
+    end
+  end
+
+  get "/mi/cuenta/", :autorizar => [:usuario, :administrador] do
+    "Detalles de mi cuenta"
+  end
+
+  get "/solo/administradores/", :autorizar => :administrador do
+    "Únicamente para administradores!"
+  end
+
 === Valores de Retorno
 
 El valor de retorno de un bloque de ruta determina al menos el cuerpo de la
@@ -821,6 +841,56 @@ De manera similar, también podés asignar el código de estado y encabezados:
 
 También, al igual que +body+, tanto +status+ como +headers+ pueden utilizarse
 para obtener sus valores cuando no se les pasa argumentos.
+
+=== Streaming De Respuestas
+
+A veces vas a querer empezar a enviar la respuesta a pesar de que todavía no
+terminaste de generar su cuerpo.  También es posible que, en algunos casos,
+quieras seguir enviando información hasta que el cliente cierre la conexión.
+Cuando esto ocurra, el +stream+ helper te va a ser de gran ayuda:
+
+  get '/' do
+    stream do |out|
+      out << "Esto va a ser legen -\n"
+      sleep 0.5
+      out << " (esperalo) \n"
+      sleep 1
+      out << "- dario!\n"
+    end
+  end
+
+Podés implementar APIs de streaming,
+{Server-Sent Events}[http://dev.w3.org/html5/eventsource/] y puede ser usado
+como base para {WebSockets}[http://es.wikipedia.org/wiki/WebSockets].  También
+puede ser usado para incrementar el throughput si solo una parte del contenido
+depende de un recurso lento.
+
+Hay que tener en cuenta que el comportamiento del streaming, especialmente el
+número de peticiones concurrentes, depende del servidor web utilizado para
+servir la aplicación.  Puede que algunos servidores, como es el caso de
+WEBRick, no soporten streaming directamente, así el cuerpo de la respuesta será
+enviado completamente de una vez cuando el bloque pasado a +stream+ finalice su
+ejecución.
+
+Cuando se pasa +false+ como parámetro, no se va a enviar el mensaje +close+ al
+objeto de stream.  Queda en vos cerrarlo en el punto de ejecución que quieras.
+Nuevamente, hay que tener en cuenta que este comportamiento es posible solo en
+servidores que soporten eventos, como Thin o Rainbows.  El resto de los
+servidores van a cerrar el stream de todos modos.
+
+  set :server, :thin
+  conexiones = []
+
+  get '/' do
+    # mantenemos abierto el stream
+    stream(false) { |salida| conexiones << salida }
+  end
+
+  post '/' do
+    # escribimos a todos los streams abiertos
+    conexiones.each { |salida| salida << params[:mensaje] << "\n" }
+    "mensaje enviado"
+  end
 
 === Log (Registro)
 
