@@ -146,6 +146,26 @@ Podés definir tus propias condiciones fácilmente:
     "Lo siento, perdiste."
   end
 
+Si tu condición acepta más de un argumento, podés pasarle un arreglo.  Al
+definir la condición puede resultarte conveniente utilizar el operador splat en
+la lista de parámetros:
+
+  set(:autorizar) do |*roles|   # <- mirá el splat
+    condition do
+      unless sesion_iniciada? && roles.any? {|rol| usuario_actual.tiene_rol? rol }
+        redirect "/iniciar_sesion/", 303
+      end
+    end
+  end
+
+  get "/mi/cuenta/", :autorizar => [:usuario, :administrador] do
+    "Detalles de mi cuenta"
+  end
+
+  get "/solo/administradores/", :autorizar => :administrador do
+    "Únicamente para aministradores!"
+  end
+
 === Valores de Retorno
 
 El valor de retorno de un bloque de ruta determina al menos el cuerpo de la
