@@ -961,7 +961,7 @@ Sinatra并不理解。使用 +mime_type+ 通过文件扩展名来注册它们：
 
 或者使用session:
 
-  enable :session
+  enable :sessions
 
   get '/foo' do
     session[:secret] = 'foo'

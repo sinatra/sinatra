@@ -826,7 +826,7 @@ Um Argumente an ein Redirect weiterzugeben, können sie entweder dem Query
 
 oder eine Session verwendet werden:
 
-  enable :session
+  enable :sessions
   
   get '/foo' do
     session[:secret] = 'foo'

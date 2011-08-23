@@ -945,7 +945,7 @@ To pass arguments with a redirect, either add them to the query:
 
 Or use a session:
 
-  enable :session
+  enable :sessions
   
   get '/foo' do
     session[:secret] = 'foo'
