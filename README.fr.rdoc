@@ -1008,7 +1008,7 @@ Pour passer des arguments à une redirection, ajoutez-les soit à la requête :
 
 Ou bien utilisez une session :
 
-  enable :session
+  enable :sessions
 
   get '/foo' do
     session[:secret] = 'foo'

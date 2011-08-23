@@ -983,7 +983,7 @@ búsqueda:
 
 O usar una sesión:
 
-  enable :session
+  enable :sessions
 
   get '/foo' do
     session[:secreto] = 'foo'
