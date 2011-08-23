@@ -869,7 +869,7 @@ class HelpersTest < Test::Unit::TestCase
             end
           end
           wrapper = Object.new.extend Sinatra::Helpers
-          @last_modified_time = wrapper.send :time_for, last_modified_time
+          @last_modified_time = wrapper.time_for last_modified_time
         end
 
         # fixes strange missing test error when running complete test suite.

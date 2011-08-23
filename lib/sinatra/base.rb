@@ -419,12 +419,8 @@ module Sinatra
       status == 404
     end
 
-
-    private
-
-    # Ruby 1.8 has no #to_time method.
-    # This can be removed and calls to it replaced with to_time,
-    # if 1.8 support is dropped.
+    # Generates a Time object from the given value.
+    # Used by #expires and #last_modified.
     def time_for(value)
       if value.respond_to? :to_time
         value.to_time
@@ -449,6 +445,8 @@ module Sinatra
       raise ArgumentError, "unable to convert #{value.inspect} to a Time object"
     end
   end
+
+  private
 
   # Template rendering methods. Each method takes the name of a template
   # to render as a Symbol and returns a String with the rendered output,

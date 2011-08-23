@@ -1119,6 +1119,37 @@ You can also pass it a file name:
     "store it!"
   end
 
+=== Dealing with Date and Time
+
+Sinatra offers a +time_for+ helper method, which, from the given value
+generates a Time object. It is also able to convert +DateTime+, +Date+ and
+similar classes.
+
+  get '/' do
+    pass if Time.now > time_for('Dec 23, 2012')
+    "still time"
+  end
+
+This method is used internally by +expires+, +last_modified+ and akin. You can
+therefore easily extend the behavior of those methods by overriding +time_for+
+in your application.
+
+  helpers do
+    def time_for(value)
+      case value
+      when :yesterday then Time.now - 24*60*60
+      when :tomorrow  then Time.now + 24*60*60
+      else super
+      end
+    end
+  end
+
+  get '/' do
+    last_modified :yesterday
+    expires :tomorrow
+    "hello"
+  end
+
 === Looking Up Template Files
 
 The <tt>find_template</tt> helper is used to find template files for rendering:
