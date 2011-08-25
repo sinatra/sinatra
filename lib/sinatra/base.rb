@@ -1158,7 +1158,7 @@ module Sinatra
           @signatures ||= {}
           if @signatures.key? verb_sig
             partial = signature[0,3]
-            verb_routes.delete_at verb_routes.index{ |a| a[0,3] == partial }
+            verb_routes.delete_if{ |a| a[0,3] == partial }
           end
           @signatures[verb_sig] = true
         end
