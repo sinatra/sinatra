@@ -30,8 +30,6 @@ Currently included:
 * `sinatra/content_for`: Adds Rails-style `content_for` helpers to Haml, Erb,
   Erubis and Slim.
 
-* `sinatra/csrf`: Protects your Sinatra application from CSRF attacks.
-
 * `sinatra/engine_tracking`: Adds methods like `haml?` that allow helper
   methods to check whether they are called from within a template.
 
@@ -42,6 +40,9 @@ Currently included:
   helper methods.
 
 * `sinatra/namespace`: Adds namespace support to Sinatra.
+
+* `sinatra/protection`: Sets up rack-protection to protect common attacks
+  against your application.
 
 * `sinatra/respond_with`: Choose action and/or template depending automatically
   depending on the incoming request. Adds helpers `respond_to` and
@@ -99,13 +100,13 @@ A single extension (example: sinatra-content-for):
 ``` ruby
 require 'sinatra/base'
 require 'sinatra/content_for'
-require 'sinatra/csrf'
+require 'sinatra/protection'
 
 class MyApp < Sinatra::Base
   # Note: Some modules are extensions, some helpers, see the specific
   # documentation or the source
   helpers Sinatra::ContentFor
-  register Sinatra::CSRF
+  register Sinatra::Protection
 end
 ```
 
