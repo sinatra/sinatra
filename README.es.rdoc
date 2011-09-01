@@ -1157,6 +1157,38 @@ También podés pasarle un nombre de archivo:
     "guardalo!"
   end
 
+=== Fecha y Hora
+
+Sinatra pone a tu disposición el helper +time_for+, que genera un objeto +Time+
+a partir del valor que recibe como argumento.  Este valor puede ser un
++String+, pero también es capaz de convertir objetos +DateTime+, +Date+ y de
+otras clases similares.
+
+  get '/' do
+    pass if Time.now > time_for('Dec 23, 2012')
+    "todavía hay tiempo"
+  end
+
+Este método es usado internamente por métodos como +expires+ y +last_modified+,
+entre otros.  Por lo tanto, es posible extender el comportamiento de estos
+métodos sobreescribiendo +time_for+ en tu aplicación:
+
+  helpers do
+    def time_for(value)
+      case value
+      when :ayer then Time.now - 24*60*60
+      when :mañana then Time.now + 24*60*60
+      else super
+      end
+    end
+  end
+
+  get '/' do
+    last_modified :ayer
+    expires :mañana
+    "hola"
+  end
+
 === Buscando los Archivos de las Plantillas
 
 El helper <tt>find_template</tt> se utiliza para encontrar los archivos de las
