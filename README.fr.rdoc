@@ -146,6 +146,25 @@ Vous pouvez facilement définir vos propres conditions :
     "Désolé, vous avez perdu."
   end
 
+Utilisez un splat (caractère joker) dans le cas d'une condition qui prend
+plusieurs valeurs :
+
+  set(:auth) do |*roles|   # <- ici on utilise un splat
+    condition do
+      unless logged_in? && roles.any? {|role| current_user.in_role? role }
+        redirect "/login/", 303 
+      end
+    end
+  end
+
+  get "/mon/compte/", :auth => [:user, :admin] do
+    "Informations sur votre compte"
+  end
+
+  get "/reserve/aux/admins/", :auth => :admin do  
+    "Seuls les administrateurs sont acceptés ici !"
+  end
+
 === Valeurs de retour
 
 La valeur renvoyée par le bloc correspondant à une route constitue le corps de
