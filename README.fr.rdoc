@@ -893,9 +893,9 @@ charge le streaming (WEBRick par exemple). Lorsque le serveur ne gère pas le
 streaming, la partie body de la réponse sera envoyée au client en une seule
 fois, après que l'exécution du bloc passé au helper +stream+ sera terminée.
 
-En utilisant le helper +stream+ avec le paramètre +false+, il n'appelera pas
-la méthode +close+ du flux, vous laissant la possibilité de le fermer à tout
-moment au cours de l'exécution. Ceci ne fonctionne qu'avec les serveurs
+En utilisant le helper +stream+ avec le paramètre +keep_open+, il n'appelera
+pas la méthode +close+ du flux, vous laissant la possibilité de le fermer à
+tout moment au cours de l'exécution. Ceci ne fonctionne qu'avec les serveurs
 evented (ie non threadés) tels que Thin et Rainbows. Les autres serveurs
 fermeront malgré tout le flux.
 
@@ -904,7 +904,7 @@ fermeront malgré tout le flux.
 
   get '/' do
     # conserve le flux ouvert
-    stream(false) { |out| connections << out }
+    stream(:keep_open) { |out| connections << out }
   end
 
   post '/' do
