@@ -194,6 +194,10 @@ Avec cela, on peut facilement implémenter un streaming par exemple :
 
     get('/') { Stream.new }
 
+Vous pouvez aussi utiliser le helper +stream+ (présenté un peu plus loin) pour
+éviter la surcharge et intégrer le traitement relatif au streaming dans le bloc
+de code de la route.
+
 === Masques de route spécifiques
 
 Comme cela a été vu auparavant, Sinatra offre la possibilité d'utiliser des
@@ -859,6 +863,56 @@ retour et les entêtes :
 Comme +body+, +headers+ et +status+ peuvent être utilisés sans arguments
 pour accéder à leurs valeurs.
 
+=== Faire du streaming
+
+Il y a des cas où vous voulez commencer à renvoyer des données pendant que
+vous êtes en train de générer le reste de la réponse. Dans les cas les plus
+extrèmes, vous souhaitez continuer à envoyer des données tant que le client
+n'abandonne pas la connection. Vous pouvez alors utiliser le helper +stream+
+pour éviter de créer votre propre système :
+
+  get '/' do
+    stream do |out|
+      out << "Ca va être hallu -\n"
+      sleep 0.5
+      out << " (attends la suite) \n"
+      sleep 1
+      out << "- cinant !\n"
+    end
+  end
+
+Cela permet d'implémenter des API de streaming ou de
+{Server Sent Events}[http://dev.w3.org/html5/eventsource/] et peut servir de
+base pour des {WebSockets}[http://en.wikipedia.org/wiki/WebSocket]. Vous
+pouvez aussi l'employer pour augmenter le débit quand une partie du contenu
+provient d'une resource lente.
+
+Le fonctionnement du streaming, notamment le nombre de requêtes simultanées,
+dépend énormément du serveur web utilisé. Certains ne prennent pas du tout en
+charge le streaming (WEBRick par exemple). Lorsque le serveur ne gère pas le
+streaming, la partie body de la réponse sera envoyée au client en une seule
+fois, après que l'exécution du bloc passé au helper +stream+ sera terminée.
+
+En utilisant le helper +stream+ avec le paramètre +false+, il n'appelera pas
+la méthode +close+ du flux, vous laissant la possibilité de le fermer à tout
+moment au cours de l'exécution. Ceci ne fonctionne qu'avec les serveurs
+evented (ie non threadés) tels que Thin et Rainbows. Les autres serveurs
+fermeront malgré tout le flux.
+
+  set :server, :thin
+  connections = []
+
+  get '/' do
+    # conserve le flux ouvert
+    stream(false) { |out| connections << out }
+  end
+
+  post '/' do
+    # écrit dans tous les flux ouverts
+    connections.each { |out| out << params[:message] << "\n" }
+    "message sent"
+  end
+
 === Journalisation (Logging)
 
 Dans le contexte de la requête, la méthode utilitaire +logger+ expose une
@@ -1309,6 +1363,9 @@ Vous pouvez accéder à ces paramètres via <tt>settings</tt> :
                       gérer lui même. Le désactiver augmentera la performance.
                       Activé par défaut pour le style classique, désactivé pour
                       le style modulaire.
+
+[threaded]            à définir à +true+ pour indiquer à Thin d'utiliser
+                      <tt>EventMachine.defer</tt> pour traiter la requête.
 
 [views]               dossier des vues.
 
