@@ -1179,6 +1179,38 @@ Vous pouvez également lui passer un nom de fichier :
     "enregistre-le !"
   end
 
+=== Gérer Date et Time
+
+Sinatra fourni un helper +time_for+ pour convertir une valeur donnée en
+objet +Time+. Il peut aussi faire la conversion à partir d'objets +DateTime+,
++Date+ ou de classes similaires.
+
+  get '/' do
+    pass if Time.now > time_for('Dec 23, 2012')
+    "encore temps"
+  end
+
+Cette méthode est utilisée en interne par +expires+, +last_modified+ et
+consorts. Par conséquent, vous pouvez très facilement étendre le
+fonctionnement de ces méthodes en surchargeant le helper +time_for+ dans
+votre application :
+
+  helpers do
+    def time_for(value)
+      case value
+      when :yesterday then Time.now - 24*60*60
+      when :tomorrow  then Time.now + 24*60*60
+      else super
+      end
+    end
+  end
+
+  get '/' do
+    last_modified :yesterday
+    expires :tomorrow
+    "salut"
+  end
+
 === Chercher les fichiers de templates
 
 La méthode <tt>find_template</tt> est utilisée pour trouver les fichiers de
