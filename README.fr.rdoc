@@ -1035,7 +1035,7 @@ Si vous utilisez la méthode +expires+ pour définir l'entête correspondant,
     expires 500, :public, :must_revalidate
   end
 
-Pour utiliser correctement les caches, vous devriez utiliser +etag+ et
+Pour utiliser correctement les caches, vous devriez utiliser +etag+ ou
 +last_modified+. Il est recommandé d'utiliser ces méthodes *avant* de faire
 d'importantes modifications, car elles vont immédiatement déclencher la réponse
 si le client a déjà la version courante dans son cache :
@@ -1054,7 +1054,7 @@ Il est également possible d'utiliser un
 
 Ces méthodes ne sont pas chargées de mettre des données en cache, mais elles
 fournissent les informations nécessaires pour votre cache. Si vous êtes à la
-recherche de solutions rapides de cache, essayez
+recherche de solutions rapides pour un reverse-proxy de cache, essayez
 {rack-cache}[http://rtomayko.github.com/rack-cache/] :
 
   require "rack/cache"
