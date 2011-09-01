@@ -52,44 +52,34 @@ class SlimTest < Test::Unit::TestCase
   HTML4_DOCTYPE = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"
   
   it "passes slim options to the slim engine" do
-    mock_app {
-      get '/' do
-        slim "doctype html\nh1 Hello World", :format => :html4
-      end
-    }
+    mock_app { get('/') { slim "x foo='bar'", :attr_wrapper => "'" }}
     get '/'
     assert ok?
-    assert_equal "#{HTML4_DOCTYPE}<h1>Hello World</h1>", body
+    assert_body "<x foo='bar'></x>"
   end
   
   it "passes default slim options to the slim engine" do
-    mock_app {
-      set :slim, {:format => :html4}
-      get '/' do
-        slim "doctype html\nh1 Hello World"
-      end
-    }
+    mock_app do
+      set :slim, :attr_wrapper => "'"
+      get('/') { slim "x foo='bar'" }
+    end
     get '/'
     assert ok?
-    assert_equal "#{HTML4_DOCTYPE}<h1>Hello World</h1>", body
+    assert_body "<x foo='bar'></x>"
   end
   
   it "merges the default slim options with the overrides and passes them to the slim engine" do
-    mock_app {
-      set :slim, {:format => :html4}
-      get '/' do
-        slim "doctype html\nh1.header Hello World"
-      end
-      get '/html5' do
-        slim "doctype html\nh1.header Hello World", :format => :html5
-      end
-    }
+    mock_app do
+      set :slim, :attr_wrapper => "'"
+      get('/') { slim "x foo='bar'" }
+      get('/other') { slim "x foo='bar'", :attr_wrapper => '"' }
+    end
     get '/'
     assert ok?
-    assert_match(/^#{HTML4_DOCTYPE}/, body)
-    get '/html5'
+    assert_body "<x foo='bar'></x>"
+    get '/other'
     assert ok?
-    assert_equal "<!DOCTYPE html><h1 class=\"header\">Hello World</h1>", body
+    assert_body '<x foo="bar"></x>'
   end
 end
 
