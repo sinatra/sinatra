@@ -845,17 +845,17 @@ like WEBRick, might not even support streaming at all. If the server does not
 support streaming, the body will be sent all at once after the block passed to
 +stream+ finished executing.
 
-If the optional parameter is set to +false+, it will not call +close+ on the
-stream object, allowing you to close it at any later point in the execution
-flow. This only works on evented servers, like Thin and Rainbows. Other
-servers will still close the stream.
+If the optional parameter is set to +keep_open+, it will not call +close+ on
+the stream object, allowing you to close it at any later point in the
+execution flow. This only works on evented servers, like Thin and Rainbows.
+Other servers will still close the stream.
 
   set :server, :thin
   connections = []
 
   get '/' do
     # keep stream open
-    stream(false) { |out| connections << out }
+    stream(:keep_open) { |out| connections << out }
   end
 
   post '/' do
@@ -1769,27 +1769,35 @@ The following Ruby versions are officially supported:
 
 [ Ruby 1.8.7 ]
   1.8.7 is fully supported, however, if nothing is keeping you from it, we
-  recommend upgrading to 1.9.2 or switching to JRuby or Rubinius.
+  recommend upgrading to 1.9.2 or switching to JRuby or Rubinius. Support for
+  1.8.7 will not be dropped before Sinatra 2.0 and Ruby 2.0 except maybe for
+  the unlikely event of 1.8.8 being released. Even then, we might continue
+  supporting it. <b>Ruby 1.8.6 is no longer supported.</b> If you want to run
+  with 1.8.6, downgrade to Sinatra 1.2, which will receive bug fixes until
+  Sinatra 1.4.0 is released.
 
 [ Ruby 1.9.2 ]
-  1.9.2 is supported and recommended. Note that Radius and Markaby are
-  currently not 1.9 compatible. Do not use 1.9.2p0, it is known to cause
-  segmentation faults when running Sinatra.
+  1.9.2 is fully supported and recommended. Note that Radius and Markaby
+  are currently not 1.9 compatible. Do not use 1.9.2p0, it is known to cause
+  segmentation faults when running Sinatra. Support will continue at least
+  until the release of Ruby 1.9.4/2.0 and support for the latest 1.9 release
+  will continue as long as it is still supported by the Ruby core team.
+
+[ Ruby 1.9.3 ]
+  While we test against 1.9.3 we do not know of anyone using it in
+  production yet, and as with 1.9.2, you might want to be careful with
+  patch level zero.
 
 [ Rubinius ]
-  Rubinius is officially supported (Rubinius >= 1.2.3), everything, including
+  Rubinius is officially supported (Rubinius >= 1.2.4), everything, including
   all template languages, works.
 
 [ JRuby ]
-  JRuby is officially supported (JRuby >= 1.6.1). No issues with third party
+  JRuby is officially supported (JRuby >= 1.6.3). No issues with third party
   template libraries are known, however, if you choose to use JRuby, please
   look into JRuby rack handlers, as the Thin web server is not fully supported
   on JRuby. JRuby's support for C extensions is still experimental, which only
   affects RDiscount and Redcarpet at the moment.
-
-<b>Ruby 1.8.6 is no longer supported.</b> If you want to run with 1.8.6,
-downgrade to Sinatra 1.2, which will receive bug fixes until Sinatra 1.4.0 is
-released.
 
 We also keep an eye on upcoming Ruby versions.
 
@@ -1797,18 +1805,22 @@ The following Ruby implementations are not officially supported but still are
 known to run Sinatra:
 
 * Older versions of JRuby and Rubinius
+* Ruby Enterprise Edition
 * MacRuby, Maglev, IronRuby
-* Ruby 1.9.0 and 1.9.1
+* Ruby 1.9.0 and 1.9.1 (but we do recommend against using those)
 
 Not being officially supported means if things only break there and not on a
 supported platform, we assume it's not our issue but theirs.
 
-We also run our CI against ruby-head (the upcoming 1.9.3), but we can't
-guarantee anything, since it is constantly moving. Expect 1.9.3p0 to be
+We also run our CI against ruby-head (the upcoming 1.9.4), but we can't
+guarantee anything, since it is constantly moving. Expect 1.9.4p0 to be
 supported.
 
 Sinatra should work on any operating system supported by the chosen Ruby
 implementation.
+
+You will not be able to run Sinatra on Cardinal, SmallRuby, BlueRuby or any
+Ruby version prior to 1.8.7 as of the time being.
 
 == The Bleeding Edge
 

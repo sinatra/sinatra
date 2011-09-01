@@ -245,8 +245,8 @@ module Sinatra
       def self.schedule(*) yield end
       def self.defer(*)    yield end
 
-      def initialize(scheduler = self.class, close = true, &back)
-        @back, @scheduler, @callback, @close = back.to_proc, scheduler, nil, close
+      def initialize(scheduler = self.class, keep_open = false, &back)
+        @back, @scheduler, @callback, @keep_open = back.to_proc, scheduler, nil, keep_open
       end
 
       def close
@@ -261,7 +261,7 @@ module Sinatra
           rescue Exception => e
             @scheduler.schedule { raise e }
           end
-          close if @close
+          close unless @keep_open
         end
       end
 
@@ -283,9 +283,9 @@ module Sinatra
     # The close parameter specifies whether Stream#close should be called
     # after the block has been executed. This is only relevant for evented
     # servers like Thin or Rainbows.
-    def stream(close = true, &block)
+    def stream(keep_open = false, &block)
       scheduler = env['async.callback'] ? EventMachine : Stream
-      body Stream.new(scheduler, close, &block)
+      body Stream.new(scheduler, keep_open, &block)
     end
 
     # Specify response freshness policy for HTTP caches (Cache-Control header).

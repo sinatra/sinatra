@@ -47,10 +47,10 @@ class StreamingTest < Test::Unit::TestCase
     assert_equal 10, final
   end
 
-  it 'does not trigger the callback if close is set to false' do
+  it 'does not trigger the callback if close is set to :keep_open' do
     step   = 0
     final  = 0
-    stream = Stream.new(Stream, false) { |o| 10.times { step += 1 } }
+    stream = Stream.new(Stream, :keep_open) { |o| 10.times { step += 1 } }
     stream.callback { final = step }
     stream.each { |str| }
     assert_equal 0, final

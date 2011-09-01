@@ -872,18 +872,18 @@ WEBRick, no soporten streaming directamente, así el cuerpo de la respuesta ser�
 enviado completamente de una vez cuando el bloque pasado a +stream+ finalice su
 ejecución.
 
-Cuando se pasa +false+ como parámetro, no se va a enviar el mensaje +close+ al
-objeto de stream.  Queda en vos cerrarlo en el punto de ejecución que quieras.
-Nuevamente, hay que tener en cuenta que este comportamiento es posible solo en
-servidores que soporten eventos, como Thin o Rainbows.  El resto de los
-servidores van a cerrar el stream de todos modos.
+Cuando se pasa +keep_open+ como parámetro, no se va a enviar el mensaje
++close+ al objeto de stream. Queda en vos cerrarlo en el punto de ejecución
+que quieras. Nuevamente, hay que tener en cuenta que este comportamiento es
+posible solo en servidores que soporten eventos, como Thin o Rainbows. El
+resto de los servidores van a cerrar el stream de todos modos.
 
   set :server, :thin
   conexiones = []
 
   get '/' do
     # mantenemos abierto el stream
-    stream(false) { |salida| conexiones << salida }
+    stream(:keep_open) { |salida| conexiones << salida }
   end
 
   post '/' do
