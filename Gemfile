@@ -29,12 +29,14 @@ gem 'sass'
 gem 'builder'
 gem 'erubis'
 gem 'less', '~> 1.0'
+
 if RUBY_ENGINE == "maglev"
   gem 'liquid', :git => "https://github.com/Shopify/liquid.git"
 else
   gem 'liquid'
 end
-gem 'slim'
+
+gem 'slim', '~> 1.0'
 gem 'RedCloth' if RUBY_VERSION < "1.9.3" and not RUBY_ENGINE.start_with? 'ma'
 gem 'coffee-script', '>= 2.0'
 gem 'rdoc'
