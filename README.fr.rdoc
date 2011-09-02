@@ -897,7 +897,7 @@ En utilisant le helper +stream+ avec le paramètre +keep_open+, il n'appelera
 pas la méthode +close+ du flux, vous laissant la possibilité de le fermer à
 tout moment au cours de l'exécution. Ceci ne fonctionne qu'avec les serveurs
 evented (ie non threadés) tels que Thin et Rainbows. Les autres serveurs
-fermeront malgré tout le flux.
+fermeront malgré tout le flux :
 
   set :server, :thin
   connections = []
@@ -1183,7 +1183,7 @@ Vous pouvez également lui passer un nom de fichier :
 
 Sinatra fourni un helper +time_for+ pour convertir une valeur donnée en
 objet +Time+. Il peut aussi faire la conversion à partir d'objets +DateTime+,
-+Date+ ou de classes similaires.
++Date+ ou de classes similaires :
 
   get '/' do
     pass if Time.now > time_for('Dec 23, 2012')
