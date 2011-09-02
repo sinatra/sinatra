@@ -41,9 +41,6 @@ Currently included:
 
 * `sinatra/namespace`: Adds namespace support to Sinatra.
 
-* `sinatra/protection`: Sets up rack-protection to protect common attacks
-  against your application.
-
 * `sinatra/respond_with`: Choose action and/or template depending automatically
   depending on the incoming request. Adds helpers `respond_to` and
   `respond_with`.
@@ -100,13 +97,13 @@ A single extension (example: sinatra-content-for):
 ``` ruby
 require 'sinatra/base'
 require 'sinatra/content_for'
-require 'sinatra/protection'
+require 'sinatra/namespace'
 
 class MyApp < Sinatra::Base
   # Note: Some modules are extensions, some helpers, see the specific
   # documentation or the source
   helpers Sinatra::ContentFor
-  register Sinatra::Protection
+  register Sinatra::Namespace
 end
 ```
 

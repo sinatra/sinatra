@@ -9,7 +9,6 @@ module Sinatra
     module Common
       register :ConfigFile
       register :Namespace
-      register :Protection
       register :RespondWith
 
       helpers :Capture
