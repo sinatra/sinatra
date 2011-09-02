@@ -96,6 +96,13 @@ Und auch hier können Block-Parameter genutzt werden:
     "Hallo, #{c}!"
   end
 
+Routen-Muster können auch mit optionalen Parametern ausgestattet werden:
+
+  get '/posts.?:format?' do
+    # passt auf "GET /posts" sowie jegliche Erweiterung 
+    # wie "GET /posts.json", "GET /posts.xml" etc.
+  end
+
 === Bedingungen
 
 An Routen können eine Vielzahl von Bedingungen angehängt werden, die erfüllt
@@ -136,6 +143,25 @@ Es können auch andere Bedingungen relativ einfach hinzugefügt werden:
     "Tut mir leid, verloren."
   end
 
+Bei Bedingungen, die mehrere Werte annehmen können, sollte ein Splat verwendet 
+werden:
+
+  set(:auth) do |*roles|   # <- hier kommt der Splat ins Spiel
+    condition do
+      unless logged_in? && roles.any? {|role| current_user.in_role? role }
+        redirect "/login/", 303 
+      end
+    end
+  end
+
+  get "/mein/account/", :auth => [:user, :admin] do
+    "Mein Account"
+  end
+  
+  get "/nur/admin/", :auth => :admin do
+    "Nur Admins dürfen hier rein!"
+  end
+
 === Rückgabewerte
 
 Durch den Rückgabewert eines Routen-Blocks wird mindestens der Response-Body
@@ -164,6 +190,9 @@ Damit lässt sich relativ einfach Streaming implementieren:
     end
 
     get('/') { Stream.new }
+
+Ebenso kann die +stream+-Helfer-Methode (s.u.) verwendet werden, die Streaming
+direkt in die Route integriert.
 
 === Eigene Routen-Muster 
 
@@ -426,9 +455,9 @@ Templates zu verwenden und einen anderen für das Layout, indem die
 === CoffeeScript Templates
 
 Abhängigkeit::        {coffee-script}[https://github.com/josh/ruby-coffee-script]
-                    und eine {Möglichkeit JavaScript auszuführen}[https://github.com/sstephenson/execjs/blob/master/README.md#readme]
+                      und eine {Möglichkeit JavaScript auszuführen}[https://github.com/sstephenson/execjs/blob/master/README.md#readme]
 Dateierweiterungs::   <tt>.coffee</tt>
-Beispiel::           <tt>coffee :index</tt>
+Beispiel::            <tt>coffee :index</tt>
 
 === Eingebettete Templates
 
@@ -740,6 +769,56 @@ Vergleichbar mit +body+ lassen sich auch Status-Code und Header setzen:
 Genau wie bei +body+ liest ein Aufrufen von +headers+ oder +status+ ohne
 Argumente den aktuellen Wert aus.
 
+=== Response-Streams
+
+In manchen Situationen sollen Daten bereits an den Client zurückgeschickt 
+werden, bevor ein vollständiger Response bereit steht. Manchmal will man die 
+Verbindung auch erst dann beenden und Daten so lange an den Client 
+zurückschicken, bis er die Verbindung abbricht. Für diese Fälle gibt es die 
++stream+-Helfer-Methode, die es einem erspart eigene Lösungen zu schreiben:
+
+  get '/' do
+    stream do |out|
+      out << "Das ist ja mal wieder fanta -\n"
+      sleep 0.5
+      out << " (bitte warten…) \n"
+      sleep 1
+      out << "- stisch!\n"
+    end
+  end
+
+Damit lassen sich Streaming-APIs realisieren, sog. {Server Sent Events}[http://dev.w3.org/html5/eventsource/]
+die als Basis für {WebSockets}[http://en.wikipedia.org/wiki/WebSocket] dienen.
+Ebenso können sie verwendet werden, um den Durchsatz zu erhöhen, wenn ein Teil
+der Daten von langsamen Ressourcen abhängig ist.
+
+Es ist zu beachten, dass das Verhalten beim Streaming, insbesondere die Anzahl
+nebenläufiger Anfragen, stark davon abhängt, welcher Webserver für die 
+Applikation verwendet wird. Einige Server, z.B. WEBRick, unterstützen Streaming
+nicht oder nur teilweise. Sollte der Server Streaming nicht unterstützen, wird
+ein vollständiger Response-Body zurückgeschickt, sobald der an +stream+ 
+weitergegebene Block abgearbeitet ist.
+
+Ist der optionale Parameter +keep_open+ aktiviert, wird beim gestreamten Objekt
++close+ nicht aufgerufen und es ist einem überlassen dies an einem beliebigen 
+späteren Zeitpunkt nachholen. Die Funktion ist jedoch nur bei Event-gesteuerten 
+Serven wie Thin oder Rainbows möglich, andere Server werden trotzdem den Stream 
+beenden:
+
+  set :server, :thin
+  connections = []
+
+  get '/' do
+    # Den Stream offen halten
+    stream(:keep_open) { |out| connections << out }
+  end
+
+  post '/' do
+    # In alle offenen Streams schreiben
+    connections.each { |out| out << params[:message] << "\n" }
+    "Nachricht verschickt"
+  end
+  
 === Logger
 
 Im Geltungsbereich eines Request stellt die +logger+ Helfer-Methode eine
@@ -863,7 +942,7 @@ Headers, wird <tt>Cache-Control</tt> automatisch eigestellt:
     expires 500, :public, :must_revalidate
   end
 
-Um alles richtig zu machen, sollten auch +etag+ und +last_modified+ verwendet
+Um alles richtig zu machen, sollten auch +etag+ oder +last_modified+ verwendet
 werden. Es wird empfohlen, dass diese Helfer aufgerufen werden *bevor* die
 eigentliche Arbeit anfängt, da sie sofort eine Antwort senden, wenn der
 Client eine aktuelle Version im Cache vorhält:
@@ -881,8 +960,9 @@ ebenso ist es möglich einen
   etag @article.sha1, :weak
 
 Diese Helfer führen nicht das eigentliche Caching aus, sondern geben die dafür
-notwendigen Informationen an den Cache weiter. Für schnelle Cache-Lösungen
-bietet sich z.B. {rack-cache}[http://rtomayko.github.com/rack-cache/] an:
+notwendigen Informationen an den Cache weiter. Für schnelle Reverse-Proxy 
+Cache-Lösungen bietet sich z.B. 
+{rack-cache}[http://rtomayko.github.com/rack-cache/] an:
 
   require "rack/cache"
   require "sinatra"
@@ -1003,6 +1083,37 @@ Ebenso kann eine Dateiname als Parameter hinzugefügt werden:
     "Speichern!"
   end
 
+=== Umgang mit Datum und Zeit
+
+Sinatra bietet eine <tt>time_for</tt>-Helfer-Methode, die aus einem gegebenen 
+Wert ein Time-Objekt generiert. Ebenso kann sie nach +DateTime+, +Date+ und 
+ähnliche Klassen konvertieren:
+
+  get '/' do
+    pass if Time.now > time_for('Dec 23, 2012')
+    "noch Zeit"
+  end
+
+Diese Methode wird intern für +expires, +last_modiefied+ und Freunde verwendet.
+Mit ein paar Handgriffen lässt sich diese Methode also in ihrem Verhalten 
+erweitern, indem man +time_for+ in der eigenen Applikation überschreibt:
+
+  helpers do
+    def time_for(value)
+      case value
+      when :yesterday then Time.now - 24*60*60
+      when :tomorrow  then Time.now + 24*60*60
+      else super
+      end
+    end
+  end
+
+  get '/' do
+    last_modified :yesterday
+    expires :tomorrow
+    "Hallo"
+  end
+  
 === Nachschlagen von Template-Dateien
 
 Die <tt>find_template</tt>-Helfer-Methode wird genutzt, um Template-Dateien zum
@@ -1663,50 +1774,65 @@ Die folgenden Versionen werden offiziell unterstützt:
 [ Ruby 1.8.7 ]
   1.8.7 wird vollständig unterstützt, aber solange nichts dagegen spricht, 
   wird ein Update auf 1.9.2 oder ein Umstieg auf JRuby/Rubinius empfohlen.
+  Unterstützung für 1.8.7 wird es mindestens bis Sinatra 2.0 und Ruby 2.0 geben,
+  es sei denn, dass der unwahrscheinliche Fall eintritt und 1.8.8 rauskommt. Doch
+  selbst dann ist es eher wahrscheinlich, dass 1.8.7 weiterhin unterstützt wird.
+  <b>Ruby 1.8.6 wird nicht mehr unterstützt.</b> Soll Sinatra unter 1.8.6 
+  eingesetzt werden, muss Sinatra 1.2 verwendet werden, dass noch bis zum 
+  Release von Sinatra 1.4.0 fortgeführt wird.
 
 [ Ruby 1.9.2 ]
-  1.9.2 wird unterstützt und empfohlen. Beachte, dass Markaby und Radius
-  momentan noch nicht kompatibel mit 1.9 sind. Version 1.9.0p0 sollte nicht
+  1.9.2 wird voll unterstützt und empfohlen. Beachte, dass Markaby und Radius
+  momentan noch nicht kompatibel mit 1.9 sind. Version 1.9.2p0 sollte nicht
   verwendet werden, da unter Sinatra immer wieder Segfaults auftreten.
+  Unterstützung wird es mindestens bis zum Release von Ruby 1.9.4/2.0 geben und
+  das letzte Sinatra Release für 1.9 wird so lange unterstützt, wie das Ruby 
+  Core-Team 1.9 pflegt.
 
+[ Ruby 1.9.3 ]
+  Obwohl Tests bereits auf 1.9.3 laufen, sind bisher keine Applikationen auf 
+  1.9.3 in Produktion bekannt. Ebenso wie bei 1.9.2 besteht die gleiche Warnung 
+  zum Patchlevel 0.
+  
 [ Rubinius ]
-  Rubinius (rbx >= 1.2.3) wird offiziell unter Einbezug aller Templates 
+  Rubinius (rbx >= 1.2.4) wird offiziell unter Einbezug aller Templates 
   unterstützt.
 
 [ JRuby ]
-  JRuby wird offiziell unterstützt (JRuby >= 1.6.1). Probleme mit Template-
+  JRuby wird offiziell unterstützt (JRuby >= 1.6.3). Probleme mit Template-
   Bibliotheken Dritter sind nicht bekannt. Falls JRuby zum Einsatz kommt, 
   sollte aber darauf geachtet werden, dass ein JRuby-Rack-Handler zum Einsatz 
   kommt – der Thin-Web-Server wird bisher nicht unterstütz. JRubys 
   Unterstützung für C-Erweiterungen sind zur Zeit noch experimenteller Natur,
   betrifft im Moment aber nur RDiscount und Redcarpet.
 
-<b>Ruby 1.8.6 wird nicht weiter unterstützt.</b> Falls Sinatra trotzdem unter
-1.8.6 eingesetzt wird, muss Sinatra 1.2 verwendet werden, dass noch bis zum 
-Release von Sinatra 1.4.0 mit kleinen Bugfixes versorgt werden wird.
 
 Weiterhin werden wir auf kommende Ruby-Versionen ein Auge haben.
 
 Die nachfolgend aufgeführten Ruby-Implementierungen werden offiziell nicht von 
 Sinatra unterstützt, funktionieren aber normalerweise:
 
+* Ruby Enterprise Edition
 * Ältere Versionen von JRuby und Rubinius
 * MacRuby, Maglev, IronRuby
-* Ruby 1.9.0 und 1.9.1
+* Ruby 1.9.0 und 1.9.1 (wird jedoch nicht empfohlen, s.o.)
 
 Nicht offiziell unterstützt bedeutet, dass wenn Sachen nicht funktionieren, 
 wir davon ausgehen, dass es nicht an Sinatra sondern an der jeweiligen 
 Implentierung liegt.
 
 Im Rahmen unserer CI (Kontinuierlichen Integration) wird bereits ruby-head
-(das kommende Ruby 1.9.3) mit eingebunden. Da noch alles im Fluss ist, kann zur
+(das kommende Ruby 1.9.4) mit eingebunden. Da noch alles im Fluss ist, kann zur
 Zeit für nichts garantiert werden. Es kann aber erwartet werden, dass Ruby 
-1.9.3p0 von Sinatra unterstützt werden wird.
+1.9.4p0 von Sinatra unterstützt werden wird.
 
 Sinatra sollte auf jedem Betriebssystem laufen, dass den gewählten Ruby-
 Interpreter unterstützt.
 
-== Der neueste Stand (The Bleeding Edge)
+Sinatra wird aktuell nicht unter Cardinal, SmallRuby, BleuRuby oder irgendeiner 
+Version von Ruby vor 1.8.7 laufen.
+
+== Der neuste Stand (The Bleeding Edge)
 
 Um auf dem neusten Stand zu bleiben, kann der Master-Branch verwendet werden.
 Er sollte recht stabil sein. Ebenso gibt es von Zeit zu Zeit prerelease Gems, 
@@ -1803,3 +1929,4 @@ SemVer und SemVerTag.
 * API Dokumentation für die {aktuelle Version}[http://rubydoc.info/gems/sinatra]
   oder für {HEAD}[http://rubydoc.info/github/sinatra/sinatra] auf
   http://rubydoc.info
+* {CI Server}[http://ci.rkh.im/view/Sinatra/]
