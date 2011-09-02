@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
     "Gabriel Andretta",
     "Nicolas Sanguinetti",
     "Eliot Shepard",
+    "Andrew Crump",
     "Matt Lyon",
     "undr"
   ]
@@ -22,6 +23,7 @@ Gem::Specification.new do |s|
     "ohhgabriel@gmail.com",
     "contacto@nicolassanguinetti.info",
     "eshepard@slower.net",
+    "andrew.crump@ieee.org",
     "matt@flowerpowered.com",
     "undr@yandex.ru"
   ]
@@ -45,7 +47,6 @@ Gem::Specification.new do |s|
     "lib/sinatra/json.rb",
     "lib/sinatra/link_header.rb",
     "lib/sinatra/namespace.rb",
-    "lib/sinatra/protection.rb",
     "lib/sinatra/reloader.rb",
     "lib/sinatra/respond_with.rb",
     "lib/sinatra/streaming.rb",
@@ -94,7 +95,6 @@ Gem::Specification.new do |s|
     "spec/namespace/nested/foo.erb",
     "spec/namespace_spec.rb",
     "spec/okjson.rb",
-    "spec/protection_spec.rb",
     "spec/reloader/app.rb.erb",
     "spec/reloader_spec.rb",
     "spec/respond_with/bar.erb",
