@@ -7,8 +7,8 @@ module Rack
     module VERSION
       extend Comparable
 
-      MAJOR     = 0
-      MINOR     = 1
+      MAJOR     = 1
+      MINOR     = 0
       TINY      = 0
       SIGNATURE = [MAJOR, MINOR, TINY]
       STRING    = SIGNATURE.join '.'

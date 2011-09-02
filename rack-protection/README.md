@@ -78,3 +78,17 @@ Prevented by:
 # Installation
 
     gem install rack-protection
+
+# History
+
+## v0.1.0 (2011/06/20)
+
+First public release.
+
+## v1.0.0 (2011/09/02)
+
+First stable release.
+
+Changes:
+
+* Fix bug in JsonCsrf
