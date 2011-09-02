@@ -71,7 +71,6 @@ Prevented by:
 
 ## IP Spoofing
 
-
 Prevented by:
 
 * `Rack::Protection::IPSpoofing`
