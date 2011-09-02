@@ -38,6 +38,7 @@ else
 end
 
 gem 'slim', '~> 1.0'
+gem 'temple', '!= 0.3.3'
 gem 'RedCloth' if RUBY_VERSION < "1.9.3" and not RUBY_ENGINE.start_with? 'ma'
 gem 'coffee-script', '>= 2.0'
 gem 'rdoc'
