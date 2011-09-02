@@ -647,10 +647,10 @@ https://github.com/rtomayko/tilt pour en savoir plus sur Tilt.
 
 == Filtres
 
-Un filtre <tt>before</tt> est évalué avant n'importe quelle requête, dans le
-contexte de celle-ci, et peut modifier la requête ou la réponse. Les variables
-d'instance déclarées dans le filtre sont accessibles au gestionnaire de route
-et au template :
+Les filtres before sont exécutés avant chaque requête, dans le même contexte
+que les routes, et permettent de modifier la requête et sa réponse. Les
+variables d'instance déclarées dans les filtres sont accessibles au niveau
+des routes et des templates :
 
   before do
     @note = 'Coucou !'
@@ -662,22 +662,21 @@ et au template :
     params[:splat] #=> 'bar/baz'
   end
 
-Un filtre <tt>after</tt> est évalué après chaque requête, dans le contexte
-de celle-ci et peut également modifier la requête et/ou la réponse. Toutes les
-variables d'instance déclarées dans un filtre <tt>before</tt> et dans le
-gestionnaire de route sont accessibles dans le filtre <tt>after</tt> :
+Les filtres after sont exécutés après chaque requête à l'intérieur du même
+contexte et permettent de modifier la requête et sa réponse. Les variables
+d'instance déclarées dans les filtres before ou les routes sont accessibles
+au niveau des filtres after :
 
   after do
     puts response.status
   end
 
-Note : Sauf si vous utilisez la méthode +body+ au lieu de renvoyer une chaîne
-de caractères dans vos gestionnaires de routes, le corps de la réponse ne sera
-pas disponible dans le filtre <tt>after</tt>, étant donné qu'il est généré
-plus tard.
+Note : Le corps de la réponse n'est pas disponible au niveau du filtre after
+car il ne sera généré que plus tard (sauf dans le cas où vous utilisez la
+méthode +body+ au lieu de simplement renvoyer une chaine depuis vos routes).
 
-En option, on peut passer un masque au filtre, ce qui le rend actif uniquement
-si la requête correspond au masque en question :
+Les filtres peuvent être associés à un masque, ce qui permet de limiter leur
+exécution aux cas où la requête correspond à ce masque :
 
   before '/secret/*' do
     authentification!
@@ -687,7 +686,7 @@ si la requête correspond au masque en question :
     session[:dernier_travail] = travail
   end
 
-Tout comme les routes, les filtres acceptent également les conditions :
+Tout comme les routes, les filtres acceptent également des conditions :
 
   before :agent => /Songbird/ do
     # ...
