@@ -11,6 +11,9 @@
 
  * Added support for HTTP PATCH requests. (Konstantin Haase)
 
+ * Use rack-protection to defend against common opportunistic attacks.
+   (Konstantin Haase)
+
  * Support for Creole templates, Creole is a standardized wiki markup,
    supported by many wiki implementations. (Konstanin Haase)
 

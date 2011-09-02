@@ -8,6 +8,7 @@
 
 RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
 source :rubygems unless ENV['QUICK']
+gemspec
 
 gem 'rake'
 gem 'rack-test', '>= 0.5.6'
