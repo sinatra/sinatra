@@ -1014,7 +1014,7 @@ Si estás usando el helper +expires+ para definir el encabezado correspondiente,
     expires 500, :public, :must_revalidate
   end
 
-Para usar cachés adecuadamente, deberías considerar usar +etag+ y
+Para usar cachés adecuadamente, deberías considerar usar +etag+ o
 +last_modified+.  Es recomendable que llames a estos helpers *antes* de hacer
 cualquier trabajo pesado, ya que van a enviar la respuesta inmediatamente si
 el cliente ya tiene la versión actual en su caché:
@@ -1033,7 +1033,8 @@ También es posible usar una
 
 Estos helpers no van a cachear nada por vos, sino que van a facilitar la
 información necesaria para poder hacerlo.  Si estás buscando soluciones rápidas
-de cacheo, mirá {rack-cache}[http://rtomayko.github.com/rack-cache/]:
+de cacheo con proxys inversos, mirá
+{rack-cache}[http://rtomayko.github.com/rack-cache/]:
 
   require "rack/cache"
   require "sinatra"
