@@ -1828,7 +1828,14 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
 
 [ Ruby 1.8.7 ]
   1.8.7 es soportado completamente.  Sin embargo, si no hay nada que te lo
-  prohíba, te recomendamos que usés 1.9.2 o cambies a JRuby o Rubinius.
+  prohíba, te recomendamos que usés 1.9.2 o cambies a JRuby o Rubinius.  No se
+  dejará de dar soporte a 1.8.7 hasta Sinatra 2.0 y Ruby 2.0, aunque si se
+  libera la versión 1.8.8 de Ruby las cosas podrían llegar a cambiar.  Sin
+  embargo, que eso ocurra es muy poco probable, e incluso el caso de que lo
+  haga, puede que se siga dando soporte a 1.8.7.  <b>Hemos dejado de soportar
+  Ruby 1.8.6.</b> Si querés ejecutar Sinatra sobre 1.8.6, podés utilizar la
+  versión 1.2, pero tené en cuenta que una vez que Sinatra 1.4.0 sea liberado,
+  ya no se corregirán errores por más que se reciban reportes de los mismos.
 
 [ Ruby 1.9.2 ]
   1.9.2 es soportado y recomendado.  Tené en cuenta que Radius y Markaby no
@@ -1836,11 +1843,11 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
   fallos de segmentación cuando se ejecuta Sinatra.
 
 [ Rubinius ]
-  Rubinius es soportado oficialmente (Rubinius >= 1.2.3).  Todo
+  Rubinius es soportado oficialmente (Rubinius >= 1.2.4).  Todo
   funciona correctamente, incluyendo los lenguajes de plantillas.
 
 [ JRuby ]
-  JRuby es soportado oficialmente (JRuby >= 1.6.1).  No se conocen
+  JRuby es soportado oficialmente (JRuby >= 1.6.3).  No se conocen
   problemas con librerías de plantillas de terceras partes.  Sin
   embargo, si elegís usar JRuby, deberías examinar sus Rack handlers
   porque el servidor web Thin no es soportado completamente.  El
@@ -1848,31 +1855,30 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
   experimental, sin embargo, de momento solamente RDiscount y Redcarpted
   se ven afectadas.
 
-<b>Hemos dejado de soportar Ruby 1.8.6.</b> Si querés ejecutar Sinatra sobre
-1.8.6, podés utilizar la versión 1.2, pero tené en cuenta que una vez que
-Sinatra 1.4.0 sea liberado, ya no se corregirán los reportes de errores que se
-reciban.
-
 Siempre le prestamos atención a las nuevas versiones de Ruby.
 
 Las siguientes implementaciones de Ruby no se encuentran soportadas
 oficialmente.  De cualquier manera, pueden ejecutar Sinatra:
 
 * Versiones anteriores de JRuby y Rubinius
+* Ruby Enterprise Edition
 * MacRuby, Maglev e IronRuby
-* Ruby 1.9.0 y 1.9.1
+* Ruby 1.9.0 y 1.9.1 (pero no te recomendamos que los usés)
 
 No estar soportada oficialmente, significa que si las cosas solamente se rompen
 ahí y no en una plataforma soportada, asumimos que no es nuestro problema sino
 el suyo.
 
 Nuestro servidor CI también se ejecuta sobre ruby-head (que será la
-próxima versión 1.9.3).  Como está en movimiento constante, no podemos
-garantizar nada.  De todas formas, podés contar con que 1.9.3-p0 sea
+próxima versión 1.9.4).  Como está en movimiento constante, no podemos
+garantizar nada.  De todas formas, podés contar con que 1.9.4-p0 sea
 soportada.
 
 Sinatra debería funcionar en cualquier sistema operativo soportado por la
 implementación de Ruby elegida.
+
+En este momento, no vas a poder ejecutar Sinatra en Cardinal, SmallRuby,
+BlueRuby o cualquier versión de Ruby anterior a 1.8.7.
 
 == A la Vanguardia
 
