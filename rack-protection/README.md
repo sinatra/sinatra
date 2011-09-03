@@ -92,3 +92,11 @@ First stable release.
 Changes:
 
 * Fix bug in JsonCsrf
+
+## v1.1.0 (not yet release)
+
+Second public release.
+
+Changes:
+
+* Dependency on `escape_utils` is now optional

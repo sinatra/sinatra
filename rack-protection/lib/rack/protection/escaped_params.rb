@@ -1,5 +1,10 @@
 require 'rack/protection'
-require 'escape_utils'
+require 'rack/utils'
+
+begin
+  require 'escape_utils'
+rescue LoadError
+end
 
 module Rack
   module Protection
@@ -16,14 +21,28 @@ module Rack
     # escape:: What escaping modes to use, should be Symbol or Array of Symbols.
     #          Available: :html (default), :javascript, :url
     class EscapedParams < Base
-      default_options :escape => :html
+      extend Rack::Utils
+
+      class << self
+        alias escape_url escape
+        public :escape_html
+      end
+
+      default_options :escape => :html,
+        :escaper => defined?(EscapeUtils) ? EscapeUtils : self
 
       def initialize(*)
         super
-        modes = Array options[:escape]
-        code  = "def self.escape_string(str) %s end"
-        modes.each { |m| code %= "EscapeUtils.escape_#{m}(%s)"}
-        eval code % 'str'
+
+        modes       = Array options[:escape]
+        @escaper    = options[:escaper]
+        @html       = modes.include? :html
+        @javascript = modes.include? :javascript
+        @url        = modes.include? :url
+
+        if @javascript and not @escaper.respond_to? :escape_javascript
+          fail("Use EscapeUtils for JavaScript escaping.")
+        end
       end
 
       def call(env)
@@ -32,7 +51,7 @@ module Rack
         post_was = handle(request.POST) rescue nil
         app.call env
       ensure
-        request.GET.replace get_was
+        request.GET.replace  get_was  if get_was
         request.POST.replace post_was if post_was
       end
 
@@ -55,6 +74,13 @@ module Rack
         hash = hash.dup
         hash.each { |k,v| hash[k] = escape(v) }
         hash
+      end
+
+      def escape_string(str)
+        str = @escaper.escape_url(str)        if @url
+        str = @escaper.escape_html(str)       if @html
+        str = @escaper.escape_javascript(str) if @javascript
+        str
       end
     end
   end
