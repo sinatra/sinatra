@@ -8,7 +8,7 @@ module Rack
       extend Comparable
 
       MAJOR     = 1
-      MINOR     = 0
+      MINOR     = 1
       TINY      = 0
       SIGNATURE = [MAJOR, MINOR, TINY]
       STRING    = SIGNATURE.join '.'
