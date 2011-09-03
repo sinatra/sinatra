@@ -876,7 +876,7 @@ Cuando se pasa +keep_open+ como parámetro, no se va a enviar el mensaje
 +close+ al objeto de stream. Queda en vos cerrarlo en el punto de ejecución
 que quieras. Nuevamente, hay que tener en cuenta que este comportamiento es
 posible solo en servidores que soporten eventos, como Thin o Rainbows. El
-resto de los servidores van a cerrar el stream de todos modos.
+resto de los servidores van a cerrar el stream de todos modos:
 
   set :server, :thin
   conexiones = []
@@ -1163,7 +1163,7 @@ También podés pasarle un nombre de archivo:
 Sinatra pone a tu disposición el helper +time_for+, que genera un objeto +Time+
 a partir del valor que recibe como argumento.  Este valor puede ser un
 +String+, pero también es capaz de convertir objetos +DateTime+, +Date+ y de
-otras clases similares.
+otras clases similares:
 
   get '/' do
     pass if Time.now > time_for('Dec 23, 2012')
