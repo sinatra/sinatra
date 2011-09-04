@@ -53,7 +53,7 @@ elsif RUBY_ENGINE != 'maglev'
   gem 'nokogiri'
 end
 
-unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1"
+unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1" && !ENV['TRAVIS']
   # C extensions
   gem 'rdiscount'
   gem 'redcarpet'
