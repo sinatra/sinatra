@@ -515,11 +515,6 @@ describe Sinatra::Cookies do
     end
   end
 
-  describe :hash do
-    it { cookies.hash.should be == {}.hash }
-    it { cookies('foo=bar').hash.should be == {'foo' => 'bar'}.hash }
-  end
-
   describe :include? do
     it 'checks request cookies' do
       cookies('foo=bar').should include('foo')
