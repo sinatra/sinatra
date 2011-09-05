@@ -39,6 +39,9 @@ Currently included:
   corresponding `Link` HTTP headers. Adds `link`, `stylesheet` and `prefetch`
   helper methods.
 
+* `sinatra/multi_route`: Adds ability to define one route block for multiple
+  routes and multiple or custom HTTP verbs.
+
 * `sinatra/namespace`: Adds namespace support to Sinatra.
 
 * `sinatra/respond_with`: Choose action and/or template depending automatically

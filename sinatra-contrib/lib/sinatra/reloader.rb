@@ -234,7 +234,10 @@ module Sinatra
       # Does everything Sinatra::Base#route does, but it also tells the
       # +Watcher::List+ for the Sinatra application to watch the defined
       # route.
-      def route(verb, path, options={}, &block)
+      #
+      # Note: We are using #compile! so we don't interfere with extensions
+      # changing #route.
+      def compile!(verb, path, block, options = {})
         source_location = block.respond_to?(:source_location) ?
           block.source_location.first : caller_files[1]
         signature = super

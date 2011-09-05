@@ -8,6 +8,7 @@ module Sinatra
     # Sinatra::Application by default.
     module Common
       register :ConfigFile
+      register :MultiRoute
       register :Namespace
       register :RespondWith
 
