@@ -107,6 +107,10 @@ Los patrones de ruta pueden contener parámetros opcionales:
     # ejemplo, "GET /posts.json", "GET /posts.xml", etc.
   end
 
+A propósito, a menos que desactivés la protección para el ataque <em>path
+traversal</em> (ver más abajo), el path de la petición puede ser modificado
+antes de que se compare con los de tus rutas.
+
 === Condiciones
 
 Las rutas pueden incluir una variedad de condiciones de selección, como por
@@ -1279,6 +1283,24 @@ Podés acceder a estas opciones utilizando el método <tt>settings</tt>:
     ...
   end
 
+==== Configurando la Protección de Ataques
+
+Sinatra usa {Rack::Protection}[https://github.com/rkh/rack-protection#readme]
+para defender a tu aplicación de los ataques más comunes.  Tenés que tener en
+cuenta que como consecuencia de esto puede venir asociada una disminución del
+rendimiento de tu aplicación.  Si por este, o algún otro motivo, querés
+desactivar está funcionalidad, podés hacerlo:
+
+  disable :protection
+
+También es posible desactivar una única capa de defensa:
+
+  set :protection, :except => :path_traversal
+
+O varias:
+
+  set :protections, :except => [:path_traversal, :session_hijacking]
+
 === Configuraciones Disponibles
 
 [absolute_redirects]   si está deshabilitada, Sinatra va a permitir
@@ -1337,6 +1359,11 @@ Podés acceder a estas opciones utilizando el método <tt>settings</tt>:
                        <tt>redirect '/foo'</tt> se comporta de la misma manera
                        que <tt>redirect to('/foo')</tt>.  Se encuentra
                        deshabilitada por defecto.
+
+[protection]           define si deben activarse las protecciones para los
+                       ataques web más comunes.  Para más detalles mirá la
+                       sección sobre la configuración de protección de ataques
+                       más arriba.
 
 [public_folder]        directorio desde donde se sirven los archivos públicos.
 
