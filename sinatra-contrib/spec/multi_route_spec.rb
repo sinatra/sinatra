@@ -5,7 +5,7 @@ describe Sinatra::MultiRoute do
   before do
     count = 0
     mock_app do
-      set(:some_condition) { count += 1 }
+      set(:some_condition) { |_| count += 1 }
       register Sinatra::MultiRoute
       get('/') { 'normal' }
       get('/foo', '/bar', :some_condition => true) { 'paths' }
