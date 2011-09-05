@@ -26,6 +26,7 @@ module Sinatra
     def_delegators :last_response, :body, :headers, :status, :errors
     def_delegators :app, :configure, :set, :enable, :disable, :use, :helpers, :register
     def_delegators :current_session, :env_for
+    def_delegators :rack_mock_session, :cookie_jar
 
     def mock_app(base = Sinatra::Base, &block)
       inner = nil

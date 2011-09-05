@@ -30,6 +30,8 @@ Currently included:
 * `sinatra/content_for`: Adds Rails-style `content_for` helpers to Haml, Erb,
   Erubis and Slim.
 
+* `sinatra/cookies`: A `cookies` helper for reading and writing cookies.
+
 * `sinatra/engine_tracking`: Adds methods like `haml?` that allow helper
   methods to check whether they are called from within a template.
 
