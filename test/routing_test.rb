@@ -755,6 +755,15 @@ class RoutingTest < Test::Unit::TestCase
     assert_body 'image/png'
   end
 
+  it 'prioritizes route with higher accept-quality' do
+    mock_app do
+      get('/', :provides => :html) { content_type }
+      get('/', :provides => :js) { content_type }
+    end
+    get '/', {}, { 'HTTP_ACCEPT' => 'application/json, text/javascript, */*; q=0.01' }
+    assert_body 'application/json'
+  end
+
   it 'accepts generic types' do
     mock_app do
       get('/', :provides => :xml) { content_type }
