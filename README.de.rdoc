@@ -103,6 +103,10 @@ Routen-Muster können auch mit optionalen Parametern ausgestattet werden:
     # wie "GET /posts.json", "GET /posts.xml" etc.
   end
 
+Anmerkung: Solange man den sog. Path Traversal Attack-Schutz nicht deaktiviert
+(siehe weiter unten), kann es sein, dass der Request-Pfad noch vor dem Abgleich
+mit den Routen modifiziert wird.
+
 === Bedingungen
 
 An Routen können eine Vielzahl von Bedingungen angehängt werden, die erfüllt
@@ -1206,6 +1210,26 @@ Diese Einstellungen sind über +settings+ erreichbar:
     ...
   end
 
+=== Einstellung des Angriffsschutzes
+
+Sinatra verwendet 
+{Rack::Protection}[https://github.com/rkh/rack-protection#readme], um die
+Anwendung vor häufig vorkommenden Angriffen zu schützen. Diese Voreinstellung
+lässt sich selbstverständlich auch deaktivieren, z.B. um 
+Geschwindigkeitsvorteile zu gewinnen:
+
+  disable :protection
+
+Um einen bestimmten Schutzmechanismus zu deaktivieren, fügt man +protection+
+einen Hash mit Optionen hinzu:
+
+  set :protection, :except => :path_traversal
+
+Neben Strings akzeptiert <tt>:except</tt> auch Arrays, um gleich mehrere 
+Schutzmechanismen zu deaktivieren:
+
+  set :protections, :except => [:path_traversal, :session_hijacking]
+  
 === Mögliche Einstellungen
 
 [absolute_redirects]    Wenn ausgeschaltet, wird Sinatra relative Redirects
@@ -1269,6 +1293,11 @@ Diese Einstellungen sind über +settings+ erreichbar:
                         sich <tt>redirect '/foo'</tt> so, als wäre es ein
                         <tt>redirect to('/foo')</tt>. Standardmäßig nicht 
                         aktiviert.
+                        
+[protection]            Legt fest, ob der Schutzmechanismus für häufig 
+                        Vorkommende Webangriffe auf Webapplikationen aktiviert 
+                        wird oder nicht. Weitere Informationen im vorhergehenden 
+                        Abschnitt.
 
 [public_folder]         Das öffentliche Verzeichnis, aus dem Daten zur
                         Verfügung gestellt werden können.
