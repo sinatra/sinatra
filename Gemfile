@@ -8,6 +8,7 @@
 
 RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
 source :rubygems unless ENV['QUICK']
+gemspec
 
 gem 'rake'
 gem 'rack-test', '>= 0.5.6'
@@ -29,18 +30,30 @@ gem 'sass'
 gem 'builder'
 gem 'erubis'
 gem 'less', '~> 1.0'
-gem 'liquid' unless RUBY_ENGINE == 'maglev'
-gem 'slim'
+
+if RUBY_ENGINE == "maglev"
+  gem 'liquid', :git => "https://github.com/Shopify/liquid.git"
+else
+  gem 'liquid'
+end
+
+gem 'slim', '~> 1.0'
+gem 'temple', '!= 0.3.3'
 gem 'RedCloth' if RUBY_VERSION < "1.9.3" and not RUBY_ENGINE.start_with? 'ma'
-gem 'coffee-script', '>= 2.0' unless RUBY_ENGINE == 'maglev'
+gem 'coffee-script', '>= 2.0'
 gem 'rdoc'
 gem 'kramdown'
 gem 'maruku'
 gem 'creole'
 
-gem 'nokogiri' if RUBY_ENGINE != 'maglev'
+if RUBY_ENGINE == 'jruby'
+  gem 'nokogiri', '!= 1.5.0'
+  gem 'jruby-openssl'
+elsif RUBY_ENGINE != 'maglev'
+  gem 'nokogiri'
+end
 
-unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1"
+unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1" && !ENV['TRAVIS']
   # C extensions
   gem 'rdiscount'
   gem 'redcarpet'
@@ -50,15 +63,15 @@ unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1"
 end
 
 if RUBY_ENGINE == 'maglev'
-  gem 'json'
+  gem 'json', :git => "https://github.com/MagLev/json.git"
   gem 'markaby'
   gem 'radius'
-end
-
-platforms :ruby_18, :jruby do
-  gem 'json'
-  gem 'markaby'
-  gem 'radius'
+else
+  platforms :ruby_18, :jruby do
+    gem 'json'
+    gem 'markaby'
+    gem 'radius'
+  end
 end
 
 platforms :mri_18 do

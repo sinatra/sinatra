@@ -7,7 +7,7 @@ class HelpersTest < Test::Unit::TestCase
   end
 
   def status_app(code, &block)
-    code += 1 if code == 204 or code == 304
+    code += 2 if [204, 205, 304].include? code
     block ||= proc { }
     mock_app do
       get '/' do
@@ -207,6 +207,22 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal 'http://example.org:444/foo', response['Location']
     end
 
+    it 'uses 303 for post requests if request is HTTP 1.1' do
+      mock_app { post('/') { redirect '/'} }
+      post '/', {}, 'HTTP_VERSION' => 'HTTP/1.1'
+      assert_equal 303, status
+      assert_equal '', body
+      assert_equal 'http://example.org/', response['Location']
+    end
+
+    it 'uses 302 for post requests if request is HTTP 1.0' do
+      mock_app { post('/') { redirect '/'} }
+      post '/', {}, 'HTTP_VERSION' => 'HTTP/1.0'
+      assert_equal 302, status
+      assert_equal '', body
+      assert_equal 'http://example.org/', response['Location']
+    end
+
     it 'works behind a reverse proxy' do
       mock_app do
         get '/' do
@@ -364,7 +380,7 @@ class HelpersTest < Test::Unit::TestCase
         enable :sessions
 
         get '/' do
-          assert session.empty?
+          assert session[:foo].nil?
           session[:foo] = 'bar'
           redirect '/hi'
         end
@@ -853,7 +869,7 @@ class HelpersTest < Test::Unit::TestCase
             end
           end
           wrapper = Object.new.extend Sinatra::Helpers
-          @last_modified_time = wrapper.send :time_for, last_modified_time
+          @last_modified_time = wrapper.time_for last_modified_time
         end
 
         # fixes strange missing test error when running complete test suite.

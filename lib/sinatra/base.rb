@@ -1,6 +1,7 @@
 # external dependencies
 require 'rack'
 require 'tilt'
+require "rack/protection"
 
 # stdlib dependencies
 require 'thread'
@@ -78,7 +79,11 @@ module Sinatra
       elsif Array === body and not [204, 304].include?(status.to_i)
         headers["Content-Length"] = body.inject(0) { |l, p| l + Rack::Utils.bytesize(p) }.to_s
       end
-      super
+
+      # Rack::Response#finish sometimes returns self as response body. We don't want that.
+      status, headers, result = super
+      result = body if result == self
+      [status, headers, result]
     end
   end
 
@@ -109,7 +114,11 @@ module Sinatra
 
     # Halt processing and redirect to the URI provided.
     def redirect(uri, *args)
-      status 302
+      if env['HTTP_VERSION'] == 'HTTP/1.1' and env["REQUEST_METHOD"] != 'GET'
+        status 303
+      else
+        status 302
+      end
 
       # According to RFC 2616 section 14.30, "the field value consists of a
       # single absolute URI"
@@ -223,6 +232,61 @@ module Sinatra
       halt result[0], result[2]
     rescue Errno::ENOENT
       not_found
+    end
+
+    # Class of the response body in case you use #stream.
+    #
+    # Three things really matter: The front and back block (back being the
+    # blog generating content, front the one sending it to the client) and
+    # the scheduler, integrating with whatever concurrency feature the Rack
+    # handler is using.
+    #
+    # Scheduler has to respond to defer and schedule.
+    class Stream
+      def self.schedule(*) yield end
+      def self.defer(*)    yield end
+
+      def initialize(scheduler = self.class, keep_open = false, &back)
+        @back, @scheduler, @callback, @keep_open = back.to_proc, scheduler, nil, keep_open
+      end
+
+      def close
+        @scheduler.schedule { @callback.call if @callback }
+      end
+
+      def each(&front)
+        @front = front
+        @scheduler.defer do
+          begin
+            @back.call(self)
+          rescue Exception => e
+            @scheduler.schedule { raise e }
+          end
+          close unless @keep_open
+        end
+      end
+
+      def <<(data)
+        @scheduler.schedule { @front.call(data.to_s) }
+        self
+      end
+
+      def callback(&block)
+        @callback = block
+      end
+
+      alias errback callback
+    end
+
+    # Allows to start sending data to the client even though later parts of
+    # the response body have not yet been generated.
+    #
+    # The close parameter specifies whether Stream#close should be called
+    # after the block has been executed. This is only relevant for evented
+    # servers like Thin or Rainbows.
+    def stream(keep_open = false, &block)
+      scheduler = env['async.callback'] ? EventMachine : Stream
+      body Stream.new(scheduler, keep_open, &block)
     end
 
     # Specify response freshness policy for HTTP caches (Cache-Control header).
@@ -356,12 +420,8 @@ module Sinatra
       status == 404
     end
 
-
-    private
-
-    # Ruby 1.8 has no #to_time method.
-    # This can be removed and calls to it replaced with to_time,
-    # if 1.8 support is dropped.
+    # Generates a Time object from the given value.
+    # Used by #expires and #last_modified.
     def time_for(value)
       if value.respond_to? :to_time
         value.to_time
@@ -386,6 +446,8 @@ module Sinatra
       raise ArgumentError, "unable to convert #{value.inspect} to a Time object"
     end
   end
+
+  private
 
   # Template rendering methods. Each method takes the name of a template
   # to render as a Symbol and returns a String with the rendered output,
@@ -700,12 +762,12 @@ module Sinatra
     # Revert params afterwards.
     #
     # Returns pass block.
-    def process_route(pattern, keys, conditions, block = nil)
+    def process_route(pattern, keys, conditions, block = nil, values = [])
       @original_params ||= @params
       route = @request.path_info
       route = '/' if route.empty? and not settings.empty_path_info?
       if match = pattern.match(route)
-        values = match.captures.to_a.map { |v| force_encoding URI.decode(v) if v }
+        values += match.captures.to_a.map { |v| force_encoding URI.decode(v) if v }
         params =
           if keys.any?
             keys.zip(values).inject({}) do |hash,(k,v)|
@@ -801,29 +863,33 @@ module Sinatra
     def handle_exception!(boom)
       @env['sinatra.error'] = boom
       status boom.respond_to?(:code) ? Integer(boom.code) : 500
-      dump_errors! boom if settings.dump_errors? and server_error?
-      raise boom if settings.show_exceptions? and settings.show_exceptions != :after_handler
+
+      if server_error?
+        dump_errors! boom if settings.dump_errors?
+        raise boom if settings.show_exceptions? and settings.show_exceptions != :after_handler
+      end
 
       if not_found?
         headers['X-Cascade'] = 'pass'
         body '<h1>Not Found</h1>'
       end
 
-      res = error_block!(boom.class) || error_block!(status)
+      res = error_block!(boom.class, boom) || error_block!(status, boom)
       return res if res or not server_error?
       raise boom if settings.raise_errors? or settings.show_exceptions?
-      error_block! Exception
+      error_block! Exception, boom
     end
 
     # Find an custom error block for the key(s) specified.
-    def error_block!(key)
+    def error_block!(key, *block_params)
       base = settings
       while base.respond_to?(:errors)
         next base = base.superclass unless args = base.errors[key]
+        args += [block_params]
         return process_route(*args)
       end
       return false unless key.respond_to? :superclass and key.superclass < Exception
-      error_block! key.superclass
+      error_block!(key.superclass, *block_params)
     end
 
     def dump_errors!(boom)
@@ -1086,8 +1152,10 @@ module Sinatra
         # Because of self.options.host
         host_name(options.delete(:host)) if options.key?(:host)
         enable :empty_path_info if path == "" and empty_path_info.nil?
-        (@routes[verb] ||= []) << compile!(verb, path, block, options)
+        signature = compile!(verb, path, block, options)
+        (@routes[verb] ||= []) << signature
         invoke_hook(:route_added, verb, path, block)
+        signature
       end
 
       def invoke_hook(name, *args)
@@ -1200,8 +1268,9 @@ module Sinatra
             "on #{port} for #{environment} with backup from #{handler_name}"
           end
           [:INT, :TERM].each { |sig| trap(sig) { quit!(server, handler_name) } }
+          server.threaded = settings.threaded if server.respond_to? :threaded=
           set :running, true
-          yield handler if block_given?
+          yield server if block_given?
         end
       rescue Errno::EADDRINUSE => e
         $stderr.puts "== Someone is already performing on port #{port}!"
@@ -1240,8 +1309,9 @@ module Sinatra
         builder.use ShowExceptions       if show_exceptions?
         builder.use Rack::MethodOverride if method_override?
         builder.use Rack::Head
-        setup_logging  builder
-        setup_sessions builder
+        setup_logging    builder
+        setup_sessions   builder
+        setup_protection builder
       end
 
       def setup_middleware(builder)
@@ -1261,6 +1331,14 @@ module Sinatra
         end
       end
 
+      def setup_protection(builder)
+        return unless protection?
+        options = Hash === protection ? protection.dup : {}
+        options[:except] = Array options[:except]
+        options[:except] += [:session_hijacking, :remote_token] unless sessions?
+        builder.use Rack::Protection, options
+      end
+
       def setup_sessions(builder)
         return unless sessions?
         options = {}
@@ -1273,7 +1351,7 @@ module Sinatra
         servers = Array(server)
         servers.each do |server_name|
           begin
-            return Rack::Handler.get(server_name)
+            return Rack::Handler.get(server_name.to_s)
           rescue LoadError
           rescue NameError
           end
@@ -1368,6 +1446,7 @@ module Sinatra
     set :show_exceptions, Proc.new { development? }
     set :sessions, false
     set :logging, false
+    set :protection, true
     set :method_override, false
     set :default_encoding, "utf-8"
     set :add_charset, %w[javascript xml xhtml+xml json].map { |t| "application/#{t}" }
@@ -1402,6 +1481,7 @@ module Sinatra
     set :views, Proc.new { root && File.join(root, 'views') }
     set :reload_templates, Proc.new { development? }
     set :lock, false
+    set :threaded, true
 
     set :public_folder, Proc.new { root && File.join(root, 'public') }
     set :static, Proc.new { public_folder && File.exist?(public_folder) }

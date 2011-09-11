@@ -37,7 +37,7 @@ class ResponseTest < Test::Unit::TestCase
     @response.body = ['Hello', 'World!', '✈']
     status, headers, body = @response.finish
     assert_equal '14', headers['Content-Length']
-    assert_equal @response.body, body.body
+    assert_equal @response.body, body
   end
 
   it 'does not call #to_ary or #inject on the body' do

@@ -29,6 +29,15 @@ class MappedErrorTest < Test::Unit::TestCase
       assert_equal 'Foo!', body
     end
 
+    it 'passes the exception object to the error handler' do
+      mock_app do
+        set :raise_errors, false
+        error(FooError) { |e| assert_equal(FooError, e.class) }
+        get('/') { raise FooError }
+      end
+      get('/')
+    end
+
     it 'uses the Exception handler if no matching handler found' do
       mock_app {
         set :raise_errors, false
@@ -112,12 +121,7 @@ class MappedErrorTest < Test::Unit::TestCase
     end
 
     it "never raises Sinatra::NotFound beyond the application" do
-      mock_app {
-        set :raise_errors, true
-        get '/' do
-          raise Sinatra::NotFound
-        end
-      }
+      mock_app(Sinatra::Application) { get('/') { raise Sinatra::NotFound }}
       assert_nothing_raised { get '/' }
       assert_equal 404, status
     end
