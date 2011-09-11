@@ -1,3 +1,3 @@
 module Sinatra
-  VERSION = '1.3.0.e'
+  VERSION = '1.3.0.f'
 end
