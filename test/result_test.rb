@@ -88,11 +88,11 @@ class ResultTest < Test::Unit::TestCase
 
   it "sets status when result is a Fixnum status code" do
     mock_app {
-      get('/') { 205 }
+      get('/') { 204 }
     }
 
     get '/'
-    assert_equal 205, status
+    assert_equal 204, status
     assert_equal '', body
   end
 end
