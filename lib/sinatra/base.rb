@@ -634,7 +634,7 @@ module Sinatra
           path, line = settings.caller_locations.first
           template.new(path, line.to_i, options, &body)
         else
-          raise ArgumentError
+          raise ArgumentError, "Sorry, don't know how to render #{data.inspect}."
         end
       end
     end
