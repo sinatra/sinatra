@@ -8,6 +8,7 @@
 
 RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
 source :rubygems unless ENV['QUICK']
+gemspec
 
 gem 'rake'
 gem 'rack-test', '>= 0.5.6'
@@ -37,6 +38,7 @@ else
 end
 
 gem 'slim', '~> 1.0'
+gem 'temple', '!= 0.3.3'
 gem 'RedCloth' if RUBY_VERSION < "1.9.3" and not RUBY_ENGINE.start_with? 'ma'
 gem 'coffee-script', '>= 2.0'
 gem 'rdoc'
@@ -51,7 +53,7 @@ elsif RUBY_ENGINE != 'maglev'
   gem 'nokogiri'
 end
 
-unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1"
+unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1" && !ENV['TRAVIS']
   # C extensions
   gem 'rdiscount'
   gem 'redcarpet'

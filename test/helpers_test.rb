@@ -380,7 +380,7 @@ class HelpersTest < Test::Unit::TestCase
         enable :sessions
 
         get '/' do
-          assert session.empty?
+          assert session[:foo].nil?
           session[:foo] = 'bar'
           redirect '/hi'
         end

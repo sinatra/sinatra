@@ -1,6 +1,7 @@
 # external dependencies
 require 'rack'
 require 'tilt'
+require "rack/protection"
 
 # stdlib dependencies
 require 'thread'
@@ -633,7 +634,7 @@ module Sinatra
           path, line = settings.caller_locations.first
           template.new(path, line.to_i, options, &body)
         else
-          raise ArgumentError
+          raise ArgumentError, "Sorry, don't know how to render #{data.inspect}."
         end
       end
     end
@@ -1308,8 +1309,9 @@ module Sinatra
         builder.use ShowExceptions       if show_exceptions?
         builder.use Rack::MethodOverride if method_override?
         builder.use Rack::Head
-        setup_logging  builder
-        setup_sessions builder
+        setup_logging    builder
+        setup_sessions   builder
+        setup_protection builder
       end
 
       def setup_middleware(builder)
@@ -1327,6 +1329,14 @@ module Sinatra
         else
           builder.use Rack::NullLogger
         end
+      end
+
+      def setup_protection(builder)
+        return unless protection?
+        options = Hash === protection ? protection.dup : {}
+        options[:except] = Array options[:except]
+        options[:except] += [:session_hijacking, :remote_token] unless sessions?
+        builder.use Rack::Protection, options
       end
 
       def setup_sessions(builder)
@@ -1436,6 +1446,7 @@ module Sinatra
     set :show_exceptions, Proc.new { development? }
     set :sessions, false
     set :logging, false
+    set :protection, true
     set :method_override, false
     set :default_encoding, "utf-8"
     set :add_charset, %w[javascript xml xhtml+xml json].map { |t| "application/#{t}" }

@@ -490,4 +490,49 @@ class SettingsTest < Test::Unit::TestCase
       assert ! @application.lock?
     end
   end
+
+  describe 'protection' do
+    class MiddlewareTracker < Rack::Builder
+      def self.track
+        Rack.send :remove_const, :Builder
+        Rack.const_set :Builder, MiddlewareTracker
+        MiddlewareTracker.used.clear
+        yield
+      ensure
+        Rack.send :remove_const, :Builder
+        Rack.const_set :Builder, MiddlewareTracker.superclass
+      end
+
+      def self.used
+        @used ||= []
+      end
+
+      def use(middleware, *)
+        MiddlewareTracker.used << middleware
+        super
+      end
+    end
+
+    it 'sets up Rack::Protection' do
+      MiddlewareTracker.track do
+        Sinatra::Base.new
+        assert_include MiddlewareTracker.used, Rack::Protection
+      end
+    end
+
+    it 'sets up Rack::Protection::PathTraversal' do
+      MiddlewareTracker.track do
+        Sinatra::Base.new
+        assert_include MiddlewareTracker.used, Rack::Protection::PathTraversal
+      end
+    end
+
+    it 'does not set up Rack::Protection::PathTraversal when disabling it' do
+      MiddlewareTracker.track do
+        Sinatra.new { set :protection, :except => :path_traversal }.new
+        assert_include MiddlewareTracker.used, Rack::Protection
+        assert !MiddlewareTracker.used.include?(Rack::Protection::PathTraversal)
+      end
+    end
+  end
 end

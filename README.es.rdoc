@@ -107,6 +107,10 @@ Los patrones de ruta pueden contener parámetros opcionales:
     # ejemplo, "GET /posts.json", "GET /posts.xml", etc.
   end
 
+A propósito, a menos que desactivés la protección para el ataque <em>path
+traversal</em> (ver más abajo), el path de la petición puede ser modificado
+antes de que se compare con los de tus rutas.
+
 === Condiciones
 
 Las rutas pueden incluir una variedad de condiciones de selección, como por
@@ -876,7 +880,7 @@ Cuando se pasa +keep_open+ como parámetro, no se va a enviar el mensaje
 +close+ al objeto de stream. Queda en vos cerrarlo en el punto de ejecución
 que quieras. Nuevamente, hay que tener en cuenta que este comportamiento es
 posible solo en servidores que soporten eventos, como Thin o Rainbows. El
-resto de los servidores van a cerrar el stream de todos modos.
+resto de los servidores van a cerrar el stream de todos modos:
 
   set :server, :thin
   conexiones = []
@@ -1014,7 +1018,7 @@ Si estás usando el helper +expires+ para definir el encabezado correspondiente,
     expires 500, :public, :must_revalidate
   end
 
-Para usar cachés adecuadamente, deberías considerar usar +etag+ y
+Para usar cachés adecuadamente, deberías considerar usar +etag+ o
 +last_modified+.  Es recomendable que llames a estos helpers *antes* de hacer
 cualquier trabajo pesado, ya que van a enviar la respuesta inmediatamente si
 el cliente ya tiene la versión actual en su caché:
@@ -1033,7 +1037,8 @@ También es posible usar una
 
 Estos helpers no van a cachear nada por vos, sino que van a facilitar la
 información necesaria para poder hacerlo.  Si estás buscando soluciones rápidas
-de cacheo, mirá {rack-cache}[http://rtomayko.github.com/rack-cache/]:
+de cacheo con proxys inversos, mirá
+{rack-cache}[http://rtomayko.github.com/rack-cache/]:
 
   require "rack/cache"
   require "sinatra"
@@ -1162,7 +1167,7 @@ También podés pasarle un nombre de archivo:
 Sinatra pone a tu disposición el helper +time_for+, que genera un objeto +Time+
 a partir del valor que recibe como argumento.  Este valor puede ser un
 +String+, pero también es capaz de convertir objetos +DateTime+, +Date+ y de
-otras clases similares.
+otras clases similares:
 
   get '/' do
     pass if Time.now > time_for('Dec 23, 2012')
@@ -1278,6 +1283,24 @@ Podés acceder a estas opciones utilizando el método <tt>settings</tt>:
     ...
   end
 
+==== Configurando la Protección de Ataques
+
+Sinatra usa {Rack::Protection}[https://github.com/rkh/rack-protection#readme]
+para defender a tu aplicación de los ataques más comunes.  Tenés que tener en
+cuenta que como consecuencia de esto puede venir asociada una disminución del
+rendimiento de tu aplicación.  Si por este, o algún otro motivo, querés
+desactivar está funcionalidad, podés hacerlo:
+
+  disable :protection
+
+También es posible desactivar una única capa de defensa:
+
+  set :protection, :except => :path_traversal
+
+O varias:
+
+  set :protections, :except => [:path_traversal, :session_hijacking]
+
 === Configuraciones Disponibles
 
 [absolute_redirects]   si está deshabilitada, Sinatra va a permitir
@@ -1336,6 +1359,11 @@ Podés acceder a estas opciones utilizando el método <tt>settings</tt>:
                        <tt>redirect '/foo'</tt> se comporta de la misma manera
                        que <tt>redirect to('/foo')</tt>.  Se encuentra
                        deshabilitada por defecto.
+
+[protection]           define si deben activarse las protecciones para los
+                       ataques web más comunes.  Para más detalles mirá la
+                       sección sobre la configuración de protección de ataques
+                       más arriba.
 
 [public_folder]        directorio desde donde se sirven los archivos públicos.
 
@@ -1827,7 +1855,14 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
 
 [ Ruby 1.8.7 ]
   1.8.7 es soportado completamente.  Sin embargo, si no hay nada que te lo
-  prohíba, te recomendamos que usés 1.9.2 o cambies a JRuby o Rubinius.
+  prohíba, te recomendamos que usés 1.9.2 o cambies a JRuby o Rubinius.  No se
+  dejará de dar soporte a 1.8.7 hasta Sinatra 2.0 y Ruby 2.0, aunque si se
+  libera la versión 1.8.8 de Ruby las cosas podrían llegar a cambiar.  Sin
+  embargo, que eso ocurra es muy poco probable, e incluso el caso de que lo
+  haga, puede que se siga dando soporte a 1.8.7.  <b>Hemos dejado de soportar
+  Ruby 1.8.6.</b> Si querés ejecutar Sinatra sobre 1.8.6, podés utilizar la
+  versión 1.2, pero tené en cuenta que una vez que Sinatra 1.4.0 sea liberado,
+  ya no se corregirán errores por más que se reciban reportes de los mismos.
 
 [ Ruby 1.9.2 ]
   1.9.2 es soportado y recomendado.  Tené en cuenta que Radius y Markaby no
@@ -1835,11 +1870,11 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
   fallos de segmentación cuando se ejecuta Sinatra.
 
 [ Rubinius ]
-  Rubinius es soportado oficialmente (Rubinius >= 1.2.3).  Todo
+  Rubinius es soportado oficialmente (Rubinius >= 1.2.4).  Todo
   funciona correctamente, incluyendo los lenguajes de plantillas.
 
 [ JRuby ]
-  JRuby es soportado oficialmente (JRuby >= 1.6.1).  No se conocen
+  JRuby es soportado oficialmente (JRuby >= 1.6.3).  No se conocen
   problemas con librerías de plantillas de terceras partes.  Sin
   embargo, si elegís usar JRuby, deberías examinar sus Rack handlers
   porque el servidor web Thin no es soportado completamente.  El
@@ -1847,31 +1882,30 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
   experimental, sin embargo, de momento solamente RDiscount y Redcarpted
   se ven afectadas.
 
-<b>Hemos dejado de soportar Ruby 1.8.6.</b> Si querés ejecutar Sinatra sobre
-1.8.6, podés utilizar la versión 1.2, pero tené en cuenta que una vez que
-Sinatra 1.4.0 sea liberado, ya no se corregirán los reportes de errores que se
-reciban.
-
 Siempre le prestamos atención a las nuevas versiones de Ruby.
 
 Las siguientes implementaciones de Ruby no se encuentran soportadas
 oficialmente.  De cualquier manera, pueden ejecutar Sinatra:
 
 * Versiones anteriores de JRuby y Rubinius
+* Ruby Enterprise Edition
 * MacRuby, Maglev e IronRuby
-* Ruby 1.9.0 y 1.9.1
+* Ruby 1.9.0 y 1.9.1 (pero no te recomendamos que los usés)
 
 No estar soportada oficialmente, significa que si las cosas solamente se rompen
 ahí y no en una plataforma soportada, asumimos que no es nuestro problema sino
 el suyo.
 
 Nuestro servidor CI también se ejecuta sobre ruby-head (que será la
-próxima versión 1.9.3).  Como está en movimiento constante, no podemos
-garantizar nada.  De todas formas, podés contar con que 1.9.3-p0 sea
+próxima versión 1.9.4).  Como está en movimiento constante, no podemos
+garantizar nada.  De todas formas, podés contar con que 1.9.4-p0 sea
 soportada.
 
 Sinatra debería funcionar en cualquier sistema operativo soportado por la
 implementación de Ruby elegida.
+
+En este momento, no vas a poder ejecutar Sinatra en Cardinal, SmallRuby,
+BlueRuby o cualquier versión de Ruby anterior a 1.8.7.
 
 == A la Vanguardia
 
