@@ -382,7 +382,7 @@ Ce moteur accepte également un bloc pour des templates en ligne (voir exemple).
 
 Dépendances::             {nokogiri}[http://nokogiri.org/]
 Extensions de fichier::   <tt>.nokogiri</tt>
-Exemple::                 <tt>builder { |xml| xml.em "salut" }</tt>
+Exemple::                 <tt>nokogiri { |xml| xml.em "salut" }</tt>
 
 Ce moteur accepte également un bloc pour des templates en ligne (voir exemple).
 
