@@ -1098,7 +1098,6 @@ module Sinatra
       def compile(path)
         keys = []
         if path.respond_to? :to_str
-          special_chars = %w{. + ( ) $}
           pattern = path.to_str.gsub(/[^\?\%\\\/\:\*\w]/) { |c| encoded(c) }
           pattern.gsub! /((:\w+)|\*)/ do |match|
             if match == "*"
