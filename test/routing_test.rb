@@ -80,11 +80,11 @@ class RoutingTest < Test::Unit::TestCase
 
   it "ignore trailing delimiters" do
     mock_app do
-      get('/foo') { }
+      get('/foo/bar') { }
     end
-    assert_equal 200, get('/foo').status
-    assert_equal 200, get('/foo/').status
-    assert_equal 200, get('/foo//').status
+    assert_equal 200, get('/foo/bar').status
+    assert_equal 200, get('/foo/bar/').status
+    assert_equal 200, get('/foo//bar//').status
   end
 
   it "it handles encoded slashes correctly" do

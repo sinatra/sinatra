@@ -766,6 +766,7 @@ module Sinatra
       @original_params ||= @params
       route = @request.path_info
       route = '/' if route.empty? and not settings.empty_path_info?
+      route.squeeze!('/')
       if match = pattern.match(route)
         values += match.captures.to_a.map { |v| force_encoding URI.decode(v) if v }
         params =
