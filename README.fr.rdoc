@@ -1067,6 +1067,9 @@ recherche de solutions rapides pour un reverse-proxy de cache, essayez
     "hello"
   end
 
+Utilisez le paramètre <tt>:static_cache_control</tt> pour ajouter l'information
+d'en-tête <tt>Cache-Control</tt> (voir plus loin).
+
 === Envoyer des fichiers
 
 Pour envoyer des fichiers, vous pouvez utiliser la méthode
@@ -1363,6 +1366,9 @@ Vous pouvez accéder à ces paramètres via <tt>settings</tt> :
                       comportera comme <tt>redirect to('/foo')</tt>.
                       Désactivé par défaut.
 
+[protection]          défini s'il faut activer ou non la protection contre
+                      les attaques web. Voir la section protection plus loin.
+
 [public_folder]       dossier duquel les fichiers publics sont servis
 
 [reload_templates]    si oui ou non les templates doivent être rechargés
@@ -1394,6 +1400,13 @@ Vous pouvez accéder à ces paramètres via <tt>settings</tt> :
                       gérer lui même. Le désactiver augmentera la performance.
                       Activé par défaut pour le style classique, désactivé pour
                       le style modulaire.
+
+[static_cache_control] A définir quand Sinatra rend des fichiers statiques pour
+                       ajouter les en-têtes <tt>Cache-Control</tt>. Utilise le
+                       helper +cache_control+. Désactivé par défaut.
+                       Utiliser un array explicite pour définir des plusieurs
+                       valeurs :
+                       <tt>set :static_cache_control, [:public, :max_age => 300]</tt>
 
 [threaded]            à définir à +true+ pour indiquer à Thin d'utiliser
                       <tt>EventMachine.defer</tt> pour traiter la requête.
