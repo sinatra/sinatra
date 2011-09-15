@@ -1306,100 +1306,100 @@ Vous pouvez accéder à ces paramètres via <tt>settings</tt> :
 
 === Paramètres disponibles
 
-[absolute_redirects]  Si désactivé, Sinatra permettra les redirections
-                      relatives. Toutefois, Sinatra ne sera plus conforme à la
-                      RFC 2616 (HTTP 1.1), qui n'autorise que les redirections
-                      absolues.
+[absolute_redirects]   Si désactivé, Sinatra permettra les redirections
+                       relatives. Toutefois, Sinatra ne sera plus conforme à la
+                       RFC 2616 (HTTP 1.1), qui n'autorise que les redirections
+                       absolues.
 
-                      Activez si votre application tourne derrière un proxy
-                      inverse qui n'a pas été correctement configuré. Notez
-                      que la méthode +url+ continuera de produire des URLs
-                      absolues, sauf si vous lui passez +false+ comme second
-                      argument.
+                       Activez si votre application tourne derrière un proxy
+                       inverse qui n'a pas été correctement configuré. Notez
+                       que la méthode +url+ continuera de produire des URLs
+                       absolues, sauf si vous lui passez +false+ comme second
+                       argument.
 
-                      Désactivé par défaut.
+                       Désactivé par défaut.
 
-[add_charsets]        types mime pour lesquels la méthode
-                      <tt>content_type</tt> va automatiquement ajouter
-                      l'information du +charset+.
+[add_charsets]         types mime pour lesquels la méthode
+                       <tt>content_type</tt> va automatiquement ajouter
+                       l'information du +charset+.
 
-                      Vous devriez lui ajouter des valeurs plutôt que de
-                      l'écraser :
+                       Vous devriez lui ajouter des valeurs plutôt que de
+                       l'écraser :
 
-                        settings.add_charsets << "application/foobar"
+                         settings.add_charsets << "application/foobar"
 
-[app_file]            fichier de l'application principale, utilisé pour
-                      détecterla racine du projet, le dossier public et le
-                      dossier de vues ainsi que pour les templates en ligne.
+[app_file]             fichier de l'application principale, utilisé pour
+                       détecterla racine du projet, le dossier public et le
+                       dossier de vues ainsi que pour les templates en ligne.
 
-[bind]                adresse IP sur laquelle se brancher
-                      (par défaut : 0.0.0.0).
-                      Utiliser seulement pour le serveur intégré.
+[bind]                 adresse IP sur laquelle se brancher
+                       (par défaut : 0.0.0.0).
+                       Utiliser seulement pour le serveur intégré.
 
-[default_encoding]    encodage à utiliser si inconnu (par défaut
-                      <tt>"utf-8"</tt>).
+[default_encoding]     encodage à utiliser si inconnu (par défaut
+                       <tt>"utf-8"</tt>).
 
-[dump_errors]         afficher les erreurs dans le +log+.
+[dump_errors]          afficher les erreurs dans le +log+.
 
-[environment]         environnement courant, par défaut
-                      <tt>ENV['RACK_ENV']</tt>, ou
-                      <tt>"development"</tt> si absent.
+[environment]          environnement courant, par défaut
+                       <tt>ENV['RACK_ENV']</tt>, ou
+                       <tt>"development"</tt> si absent.
 
-[logging]             utiliser le +logger+.
+[logging]              utiliser le +logger+.
 
-[lock]                Place un +lock+ autour de chaque requête, n'exécutant
-                      donc qu'une seule requête par processus Ruby.
+[lock]                 Place un +lock+ autour de chaque requête, n'exécutant
+                       donc qu'une seule requête par processus Ruby.
 
-                      Activé si votre application n'est pas +thread-safe+.
-                      Désactivé par défaut.
+                       Activé si votre application n'est pas +thread-safe+.
+                       Désactivé par défaut.
 
-[method_override]     utilise la magie de <tt>_method</tt> afin de permettre
-                      des formulaires put/delete dans des navigateurs qui ne
-                      le permettent pas.
+[method_override]      utilise la magie de <tt>_method</tt> afin de permettre
+                       des formulaires put/delete dans des navigateurs qui ne
+                       le permettent pas.
 
-[port]                port à écouter. Utiliser seulement pour le serveur
-                      intégré.
+[port]                 port à écouter. Utiliser seulement pour le serveur
+                       intégré.
 
-[prefixed_redirects]  si oui ou non <tt>request.script_name</tt> doit être
-                      inséré dans les redirections si un chemin non absolu
-                      est utilisé. Ainsi, <tt>redirect '/foo'</tt> se
-                      comportera comme <tt>redirect to('/foo')</tt>.
-                      Désactivé par défaut.
+[prefixed_redirects]   si oui ou non <tt>request.script_name</tt> doit être
+                       inséré dans les redirections si un chemin non absolu
+                       est utilisé. Ainsi, <tt>redirect '/foo'</tt> se
+                       comportera comme <tt>redirect to('/foo')</tt>.
+                       Désactivé par défaut.
 
-[protection]          défini s'il faut activer ou non la protection contre
-                      les attaques web. Voir la section protection plus loin.
+[protection]           défini s'il faut activer ou non la protection contre
+                       les attaques web. Voir la section protection plus loin.
 
-[public_folder]       dossier duquel les fichiers publics sont servis
+[public_folder]        dossier duquel les fichiers publics sont servis
 
-[reload_templates]    si oui ou non les templates doivent être rechargés
-                      entre les requêtes. Activé en mode développement.
+[reload_templates]     si oui ou non les templates doivent être rechargés
+                       entre les requêtes. Activé en mode développement.
 
-[root]                dossier racine du projet.
+[root]                 dossier racine du projet.
 
-[raise_errors]        soulever les erreurs (ce qui arrêtera l'application).
+[raise_errors]         soulever les erreurs (ce qui arrêtera l'application).
 
-[run]                 si activé, Sinatra s'occupera de démarrer le serveur,
-                      ne pas activer si vous utiliser rackup ou autres.
+[run]                  si activé, Sinatra s'occupera de démarrer le serveur,
+                       ne pas activer si vous utiliser rackup ou autres.
 
-[running]             est-ce que le serveur intégré est en marche ?
-                      ne changez pas ce paramètre !
+[running]              est-ce que le serveur intégré est en marche ?
+                       ne changez pas ce paramètre !
 
-[server]              serveur ou liste de serveurs à utiliser pour le serveur
-                      intégré.
-                      Par défaut ['thin', 'mongrel', 'webrick'], l'ordre
-                      indiquant la priorité.
+[server]               serveur ou liste de serveurs à utiliser pour le serveur
+                       intégré.
+                       Par défaut ['thin', 'mongrel', 'webrick'], l'ordre
+                       indiquant la priorité.
 
-[sessions]            active l'enregistrement des sessions en utilisant les
-                      cookies.
+[sessions]             active l'enregistrement des sessions en utilisant les
+                       cookies.
 
-[show_exceptions]     affiche la trace de l'erreur dans le navigateur.
+[show_exceptions]      affiche la trace de l'erreur dans le navigateur.
 
-[static]              Si oui ou non Sinatra doit s'occuper de servir les
-                      fichiers statiques.
-                      Désactivez si vous utilisez un serveur capable de le
-                      gérer lui même. Le désactiver augmentera la performance.
-                      Activé par défaut pour le style classique, désactivé pour
-                      le style modulaire.
+[static]               Si oui ou non Sinatra doit s'occuper de servir les
+                       fichiers statiques.
+                       Désactivez si vous utilisez un serveur capable de le
+                       gérer lui même. Le désactiver augmentera la performance.
+                       Activé par défaut pour le style classique, désactivé pour
+                       le style modulaire.
 
 [static_cache_control] A définir quand Sinatra rend des fichiers statiques pour
                        ajouter les en-têtes <tt>Cache-Control</tt>. Utilise le
@@ -1408,10 +1408,10 @@ Vous pouvez accéder à ces paramètres via <tt>settings</tt> :
                        valeurs :
                        <tt>set :static_cache_control, [:public, :max_age => 300]</tt>
 
-[threaded]            à définir à +true+ pour indiquer à Thin d'utiliser
-                      <tt>EventMachine.defer</tt> pour traiter la requête.
+[threaded]             à définir à +true+ pour indiquer à Thin d'utiliser
+                       <tt>EventMachine.defer</tt> pour traiter la requête.
 
-[views]               dossier des vues.
+[views]                dossier des vues.
 
 == Gérer les erreurs
 
