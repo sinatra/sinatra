@@ -1992,5 +1992,5 @@ SemVer que SemVerTag.
   par la communauté
 * Documentation API de la {dernière version}[http://rubydoc.info/gems/sinatra]
   ou du {HEAD courant}[http://rubydoc.info/github/sinatra/sinatra] sur
-  http://rubydoc.info/
-
+  http://rubydoc.info
+* {CI server}[http://ci.rkh.im/view/Sinatra/]
