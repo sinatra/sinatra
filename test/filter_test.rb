@@ -264,7 +264,6 @@ class AfterFilterTest < Test::Unit::TestCase
       get('/bar') { 'blah' }
     end
     get '/foo'
-    assert ok?
     assert_equal 'blah', body
   end
 

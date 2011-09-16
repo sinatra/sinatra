@@ -193,7 +193,7 @@ class RoutingTest < Test::Unit::TestCase
 
   it "supports optional named params like /?:foo?/?:bar?" do
     mock_app {
-      get '/?:foo?/?:bar?' do
+      get '/:foo?/:bar?' do
         "foo=#{params[:foo]};bar=#{params[:bar]}"
       end
     }
@@ -309,6 +309,18 @@ class RoutingTest < Test::Unit::TestCase
     get '/pony.jpg'
     assert_equal 200, response.status
     assert_equal 'right on', body
+  end
+
+  it "matches an optional literal dot ('.') outside of optionals named params" do
+    mock_app {
+      get '/:file?.:ext?' do
+        params.values_at(:file, :ext).join(",")
+      end
+    }
+
+    get '/pony.jpg'
+    assert_equal 200, response.status
+    assert_equal 'pony,jpg', body
   end
 
   it "literally matches dot in paths" do

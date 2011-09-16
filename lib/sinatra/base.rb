@@ -766,7 +766,6 @@ module Sinatra
       @original_params ||= @params
       route = @request.path_info
       route = '/' if route.empty? and not settings.empty_path_info?
-      route.squeeze!('/')
       if match = pattern.match(route)
         values += match.captures.to_a.map { |v| force_encoding URI.decode(v) if v }
         params =
@@ -1183,19 +1182,27 @@ module Sinatra
       end
 
       def compile(path)
-        keys = []
-        if path.respond_to? :to_str
-          pattern = path.to_str.gsub(/[^\?\%\\\/\:\*\w]/) { |c| encoded(c) }
-          pattern.gsub! /((:\w+)|\*)/ do |match|
-            if match == "*"
-              keys << 'splat'
-              "(.*?)"
-            else
-              keys << $2[1..-1]
-              "([^/?#]+)"
-            end
-          end
-          [/^#{pattern}\/?$/, keys]
+        keys   = []
+        path   = if path.respond_to?(:to_str)
+          pattern = path.dup.to_str.
+            gsub(/[^\?\%\\\/\:\*\w\.]/) { |m| encoded(m) }.
+            concat(path[-1] == ?/ ? '' : '/?').
+            gsub(/\/\(/, '(?:/').
+            gsub(/(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/) {
+              slash, format, key, capture, optional = $1, $2, $3, $4, $5
+              keys.push(key)
+              slash ||= ''
+              (optional ? '' : slash) +
+              '(?:' +
+              (optional ? slash : '') +
+              (format || '') +
+              (capture || (format ? '([^/.]+?)' : '([^/]+?)')) +
+              ')' +
+              (optional || '')
+            }.
+            gsub(/([\/.])/) { |m| '\%s' % m }.
+            gsub(/\*/) { keys.push('splat'); '(.*?)' }
+          [/^#{pattern}$/, keys]
         elsif path.respond_to?(:keys) && path.respond_to?(:match)
           [path, path.keys]
         elsif path.respond_to?(:names) && path.respond_to?(:match)
