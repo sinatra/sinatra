@@ -969,6 +969,20 @@ class HelpersTest < Test::Unit::TestCase
             assert_equal '', body
           end
         end
+
+        context "If-Unmodified-Since" do
+          it 'results in 200 if resource has not been modified' do
+            get '/', {}, { 'HTTP_IF_UNMODIFIED_SINCE' => 'Sun, 26 Sep 2030 23:43:52 GMT' }
+            assert_equal 200, status
+            assert_equal 'Boo!', body
+          end
+
+          it 'results in 412 if resource has been modified' do
+            get '/', {}, { 'HTTP_IF_UNMODIFIED_SINCE' => Time.at(0).httpdate }
+            assert_equal 412, status
+            assert_equal '', body
+          end
+        end
       end
     end
   end
