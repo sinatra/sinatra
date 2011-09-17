@@ -82,6 +82,9 @@
  * Conditional requests on `etag` helper now work properly for unsafe HTTP
    methods. (Matthew Schinckel, Konstantin Haase)
 
+ * The `last_modified` helper does not stop execution and change the status code
+   if the status code is something different than 200. (Konstantin Haase)
+
  * `Sinatra::Base.run!` now prints to stderr rather than stdout. (Andrew
    Armenia)
 

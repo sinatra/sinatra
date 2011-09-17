@@ -858,6 +858,20 @@ class HelpersTest < Test::Unit::TestCase
       assert ! response['Last-Modified']
     end
 
+    it 'does not change a status other than 200' do
+      mock_app do
+        get '/' do
+          status 299
+          last_modified Time.at(0)
+          'ok'
+        end
+      end
+
+      get('/', {}, 'HTTP_IF_MODIFIED_SINCE' => 'Sun, 26 Sep 2030 23:43:52 GMT')
+      assert_status 299
+      assert_body 'ok'
+    end
+
     [Time.now, DateTime.now, Date.today, Time.now.to_i,
       Struct.new(:to_time).new(Time.now) ].each do |last_modified_time|
       describe "with #{last_modified_time.class.name}" do
