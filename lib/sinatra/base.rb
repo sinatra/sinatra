@@ -355,8 +355,12 @@ module Sinatra
       return unless time
       time = time_for time
       response['Last-Modified'] = time.httpdate
-      # compare based on seconds since epoch
-      halt 304 if Time.httpdate(env['HTTP_IF_MODIFIED_SINCE']).to_i >= time.to_i
+
+      unless env['HTTP_IF_NONE_MATCH']
+        # compare based on seconds since epoch
+        since = Time.httpdate(env['HTTP_IF_MODIFIED_SINCE']).to_i
+        halt 304 if since >= time.to_i
+      end
     rescue ArgumentError
     end
 
@@ -369,20 +373,34 @@ module Sinatra
     # When the current request includes an 'If-None-Match' header with a
     # matching etag, execution is immediately halted. If the request method is
     # GET or HEAD, a '304 Not Modified' response is sent.
-    def etag(value, kind = :strong)
-      raise ArgumentError, ":strong or :weak expected" unless [:strong,:weak].include?(kind)
+    def etag(value, options = {})
+      # Before touching this code, please double check RFC 2616 14.24 and 14.26.
+      options      = {:kind => options} unless Hash === options
+      kind         = options[:kind] || :strong
+      new_resource = options.fetch(:new_resource) { request.post? }
+
+      unless [:strong, :weak].include?(kind)
+        raise ArgumentError, ":strong or :weak expected"
+      end
+
       value = '"%s"' % value
       value = 'W/' + value if kind == :weak
       response['ETag'] = value
 
-      if etags = env['HTTP_IF_NONE_MATCH']
-        etags = etags.split(/\s*,\s*/)
-        if etags.include?(value) or etags.include?('*')
-          halt 304 if request.safe?
-        else
-          halt 412 unless request.safe?
+      if success? or status == 304
+        if etag_matches? env['HTTP_IF_NONE_MATCH'], new_resource
+          halt(request.safe? ? 304 : 412)
+        end
+
+        if env['HTTP_IF_MATCH']
+          halt 412 unless etag_matches? env['HTTP_IF_MATCH'], new_resource
         end
       end
+    end
+
+    def etag_matches?(list, new_resource = request.post?)
+      return !new_resource if list == '*'
+      list.to_s.split(/\s*,\s*/).include? response['ETag']
     end
 
     # Sugar for redirect (example:  redirect back)

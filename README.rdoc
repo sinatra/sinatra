@@ -1018,6 +1018,24 @@ try {rack-cache}[http://rtomayko.github.com/rack-cache/]:
 Use the <tt>:static_cache_control</tt> setting (see below) to add
 <tt>Cache-Control</tt> header info to static files.
 
+According to RFC 2616 your application should behave differently if the
+If-Matches of If-None-Matches header is set to <tt>*</tt> depending on whether
+the resource requested is already in existence. Sinatra assumes resources for
+safe (like get) and idempotent (like put) requests are already in existence,
+whereas other resources (for instance for post requests), are treated as new
+resources. You can change this behavior by passing in a <tt>:new_resource</tt>
+option:
+
+  get '/create' do
+    etag '', :new_resource => true
+    Article.create
+    erb :new_article
+  end
+
+If you still want to use a weak ETag, pass in a <tt>:kind</tt> option:
+
+  etag '', :new_resource => true, :kind => :weak
+
 === Sending Files
 
 For sending files, you can use the <tt>send_file</tt> helper method:
