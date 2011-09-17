@@ -405,11 +405,6 @@ module Sinatra
       end
     end
 
-    def etag_matches?(list, new_resource = request.post?)
-      return !new_resource if list == '*'
-      list.to_s.split(/\s*,\s*/).include? response['ETag']
-    end
-
     # Sugar for redirect (example:  redirect back)
     def back
       request.referer
@@ -469,6 +464,14 @@ module Sinatra
       raise boom
     rescue Exception
       raise ArgumentError, "unable to convert #{value.inspect} to a Time object"
+    end
+
+    private
+
+    # Helper method checking if a ETag value list includes the current ETag.
+    def etag_matches?(list, new_resource = request.post?)
+      return !new_resource if list == '*'
+      list.to_s.split(/\s*,\s*/).include? response['ETag']
     end
   end
 
