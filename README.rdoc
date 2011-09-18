@@ -1019,7 +1019,7 @@ Use the <tt>:static_cache_control</tt> setting (see below) to add
 <tt>Cache-Control</tt> header info to static files.
 
 According to RFC 2616 your application should behave differently if the If-Match
-of If-None-Match header is set to <tt>*</tt> depending on whether the resource
+or If-None-Match header is set to <tt>*</tt> depending on whether the resource
 requested is already in existence. Sinatra assumes resources for safe (like get)
 and idempotent (like put) requests are already in existence, whereas other
 resources (for instance for post requests), are treated as new resources. You
