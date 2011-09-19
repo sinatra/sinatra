@@ -8,7 +8,7 @@ module Sinatra
     # on this path by default.
     set :app_file, caller_files.first || $0
 
-    set :run, Proc.new { $0 == app_file }
+    set :run, Proc.new { File.expand_path($0) == File.expand_path(app_file) }
 
     if run? && ARGV.any?
       require 'optparse'
