@@ -97,6 +97,17 @@ class BeforeFilterTest < Test::Unit::TestCase
     assert_equal 'cool', body
   end
 
+  it "properly unescapes parameters" do
+    mock_app {
+      before { @foo = params['foo'] }
+      get('/foo') { @foo }
+    }
+
+    get '/foo?foo=bar%3Abaz%2Fbend'
+    assert ok?
+    assert_equal 'bar:baz/bend', body
+  end
+
   it "runs filters defined in superclasses" do
     base = Class.new(Sinatra::Base)
     base.before { @foo = 'hello from superclass' }
