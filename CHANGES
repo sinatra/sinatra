@@ -12,7 +12,7 @@
  * Added support for HTTP PATCH requests. (Konstantin Haase)
 
  * Use rack-protection to defend against common opportunistic attacks.
-   (Konstantin Haase)
+   (Josh Lane, Jacob Burkhart, Konstantin Haase)
 
  * Support for Creole templates, Creole is a standardized wiki markup,
    supported by many wiki implementations. (Konstanin Haase)
@@ -41,7 +41,7 @@
  * The sessions setting may be an options hash now. (Konstantin Haase)
 
  * Important: Ruby 1.8.6 support has been dropped. This version also depends
-   on at least Rack 1.3.0. This means that it is incompatible to Rails prior
+   on at least Rack 1.3.0. This means that it is incompatible with Rails prior
    to 3.1.0. Please use 1.2.x if you require an earlier version of Ruby or
    Rack, which we will continue to supply with bug fixes. (Konstantin Haase)
 
@@ -81,6 +81,11 @@
 
  * Conditional requests on `etag` helper now work properly for unsafe HTTP
    methods. (Matthew Schinckel, Konstantin Haase)
+
+ * The `last_modified` helper does not stop execution and change the status code
+   if the status code is something different than 200. (Konstantin Haase)
+
+ * Added support for If-Unmodified-Since header. (Konstantin Haase)
 
  * `Sinatra::Base.run!` now prints to stderr rather than stdout. (Andrew
    Armenia)

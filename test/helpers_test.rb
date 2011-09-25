@@ -858,6 +858,20 @@ class HelpersTest < Test::Unit::TestCase
       assert ! response['Last-Modified']
     end
 
+    it 'does not change a status other than 200' do
+      mock_app do
+        get '/' do
+          status 299
+          last_modified Time.at(0)
+          'ok'
+        end
+      end
+
+      get('/', {}, 'HTTP_IF_MODIFIED_SINCE' => 'Sun, 26 Sep 2030 23:43:52 GMT')
+      assert_status 299
+      assert_body 'ok'
+    end
+
     [Time.now, DateTime.now, Date.today, Time.now.to_i,
       Struct.new(:to_time).new(Time.now) ].each do |last_modified_time|
       describe "with #{last_modified_time.class.name}" do
@@ -955,74 +969,641 @@ class HelpersTest < Test::Unit::TestCase
             assert_equal '', body
           end
         end
+
+        context "If-Unmodified-Since" do
+          it 'results in 200 if resource has not been modified' do
+            get '/', {}, { 'HTTP_IF_UNMODIFIED_SINCE' => 'Sun, 26 Sep 2030 23:43:52 GMT' }
+            assert_equal 200, status
+            assert_equal 'Boo!', body
+          end
+
+          it 'results in 412 if resource has been modified' do
+            get '/', {}, { 'HTTP_IF_UNMODIFIED_SINCE' => Time.at(0).httpdate }
+            assert_equal 412, status
+            assert_equal '', body
+          end
+        end
       end
     end
   end
 
   describe 'etag' do
-    setup do
-      mock_app {
-        get '/' do
-          body { 'Hello World' }
-          etag 'FOO'
-          'Boo!'
+    context "safe requests" do
+      it 'returns 200 for normal requests' do
+        mock_app do
+          get '/' do
+            etag 'foo'
+            'ok'
+          end
         end
 
-        post '/' do
-          etag 'FOO'
-          'Matches!'
+        get('/')
+        assert_status 200
+        assert_body 'ok'
+      end
+
+      context "If-None-Match" do
+        it 'returns 304 when If-None-Match is *' do
+          mock_app do
+            get '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          get('/', {}, 'HTTP_IF_NONE_MATCH' => '*')
+          assert_status 304
+          assert_body ''
         end
-      }
+
+        it 'returns 200 when If-None-Match is * for new resources' do
+          mock_app do
+            get '/' do
+              etag 'foo', :new_resource => true
+              'ok'
+            end
+          end
+
+          get('/', {}, 'HTTP_IF_NONE_MATCH' => '*')
+          assert_status 200
+          assert_body 'ok'
+        end
+
+        it 'returns 304 when If-None-Match is * for existing resources' do
+          mock_app do
+            get '/' do
+              etag 'foo', :new_resource => false
+              'ok'
+            end
+          end
+
+          get('/', {}, 'HTTP_IF_NONE_MATCH' => '*')
+          assert_status 304
+          assert_body ''
+        end
+
+        it 'returns 304 when If-None-Match is the etag' do
+          mock_app do
+            get '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          get('/', {}, 'HTTP_IF_NONE_MATCH' => '"foo"')
+          assert_status 304
+          assert_body ''
+        end
+
+        it 'returns 304 when If-None-Match includes the etag' do
+          mock_app do
+            get '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          get('/', {}, 'HTTP_IF_NONE_MATCH' => '"bar", "foo"')
+          assert_status 304
+          assert_body ''
+        end
+
+        it 'returns 200 when If-None-Match does not include the etag' do
+          mock_app do
+            get '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          get('/', {}, 'HTTP_IF_NONE_MATCH' => '"bar"')
+          assert_status 200
+          assert_body 'ok'
+        end
+
+        it 'ignores If-Modified-Since if If-None-Match does not match' do
+          mock_app do
+            get '/' do
+              etag 'foo'
+              last_modified Time.at(0)
+              'ok'
+            end
+          end
+
+          get('/', {}, 'HTTP_IF_NONE_MATCH' => '"bar"')
+          assert_status 200
+          assert_body 'ok'
+        end
+
+        it 'does not change a status code other than 2xx or 304' do
+          mock_app do
+            get '/' do
+              status 499
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          get('/', {}, 'HTTP_IF_NONE_MATCH' => '"foo"')
+          assert_status 499
+          assert_body 'ok'
+        end
+
+        it 'does change 2xx status codes' do
+          mock_app do
+            get '/' do
+              status 299
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          get('/', {}, 'HTTP_IF_NONE_MATCH' => '"foo"')
+          assert_status 304
+          assert_body ''
+        end
+
+        it 'does not send a body on 304 status codes' do
+          mock_app do
+            get '/' do
+              status 304
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          get('/', {}, 'HTTP_IF_NONE_MATCH' => '"foo"')
+          assert_status 304
+          assert_body ''
+        end
+      end
+
+      context "If-Match" do
+        it 'returns 200 when If-Match is the etag' do
+          mock_app do
+            get '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          get('/', {}, 'HTTP_IF_MATCH' => '"foo"')
+          assert_status 200
+          assert_body 'ok'
+        end
+
+        it 'returns 200 when If-Match includes the etag' do
+          mock_app do
+            get '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          get('/', {}, 'HTTP_IF_MATCH' => '"foo", "bar"')
+          assert_status 200
+          assert_body 'ok'
+        end
+
+        it 'returns 200 when If-Match is *' do
+          mock_app do
+            get '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          get('/', {}, 'HTTP_IF_MATCH' => '*')
+          assert_status 200
+          assert_body 'ok'
+        end
+
+        it 'returns 412 when If-Match is * for new resources' do
+          mock_app do
+            get '/' do
+              etag 'foo', :new_resource => true
+              'ok'
+            end
+          end
+
+          get('/', {}, 'HTTP_IF_MATCH' => '*')
+          assert_status 412
+          assert_body ''
+        end
+
+        it 'returns 200 when If-Match is * for existing resources' do
+          mock_app do
+            get '/' do
+              etag 'foo', :new_resource => false
+              'ok'
+            end
+          end
+
+          get('/', {}, 'HTTP_IF_MATCH' => '*')
+          assert_status 200
+          assert_body 'ok'
+        end
+
+        it 'returns 412 when If-Match does not include the etag' do
+          mock_app do
+            get '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          get('/', {}, 'HTTP_IF_MATCH' => '"bar"')
+          assert_status 412
+          assert_body ''
+        end
+      end
     end
 
-    it 'sets the ETag header' do
-      get '/'
-      assert_equal '"FOO"', response['ETag']
+    context "idempotent requests" do
+      it 'returns 200 for normal requests' do
+        mock_app do
+          put '/' do
+            etag 'foo'
+            'ok'
+          end
+        end
+
+        put('/')
+        assert_status 200
+        assert_body 'ok'
+      end
+
+      context "If-None-Match" do
+        it 'returns 412 when If-None-Match is *' do
+          mock_app do
+            put '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          put('/', {}, 'HTTP_IF_NONE_MATCH' => '*')
+          assert_status 412
+          assert_body ''
+        end
+
+        it 'returns 200 when If-None-Match is * for new resources' do
+          mock_app do
+            put '/' do
+              etag 'foo', :new_resource => true
+              'ok'
+            end
+          end
+
+          put('/', {}, 'HTTP_IF_NONE_MATCH' => '*')
+          assert_status 200
+          assert_body 'ok'
+        end
+
+        it 'returns 412 when If-None-Match is * for existing resources' do
+          mock_app do
+            put '/' do
+              etag 'foo', :new_resource => false
+              'ok'
+            end
+          end
+
+          put('/', {}, 'HTTP_IF_NONE_MATCH' => '*')
+          assert_status 412
+          assert_body ''
+        end
+
+        it 'returns 412 when If-None-Match is the etag' do
+          mock_app do
+            put '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          put('/', {}, 'HTTP_IF_NONE_MATCH' => '"foo"')
+          assert_status 412
+          assert_body ''
+        end
+
+        it 'returns 412 when If-None-Match includes the etag' do
+          mock_app do
+            put '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          put('/', {}, 'HTTP_IF_NONE_MATCH' => '"bar", "foo"')
+          assert_status 412
+          assert_body ''
+        end
+
+        it 'returns 200 when If-None-Match does not include the etag' do
+          mock_app do
+            put '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          put('/', {}, 'HTTP_IF_NONE_MATCH' => '"bar"')
+          assert_status 200
+          assert_body 'ok'
+        end
+
+        it 'ignores If-Modified-Since if If-None-Match does not match' do
+          mock_app do
+            put '/' do
+              etag 'foo'
+              last_modified Time.at(0)
+              'ok'
+            end
+          end
+
+          put('/', {}, 'HTTP_IF_NONE_MATCH' => '"bar"')
+          assert_status 200
+          assert_body 'ok'
+        end
+      end
+
+      context "If-Match" do
+        it 'returns 200 when If-Match is the etag' do
+          mock_app do
+            put '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          put('/', {}, 'HTTP_IF_MATCH' => '"foo"')
+          assert_status 200
+          assert_body 'ok'
+        end
+
+        it 'returns 200 when If-Match includes the etag' do
+          mock_app do
+            put '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          put('/', {}, 'HTTP_IF_MATCH' => '"foo", "bar"')
+          assert_status 200
+          assert_body 'ok'
+        end
+
+        it 'returns 200 when If-Match is *' do
+          mock_app do
+            put '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          put('/', {}, 'HTTP_IF_MATCH' => '*')
+          assert_status 200
+          assert_body 'ok'
+        end
+
+        it 'returns 412 when If-Match is * for new resources' do
+          mock_app do
+            put '/' do
+              etag 'foo', :new_resource => true
+              'ok'
+            end
+          end
+
+          put('/', {}, 'HTTP_IF_MATCH' => '*')
+          assert_status 412
+          assert_body ''
+        end
+
+        it 'returns 200 when If-Match is * for existing resources' do
+          mock_app do
+            put '/' do
+              etag 'foo', :new_resource => false
+              'ok'
+            end
+          end
+
+          put('/', {}, 'HTTP_IF_MATCH' => '*')
+          assert_status 200
+          assert_body 'ok'
+        end
+
+        it 'returns 412 when If-Match does not include the etag' do
+          mock_app do
+            put '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          put('/', {}, 'HTTP_IF_MATCH' => '"bar"')
+          assert_status 412
+          assert_body ''
+        end
+      end
     end
 
-    it 'returns a body when conditional get misses' do
-      get '/'
-      assert_equal 200, status
-      assert_equal 'Boo!', body
-    end
+    context "post requests" do
+      it 'returns 200 for normal requests' do
+        mock_app do
+          post '/' do
+            etag 'foo'
+            'ok'
+          end
+        end
 
-    it 'returns a body when posting with no If-None-Match header' do
-      post '/'
-      assert_equal 200, status
-      assert_equal 'Matches!', body
-    end
+        post('/')
+        assert_status 200
+        assert_body 'ok'
+      end
 
-    it 'returns a body when conditional post matches' do
-      post '/', {}, { 'HTTP_IF_NONE_MATCH' => '"FOO"' }
-      assert_equal 200, status
-      assert_equal 'Matches!', body
-    end
+      context "If-None-Match" do
+        it 'returns 200 when If-None-Match is *' do
+          mock_app do
+            post '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
 
-    it 'halts with 412 when conditional post misses' do
-      post '/', {}, { 'HTTP_IF_NONE_MATCH' => '"BAR"' }
-      assert_equal 412, status
-      assert_equal '', body
-    end
+          post('/', {}, 'HTTP_IF_NONE_MATCH' => '*')
+          assert_status 200
+          assert_body 'ok'
+        end
 
-    it 'halts when a conditional GET matches' do
-      get '/', {}, { 'HTTP_IF_NONE_MATCH' => '"FOO"' }
-      assert_equal 304, status
-      assert_equal '', body
-    end
+        it 'returns 200 when If-None-Match is * for new resources' do
+          mock_app do
+            post '/' do
+              etag 'foo', :new_resource => true
+              'ok'
+            end
+          end
 
-    it 'should handle multiple ETag values in If-None-Match header' do
-      get '/', {}, { 'HTTP_IF_NONE_MATCH' => '"BAR", *' }
-      assert_equal 304, status
-      assert_equal '', body
+          post('/', {}, 'HTTP_IF_NONE_MATCH' => '*')
+          assert_status 200
+          assert_body 'ok'
+        end
+
+        it 'returns 412 when If-None-Match is * for existing resources' do
+          mock_app do
+            post '/' do
+              etag 'foo', :new_resource => false
+              'ok'
+            end
+          end
+
+          post('/', {}, 'HTTP_IF_NONE_MATCH' => '*')
+          assert_status 412
+          assert_body ''
+        end
+
+        it 'returns 412 when If-None-Match is the etag' do
+          mock_app do
+            post '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          post('/', {}, 'HTTP_IF_NONE_MATCH' => '"foo"')
+          assert_status 412
+          assert_body ''
+        end
+
+        it 'returns 412 when If-None-Match includes the etag' do
+          mock_app do
+            post '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          post('/', {}, 'HTTP_IF_NONE_MATCH' => '"bar", "foo"')
+          assert_status 412
+          assert_body ''
+        end
+
+        it 'returns 200 when If-None-Match does not include the etag' do
+          mock_app do
+            post '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          post('/', {}, 'HTTP_IF_NONE_MATCH' => '"bar"')
+          assert_status 200
+          assert_body 'ok'
+        end
+
+        it 'ignores If-Modified-Since if If-None-Match does not match' do
+          mock_app do
+            post '/' do
+              etag 'foo'
+              last_modified Time.at(0)
+              'ok'
+            end
+          end
+
+          post('/', {}, 'HTTP_IF_NONE_MATCH' => '"bar"')
+          assert_status 200
+          assert_body 'ok'
+        end
+      end
+
+      context "If-Match" do
+        it 'returns 200 when If-Match is the etag' do
+          mock_app do
+            post '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          post('/', {}, 'HTTP_IF_MATCH' => '"foo"')
+          assert_status 200
+          assert_body 'ok'
+        end
+
+        it 'returns 200 when If-Match includes the etag' do
+          mock_app do
+            post '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          post('/', {}, 'HTTP_IF_MATCH' => '"foo", "bar"')
+          assert_status 200
+          assert_body 'ok'
+        end
+
+        it 'returns 412 when If-Match is *' do
+          mock_app do
+            post '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          post('/', {}, 'HTTP_IF_MATCH' => '*')
+          assert_status 412
+          assert_body ''
+        end
+
+        it 'returns 412 when If-Match is * for new resources' do
+          mock_app do
+            post '/' do
+              etag 'foo', :new_resource => true
+              'ok'
+            end
+          end
+
+          post('/', {}, 'HTTP_IF_MATCH' => '*')
+          assert_status 412
+          assert_body ''
+        end
+
+        it 'returns 200 when If-Match is * for existing resources' do
+          mock_app do
+            post '/' do
+              etag 'foo', :new_resource => false
+              'ok'
+            end
+          end
+
+          post('/', {}, 'HTTP_IF_MATCH' => '*')
+          assert_status 200
+          assert_body 'ok'
+        end
+
+        it 'returns 412 when If-Match does not include the etag' do
+          mock_app do
+            post '/' do
+              etag 'foo'
+              'ok'
+            end
+          end
+
+          post('/', {}, 'HTTP_IF_MATCH' => '"bar"')
+          assert_status 412
+          assert_body ''
+        end
+      end
     end
 
     it 'uses a weak etag with the :weak option' do
-      mock_app {
+      mock_app do
         get '/' do
           etag 'FOO', :weak
           "that's weak, dude."
         end
-      }
+      end
       get '/'
       assert_equal 'W/"FOO"', response['ETag']
     end

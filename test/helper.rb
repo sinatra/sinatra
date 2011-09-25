@@ -72,6 +72,10 @@ class Test::Unit::TestCase
     assert_equal value.lstrip.gsub(/\s*\n\s*/, ""), body.lstrip.gsub(/\s*\n\s*/, "")
   end
 
+  def assert_status(expected)
+    assert_equal Integer(expected), Integer(status)
+  end
+
   def assert_like(a,b)
     pattern = /id=['"][^"']*["']|\s+/
     assert_equal a.strip.gsub(pattern, ""), b.strip.gsub(pattern, "")
