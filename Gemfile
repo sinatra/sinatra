@@ -8,6 +8,7 @@
 
 RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
 source :rubygems unless ENV['QUICK']
+gemspec
 
 gem 'rake'
 gem 'rack-test', '>= 0.5.6'
@@ -24,42 +25,45 @@ repos = { 'tilt' => github % "rtomayko/tilt", 'rack' => github % "rack/rack" }
   gem lib, dep
 end
 
-gem 'haml', '>= 3.0', :group => 'haml'
-gem 'sass', :group => 'sass'
-gem 'builder', :group => 'builder'
-gem 'erubis', :group => 'erubis'
-gem 'less', '~> 1.0', :group => 'less'
-gem 'liquid', :group => 'liquid' unless RUBY_ENGINE == 'maglev'
-gem 'slim', :group => 'slim'
-gem 'RedCloth', :group => 'redcloth' if RUBY_VERSION < "1.9.3" and not RUBY_ENGINE.start_with? 'ma'
-gem 'coffee-script', '>= 2.0', :group => 'coffee-script'
-gem 'rdoc', :group => 'rdoc'
-gem 'kramdown', :group => 'kramdown'
-gem 'maruku', :group => 'maruku'
-gem 'creole', :group => 'creole'
+gem 'haml', '>= 3.0'
+gem 'sass'
+gem 'builder'
+gem 'erubis'
+gem 'less', '~> 1.0'
+gem 'liquid'
+gem 'slim', '~> 1.0'
+gem 'temple', '!= 0.3.3'
+gem 'RedCloth' if RUBY_VERSION < "1.9.3" and not RUBY_ENGINE.start_with? 'ma'
+gem 'coffee-script', '>= 2.0'
+gem 'rdoc'
+gem 'kramdown'
+gem 'maruku'
+gem 'creole'
 
-gem 'nokogiri', :group => 'nokogiri' if RUBY_ENGINE != 'maglev'
-#nokogiri_options = {:group => 'nokogiri'}
-#nokogiri_options[:git] = "https://github.com/MagLev/nokogiri.git" if RUBY_ENGINE == 'maglev'
-#gem 'nokogiri', nokogiri_options if RUBY_ENGINE != 'maglev'
+if RUBY_ENGINE == 'jruby'
+  gem 'nokogiri', '!= 1.5.0'
+  gem 'jruby-openssl'
+else
+  gem 'nokogiri'
+end
 
-unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1"
+unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1" && !ENV['TRAVIS']
   # C extensions
-  gem 'rdiscount', :group => 'rdiscount'
-  gem 'redcarpet', :group => 'redcarpet'
+  gem 'rdiscount'
+  gem 'redcarpet'
 
   ## bluecloth is broken
-  #gem 'bluecloth', :group => 'bluecloth'
+  #gem 'bluecloth'
 end
 
 platforms :ruby_18, :jruby do
-  gem 'json', :group => 'coffee-script'
-  gem 'markaby', :group => 'markaby'
-  gem 'radius', :group => 'radius'
+  gem 'json'
+  gem 'markaby'
+  gem 'radius'
 end
 
 platforms :mri_18 do
   # bundler platforms are broken
   next if RUBY_ENGINE != 'ruby' or RUBY_VERSION > "1.8"
-  gem 'rcov', :group => 'rcov'
+  gem 'rcov'
 end

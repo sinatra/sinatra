@@ -98,6 +98,15 @@ Or with a block parameter:
     "Hello, #{c}!"
   end
 
+Route patterns may have optional parameters:
+
+  get '/posts.?:format?' do
+    # matches "GET /posts" and any extension "GET /posts.json", "GET /posts.xml" etc.
+  end
+
+By the way, unless you disable the path traversal attack protection (see below),
+the request path might be modified before matching against your routes.
+
 === Conditions
 
 Routes may include a variety of matching conditions, such as the user agent:
@@ -135,7 +144,25 @@ You can easily define your own conditions:
   get '/win_a_car' do
     "Sorry, you lost."
   end
+  
+For a condition that takes multiple values use a splat:
 
+  set(:auth) do |*roles|   # <- notice the splat here
+    condition do
+      unless logged_in? && roles.any? {|role| current_user.in_role? role }
+        redirect "/login/", 303 
+      end
+    end
+  end
+
+  get "/my/account/", :auth => [:user, :admin] do
+    "Your Account Details"
+  end
+  
+  get "/only/admin/", :auth => :admin do
+    "Only admins are allowed here!"
+  end
+  
 === Return Values
 
 The return value of a route block determines at least the response body passed
@@ -163,6 +190,9 @@ That way we can, for instance, easily implement a streaming example:
     end
 
     get('/') { Stream.new }
+
+You can also use the +stream+ helper method (described below) to reduce boiler
+plate and embed the streaming logic in the route.
 
 === Custom Route Matchers
 
@@ -208,9 +238,9 @@ Or, using negative look ahead:
 == Static Files
 
 Static files are served from the <tt>./public</tt> directory. You can specify
-a different location by setting the <tt>:public</tt> option:
+a different location by setting the <tt>:public_folder</tt> option:
 
-  set :public, File.dirname(__FILE__) + '/static'
+  set :public_folder, File.dirname(__FILE__) + '/static'
 
 Note that the public directory name is not included in the URL. A file
 <tt>./public/css/style.css</tt> is made available as
@@ -418,7 +448,7 @@ template than for the layout by passing the <tt>:layout_engine</tt> option.
 
 Dependency::        {rdoc}[http://rdoc.rubyforge.org/]
 File Extensions::   <tt>.rdoc</tt>
-Example::           <tt>textile :README, :layout_engine => :erb</tt>
+Example::           <tt>rdoc :README, :layout_engine => :erb</tt>
 
 It is not possible to call methods from rdoc, nor to pass locals to it. You
 therefore will usually use it in combination with another rendering engine:
@@ -668,7 +698,7 @@ Note that <tt>enable :sessions</tt> actually stores all data in a cookie. This
 might not always be what you want (storing lots of data will increase your
 traffic, for instance). You can use any Rack session middleware: in order to
 do so, do *not* call <tt>enable :sessions</tt>, but instead pull in your
-middleware of choice how you would any other middleware:
+middleware of choice as you would any other middleware:
 
   use Rack::Session::Pool, :expire_after => 2592000
 
@@ -781,13 +811,61 @@ Similar to the body, you can also set the status code and headers:
   get '/foo' do
     status 418
     headers \
-      "Allow"   => "BREW, POST, GET, PROPFIND, WHEN"
+      "Allow"   => "BREW, POST, GET, PROPFIND, WHEN",
       "Refresh" => "Refresh: 20; http://www.ietf.org/rfc/rfc2324.txt"
     body "I'm a tea pot!"
   end
 
 Like +body+, +headers+ and +status+ with no arguments can be used to access
 their current values.
+
+=== Streaming Responses
+
+Sometimes you want to start sending out data while still generating parts of
+the response body. In extreme examples, you want to keep sending data until
+the client closes the connection. You can use the +stream+ helper to avoid
+creating your own wrapper:
+
+  get '/' do
+    stream do |out|
+      out << "It's gonna be legen -\n"
+      sleep 0.5
+      out << " (wait for it) \n"
+      sleep 1
+      out << "- dary!\n"
+    end
+  end
+
+This allows you to implement streaming APIs,
+{Server Sent Events}[http://dev.w3.org/html5/eventsource/] and can be used as
+basis for {WebSockets}[http://en.wikipedia.org/wiki/WebSocket]. It can also be
+used to increase throughput if some but not all content depends on a slow
+resource.
+
+Note that the streaming behavior, especially the number of concurrent request,
+highly depends on the web server used to serve the application. Some servers,
+like WEBRick, might not even support streaming at all. If the server does not
+support streaming, the body will be sent all at once after the block passed to
++stream+ finished executing.
+
+If the optional parameter is set to +keep_open+, it will not call +close+ on
+the stream object, allowing you to close it at any later point in the
+execution flow. This only works on evented servers, like Thin and Rainbows.
+Other servers will still close the stream:
+
+  set :server, :thin
+  connections = []
+
+  get '/' do
+    # keep stream open
+    stream(:keep_open) { |out| connections << out }
+  end
+
+  post '/' do
+    # write to all open streams
+    connections.each { |out| out << params[:message] << "\n" }
+    "message sent"
+  end
 
 === Logging
 
@@ -870,7 +948,7 @@ To pass arguments with a redirect, either add them to the query:
 
 Or use a session:
 
-  enable :session
+  enable :sessions
   
   get '/foo' do
     session[:secret] = 'foo'
@@ -905,7 +983,7 @@ If you are using the +expires+ helper to set the corresponding header,
     expires 500, :public, :must_revalidate
   end
 
-To properly use caches, you should consider using +etag+ and +last_modified+.
+To properly use caches, you should consider using +etag+ or +last_modified+.
 It is recommended to call those helpers *before* doing heavy lifting, as they
 will immediately flush a response if the client already has the current
 version in its cache:
@@ -923,7 +1001,7 @@ It is also possible to use a
   etag @article.sha1, :weak
 
 These helpers will not do any caching for you, but rather feed the necessary
-information to your cache. If you are looking for a quick caching solutions, 
+information to your cache. If you are looking for a quick reverse-proxy caching solution, 
 try {rack-cache}[http://rtomayko.github.com/rack-cache/]:
 
   require "rack/cache"
@@ -939,6 +1017,23 @@ try {rack-cache}[http://rtomayko.github.com/rack-cache/]:
 
 Use the <tt>:static_cache_control</tt> setting (see below) to add
 <tt>Cache-Control</tt> header info to static files.
+
+According to RFC 2616 your application should behave differently if the If-Match
+or If-None-Match header is set to <tt>*</tt> depending on whether the resource
+requested is already in existence. Sinatra assumes resources for safe (like get)
+and idempotent (like put) requests are already in existence, whereas other
+resources (for instance for post requests), are treated as new resources. You
+can change this behavior by passing in a <tt>:new_resource</tt> option:
+
+  get '/create' do
+    etag '', :new_resource => true
+    Article.create
+    erb :new_article
+  end
+
+If you still want to use a weak ETag, pass in a <tt>:kind</tt> option:
+
+  etag '', :new_resource => true, :kind => :weak
 
 === Sending Files
 
@@ -1044,6 +1139,37 @@ You can also pass it a file name:
     "store it!"
   end
 
+=== Dealing with Date and Time
+
+Sinatra offers a +time_for+ helper method, which, from the given value
+generates a Time object. It is also able to convert +DateTime+, +Date+ and
+similar classes:
+
+  get '/' do
+    pass if Time.now > time_for('Dec 23, 2012')
+    "still time"
+  end
+
+This method is used internally by +expires+, +last_modified+ and akin. You can
+therefore easily extend the behavior of those methods by overriding +time_for+
+in your application:
+
+  helpers do
+    def time_for(value)
+      case value
+      when :yesterday then Time.now - 24*60*60
+      when :tomorrow  then Time.now + 24*60*60
+      else super
+      end
+    end
+  end
+
+  get '/' do
+    last_modified :yesterday
+    expires :tomorrow
+    "hello"
+  end
+
 === Looking Up Template Files
 
 The <tt>find_template</tt> helper is used to find template files for rendering:
@@ -1132,6 +1258,23 @@ You can access those options via <tt>settings</tt>:
     ...
   end
 
+=== Configuring attack protection
+
+Sinatra is using
+{Rack::Protection}[https://github.com/rkh/rack-protection#readme] to defend
+you application against common, opportunistic attacks. You can easily disable
+this behavior (which should result in performance gains):
+
+  disable :protection
+
+To skip a single defense layer, set +protection+ to an options hash:
+
+  set :protection, :except => :path_traversal
+
+You can also hand in an array in order to disable a list of protections:
+
+  set :protections, :except => [:path_traversal, :session_hijacking]
+
 === Available Settings
 
 [absolute_redirects]   If disabled, Sinatra will allow relative redirects,
@@ -1184,7 +1327,10 @@ You can access those options via <tt>settings</tt>:
                        <tt>redirect '/foo'</tt> would behave like
                        <tt>redirect to('/foo')</tt>. Disabled per default.
 
-[public]               folder public files are served from
+[protection]           Whether or not to enable web attack protections. See
+                       protection section above.
+
+[public_folder]        folder public files are served from
 
 [reload_templates]     whether or not to reload templates between requests.
                        Enabled in development mode.
@@ -1218,6 +1364,9 @@ You can access those options via <tt>settings</tt>:
                        +cache_control+ helper. Disabled by default.
                        Use an explicit array when setting multiple values:
                        <tt>set :static_cache_control, [:public, :max_age => 300]</tt>
+
+[threaded]             If set to +true+, will tell Thin to use
+                       <tt>EventMachine.defer</tt> for processing the request.
 
 [views]                views folder.
 
@@ -1523,6 +1672,7 @@ assign them to a constant, you can do this with <tt>Sinatra.new</tt>:
 
 It takes the application to inherit from as optional argument:
 
+  # config.ru
   require 'sinatra/base'
 
   controller = Sinatra.new do
@@ -1659,27 +1809,35 @@ The following Ruby versions are officially supported:
 
 [ Ruby 1.8.7 ]
   1.8.7 is fully supported, however, if nothing is keeping you from it, we
-  recommend upgrading to 1.9.2 or switching to JRuby or Rubinius.
+  recommend upgrading to 1.9.2 or switching to JRuby or Rubinius. Support for
+  1.8.7 will not be dropped before Sinatra 2.0 and Ruby 2.0 except maybe for
+  the unlikely event of 1.8.8 being released. Even then, we might continue
+  supporting it. <b>Ruby 1.8.6 is no longer supported.</b> If you want to run
+  with 1.8.6, downgrade to Sinatra 1.2, which will receive bug fixes until
+  Sinatra 1.4.0 is released.
 
 [ Ruby 1.9.2 ]
-  1.9.2 is supported and recommended. Note that Radius and Markaby are
-  currently not 1.9 compatible. Do not use 1.9.2p0, it is known to cause
-  segmentation faults when running Sinatra.
+  1.9.2 is fully supported and recommended. Note that Radius and Markaby
+  are currently not 1.9 compatible. Do not use 1.9.2p0, it is known to cause
+  segmentation faults when running Sinatra. Support will continue at least
+  until the release of Ruby 1.9.4/2.0 and support for the latest 1.9 release
+  will continue as long as it is still supported by the Ruby core team.
+
+[ Ruby 1.9.3 ]
+  While we test against 1.9.3 we do not know of anyone using it in
+  production yet, and as with 1.9.2, you might want to be careful with
+  patch level zero.
 
 [ Rubinius ]
-  Rubinius is officially supported (Rubinius >= 1.2.3), everything, including
+  Rubinius is officially supported (Rubinius >= 1.2.4), everything, including
   all template languages, works.
 
 [ JRuby ]
-  JRuby is officially supported (JRuby >= 1.6.1). No issues with third party
+  JRuby is officially supported (JRuby >= 1.6.3). No issues with third party
   template libraries are known, however, if you choose to use JRuby, please
   look into JRuby rack handlers, as the Thin web server is not fully supported
   on JRuby. JRuby's support for C extensions is still experimental, which only
   affects RDiscount and Redcarpet at the moment.
-
-<b>Ruby 1.8.6 is no longer supported.</b> If you want to run with 1.8.6,
-downgrade to Sinatra 1.2, which will receive bug fixes until Sinatra 1.4.0 is
-released.
 
 We also keep an eye on upcoming Ruby versions.
 
@@ -1687,18 +1845,22 @@ The following Ruby implementations are not officially supported but still are
 known to run Sinatra:
 
 * Older versions of JRuby and Rubinius
+* Ruby Enterprise Edition
 * MacRuby, Maglev, IronRuby
-* Ruby 1.9.0 and 1.9.1
+* Ruby 1.9.0 and 1.9.1 (but we do recommend against using those)
 
 Not being officially supported means if things only break there and not on a
 supported platform, we assume it's not our issue but theirs.
 
-We also run our CI against ruby-head (the upcoming 1.9.3), but we can't
-guarantee anything, since it is constantly moving. Expect 1.9.3p0 to be
+We also run our CI against ruby-head (the upcoming 1.9.4), but we can't
+guarantee anything, since it is constantly moving. Expect 1.9.4p0 to be
 supported.
 
 Sinatra should work on any operating system supported by the chosen Ruby
 implementation.
+
+You will not be able to run Sinatra on Cardinal, SmallRuby, BlueRuby or any
+Ruby version prior to 1.8.7 as of the time being.
 
 == The Bleeding Edge
 
@@ -1785,3 +1947,4 @@ SemVerTag.
 * API documentation for the {latest release}[http://rubydoc.info/gems/sinatra]
   or the {current HEAD}[http://rubydoc.info/github/sinatra/sinatra] on
   http://rubydoc.info
+* {CI server}[http://ci.rkh.im/view/Sinatra/]

@@ -54,12 +54,12 @@ class ResultTest < Test::Unit::TestCase
   it "sets status, headers, and body when result is a Rack response tuple" do
     mock_app {
       get '/' do
-        [205, {'Content-Type' => 'foo/bar'}, 'Hello World']
+        [203, {'Content-Type' => 'foo/bar'}, 'Hello World']
       end
     }
 
     get '/'
-    assert_equal 205, status
+    assert_equal 203, status
     assert_equal 'foo/bar', response['Content-Type']
     assert_equal 'Hello World', body
   end

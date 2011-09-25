@@ -1,6 +1,18 @@
 = 1.3.0 / Not Yet Released
 
+ * Added `stream` helper method for easily creating streaming APIs, Server
+   Sent Events or even WebSockets. See README for more on that topic.
+   (Konstantin Haase)
+
+ * If a HTTP 1.1 client is redirected from a different verb than GET, use 303
+   instead of 302 by default. You may still pass 302 explicitly. Fixes AJAX
+   redirects in Internet Explorer 9 (to be fair, everyone else is doing it
+   wrong and IE is behaving correct). (Konstantin Haase)
+
  * Added support for HTTP PATCH requests. (Konstantin Haase)
+
+ * Use rack-protection to defend against common opportunistic attacks.
+   (Josh Lane, Jacob Burkhart, Konstantin Haase)
 
  * Support for Creole templates, Creole is a standardized wiki markup,
    supported by many wiki implementations. (Konstanin Haase)
@@ -14,9 +26,9 @@
    version. This makes Sinatra confirm with RFC 2396 section 2.2 and RFC 2616
    section 3.2.3 (escaped reserved characters should not be treated like the
    unescaped version), meaning that "/:name" will also match `/foo%2Fbar`, but
-   not `/foo/bar`. To avoid incompatibility, pattern matching has been adjusted.
-   Moreover, since we do no longer need to keep an unescaped version of
-   path_info around, we handle all changes to `env['PATH_INFO']` correctly.
+   not `/foo/bar`. To avoid incompatibility, pattern matching has been
+   adjusted. Moreover, since we do no longer need to keep an unescaped version
+   of path_info around, we handle all changes to `env['PATH_INFO']` correctly.
    (Konstantin Haase)
 
  * `settings.app_file` now defaults to the file subclassing `Sinatra::Base` in
@@ -26,35 +38,65 @@
    was enabled or not. Also, expose that logger with the `logger` helper
    method. (Konstantin Haase)
 
- * The sessions setting now may be an options hash. (Konstantin Haase)
+ * The sessions setting may be an options hash now. (Konstantin Haase)
 
- * Important: 1.8.6 support has been dropped. This version also depends on at
-   least Rack 1.3.0. This means that it is incompatible to Rails prior to 3.1.0.
-   Please use 1.2.x if you require an earlier version for Ruby or Rack, which we
-   will continue to supply with bug fixes. (Konstantin Haase)
+ * Important: Ruby 1.8.6 support has been dropped. This version also depends
+   on at least Rack 1.3.0. This means that it is incompatible with Rails prior
+   to 3.1.0. Please use 1.2.x if you require an earlier version of Ruby or
+   Rack, which we will continue to supply with bug fixes. (Konstantin Haase)
 
- * It is now possible to use a different target class for the top level DSL (aka
-   classic style) than `Sinatra::Application` by setting `Delegator.target`.
-   This was mainly introduced to ease testing. (Konstantin Haase)
+ * Renamed `:public` to `:public_folder` to avoid overriding Ruby's built-in
+   `public` method/keyword. `set(:public, ...)` is still possible but shows a
+   warning. (Konstantin Haase)
 
- * Error handlers defined for an error class will now also handle subclasses of
-   that class, unless more specific error handlers exist. (Konstantin Haase)
+ * It is now possible to use a different target class for the top level DSL
+   (aka classic style) than `Sinatra::Application` by setting
+   `Delegator.target`. This was mainly introduced to ease testing. (Konstantin
+   Haase)
+
+ * Error handlers defined for an error class will now also handle subclasses
+   of that class, unless more specific error handlers exist. (Konstantin
+   Haase)
 
  * Error handling respects Exception#code, again. (Konstantin Haase)
 
  * Changing a setting will merge hashes: `set(:x, :a => 1); set(:x :b => 2)`
-   will result in `{:a => 1, :b => 2}`. Use `set(:x, {:a => 1}, true)` to avoid
-   this behavior. (Konstantin Haase)
+   will result in `{:a => 1, :b => 2}`. Use `set(:x, {:a => 1}, true)` to
+   avoid this behavior. (Konstantin Haase)
 
  * Added `request.accept?` and `request.preferred_type` to ease dealing with
    `Accept` headers. (Konstantin Haase)
 
+ * Added `:static_cache_control` setting to automatically set cache control
+   headers to static files. (Kenichi Nakamura)
+
+ * Added `informal?`, `success?`, `redirect?`, `client_error?`,
+   `server_error?` and `not_found?` helper methods to ease dealing with status
+   codes. (Konstantin Haase)
+
  * Uses SecureRandom to generate default session secret. (Konstantin Haase)
 
- * `Sinatra.run!` now prints to stderr rather than stdout. (Andrew Armenia)
+ * The `attachment` helper will set Content-Type (if it hasn't been set yet)
+   depending on the supplied file name. (Vasiliy Ermolovich)
+
+ * Conditional requests on `etag` helper now work properly for unsafe HTTP
+   methods. (Matthew Schinckel, Konstantin Haase)
+
+ * The `last_modified` helper does not stop execution and change the status code
+   if the status code is something different than 200. (Konstantin Haase)
+
+ * Added support for If-Unmodified-Since header. (Konstantin Haase)
+
+ * `Sinatra::Base.run!` now prints to stderr rather than stdout. (Andrew
+   Armenia)
+
+ * `Sinatra::Base.run!` takes a block allowing access to the Rack handler.
+   (David Waite)
 
  * Automatic `app_file` detection now works in directories containing brackets
    (Konstantin Haase)
+
+ * Exception objects are now passed to error handlers. (Konstantin Haase)
 
  * Improved documentation. (Emanuele Vicentini, Peter Higgins, Takanori
    Ishikawa, Konstantin Haase)
@@ -65,10 +107,23 @@
    allows you to run Sinatra with custom Rack handlers, like Kirk or Mongrel2.
    Example: `ruby app.rb -s Mongrel2` (Konstantin Haase)
 
- * Middleware setup is now distributed across multiple methods, allowing Sinatra
-   extensions to easily hook into the setup process. (Konstantin Haase)
+ * Ignore `to_ary` on response bodies. Fixes compatibility to Rails 3.1.
+   (Konstantin Haase)
+
+ * Middleware setup is now distributed across multiple methods, allowing
+   Sinatra extensions to easily hook into the setup process. (Konstantin
+   Haase)
 
  * Internal refactoring and minor performance improvements. (Konstantin Haase)
+
+ * Move Sinatra::VERSION to separate file, so it can be checked without
+   loading Sinatra. (Konstantin Haase)
+
+ * Command line options now complain if value passed to `-p` is not a valid
+   integer. (Konstantin Haase)
+
+ * Fix handling of broken query params when displaying exceptions. (Luke
+   Jahnke)
 
 = 1.2.7 (backports release) / Not Yet Released
 
@@ -77,6 +132,9 @@ Custom changes:
  * Fix Ruby 1.8.6 issue with Accept header parsing. (Konstantin Haase)
 
 Backported from 1.3.0:
+
+ * Ignore `to_ary` on response bodies. Fixes compatibility to Rails 3.1.
+   (Konstantin Haase)
 
  * `Sinatra.run!` now prints to stderr rather than stdout. (Andrew Armenia)
 
@@ -93,6 +151,12 @@ Backported from 1.3.0:
    Example: `ruby app.rb -s Mongrel2` (Konstantin Haase)
 
  * Fix uninitialized instance variable warning. (David Kellum)
+
+ * Command line options now complain if value passed to `-p` is not a valid
+   integer. (Konstantin Haase)
+
+ * Fix handling of broken query params when displaying exceptions. (Luke
+   Jahnke)
 
 = 1.2.6 / 2011-05-01
 

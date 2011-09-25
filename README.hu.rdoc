@@ -99,9 +99,9 @@ tervezhetők, így például az user agent karakterláncot alapul véve:
 
 A statikus fájlok kiszolgálása a <tt>./public</tt> könyvtárból
 történik, de természetesen más könyvtárat is megadhatsz erre a célra,
-mégpedig a <tt>:public</tt> kapcsoló beállításával:
+mégpedig a <tt>:public_folder</tt> kapcsoló beállításával:
 
-  set :public, File.dirname(__FILE__) + '/static'
+  set :public_folder, File.dirname(__FILE__) + '/static'
 
 Fontos mgejegyezni, hogy a nyilvános könyvtár neve nem szerepel az URL-ben.
 A <tt>./public/css/style.css</tt> fájl az

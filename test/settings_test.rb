@@ -359,13 +359,13 @@ class SettingsTest < Test::Unit::TestCase
       assert ! @base.static?
     end
 
-    it 'is enabled on Base when public is set and exists' do
+    it 'is enabled on Base when public_folder is set and exists' do
       @base.set :environment, :development
-      @base.set :public, File.dirname(__FILE__)
+      @base.set :public_folder, File.dirname(__FILE__)
       assert @base.static?
     end
 
-    it 'is enabled on Base when root is set and root/public exists' do
+    it 'is enabled on Base when root is set and root/public_folder exists' do
       @base.set :environment, :development
       @base.set :root, File.dirname(__FILE__)
       assert @base.static?
@@ -375,16 +375,35 @@ class SettingsTest < Test::Unit::TestCase
       assert ! @application.static?
     end
 
-    it 'is enabled on Application when public is set and exists' do
+    it 'is enabled on Application when public_folder is set and exists' do
       @application.set :environment, :development
-      @application.set :public, File.dirname(__FILE__)
+      @application.set :public_folder, File.dirname(__FILE__)
       assert @application.static?
     end
 
-    it 'is enabled on Application when root is set and root/public exists' do
+    it 'is enabled on Application when root is set and root/public_folder exists' do
       @application.set :environment, :development
       @application.set :root, File.dirname(__FILE__)
       assert @application.static?
+    end
+
+    it 'is possible to use Module#public' do
+      @base.send(:define_method, :foo) { }
+      @base.send(:private, :foo)
+      assert !@base.public_method_defined?(:foo)
+      @base.send(:public, :foo)
+      assert @base.public_method_defined?(:foo)
+    end
+
+    it 'is possible to use the keyword public in a sinatra app' do
+      app = Sinatra.new do
+        private
+        def priv; end
+        public
+        def pub; end
+      end
+      assert !app.public_method_defined?(:priv)
+      assert app.public_method_defined?(:pub)
     end
   end
 
@@ -450,18 +469,18 @@ class SettingsTest < Test::Unit::TestCase
     end
   end
 
-  describe 'public' do
+  describe 'public_folder' do
     it 'is nil if root is not set' do
-      assert @base.public.nil?
-      assert @application.public.nil?
+      assert @base.public_folder.nil?
+      assert @application.public_folder.nil?
     end
 
     it 'is set to root joined with public/' do
       @base.root = File.dirname(__FILE__)
-      assert_equal File.dirname(__FILE__) + "/public", @base.public
+      assert_equal File.dirname(__FILE__) + "/public", @base.public_folder
 
       @application.root = File.dirname(__FILE__)
-      assert_equal File.dirname(__FILE__) + "/public", @application.public
+      assert_equal File.dirname(__FILE__) + "/public", @application.public_folder
     end
   end
 
@@ -469,6 +488,51 @@ class SettingsTest < Test::Unit::TestCase
     it 'is disabled by default' do
       assert ! @base.lock?
       assert ! @application.lock?
+    end
+  end
+
+  describe 'protection' do
+    class MiddlewareTracker < Rack::Builder
+      def self.track
+        Rack.send :remove_const, :Builder
+        Rack.const_set :Builder, MiddlewareTracker
+        MiddlewareTracker.used.clear
+        yield
+      ensure
+        Rack.send :remove_const, :Builder
+        Rack.const_set :Builder, MiddlewareTracker.superclass
+      end
+
+      def self.used
+        @used ||= []
+      end
+
+      def use(middleware, *)
+        MiddlewareTracker.used << middleware
+        super
+      end
+    end
+
+    it 'sets up Rack::Protection' do
+      MiddlewareTracker.track do
+        Sinatra::Base.new
+        assert_include MiddlewareTracker.used, Rack::Protection
+      end
+    end
+
+    it 'sets up Rack::Protection::PathTraversal' do
+      MiddlewareTracker.track do
+        Sinatra::Base.new
+        assert_include MiddlewareTracker.used, Rack::Protection::PathTraversal
+      end
+    end
+
+    it 'does not set up Rack::Protection::PathTraversal when disabling it' do
+      MiddlewareTracker.track do
+        Sinatra.new { set :protection, :except => :path_traversal }.new
+        assert_include MiddlewareTracker.used, Rack::Protection
+        assert !MiddlewareTracker.used.include?(Rack::Protection::PathTraversal)
+      end
     end
   end
 end
