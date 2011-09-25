@@ -1210,19 +1210,26 @@ module Sinatra
       end
 
       def compile(path)
-        keys = []
-        if path.respond_to? :to_str
-          special_chars = %w{. + ( ) $}
-          pattern = path.to_str.gsub(/[^\?\%\\\/\:\*\w]/) { |c| encoded(c) }
-          pattern.gsub! /((:\w+)|\*)/ do |match|
-            if match == "*"
-              keys << 'splat'
-              "(.*?)"
-            else
-              keys << $2[1..-1]
-              "([^/?#]+)"
-            end
-          end
+        keys   = []
+        path   = if path.respond_to?(:to_str)
+          pattern = path.dup.to_str.
+            gsub(/[^\?\%\\\/\:\*\w\.]/) { |m| encoded(m) }.
+            concat(path[-1] == ?/ ? '' : '/?').
+            gsub(/\/\(/, '(?:/').
+            gsub(/(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/) {
+              slash, format, key, capture, optional = $1, $2, $3, $4, $5
+              keys.push(key)
+              slash ||= ''
+              (optional ? '' : slash) +
+              '(?:' +
+              (optional ? slash : '') +
+              (format || '') +
+              (capture || (format ? '([^/.]+?)' : '([^/]+?)')) +
+              ')' +
+              (optional || '')
+            }.
+            gsub(/([\/.])/) { |m| '\%s' % m }.
+            gsub(/\*/) { keys.push('splat'); '(.*?)' }
           [/^#{pattern}$/, keys]
         elsif path.respond_to?(:keys) && path.respond_to?(:match)
           [path, path.keys]
@@ -1256,8 +1263,7 @@ module Sinatra
         extensions << Module.new(&block) if block_given?
         @extensions += extensions
         extensions.each do |extension|
-          extend extension
-          extension.registered(self) if extension.respond_to?(:registered)
+          extension.respond_to?(:registered) ? extension.registered(self) : extend(extension)
         end
       end
 
