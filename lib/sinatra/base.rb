@@ -845,7 +845,7 @@ module Sinatra
       return unless path.start_with?(public_dir) and File.file?(path)
 
       env['sinatra.static_file'] = path
-      cache_control *settings.static_cache_control if settings.static_cache_control?
+      cache_control(*settings.static_cache_control) if settings.static_cache_control?
       send_file path, :disposition => nil
     end
 
@@ -1213,7 +1213,7 @@ module Sinatra
         keys = []
         if path.respond_to? :to_str
           pattern = path.to_str.gsub(/[^\?\%\\\/\:\*\w]/) { |c| encoded(c) }
-          pattern.gsub! /((:\w+)|\*)/ do |match|
+          pattern.gsub!(/((:\w+)|\*)/) do |match|
             if match == "*"
               keys << 'splat'
               "(.*?)"
