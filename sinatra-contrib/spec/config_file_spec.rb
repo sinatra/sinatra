@@ -41,4 +41,13 @@ describe Sinatra::ConfigFile do
     config_file('missing_env.yml') { set :foo => 42, :environment => :test }
     settings.foo.should == 42
   end
+
+  it 'should prioritize settings in latter files' do
+    # first let's check the test is actually working properly
+    config_file 'key_value.yml'
+    settings.foo.should == 'bar'
+    # now test it
+    config_file 'key_value_override.yml'
+    settings.foo.should == 'foo'
+  end
 end
