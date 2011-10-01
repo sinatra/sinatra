@@ -19,10 +19,17 @@ module Rack
       end
 
       def cleanup(path)
-        return cleanup("/" << path)[1..-1] unless path[0] == ?/
-        escaped = ::File.expand_path path.gsub('%2e', '.').gsub('%2f', '/')
-        escaped << '/' if escaped[-1] != ?/ and path =~ /\/\.{0,2}$/
-        escaped.gsub(/\/\/+/, '/')
+        parts     = []
+        unescaped = path.gsub('%2e', '.').gsub('%2f', '/')
+
+        unescaped.split('/').each do |part|
+          next if part.empty? or part == '.'
+          part == '..' ? parts.pop : parts << part
+        end
+
+        cleaned = '/' << parts.join('/')
+        cleaned << '/' if parts.any? and unescaped =~ /\/\.{0,2}$/
+        cleaned
       end
     end
   end
