@@ -333,14 +333,14 @@ module Sinatra
 
       # Indicates with a +glob+ which files should be reloaded if they
       # have been modified.  It can be called several times.
-      def also_reload(glob)
-        Dir[glob].each { |path| Watcher::List.for(self).watch_file(path) }
+      def also_reload(*glob)
+        Dir[*glob].each { |path| Watcher::List.for(self).watch_file(path) }
       end
 
       # Indicates with a +glob+ which files should not be reloaded even if
       # they have been modified.  It can be called several times.
-      def dont_reload(glob)
-        Dir[glob].each { |path| Watcher::List.for(self).ignore(path) }
+      def dont_reload(*glob)
+        Dir[*glob].each { |path| Watcher::List.for(self).ignore(path) }
       end
 
     private
