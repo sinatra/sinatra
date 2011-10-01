@@ -25,6 +25,7 @@ GEM
     erubis (2.7.0)
     escape_utils (0.2.3)
     eventmachine (0.12.10)
+    eventmachine (0.12.10-java)
     haml (3.1.2)
     json (1.5.1)
     json (1.5.1-java)
@@ -58,9 +59,11 @@ DEPENDENCIES
   erubis
   haml
   json
+  rack
   rake
   rspec (~> 2.3)
   sinatra!
   sinatra-contrib!
   slim
+  tilt
   yajl-ruby
