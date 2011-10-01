@@ -57,6 +57,7 @@ Gem::Specification.new do |s|
     test/middleware_test.rb
     test/nokogiri_test.rb
     test/public/favicon.ico
+    test/rack_test.rb
     test/radius_test.rb
     test/rdoc_test.rb
     test/request_test.rb
