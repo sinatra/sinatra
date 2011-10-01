@@ -1,7 +1,7 @@
 # Run `rake sinatra-contrib.gemspec` to update the gemspec.
 Gem::Specification.new do |s|
   s.name        = "sinatra-contrib"
-  s.version     = "1.3.0"
+  s.version     = "1.3.1"
   s.description = "Collection of useful Sinatra extensions"
   s.homepage    = "http://github.com/sinatra/sinatra-contrib"
   s.summary     = s.description
@@ -56,6 +56,7 @@ Gem::Specification.new do |s|
     "sinatra-contrib.gemspec",
     "spec/capture_spec.rb",
     "spec/config_file/key_value.yml",
+    "spec/config_file/key_value_override.yml",
     "spec/config_file/missing_env.yml",
     "spec/config_file/with_envs.yml",
     "spec/config_file/with_nested_envs.yml",
