@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
 require 'open-uri'
 require 'yaml'
+require 'sinatra/contrib/version'
 
 desc "run specs"
 task(:spec) { ruby '-S rspec spec -c' }
@@ -28,7 +29,6 @@ task :doc => 'doc:all'
 
 desc "generate gemspec"
 task 'sinatra-contrib.gemspec' do
-  require 'sinatra/contrib/version'
   content = File.read 'sinatra-contrib.gemspec'
 
   fields = {
@@ -57,5 +57,19 @@ task :travis, [:branch] do |t, a|
   data["notifications"]["recipients"] << "ohhgabriel@gmail.com"
   File.open('.travis.yml', 'w') { |f| f << data.to_yaml }
   system 'git add .travis.yml && git diff --cached .travis.yml'
+end
+
+task :release => :gemspec do
+  sh <<-SH
+    rm -Rf sinatra-contrib*.gem &&
+    gem build sinatra-contrib.gemspec &&
+    gem install sinatra-contrib*.gem --local &&
+    gem push sinatra-contrib*.gem  &&
+    git commit --allow-empty -a -m '#{Sinatra::Contrib::VERSION} release'  &&
+    git tag -s v#{Sinatra::Contrib::VERSION} -m '#{Sinatra::Contrib::VERSION} release'  &&
+    git tag -s #{Sinatra::Contrib::VERSION} -m '#{Sinatra::Contrib::VERSION} release'  &&
+    git push && (git push sinatra || true) &&
+    git push --tags && (git push sinatra --tags || true)
+  SH
 end
 
