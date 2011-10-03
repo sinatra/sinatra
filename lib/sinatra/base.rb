@@ -247,11 +247,11 @@ module Sinatra
       def self.defer(*)    yield end
 
       def initialize(scheduler = self.class, keep_open = false, &back)
-        @back, @scheduler, @callback, @keep_open = back.to_proc, scheduler, nil, keep_open
+        @back, @scheduler, @callbacks, @keep_open = back.to_proc, scheduler, [], keep_open
       end
 
       def close
-        @scheduler.schedule { @callback.call if @callback }
+        @scheduler.schedule { @callbacks.each { |c| c.call }}
       end
 
       def each(&front)
@@ -272,7 +272,7 @@ module Sinatra
       end
 
       def callback(&block)
-        @callback = block
+        @callbacks << block
       end
 
       alias errback callback
