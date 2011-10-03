@@ -1,3 +1,5 @@
+= 1.3.1 / Not Yet Released
+
 = 1.3.0 / 2011-09-30
 
  * Added `stream` helper method for easily creating streaming APIs, Server
