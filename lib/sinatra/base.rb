@@ -247,10 +247,13 @@ module Sinatra
       def self.defer(*)    yield end
 
       def initialize(scheduler = self.class, keep_open = false, &back)
-        @back, @scheduler, @callbacks, @keep_open = back.to_proc, scheduler, [], keep_open
+        @back, @scheduler, @keep_open = back.to_proc, scheduler, keep_open
+        @callbacks, @closed = [], false
       end
 
       def close
+        return if @closed
+        @closed = true
         @scheduler.schedule { @callbacks.each { |c| c.call }}
       end
 

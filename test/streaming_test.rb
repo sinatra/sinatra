@@ -107,4 +107,9 @@ class StreamingTest < Test::Unit::TestCase
     scheduler.defer!
     assert_raise(RuntimeError) { scheduler.schedule! }
   end
+
+  it 'does not trigger an infinite loop if you call close in a callback' do
+    stream = Stream.new { |out| out.callback { out.close }}
+    stream.each { |str| }
+  end
 end
