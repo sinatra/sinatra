@@ -19,5 +19,10 @@ describe Rack::Protection::PathTraversal do
     }.each do |a, b|
       it("replaces #{a.inspect} with #{b.inspect}") { get(a).body.should == b }
     end
+
+    it 'should be able to deal with PATH_INFO = nil (fcgi?)' do
+      app = Rack::Protection::PathTraversal.new(proc { 42 })
+      app.call({}).should be == 42
+    end
   end
 end
