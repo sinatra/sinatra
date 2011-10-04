@@ -1360,8 +1360,8 @@ module Sinatra
 
       def setup_protection(builder)
         return unless protection?
-        options = Hash === protection ? protection.dup : {:except => [:escaped_params]}
-        options[:except] = Array options[:except]
+        options = Hash === protection ? protection.dup : {}
+        options[:except] = Array(options[:except] || :escaped_params)
         options[:except] += [:session_hijacking, :remote_token] unless sessions?
         builder.use Rack::Protection, options
       end
