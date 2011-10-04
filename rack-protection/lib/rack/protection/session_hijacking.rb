@@ -14,8 +14,7 @@ module Rack
     class SessionHijacking < Base
       default_reaction :drop_session
       default_options :tracking_key => :tracking, :encrypt_tracking => true,
-        :track => %w[HTTP_USER_AGENT HTTP_ACCEPT_ENCODING HTTP_ACCEPT_LANGUAGE
-          HTTP_VERSION]
+        :track => %w[HTTP_USER_AGENT HTTP_ACCEPT_ENCODING HTTP_ACCEPT_LANGUAGE]
 
       def accepts?(env)
         session = session env

@@ -31,10 +31,10 @@ describe Rack::Protection::SessionHijacking do
     session.should be_empty
   end
 
-  it "denies requests with a changing Version header"do
+  it "accepts requests with a changing Version header"do
     session = {:foo => :bar}
     get '/', {}, 'rack.session' => session, 'HTTP_VERSION' => '1.0'
     get '/', {}, 'rack.session' => session, 'HTTP_VERSION' => '1.1'
-    session.should be_empty
+    session[:foo].should == :bar
   end
 end
