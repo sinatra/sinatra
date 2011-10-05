@@ -1,9 +1,10 @@
-= 1.3.2 / Not Yet Released
-
 = 1.3.1 / 2011-10-05
 
  * Support adding more than one callback to the stream object. (Konstantin
    Haase)
+
+ * Fix for infinite loop when streaming on 1.9.2 with Thin from a modular
+   application (Konstantin Haase)
 
 = 1.3.0 / 2011-09-30
 
