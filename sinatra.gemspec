@@ -7,7 +7,7 @@ Gem::Specification.new 'sinatra', Sinatra::VERSION do |s|
   s.authors           = ["Blake Mizerany", "Ryan Tomayko", "Simon Rozet", "Konstantin Haase"]
   s.email             = "sinatrarb@googlegroups.com"
   s.homepage          = "http://www.sinatrarb.com/"
-  s.files             = `git ls-files`.split("\n")
+  s.files             = `git ls-files`.split("\n") - %w[.gitignore .travis.yml]
   s.test_files        = s.files.select { |p| p =~ /^test\/.*_test.rb/ }
   s.extra_rdoc_files  = s.files.select { |p| p =~ /^README/ } << 'LICENSE'
   s.rdoc_options      = %w[--line-numbers --inline-source --title Sinatra --main README.rdoc]
