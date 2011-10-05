@@ -185,6 +185,10 @@ if defined?(Gem)
   end
 
   task 'release' => ['test', package('.gem')] do
+    if File.read("CHANGES") =~ /= \d\.\d\.\d - not yet released$/i
+      fail 'please update changes first'
+    end
+
     sh <<-SH
       gem install #{package('.gem')} --local &&
       gem push #{package('.gem')}  &&
