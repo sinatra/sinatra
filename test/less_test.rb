@@ -16,7 +16,7 @@ class LessTest < Test::Unit::TestCase
   it 'renders inline Less strings' do
     less_app { less "@white_color: #fff; #main { background-color: @white_color }" }
     assert ok?
-    assert_body "#main {background-color: #ffffff;}"
+    assert_equal "#main{background-color:#ffffff;}", body.gsub(/\s/, "")
   end
 
   it 'defaults content type to css' do
@@ -45,13 +45,13 @@ class LessTest < Test::Unit::TestCase
   it 'renders .less files in views path' do
     less_app { less :hello }
     assert ok?
-    assert_body "#main {background-color: #ffffff;}"
+    assert_equal "#main{background-color:#ffffff;}", body.gsub(/\s/, "")
   end
 
   it 'ignores the layout option' do
     less_app { less :hello, :layout => :layout2 }
     assert ok?
-    assert_body "#main {background-color: #ffffff;}"
+    assert_equal "#main{background-color:#ffffff;}", body.gsub(/\s/, "")
   end
 
   it "raises error if template not found" do
