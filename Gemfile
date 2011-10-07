@@ -29,7 +29,6 @@ gem 'haml', '>= 3.0'
 gem 'sass'
 gem 'builder'
 gem 'erubis'
-gem 'less', '~> 2.0'
 gem 'liquid'
 gem 'slim', '~> 1.0'
 gem 'temple', '!= 0.3.3'
@@ -45,6 +44,12 @@ if RUBY_ENGINE == 'jruby'
   gem 'jruby-openssl'
 else
   gem 'nokogiri'
+end
+
+if RUBY_ENGINE == "ruby"
+  gem 'less', '~> 2.0'
+else
+  gem 'less', '~> 1.0'
 end
 
 unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1" && !ENV['TRAVIS']
