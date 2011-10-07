@@ -51,7 +51,7 @@ module Sinatra
     private
 
     def accept_entry(entry)
-      type, *options = entry.gsub(/\s/, '').split(';')
+      type, *options = entry.delete(' ').split(';')
       quality = 0 # we sort smalles first
       options.delete_if { |e| quality = 1 - e[2..-1].to_f if e.start_with? 'q=' }
       [type, [quality, type.count('*'), 1 - options.size]]
@@ -311,7 +311,7 @@ module Sinatra
         hash = {}
       end
 
-      values = values.map { |value| value.to_s.tr('_','-') }
+      values.map! { |value| value.to_s.tr('_','-') }
       hash.each do |key, value|
         key = key.to_s.tr('_', '-')
         value = value.to_i if key == "max-age"
