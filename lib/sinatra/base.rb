@@ -503,85 +503,42 @@ module Sinatra
       attr_accessor :content_type
     end
 
+    ENGINES = [:builder, :coffee, :creole, :erb, :erubis, :haml, :less, :liquid, :markaby,
+               :markdown, :nokogiri, :radius, :rdoc, :sass, :scss, :slim, :textile]
+
     def initialize
       super
       @default_layout = :layout
     end
 
-    def erb(template, options={}, locals={})
-      render :erb, template, options, locals
-    end
-
-    def erubis(template, options={}, locals={})
-      warn "Sinatra::Templates#erubis is deprecated and will be removed, use #erb instead.\n" \
-        "If you have Erubis installed, it will be used automatically."
-      render :erubis, template, options, locals
-    end
-
-    def haml(template, options={}, locals={})
-      render :haml, template, options, locals
-    end
-
-    def sass(template, options={}, locals={})
-      options.merge! :layout => false, :default_content_type => :css
-      render :sass, template, options, locals
-    end
-
-    def scss(template, options={}, locals={})
-      options.merge! :layout => false, :default_content_type => :css
-      render :scss, template, options, locals
-    end
-
-    def less(template, options={}, locals={})
-      options.merge! :layout => false, :default_content_type => :css
-      render :less, template, options, locals
-    end
-
-    def builder(template=nil, options={}, locals={}, &block)
-      options[:default_content_type] = :xml
-      render_ruby(:builder, template, options, locals, &block)
-    end
-
-    def liquid(template, options={}, locals={})
-      render :liquid, template, options, locals
-    end
-
-    def markdown(template, options={}, locals={})
-      render :markdown, template, options, locals
-    end
-
-    def textile(template, options={}, locals={})
-      render :textile, template, options, locals
-    end
-
-    def rdoc(template, options={}, locals={})
-      render :rdoc, template, options, locals
-    end
-
-    def radius(template, options={}, locals={})
-      render :radius, template, options, locals
-    end
-
-    def markaby(template=nil, options={}, locals={}, &block)
-      render_ruby(:mab, template, options, locals, &block)
-    end
-
-    def coffee(template, options={}, locals={})
-      options.merge! :layout => false, :default_content_type => :js
-      render :coffee, template, options, locals
-    end
-
-    def nokogiri(template=nil, options={}, locals={}, &block)
-      options[:default_content_type] = :xml
-      render_ruby(:nokogiri, template, options, locals, &block)
-    end
-
-    def slim(template, options={}, locals={})
-      render :slim, template, options, locals
-    end
-
-    def creole(template, options={}, locals={})
-      render :creole, template, options, locals
+    ENGINES.each do |engine|
+      if [:builder, :nokogiri].include? engine
+        define_method(engine) do |template = nil, options = {}, locals = {}, &block|
+          options[:default_content_type] = :xml
+          render_ruby(engine, template, options, locals, &block)
+        end
+      elsif [:markaby].include? engine
+        define_method(engine) do |template = nil, options = {}, locals = {}, &block|
+          render_ruby(:mab, template, options, locals, &block)
+        end
+      else
+        define_method(engine) do |template, options = {}, locals = {}, &block|
+          case engine
+          when :liquid, :markdown, :textile, :rdoc, :radius, :slim, :creole, :erb, :haml
+            render engine, template, options, locals
+          when :erubis
+            warn "Sinatra::Templates#erubis is deprecated and will be removed, use #erb instead.\n" \
+              "If you have Erubis installed, it will be used automatically."
+            render engine, template, options, locals
+          when :sass, :scss, :less
+            options.merge! :layout => false, :default_content_type => :css
+            render engine, template, options, locals
+          when :coffee
+            options.merge! :layout => false, :default_content_type => :js
+            render engine, template, options, locals
+          end
+        end
+      end
     end
 
     # Calls the given block for every possible template file in views,
