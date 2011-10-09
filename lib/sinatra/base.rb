@@ -609,8 +609,8 @@ module Sinatra
       options[:default_encoding] ||= settings.default_encoding
 
       # extract generic options
-      locals          = options.delete(:locals) || locals         || {}
-      views           = options.delete(:views)  || settings.views || "./views"
+      locals          = options.delete(:locals) || locals                || {}
+      views           = options.delete(:views)  || settings.views_folder || "./views"
       layout          = options.delete(:layout)
       eat_errors      = layout.nil?
       layout          = @default_layout if layout.nil? or layout == true
@@ -1122,8 +1122,13 @@ module Sinatra
       end
 
       def public=(value)
-        warn ":public is no longer used to avoid overloading Module#public, use :public_folder instead"
+        warn ":public is no longer used to avoid overloading Module#public; please use :public_folder instead"
         set(:public_folder, value)
+      end
+      
+      def views=(value)
+        warn ":views is no longer used in favor of matching the syntax used for setting the public folder; please use :views_folder instead"
+        set(:view_folder, value)
       end
 
    private
@@ -1508,12 +1513,12 @@ module Sinatra
 
     set :app_file, nil
     set :root, Proc.new { app_file && File.expand_path(File.dirname(app_file)) }
-    set :views, Proc.new { root && File.join(root, 'views') }
     set :reload_templates, Proc.new { development? }
     set :lock, false
     set :threaded, true
 
     set :public_folder, Proc.new { root && File.join(root, 'public') }
+    set :views_folder, Proc.new { root && File.join(root, 'views') }
     set :static, Proc.new { public_folder && File.exist?(public_folder) }
     set :static_cache_control, false
 
