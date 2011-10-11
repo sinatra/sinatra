@@ -40,7 +40,7 @@ if RUBY_VERSION > '1.8.6'
     gem 'nokogiri'
   end
   gem 'coffee-script', '>= 2.0', :group => 'coffee-script'
-  gem 'rdoc', :group => 'rdoc'
+  gem 'rdoc', '< 3.10', :group => 'rdoc'
 end
 
 platforms :ruby do
