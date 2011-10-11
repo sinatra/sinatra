@@ -19,9 +19,14 @@ gem 'ci_reporter', :group => :ci
 github = "git://github.com/%s.git"
 repos = { 'tilt' => github % "rtomayko/tilt", 'rack' => github % "rack/rack" }
 %w[tilt rack].each do |lib|
-  dep = (ENV[lib] || 'stable').sub "#{lib}-", ''
-  dep = nil if dep == 'stable'
-  dep = {:git => repos[lib], :branch => dep} if dep and dep !~ /(\d+\.)+\d+/
+  dep = case ENV[lib] || 'stable'
+        when 'stable'
+          nil
+        when /(\d+\.)+\d+/
+          "~> " + ENV[lib].sub("#{lib}-", '')
+        else
+          {:git => repos[lib], :branch => dep}
+        end
   gem lib, dep
 end
 
