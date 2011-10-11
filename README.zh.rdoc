@@ -492,6 +492,7 @@ Rack body对象或者HTTP状态码：
 需要引入 <tt>RDoc</tt> gem/library 以渲染RDoc模板：
 
   # 需要在你的应用中引入rdoc/markup/to_html
+  require "rdoc"
   require "rdoc/markup/to_html"
 
   get '/' do
