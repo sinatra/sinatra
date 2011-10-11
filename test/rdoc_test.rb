@@ -1,6 +1,7 @@
 require File.expand_path('../helper', __FILE__)
 
 begin
+require 'rdoc'
 require 'rdoc/markup/to_html'
 
 class RdocTest < Test::Unit::TestCase
