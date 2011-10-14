@@ -885,7 +885,7 @@ default, so if you inherit from <tt>Sinatra::Base</tt>, you probably want to
 enable it yourself:
 
   class MyApp < Sinatra::Base
-    configure(:production, :development) do
+    configure :production, :development do
       enable :logging
     end
   end
