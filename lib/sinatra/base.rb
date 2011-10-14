@@ -568,11 +568,14 @@ module Sinatra
       scope           = options.delete(:scope)         || self
 
       # compile and render template
-      layout_was      = @default_layout
-      @default_layout = false
-      template        = compile_template(engine, data, options, views)
-      output          = template.render(scope, locals, &block)
-      @default_layout = layout_was
+      begin
+        layout_was      = @default_layout
+        @default_layout = false
+        template        = compile_template(engine, data, options, views)
+        output          = template.render(scope, locals, &block)
+      ensure
+        @default_layout = layout_was
+      end
 
       # render layout
       if layout
