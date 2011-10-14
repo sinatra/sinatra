@@ -1711,6 +1711,16 @@ class HelpersTest < Test::Unit::TestCase
       assert !io.string.include?("INFO -- : Program started")
       assert !io.string.include?("WARN -- : Nothing to do")
     end
+
+    it 'does not create a logger when logging is set to nil' do
+      mock_app do
+        disable :logging
+        get('/') { logger.inspect }
+      end
+
+      get '/'
+      assert_body 'nil'
+    end
   end
 
   module ::HelperOne; def one; '1'; end; end

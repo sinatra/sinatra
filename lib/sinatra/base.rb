@@ -1353,14 +1353,27 @@ module Sinatra
 
       def setup_logging(builder)
         if logging?
-          builder.use Rack::CommonLogger
-          if logging.respond_to? :to_int
-            builder.use Rack::Logger, logging
-          else
-            builder.use Rack::Logger
-          end
+          setup_common_logger(builder)
+          setup_custom_logger(builder)
+        elsif logging == false
+          setup_null_logger(builder)
+        end
+      end
+
+      def setup_null_logger(builder)
+        builder.use Rack::NullLogger
+      end
+
+      def setup_common_logger(builder)
+        return if ["development", "deployment", nil].include? ENV["RACK_ENV"]
+        builder.use Rack::CommonLogger
+      end
+
+      def setup_custom_logger(builder)
+        if logging.respond_to? :to_int
+          builder.use Rack::Logger, logging
         else
-          builder.use Rack::NullLogger
+          builder.use Rack::Logger
         end
       end
 
