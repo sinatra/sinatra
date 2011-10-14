@@ -210,6 +210,7 @@ module Sinatra
           end
         end
       end
+      klass.set(:inline_templates, klass.app_file) if klass == Sinatra::Application
     end
 
     # Reloads the modified files, adding, updating and removing the
