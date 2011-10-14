@@ -1974,7 +1974,7 @@ SemVer que SemVerTag.
 * {IRC : #sinatra}[irc://chat.freenode.net/#sinatra] sur http://freenode.net
 * {IRC : #sinatra}[irc://chat.freenode.net/#sinatra] on http://freenode.net
 * {Sinatra Book}[http://sinatra-book.gittr.com] Tutoriels et recettes
-* {Sinatra Book Contrib}[http://sinatra-book-contrib.com/] Recettes contribuées
+* {Sinatra Recipes}[http://recipes.sinatrarb.com/] Recettes contribuées
   par la communauté
 * Documentation API de la {dernière version}[http://rubydoc.info/gems/sinatra]
   ou du {HEAD courant}[http://rubydoc.info/github/sinatra/sinatra] sur
