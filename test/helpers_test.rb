@@ -1714,7 +1714,7 @@ class HelpersTest < Test::Unit::TestCase
 
     it 'does not create a logger when logging is set to nil' do
       mock_app do
-        disable :logging
+        set :logging, nil
         get('/') { logger.inspect }
       end
 
