@@ -798,10 +798,14 @@ module Sinatra
     # Returns pass block.
     def process_route(pattern, keys, conditions, block = nil, values = [])
       @original_params ||= @params
-      route = @request.path_info
+      
+      # The %2F shuffle seems ugly. But '/' just happens to be our parameter separator.
+      # It deserves the extra treatment.
+      route = Rack::Utils.unescape @request.path_info.gsub('%2F', '%252F')
+      
       route = '/' if route.empty? and not settings.empty_path_info?
       if match = pattern.match(route)
-        values += match.captures.to_a.map { |v| force_encoding URI.decode(v) if v }
+        values += match.captures.to_a.map { |v| force_encoding v.gsub('%2F','/') if v }
         params =
           if keys.any?
             keys.zip(values).inject({}) do |hash,(k,v)|
@@ -1218,7 +1222,7 @@ module Sinatra
       def compile(path)
         keys = []
         if path.respond_to? :to_str
-          pattern = path.to_str.gsub(/[^\?\%\\\/\:\*\w]/) { |c| encoded(c) }
+          pattern = path.to_str.gsub(/[^\?\%\\\/\:\*\w\ ]/) { |c| encoded(c) }
           pattern.gsub!(/((:\w+)|\*)/) do |match|
             if match == "*"
               keys << 'splat'
@@ -1241,10 +1245,7 @@ module Sinatra
       end
 
       def encoded(char)
-        enc = URI.encode(char)
-        enc = "(?:#{Regexp.escape enc}|#{URI.encode char, /./})" if enc == char
-        enc = "(?:#{enc}|#{encoded('+')})" if char == " "
-        enc
+        "(?:#{Regexp.escape char}|#{URI.encode char, /./})"
       end
 
     public

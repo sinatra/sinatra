@@ -459,6 +459,43 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 'Hello World', body
   end
 
+  it "URL works with spaces within regexps" do
+    mock_app {
+      get %r{\A/regexp_space/([\w ]+)} do
+        assert_equal ['how are you'], params['captures']
+        nil
+      end
+    }
+
+    get '/regexp_space/how%20are%20you'
+    assert ok?
+  end
+
+  # pending:
+  # it "URL works with slashes within regexps" do
+  #   mock_app {
+  #     get %r{\A/regexp_slash/([\w\/]+)} do
+  #       assert_equal ['how/are/you'], params['captures']
+  #       nil
+  #     end
+  #   }
+  # 
+  #   get '/regexp_slash/how%2Fare%2Fyou'
+  #   assert ok?
+  # end
+
+  it "URL works with umlauts within regexps" do
+    mock_app {
+      get %r{\A/regexp_umlaut/([äöü])}u do          # the 'u' is only needed for ruby 1.8.7
+        assert_equal ['ö'], params['captures']
+        nil
+      end
+    }
+
+    get '/regexp_umlaut/%C3%B6'
+    assert ok?
+  end
+
   it 'makes regular expression captures available in params[:captures]' do
     mock_app {
       get(/^\/fo(.*)\/ba(.*)/) do
