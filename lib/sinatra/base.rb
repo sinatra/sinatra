@@ -1459,6 +1459,8 @@ module Sinatra
     end
   end
 
+  UBERKLASSE = Base
+
   # Execution context for classic style (top-level) applications. All
   # DSL methods executed on main are delegated to this class.
   #
