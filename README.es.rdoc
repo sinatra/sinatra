@@ -921,6 +921,11 @@ para <tt>Sinatra::Application</tt>.  Si heredaste de
     end
   end
 
+Para evitar que se inicialice cualquier middleware de logging, configurá
++logging+ a +nil+.  Tené en cuenta que, cuando hagas esto, +logger+ va a
+devolver +nil+.  Un caso común es cuando querés usar tu propio logger. Sinatra
+va a usar lo que encuentre en <tt>env['rack.logger']</tt>.
+
 === Tipos Mime
 
 Cuando usás <tt>send_file</tt> o archivos estáticos tal vez tengas tipos mime
