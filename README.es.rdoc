@@ -916,7 +916,7 @@ para <tt>Sinatra::Application</tt>.  Si heredaste de
 <tt>Sinatra::Base</tt>, probablemente quieras habilitarlo manualmente:
 
   class MiApp < Sinatra::Base
-    configure(:production, :development) do
+    configure :production, :development do
       enable :logging
     end
   end
