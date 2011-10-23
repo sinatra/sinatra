@@ -1300,7 +1300,7 @@ Podés acceder a estas opciones utilizando el método <tt>settings</tt>:
     ...
   end
 
-==== Configurando la Protección de Ataques
+=== Configurando la Protección de Ataques
 
 Sinatra usa {Rack::Protection}[https://github.com/rkh/rack-protection#readme]
 para defender a tu aplicación de los ataques más comunes.  Tenés que tener en
