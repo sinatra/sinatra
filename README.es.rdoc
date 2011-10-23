@@ -916,10 +916,15 @@ para <tt>Sinatra::Application</tt>.  Si heredaste de
 <tt>Sinatra::Base</tt>, probablemente quieras habilitarlo manualmente:
 
   class MiApp < Sinatra::Base
-    configure(:production, :development) do
+    configure :production, :development do
       enable :logging
     end
   end
+
+Para evitar que se inicialice cualquier middleware de logging, configurá
++logging+ a +nil+.  Tené en cuenta que, cuando hagas esto, +logger+ va a
+devolver +nil+.  Un caso común es cuando querés usar tu propio logger. Sinatra
+va a usar lo que encuentre en <tt>env['rack.logger']</tt>.
 
 === Tipos Mime
 
@@ -1300,7 +1305,7 @@ Podés acceder a estas opciones utilizando el método <tt>settings</tt>:
     ...
   end
 
-==== Configurando la Protección de Ataques
+=== Configurando la Protección de Ataques
 
 Sinatra usa {Rack::Protection}[https://github.com/rkh/rack-protection#readme]
 para defender a tu aplicación de los ataques más comunes.  Tenés que tener en
