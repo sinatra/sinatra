@@ -114,6 +114,8 @@ class RoutingTest < Test::Unit::TestCase
 
   it 'matches empty PATH_INFO to "" if a route is defined for ""' do
     mock_app do
+      disable :protection
+
       get '/' do
         'did not work'
       end

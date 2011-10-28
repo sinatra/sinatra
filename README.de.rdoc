@@ -1953,7 +1953,7 @@ SemVer und SemVerTag.
 * {Mailing-Liste}[http://groups.google.com/group/sinatrarb]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] auf http://freenode.net
 * {Sinatra Book}[http://sinatra-book.gittr.com] Kochbuch Tutorial
-* {Sinatra Book Contrib}[http://sinatra-book-contrib.com/] Sinatra-Rezepte aus
+* {Sinatra Recipes}[http://recipes.sinatrarb.com/] Sinatra-Rezepte aus
   der Community
 * API Dokumentation für die {aktuelle Version}[http://rubydoc.info/gems/sinatra]
   oder für {HEAD}[http://rubydoc.info/github/sinatra/sinatra] auf

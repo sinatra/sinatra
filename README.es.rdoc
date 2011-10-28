@@ -916,10 +916,15 @@ para <tt>Sinatra::Application</tt>.  Si heredaste de
 <tt>Sinatra::Base</tt>, probablemente quieras habilitarlo manualmente:
 
   class MiApp < Sinatra::Base
-    configure(:production, :development) do
+    configure :production, :development do
       enable :logging
     end
   end
+
+Para evitar que se inicialice cualquier middleware de logging, configurá
++logging+ a +nil+.  Tené en cuenta que, cuando hagas esto, +logger+ va a
+devolver +nil+.  Un caso común es cuando querés usar tu propio logger. Sinatra
+va a usar lo que encuentre en <tt>env['rack.logger']</tt>.
 
 === Tipos Mime
 
@@ -1054,6 +1059,23 @@ de cacheo con proxys inversos, mirá
 Usá la configuración <tt>:static_cache_control</tt> para agregar el encabezado
 <tt>Cache-Control</tt> a archivos estáticos (ver la sección de configuración
 para más detalles).
+
+De acuerdo con la RFC 2616 tu aplicación debería comportarse diferente si a las
+cabeceras If-Match o If-None-Match se le asigna el valor <tt>*</tt> cuando el
+recurso solicitado ya existe.  Sinatra asume para peticiones seguras (como get)
+e idempotentes (como put) que el recurso existe, mientras que para el resto
+(como post), que no.  Podes cambiar este comportamiento con la opción
+<tt>:new_resource</tt>:
+
+  get '/crear' do
+    etag '', :new_resource => true
+    Articulo.create
+    erb :nuevo_articulo
+  end
+
+Si querés seguir usando una weak ETag, indicalo con la opción <tt>:kind</tt>:
+
+  etag '', :new_resource => true, :kind => :weak
 
 === Enviando Archivos
 
@@ -1283,7 +1305,7 @@ Podés acceder a estas opciones utilizando el método <tt>settings</tt>:
     ...
   end
 
-==== Configurando la Protección de Ataques
+=== Configurando la Protección de Ataques
 
 Sinatra usa {Rack::Protection}[https://github.com/rkh/rack-protection#readme]
 para defender a tu aplicación de los ataques más comunes.  Tenés que tener en
@@ -1987,7 +2009,7 @@ siguiendo las especificaciones SemVer y SemVerTag.
 * {Lista de Correo}[http://groups.google.com/group/sinatrarb/topics]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] en http://freenode.net
 * {Sinatra Book}[http://sinatra-book.gittr.com] Tutorial (en inglés).
-* {Sinatra Book Contrib}[http://sinatra-book-contrib.com/] Recetas contribuidas
+* {Sinatra Recipes}[http://recipes.sinatrarb.com/] Recetas contribuidas
   por la comunidad (en inglés).
 * Documentación de la API para la
   {última versión liberada}[http://rubydoc.info/gems/sinatra] o para la

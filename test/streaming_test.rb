@@ -56,6 +56,16 @@ class StreamingTest < Test::Unit::TestCase
     assert_equal 0, final
   end
 
+  it 'allows adding more than one callback' do
+    a = b = false
+    stream = Stream.new { }
+    stream.callback { a = true }
+    stream.callback { b = true }
+    stream.each { |str| }
+    assert a, 'should trigger first callback'
+    assert b, 'should trigger second callback'
+  end
+
   class MockScheduler
     def initialize(*)     @schedule, @defer = [], []                end
     def schedule(&block)  @schedule << block                        end
@@ -96,5 +106,10 @@ class StreamingTest < Test::Unit::TestCase
     Stream.new(scheduler) { fail 'should be caught' }.each { }
     scheduler.defer!
     assert_raise(RuntimeError) { scheduler.schedule! }
+  end
+
+  it 'does not trigger an infinite loop if you call close in a callback' do
+    stream = Stream.new { |out| out.callback { out.close }}
+    stream.each { |str| }
   end
 end

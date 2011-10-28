@@ -19,9 +19,14 @@ gem 'ci_reporter', :group => :ci
 github = "git://github.com/%s.git"
 repos = { 'tilt' => github % "rtomayko/tilt", 'rack' => github % "rack/rack" }
 %w[tilt rack].each do |lib|
-  dep = (ENV[lib] || 'stable').sub "#{lib}-", ''
-  dep = nil if dep == 'stable'
-  dep = {:git => repos[lib], :branch => dep} if dep and dep !~ /(\d+\.)+\d+/
+  dep = case ENV[lib] || 'stable'
+        when 'stable'
+          nil
+        when /(\d+\.)+\d+/
+          "~> " + ENV[lib].sub("#{lib}-", '')
+        else
+          {:git => repos[lib], :branch => dep}
+        end
   gem lib, dep
 end
 
@@ -29,17 +34,10 @@ gem 'haml', '>= 3.0'
 gem 'sass'
 gem 'builder'
 gem 'erubis'
-gem 'less', '~> 1.0'
-
-if RUBY_ENGINE == "maglev"
-  gem 'liquid', :git => "https://github.com/Shopify/liquid.git"
-else
-  gem 'liquid'
-end
-
+gem 'liquid'
 gem 'slim', '~> 1.0'
 gem 'temple', '!= 0.3.3'
-gem 'RedCloth' if RUBY_VERSION < "1.9.3" and not RUBY_ENGINE.start_with? 'ma'
+gem 'RedCloth' if RUBY_VERSION < "1.9.3" and not RUBY_ENGINE == "macruby"
 gem 'coffee-script', '>= 2.0'
 gem 'rdoc'
 gem 'kramdown'
@@ -49,8 +47,14 @@ gem 'creole'
 if RUBY_ENGINE == 'jruby'
   gem 'nokogiri', '!= 1.5.0'
   gem 'jruby-openssl'
-elsif RUBY_ENGINE != 'maglev'
+else
   gem 'nokogiri'
+end
+
+if RUBY_ENGINE == "ruby"
+  gem 'less', '~> 2.0'
+else
+  gem 'less', '~> 1.0'
 end
 
 unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1" && !ENV['TRAVIS']
@@ -62,16 +66,10 @@ unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1" && !ENV['TRAVIS']
   #gem 'bluecloth'
 end
 
-if RUBY_ENGINE == 'maglev'
-  gem 'json', :git => "https://github.com/MagLev/json.git"
+platforms :ruby_18, :jruby do
+  gem 'json'
   gem 'markaby'
   gem 'radius'
-else
-  platforms :ruby_18, :jruby do
-    gem 'json'
-    gem 'markaby'
-    gem 'radius'
-  end
 end
 
 platforms :mri_18 do

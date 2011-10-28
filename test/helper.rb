@@ -69,7 +69,15 @@ class Test::Unit::TestCase
   end
 
   def assert_body(value)
-    assert_equal value.lstrip.gsub(/\s*\n\s*/, ""), body.lstrip.gsub(/\s*\n\s*/, "")
+    if value.respond_to? :to_str
+      assert_equal value.lstrip.gsub(/\s*\n\s*/, ""), body.lstrip.gsub(/\s*\n\s*/, "")
+    else
+      assert_match value, body
+    end
+  end
+
+  def assert_status(expected)
+    assert_equal Integer(expected), Integer(status)
   end
 
   def assert_like(a,b)

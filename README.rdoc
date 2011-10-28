@@ -885,10 +885,15 @@ default, so if you inherit from <tt>Sinatra::Base</tt>, you probably want to
 enable it yourself:
 
   class MyApp < Sinatra::Base
-    configure(:production, :development) do
+    configure :production, :development do
       enable :logging
     end
   end
+
+To avoid any logging middleware to be set up, set the +logging+ setting to
++nil+. However, keep in mind that +logger+ will in that case return +nil+. A
+common use case is when you want to set your own logger. Sinatra will use
+whatever it will find in <tt>env['rack.logger']</tt>.
 
 === Mime Types
 
@@ -1017,6 +1022,23 @@ try {rack-cache}[http://rtomayko.github.com/rack-cache/]:
 
 Use the <tt>:static_cache_control</tt> setting (see below) to add
 <tt>Cache-Control</tt> header info to static files.
+
+According to RFC 2616 your application should behave differently if the If-Match
+or If-None-Match header is set to <tt>*</tt> depending on whether the resource
+requested is already in existence. Sinatra assumes resources for safe (like get)
+and idempotent (like put) requests are already in existence, whereas other
+resources (for instance for post requests), are treated as new resources. You
+can change this behavior by passing in a <tt>:new_resource</tt> option:
+
+  get '/create' do
+    etag '', :new_resource => true
+    Article.create
+    erb :new_article
+  end
+
+If you still want to use a weak ETag, pass in a <tt>:kind</tt> option:
+
+  etag '', :new_resource => true, :kind => :weak
 
 === Sending Files
 
@@ -1925,7 +1947,7 @@ SemVerTag.
 * {Mailing List}[http://groups.google.com/group/sinatrarb/topics]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] on http://freenode.net
 * {Sinatra Book}[http://sinatra-book.gittr.com] Cookbook Tutorial
-* {Sinatra Book Contrib}[http://sinatra-book-contrib.com/] Community 
+* {Sinatra Recipes}[http://recipes.sinatrarb.com/] Community 
   contributed recipes
 * API documentation for the {latest release}[http://rubydoc.info/gems/sinatra]
   or the {current HEAD}[http://rubydoc.info/github/sinatra/sinatra] on

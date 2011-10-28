@@ -51,7 +51,7 @@ module Sinatra
     private
 
     def accept_entry(entry)
-      type, *options = entry.gsub(/\s/, '').split(';')
+      type, *options = entry.delete(' ').split(';')
       quality = 0 # we sort smalles first
       options.delete_if { |e| quality = 1 - e[2..-1].to_f if e.start_with? 'q=' }
       [type, [quality, type.count('*'), 1 - options.size]]
@@ -247,11 +247,14 @@ module Sinatra
       def self.defer(*)    yield end
 
       def initialize(scheduler = self.class, keep_open = false, &back)
-        @back, @scheduler, @callback, @keep_open = back.to_proc, scheduler, nil, keep_open
+        @back, @scheduler, @keep_open = back.to_proc, scheduler, keep_open
+        @callbacks, @closed = [], false
       end
 
       def close
-        @scheduler.schedule { @callback.call if @callback }
+        return if @closed
+        @closed = true
+        @scheduler.schedule { @callbacks.each { |c| c.call }}
       end
 
       def each(&front)
@@ -272,7 +275,7 @@ module Sinatra
       end
 
       def callback(&block)
-        @callback = block
+        @callbacks << block
       end
 
       alias errback callback
@@ -308,7 +311,7 @@ module Sinatra
         hash = {}
       end
 
-      values = values.map { |value| value.to_s.tr('_','-') }
+      values.map! { |value| value.to_s.tr('_','-') }
       hash.each do |key, value|
         key = key.to_s.tr('_', '-')
         value = value.to_i if key == "max-age"
@@ -355,8 +358,19 @@ module Sinatra
       return unless time
       time = time_for time
       response['Last-Modified'] = time.httpdate
-      # compare based on seconds since epoch
-      halt 304 if Time.httpdate(env['HTTP_IF_MODIFIED_SINCE']).to_i >= time.to_i
+      return if env['HTTP_IF_NONE_MATCH']
+
+      if status == 200 and env['HTTP_IF_MODIFIED_SINCE']
+        # compare based on seconds since epoch
+        since = Time.httpdate(env['HTTP_IF_MODIFIED_SINCE']).to_i
+        halt 304 if since >= time.to_i
+      end
+
+      if (success? or status == 412) and env['HTTP_IF_UNMODIFIED_SINCE']
+        # compare based on seconds since epoch
+        since = Time.httpdate(env['HTTP_IF_UNMODIFIED_SINCE']).to_i
+        halt 412 if since < time.to_i
+      end
     rescue ArgumentError
     end
 
@@ -369,18 +383,27 @@ module Sinatra
     # When the current request includes an 'If-None-Match' header with a
     # matching etag, execution is immediately halted. If the request method is
     # GET or HEAD, a '304 Not Modified' response is sent.
-    def etag(value, kind = :strong)
-      raise ArgumentError, ":strong or :weak expected" unless [:strong,:weak].include?(kind)
+    def etag(value, options = {})
+      # Before touching this code, please double check RFC 2616 14.24 and 14.26.
+      options      = {:kind => options} unless Hash === options
+      kind         = options[:kind] || :strong
+      new_resource = options.fetch(:new_resource) { request.post? }
+
+      unless [:strong, :weak].include?(kind)
+        raise ArgumentError, ":strong or :weak expected"
+      end
+
       value = '"%s"' % value
       value = 'W/' + value if kind == :weak
       response['ETag'] = value
 
-      if etags = env['HTTP_IF_NONE_MATCH']
-        etags = etags.split(/\s*,\s*/)
-        if etags.include?(value) or etags.include?('*')
-          halt 304 if request.safe?
-        else
-          halt 412 unless request.safe?
+      if success? or status == 304
+        if etag_matches? env['HTTP_IF_NONE_MATCH'], new_resource
+          halt(request.safe? ? 304 : 412)
+        end
+
+        if env['HTTP_IF_MATCH']
+          halt 412 unless etag_matches? env['HTTP_IF_MATCH'], new_resource
         end
       end
     end
@@ -444,6 +467,14 @@ module Sinatra
       raise boom
     rescue Exception
       raise ArgumentError, "unable to convert #{value.inspect} to a Time object"
+    end
+
+    private
+
+    # Helper method checking if a ETag value list includes the current ETag.
+    def etag_matches?(list, new_resource = request.post?)
+      return !new_resource if list == '*'
+      list.to_s.split(/\s*,\s*/).include? response['ETag']
     end
   end
 
@@ -588,11 +619,14 @@ module Sinatra
       scope           = options.delete(:scope)         || self
 
       # compile and render template
-      layout_was      = @default_layout
-      @default_layout = false
-      template        = compile_template(engine, data, options, views)
-      output          = template.render(scope, locals, &block)
-      @default_layout = layout_was
+      begin
+        layout_was      = @default_layout
+        @default_layout = false
+        template        = compile_template(engine, data, options, views)
+        output          = template.render(scope, locals, &block)
+      ensure
+        @default_layout = layout_was
+      end
 
       # render layout
       if layout
@@ -817,7 +851,7 @@ module Sinatra
       return unless path.start_with?(public_dir) and File.file?(path)
 
       env['sinatra.static_file'] = path
-      cache_control *settings.static_cache_control if settings.static_cache_control?
+      cache_control(*settings.static_cache_control) if settings.static_cache_control?
       send_file path, :disposition => nil
     end
 
@@ -1184,9 +1218,8 @@ module Sinatra
       def compile(path)
         keys = []
         if path.respond_to? :to_str
-          special_chars = %w{. + ( ) $}
           pattern = path.to_str.gsub(/[^\?\%\\\/\:\*\w]/) { |c| encoded(c) }
-          pattern.gsub! /((:\w+)|\*)/ do |match|
+          pattern.gsub!(/((:\w+)|\*)/) do |match|
             if match == "*"
               keys << 'splat'
               "(.*?)"
@@ -1320,21 +1353,34 @@ module Sinatra
 
       def setup_logging(builder)
         if logging?
-          builder.use Rack::CommonLogger
-          if logging.respond_to? :to_int
-            builder.use Rack::Logger, logging
-          else
-            builder.use Rack::Logger
-          end
+          setup_common_logger(builder)
+          setup_custom_logger(builder)
+        elsif logging == false
+          setup_null_logger(builder)
+        end
+      end
+
+      def setup_null_logger(builder)
+        builder.use Rack::NullLogger
+      end
+
+      def setup_common_logger(builder)
+        return if ["development", "deployment", nil].include? ENV["RACK_ENV"]
+        builder.use Rack::CommonLogger
+      end
+
+      def setup_custom_logger(builder)
+        if logging.respond_to? :to_int
+          builder.use Rack::Logger, logging
         else
-          builder.use Rack::NullLogger
+          builder.use Rack::Logger
         end
       end
 
       def setup_protection(builder)
         return unless protection?
         options = Hash === protection ? protection.dup : {}
-        options[:except] = Array options[:except]
+        options[:except] = Array(options[:except] || :escaped_params)
         options[:except] += [:session_hijacking, :remote_token] unless sessions?
         builder.use Rack::Protection, options
       end

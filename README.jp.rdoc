@@ -376,6 +376,7 @@ textileからメソッドを呼び出すことも、localsに変数を渡すこ�
 RDocテンプレートを使うにはRDocライブラリが必要です:
 
   # rdoc/markup/to_htmlを読み込みます
+  require "rdoc"
   require "rdoc/markup/to_html"
 
   get '/' do
