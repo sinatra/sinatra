@@ -802,21 +802,8 @@ module Sinatra
       route = '/' if route.empty? and not settings.empty_path_info?
       if match = pattern.match(route)
         values += match.captures.to_a.map { |v| force_encoding URI.decode(v) if v }
-        params =
-          if keys.any?
-            keys.zip(values).inject({}) do |hash,(k,v)|
-              if k == 'splat'
-                (hash[k] ||= []) << v
-              else
-                hash[k] = v
-              end
-              hash
-            end
-          elsif values.any?
-            {'captures' => values}
-          else
-            {}
-          end
+        params = {'splat' => [], 'captures' => values}
+        keys.zip(values) { |k,v| (params[k] ||= '') << v if v }
         @params = @original_params.merge(params)
         @block_params = values
         catch(:pass) do

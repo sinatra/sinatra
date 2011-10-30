@@ -370,7 +370,8 @@ class RoutingTest < Test::Unit::TestCase
         "firefox" => {"engine" => {"name"=>"spidermonkey", "version"=>"1.7.0"}},
         "chrome"  => {"engine" => {"name"=>"V8", "version"=>"1.0"}}
       },
-      "paste" => {"name"=>"hello world", "syntax"=>"ruby"}
+      "paste" => {"name"=>"hello world", "syntax"=>"ruby"},
+      "splat"=>[], "captures"=>[]
     }
     mock_app {
       get '/foo' do
