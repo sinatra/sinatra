@@ -35,12 +35,14 @@ gem 'erubis'
 gem 'liquid'
 gem 'slim', '~> 1.0'
 gem 'temple', '!= 0.3.3'
-gem 'RedCloth' if RUBY_VERSION < "1.9.3" and not RUBY_ENGINE == "macruby"
+gem 'RedCloth' unless RUBY_ENGINE == "macruby"
 gem 'coffee-script', '>= 2.0'
 gem 'rdoc'
 gem 'kramdown'
 gem 'maruku'
 gem 'creole'
+gem 'markaby'
+gem 'radius'
 
 if RUBY_ENGINE == 'jruby'
   gem 'nokogiri', '!= 1.5.0'
@@ -66,8 +68,6 @@ end
 
 platforms :ruby_18, :jruby do
   gem 'json'
-  gem 'markaby'
-  gem 'radius'
 end
 
 platforms :mri_18 do
