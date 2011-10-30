@@ -17,15 +17,13 @@ gem 'ci_reporter', :group => :ci
 # Allows stuff like `tilt=1.2.2 bundle install` or `tilt=master ...`.
 # Used by the CI.
 github = "git://github.com/%s.git"
-repos = { 'tilt' => github % "rtomayko/tilt", 'rack' => github % "rack/rack" }
+repos  = {'tilt' => github % "rtomayko/tilt", 'rack' => github % "rack/rack"}
+
 %w[tilt rack].each do |lib|
-  dep = case ENV[lib] || 'stable'
-        when 'stable'
-          nil
-        when /(\d+\.)+\d+/
-          "~> " + ENV[lib].sub("#{lib}-", '')
-        else
-          {:git => repos[lib], :branch => dep}
+  dep = case ENV[lib]
+        when 'stable', nil then nil
+        when /(\d+\.)+\d+/ then "~> " + ENV[lib].sub("#{lib}-", '')
+        else {:git => repos[lib], :branch => dep}
         end
   gem lib, dep
 end
