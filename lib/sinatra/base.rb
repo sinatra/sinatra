@@ -797,22 +797,22 @@ module Sinatra
     #
     # Returns pass block.
     def process_route(pattern, keys, conditions, block = nil, values = [])
-      @original_params ||= @params
       route = @request.path_info
       route = '/' if route.empty? and not settings.empty_path_info?
-      if match = pattern.match(route)
-        values += match.captures.to_a.map { |v| force_encoding URI.decode(v) if v }
-        params = {'splat' => [], 'captures' => values}
-        keys.zip(values) { |k,v| (params[k] ||= '') << v if v }
-        @params = @original_params.merge(params)
-        @block_params = values
-        catch(:pass) do
-          conditions.each { |c| throw :pass if c.bind(self).call == false }
-          block ? block[self, @block_params] : yield(self, @block_params)
-        end
+      return unless match = pattern.match(route)
+      values += match.captures.to_a.map { |v| force_encoding URI.decode(v) if v }
+
+      if values.any?
+        original, @params = params, params.merge('splat' => [], 'captures' => values)
+        keys.zip(values) { |k,v| (@params[k] ||= '') << v if v }
+      end
+
+      catch(:pass) do
+        conditions.each { |c| throw :pass if c.bind(self).call == false }
+        block ? block[self, values] : yield(self, values)
       end
     ensure
-      @params = @original_params
+      @params = original if original
     end
 
     # No matching route was found or all routes passed. The default
