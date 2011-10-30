@@ -1,5 +1,13 @@
 require File.expand_path('../helper', __FILE__)
 
+class UBERKLASSETest < Test::Unit::TestCase
+  describe "Sinatra::UBERKLASSE" do
+    it "all your base are belong to UBERKLASSE" do
+      assert_equal Sinatra::UBERKLASSE, Sinatra::Base
+    end
+  end
+end
+
 class BaseTest < Test::Unit::TestCase
   def test_default
     assert true
