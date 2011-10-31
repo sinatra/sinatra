@@ -9,10 +9,7 @@ class IntegrationTest < Test::Unit::TestCase
   end
 
   def port
-    min = 49152
-    max = 65535
-    mod = max - min
-    (Process.pid % mod) + min
+    5000 + (Process.pid % 1000)
   end
 
   def command
