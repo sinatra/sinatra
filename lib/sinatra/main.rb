@@ -25,4 +25,4 @@ module Sinatra
   at_exit { Application.run! if $!.nil? && Application.run? }
 end
 
-include Sinatra::Delegator
+[Sinatra::Request, Sinatra::Response, Sinatra::Base, Sinatra::Application].each {|klass| klass.send(:include, Sinatra::Delegator); klass.send(:extend, Sinatra::Delegator)}
