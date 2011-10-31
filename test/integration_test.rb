@@ -38,6 +38,7 @@ class IntegrationTest < Test::Unit::TestCase
       end
     end
   rescue Timeout::Error => e
+    $stderr.puts command, pipe.read if pipe
     raise error || e
   ensure
     Process.kill("TERM", pipe.pid) if pipe
