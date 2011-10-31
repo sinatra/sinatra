@@ -1,6 +1,7 @@
 require File.expand_path('../helper', __FILE__)
 require 'rbconfig'
 require 'open-uri'
+require 'timeout'
 
 class IntegrationTest < Test::Unit::TestCase
   it 'starts a top level application' do
@@ -16,7 +17,14 @@ class IntegrationTest < Test::Unit::TestCase
     cmd << app_file.inspect
     cmd << "2>&1"
     pipe = IO.popen(cmd.join(" "))
-    assert_equal open('http://localhost:4567/app_file').read, app_file
+    Timeout.timeout(10) do
+      begin
+        assert_equal open('http://localhost:4567/app_file').read, app_file
+      rescue Errno::ECONNREFUSED
+        sleep 0.1
+        retry
+      end
+    end
     Process.kill("TERM", pipe.pid)
   end
 end
