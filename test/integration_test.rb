@@ -8,6 +8,13 @@ class IntegrationTest < Test::Unit::TestCase
     File.expand_path('../integration/app.rb', __FILE__)
   end
 
+  def port
+    min = 49152
+    max = 65535
+    mod = max - min
+    (Process.pid % mod) + min
+  end
+
   def command
     cmd = []
     if RbConfig.respond_to? :ruby
@@ -17,27 +24,31 @@ class IntegrationTest < Test::Unit::TestCase
       cmd << File.expand_path(file, dir).inspect
     end
     cmd << "-I" << File.expand_path('../../lib', __FILE__).inspect
-    cmd << app_file.inspect
-    cmd << "2>&1"
+    cmd << app_file.inspect << '-p' << port << '2>&1'
     cmd.join(" ")
   end
 
   def with_server
     pipe = IO.popen(command)
+    error = nil
     Timeout.timeout(10) do
       begin
         yield
-      rescue Errno::ECONNREFUSED
+      rescue Errno::ECONNREFUSED => e
+        error = e
         sleep 0.1
         retry
       end
     end
-    Process.kill("TERM", pipe.pid)
+  rescue Timeout::Error => e
+    raise error || e
+  ensure
+    Process.kill("TERM", pipe.pid) if pipe
   end
 
   it 'starts a top level application' do
     with_server do
-      assert_equal open('http://localhost:4567/app_file').read, app_file
+      assert_equal open("http://127.0.0.1:#{port}/app_file").read, app_file
     end
   end
 end
