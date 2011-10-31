@@ -4,9 +4,12 @@ require 'open-uri'
 require 'timeout'
 
 class IntegrationTest < Test::Unit::TestCase
-  it 'starts a top level application' do
+  def app_file
+    File.expand_path('../integration/app.rb', __FILE__)
+  end
+
+  def command
     cmd = []
-    app_file = File.expand_path('../integration/app.rb', __FILE__)
     if RbConfig.respond_to? :ruby
       cmd << RbConfig.ruby.inspect
     else
@@ -16,15 +19,25 @@ class IntegrationTest < Test::Unit::TestCase
     cmd << "-I" << File.expand_path('../../lib', __FILE__).inspect
     cmd << app_file.inspect
     cmd << "2>&1"
-    pipe = IO.popen(cmd.join(" "))
+    cmd.join(" ")
+  end
+
+  def with_server
+    pipe = IO.popen(command)
     Timeout.timeout(10) do
       begin
-        assert_equal open('http://localhost:4567/app_file').read, app_file
+        yield
       rescue Errno::ECONNREFUSED
         sleep 0.1
         retry
       end
     end
     Process.kill("TERM", pipe.pid)
+  end
+
+  it 'starts a top level application' do
+    with_server do
+      assert_equal open('http://localhost:4567/app_file').read, app_file
+    end
   end
 end
