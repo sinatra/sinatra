@@ -35,7 +35,6 @@ gem 'erubis'
 gem 'liquid'
 gem 'slim', '~> 1.0'
 gem 'temple', '!= 0.3.3'
-gem 'RedCloth' unless RUBY_ENGINE == "macruby"
 gem 'coffee-script', '>= 2.0'
 gem 'rdoc'
 gem 'kramdown'
@@ -61,6 +60,7 @@ unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1" && !ENV['TRAVIS']
   # C extensions
   gem 'rdiscount'
   gem 'redcarpet'
+  gem 'RedCloth' unless RUBY_ENGINE == "macruby"
 
   ## bluecloth is broken
   #gem 'bluecloth'

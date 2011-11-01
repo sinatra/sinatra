@@ -1843,7 +1843,7 @@ The following Ruby versions are officially supported:
   template libraries are known, however, if you choose to use JRuby, please
   look into JRuby rack handlers, as the Thin web server is not fully supported
   on JRuby. JRuby's support for C extensions is still experimental, which only
-  affects RDiscount and Redcarpet at the moment.
+  affects RDiscount, Redcarpet and RedCloth at the moment.
 
 We also keep an eye on upcoming Ruby versions.
 
