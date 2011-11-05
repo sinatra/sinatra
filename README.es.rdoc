@@ -1887,9 +1887,12 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
   ya no se corregirán errores por más que se reciban reportes de los mismos.
 
 [ Ruby 1.9.2 ]
-  1.9.2 es soportado y recomendado.  Tené en cuenta que Radius y Markaby no
-  son compatibles con 1.9 actualmente.  Además, no usés 1.9.2p0, porque produce
-  fallos de segmentación cuando se ejecuta Sinatra.
+  1.9.2 es soportado y recomendado.  Tené en cuenta que Radius y Markaby no son
+  compatibles con 1.9 actualmente.  Además, no usés 1.9.2p0, porque se producen
+  fallos de segmentación cuando se ejecuta Sinatra.  El soporte se mantendrá al
+  menos hasta que se libere la versión 1.9.4/2.0 de Ruby.  El soporte para la
+  última versión de la serie 1.9 se mantendrá mientras lo haga el core team de
+  Ruby.
 
 [ Rubinius ]
   Rubinius es soportado oficialmente (Rubinius >= 1.2.4).  Todo
