@@ -1513,11 +1513,11 @@ is recommended:
 
 Defining your app at the top-level works well for micro-apps but has
 considerable drawbacks when building reusable components such as Rack
-middleware, Rails metal, simple libraries with a server component, or
-even Sinatra extensions. The top-level DSL pollutes the Object namespace
-and assumes a micro-app style configuration (e.g., a single application
-file, <tt>./public</tt> and <tt>./views</tt> directories, logging, exception
-detail page, etc.). That's where <tt>Sinatra::Base</tt> comes into play:
+middleware, Rails metal, simple libraries with a server component, or even
+Sinatra extensions. The top-level assumes a micro-app style configuration
+(e.g., a single application file, <tt>./public</tt> and <tt>./views</tt>
+directories, logging, exception detail page, etc.). That's where
+<tt>Sinatra::Base</tt> comes into play:
 
   require 'sinatra/base'
 
@@ -1549,15 +1549,10 @@ for details on available options and their behavior.
 Contrary to common belief, there is nothing wrong with classic style. If it
 suits your application, you do not have to switch to a modular application.
 
-There are only two downsides compared with modular style:
-
-* You may only have one Sinatra application per Ruby process. If you plan to
-  use more, switch to modular style.
-
-* Classic style pollutes Object with delegator methods. If you plan to ship
-  your application in a library/gem, switch to modular style.
-
-There is no reason you cannot mix modular and classic style.
+The main downsides of using classic style rather than modular style is that
+you may only have one Sinatra application per Ruby process. If you plan to use
+more than one, switch to modular style. There is no reason you cannot mix
+modular and classic style.
 
 If switching from one style to the other, you should be aware of slightly
 different default settings:
