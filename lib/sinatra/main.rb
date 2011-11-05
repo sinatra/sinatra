@@ -25,4 +25,6 @@ module Sinatra
   at_exit { Application.run! if $!.nil? && Application.run? }
 end
 
-include Sinatra::Delegator
+# include would include the module in Object
+# extend only extends the `main` object
+extend Sinatra::Delegator
