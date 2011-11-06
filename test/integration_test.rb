@@ -35,7 +35,7 @@ class IntegrationTest < Test::Unit::TestCase
   def with_server
     pipe = IO.popen(command)
     error = nil
-    Timeout.timeout(10) do
+    Timeout.timeout(120) do
       begin
         yield
       rescue Errno::ECONNREFUSED => e
