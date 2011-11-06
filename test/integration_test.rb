@@ -32,6 +32,12 @@ class IntegrationTest < Test::Unit::TestCase
     $stderr.puts command, out unless out.empty?
   end
 
+  def kill(pid, signal = "TERM")
+    Process.kill(signal, pid)
+  rescue NotImplementedError
+    system "kill -s #{signal} #{pid}"
+  end
+
   def with_server
     pipe = IO.popen(command)
     error = nil
@@ -44,11 +50,11 @@ class IntegrationTest < Test::Unit::TestCase
         retry
       end
     end
+    kill(pipe.pid) if pipe
   rescue Timeout::Error => e
     display_output pipe
+    kill(pipe.pid, "KILL") if pipe
     raise error || e
-  ensure
-    Process.kill("TERM", pipe.pid) if pipe
   end
 
   it 'starts a top level application' do
