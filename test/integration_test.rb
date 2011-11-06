@@ -25,6 +25,13 @@ class IntegrationTest < Test::Unit::TestCase
     cmd.join(" ")
   end
 
+  def display_output(pipe)
+    out = ""
+    loop { out <<  pipe.read_nonblock(1) }
+  rescue
+    $stderr.puts command, out unless out.empty?
+  end
+
   def with_server
     pipe = IO.popen(command)
     error = nil
@@ -38,7 +45,7 @@ class IntegrationTest < Test::Unit::TestCase
       end
     end
   rescue Timeout::Error => e
-    $stderr.puts command, pipe.read if pipe
+    display_output pipe
     raise error || e
   ensure
     Process.kill("TERM", pipe.pid) if pipe
