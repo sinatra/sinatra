@@ -380,6 +380,26 @@ class AfterFilterTest < Test::Unit::TestCase
     assert ran
   end
 
+  it 'can add params' do
+    mock_app do
+      before { params['foo'] = 'bar' }
+      get('/') { params['foo'] }
+    end
+
+    get '/'
+    assert_body 'bar'
+  end
+
+  it 'can remove params' do
+    mock_app do
+      before { params.delete('foo') }
+      get('/') { params['foo'].to_s }
+    end
+
+    get '/?foo=bar'
+    assert_body ''
+  end
+
   it 'is possible to apply user_agent conditions to after filters with no path' do
     ran = false
     mock_app do

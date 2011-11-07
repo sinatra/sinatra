@@ -17,15 +17,13 @@ gem 'ci_reporter', :group => :ci
 # Allows stuff like `tilt=1.2.2 bundle install` or `tilt=master ...`.
 # Used by the CI.
 github = "git://github.com/%s.git"
-repos = { 'tilt' => github % "rtomayko/tilt", 'rack' => github % "rack/rack" }
+repos  = {'tilt' => github % "rtomayko/tilt", 'rack' => github % "rack/rack"}
+
 %w[tilt rack].each do |lib|
-  dep = case ENV[lib] || 'stable'
-        when 'stable'
-          nil
-        when /(\d+\.)+\d+/
-          "~> " + ENV[lib].sub("#{lib}-", '')
-        else
-          {:git => repos[lib], :branch => dep}
+  dep = case ENV[lib]
+        when 'stable', nil then nil
+        when /(\d+\.)+\d+/ then "~> " + ENV[lib].sub("#{lib}-", '')
+        else {:git => repos[lib], :branch => dep}
         end
   gem lib, dep
 end
@@ -37,12 +35,13 @@ gem 'erubis'
 gem 'liquid'
 gem 'slim', '~> 1.0'
 gem 'temple', '!= 0.3.3'
-gem 'RedCloth' if RUBY_VERSION < "1.9.3" and not RUBY_ENGINE == "macruby"
 gem 'coffee-script', '>= 2.0'
 gem 'rdoc'
 gem 'kramdown'
 gem 'maruku'
 gem 'creole'
+gem 'markaby'
+gem 'radius'
 
 if RUBY_ENGINE == 'jruby'
   gem 'nokogiri', '!= 1.5.0'
@@ -61,6 +60,7 @@ unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1" && !ENV['TRAVIS']
   # C extensions
   gem 'rdiscount'
   gem 'redcarpet'
+  gem 'RedCloth' unless RUBY_ENGINE == "macruby"
 
   ## bluecloth is broken
   #gem 'bluecloth'
@@ -68,8 +68,6 @@ end
 
 platforms :ruby_18, :jruby do
   gem 'json'
-  gem 'markaby'
-  gem 'radius'
 end
 
 platforms :mri_18 do

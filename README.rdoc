@@ -846,7 +846,7 @@ Note that the streaming behavior, especially the number of concurrent request,
 highly depends on the web server used to serve the application. Some servers,
 like WEBRick, might not even support streaming at all. If the server does not
 support streaming, the body will be sent all at once after the block passed to
-+stream+ finished executing.
++stream+ finished executing. Streaming does not work at all with Shotgun.
 
 If the optional parameter is set to +keep_open+, it will not call +close+ on
 the stream object, allowing you to close it at any later point in the
@@ -1829,20 +1829,21 @@ The following Ruby versions are officially supported:
   will continue as long as it is still supported by the Ruby core team.
 
 [ Ruby 1.9.3 ]
-  While we test against 1.9.3 we do not know of anyone using it in
-  production yet, and as with 1.9.2, you might want to be careful with
-  patch level zero.
+  1.9.3 is fully supported. We recommend waiting for higher patch levels to be
+  released (current one is p0) before using it in production. Please note that
+  switching to 1.9.3 from an earlier version will invalidate all sessions.
 
 [ Rubinius ]
   Rubinius is officially supported (Rubinius >= 1.2.4), everything, including
-  all template languages, works.
+  all template languages, works. The upcoming 2.0 release is supported as
+  well.
 
 [ JRuby ]
-  JRuby is officially supported (JRuby >= 1.6.3). No issues with third party
+  JRuby is officially supported (JRuby >= 1.6.5). No issues with third party
   template libraries are known, however, if you choose to use JRuby, please
   look into JRuby rack handlers, as the Thin web server is not fully supported
   on JRuby. JRuby's support for C extensions is still experimental, which only
-  affects RDiscount and Redcarpet at the moment.
+  affects RDiscount, Redcarpet and RedCloth at the moment.
 
 We also keep an eye on upcoming Ruby versions.
 
@@ -1857,9 +1858,9 @@ known to run Sinatra:
 Not being officially supported means if things only break there and not on a
 supported platform, we assume it's not our issue but theirs.
 
-We also run our CI against ruby-head (the upcoming 1.9.4), but we can't
-guarantee anything, since it is constantly moving. Expect 1.9.4p0 to be
-supported.
+We also run our CI against ruby-head (the upcoming 2.0.0) and the 1.9.4
+branch, but we can't guarantee anything, since it is constantly moving. Expect
+both 1.9.4p0 and 2.0.0p0 to be supported.
 
 Sinatra should work on any operating system supported by the chosen Ruby
 implementation.
