@@ -83,7 +83,7 @@ module Rack
 
       def random_string(secure = defined? SecureRandom)
         secure ? SecureRandom.hex(32) : "%032x" % rand(2**128-1)
-      rescue NotImpelentedError
+      rescue NotImplementedError
         random_string false
       end
 
