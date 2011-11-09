@@ -1222,7 +1222,7 @@ module Sinatra
       def compile(path)
         keys = []
         if path.respond_to? :to_str
-          pattern = path.to_str.gsub(/[^\?\%\\\/\:\*\w\ ]/) { |c| encoded(c) }
+          pattern = path.to_str.gsub(/[^\?\%\\\/\:\*\w\ ]/) { |c| "(?:#{Regexp.escape c})" }
           pattern.gsub!(/((:\w+)|\*)/) do |match|
             if match == "*"
               keys << 'splat'
@@ -1242,10 +1242,6 @@ module Sinatra
         else
           raise TypeError, path
         end
-      end
-
-      def encoded(char)
-        "(?:#{Regexp.escape char}|#{URI.encode char, /./})"
       end
 
     public
