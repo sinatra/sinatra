@@ -46,7 +46,7 @@ module Sinatra
   #     require "sinatra/content_for"
   #
   #     class MyApp < Sinatra::Base
-  #       register Sinatra::ContentFor
+  #       helpers Sinatra::ContentFor
   #
   #       # The rest of your modular application code goes here...
   #     end
