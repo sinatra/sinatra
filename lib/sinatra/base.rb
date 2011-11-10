@@ -102,7 +102,7 @@ module Sinatra
     # Set or retrieve the response body. When a block is given,
     # evaluation is deferred until the body is read with #each.
     def body(value=nil, &block)
-      if block_given?
+      if block
         def block.each; yield(call) end
         response.body = block
       elsif value
@@ -1238,14 +1238,14 @@ module Sinatra
       # Makes the methods defined in the block and in the Modules given
       # in `extensions` available to the handlers and templates
       def helpers(*extensions, &block)
-        class_eval(&block)   if block_given?
+        class_eval(&block)   if block
         include(*extensions) if extensions.any?
       end
 
       # Register an extension. Alternatively take a block from which an
       # extension will be created and registered on the fly.
       def register(*extensions, &block)
-        extensions << Module.new(&block) if block_given?
+        extensions << Module.new(&block) if block
         @extensions += extensions
         extensions.each do |extension|
           extend extension
@@ -1611,7 +1611,7 @@ module Sinatra
   # class scope.
   def self.new(base=Base, options={}, &block)
     base = Class.new(base)
-    base.class_eval(&block) if block_given?
+    base.class_eval(&block) if block
     base
   end
 
