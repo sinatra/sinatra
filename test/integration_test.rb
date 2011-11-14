@@ -13,7 +13,7 @@ class IntegrationTest < Test::Unit::TestCase
   end
 
   def command
-    cmd = []
+    cmd = ['exec']
     if RbConfig.respond_to? :ruby
       cmd << RbConfig.ruby.inspect
     else
