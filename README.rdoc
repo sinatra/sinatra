@@ -1347,7 +1347,7 @@ You can also hand in an array in order to disable a list of protections:
                        setting if not set.
 
 [raise_errors]         raise exceptions (will stop application). Enabled
-                       by default when <tt>env</tt> is set to <tt>"test"</tt>,
+                       by default when <tt>environment</tt> is set to <tt>"test"</tt>,
                        disabled otherwise.
 
 [run]                  if enabled, Sinatra will handle starting the web server,
@@ -1365,8 +1365,8 @@ You can also hand in an array in order to disable a list of protections:
                        section for more information.
 
 [show_exceptions]      show a stack trace in the browser when an exception
-                       happens. Enabled by default when <tt>env</tt> is set
-                       to <tt>"development"</tt>, disabled otherwise.
+                       happens. Enabled by default when <tt>environment</tt>
+                       is set to <tt>"development"</tt>, disabled otherwise.
 
 [static]               Whether Sinatra should handle serving static files.
                        Disable when using a Server able to do this on its own.
