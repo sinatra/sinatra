@@ -264,7 +264,7 @@ Instead of a template name, you can also just pass in the template content
 directly:
 
   get '/' do
-    code = "<%= Time.now >"
+    code = "<%= Time.now %>"
     erb code
   end
 
