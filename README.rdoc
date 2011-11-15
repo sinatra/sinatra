@@ -264,7 +264,7 @@ Instead of a template name, you can also just pass in the template content
 directly:
 
   get '/' do
-    code = "<%= Time.now >"
+    code = "<%= Time.now %>"
     erb code
   end
 
@@ -1300,7 +1300,7 @@ You can also hand in an array in order to disable a list of protections:
 
                          settings.add_charsets << "application/foobar"
 
-[app_file]             main application file, used to detect project root,
+[app_file]             Path to the main application file, used to detect project root,
                        views and public folder and inline templates.
 
 [bind]                 IP address to bind to (default: 0.0.0.0).
@@ -1327,7 +1327,7 @@ You can also hand in an array in order to disable a list of protections:
 
 [port]                 Port to listen on. Only used for built-in server.
 
-[prefixed_redirects]   Whether or not to insert <tt>request.script_name</tt> 
+[prefixed_redirects]   Whether or not to insert <tt>request.script_name</tt>
                        into redirects if no absolute path is given. That way
                        <tt>redirect '/foo'</tt> would behave like
                        <tt>redirect to('/foo')</tt>. Disabled per default.
@@ -1335,14 +1335,20 @@ You can also hand in an array in order to disable a list of protections:
 [protection]           Whether or not to enable web attack protections. See
                        protection section above.
 
-[public_folder]        folder public files are served from
+[public_folder]        Path to the folder public files are served from. Only
+                       used if static file serving is enabled (see
+                       <tt>static</tt> setting below). Inferred from
+                       <tt>app_file</tt> setting if not set.
 
 [reload_templates]     whether or not to reload templates between requests.
                        Enabled in development mode.
 
-[root]                 project root folder.
+[root]                 Path to project root folder. Inferred from +app_file+
+                       setting if not set.
 
-[raise_errors]         raise exceptions (will stop application).
+[raise_errors]         raise exceptions (will stop application). Enabled
+                       by default when <tt>environment</tt> is set to <tt>"test"</tt>,
+                       disabled otherwise.
 
 [run]                  if enabled, Sinatra will handle starting the web server,
                        do not enable if using rackup or other means.
@@ -1351,12 +1357,16 @@ You can also hand in an array in order to disable a list of protections:
                        do not change this setting!
 
 [server]               server or list of servers to use for built-in server.
-                       defaults to ['thin', 'mongrel', 'webrick'], order 
+                       defaults to ['thin', 'mongrel', 'webrick'], order
                        indicates priority.
 
-[sessions]             enable cookie based sessions.
+[sessions]             enable cookie based sessions support using
+                       <tt>Rack::Session::Cookie</tt>. See 'Using Sessions'
+                       section for more information.
 
-[show_exceptions]      show a stack trace in the browser.
+[show_exceptions]      show a stack trace in the browser when an exception
+                       happens. Enabled by default when <tt>environment</tt>
+                       is set to <tt>"development"</tt>, disabled otherwise.
 
 [static]               Whether Sinatra should handle serving static files.
                        Disable when using a Server able to do this on its own.
@@ -1373,7 +1383,8 @@ You can also hand in an array in order to disable a list of protections:
 [threaded]             If set to +true+, will tell Thin to use
                        <tt>EventMachine.defer</tt> for processing the request.
 
-[views]                views folder.
+[views]                Path to the views folder. Inferred from <tt>app_file</tt>
+                       setting if not set.
 
 == Error Handling
 
