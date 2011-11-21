@@ -20,14 +20,14 @@ module Rack
       # does not include: RemoteReferrer, AuthenticityToken and FormToken
       except = Array options[:except]
       Rack::Builder.new do
-        use EscapedParams,    options unless except.include? :escaped_params
-        use FrameOptions,     options unless except.include? :frame_options
-        use IPSpoofing,       options unless except.include? :ip_spoofing
-        use JsonCsrf,         options unless except.include? :json_csrf
-        use PathTraversal,    options unless except.include? :path_traversal
-        use RemoteToken,      options unless except.include? :remote_token
-        use SessionHijacking, options unless except.include? :session_hijacking
-        use XSSHeader,        options unless except.include? :xss_header
+        use ::Rack::Protection::EscapedParams,    options unless except.include? :escaped_params
+        use ::Rack::Protection::FrameOptions,     options unless except.include? :frame_options
+        use ::Rack::Protection::IPSpoofing,       options unless except.include? :ip_spoofing
+        use ::Rack::Protection::JsonCsrf,         options unless except.include? :json_csrf
+        use ::Rack::Protection::PathTraversal,    options unless except.include? :path_traversal
+        use ::Rack::Protection::RemoteToken,      options unless except.include? :remote_token
+        use ::Rack::Protection::SessionHijacking, options unless except.include? :session_hijacking
+        use ::Rack::Protection::XSSHeader,        options unless except.include? :xss_header
         run app
       end.to_app
     end
