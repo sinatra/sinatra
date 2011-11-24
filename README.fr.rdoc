@@ -1,4 +1,5 @@
 ﻿= Sinatra
+
 <i>Attention : Ce document correspond à la traduction de la version anglaise et
 il n'est peut être plus à jour.</i>
 
