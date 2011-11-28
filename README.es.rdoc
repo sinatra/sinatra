@@ -1321,7 +1321,7 @@ También es posible desactivar una única capa de defensa:
 
 O varias:
 
-  set :protections, :except => [:path_traversal, :session_hijacking]
+  set :protection, :except => [:path_traversal, :session_hijacking]
 
 === Configuraciones Disponibles
 
