@@ -32,7 +32,7 @@ module Sinatra
   #   list = []
   #
   #   get '/' do
-  #     stream(false) do |out|
+  #     stream(:keep_open) do |out|
   #       list << out
   #       out.callback { list.delete out }
   #       out.errback do
