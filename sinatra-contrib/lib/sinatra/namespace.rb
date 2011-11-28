@@ -20,7 +20,7 @@ module Sinatra
   # You can define a namespace by a path prefix:
   #
   #     namespace '/blog' do
-  #       get() { haml :blog }
+  #       get { haml :blog }
   #       get '/:entry_permalink' do
   #         @entry = Entry.find_by_permalink!(params[:entry_permalink])
   #         haml :entry
