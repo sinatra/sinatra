@@ -1321,7 +1321,7 @@ También es posible desactivar una única capa de defensa:
 
 O varias:
 
-  set :protections, :except => [:path_traversal, :session_hijacking]
+  set :protection, :except => [:path_traversal, :session_hijacking]
 
 === Configuraciones Disponibles
 
@@ -1345,9 +1345,9 @@ O varias:
 
                          settings.add_charsets << "application/foobar"
 
-[app_file]             archivo principal de la aplicación, se utiliza para
-                       detectar la raíz del proyecto, el directorio de las
-                       vistas y el público así como las plantillas inline.
+[app_file]             path del archivo principal de la aplicación, se utiliza
+                       para detectar la raíz del proyecto, el directorio de las
+                       vistas y el público, así como las plantillas inline.
 
 [bind]                 dirección IP que utilizará el servidor integrado (por
                        defecto: 0.0.0.0).
@@ -1387,15 +1387,24 @@ O varias:
                        sección sobre la configuración de protección de ataques
                        más arriba.
 
-[public_folder]        directorio desde donde se sirven los archivos públicos.
+[public_folder]        path del directorio desde donde se sirven los archivos
+                       públicos.  Solo se utiliza cuando se sirven archivos
+                       estáticos (ver la opción <tt>static</tt>).  Si no
+                       está presente, se infiere del valor de la opción
+                       <tt>app_file</tt>.
 
 [reload_templates]     define si se recargan las plantillas entre peticiones.
 
                        Se encuentra activado en el entorno de desarrollo.
 
-[root]                 directorio raíz del proyecto.
+[root]                 path del directorio raíz del proyecto.  Si no está
+                       presente, se infiere del valor de la opción
+                       <tt>app_file</tt>.
 
-[raise_errors]         elevar excepciones (detiene la aplicación).
+[raise_errors]         elevar excepciones (detiene la aplicación).  Se
+                       encuentra activada por defecto cuando el valor de
+                       <tt>environment</tt>  es <tt>"test"</tt>.  En caso
+                       contrario estará desactivada.
 
 [run]                  cuando está habilitada, Sinatra se va a encargar de
                        iniciar el servidor web, no la habilités cuando estés
@@ -1408,9 +1417,14 @@ O varias:
                        integrado.  Por defecto: ['thin', 'mongrel', 'webrick'],
                        el orden establece la prioridad.
 
-[sessions]             habilita sesiones basadas en cookies.
+[sessions]             habilita el soporte de sesiones basadas en cookies a
+                       través de <tt>Rack::Session::Cookie</tt>.  Ver la
+                       sección 'Usando Sesiones' para más información.
 
-[show_exceptions]      muestra un stack trace en el navegador.
+[show_exceptions]      muestra un stack trace en el navegador cuando ocurre una
+                       excepción.  Se encuentra activada por defecto cuando el
+                       valor de <tt>environment</tt> es <tt>"development"</tt>.
+                       En caso contrario estará desactivada.
 
 [static]               define si Sinatra debe encargarse de servir archivos
                        estáticos.
@@ -1429,7 +1443,9 @@ O varias:
                        utilizar un array cuando se asignan múltiples valores: 
                        <tt>set :static_cache_control, [:public, :max_age => 300]</tt>.
 
-[views]                directorio de las vistas.
+[views]                path del directorio de las vistas.  Si no está presente,
+                       se infiere del valor de la opción <tt>app_file</tt>.
+
 
 == Manejo de Errores
 
