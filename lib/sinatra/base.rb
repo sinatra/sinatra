@@ -808,7 +808,7 @@ module Sinatra
       end
 
       catch(:pass) do
-        conditions.each { |c| throw :pass if c.bind(self).call == false }
+        conditions.each { |c| throw :pass if instance_exec(&c) == false }
         block ? block[self, values] : yield(self, values)
       end
     ensure
@@ -1108,7 +1108,7 @@ module Sinatra
       # Add a route condition. The route is considered non-matching when the
       # block returns false.
       def condition(name = "#{caller.first[/`.*'/]} condition", &block)
-        @conditions << generate_method(name, &block)
+        @conditions << wrap_with_arity_check(block)
       end
 
       def public=(value)
@@ -1183,23 +1183,26 @@ module Sinatra
         extensions.each { |e| e.send(name, *args) if e.respond_to?(name) }
       end
 
-      def generate_method(method_name, &block)
-        define_method(method_name, &block)
-        method = instance_method method_name
-        remove_method method_name
-        method
+      # wrap a block to give it lambda-like argument semantics, with the
+      # exception of arity == 0 where block semantics are maintained.
+      def wrap_with_arity_check(block)
+        proc do |*args|
+          if block.arity < 0
+            raise ArgumentError unless args.size >= ~block.arity
+          elsif block.arity > 0
+            raise ArgumentError unless args.size == block.arity
+          end
+
+          instance_exec(*args, &block)
+        end
       end
 
       def compile!(verb, path, block, options = {})
         options.each_pair { |option, args| send(option, *args) }
-        method_name             = "#{verb} #{path}"
-        unbound_method          = generate_method(method_name, &block)
         pattern, keys           = compile path
         conditions, @conditions = @conditions, []
 
-        [ pattern, keys, conditions, block.arity != 0 ?
-            proc { |a,p| unbound_method.bind(a).call(*p) } :
-            proc { |a,p| unbound_method.bind(a).call } ]
+        [ pattern, keys, conditions, proc { |a,p| a.instance_exec(*p, &wrap_with_arity_check(block)) } ]
       end
 
       def compile(path)
