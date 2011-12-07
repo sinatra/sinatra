@@ -52,7 +52,7 @@ module Sinatra
 
     def accept_entry(entry)
       type, *options = entry.delete(' ').split(';')
-      quality = 0 # we sort smalles first
+      quality = 0 # we sort smallest first
       options.delete_if { |e| quality = 1 - e[2..-1].to_f if e.start_with? 'q=' }
       [type, [quality, type.count('*'), 1 - options.size]]
     end
