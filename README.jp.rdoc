@@ -153,9 +153,9 @@ Rackレスポンス、Rackボディオブジェクト、HTTPステータスコ�
 == 静的ファイル
 
 静的ファイルは<tt>./public</tt>ディレクトリから配信されます。
-<tt>:public_folder</tt>オプションを指定することで別の場所を指定することができます。
+<tt>:public_dir</tt>オプションを指定することで別の場所を指定することができます。
 
-  set :public_folder, File.dirname(__FILE__) + '/static'
+  set :public_dir, File.dirname(__FILE__) + '/static'
 
 注意: この静的ファイル用のディレクトリ名はURL中に含まれません。
 例えば、<tt>./public/css/style.css</tt>は<tt>http://example.com/css/style.css</tt>でアクセスできます。

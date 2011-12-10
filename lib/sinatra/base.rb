@@ -831,7 +831,7 @@ module Sinatra
     # Attempt to serve static files from public directory. Throws :halt when
     # a matching file is found, returns nil otherwise.
     def static!
-      return if (public_dir = settings.public_folder).nil?
+      return if (public_dir = settings.public_dir).nil?
       public_dir = File.expand_path(public_dir)
 
       path = File.expand_path(public_dir + unescape(request.path_info))
@@ -1112,8 +1112,13 @@ module Sinatra
       end
 
       def public=(value)
-        warn ":public is no longer used to avoid overloading Module#public, use :public_folder instead"
-        set(:public_folder, value)
+        warn ":public is no longer used to avoid overloading Module#public, use :public_dir instead"
+        set(:public_dir, value)
+      end
+
+      def public_folder=(value)
+        warn ":public_folder has been renamed to :public_dir"
+        set(:public_dir, value)
       end
 
    private
@@ -1516,8 +1521,8 @@ module Sinatra
     set :lock, false
     set :threaded, true
 
-    set :public_folder, Proc.new { root && File.join(root, 'public') }
-    set :static, Proc.new { public_folder && File.exist?(public_folder) }
+    set :public_dir, Proc.new { root && File.join(root, 'public') }
+    set :static, Proc.new { public_dir && File.exist?(public_dir) }
     set :static_cache_control, false
 
     error ::Exception do
