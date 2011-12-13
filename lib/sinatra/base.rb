@@ -602,7 +602,14 @@ module Sinatra
       render engine, template, options, locals
     end
 
-    def render(engine, data, options={}, locals={}, &block)
+    def render(engine, data, options={}, locals={}, &block) 
+      
+      if options.has_key? :preprocess
+        @preferred_extension = engine.to_s + '.' + options[:preprocess].to_s
+        @preprocessing = true
+        data = render(options.delete(:preprocess), data, options, locals, &block)
+      end
+      
       # merge app-level options
       options = settings.send(engine).merge(options) if settings.respond_to?(engine)
       options[:outvar]           ||= '@_out_buf'
@@ -611,7 +618,7 @@ module Sinatra
       # extract generic options
       locals          = options.delete(:locals) || locals         || {}
       views           = options.delete(:views)  || settings.views || "./views"
-      layout          = options.delete(:layout)
+      layout          = options.delete(:layout) unless @preprocessing
       eat_errors      = layout.nil?
       layout          = @default_layout if layout.nil? or layout == true
       content_type    = options.delete(:content_type)  || options.delete(:default_content_type)
@@ -629,11 +636,13 @@ module Sinatra
       end
 
       # render layout
-      if layout
+      if layout && !@preprocessing
+        @preferred_extension = engine.to_s
         options = options.merge(:views => views, :layout => false, :eat_errors => eat_errors, :scope => scope)
         catch(:layout_missing) { return render(layout_engine, layout, options, locals) { output } }
       end
-
+      
+      @preprocessing = false
       output.extend(ContentTyped).content_type = content_type if content_type
       output
     end
@@ -652,7 +661,7 @@ module Sinatra
             template.new(path, line.to_i, options) { body }
           else
             found = false
-            @preferred_extension = engine.to_s
+            @preferred_extension = @preferred_extension ||= engine.to_s  
             find_template(views, data, template) do |file|
               path ||= file # keep the initial path rather than the last one
               if found = File.exists?(file)
