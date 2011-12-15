@@ -1,7 +1,7 @@
 # Run `rake sinatra-contrib.gemspec` to update the gemspec.
 Gem::Specification.new do |s|
   s.name        = "sinatra-contrib"
-  s.version     = "1.3.1"
+  s.version     = "1.3.2"
   s.description = "Collection of useful Sinatra extensions"
   s.homepage    = "http://github.com/sinatra/sinatra-contrib"
   s.summary     = s.description
