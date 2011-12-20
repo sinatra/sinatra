@@ -1386,6 +1386,18 @@ You can also hand in an array in order to disable a list of protections:
 [views]                Path to the views folder. Inferred from <tt>app_file</tt>
                        setting if not set.
 
+== Environments
+
+There are three predefined +environments+: <tt>development</tt>,  <tt>production</tt> and <tt>test</tt>. Environment can be set by RACK_ENV environment variable, and default value is <tt>development</tt>.
+
+You can also run different environemnt using <tt>-e</tt> option:
+
+  ruby my_app.rb -e [ENVIRONMENT]
+
+You can use predefinied methods: +development?+, +test?+ and +production?+, to check which enviroment is set.
+
++Developemnt+ is default setting. In this mode, all templates are being reloaded between requests. Special <tt>not_found</tt> and <tt>error</tt> handlers are installed for this enviroment, so you will see nice error page. In +production+ and +test+ templates are being cached.
+
 == Error Handling
 
 Error handlers run within the same context as routes and before filters, which
