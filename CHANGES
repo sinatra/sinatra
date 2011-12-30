@@ -1,4 +1,4 @@
-= 1.3.2 / Not Yet Released
+= 1.3.2 / 2011-12-30
 
  * Don't automatically add `Rack::CommonLogger` if `Rack::Server` is adding it,
    too. (Konstantin Haase)
@@ -6,8 +6,24 @@
  * Setting `logging` to `nil` will avoid setting up `Rack::NullLogger`.
    (Konstantin Haase)
 
- * Fix bug where rendering a second template in the same request after the
-   first one raised an exception skipped the default layout (Nathan Baum)
+ * Route specific params are now available in the block passed to #stream.
+   (Konstantin Haase)
+
+ * Fix bug where rendering a second template in the same request, after the
+   first one raised an exception, skipped the default layout. (Nathan Baum)
+
+ * Fix bug where parameter escaping got enabled when disabling a different
+   protection. (Konstantin Haase)
+
+ * Fix regression: Filters without a pattern may now again manipulate the params
+   hash. (Konstantin Haase)
+
+ * Added examples directory. (Konstantin Haase)
+
+ * Improved documentation. (Gabriel Andretta, Markus Prinz, Erick Zetta, Just
+   Lest, Adam Vaughan, Aleksander Dąbrowski)
+
+ * Improved MagLev support. (Tim Felgentreff)
 
 = 1.3.1 / 2011-10-05
 
@@ -144,7 +160,7 @@
  * Fix handling of broken query params when displaying exceptions. (Luke
    Jahnke)
 
-= 1.2.8 / Not Yet Released
+= 1.2.8 (backports release) / 2011-12-30
 
 Backported from 1.3.2:
 

@@ -36,7 +36,6 @@ class StaticTest < Test::Unit::TestCase
     head "/#{File.basename(__FILE__)}"
     assert ok?
     assert_equal '', body
-    assert_equal File.size(__FILE__).to_s, response['Content-Length']
     assert response.headers.include?('Last-Modified')
   end
 

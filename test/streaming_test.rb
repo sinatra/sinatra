@@ -112,4 +112,12 @@ class StreamingTest < Test::Unit::TestCase
     stream = Stream.new { |out| out.callback { out.close }}
     stream.each { |str| }
   end
+
+  it 'gives access to route specific params' do
+    mock_app do
+      get('/:name') { stream { |o| o << params[:name] }}
+    end
+    get '/foo'
+    assert_body 'foo'
+  end
 end

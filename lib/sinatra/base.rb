@@ -287,8 +287,18 @@ module Sinatra
     # The close parameter specifies whether Stream#close should be called
     # after the block has been executed. This is only relevant for evented
     # servers like Thin or Rainbows.
-    def stream(keep_open = false, &block)
+    def stream(keep_open = false)
       scheduler = env['async.callback'] ? EventMachine : Stream
+      current   = @params.dup
+      block     = proc do |out|
+        begin
+          original, @params = @params, current
+          yield(out)
+        ensure
+          @params = original if original
+        end
+      end
+
       body Stream.new(scheduler, keep_open, &block)
     end
 
@@ -1367,7 +1377,7 @@ module Sinatra
       def setup_protection(builder)
         return unless protection?
         options = Hash === protection ? protection.dup : {}
-        options[:except] = Array(options[:except] || :escaped_params)
+        options[:except] = Array options[:except]
         options[:except] += [:session_hijacking, :remote_token] unless sessions?
         builder.use Rack::Protection, options
       end
