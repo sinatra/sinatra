@@ -240,9 +240,9 @@ O, usando un lookahead negativo:
 
 Los archivos estáticos son servidos desde el directorio público
 <tt>./public</tt>. Podés especificar una ubicación diferente ajustando la
-opción <tt>:public_folder</tt>:
+opción <tt>:public_dir</tt>:
 
-  set :public_folder, File.dirname(__FILE__) + '/estaticos'
+  set :public_dir, File.dirname(__FILE__) + '/estaticos'
 
 Notá que el nombre del directorio público no está incluido en la URL. Por
 ejemplo, el archivo <tt>./public/css/style.css</tt> se accede a través de
@@ -1387,7 +1387,7 @@ O varias:
                        sección sobre la configuración de protección de ataques
                        más arriba.
 
-[public_folder]        path del directorio desde donde se sirven los archivos
+[public_dir]           path del directorio desde donde se sirven los archivos
                        públicos.  Solo se utiliza cuando se sirven archivos
                        estáticos (ver la opción <tt>static</tt>).  Si no
                        está presente, se infiere del valor de la opción

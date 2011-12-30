@@ -244,9 +244,9 @@ Oder unter Verwendung eines negativen look ahead:
 
 Statische Dateien werden aus dem <tt>./public</tt>-Ordner ausgeliefert. Es ist
 möglich, einen anderen Ort zu definieren, indem man die
-<tt>:public_folder</tt>-Option setzt:
+<tt>:public_dir</tt>-Option setzt:
 
-  set :public_folder, File.dirname(__FILE__) + '/static'
+  set :public_dir, File.dirname(__FILE__) + '/static'
 
 Zu beachten ist, dass der Ordnername public nicht Teil der URL ist. Die Datei
 <tt>./public/css/style.css</tt> ist unter
@@ -1299,8 +1299,8 @@ Schutzmechanismen zu deaktivieren:
                         wird oder nicht. Weitere Informationen im vorhergehenden 
                         Abschnitt.
 
-[public_folder]         Das öffentliche Verzeichnis, aus dem Daten zur
-                        Verfügung gestellt werden können.
+[public_dir]            Das öffentliche Verzeichnis, aus dem Daten zur Verfügung
+                        gestellt werden können.
 
 [reload_templates]      Im development-Modus aktiviert.
 

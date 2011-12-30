@@ -194,10 +194,10 @@ Rack body对象或者HTTP状态码：
 
 == 静态文件
 
-静态文件是从 <tt>./public_folder</tt> 目录提供服务。你可以通过设置<tt>:public</tt>
+静态文件是从 <tt>./public_dir</tt> 目录提供服务。你可以通过设置<tt>:public</tt>
 选项设定一个不同的位置：
 
-  set :public_folder, File.dirname(__FILE__) + '/static'
+  set :public_dir, File.dirname(__FILE__) + '/static'
 
 请注意public目录名并没有被包含在URL之中。文件
 <tt>./public/css/style.css</tt>是通过
@@ -1269,7 +1269,7 @@ Sinatra会自动处理range请求。
                       <tt>redirect '/foo'</tt> 会和
                       <tt>redirect to('/foo')</tt>起相同作用。默认禁用。
 
-[public_folder]      public文件夹的位置。
+[public_dir]          public文件夹的位置。
 
 [reload_templates]    是否每个请求都重新载入模板。
                       在development mode和 Ruby 1.8.6 中被企业（用来

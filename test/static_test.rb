@@ -4,7 +4,7 @@ class StaticTest < Test::Unit::TestCase
   setup do
     mock_app {
       set :static, true
-      set :public_folder, File.dirname(__FILE__)
+      set :public_dir, File.dirname(__FILE__)
     }
   end
 
@@ -65,7 +65,7 @@ class StaticTest < Test::Unit::TestCase
   end
 
   it 'passes to the next handler when the public option is nil' do
-    @app.set :public_folder, nil
+    @app.set :public_dir, nil
     get "/#{File.basename(__FILE__)}"
     assert not_found?
   end
@@ -84,7 +84,7 @@ class StaticTest < Test::Unit::TestCase
   it '404s when .. path traverses outside of public directory' do
     mock_app {
       set :static, true
-      set :public_folder, File.dirname(__FILE__) + '/data'
+      set :public_dir, File.dirname(__FILE__) + '/data'
     }
     get "/../#{File.basename(__FILE__)}"
     assert not_found?

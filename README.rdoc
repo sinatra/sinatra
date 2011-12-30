@@ -238,9 +238,9 @@ Or, using negative look ahead:
 == Static Files
 
 Static files are served from the <tt>./public</tt> directory. You can specify
-a different location by setting the <tt>:public_folder</tt> option:
+a different location by setting the <tt>:public_dir</tt> option:
 
-  set :public_folder, File.dirname(__FILE__) + '/static'
+  set :public_dir, File.dirname(__FILE__) + '/static'
 
 Note that the public directory name is not included in the URL. A file
 <tt>./public/css/style.css</tt> is made available as
@@ -1335,7 +1335,7 @@ You can also hand in an array in order to disable a list of protections:
 [protection]           Whether or not to enable web attack protections. See
                        protection section above.
 
-[public_folder]        Path to the folder public files are served from. Only
+[public_dir]           Path to the folder public files are served from. Only
                        used if static file serving is enabled (see
                        <tt>static</tt> setting below). Inferred from
                        <tt>app_file</tt> setting if not set.
