@@ -57,9 +57,13 @@ class IntegrationTest < Test::Unit::TestCase
     raise error || e
   end
 
-  it 'starts a top level application' do
+  def assert_content(url, content)
     with_server do
-      assert_equal open("http://127.0.0.1:#{port}/app_file").read, app_file
+      response = open("http://127.0.0.1:#{port}#{url}")
+      assert_equal response.read, content
     end
   end
+
+  it('sets the app_file') { assert_content "/app_file", app_file }
+  it('only extends main') { assert_content "/mainonly", "true"   }
 end
