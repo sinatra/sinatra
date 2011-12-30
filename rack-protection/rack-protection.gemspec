@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   # general infos
   s.name        = "rack-protection"
-  s.version     = "1.1.4"
+  s.version     = "1.2.0"
   s.description = "You should use protection!"
   s.homepage    = "http://github.com/rkh/rack-protection"
   s.summary     = s.description
@@ -10,17 +10,21 @@ Gem::Specification.new do |s|
   # generated from git shortlog -sn
   s.authors = [
     "Konstantin Haase",
+    "Akzhan Abdulin",
     "Corey Ward",
     "David Kellum",
-    "Fojas"
+    "Fojas",
+    "Martin Mauch"
   ]
 
   # generated from git shortlog -sne
   s.email = [
     "konstantin.mailinglists@googlemail.com",
+    "akzhan.abdulin@gmail.com",
     "coreyward@me.com",
     "dek-oss@gravitext.com",
-    "developer@fojasaur.us"
+    "developer@fojasaur.us",
+    "martin.mauch@gmail.com"
   ]
 
   # generated from git ls-files
