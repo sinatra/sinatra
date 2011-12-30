@@ -59,7 +59,7 @@ end
 unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1" && !ENV['TRAVIS']
   # C extensions
   gem 'rdiscount'
-  gem 'redcarpet'
+  platforms(:ruby_18) { gem 'redcarpet' }
   gem 'RedCloth' unless RUBY_ENGINE == "macruby"
 
   ## bluecloth is broken
