@@ -287,8 +287,18 @@ module Sinatra
     # The close parameter specifies whether Stream#close should be called
     # after the block has been executed. This is only relevant for evented
     # servers like Thin or Rainbows.
-    def stream(keep_open = false, &block)
+    def stream(keep_open = false)
       scheduler = env['async.callback'] ? EventMachine : Stream
+      current   = @params.dup
+      block     = proc do |out|
+        begin
+          original, @params = @params, current
+          yield(out)
+        ensure
+          @params = original if original
+        end
+      end
+
       body Stream.new(scheduler, keep_open, &block)
     end
 
