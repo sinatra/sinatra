@@ -1446,6 +1446,25 @@ O varias:
 [views]                path del directorio de las vistas.  Si no está presente,
                        se infiere del valor de la opción <tt>app_file</tt>.
 
+== Entornos
+
+Existen tres entornos (+environments+) predefinidos: <tt>development</tt>,
+<tt>production</tt> y <tt>test</tt>.  El entorno por defecto es
+<tt>development</tt> y tiene algunas particularidades:
+
+* Se recargan las plantillas entre una petición y la siguiente, a diferencia
+de <tt>production</tt> y <tt>test</tt>, donde se cachean.
+* Se instalan manejadores de errores <tt>not_found</tt> y <tt>error</tt>
+especiales que muestran un stack trace en el navegador cuando son disparados.
+
+Para utilizar alguno de los otros entornos puede asignarse el valor
+correspondiente a la variable de entorno +RACK_ENV+, o bien utilizar la opción
+<tt>-e</tt> al ejecutar la aplicación:
+
+  ruby mi_app.rb -e <ENTORNO>
+
+Los métodos +development?+, +test?+ y +production?+ te permiten conocer el
+entorno actual.
 
 == Manejo de Errores
 
@@ -1588,10 +1607,10 @@ Definir tu aplicación en el top-level funciona bien para micro-aplicaciones
 pero trae inconvenientes considerables a la hora de construir componentes
 reutilizables como Rack middleware, Rails metal, simple librerías con un
 componente de servidor, o incluso extensiones de Sinatra. El DSL de top-level
-contamina el espacio de nombres de Object y asume una configuración apropiada
-para micro-aplicaciones (por ejemplo, un único archivo de aplicación, los
-directorios <tt>./public</tt> y <tt>./views</tt>, logging, página con detalles
-de excepción, etc.). Ahí es donde <tt>Sinatra::Base</tt> entra en el juego:
+asume una configuración apropiada para micro-aplicaciones (por ejemplo, un
+único archivo de aplicación, los directorios <tt>./public</tt> y
+<tt>./views</tt>, logging, página con detalles de excepción, etc.). Ahí es
+donde <tt>Sinatra::Base</tt> entra en el juego:
 
   require 'sinatra/base'
 
@@ -1625,20 +1644,14 @@ para detalles sobre las opciones disponibles y su comportamiento.
 Contrariamente a la creencia popular, no hay nada de malo con el estilo clásico.
 Si se ajusta a tu aplicación, no es necesario que la cambies a una modular.
 
-Existen tan solo dos desventajas en comparación con el estilo modular:
+Las desventaja de usar el estilo clásico en lugar del modular consiste en que
+solamente podés tener una aplicación Sinatra por proceso Ruby.  Si tenés
+planificado usar más, cambiá al estilo modular.  Al mismo tiempo, tené en
+cuenta que no hay ninguna razón por la cuál no puedas mezclar los estilos
+clásico y modular.
 
-* Solamente podés tener una aplicación Sinatra por proceso Ruby - si tenés
-  planificado usar más, cambiá al estilo modular.
-
-* El estilo clásico contamina Object con métodos delegadores - si tenés
-  planificado empaquetar tu aplicación en una librería/gem, cambiá al estilo
-  modular.
-
-No hay ninguna razón por la cuál no puedas mezclar los estilos modular y
-clásico.
-
-Cuando cambiés de un estilo al otro, tené en cuenta las sutiles diferencias
-entre sus configuraciones:
+A continuación se detallan las diferencias (sutiles) entre las configuraciones
+de ambos estilos:
 
   Configuración       Clásica                      Modular
 
