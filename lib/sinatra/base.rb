@@ -88,7 +88,7 @@ module Sinatra
   end
 
   class NotFound < NameError #:nodoc:
-    def code ; 404 ; end
+    def http_status; 404 end
   end
 
   # Methods available to routes, before/after filters, and views.
@@ -893,7 +893,19 @@ module Sinatra
     # Error handling during requests.
     def handle_exception!(boom)
       @env['sinatra.error'] = boom
-      status boom.respond_to?(:code) ? Integer(boom.code) : 500
+
+      if boom.respond_to? :http_status
+        status(boom.http_status)
+      elsif settings.use_code? and boom.respond_to? :code and boom.code.between? 400, 599
+        status(boom.code)
+        warn "Using #{boom.class}#code (#{status}) for setting status code. This is deprecated. " \
+          "Use #http_status instead. If this happens unintentional, please \`disable :use_code\`" \
+          " in your application."
+      else
+        status(500)
+      end
+
+      status(500) unless status.between? 400, 599
 
       if server_error?
         dump_errors! boom if settings.dump_errors?
@@ -1491,6 +1503,7 @@ module Sinatra
     set :logging, false
     set :protection, true
     set :method_override, false
+    set :use_code, true
     set :default_encoding, "utf-8"
     set :add_charset, %w[javascript xml xhtml+xml json].map { |t| "application/#{t}" }
     settings.add_charset << /^text\//
