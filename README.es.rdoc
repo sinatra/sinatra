@@ -1446,6 +1446,25 @@ O varias:
 [views]                path del directorio de las vistas.  Si no está presente,
                        se infiere del valor de la opción <tt>app_file</tt>.
 
+== Entornos
+
+Existen tres entornos (+environments+) predefinidos: <tt>development</tt>,
+<tt>production</tt> y <tt>test</tt>.  El entorno por defecto es
+<tt>development</tt> y tiene algunas particularidades:
+
+* Se recargan las plantillas entre una petición y la siguiente, a diferencia
+de <tt>production</tt> y <tt>test</tt>, donde se cachean.
+* Se instalan manejadores de errores <tt>not_found</tt> y <tt>error</tt>
+especiales que muestran un stack trace en el navegador cuando son disparados.
+
+Para utilizar alguno de los otros entornos puede asignarse el valor
+correspondiente a la variable de entorno +RACK_ENV+, o bien utilizar la opción
+<tt>-e</tt> al ejecutar la aplicación:
+
+  ruby mi_app.rb -e <ENTORNO>
+
+Los métodos +development?+, +test?+ y +production?+ te permiten conocer el
+entorno actual.
 
 == Manejo de Errores
 
