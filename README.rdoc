@@ -679,6 +679,22 @@ route handlers and templates:
     bar(params[:name])
   end
 
+Helper methods can be separately defined in a module:
+
+  module FooUtils
+    def bar(name)
+      "#{name}bar"
+    end
+  end
+
+  module MooUtils
+    # ...
+  end
+
+  helpers FooUtils, MooUtils
+
+The effect is same as including a module.
+
 === Using Sessions
 
 A session is used to keep state during requests. If activated, you have one
