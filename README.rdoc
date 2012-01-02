@@ -679,21 +679,19 @@ route handlers and templates:
     bar(params[:name])
   end
 
-Helper methods can be separately defined in a module:
+Alternatively, helper methods can be separately defined in a module:
 
   module FooUtils
-    def bar(name)
-      "#{name}bar"
-    end
+    def foo(name) "#{name}foo" end
   end
 
-  module MooUtils
-    # ...
+  module BarUtils
+    def bar(name) "#{name}bar" end
   end
 
-  helpers FooUtils, MooUtils
+  helpers FooUtils, BarUtils
 
-The effect is same as including a module.
+The effect is the same as including the modules in the application class.
 
 === Using Sessions
 
