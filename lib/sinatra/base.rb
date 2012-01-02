@@ -1163,7 +1163,9 @@ module Sinatra
         types.map! { |t| mime_types(t) }
         types.flatten!
         condition do
-          if type = request.preferred_type(types)
+          if type = response['Content-Type']
+            types.include? type or types.include? type[/^[^;]+/]
+          elsif type = request.preferred_type(types)
             content_type(type)
             true
           else
