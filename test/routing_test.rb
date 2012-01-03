@@ -718,6 +718,31 @@ class RoutingTest < Test::Unit::TestCase
     assert !ok?
   end
 
+  it "filters by current Content-Type" do
+    mock_app do
+      before('/txt') { content_type :txt }
+      get('*', :provides => :txt) { 'txt' }
+
+      before('/html') { content_type :html }
+      get('*', :provides => :html) { 'html' }
+    end
+
+    get '/', {}, { 'HTTP_ACCEPT' => '*' }
+    assert ok?
+    assert_equal 'text/plain;charset=utf-8', response.headers['Content-Type']
+    assert_body 'txt'
+
+    get '/txt', {}, { 'HTTP_ACCEPT' => 'text/plain' }
+    assert ok?
+    assert_equal 'text/plain;charset=utf-8', response.headers['Content-Type']
+    assert_body 'txt'
+
+    get '/', {}, { 'HTTP_ACCEPT' => 'text/html' }
+    assert ok?
+    assert_equal 'text/html;charset=utf-8', response.headers['Content-Type']
+    assert_body 'html'
+  end
+
   it "allows multiple mime types for accept header" do
     types = ['image/jpeg', 'image/pjpeg']
 

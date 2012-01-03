@@ -425,4 +425,15 @@ class AfterFilterTest < Test::Unit::TestCase
     get '/foo', {}, { 'HTTP_USER_AGENT' => 'foo' }
     assert ran
   end
+
+  it 'only triggeres provides condition if conforms with current Content-Type' do
+    mock_app do
+      before(:provides => :txt)  { @type = 'txt' }
+      before(:provides => :html) { @type = 'html' }
+      get('/') { @type }
+    end
+
+    get '/', {}, { 'HTTP_ACCEPT' => '*' }
+    assert_body 'txt'
+  end
 end

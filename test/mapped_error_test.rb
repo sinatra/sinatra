@@ -7,8 +7,13 @@ class FooNotFound < Sinatra::NotFound
 end
 
 class FooSpecialError < RuntimeError
-  def code; 501 end
+  def http_status; 501 end
 end
+
+class FooStatusOutOfRangeError < RuntimeError
+  def code; 4000 end
+end
+
 
 class MappedErrorTest < Test::Unit::TestCase
   def test_default
@@ -182,7 +187,7 @@ class MappedErrorTest < Test::Unit::TestCase
       assert_equal 'subclass', body
     end
 
-    it 'honors Exception#code if present' do
+    it 'honors Exception#http_status if present' do
       mock_app do
         set :raise_errors, false
         error(501) { 'Foo!' }
@@ -192,6 +197,16 @@ class MappedErrorTest < Test::Unit::TestCase
       assert_equal 501, status
       assert_equal 'Foo!', body
     end
+
+    it 'does not rely on Exception#code for invalid codes' do
+      mock_app do
+        set :raise_errors, false
+        get('/') { raise FooStatusOutOfRangeError }
+      end
+      get '/'
+      assert_equal 500, status
+    end
+
   end
 
   describe 'Custom Error Pages' do

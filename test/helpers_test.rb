@@ -729,6 +729,12 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal 'attachment; filename="foo.txt"', response['Content-Disposition']
     end
 
+    it 'allows setting a custom status code' do
+      send_file_app :status => 201
+      get '/file.txt'
+      assert_status 201
+    end
+
     it "is able to send files with unkown mime type" do
       @file = File.dirname(__FILE__) + '/file.foobar'
       File.open(@file, 'wb') { |io| io.write('Hello World') }

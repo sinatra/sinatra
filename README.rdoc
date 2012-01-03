@@ -5,7 +5,7 @@ effort:
 
   # myapp.rb
   require 'sinatra'
-  
+
   get '/' do
     'Hello world!'
   end
@@ -128,7 +128,7 @@ Other available conditions are +host_name+ and +provides+:
   get '/', :provides => 'html' do
     haml :index
   end
-  
+
   get '/', :provides => ['rss', 'atom', 'xml'] do
     builder :feed
   end
@@ -136,21 +136,21 @@ Other available conditions are +host_name+ and +provides+:
 You can easily define your own conditions:
 
   set(:probability) { |value| condition { rand <= value } }
-  
+
   get '/win_a_car', :probability => 0.1 do
     "You won!"
   end
-  
+
   get '/win_a_car' do
     "Sorry, you lost."
   end
-  
+
 For a condition that takes multiple values use a splat:
 
   set(:auth) do |*roles|   # <- notice the splat here
     condition do
       unless logged_in? && roles.any? {|role| current_user.in_role? role }
-        redirect "/login/", 303 
+        redirect "/login/", 303
       end
     end
   end
@@ -158,11 +158,11 @@ For a condition that takes multiple values use a splat:
   get "/my/account/", :auth => [:user, :admin] do
     "Your Account Details"
   end
-  
+
   get "/only/admin/", :auth => :admin do
     "Only admins are allowed here!"
   end
-  
+
 === Return Values
 
 The return value of a route block determines at least the response body passed
@@ -177,7 +177,7 @@ body object or HTTP status code:
   body (responds to #each)]</tt>
 * An Array with two elements: <tt>[status (Fixnum), response body (responds to
   #each)]</tt>
-* An object that responds to <tt>#each</tt> and passes nothing but strings to 
+* An object that responds to <tt>#each</tt> and passes nothing but strings to
   the given block
 * A Fixnum representing the status code
 
@@ -559,7 +559,7 @@ Templates may be defined at the end of the source file:
     = yield
 
   @@ index
-  %div.title Hello world!!!!!
+  %div.title Hello world.
 
 NOTE: Inline templates defined in the source file that requires sinatra are
 automatically loaded. Call <tt>enable :inline_templates</tt> explicitly if you
@@ -582,8 +582,8 @@ Templates may also be defined using the top-level <tt>template</tt> method:
   end
 
 If a template named "layout" exists, it will be used each time a template
-is rendered. You can individually disable layouts by passing 
-<tt>:layout => false</tt> or disable them by default via 
+is rendered. You can individually disable layouts by passing
+<tt>:layout => false</tt> or disable them by default via
 <tt>set :haml, :layout => false</tt>:
 
   get '/' do
@@ -659,7 +659,7 @@ Like routes, filters also take conditions:
   before :agent => /Songbird/ do
     # ...
   end
-  
+
   after '/blog/*', :host_name => 'example.com' do
     # ...
   end
@@ -678,6 +678,20 @@ route handlers and templates:
   get '/:name' do
     bar(params[:name])
   end
+
+Alternatively, helper methods can be separately defined in a module:
+
+  module FooUtils
+    def foo(name) "#{name}foo" end
+  end
+
+  module BarUtils
+    def bar(name) "#{name}bar" end
+  end
+
+  helpers FooUtils, BarUtils
+
+The effect is the same as including the modules in the application class.
 
 === Using Sessions
 
@@ -798,12 +812,12 @@ access the body:
   get '/foo' do
     body "bar"
   end
-  
+
   after do
     puts body
   end
 
-It is also possible to pass a block to +body+, which will be executed by the 
+It is also possible to pass a block to +body+, which will be executed by the
 Rack handler (this can be used to implement streaming, see "Return Values").
 
 Similar to the body, you can also set the status code and headers:
@@ -954,12 +968,12 @@ To pass arguments with a redirect, either add them to the query:
 Or use a session:
 
   enable :sessions
-  
+
   get '/foo' do
     session[:secret] = 'foo'
     redirect to('/bar')
   end
-  
+
   get '/bar' do
     session[:secret]
   end
@@ -1006,14 +1020,14 @@ It is also possible to use a
   etag @article.sha1, :weak
 
 These helpers will not do any caching for you, but rather feed the necessary
-information to your cache. If you are looking for a quick reverse-proxy caching solution, 
-try {rack-cache}[http://rtomayko.github.com/rack-cache/]:
+information to your cache. If you are looking for a quick reverse-proxy caching
+solution, try {rack-cache}[http://rtomayko.github.com/rack-cache/]:
 
   require "rack/cache"
   require "sinatra"
-  
+
   use Rack::Cache
-  
+
   get '/' do
     cache_control :public, :max_age => 36000
     sleep 5
@@ -1070,6 +1084,9 @@ The options are:
 [length]
   Content-Length header, defaults to file size.
 
+[status]
+  Status code to be send. Useful when sending a static file as an error page.
+
 If supported by the Rack handler, other means than streaming from the Ruby
 process will be used. If you use this helper method, Sinatra will automatically
 handle range requests.
@@ -1114,7 +1131,7 @@ Some options, like <tt>script_name</tt> or <tt>path_info</tt>, can also be
 written:
 
   before { request.path_info = "/" }
-  
+
   get "/" do
     "all requests end up here"
   end
@@ -1223,16 +1240,16 @@ Run once, at startup, in any environment:
   configure do
     # setting one option
     set :option, 'value'
-    
+
     # setting multiple options
     set :a => 1, :b => 2
-    
+
     # same as `set :option, true`
     enable :option
-    
+
     # same as `set :option, false`
     disable :option
-    
+
     # you can also have dynamic settings with blocks
     set(:css_dir) { File.join(views, 'css') }
   end
@@ -1300,8 +1317,8 @@ You can also hand in an array in order to disable a list of protections:
 
                          settings.add_charsets << "application/foobar"
 
-[app_file]             Path to the main application file, used to detect project root,
-                       views and public folder and inline templates.
+[app_file]             Path to the main application file, used to detect project
+                       root, views and public folder and inline templates.
 
 [bind]                 IP address to bind to (default: 0.0.0.0).
                        Only used for built-in server.
@@ -1347,8 +1364,8 @@ You can also hand in an array in order to disable a list of protections:
                        setting if not set.
 
 [raise_errors]         raise exceptions (will stop application). Enabled
-                       by default when <tt>environment</tt> is set to <tt>"test"</tt>,
-                       disabled otherwise.
+                       by default when <tt>environment</tt> is set to
+                       <tt>"test"</tt>, disabled otherwise.
 
 [run]                  if enabled, Sinatra will handle starting the web server,
                        do not enable if using rackup or other means.
@@ -1388,15 +1405,20 @@ You can also hand in an array in order to disable a list of protections:
 
 == Environments
 
-There are three predefined +environments+: <tt>development</tt>,  <tt>production</tt> and <tt>test</tt>. Environment can be set by RACK_ENV environment variable, and default value is <tt>development</tt>.
+There are three predefined +environments+: <tt>"development"</tt>,
+<tt>"production"</tt> and <tt>"test"</tt>. Environments can be set
+through the +RACK_ENV+ environment variable. The default value is
+<tt>"development"</tt>. In this mode, all templates are reloaded between
+requests. Special <tt>not_found</tt> and <tt>error</tt> handlers are installed
+for this environment so you will see a stack trace in your browser.
+In <tt>"production"</tt> and <tt>"test"</tt> templates are cached by default.
 
-You can also run different environemnt using <tt>-e</tt> option:
+To run different environments use the <tt>-e</tt> option:
 
   ruby my_app.rb -e [ENVIRONMENT]
 
-You can use predefinied methods: +development?+, +test?+ and +production?+, to check which enviroment is set.
-
-+Developemnt+ is default setting. In this mode, all templates are being reloaded between requests. Special <tt>not_found</tt> and <tt>error</tt> handlers are installed for this enviroment, so you will see nice error page. In +production+ and +test+ templates are being cached.
+You can use predefined methods: +development?+, +test?+ and +production?+ to
+check which enviroment is currently set.
 
 == Error Handling
 
@@ -1501,8 +1523,8 @@ with {CodeRack}[http://coderack.org/] or in the
 
 == Testing
 
-Sinatra tests can be written using any Rack-based testing library
-or framework. {Rack::Test}[http://rdoc.info/github/brynary/rack-test/master/frames] 
+Sinatra tests can be written using any Rack-based testing library or framework.
+{Rack::Test}[http://rdoc.info/github/brynary/rack-test/master/frames]
 is recommended:
 
   require 'my_sinatra_app'
@@ -1536,11 +1558,11 @@ is recommended:
 
 Defining your app at the top-level works well for micro-apps but has
 considerable drawbacks when building reusable components such as Rack
-middleware, Rails metal, simple libraries with a server component, or
-even Sinatra extensions. The top-level DSL pollutes the Object namespace
-and assumes a micro-app style configuration (e.g., a single application
-file, <tt>./public</tt> and <tt>./views</tt> directories, logging, exception
-detail page, etc.). That's where <tt>Sinatra::Base</tt> comes into play:
+middleware, Rails metal, simple libraries with a server component, or even
+Sinatra extensions. The top-level assumes a micro-app style configuration
+(e.g., a single application file, <tt>./public</tt> and <tt>./views</tt>
+directories, logging, exception detail page, etc.). That's where
+<tt>Sinatra::Base</tt> comes into play:
 
   require 'sinatra/base'
 
@@ -1564,7 +1586,8 @@ available via the top-level DSL. Most top-level apps can be converted to
   of <tt>Sinatra::Base</tt>.
 
 <tt>Sinatra::Base</tt> is a blank slate. Most options are disabled by default,
-including the built-in server. See {Options and Configuration}[http://sinatra.github.com/configuration.html]
+including the built-in server. See
+{Options and Configuration}[http://sinatra.github.com/configuration.html]
 for details on available options and their behavior.
 
 === Modular vs. Classic Style
@@ -1572,15 +1595,10 @@ for details on available options and their behavior.
 Contrary to common belief, there is nothing wrong with classic style. If it
 suits your application, you do not have to switch to a modular application.
 
-There are only two downsides compared with modular style:
-
-* You may only have one Sinatra application per Ruby process. If you plan to
-  use more, switch to modular style.
-
-* Classic style pollutes Object with delegator methods. If you plan to ship
-  your application in a library/gem, switch to modular style.
-
-There is no reason you cannot mix modular and classic style.
+The main downsides of using classic style rather than modular style is that
+you may only have one Sinatra application per Ruby process. If you plan to use
+more than one, switch to modular style. There is no reason you cannot mix
+modular and classic style.
 
 If switching from one style to the other, you should be aware of slightly
 different default settings:
@@ -1602,10 +1620,10 @@ There are two common options for starting a modular app, actively starting with
 
   # my_app.rb
   require 'sinatra/base'
-  
+
   class MyApp < Sinatra::Base
     # ... app code here ...
-    
+
     # start the server if ruby file executed directly
     run! if app_file == $0
   end
@@ -1630,7 +1648,7 @@ Write your app file:
 
   # app.rb
   require 'sinatra'
-  
+
   get '/' do
     'Hello world!'
   end
@@ -1661,12 +1679,12 @@ endpoint could be another Sinatra application, or any other Rack-based
 application (Rails/Ramaze/Camping/...):
 
   require 'sinatra/base'
-  
+
   class LoginScreen < Sinatra::Base
     enable :sessions
-    
+
     get('/login') { haml :login }
-    
+
     post('/login') do
       if params[:name] == 'admin' && params[:password] == 'admin'
         session['user_name'] = params[:name]
@@ -1675,17 +1693,17 @@ application (Rails/Ramaze/Camping/...):
       end
     end
   end
-  
+
   class MyApp < Sinatra::Base
     # middleware will run before filters
     use LoginScreen
-    
+
     before do
       unless session['user_name']
         halt "Access denied, please <a href='/login'>login</a>."
       end
     end
-    
+
     get('/') { "Hello #{session['user_name']}." }
   end
 
@@ -1737,10 +1755,10 @@ available.
 === Application/Class Scope
 
 Every Sinatra application corresponds to a subclass of <tt>Sinatra::Base</tt>.
-If you are using the top-level DSL (<tt>require 'sinatra'</tt>), then this 
-class is <tt>Sinatra::Application</tt>, otherwise it is the subclass you 
+If you are using the top-level DSL (<tt>require 'sinatra'</tt>), then this
+class is <tt>Sinatra::Application</tt>, otherwise it is the subclass you
 created explicitly. At class level you have methods like +get+ or +before+, but
-you cannot access the +request+ object or the +session+, as there only is a 
+you cannot access the +request+ object or the +session+, as there only is a
 single application class for all requests.
 
 Options created via +set+ are methods at class level:
@@ -1749,7 +1767,7 @@ Options created via +set+ are methods at class level:
       # Hey, I'm in the application scope!
       set :foo, 42
       foo # => 42
-      
+
       get '/foo' do
         # Hey, I'm no longer in the application scope!
       end
@@ -1781,12 +1799,12 @@ scope via the +settings+ helper:
     get '/define_route/:name' do
       # Request scope for '/define_route/:name'
       @value = 42
-      
+
       settings.get("/#{params[:name]}") do
         # Request scope for "/#{params[:name]}"
         @value # => nil (not the same request)
       end
-      
+
       "Route defined!"
     end
   end
@@ -1915,7 +1933,7 @@ Then, in your project directory, create a +Gemfile+:
 
   source :rubygems
   gem 'sinatra', :git => "git://github.com/sinatra/sinatra.git"
-  
+
   # other dependencies
   gem 'haml'                    # for instance, if you use haml
   gem 'activerecord', '~> 3.0'  # maybe you also need ActiveRecord 3.x
@@ -1971,7 +1989,7 @@ SemVerTag.
 * {Mailing List}[http://groups.google.com/group/sinatrarb/topics]
 * {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] on http://freenode.net
 * {Sinatra Book}[http://sinatra-book.gittr.com] Cookbook Tutorial
-* {Sinatra Recipes}[http://recipes.sinatrarb.com/] Community 
+* {Sinatra Recipes}[http://recipes.sinatrarb.com/] Community
   contributed recipes
 * API documentation for the {latest release}[http://rubydoc.info/gems/sinatra]
   or the {current HEAD}[http://rubydoc.info/github/sinatra/sinatra] on
