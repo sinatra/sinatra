@@ -39,6 +39,9 @@
  * When protecting against CSRF attacks, drop the session instead of refusing
    the request. (Konstantin Haase)
 
+ * Status, headers and body will be set correctly in an after filter when using
+   halt in a before filter or route. (Konstantin Haase)
+
 = 1.3.2 / 2011-12-30
 
  * Don't automatically add `Rack::CommonLogger` if `Rack::Server` is adding it,
