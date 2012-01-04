@@ -907,7 +907,7 @@ enable it yourself:
 To avoid any logging middleware to be set up, set the +logging+ setting to
 +nil+. However, keep in mind that +logger+ will in that case return +nil+. A
 common use case is when you want to set your own logger. Sinatra will use
-whatever it will find in <tt>env['rack.logger']</tt>.
+whatever it will find in <tt>ENV['rack.logger']</tt>.
 
 === Mime Types
 

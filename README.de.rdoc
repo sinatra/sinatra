@@ -932,7 +932,7 @@ Damit auch keine Middleware das Logging aktivieren kann, muss die +logging+
 Einstellung auf +nil+ gesetzt werden. Das heißt aber auch, dass +logger+ in
 diesem Fall +nil+ zurückgeben wird. Üblicherweise wird das eingesetzt, wenn ein
 eigener Logger eingerichtet werden soll. Sinatra wird dann verwenden, was in
-<tt>env['rack.logger']</tt> eingetragen ist.
+<tt>ENV['rack.logger']</tt> eingetragen ist.
 
 == Mime-Types
 
