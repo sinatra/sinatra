@@ -120,4 +120,21 @@ class StreamingTest < Test::Unit::TestCase
     get '/foo'
     assert_body 'foo'
   end
+
+  it 'sets up async.close if available' do
+    ran = false
+    mock_app do
+      get('/') do
+        close = Object.new
+        def close.callback; yield end
+        def close.errback; end
+        env['async.close'] = close
+        stream(:keep_open) do |out|
+          out.callback { ran = true }
+        end
+      end
+    end
+    get '/'
+    assert ran
+  end
 end
