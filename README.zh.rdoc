@@ -1,4 +1,5 @@
-= Sinatra
+= Sinatra {<img src="https://secure.travis-ci.org/sinatra/sinatra.png" />}[http://travis-ci.org/sinatra/sinatra] {<img src="https://gemnasium.com/sinatra/sinatra.png" />}[https://gemnasium.com/sinatra/sinatra]
+
 <i>注：本文档仅仅是英文版的翻译，会出现内容没有及时更新的情况发生。
 如有不一致的地方，请以英文版为准。</i>
 
@@ -109,7 +110,7 @@ Sinatra是一个基于Ruby语言，以最小精力为代价快速创建web应用
   get '/', :provides => 'html' do
     haml :index
   end
-  
+
   get '/', :provides => ['rss', 'atom', 'xml'] do
     builder :feed
   end
@@ -117,11 +118,11 @@ Sinatra是一个基于Ruby语言，以最小精力为代价快速创建web应用
 你也可以很轻松地定义自己的条件：
 
   set(:probability) { |value| condition { rand <= value } }
-  
+
   get '/win_a_car', :probability => 0.1 do
     "You won!"
   end
-  
+
   get '/win_a_car' do
     "Sorry, you lost."
   end
@@ -214,7 +215,7 @@ Rack body对象或者HTTP状态码：
 即使它们在子目录下
 （在这种情况下，使用 <tt>:'subdir/template'</tt>）。
 你必须使用一个符号，
-因为渲染方法会直接地渲染任何传入的字符串。 
+因为渲染方法会直接地渲染任何传入的字符串。
 
 === Haml模板
 
@@ -302,11 +303,11 @@ Rack body对象或者HTTP状态码：
 
 渲染 <tt>./views/index.nokogiri</tt>。
 
-=== Sass 模板 
+=== Sass 模板
 
 需要引入 <tt>haml</tt> 或者 <tt>sass</tt> gem/library 以渲染 Sass 模板：
 
-  # 需要在你的应用中引入 haml 或者 sass 
+  # 需要在你的应用中引入 haml 或者 sass
   require 'sass'
 
   get '/stylesheet.css' do
@@ -326,7 +327,7 @@ Rack body对象或者HTTP状态码：
     sass :stylesheet, :style => :expanded # 覆盖
   end
 
-=== Scss 模板 
+=== Scss 模板
 
 需要引入 <tt>haml</tt> 或者 <tt>sass</tt> gem/library 来渲染 Scss templates：
 
@@ -350,7 +351,7 @@ Rack body对象或者HTTP状态码：
     scss :stylesheet, :style => :expanded # overridden
   end
 
-=== Less 模板 
+=== Less 模板
 
 需要引入 <tt>less</tt> gem/library 以渲染 Less 模板：
 
@@ -363,7 +364,7 @@ Rack body对象或者HTTP状态码：
 
 渲染 <tt>./views/stylesheet.less</tt>。
 
-=== Liquid 模板 
+=== Liquid 模板
 
 需要引入 <tt>liquid</tt> gem/library 来渲染 Liquid 模板：
 
@@ -387,12 +388,12 @@ Rack body对象或者HTTP状态码：
 
   # 需要在你的应用中引入rdiscount
   require "rdiscount"
-  
+
   get '/' do
     markdown :index
   end
 
-渲染 <tt>./views/index.markdown</tt> 
+渲染 <tt>./views/index.markdown</tt>
 (+md+ 和 +mkd+ 也是合理的文件扩展名)。
 
 在markdown中是不可以调用方法的，也不可以传递 locals给它。
@@ -551,7 +552,7 @@ Rack body对象或者HTTP状态码：
 
   radius :index, :locals => { :key => 'value' }
 
-=== Markaby 模板 
+=== Markaby 模板
 
 需要引入<tt>markaby</tt> gem/library以渲染Markaby模板：
 
@@ -570,7 +571,7 @@ Rack body对象或者HTTP状态码：
     markaby { h1 "Welcome!" }
   end
 
-=== Slim 模板 
+=== Slim 模板
 
 需要引入 <tt>slim</tt> gem/library 来渲染 Slim 模板：
 
@@ -583,7 +584,7 @@ Rack body对象或者HTTP状态码：
 
 渲染 <tt>./views/index.slim</tt>。
 
-=== Creole 模板 
+=== Creole 模板
 
 需要引入 <tt>creole</tt> gem/library 来渲染 Creole 模板：
 
@@ -715,7 +716,7 @@ Rack body对象或者HTTP状态码：
     myat :index
   end
 
-渲染 <tt>./views/index.myat</tt>。察看 https://github.com/rtomayko/tilt 
+渲染 <tt>./views/index.myat</tt>。察看 https://github.com/rtomayko/tilt
 来更多了解Tilt.
 
 == 过滤器
@@ -1095,11 +1096,11 @@ Sinatra会自动处理range请求。
     request.env               # Rack中使用的未处理的env哈希
   end
 
-一些选项，例如 <tt>script_name</tt> 或者 <tt>path_info</tt> 
+一些选项，例如 <tt>script_name</tt> 或者 <tt>path_info</tt>
 也是可写的：
 
   before { request.path_info = "/" }
-  
+
   get "/" do
     "all requests end up here"
   end
@@ -1177,16 +1178,16 @@ Sinatra会自动处理range请求。
   configure do
     # setting one option
     set :option, 'value'
-    
+
     # setting multiple options
     set :a => 1, :b => 2
-    
+
     # same as `set :option, true`
     enable :option
-    
+
     # same as `set :option, false`
     disable :option
-    
+
     # you can also have dynamic settings with blocks
     set(:css_dir) { File.join(views, 'css') }
   end
@@ -1222,7 +1223,7 @@ Sinatra会自动处理range请求。
 [absolute_redirects]  如果被禁用，Sinatra会允许使用相对路径重定向，
                       但是，Sinatra就不再遵守 RFC 2616标准
                       (HTTP 1.1), 该标准只允许绝对路径重定向。
-                      
+
                       如果你的应用运行在一个未恰当设置的反向代理之后，
                       你需要启用这个选项。注意 +url+ 辅助方法
                       仍然会生成绝对 URL，除非你传入
@@ -1317,7 +1318,7 @@ Sinatra会自动处理range请求。
 
 === 错误
 
-+error+ 处理器，在任何路由代码块或者过滤器抛出异常的时候会被调用。 
++error+ 处理器，在任何路由代码块或者过滤器抛出异常的时候会被调用。
 异常对象可以通过<tt>sinatra.error</tt> Rack 变量获得：
 
 
@@ -1362,7 +1363,7 @@ Sinatra会自动处理range请求。
 
 == Rack 中间件
 
-Sinatra 依靠 Rack[http://rack.rubyforge.org/], 
+Sinatra 依靠 Rack[http://rack.rubyforge.org/],
 一个面向Ruby web框架的最小标准接口。
 Rack的一个最有趣的面向应用开发者的能力是支持“中间件”——坐落在服务器和你的应用之间，
 监视 并/或 操作HTTP请求/响应以
@@ -1381,7 +1382,7 @@ Sinatra 让建立Rack中间件管道异常简单，
     'Hello World'
   end
 
-+use+ 的语义和在 Rack::Builder[http://rack.rubyforge.org/doc/classes/Rack/Builder.html] 
++use+ 的语义和在 Rack::Builder[http://rack.rubyforge.org/doc/classes/Rack/Builder.html]
 DSL(在rack文件中最频繁使用)中定义的完全一样。例如，+use+
 方法接受 多个/可变 参数，包括代码块：
 
@@ -1499,10 +1500,10 @@ Sinatra::Base子类可用的方法实际上就是通过顶层 DSL
 
   # my_app.rb
   require 'sinatra/base'
-  
+
   class MyApp < Sinatra::Base
     # ... app code here ...
-    
+
     # start the server if ruby file executed directly
     run! if app_file == $0
   end
@@ -1527,7 +1528,7 @@ Sinatra::Base子类可用的方法实际上就是通过顶层 DSL
 
   # app.rb
   require 'sinatra'
-  
+
   get '/' do
     'Hello world!'
   end
@@ -1558,12 +1559,12 @@ Sinatra::Base子类可用的方法实际上就是通过顶层 DSL
 (Rails/Ramaze/Camping/...)。
 
   require 'sinatra/base'
-  
+
   class LoginScreen < Sinatra::Base
     enable :sessions
-    
+
     get('/login') { haml :login }
-    
+
     post('/login') do
       if params[:name] = 'admin' and params[:password] = 'admin'
         session['user_name'] = params[:name]
@@ -1572,17 +1573,17 @@ Sinatra::Base子类可用的方法实际上就是通过顶层 DSL
       end
     end
   end
-  
+
   class MyApp < Sinatra::Base
     # 在前置过滤器前运行中间件
     use LoginScreen
-    
+
     before do
       unless session['user_name']
         halt "Access denied, please <a href='/login'>login</a>."
       end
     end
-    
+
     get('/') { "Hello #{session['user_name']}." }
   end
 
@@ -1606,7 +1607,7 @@ Sinatra::Application，或者这个类就是你显式创建的子类。
       # 嘿，我在应用变量域！
       set :foo, 42
       foo # => 42
-      
+
       get '/foo' do
         # 嘿，我不再处于应用变量域了！
       end
@@ -1637,12 +1638,12 @@ Sinatra::Application，或者这个类就是你显式创建的子类。
     get '/define_route/:name' do
       # 针对 '/define_route/:name' 的请求变量域
       @value = 42
-      
+
       settings.get("/#{params[:name]}") do
         # 针对 "/#{params[:name]}" 的请求变量域
         @value # => nil (并不是相同的请求)
       end
-      
+
       "Route defined!"
     end
   end
@@ -1657,7 +1658,7 @@ Sinatra::Application，或者这个类就是你显式创建的子类。
 === 代理变量域
 
 代理变量域只是把方法转送到类变量域。可是，
-他并非表现得100%类似于类变量域, 因为你并不能获得类的绑定: 
+他并非表现得100%类似于类变量域, 因为你并不能获得类的绑定:
 只有显式地标记为供代理使用的方法才是可用的，
 而且你不能和类变量域共享变量/状态。(解释：你有了一个不同的
 `self`)。 你可以显式地增加方法代理，通过调用
@@ -1668,7 +1669,7 @@ Sinatra::Application，或者这个类就是你显式创建的子类。
 * 顶层的绑定，如果你做过 <tt>require "sinatra"</tt>
 * 在扩展了 `Sinatra::Delegator` mixin的对象
 
-自己在这里看一下代码: 
+自己在这里看一下代码:
 {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
 已经 {被包含进了主命名空间}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28]。
 
@@ -1764,7 +1765,7 @@ Sinatra应该会运行在任何支持上述Ruby实现的操作系统。
 
   source :rubygems
   gem 'sinatra', :git => "git://github.com/sinatra/sinatra.git"
-  
+
   # 其他的依赖关系
   gem 'haml'                    # 举例，如果你想用haml
   gem 'activerecord', '~> 3.0'  # 也许你还需要 ActiveRecord 3.x

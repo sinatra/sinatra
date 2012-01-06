@@ -1,4 +1,4 @@
-﻿= Sinatra
+﻿= Sinatra {<img src="https://secure.travis-ci.org/sinatra/sinatra.png" />}[http://travis-ci.org/sinatra/sinatra] {<img src="https://gemnasium.com/sinatra/sinatra.png" />}[https://gemnasium.com/sinatra/sinatra]
 
 <i>Attention : Ce document correspond à la traduction de la version anglaise et
 il n'est peut être plus à jour.</i>
@@ -153,7 +153,7 @@ plusieurs valeurs :
   set(:auth) do |*roles|   # <- ici on utilise un splat
     condition do
       unless logged_in? && roles.any? {|role| current_user.in_role? role }
-        redirect "/login/", 303 
+        redirect "/login/", 303
       end
     end
   end
@@ -162,7 +162,7 @@ plusieurs valeurs :
     "Informations sur votre compte"
   end
 
-  get "/reserve/aux/admins/", :auth => :admin do  
+  get "/reserve/aux/admins/", :auth => :admin do
     "Seuls les administrateurs sont acceptés ici !"
   end
 
@@ -250,7 +250,7 @@ avez la possibilité d'utiliser un autre répertoire en définissant le paramèt
   set :public_folder, File.dirname(__FILE__) + '/statique'
 
 Notez que le nom du dossier public n'apparait pas dans l'URL. Le fichier
-<tt>./public/css/style.css</tt> sera appelé via l'URL : 
+<tt>./public/css/style.css</tt> sera appelé via l'URL :
 <tt>http://exemple.com/css/style.css</tt>.
 
 Utilisez le paramètre <tt>:static_cache_control</tt> pour ajouter l'information
@@ -1897,7 +1897,7 @@ Si vous voulez utiliser la toute dernière version de Sinatra, n'ayez pas peur
 de faire tourner votre application sur la branche master, cela devrait être
 stable.
 
-Nous publions également une gem de +prerelease+ de temps en temps que vous 
+Nous publions également une gem de +prerelease+ de temps en temps que vous
 pouvez installer comme suit :
 
   gem install sinatra --pre

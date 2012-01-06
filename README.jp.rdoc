@@ -1,4 +1,5 @@
-= Sinatra
+= Sinatra {<img src="https://secure.travis-ci.org/sinatra/sinatra.png" />}[http://travis-ci.org/sinatra/sinatra] {<img src="https://gemnasium.com/sinatra/sinatra.png" />}[https://gemnasium.com/sinatra/sinatra]
+
 <i>注） 本文書は英語から翻訳したものであり、その内容が最新でない場合もあります。最新の情報はオリジナルの英語版を参照して下さい。</i>
 
 SinatraはRubyで下記のような最小労力で手早くウェブアプリケーションを作成するためのDSLです。
@@ -107,7 +108,7 @@ Sinatraでは、ルートはHTTPメソッドとURLマッチングパターンが
   get '/', :provides => 'html' do
     haml :index
   end
-  
+
   get '/', :provides => ['rss', 'atom', 'xml'] do
     builder :feed
   end
@@ -115,11 +116,11 @@ Sinatraでは、ルートはHTTPメソッドとURLマッチングパターンが
 独自の条件を定義することも簡単にできます:
 
   set(:probability) { |value| condition { rand <= value } }
-  
+
   get '/win_a_car', :probability => 0.1 do
     "You won!"
   end
-  
+
   get '/win_a_car' do
     "Sorry, you lost."
   end
@@ -331,7 +332,7 @@ Markdownテンプレートを使うにはrdiscountライブラリが必要です
 
   # rdiscountを読み込みます
   require "rdiscount"
-  
+
   get '/' do
     markdown :index
   end
@@ -660,7 +661,7 @@ body部を指定することもできます ...
 <tt>script_name</tt>や<tt>path_info</tt>などのオプションは次のように利用することもできます:
 
   before { request.path_info = "/" }
-  
+
   get "/" do
     "全てのリクエストはここに来る"
   end
@@ -878,12 +879,12 @@ Sinatraは他のRackミドルウェアを利用することができるだけで
 このエンドポイントには、別のSinatraアプリケーションまたは他のRackベースのアプリケーション(Rails/Ramaze/Camping/...)が用いられるでしょう。
 
   require 'sinatra/base'
-  
+
   class LoginScreen < Sinatra::Base
     enable :sessions
-    
+
     get('/login') { haml :login }
-    
+
     post('/login') do
       if params[:name] = 'admin' and params[:password] = 'admin'
         session['user_name'] = params[:name]
@@ -892,17 +893,17 @@ Sinatraは他のRackミドルウェアを利用することができるだけで
       end
     end
   end
-  
+
   class MyApp < Sinatra::Base
     # middleware will run before filters
     use LoginScreen
-    
+
     before do
       unless session['user_name']
         halt "Access denied, please <a href='/login'>login</a>."
       end
     end
-    
+
     get('/') { "Hello #{session['user_name']}." }
   end
 
@@ -924,7 +925,7 @@ Sinatraは他のRackミドルウェアを利用することができるだけで
       # Hey, I'm in the application scope!
       set :foo, 42
       foo # => 42
-      
+
       get '/foo' do
         # Hey, I'm no longer in the application scope!
       end
@@ -953,12 +954,12 @@ Sinatraは他のRackミドルウェアを利用することができるだけで
     get '/define_route/:name' do
       # Request scope for '/define_route/:name'
       @value = 42
-      
+
       settings.get("/#{params[:name]}") do
         # Request scope for "/#{params[:name]}"
         @value # => nil (not the same request)
       end
-      
+
       "Route defined!"
     end
   end

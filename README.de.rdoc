@@ -1,4 +1,4 @@
-= Sinatra
+= Sinatra {<img src="https://secure.travis-ci.org/sinatra/sinatra.png" />}[http://travis-ci.org/sinatra/sinatra] {<img src="https://gemnasium.com/sinatra/sinatra.png" />}[https://gemnasium.com/sinatra/sinatra]
 
 <i>Wichtig: Dieses Dokument ist eine Übersetzung aus dem Englischen und unter
 Umständen nicht auf dem aktuellen Stand.</i>
@@ -886,8 +886,8 @@ weitergegebene Block abgearbeitet ist. Mit Shotgun funktioniert Streaming z.B.
 
 Ist der optionale Parameter +keep_open+ aktiviert, wird beim gestreamten Objekt
 +close+ nicht aufgerufen und es ist einem überlassen dies an einem beliebigen
-späteren Zeitpunkt nachholen. Die Funktion ist jedoch nur bei Event-gesteuerten 
-Serven wie Thin oder Rainbows möglich, andere Server werden trotzdem den Stream 
+späteren Zeitpunkt nachholen. Die Funktion ist jedoch nur bei Event-gesteuerten
+Serven wie Thin oder Rainbows möglich, andere Server werden trotzdem den Stream
 beenden:
 
   set :server, :thin
@@ -1956,7 +1956,7 @@ Die folgenden Versionen werden offiziell unterstützt:
   eingesetzt wird (aktueller Patchlevel ist p0). Bei einem Wechsel zu
   1.9.3 werden alle Sessions ungültig.
   Obwohl Tests bereits auf 1.9.3 laufen, sind bisher keine Applikationen auf
-  1.9.3 in Produktion bekannt. Ebenso wie bei 1.9.2 besteht die gleiche Warnung 
+  1.9.3 in Produktion bekannt. Ebenso wie bei 1.9.2 besteht die gleiche Warnung
   zum Patchlevel 0.
 
 [ Rubinius ]
@@ -1994,7 +1994,7 @@ Ruby 2.0.0p0 und 1.9.4p0 von Sinatra unterstützt werden wird.
 Sinatra sollte auf jedem Betriebssystem laufen, dass den gewählten Ruby-
 Interpreter unterstützt.
 
-Sinatra wird aktuell nicht unter Cardinal, SmallRuby, BleuRuby oder irgendeiner 
+Sinatra wird aktuell nicht unter Cardinal, SmallRuby, BleuRuby oder irgendeiner
 Version von Ruby vor 1.8.7 laufen.
 
 == Der neuste Stand (The Bleeding Edge)
