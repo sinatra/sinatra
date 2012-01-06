@@ -1831,8 +1831,8 @@ You have the delegate scope binding inside:
 * An object extended with the <tt>Sinatra::Delegator</tt> mixin
 
 Have a look at the code for yourself: here's the
-{Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
-being {included into the main namespace}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28].
+{Sinatra::Delegator mixin}[https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/base.rb#L1609-1633]
+being {extending the main object}[https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/main.rb#L28-30].
 
 == Command Line
 

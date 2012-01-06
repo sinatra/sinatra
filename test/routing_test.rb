@@ -531,6 +531,17 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 'HelloWorldHowAreYou', body
   end
 
+  it 'sets response.status with halt' do
+    status_was = nil
+    mock_app do
+      after { status_was = status }
+      get('/') { halt 500, 'error' }
+    end
+    get '/'
+    assert_status 500
+    assert_equal 500, status_was
+  end
+
   it "transitions to the next matching route on pass" do
     mock_app {
       get '/:foo' do

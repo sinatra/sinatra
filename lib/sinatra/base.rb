@@ -275,6 +275,7 @@ module Sinatra
       end
 
       def callback(&block)
+        return yield if @closed
         @callbacks << block
       end
 
@@ -290,6 +291,7 @@ module Sinatra
     def stream(keep_open = false)
       scheduler = env['async.callback'] ? EventMachine : Stream
       current   = @params.dup
+
       block     = proc do |out|
         begin
           original, @params = @params, current
@@ -299,7 +301,14 @@ module Sinatra
         end
       end
 
-      body Stream.new(scheduler, keep_open, &block)
+      out = Stream.new(scheduler, keep_open, &block)
+
+      if env['async.close']
+        env['async.close'].callback { out.close }
+        env['async.close'].errback { out.close }
+      end
+
+      body out
     end
 
     # Specify response freshness policy for HTTP caches (Cache-Control header).
@@ -877,15 +886,18 @@ module Sinatra
       elsif res.respond_to? :each
         body res
       end
+      nil # avoid double setting the same response tuple twice
     end
 
     # Dispatch a request with error handling.
     def dispatch!
-      static! if settings.static? && (request.get? || request.head?)
-      filter! :before
-      route!
+      invoke do
+        static! if settings.static? && (request.get? || request.head?)
+        filter! :before
+        route!
+      end
     rescue ::Exception => boom
-      handle_exception!(boom)
+      invoke { handle_exception!(boom) }
     ensure
       filter! :after unless env['sinatra.static_file']
     end
