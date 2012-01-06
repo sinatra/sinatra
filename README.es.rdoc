@@ -1,4 +1,5 @@
-= Sinatra
+= Sinatra {<img src="https://secure.travis-ci.org/sinatra/sinatra.png" />}[http://travis-ci.org/sinatra/sinatra] {<img src="https://gemnasium.com/sinatra/sinatra.png" />}[https://gemnasium.com/sinatra/sinatra]
+
 <i>Atención: Este documento es una traducción de la versión en inglés y puede estar desactualizado.</i>
 
 Sinatra es un DSL para crear aplicaciones web rápidamente en Ruby con un mínimo
@@ -1440,7 +1441,7 @@ O varias:
                        <tt>Cache-Control</tt> a las respuestas.  Para esto
                        utiliza el helper +cache_control+.  Se encuentra
                        deshabilitada por defecto.  Notar que es necesario
-                       utilizar un array cuando se asignan múltiples valores: 
+                       utilizar un array cuando se asignan múltiples valores:
                        <tt>set :static_cache_control, [:public, :max_age => 300]</tt>.
 
 [views]                path del directorio de las vistas.  Si no está presente,

@@ -1,4 +1,5 @@
-= Sinatra
+= Sinatra {<img src="https://secure.travis-ci.org/sinatra/sinatra.png" />}[http://travis-ci.org/sinatra/sinatra] {<img src="https://gemnasium.com/sinatra/sinatra.png" />}[https://gemnasium.com/sinatra/sinatra]
+
 <i>Atenção: Este documento é apenas uma tradução da versão em inglês e pode estar desatualizado.</i>
 
 Sinatra é uma DSL para criar rapidamente aplicações web em Ruby com o mínimo de
@@ -267,7 +268,7 @@ Templates podem ser definidos no final do arquivo fonte(.rb):
   %div.title Olá Mundo!!!!!
 
 NOTA: Templates inline definidos no arquivo fonte são automaticamente carregados
-pelo sinatra. Digite `enable :inline_templates` se tem templates inline no outro 
+pelo sinatra. Digite `enable :inline_templates` se tem templates inline no outro
 arquivo fonte.
 
 === Templates nomeados
@@ -504,8 +505,8 @@ aceita múltiplos argumentos/variáveis, bem como blocos:
   end
 
 O Rack é distribuido com uma variedade de middleware padrões para logs,
-debugs, rotas de URL, autenticação, e manipuladores de sessão.Sinatra utiliza 
-muitos desses componentes automaticamente dependendo da configuração, por isso, 
+debugs, rotas de URL, autenticação, e manipuladores de sessão.Sinatra utiliza
+muitos desses componentes automaticamente dependendo da configuração, por isso,
 tipicamente nao é necessário utilizar +use+ explicitamente.
 
 == Testando
