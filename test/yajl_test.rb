@@ -13,15 +13,22 @@ class YajlTest < Test::Unit::TestCase
   end
     
   it 'renders inline Yajl strings' do
-    yajl_app { yajl "json = { :foo => 'bar'}" }
+    yajl_app { yajl 'json = { :foo => "bar"}' }
     assert ok?
-    assert_body %({"foo":"bar"})
+    assert_body '{"foo":"bar"}'
   end
   
   it 'renders .yajl files in views path' do
     yajl_app { yajl :hello }
     assert ok?
-    assert_body %({"yajl":"hello"})
+    assert_body '{"yajl":"hello"}'
+  end
+  
+  it 'raises error if template not found' do
+    mock_app {
+      get('/') { yajl :no_such_template }
+    }
+    assert_raise(Errno::ENOENT) { get('/') }
   end
 end
 
