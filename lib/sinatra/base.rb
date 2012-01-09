@@ -604,6 +604,7 @@ module Sinatra
     end
     
     def yajl(template, options={}, locals={})
+      options[:default_content_type] = :json
       render :yajl, template, options, locals
     end
 
