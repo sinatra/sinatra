@@ -42,11 +42,18 @@ class YajlTest < Test::Unit::TestCase
   
   it 'decorates the json with a callback' do
     yajl_app {
-      yajl 'json = { :foo => "bar" }', 
-        { :callback => 'baz' }
+      yajl 'json = { :foo => "bar" }', { :callback => 'baz' }
     }
     assert ok?
     assert_body 'baz({"foo":"bar"});'
+  end
+  
+  it 'decorates the json with a variable' do
+    yajl_app {
+      yajl 'json = { :foo => "bar" }', { :variable => 'qux' } 
+    }
+    assert ok?
+    assert_body 'var qux = {"foo":"bar"};'
   end
 end
 
