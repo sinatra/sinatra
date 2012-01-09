@@ -13,7 +13,7 @@ class YajlTest < Test::Unit::TestCase
   end
     
   it 'renders inline Yajl strings' do
-    yajl_app { yajl 'json = { :foo => "bar"}' }
+    yajl_app { yajl 'json = { :foo => "bar" }' }
     assert ok?
     assert_body '{"foo":"bar"}'
   end
@@ -38,6 +38,15 @@ class YajlTest < Test::Unit::TestCase
     }
     assert ok?
     assert_body '{"foo":"bar"}'
+  end
+  
+  it 'decorates the json with a callback' do
+    yajl_app {
+      yajl 'json = { :foo => "bar" }', 
+        { :callback => 'baz' }
+    }
+    assert ok?
+    assert_body 'baz({"foo":"bar"});'
   end
 end
 
