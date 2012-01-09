@@ -17,6 +17,12 @@ class YajlTest < Test::Unit::TestCase
     assert ok?
     assert_body %({"foo":"bar"})
   end
+  
+  it 'renders .yajl files in views path' do
+    yajl_app { yajl :hello }
+    assert ok?
+    assert_body %({"yajl":"hello"})
+  end
 end
 
 rescue LoadError
