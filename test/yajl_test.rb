@@ -33,8 +33,17 @@ class YajlTest < Test::Unit::TestCase
   
   it 'accepts a :locals option' do
     yajl_app {
-      locals = {:object => {:foo => 'bar'} }
+      locals = { :object => { :foo => 'bar' } }
       yajl 'json = object', :locals => locals
+    }
+    assert ok?
+    assert_body '{"foo":"bar"}'
+  end
+  
+  it 'accepts a :scope option' do
+    yajl_app {
+      scope = { :object => { :foo => 'bar' } }
+      yajl 'json = self[:object]', :scope => scope
     }
     assert ok?
     assert_body '{"foo":"bar"}'
