@@ -12,6 +12,11 @@ class YajlTest < Test::Unit::TestCase
     get '/'
   end
     
+  it 'renders inline Yajl strings' do
+    yajl_app { yajl "json = { :foo => 'bar'}" }
+    assert ok?
+    assert_body %({"foo":"bar"})
+  end
 end
 
 rescue LoadError
