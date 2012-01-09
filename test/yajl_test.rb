@@ -30,6 +30,15 @@ class YajlTest < Test::Unit::TestCase
     }
     assert_raise(Errno::ENOENT) { get('/') }
   end
+  
+  it 'accepts a :locals option' do
+    yajl_app {
+      locals = {:object => {:foo => 'bar'} }
+      yajl 'json = object', :locals => locals
+    }
+    assert ok?
+    assert_body '{"foo":"bar"}'
+  end
 end
 
 rescue LoadError
