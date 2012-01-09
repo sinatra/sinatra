@@ -55,6 +55,15 @@ class YajlTest < Test::Unit::TestCase
     assert ok?
     assert_body 'var qux = {"foo":"bar"};'
   end
+  
+  it 'decorates the json with a callback and a variable' do
+    yajl_app {
+      yajl 'json = { :foo => "bar" }', 
+        { :callback => 'baz', :variable => 'qux' }
+    }
+    assert ok?
+    assert_body 'var qux = {"foo":"bar"}; baz(qux);'
+  end
 end
 
 rescue LoadError
