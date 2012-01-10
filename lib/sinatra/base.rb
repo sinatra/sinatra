@@ -603,6 +603,11 @@ module Sinatra
       render :creole, template, options, locals
     end
 
+    def yajl(template, options={}, locals={})
+      options[:default_content_type] = :json
+      render :yajl, template, options, locals
+    end
+
     # Calls the given block for every possible template file in views,
     # named name.ext, where ext is registered on engine.
     def find_template(views, name, engine)

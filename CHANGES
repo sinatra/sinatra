@@ -1,5 +1,7 @@
 = 1.4.0 / Not Yet Released
 
+ * Add support for Yajl templates. (Jamie Hodge)
+
  * No longer include Sinatra::Delegator in Object, instead extend the main
    object only. (Konstantin Haase)
 
