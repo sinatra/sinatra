@@ -514,6 +514,21 @@ Dependency::        {coffee-script}[https://github.com/josh/ruby-coffee-script]
 File Extensions::   <tt>.coffee</tt>
 Example::           <tt>coffee :index</tt>
 
+=== Yajl Templates
+
+Dependency::        {yajl-ruby}[https://github.com/brianmario/yajl-ruby]
+File Extensions::   <tt>.yajl</tt>
+Example::           <tt>yajl :index, :locals => { :key => 'qux' }, :callback => 'present', :variable => 'resource' </tt>
+
+The template source is evaluated as a Ruby string, and the resulting json variable is converted #to_json.
+
+  json = { :foo => 'bar' }
+  json[:baz] = key
+
+The <tt>:callback</tt> and <tt>:variable</tt> options can be used to decorate the rendered object.
+
+  var resource = {"foo":"bar","baz":"qux"}; present(resource);
+
 === Embedded Templates
 
   get '/' do
