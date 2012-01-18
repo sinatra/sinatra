@@ -56,7 +56,7 @@ else
   gem 'less', '~> 1.0'
 end
 
-unless RUBY_ENGINE == 'jruby' && JRUBY_VERSION < "1.6.1" && !ENV['TRAVIS']
+if RUBY_ENGINE != 'jruby' or not ENV['TRAVIS']
   # C extensions
   gem 'rdiscount'
   platforms(:ruby_18) { gem 'redcarpet' }
