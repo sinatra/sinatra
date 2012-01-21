@@ -1123,7 +1123,7 @@ Además acepta un par de opciones:
 Estas opciones son:
 
 [filename]
-  nombre del archivo respondido, por defecto es el nombre real del archivo.
+  nombre del archivo devuelto, por defecto es el nombre real del archivo.
 
 [last_modified]
   valor para el encabezado Last-Modified, por defecto toma el mtime del archivo.
