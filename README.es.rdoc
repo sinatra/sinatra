@@ -1917,8 +1917,8 @@ Tenés la ligadura al ámbito de delegación dentro de:
 * Un objeto extendido con el mixin <tt>Sinatra::Delegator</tt>
 
 Pegale una mirada al código: acá está el
-{Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
-que es {incluido en el espacio de nombres principal}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28].
+{Sinatra::Delegator mixin}[https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/base.rb#L1609-1633]
+que {extiende el objeto main}[https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/main.rb#L28-30].
 
 == Línea de Comandos
 
