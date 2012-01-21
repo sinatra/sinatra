@@ -232,6 +232,15 @@ module Sinatra
 
     # Contains the methods defined in Sinatra::Base that are overriden.
     module BaseMethods
+      # Protects Sinatra::Base.run! from being called more than once.
+      def run!(*args)
+        if settings.reloader?
+          super unless running?
+        else
+          super
+        end
+      end
+
       # Does everything Sinatra::Base#route does, but it also tells the
       # +Watcher::List+ for the Sinatra application to watch the defined
       # route.
