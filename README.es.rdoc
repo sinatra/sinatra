@@ -1140,6 +1140,10 @@ Estas opciones son:
 [length]
   encabezado Content-Length, por defecto toma el tamaño del archivo.
 
+[status]
+  código de estado devuelto. Resulta útil al enviar un archivo estático como una
+  página de error.
+
 Si el Rack handler lo soporta, se intentará no transmitir directamente desde el
 proceso de Ruby.  Si usás este método, Sinatra se va a encargar automáticamente
 peticiones de rango.
