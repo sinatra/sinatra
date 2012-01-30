@@ -8,6 +8,7 @@ module Rack
     autoload :EscapedParams,     'rack/protection/escaped_params'
     autoload :FormToken,         'rack/protection/form_token'
     autoload :FrameOptions,      'rack/protection/frame_options'
+    autoload :HttpOrigin,        'rack/protection/http_origin'
     autoload :IPSpoofing,        'rack/protection/ip_spoofing'
     autoload :JsonCsrf,          'rack/protection/json_csrf'
     autoload :PathTraversal,     'rack/protection/path_traversal'
@@ -21,6 +22,7 @@ module Rack
       except = Array options[:except]
       Rack::Builder.new do
         use ::Rack::Protection::FrameOptions,     options unless except.include? :frame_options
+        use ::Rack::Protection::HttpOrigin,       options unless except.include? :http_origin
         use ::Rack::Protection::IPSpoofing,       options unless except.include? :ip_spoofing
         use ::Rack::Protection::JsonCsrf,         options unless except.include? :json_csrf
         use ::Rack::Protection::PathTraversal,    options unless except.include? :path_traversal
