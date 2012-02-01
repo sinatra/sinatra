@@ -530,6 +530,21 @@ Dependencias::             {coffee-script}[https://github.com/josh/ruby-coffee-s
 Extensiones de Archivo::   <tt>.coffee</tt>
 Ejemplo::                  <tt>coffee :index</tt>
 
+=== Plantillas Yajl
+
+Dependencias::             {yajl-ruby}[https://github.com/brianmario/yajl-ruby]
+Extensiones de Archivo::   <tt>.yajl</tt>
+Ejemplo::                  <tt>yajl :index, :locals => { :key => 'qux' }, :callback => 'present', :variable => 'resource'</tt>
+
+El contenido de La plantilla se evalúa como código Ruby, y la variable +json+ es convertida a JSON mediante <tt>#to_json</tt>.
+
+  json = { :foo => 'bar' }
+  json[:baz] = key
+
+Las opciones <tt>:callback</tt> y <tt>:variable</tt> se pueden utilizar para decorar el objeto renderizado:
+
+  var resource = {"foo":"bar","baz":"qux"}; present(resource);
+
 === Plantillas Embebidas
 
   get '/' do
@@ -701,6 +716,22 @@ pueden ser utilizados dentro de los manejadores de rutas y las plantillas:
   get '/:nombre' do
     bar(params[:nombre])
   end
+
+Por cuestiones organizativas, puede resultar conveniente organizar los métodos
+ayudantes en distintos módulos:
+
+  module FooUtils
+    def foo(nombre) "#{nombre}foo" end
+  end
+
+  module BarUtils
+    def bar(nombre) "#{nombre}bar" end
+  end
+
+  helpers FooUtils, BarUtils
+
+El efecto de utilizar <tt>helpers</tt> de esta manera es el mismo que resulta de
+incluir los módulos en la clase de la aplicación.
 
 === Usando Sesiones
 
@@ -1092,7 +1123,7 @@ Además acepta un par de opciones:
 Estas opciones son:
 
 [filename]
-  nombre del archivo respondido, por defecto es el nombre real del archivo.
+  nombre del archivo devuelto, por defecto es el nombre real del archivo.
 
 [last_modified]
   valor para el encabezado Last-Modified, por defecto toma el mtime del archivo.
@@ -1108,6 +1139,10 @@ Estas opciones son:
 
 [length]
   encabezado Content-Length, por defecto toma el tamaño del archivo.
+
+[status]
+  código de estado devuelto. Resulta útil al enviar un archivo estático como una
+  página de error.
 
 Si el Rack handler lo soporta, se intentará no transmitir directamente desde el
 proceso de Ruby.  Si usás este método, Sinatra se va a encargar automáticamente
@@ -1882,8 +1917,8 @@ Tenés la ligadura al ámbito de delegación dentro de:
 * Un objeto extendido con el mixin <tt>Sinatra::Delegator</tt>
 
 Pegale una mirada al código: acá está el
-{Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
-que es {incluido en el espacio de nombres principal}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28].
+{Sinatra::Delegator mixin}[https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/base.rb#L1609-1633]
+que {extiende el objeto main}[https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/main.rb#L28-30].
 
 == Línea de Comandos
 
