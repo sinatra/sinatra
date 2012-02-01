@@ -871,8 +871,10 @@ module Sinatra
     def indifferent_params(params)
       params = indifferent_hash.merge(params)
       params.each do |key, value|
-        next unless value.is_a?(Hash)
-        params[key] = indifferent_params(value)
+        case value
+          when Hash  then params[key] = indifferent_params(value)
+          when Array then params[key] = value.map { |item| indifferent_params(item) }
+        end
       end
     end
 

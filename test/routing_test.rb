@@ -360,6 +360,18 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 'well, alright', body
   end
 
+  it "exposes params nested within arrays with indifferent hash" do
+    mock_app {
+      get '/testme' do
+        assert_equal 'baz', params['bar'][0]['foo']
+        assert_equal 'baz', params['bar'][0][:foo]
+        'well, alright'
+      end
+    }
+    get '/testme?bar[][foo]=baz'
+    assert_equal 'well, alright', body
+  end
+
   it "supports deeply nested params" do
     expected_params = {
       "emacs" => {
