@@ -372,6 +372,18 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 'well, alright', body
   end
 
+  it "supports arrays within params" do
+    mock_app {
+      get '/foo' do
+        assert_equal ['A', 'B'], params['bar']
+        'looks good'
+      end
+    }
+    get '/foo?bar[]=A&bar[]=B'
+    assert ok?
+    assert_equal 'looks good', body
+  end
+
   it "supports deeply nested params" do
     expected_params = {
       "emacs" => {
