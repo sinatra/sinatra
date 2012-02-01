@@ -868,11 +868,16 @@ module Sinatra
     end
 
     # Enable string or symbol key access to the nested params hash.
-    def indifferent_params(params)
-      params = indifferent_hash.merge(params)
-      params.each do |key, value|
-        next unless value.is_a?(Hash)
-        params[key] = indifferent_params(value)
+    def indifferent_params(object)
+      case object
+      when Hash
+        new_hash = indifferent_hash
+        object.each { |key, value| new_hash[key] = indifferent_params(value) }
+        new_hash
+      when Array
+        object.map { |item| indifferent_params(item) }
+      else
+        object
       end
     end
 
