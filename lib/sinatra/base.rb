@@ -1221,7 +1221,17 @@ module Sinatra
         host_name(options.delete(:host)) if options.key?(:host)
         enable :empty_path_info if path == "" and empty_path_info.nil?
         signature = compile!(verb, path, block, options)
-        (@routes[verb] ||= []) << signature
+        verb_routes = @routes[verb] ||= []
+        if settings.replace_old_routes?
+          verb_sig  = signature[0,3] + [verb]
+          @signatures ||= {}
+          if @signatures.key? verb_sig
+            partial = signature[0,3]
+            verb_routes.delete_if{ |a| a[0,3] == partial }
+          end
+          @signatures[verb_sig] = true
+        end
+        verb_routes << signature
         invoke_hook(:route_added, verb, path, block)
         signature
       end
@@ -1567,6 +1577,8 @@ module Sinatra
     set :public_folder, Proc.new { root && File.join(root, 'public') }
     set :static, Proc.new { public_folder && File.exist?(public_folder) }
     set :static_cache_control, false
+
+    set :replace_old_routes, false
 
     error ::Exception do
       response.status = 500
