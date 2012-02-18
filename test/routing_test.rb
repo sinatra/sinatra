@@ -243,6 +243,23 @@ class RoutingTest < Test::Unit::TestCase
     get '/users/show_str/bob?' + param_name + '=alice'
     assert_equal 'Hello bob', body
   end
+  
+  it "does not concatenate params" do
+    next if RUBY_VERSION < '1.9'
+    
+    param_name = 'user'
+    mock_app {
+      get Regexp.new('/users/(?<' + param_name + '>[^/?#]+)') do
+        "Hello #{params['user'].inspect}"
+      end
+    }
+    get '/users/bob?' + param_name + '=alice'
+    assert_not_equal "Hello #{nil.inspect}", body
+    assert_not_equal "Hello #{''.inspect}", body
+    assert_not_equal "Hello #{'bobalice'.inspect}", body
+    assert_not_equal "Hello #{'alicebob'.inspect}", body
+    #TODO Decide if it should be "bob" or "alice".
+  end
 
   it "supports optional named captures like %r{/page(?<format>.[^/?#]+)?} on Ruby >= 1.9" do
     next if RUBY_VERSION < '1.9'
