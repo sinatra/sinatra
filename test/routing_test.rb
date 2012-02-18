@@ -214,6 +214,35 @@ class RoutingTest < Test::Unit::TestCase
     get '/hello/Frank'
     assert_equal 'Hello Frank', body
   end
+  
+  it "supports seperate named_captures" do
+    next if RUBY_VERSION < '1.9'
+    
+    param_name = 'user'
+    mock_app {
+      get Regexp.new('/users/keys/(?<' + param_name + '>[^/?#]+)') do
+        "Hello #{ (params['named_captures'] || {}).keys.sort.join(',') }"
+      end
+      get Regexp.new('/users/show_str/(?<' + param_name + '>[^/?#]+)') do
+        "Hello #{ (params['named_captures'] || {})['user'] }"
+      end
+      get Regexp.new('/users/show_sym/(?<' + param_name + '>[^/?#]+)') do
+        "Hello #{ (params['named_captures'] || {})[:'user'] }"
+      end
+    }
+    
+    get '/users/keys/bob'
+    assert_equal 'Hello user', body
+    
+    get '/users/show_str/bob'
+    assert_equal 'Hello bob', body
+    
+    get '/users/show_sym/bob'
+    assert_equal 'Hello bob', body
+    
+    get '/users/show_str/bob?' + param_name + '=alice'
+    assert_equal 'Hello bob', body
+  end
 
   it "supports optional named captures like %r{/page(?<format>.[^/?#]+)?} on Ruby >= 1.9" do
     next if RUBY_VERSION < '1.9'
