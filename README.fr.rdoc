@@ -1939,49 +1939,66 @@ Les options sont :
 Les versions suivantes de Ruby sont officiellement supportées :
 
 [ Ruby 1.8.7 ]
-  1.8.7 est complètement supporté, toutefois si rien ne vous y retient, nous
-  vous recommandons de passer à 1.9.2 ou bien de passer à JRuby ou Rubinius.
+  1.8.7 est complètement supporté, toutefois si rien ne vous en empêche, nous
+  vous recommandons de passer à 1.9.2 ou bien de passer à JRuby ou Rubinius. Le
+  support de Ruby 1.8.7 ne sera pas supprimé avant la sortie de Sinatra 2.0 et
+  de Ruby 2.0, à moins qu'un improbable Ruby 1.8.8 apparaisse. Et même dans ce
+  cas, nous pourrions continuer à le supporter. <b>Ruby 1.8.6 n'est plus
+  supporté.</b> Si vous souhaitez utiliser la version 1.8.6, vous devez revenir
+  à Sinatra 1.2 qui continuera à recevoir des corrections de bugs tant que
+  Sinatra 1.4.0 ne sera pas livré.
 
 [ Ruby 1.9.2 ]
-  1.9.2 est supporté et recommandé. Notez que Radius et Markaby ne sont
-  actuellement pas compatible avec 1.9. N'utilisez pas 1.9.2p0 qui est
-  réputé causer des erreurs de segmentation lorque Sinatra est utilisé.
+  1.9.2 est totalement supporté et recommandé. Notez que Radius et Markaby ne
+  sont   actuellement pas compatible avec 1.9. N'utilisez pas 1.9.2p0 car il
+  provoque des erreurs de segmentation à l'exécution de Sinatra. Son support
+  continuera au minimum jusqu'à la sortie de Ruby 1.9.4/2.0 et le support de la
+  dernière version 1.9 se poursuivra aussi longtemps que la core team de Ruby la
+  supportera.
+
+[ Ruby 1.9.3 ]
+  1.9.3 est totalement supporté. Nous recommandons d'attendre qu'un premier
+  niveau de patch sorte (pour l'instant on en est à p0) avant de l'employer en
+  production. Nous vous rappelons que passer à 1.9.3 depuis une version
+  précédente annulera toutes les sessions.
 
 [ Rubinius ]
-  Rubinius est officiellement supporté (Rubinius >= 1.2.3), tout fonctionne,
-  y compris tous les langages de template.
+  Rubinius est officiellement supporté (Rubinius >= 1.2.4), tout fonctionne,
+  y compris tous les langages de template. La version 2.0 à venir est
+  également supportée.
 
 [ JRuby ]
-  JRuby est officiellement supporté (JRuby >= 1.6.1). Aucune anomalie avec
+  JRuby est officiellement supporté (JRuby >= 1.6.5). Aucune anomalie avec
   des bibliothèques de templates tierces ne sont connues. Toutefois, si vous
   choisissez JRuby, alors tournez vous vers des gestionnaires Rack JRuby car
   le serveur Thin n'est pas complètement supporté par JRuby. Le support des
   extensions C dans JRuby est encore expérimental, ce qui n'affecte que
-  RDiscount.
-
-<b>Ruby 1.8.6 n'est plus supporté.</b> Si votre application doit fonctionner
-sous Ruby 1.8.6, vous pouvez utiliser Sinatra 1.2. Cette version sera
-maintenue jusqu'à la sortie de Sinatra 1.4.0.
+  RDiscount, Redcarpet and RedCloth pour l'instant.
 
 Nous gardons également un oeil sur les versions Ruby à venir.
 
 Les implémentations Ruby suivantes ne sont pas officiellement supportées mais
-sont toujours connues comme permettant à Sinatra de fonctionner :
+sont malgré tout connues pour permettre de faire fonctionner Sinatra :
 
-* Plus anciennes versions de JRuby et Rubinius
+* Versions plus anciennes de JRuby et Rubinius
+* Ruby Enterprise Edition
 * MacRuby, Maglev, IronRuby
-* Ruby 1.9.0 et 1.9.1
+* Ruby 1.9.0 et 1.9.1 (mais nous déconseillons leur utilisation)
 
-Ne pas être officiellement supporté signifie que si les choses se passent mal
-sur ces plateformes et non sur celles supportées, nous considérons que
-l'anomalie est de le ressort, pas du nôtre.
+Le fait de ne pas être officiellement supporté signifie que si quelque chose
+ne fonctionne pas uniquement sur cette plateforme alors c'est un problème de la
+plateforme et pas un bug de Sinatra.
 
-Nous faisons également notre intégration continue (CI) avec ruby-head (la
-future 1.9.3), mais nous ne pouvons rien garantir étant donné que c'est
-constant mouvement. Vous pouvez vous attendre à ce que 1.9.3p0 soit supporté.
+Nous lançons également notre intégration continue (CI) avec ruby-head (la
+future 2.0.0) et la branche 1.9.4, mais étant donné les évolutions continuelles,
+nous ne pouvont rien garantir, si ce n'est que les versions 1.9.4p0 et 2.0.0p0
+seront supportées.
 
 Sinatra devrait fonctionner sur n'importe quel système d'exploitation
 supportant l'implémentation Ruby choisie.
+
+Il n'est pas possible d'utiliser Sinatra sur Cardinal, SmallRuby, Blueuby ou
+toute version de Ruby antérieure à 1.8.7.
 
 == Essuyer les plâtres
 
