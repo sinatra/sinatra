@@ -934,7 +934,7 @@ Notez que la journalisation est seulement activée par défaut pour
 vous aurez à l'activer vous-même :
 
   class MonApp < Sinatra::Base
-    configure(:production, :development) do
+    configure :production, :development do
       enable :logging
     end
   end
