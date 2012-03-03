@@ -1322,6 +1322,25 @@ Vous pouvez accéder à ces paramètres via <tt>settings</tt> :
     ...
   end
 
+=== Se protéger des attaques
+
+Sinatra utilise {Rack::Protection}[https://github.com/rkh/rack-protection#readme]
+pour protéger votre application contre les principales attaques opportunistes.
+Vous pouvez très simplement désactiver cette fonctionnalité (ce qui devrait
+améliorer les performances) :
+
+  disable :protection
+
+Pour désactiver seulement un type de protection, vous pouvez définir +protection+
+avec un hash d'options : 
+
+  set :protection, :except => :path_traversal
+
+Vous pouvez également lui passer un tableau pour désactiver plusieurs types de
+protection :
+
+  set :protection, :except => [:path_traversal, :session_hijacking]
+
 === Paramètres disponibles
 
 [absolute_redirects]   Si désactivé, Sinatra permettra les redirections
