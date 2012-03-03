@@ -108,6 +108,10 @@ Les routes peuvent aussi comporter des paramètres optionnels :
     # répond à "GET /posts" et aussi à "GET /posts.json", "GET /posts.xml" etc...
   end
 
+A ce propos, à moins d'avoir désactivé la protection contre les attaques par
+"path transversal" (voir plus loin), l'URL demandée peut avoir été modifiée
+avant d'être comparée à vos routes.
+
 === Conditions
 
 Les routes peuvent définir toutes sortes de conditions, comme par exemple le
@@ -1404,7 +1408,7 @@ protection :
                        Désactivé par défaut.
 
 [protection]           défini s'il faut activer ou non la protection contre
-                       les attaques web. Voir la section protection plus loin.
+                       les attaques web. Voir la section protection précédente.
 
 [public_folder]        dossier duquel les fichiers publics sont servis
 
