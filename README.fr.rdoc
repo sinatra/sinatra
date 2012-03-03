@@ -1092,6 +1092,24 @@ recherche de solutions rapides pour un reverse-proxy de cache, essayez
 Utilisez le paramètre <tt>:static_cache_control</tt> pour ajouter l'information
 d'en-tête <tt>Cache-Control</tt> (voir plus loin).
 
+D'après la RFC 2616, votre application devrait se comporter différement lorsque
+l'en-tête If-Match ou If-None-Match est défini à <tt>*</tt> en tenant compte du
+fait que la resource demandée existe déjà ou pas. Sinatra considère que les
+requêtes portant sur des resources sûres (tel que get) ou idempotentes (tel que
+put) existent déjà et pour les autres resources (par exemple dans le cas
+de requêtes post) qu'il s'agit de nouvelles resources. Vous pouvez modifier ce
+comportement en passant une option <tt>:new_resource</tt> :
+
+  get '/create' do
+    etag '', :new_resource => true
+    Article.create
+    erb :new_article
+  end
+
+Si vous souhaitez utilisez un ETag faible, utilisez l'option <tt>:kind</tt> :
+
+  etag '', :new_resource => true, :kind => :weak
+
 === Envoyer des fichiers
 
 Pour envoyer des fichiers, vous pouvez utiliser la méthode
