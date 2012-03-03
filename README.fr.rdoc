@@ -1421,6 +1421,25 @@ protection :
 
 [views]               dossier des vues.
 
+== Environements
+
+Il existe trois environnements prédéfinis : <tt>"development"</tt>,
+<tt>"production"</tt> et <tt>"test"</tt>. Les environements peuvent être
+sélectionné via la variable d'environnement +RACK_ENV+. Sa valeur par défaut
+est <tt>"development"</tt>. Dans ce mode, tous les templates sont rechargés à
+chaque requête. Des handlers spécifiques pour <tt>not_found</tt> et
+<tt>error</tt> sont installés pour vous permettre d'avoir une pile de trace
+dans votre navigateur. En mode <tt>"production"</tt> et <tt>"test"</tt> les
+templates sont mis en cache par défaut.
+
+Pour exécuter votre application dans un environnement différent, utilisez
+l'option <tt>-e</tt> de Ruby :
+
+  ruby mon_application.rb -e [ENVIRONMENT]
+
+Vous pouvez utiliser une des méthodes +development?+, +test?+ et +production?+
+pour déterminer quel est l'environnement en cours.
+
 == Gérer les erreurs
 
 Les gestionnaires d'erreur s'exécutent dans le même contexte que les routes ou
