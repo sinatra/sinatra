@@ -1388,9 +1388,9 @@ protection :
 
                          settings.add_charsets << "application/foobar"
 
-[app_file]             fichier de l'application principale, utilisé pour
-                       détecterla racine du projet, le dossier public et le
-                       dossier de vues ainsi que pour les templates en ligne.
+[app_file]             chemin pour le fichier de l'application principale,
+                       utilisé pour détecter la racine du projet, les dossiers
+                       public et vues, et les templates en ligne.
 
 [bind]                 adresse IP sur laquelle se brancher
                        (par défaut : 0.0.0.0).
@@ -1429,14 +1429,21 @@ protection :
 [protection]           défini s'il faut activer ou non la protection contre
                        les attaques web. Voir la section protection précédente.
 
-[public_folder]        dossier duquel les fichiers publics sont servis
+[public_folder]        chemin pour le dossier à partir duquel les fichiers
+                       publics sont servis. Utilisé seulement si les fichiers
+                       statiques doivent être servis (voir le paramètre
+                       <tt>static</tt>). Si non défini, il découle du paramètre
+                       <tt>app_file</tt>.
 
 [reload_templates]     si oui ou non les templates doivent être rechargés
                        entre les requêtes. Activé en mode développement.
 
-[root]                 dossier racine du projet.
+[root]                 chemin pour le dossier racine du projet. Si non défini,
+                       il découle du paramètre <tt>app_file</tt>.
 
-[raise_errors]         soulever les erreurs (ce qui arrêtera l'application).
+[raise_errors]         soulever les erreurs (ce qui arrêtera l'application). 
+                       Désactivé par défaut sauf lorsque <tt>env</tt> est défini
+                       à <tt>"test"</tt>.
 
 [run]                  si activé, Sinatra s'occupera de démarrer le serveur,
                        ne pas activer si vous utiliser rackup ou autres.
@@ -1449,10 +1456,14 @@ protection :
                        Par défaut ['thin', 'mongrel', 'webrick'], l'ordre
                        indiquant la priorité.
 
-[sessions]             active l'enregistrement des sessions en utilisant les
-                       cookies.
+[sessions]             active le support des sessions basées sur les cookies, en
+                       utilisant <tt>Rack::Session::Cookie</tt>. Reportez-vous
+                       à la section 'Utiliser les sessions' pour plus
+                       d'informations.
 
-[show_exceptions]      affiche la trace de l'erreur dans le navigateur.
+[show_exceptions]      affiche la trace de l'erreur dans le navigateur lorsqu'une
+                       exception se produit. Désactivé par défaut sauf lorsque
+                       <tt>env</tt> est défini à <tt>"development"</tt>.
 
 [static]               Si oui ou non Sinatra doit s'occuper de servir les
                        fichiers statiques.
@@ -1471,7 +1482,8 @@ protection :
 [threaded]             à définir à +true+ pour indiquer à Thin d'utiliser
                        <tt>EventMachine.defer</tt> pour traiter la requête.
 
-[views]                dossier des vues.
+[views]                chemin pour le dossier des vues. Si non défini, il
+                       découle du paramètre <tt>app_file</tt>.
 
 == Environements
 
