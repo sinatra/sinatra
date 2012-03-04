@@ -1442,8 +1442,8 @@ protection :
                        il découle du paramètre <tt>app_file</tt>.
 
 [raise_errors]         soulever les erreurs (ce qui arrêtera l'application). 
-                       Désactivé par défaut sauf lorsque <tt>env</tt> est défini
-                       à <tt>"test"</tt>.
+                       Désactivé par défaut sauf lorsque <tt>environment</tt>
+                       est défini à <tt>"test"</tt>.
 
 [run]                  si activé, Sinatra s'occupera de démarrer le serveur,
                        ne pas activer si vous utiliser rackup ou autres.
@@ -1463,7 +1463,7 @@ protection :
 
 [show_exceptions]      affiche la trace de l'erreur dans le navigateur lorsqu'une
                        exception se produit. Désactivé par défaut sauf lorsque
-                       <tt>env</tt> est défini à <tt>"development"</tt>.
+                       <tt>environment</tt> est défini à <tt>"development"</tt>.
 
 [static]               Si oui ou non Sinatra doit s'occuper de servir les
                        fichiers statiques.
