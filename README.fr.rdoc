@@ -157,7 +157,7 @@ plusieurs valeurs :
   set(:auth) do |*roles|   # <- ici on utilise un splat
     condition do
       unless logged_in? && roles.any? {|role| current_user.in_role? role }
-        redirect "/login/", 303 
+        redirect "/login/", 303
       end
     end
   end
@@ -1635,16 +1635,16 @@ recommandé :
     end
   end
 
-== Sinatra::Base - Les Middlewares, les Bibliothèques, et les Applications Modulaires
+== Sinatra::Base - Les Middlewares, Bibliothèques, et Applications Modulaires
 
-Définir votre application au niveau supérieur fonctionne bien pour les
-micro-applications, mais peut s'avérer moins pratique lorsqu'il s'agit
-de créer des composants réutilisables comme des middlewares Rack, faire
-du Rails metal, ou de simples bibliothèques avec un composant serveur, ou
-même une extension pour Sinatra. Le DSL de haut niveau pollue l'espace de noms
-et est une configuration adaptée à une micro-application (un fichier unique
-pour l'application, les dossiers <tt>./public</tt> et <tt>./views</tt>, les
-logs, pages d'erreur, etc.). C'est là que <tt>Sinatra::Base</tt> entre en jeu :
+Définir votre application au niveau supérieur fonctionne bien dans le cas des
+micro-applications mais présente pas mal d'inconvénients pour créer des
+composants réutilisables sous forme de middlewares Rack, de Rails metal, de
+simples librairies avec un composant serveur ou même d'extensions Sinatra. Le
+niveau supérieur suppose une configuration dans le style des micro-applications
+(une application d'un seul fichier, des répertoires <tt>./public</tt> et
+<tt>./views</tt>, des logs, une page d'erreur, etc...). C'est là que
+<tt>Sinatra::Base</tt> prend tout son intérêt :
 
   require 'sinatra/base'
 
@@ -1657,51 +1657,43 @@ logs, pages d'erreur, etc.). C'est là que <tt>Sinatra::Base</tt> entre en jeu :
     end
   end
 
-Les méthodes disponibles dans <tt>Sinatra::Base</tt> sont exactement identiques
-à celles disponibles dans le DSL de haut niveau. La plupart des applications
-de haut niveau peuvent être converties en composant <tt>Sinatra::Base</tt> avec
-deux modifications :
+Les méthodes de la classe <tt>Sinatra::Base</tt> sont parfaitement identiques à
+celles disponibles via le DSL de haut niveau. Il suffit de deux modifications
+pour transformer la plupart des applications de haut niveau en un composant
+<tt>Sinatra::Base</tt> :
 
-* Votre fichier doit charger +sinatra/base+ au lieu de +sinatra+ ;
-  autrement, toutes les méthodes de la DSL seront chargées dans l'espace
-  de noms.
-* Mettre vos gestionnaires de route, vos gestionnaires d'erreur, vos filtres
-  et options dans une sous-classe de <tt>Sinatra::Base</tt>.
+* Votre fichier doit charger +sinatra/base+ au lieu de +sinatra+, sinon toutes
+  les méthodes du DSL Sinatra seront importées dans l'espace de nom principal.
+* Les gestionnaires de routes, la gestion d'erreur, les filtres et les options
+  doivent être placés dans une classe héritant de <tt>Sinatra::Base</tt>.
 
-<tt>Sinatra::Base</tt> est plutôt épuré. La plupart des options sont
-désactivées par défaut, ceci inclus le serveur. Voir {Options et
-Configuration}[http://sinatra.github.com/configuration.html]
-pour plus de détails sur les options et leur comportement.
+<tt>Sinatra::Base</tt> est une page blanche. La plupart des options sont
+désactivées par défaut, y compris le serveur intégré. Reportez-vous à
+{Options et Configuration}[http://sinatra.github.com/configuration.html]
+pour plus d'informations sur les options et leur fonctionnement.
 
 === Style modulaire vs. style classique
 
-Contrairement aux croyanaces, le style classique n'a rien de mauvais. Si cela
-convient à votre application, vous n'avez pas à changer pour une application
-modulaire.
+Contrairement aux idées reçues, il n'y a rien de mal à utiliser le style
+classique. Si c'est ce qui convient pour votre application, vous n'avez pas
+aucune raison de passer à une application modulaire.
 
-Il n'y a que deux inconvénient au style classique comparé au style modulaire :
+Le principal inconvénient du style classique sur le style modulaire est que vous
+ne pouvez avoir qu'une application Ruby par processus Ruby. Si vous pensez en
+utiliser plus, passez au style modulaire. Et rien ne vous empêche de mixer style
+classique et style modulaire.
 
-* Vous ne pouvez avoir qu'une seule application Sinatra par processus Ruby. Si
-  vous envisagez d'en utiliser plus, passez au style modulaire
+Si vous passez d'un style à l'autre, souvenez-vous des quelques différences
+mineures en ce qui concerne les paramètres par défaut :
 
-* Le style classique pollue  la classe Object avec des méthodes déléguantes.
-  Si vous prévoyez de diffuser votre application dans une bibliothèque/gem,
-  passez au style modulaire.
+  Paramètre         Classique                   Modulaire
 
-Il n'y pas d'empêchement à mélanger style classic et style modulaire.
-
-Si vous passez d'un style à l'autre, vous devriez être vigilant à quelques
-légères différences dans les paramètres par défaut :
-
-  Paramètre           Classique                     Modulaire
-
-  app_file            fichier chargeant sinatra     nil
-  run                 $0 == app_file                false
-  logging             true                          false
-  method_override     true                          false
-  inline_templates    true                          false
-  static              true                          false
-
+  app_file          fichier chargeant sinatra   fichier héritant de Sinatra::Base
+  run               $0 == app_file              false
+  logging           true                        false
+  method_override   true                        false
+  inline_templates  true                        false
+  static            true                        false
 
 === Servir une application modulaire
 
