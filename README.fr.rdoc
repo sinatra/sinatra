@@ -1937,9 +1937,9 @@ Vous avez le binding du contexte de délégation dans :
 * Le binding de haut niveau, si vous avez utilisé <tt>require "sinatra"</tt>
 * Un objet qui inclut le module +Sinatra::Delegator+
 
-Jetez un oeil pour vous faire une idée : voici le mixin
-{Sinatra::Delegator}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
-qui est {inclus dans l'espace de noms principal}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28]
+Jetez un oeil pour vous faire une idée : voici le
+{mixin Sinatra::Delegator}[https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/base.rb#L1609-1633]
+qui {étend l'objet principal}[https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/main.rb#L28-30].
 
 == Ligne de commande
 
