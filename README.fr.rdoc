@@ -1144,6 +1144,9 @@ Les options sont :
 [length]
   entête Content-Length, par défaut la taille du fichier
 
+[status]
+  code état à renvoyer. Utile quand un fichier statique sert de page d'erreur.
+
 Si le gestionnaire Rack le supporte, d'autres moyens que le +streaming+ via le
 processus Ruby seront utilisés. Si vous utilisez cette méthode, Sinatra gérera
 automatiquement les requêtes de type +range+.
