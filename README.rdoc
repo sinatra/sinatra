@@ -1,7 +1,6 @@
 = Sinatra
 
-Sinatra is a DSL for quickly creating web applications in Ruby with minimal
-effort:
+Sinatra는 최소의 노력으로 신속하게 웹 애플리케이션을 만들 수 있게 해 주는 도메인 특정 언어(DSL) 이다:
 
   # myapp.rb
   require 'sinatra'
@@ -10,18 +9,19 @@ effort:
     'Hello world!'
   end
 
-Install the gem and run with:
+젬을 설치하고 다음과 같이 실행:
 
   gem install sinatra
   ruby -rubygems myapp.rb
 
 View at: http://localhost:4567
 
-It is recommended to also run <tt>gem install thin</tt>, which Sinatra will
-pick up if available.
+이 때 <tt>gem install thin</tt>도 함께 실행하길 권장하며, 그럴 경우 Sinatra가 가능하면 thin을 선택할 것임.
 
-== Routes
 
+== 라우터(Routes)
+
+Sinatra에서 라우터는 URL-
 In Sinatra, a route is an HTTP method paired with a URL-matching pattern.
 Each route is associated with a block:
 
