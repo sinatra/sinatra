@@ -713,6 +713,21 @@ qui seront accessibles dans vos gestionnaires de route et dans vos templates :
     bar(params[:nom])
   end
 
+Vous pouvez aussi définir les méthodes helper dans un module séparé :
+
+  module FooUtils
+    def foo(nom) "#{nom}foo" end
+  end
+
+  module BarUtils
+    def bar(nom) "#{nom}bar" end
+  end
+
+  helpers FooUtils, BarUtils
+
+Cela a le même résultat que d'inclure les modules dans la classe de
+l'application.
+
 === Utiliser les sessions
 
 Une session est utilisée pour conserver un état entre les requêtes. Une fois
