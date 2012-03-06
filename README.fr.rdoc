@@ -108,6 +108,10 @@ Les routes peuvent aussi comporter des paramètres optionnels :
     # répond à "GET /posts" et aussi à "GET /posts.json", "GET /posts.xml" etc...
   end
 
+A ce propos, à moins d'avoir désactivé la protection contre les attaques par
+"path transversal" (voir plus loin), l'URL demandée peut avoir été modifiée
+avant d'être comparée à vos routes.
+
 === Conditions
 
 Les routes peuvent définir toutes sortes de conditions, comme par exemple le
@@ -153,7 +157,7 @@ plusieurs valeurs :
   set(:auth) do |*roles|   # <- ici on utilise un splat
     condition do
       unless logged_in? && roles.any? {|role| current_user.in_role? role }
-        redirect "/login/", 303 
+        redirect "/login/", 303
       end
     end
   end
@@ -162,7 +166,7 @@ plusieurs valeurs :
     "Informations sur votre compte"
   end
 
-  get "/reserve/aux/admins/", :auth => :admin do  
+  get "/reserve/aux/admins/", :auth => :admin do
     "Seuls les administrateurs sont acceptés ici !"
   end
 
@@ -250,7 +254,7 @@ avez la possibilité d'utiliser un autre répertoire en définissant le paramèt
   set :public_folder, File.dirname(__FILE__) + '/statique'
 
 Notez que le nom du dossier public n'apparait pas dans l'URL. Le fichier
-<tt>./public/css/style.css</tt> sera appelé via l'URL : 
+<tt>./public/css/style.css</tt> sera appelé via l'URL :
 <tt>http://exemple.com/css/style.css</tt>.
 
 Utilisez le paramètre <tt>:static_cache_control</tt> pour ajouter l'information
@@ -383,7 +387,7 @@ Ce moteur accepte également un bloc pour des templates en ligne (voir exemple).
 
 Dépendances::             {nokogiri}[http://nokogiri.org/]
 Extensions de fichier::   <tt>.nokogiri</tt>
-Exemple::                 <tt>builder { |xml| xml.em "salut" }</tt>
+Exemple::                 <tt>nokogiri { |xml| xml.em "salut" }</tt>
 
 Ce moteur accepte également un bloc pour des templates en ligne (voir exemple).
 
@@ -540,6 +544,23 @@ Dépendances::             {coffee-script}[https://github.com/josh/ruby-coffee-s
 Extensions de fichier::   <tt>.coffee</tt>
 Exemple::                 <tt>coffee :index</tt>
 
+=== Templates Yajl
+
+Dépendances::             {yajl-ruby}[https://github.com/brianmario/yajl-ruby]
+Extensions de fichier::   <tt>.yajl</tt>
+Exemple::                 <tt>yajl :index, :locals => { :key => 'qux' }, :callback => 'present', :variable => 'resource'</tt>
+
+Le source du template est évalué en tant que chaine Ruby, puis la variable json
+obtenue est convertie avec #to_json.
+
+  json = { :foo => 'bar' }
+  json[:baz] = key
+
+Les options <tt>:callback</tt> et <tt>:variable</tt> peuvent être utilisées
+pour décorer l'objet retourné.
+
+  var resource = {"foo":"bar","baz":"qux"}; present(resource);
+
 === Templates embarqués
 
   get '/' do
@@ -648,10 +669,10 @@ https://github.com/rtomayko/tilt pour en savoir plus sur Tilt.
 
 == Filtres
 
-Un filtre <tt>before</tt> est évalué avant n'importe quelle requête, dans le
-contexte de celle-ci, et peut modifier la requête ou la réponse. Les variables
-d'instance déclarées dans le filtre sont accessibles au gestionnaire de route
-et au template :
+Les filtres before sont exécutés avant chaque requête, dans le même contexte
+que les routes, et permettent de modifier la requête et sa réponse. Les
+variables d'instance déclarées dans les filtres sont accessibles au niveau
+des routes et des templates :
 
   before do
     @note = 'Coucou !'
@@ -663,22 +684,21 @@ et au template :
     params[:splat] #=> 'bar/baz'
   end
 
-Un filtre <tt>after</tt> est évalué après chaque requête, dans le contexte
-de celle-ci et peut également modifier la requête et/ou la réponse. Toutes les
-variables d'instance déclarées dans un filtre <tt>before</tt> et dans le
-gestionnaire de route sont accessibles dans le filtre <tt>after</tt> :
+Les filtres after sont exécutés après chaque requête à l'intérieur du même
+contexte et permettent de modifier la requête et sa réponse. Les variables
+d'instance déclarées dans les filtres before ou les routes sont accessibles
+au niveau des filtres after :
 
   after do
     puts response.status
   end
 
-Note : Sauf si vous utilisez la méthode +body+ au lieu de renvoyer une chaîne
-de caractères dans vos gestionnaires de routes, le corps de la réponse ne sera
-pas disponible dans le filtre <tt>after</tt>, étant donné qu'il est généré
-plus tard.
+Note : Le corps de la réponse n'est pas disponible au niveau du filtre after
+car il ne sera généré que plus tard (sauf dans le cas où vous utilisez la
+méthode +body+ au lieu de simplement renvoyer une chaine depuis vos routes).
 
-En option, on peut passer un masque au filtre, ce qui le rend actif uniquement
-si la requête correspond au masque en question :
+Les filtres peuvent être associés à un masque, ce qui permet de limiter leur
+exécution aux cas où la requête correspond à ce masque :
 
   before '/secret/*' do
     authentification!
@@ -688,7 +708,7 @@ si la requête correspond au masque en question :
     session[:dernier_travail] = travail
   end
 
-Tout comme les routes, les filtres acceptent également les conditions :
+Tout comme les routes, les filtres acceptent également des conditions :
 
   before :agent => /Songbird/ do
     # ...
@@ -712,6 +732,21 @@ qui seront accessibles dans vos gestionnaires de route et dans vos templates :
   get '/:nom' do
     bar(params[:nom])
   end
+
+Vous pouvez aussi définir les méthodes helper dans un module séparé :
+
+  module FooUtils
+    def foo(nom) "#{nom}foo" end
+  end
+
+  module BarUtils
+    def bar(nom) "#{nom}bar" end
+  end
+
+  helpers FooUtils, BarUtils
+
+Cela a le même résultat que d'inclure les modules dans la classe de
+l'application.
 
 === Utiliser les sessions
 
@@ -892,13 +927,14 @@ Le fonctionnement du streaming, notamment le nombre de requêtes simultanées,
 dépend énormément du serveur web utilisé. Certains ne prennent pas du tout en
 charge le streaming (WEBRick par exemple). Lorsque le serveur ne gère pas le
 streaming, la partie body de la réponse sera envoyée au client en une seule
-fois, après que l'exécution du bloc passé au helper +stream+ sera terminée.
+fois, après que l'exécution du bloc passé au helper +stream+ sera terminée. Le
+streaming ne fonctionne pas du tout avec Shotgun.
 
 En utilisant le helper +stream+ avec le paramètre +keep_open+, il n'appelera
 pas la méthode +close+ du flux, vous laissant la possibilité de le fermer à
 tout moment au cours de l'exécution. Ceci ne fonctionne qu'avec les serveurs
 evented (ie non threadés) tels que Thin et Rainbows. Les autres serveurs
-fermeront malgré tout le flux.
+fermeront malgré tout le flux :
 
   set :server, :thin
   connections = []
@@ -934,10 +970,15 @@ Notez que la journalisation est seulement activée par défaut pour
 vous aurez à l'activer vous-même :
 
   class MonApp < Sinatra::Base
-    configure(:production, :development) do
+    configure :production, :development do
       enable :logging
     end
   end
+
+Si vous souhaitez utiliser votre propre logger, vous devez définir le paramètre
++logging+ à +nil+ pour être certain qu'aucun middleware de logging ne sera
+installé (notez toutefois que +logger+ renverra alors +nil+). Dans ce cas,
+Sinatra utilisera ce qui sera présent dans <tt>env['rack.logger']</tt>.
 
 === Types Mime
 
@@ -1069,6 +1110,27 @@ recherche de solutions rapides pour un reverse-proxy de cache, essayez
     "hello"
   end
 
+Utilisez le paramètre <tt>:static_cache_control</tt> pour ajouter l'information
+d'en-tête <tt>Cache-Control</tt> (voir plus loin).
+
+D'après la RFC 2616, votre application devrait se comporter différement lorsque
+l'en-tête If-Match ou If-None-Match est défini à <tt>*</tt> en tenant compte du
+fait que la resource demandée existe déjà ou pas. Sinatra considère que les
+requêtes portant sur des resources sûres (tel que get) ou idempotentes (tel que
+put) existent déjà et pour les autres resources (par exemple dans le cas
+de requêtes post) qu'il s'agit de nouvelles resources. Vous pouvez modifier ce
+comportement en passant une option <tt>:new_resource</tt> :
+
+  get '/create' do
+    etag '', :new_resource => true
+    Article.create
+    erb :new_article
+  end
+
+Si vous souhaitez utilisez un ETag faible, utilisez l'option <tt>:kind</tt> :
+
+  etag '', :new_resource => true, :kind => :weak
+
 === Envoyer des fichiers
 
 Pour envoyer des fichiers, vous pouvez utiliser la méthode
@@ -1101,6 +1163,9 @@ Les options sont :
 
 [length]
   entête Content-Length, par défaut la taille du fichier
+
+[status]
+  code état à renvoyer. Utile quand un fichier statique sert de page d'erreur.
 
 Si le gestionnaire Rack le supporte, d'autres moyens que le +streaming+ via le
 processus Ruby seront utilisés. Si vous utilisez cette méthode, Sinatra gérera
@@ -1184,7 +1249,7 @@ Vous pouvez également lui passer un nom de fichier :
 
 Sinatra fourni un helper +time_for+ pour convertir une valeur donnée en
 objet +Time+. Il peut aussi faire la conversion à partir d'objets +DateTime+,
-+Date+ ou de classes similaires.
++Date+ ou de classes similaires :
 
   get '/' do
     pass if Time.now > time_for('Dec 23, 2012')
@@ -1303,104 +1368,164 @@ Vous pouvez accéder à ces paramètres via <tt>settings</tt> :
     ...
   end
 
+=== Se protéger des attaques
+
+Sinatra utilise {Rack::Protection}[https://github.com/rkh/rack-protection#readme]
+pour protéger votre application contre les principales attaques opportunistes.
+Vous pouvez très simplement désactiver cette fonctionnalité (ce qui devrait
+améliorer les performances) :
+
+  disable :protection
+
+Pour désactiver seulement un type de protection, vous pouvez définir +protection+
+avec un hash d'options :
+
+  set :protection, :except => :path_traversal
+
+Vous pouvez également lui passer un tableau pour désactiver plusieurs types de
+protection :
+
+  set :protection, :except => [:path_traversal, :session_hijacking]
+
 === Paramètres disponibles
 
-[absolute_redirects]  Si désactivé, Sinatra permettra les redirections
-                      relatives. Toutefois, Sinatra ne sera plus conforme à la
-                      RFC 2616 (HTTP 1.1), qui n'autorise que les redirections
-                      absolues.
+[absolute_redirects]   Si désactivé, Sinatra permettra les redirections
+                       relatives. Toutefois, Sinatra ne sera plus conforme à la
+                       RFC 2616 (HTTP 1.1), qui n'autorise que les redirections
+                       absolues.
 
-                      Activez si votre application tourne derrière un proxy
-                      inverse qui n'a pas été correctement configuré. Notez
-                      que la méthode +url+ continuera de produire des URLs
-                      absolues, sauf si vous lui passez +false+ comme second
-                      argument.
+                       Activez si votre application tourne derrière un proxy
+                       inverse qui n'a pas été correctement configuré. Notez
+                       que la méthode +url+ continuera de produire des URLs
+                       absolues, sauf si vous lui passez +false+ comme second
+                       argument.
 
-                      Désactivé par défaut.
+                       Désactivé par défaut.
 
-[add_charsets]        types mime pour lesquels la méthode
-                      <tt>content_type</tt> va automatiquement ajouter
-                      l'information du +charset+.
+[add_charsets]         types mime pour lesquels la méthode
+                       <tt>content_type</tt> va automatiquement ajouter
+                       l'information du +charset+.
 
-                      Vous devriez lui ajouter des valeurs plutôt que de
-                      l'écraser :
+                       Vous devriez lui ajouter des valeurs plutôt que de
+                       l'écraser :
 
-                        settings.add_charsets << "application/foobar"
+                         settings.add_charsets << "application/foobar"
 
-[app_file]            fichier de l'application principale, utilisé pour
-                      détecterla racine du projet, le dossier public et le
-                      dossier de vues ainsi que pour les templates en ligne.
+[app_file]             chemin pour le fichier de l'application principale,
+                       utilisé pour détecter la racine du projet, les dossiers
+                       public et vues, et les templates en ligne.
 
-[bind]                adresse IP sur laquelle se brancher
-                      (par défaut : 0.0.0.0).
-                      Utiliser seulement pour le serveur intégré.
+[bind]                 adresse IP sur laquelle se brancher
+                       (par défaut : 0.0.0.0).
+                       Utiliser seulement pour le serveur intégré.
 
-[default_encoding]    encodage à utiliser si inconnu (par défaut
-                      <tt>"utf-8"</tt>).
+[default_encoding]     encodage à utiliser si inconnu (par défaut
+                       <tt>"utf-8"</tt>).
 
-[dump_errors]         afficher les erreurs dans le +log+.
+[dump_errors]          afficher les erreurs dans le +log+.
 
-[environment]         environnement courant, par défaut
-                      <tt>ENV['RACK_ENV']</tt>, ou
-                      <tt>"development"</tt> si absent.
+[environment]          environnement courant, par défaut
+                       <tt>ENV['RACK_ENV']</tt>, ou
+                       <tt>"development"</tt> si absent.
 
-[logging]             utiliser le +logger+.
+[logging]              utiliser le +logger+.
 
-[lock]                Place un +lock+ autour de chaque requête, n'exécutant
-                      donc qu'une seule requête par processus Ruby.
+[lock]                 Place un +lock+ autour de chaque requête, n'exécutant
+                       donc qu'une seule requête par processus Ruby.
 
-                      Activé si votre application n'est pas +thread-safe+.
-                      Désactivé par défaut.
+                       Activé si votre application n'est pas +thread-safe+.
+                       Désactivé par défaut.
 
-[method_override]     utilise la magie de <tt>_method</tt> afin de permettre
-                      des formulaires put/delete dans des navigateurs qui ne
-                      le permettent pas.
+[method_override]      utilise la magie de <tt>_method</tt> afin de permettre
+                       des formulaires put/delete dans des navigateurs qui ne
+                       le permettent pas.
 
-[port]                port à écouter. Utiliser seulement pour le serveur
-                      intégré.
+[port]                 port à écouter. Utiliser seulement pour le serveur
+                       intégré.
 
-[prefixed_redirects]  si oui ou non <tt>request.script_name</tt> doit être
-                      inséré dans les redirections si un chemin non absolu
-                      est utilisé. Ainsi, <tt>redirect '/foo'</tt> se
-                      comportera comme <tt>redirect to('/foo')</tt>.
-                      Désactivé par défaut.
+[prefixed_redirects]   si oui ou non <tt>request.script_name</tt> doit être
+                       inséré dans les redirections si un chemin non absolu
+                       est utilisé. Ainsi, <tt>redirect '/foo'</tt> se
+                       comportera comme <tt>redirect to('/foo')</tt>.
+                       Désactivé par défaut.
 
-[public_folder]       dossier duquel les fichiers publics sont servis
+[protection]           défini s'il faut activer ou non la protection contre
+                       les attaques web. Voir la section protection précédente.
 
-[reload_templates]    si oui ou non les templates doivent être rechargés
-                      entre les requêtes. Activé en mode développement.
+[public_folder]        chemin pour le dossier à partir duquel les fichiers
+                       publics sont servis. Utilisé seulement si les fichiers
+                       statiques doivent être servis (voir le paramètre
+                       <tt>static</tt>). Si non défini, il découle du paramètre
+                       <tt>app_file</tt>.
 
-[root]                dossier racine du projet.
+[reload_templates]     si oui ou non les templates doivent être rechargés
+                       entre les requêtes. Activé en mode développement.
 
-[raise_errors]        soulever les erreurs (ce qui arrêtera l'application).
+[root]                 chemin pour le dossier racine du projet. Si non défini,
+                       il découle du paramètre <tt>app_file</tt>.
 
-[run]                 si activé, Sinatra s'occupera de démarrer le serveur,
-                      ne pas activer si vous utiliser rackup ou autres.
+[raise_errors]         soulever les erreurs (ce qui arrêtera l'application).
+                       Désactivé par défaut sauf lorsque <tt>environment</tt>
+                       est défini à <tt>"test"</tt>.
 
-[running]             est-ce que le serveur intégré est en marche ?
-                      ne changez pas ce paramètre !
+[run]                  si activé, Sinatra s'occupera de démarrer le serveur,
+                       ne pas activer si vous utiliser rackup ou autres.
 
-[server]              serveur ou liste de serveurs à utiliser pour le serveur
-                      intégré.
-                      Par défaut ['thin', 'mongrel', 'webrick'], l'ordre
-                      indiquant la priorité.
+[running]              est-ce que le serveur intégré est en marche ?
+                       ne changez pas ce paramètre !
 
-[sessions]            active l'enregistrement des sessions en utilisant les
-                      cookies.
+[server]               serveur ou liste de serveurs à utiliser pour le serveur
+                       intégré.
+                       Par défaut ['thin', 'mongrel', 'webrick'], l'ordre
+                       indiquant la priorité.
 
-[show_exceptions]     affiche la trace de l'erreur dans le navigateur.
+[sessions]             active le support des sessions basées sur les cookies, en
+                       utilisant <tt>Rack::Session::Cookie</tt>. Reportez-vous
+                       à la section 'Utiliser les sessions' pour plus
+                       d'informations.
 
-[static]              Si oui ou non Sinatra doit s'occuper de servir les
-                      fichiers statiques.
-                      Désactivez si vous utilisez un serveur capable de le
-                      gérer lui même. Le désactiver augmentera la performance.
-                      Activé par défaut pour le style classique, désactivé pour
-                      le style modulaire.
+[show_exceptions]      affiche la trace de l'erreur dans le navigateur lorsqu'une
+                       exception se produit. Désactivé par défaut sauf lorsque
+                       <tt>environment</tt> est défini à <tt>"development"</tt>.
 
-[threaded]            à définir à +true+ pour indiquer à Thin d'utiliser
-                      <tt>EventMachine.defer</tt> pour traiter la requête.
+[static]               Si oui ou non Sinatra doit s'occuper de servir les
+                       fichiers statiques.
+                       Désactivez si vous utilisez un serveur capable de le
+                       gérer lui même. Le désactiver augmentera la performance.
+                       Activé par défaut pour le style classique, désactivé pour
+                       le style modulaire.
 
-[views]               dossier des vues.
+[static_cache_control] A définir quand Sinatra rend des fichiers statiques pour
+                       ajouter les en-têtes <tt>Cache-Control</tt>. Utilise le
+                       helper +cache_control+. Désactivé par défaut.
+                       Utiliser un array explicite pour définir des plusieurs
+                       valeurs :
+                       <tt>set :static_cache_control, [:public, :max_age => 300]</tt>
+
+[threaded]             à définir à +true+ pour indiquer à Thin d'utiliser
+                       <tt>EventMachine.defer</tt> pour traiter la requête.
+
+[views]                chemin pour le dossier des vues. Si non défini, il
+                       découle du paramètre <tt>app_file</tt>.
+
+== Environements
+
+Il existe trois environnements prédéfinis : <tt>"development"</tt>,
+<tt>"production"</tt> et <tt>"test"</tt>. Les environements peuvent être
+sélectionné via la variable d'environnement +RACK_ENV+. Sa valeur par défaut
+est <tt>"development"</tt>. Dans ce mode, tous les templates sont rechargés à
+chaque requête. Des handlers spécifiques pour <tt>not_found</tt> et
+<tt>error</tt> sont installés pour vous permettre d'avoir une pile de trace
+dans votre navigateur. En mode <tt>"production"</tt> et <tt>"test"</tt> les
+templates sont mis en cache par défaut.
+
+Pour exécuter votre application dans un environnement différent, utilisez
+l'option <tt>-e</tt> de Ruby :
+
+  ruby mon_application.rb -e [ENVIRONMENT]
+
+Vous pouvez utiliser une des méthodes +development?+, +test?+ et +production?+
+pour déterminer quel est l'environnement en cours.
 
 == Gérer les erreurs
 
@@ -1533,16 +1658,16 @@ recommandé :
     end
   end
 
-== Sinatra::Base - Les Middlewares, les Bibliothèques, et les Applications Modulaires
+== Sinatra::Base - Les Middlewares, Bibliothèques, et Applications Modulaires
 
-Définir votre application au niveau supérieur fonctionne bien pour les
-micro-applications, mais peut s'avérer moins pratique lorsqu'il s'agit
-de créer des composants réutilisables comme des middlewares Rack, faire
-du Rails metal, ou de simples bibliothèques avec un composant serveur, ou
-même une extension pour Sinatra. Le DSL de haut niveau pollue l'espace de noms
-et est une configuration adaptée à une micro-application (un fichier unique
-pour l'application, les dossiers <tt>./public</tt> et <tt>./views</tt>, les
-logs, pages d'erreur, etc.). C'est là que <tt>Sinatra::Base</tt> entre en jeu :
+Définir votre application au niveau supérieur fonctionne bien dans le cas des
+micro-applications mais présente pas mal d'inconvénients pour créer des
+composants réutilisables sous forme de middlewares Rack, de Rails metal, de
+simples librairies avec un composant serveur ou même d'extensions Sinatra. Le
+niveau supérieur suppose une configuration dans le style des micro-applications
+(une application d'un seul fichier, des répertoires <tt>./public</tt> et
+<tt>./views</tt>, des logs, une page d'erreur, etc...). C'est là que
+<tt>Sinatra::Base</tt> prend tout son intérêt :
 
   require 'sinatra/base'
 
@@ -1555,51 +1680,43 @@ logs, pages d'erreur, etc.). C'est là que <tt>Sinatra::Base</tt> entre en jeu :
     end
   end
 
-Les méthodes disponibles dans <tt>Sinatra::Base</tt> sont exactement identiques
-à celles disponibles dans le DSL de haut niveau. La plupart des applications
-de haut niveau peuvent être converties en composant <tt>Sinatra::Base</tt> avec
-deux modifications :
+Les méthodes de la classe <tt>Sinatra::Base</tt> sont parfaitement identiques à
+celles disponibles via le DSL de haut niveau. Il suffit de deux modifications
+pour transformer la plupart des applications de haut niveau en un composant
+<tt>Sinatra::Base</tt> :
 
-* Votre fichier doit charger +sinatra/base+ au lieu de +sinatra+ ;
-  autrement, toutes les méthodes de la DSL seront chargées dans l'espace
-  de noms.
-* Mettre vos gestionnaires de route, vos gestionnaires d'erreur, vos filtres
-  et options dans une sous-classe de <tt>Sinatra::Base</tt>.
+* Votre fichier doit charger +sinatra/base+ au lieu de +sinatra+, sinon toutes
+  les méthodes du DSL Sinatra seront importées dans l'espace de nom principal.
+* Les gestionnaires de routes, la gestion d'erreur, les filtres et les options
+  doivent être placés dans une classe héritant de <tt>Sinatra::Base</tt>.
 
-<tt>Sinatra::Base</tt> est plutôt épuré. La plupart des options sont
-désactivées par défaut, ceci inclus le serveur. Voir {Options et
-Configuration}[http://sinatra.github.com/configuration.html]
-pour plus de détails sur les options et leur comportement.
+<tt>Sinatra::Base</tt> est une page blanche. La plupart des options sont
+désactivées par défaut, y compris le serveur intégré. Reportez-vous à
+{Options et Configuration}[http://sinatra.github.com/configuration.html]
+pour plus d'informations sur les options et leur fonctionnement.
 
 === Style modulaire vs. style classique
 
-Contrairement aux croyanaces, le style classique n'a rien de mauvais. Si cela
-convient à votre application, vous n'avez pas à changer pour une application
-modulaire.
+Contrairement aux idées reçues, il n'y a rien de mal à utiliser le style
+classique. Si c'est ce qui convient pour votre application, vous n'avez pas
+aucune raison de passer à une application modulaire.
 
-Il n'y a que deux inconvénient au style classique comparé au style modulaire :
+Le principal inconvénient du style classique sur le style modulaire est que vous
+ne pouvez avoir qu'une application Ruby par processus Ruby. Si vous pensez en
+utiliser plus, passez au style modulaire. Et rien ne vous empêche de mixer style
+classique et style modulaire.
 
-* Vous ne pouvez avoir qu'une seule application Sinatra par processus Ruby. Si
-  vous envisagez d'en utiliser plus, passez au style modulaire
+Si vous passez d'un style à l'autre, souvenez-vous des quelques différences
+mineures en ce qui concerne les paramètres par défaut :
 
-* Le style classique pollue  la classe Object avec des méthodes déléguantes.
-  Si vous prévoyez de diffuser votre application dans une bibliothèque/gem,
-  passez au style modulaire.
+  Paramètre         Classique                   Modulaire
 
-Il n'y pas d'empêchement à mélanger style classic et style modulaire.
-
-Si vous passez d'un style à l'autre, vous devriez être vigilant à quelques
-légères différences dans les paramètres par défaut :
-
-  Paramètre           Classique                     Modulaire
-
-  app_file            fichier chargeant sinatra     nil
-  run                 $0 == app_file                false
-  logging             true                          false
-  method_override     true                          false
-  inline_templates    true                          false
-  static              true                          false
-
+  app_file          fichier chargeant sinatra   fichier héritant de Sinatra::Base
+  run               $0 == app_file              false
+  logging           true                        false
+  method_override   true                        false
+  inline_templates  true                        false
+  static            true                        false
 
 === Servir une application modulaire
 
@@ -1825,9 +1942,9 @@ Vous avez le binding du contexte de délégation dans :
 * Le binding de haut niveau, si vous avez utilisé <tt>require "sinatra"</tt>
 * Un objet qui inclut le module +Sinatra::Delegator+
 
-Jetez un oeil pour vous faire une idée : voici le mixin
-{Sinatra::Delegator}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/base.rb#L1128]
-qui est {inclus dans l'espace de noms principal}[http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606fe5992/lib/sinatra/main.rb#L28]
+Jetez un oeil pour vous faire une idée : voici le
+{mixin Sinatra::Delegator}[https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/base.rb#L1609-1633]
+qui {étend l'objet principal}[https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/main.rb#L28-30].
 
 == Ligne de commande
 
@@ -1849,47 +1966,66 @@ Les options sont :
 Les versions suivantes de Ruby sont officiellement supportées :
 
 [ Ruby 1.8.7 ]
-  1.8.7 est complètement supporté, toutefois si rien ne vous y retient, nous
-  vous recommandons de passer à 1.9.2 ou bien de passer à JRuby ou Rubinius.
+  1.8.7 est complètement supporté, toutefois si rien ne vous en empêche, nous
+  vous recommandons de passer à 1.9.2 ou bien de passer à JRuby ou Rubinius. Le
+  support de Ruby 1.8.7 ne sera pas supprimé avant la sortie de Sinatra 2.0 et
+  de Ruby 2.0, à moins qu'un improbable Ruby 1.8.8 apparaisse. Et même dans ce
+  cas, nous pourrions continuer à le supporter. <b>Ruby 1.8.6 n'est plus
+  supporté.</b> Si vous souhaitez utiliser la version 1.8.6, vous devez revenir
+  à Sinatra 1.2 qui continuera à recevoir des corrections de bugs tant que
+  Sinatra 1.4.0 ne sera pas livré.
 
 [ Ruby 1.9.2 ]
-  1.9.2 est supporté et recommandé. Notez que Radius et Markaby ne sont
-  actuellement pas compatible avec 1.9. N'utilisez pas 1.9.2p0 qui est
-  réputé causer des erreurs de segmentation lorque Sinatra est utilisé.
+  1.9.2 est totalement supporté et recommandé. Notez que Radius et Markaby ne
+  sont   actuellement pas compatible avec 1.9. N'utilisez pas 1.9.2p0 car il
+  provoque des erreurs de segmentation à l'exécution de Sinatra. Son support
+  continuera au minimum jusqu'à la sortie de Ruby 1.9.4/2.0 et le support de la
+  dernière version 1.9 se poursuivra aussi longtemps que la core team de Ruby la
+  supportera.
+
+[ Ruby 1.9.3 ]
+  1.9.3 est totalement supporté. Nous recommandons d'attendre qu'un premier
+  niveau de patch sorte (pour l'instant on en est à p0) avant de l'employer en
+  production. Nous vous rappelons que passer à 1.9.3 depuis une version
+  précédente annulera toutes les sessions.
 
 [ Rubinius ]
-  Rubinius est officiellement supporté (Rubinius >= 1.2.3), tout fonctionne,
-  y compris tous les langages de template.
+  Rubinius est officiellement supporté (Rubinius >= 1.2.4), tout fonctionne,
+  y compris tous les langages de template. La version 2.0 à venir est
+  également supportée.
 
 [ JRuby ]
-  JRuby est officiellement supporté (JRuby >= 1.6.1). Aucune anomalie avec
+  JRuby est officiellement supporté (JRuby >= 1.6.5). Aucune anomalie avec
   des bibliothèques de templates tierces ne sont connues. Toutefois, si vous
   choisissez JRuby, alors tournez vous vers des gestionnaires Rack JRuby car
   le serveur Thin n'est pas complètement supporté par JRuby. Le support des
   extensions C dans JRuby est encore expérimental, ce qui n'affecte que
-  RDiscount.
-
-<b>Ruby 1.8.6 n'est plus supporté.</b>
+  RDiscount, Redcarpet and RedCloth pour l'instant.
 
 Nous gardons également un oeil sur les versions Ruby à venir.
 
 Les implémentations Ruby suivantes ne sont pas officiellement supportées mais
-sont toujours connues comme permettant à Sinatra de fonctionner :
+sont malgré tout connues pour permettre de faire fonctionner Sinatra :
 
-* Plus anciennes versions de JRuby et Rubinius
+* Versions plus anciennes de JRuby et Rubinius
+* Ruby Enterprise Edition
 * MacRuby, Maglev, IronRuby
-* Ruby 1.9.0 et 1.9.1
+* Ruby 1.9.0 et 1.9.1 (mais nous déconseillons leur utilisation)
 
-Ne pas être officiellement supporté signifie que si les choses se passent mal
-sur ces plateformes et non sur celles supportées, nous considérons que
-l'anomalie est de le ressort, pas du nôtre.
+Le fait de ne pas être officiellement supporté signifie que si quelque chose
+ne fonctionne pas uniquement sur cette plateforme alors c'est un problème de la
+plateforme et pas un bug de Sinatra.
 
-Nous faisons également notre intégration continue (CI) avec ruby-head (la
-future 1.9.3), mais nous ne pouvons rien garantir étant donné que c'est
-constant mouvement. Vous pouvez vous attendre à ce que 1.9.3p0 soit supporté.
+Nous lançons également notre intégration continue (CI) avec ruby-head (la
+future 2.0.0) et la branche 1.9.4, mais étant donné les évolutions continuelles,
+nous ne pouvont rien garantir, si ce n'est que les versions 1.9.4p0 et 2.0.0p0
+seront supportées.
 
 Sinatra devrait fonctionner sur n'importe quel système d'exploitation
 supportant l'implémentation Ruby choisie.
+
+Il n'est pas possible d'utiliser Sinatra sur Cardinal, SmallRuby, Blueuby ou
+toute version de Ruby antérieure à 1.8.7 à l'heure actuelle.
 
 == Essuyer les plâtres
 
@@ -1897,7 +2033,7 @@ Si vous voulez utiliser la toute dernière version de Sinatra, n'ayez pas peur
 de faire tourner votre application sur la branche master, cela devrait être
 stable.
 
-Nous publions également une gem de +prerelease+ de temps en temps que vous 
+Nous publions également une gem de +prerelease+ de temps en temps que vous
 pouvez installer comme suit :
 
   gem install sinatra --pre
@@ -1979,5 +2115,5 @@ SemVer que SemVerTag.
   par la communauté
 * Documentation API de la {dernière version}[http://rubydoc.info/gems/sinatra]
   ou du {HEAD courant}[http://rubydoc.info/github/sinatra/sinatra] sur
-  http://rubydoc.info/
-
+  http://rubydoc.info
+* {CI server}[http://ci.rkh.im/view/Sinatra/]
