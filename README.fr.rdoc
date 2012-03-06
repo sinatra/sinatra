@@ -975,6 +975,11 @@ vous aurez à l'activer vous-même :
     end
   end
 
+Si vous souhaitez utiliser votre propre logger, vous devez définir le paramètre
++logging+ à +nil+ pour être certain qu'aucun middleware de logging ne sera
+installé (notez toutefois que +logger+ renverra alors +nil+). Dans ce cas,
+Sinatra utilisera ce qui sera présent dans <tt>env['rack.logger']</tt>.
+
 === Types Mime
 
 Quand vous utilisez <tt>send_file</tt> ou des fichiers statiques, vous
