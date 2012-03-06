@@ -166,7 +166,7 @@ plusieurs valeurs :
     "Informations sur votre compte"
   end
 
-  get "/reserve/aux/admins/", :auth => :admin do  
+  get "/reserve/aux/admins/", :auth => :admin do
     "Seuls les administrateurs sont acceptés ici !"
   end
 
@@ -254,7 +254,7 @@ avez la possibilité d'utiliser un autre répertoire en définissant le paramèt
   set :public_folder, File.dirname(__FILE__) + '/statique'
 
 Notez que le nom du dossier public n'apparait pas dans l'URL. Le fichier
-<tt>./public/css/style.css</tt> sera appelé via l'URL : 
+<tt>./public/css/style.css</tt> sera appelé via l'URL :
 <tt>http://exemple.com/css/style.css</tt>.
 
 Utilisez le paramètre <tt>:static_cache_control</tt> pour ajouter l'information
@@ -1355,7 +1355,7 @@ améliorer les performances) :
   disable :protection
 
 Pour désactiver seulement un type de protection, vous pouvez définir +protection+
-avec un hash d'options : 
+avec un hash d'options :
 
   set :protection, :except => :path_traversal
 
@@ -1441,7 +1441,7 @@ protection :
 [root]                 chemin pour le dossier racine du projet. Si non défini,
                        il découle du paramètre <tt>app_file</tt>.
 
-[raise_errors]         soulever les erreurs (ce qui arrêtera l'application). 
+[raise_errors]         soulever les erreurs (ce qui arrêtera l'application).
                        Désactivé par défaut sauf lorsque <tt>environment</tt>
                        est défini à <tt>"test"</tt>.
 
@@ -2002,7 +2002,7 @@ Sinatra devrait fonctionner sur n'importe quel système d'exploitation
 supportant l'implémentation Ruby choisie.
 
 Il n'est pas possible d'utiliser Sinatra sur Cardinal, SmallRuby, Blueuby ou
-toute version de Ruby antérieure à 1.8.7.
+toute version de Ruby antérieure à 1.8.7 à l'heure actuelle.
 
 == Essuyer les plâtres
 
@@ -2010,7 +2010,7 @@ Si vous voulez utiliser la toute dernière version de Sinatra, n'ayez pas peur
 de faire tourner votre application sur la branche master, cela devrait être
 stable.
 
-Nous publions également une gem de +prerelease+ de temps en temps que vous 
+Nous publions également une gem de +prerelease+ de temps en temps que vous
 pouvez installer comme suit :
 
   gem install sinatra --pre
