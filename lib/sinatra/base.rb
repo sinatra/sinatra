@@ -1466,8 +1466,11 @@ module Sinatra
         /src\/kernel\/bootstrap\/[A-Z]/                  # maglev kernel files
       ]
 
-      # add rubinius (and hopefully other VM impls) ignore patterns ...
-      CALLERS_TO_IGNORE.concat(RUBY_IGNORE_CALLERS) if defined?(RUBY_IGNORE_CALLERS)
+      # contrary to what the comment said previously, rubinius never supported this
+      if defined?(RUBY_IGNORE_CALLERS)
+        warn "RUBY_IGNORE_CALLERS is deprecated and will no longer be supported by Sinatra 2.0"
+        CALLERS_TO_IGNORE.concat(RUBY_IGNORE_CALLERS)
+      end
 
       # Like Kernel#caller but excluding certain magic entries and without
       # line / method information; the resulting array contains filenames only.
