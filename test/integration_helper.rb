@@ -63,7 +63,7 @@ module IntegrationHelper
     def alive?
       3.times { get('/ping') }
       true
-    rescue Errno::ECONNREFUSED => error
+    rescue Errno::ECONNREFUSED, Errno::ECONNRESET => error
       false
     end
 
