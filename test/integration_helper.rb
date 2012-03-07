@@ -1,6 +1,7 @@
 require 'sinatra/base'
 require 'rbconfig'
 require 'open-uri'
+require 'net/http'
 
 module IntegrationHelper
   class Server
@@ -67,12 +68,17 @@ module IntegrationHelper
       false
     end
 
-    def open(url)
-      super("http://127.0.0.1:#{port}#{url}")
+    def get_stream(url = "/stream", &block)
+      Net::HTTP.start '127.0.0.1', port do |http|
+        request = Net::HTTP::Get.new url
+        http.request request do |response|
+          response.read_body(&block)
+        end
+      end
     end
 
     def get(url)
-      open(url).read
+      open("http://127.0.0.1:#{port}#{url}").read
     end
 
     def log

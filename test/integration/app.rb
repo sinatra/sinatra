@@ -14,6 +14,15 @@ get '/ping' do
   'pong'
 end
 
+get '/stream' do
+  stream do |out|
+    sleep 0.1
+    out << "a"
+    sleep 1.2
+    out << "b"
+  end
+end
+
 get '/mainonly' do
   object = Object.new
   begin
