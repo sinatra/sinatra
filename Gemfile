@@ -60,8 +60,12 @@ end
 if RUBY_ENGINE != 'jruby' or not ENV['TRAVIS']
   # C extensions
   gem 'rdiscount'
-  platforms(:ruby_18) { gem 'redcarpet' }
+  platforms(:ruby_18) do
+    gem 'redcarpet'
+    gem 'mongrel'
+  end
   gem 'RedCloth' unless RUBY_ENGINE == "macruby"
+  gem 'thin'
 
   ## bluecloth is broken
   #gem 'bluecloth'

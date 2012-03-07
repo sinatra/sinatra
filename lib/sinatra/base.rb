@@ -1399,7 +1399,7 @@ module Sinatra
       end
 
       def setup_common_logger(builder)
-        return if ["development", "deployment", nil].include? ENV["RACK_ENV"]
+        return if defined? WEBrick and ["development", "deployment", nil].include? ENV["RACK_ENV"]
         builder.use Rack::CommonLogger
       end
 

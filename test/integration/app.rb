@@ -1,3 +1,4 @@
+$stderr.puts "loading"
 require 'sinatra'
 
 configure do
@@ -9,6 +10,10 @@ get '/app_file' do
   settings.app_file
 end
 
+get '/ping' do
+  'pong'
+end
+
 get '/mainonly' do
   object = Object.new
   begin
@@ -18,3 +23,5 @@ get '/mainonly' do
     'true'
   end
 end
+
+$stderr.puts "starting"
