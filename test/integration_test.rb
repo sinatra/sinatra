@@ -1,6 +1,10 @@
 require File.expand_path('../helper', __FILE__)
 require File.expand_path('../integration_helper', __FILE__)
 
+# These tests start a real server and talk to it over TCP.
+# Every test runs with every detected server.
+#
+# See test/integration/app.rb for the code of the app we test against.
 class IntegrationTest < Test::Unit::TestCase
   extend IntegrationHelper
   attr_accessor :server
