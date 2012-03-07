@@ -41,6 +41,7 @@ module Sinatra
     private
 
     def prefers_plain_text?(env)
+      [/text\/plain/].index{|item| item =~ env["HTTP_ACCEPT"]} ||
       [/curl/].index{|item| item =~ env["HTTP_USER_AGENT"]}
     end
 
