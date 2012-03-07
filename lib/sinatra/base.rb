@@ -827,8 +827,18 @@ module Sinatra
       return unless match = pattern.match(route)
       values += match.captures.to_a.map { |v| force_encoding URI.decode_www_form_component(v) if v }
 
+      if match.respond_to?(:names) && match.names.kind_of?(::Array)
+        named_captures = Hash[ match.names.map{ |name|
+          [name, ( begin; match[name]; rescue ::IndexError; end )]
+        }]
+      else
+        named_captures = {}
+      end
+      named_captures = indifferent_params( named_captures )
+
       if values.any?
-        original, @params = params, params.merge('splat' => [], 'captures' => values)
+        original, @params = params, params.merge('splat' => [], 'captures' => values,
+          'named_captures' => named_captures )
         keys.zip(values) { |k,v| (@params[k] ||= '') << v if v }
       end
 
