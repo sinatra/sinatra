@@ -12,6 +12,9 @@ env:
   - "rack=master"
   - "tilt=1.3.3"
   - "tilt=master"
+matrix:
+  allow_failures:
+    - rvm: ruby-head
 notifications:
   recipients:
     - k.haase@finn.de
