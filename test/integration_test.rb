@@ -14,6 +14,18 @@ class IntegrationTest < Test::Unit::TestCase
     assert_equal 1, server.log.scan("GET /ping?x=#{random}").count
   end
 
+  it 'streams' do
+    next if server.name == "webrick"
+    times, chunks = [], []
+    server.get_stream do |chunk|
+      chunks << chunk
+      times << Time.now
+    end
+    assert_equal ["", "a", "b"], chunks
+    assert times[1] - times[0] < 1
+    assert times[2] - times[1] > 1
+  end
+
   it 'starts the correct server' do
     exp = %r{
       ==\sSinatra/#{Sinatra::VERSION}\s
