@@ -829,7 +829,7 @@ module Sinatra
 
       if values.any?
         original, @params = params, params.merge('splat' => [], 'captures' => values)
-        keys.zip(values) { |k,v| (@params[k] ||= '') << v if v }
+        keys.zip(values) { |k,v| Array === @params[k] ? @params[k] << v : @params[k] = v if v }
       end
 
       catch(:pass) do

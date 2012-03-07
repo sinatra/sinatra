@@ -236,6 +236,12 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal "format=", body
   end
 
+  it 'does not concatinate params with the same name' do
+    mock_app { get('/:foo') { params[:foo] } }
+    get '/a?foo=b'
+    assert_body 'a'
+  end
+
   it "supports single splat params like /*" do
     mock_app {
       get '/*' do
