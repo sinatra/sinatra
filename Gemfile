@@ -67,7 +67,7 @@ if RUBY_ENGINE != 'jruby' or not ENV['TRAVIS']
 end
 
 platforms :ruby_18, :jruby do
-  gem 'json'
+  gem 'json' unless RUBY_VERSION > '1.9' # is there a jruby but 1.8 only selector?
 end
 
 platforms :mri_18 do
