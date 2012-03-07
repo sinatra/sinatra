@@ -44,7 +44,7 @@ class IntegrationTest < Test::Unit::TestCase
     Timeout.timeout(120) do
       begin
         yield
-      rescue Errno::ECONNREFUSED => e
+      rescue Errno::ECONNREFUSED, Errno::ECONNRESET => e
         error = e
         sleep 0.1
         retry
