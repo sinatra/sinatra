@@ -67,8 +67,11 @@ module IntegrationHelper
       false
     end
 
+    def open(url)
+      super("http://127.0.0.1:#{port}#{url}")
+    end
+
     def get(url)
-      url = "http://127.0.0.1:#{port}#{url}"
       open(url).read
     end
 
@@ -126,6 +129,7 @@ module IntegrationHelper
   def self.extend_object(obj)
     super
 
+    base_port = 5000 + Process.pid % 100
     Sinatra::Base.server.each_with_index do |server, index|
       Server.run(server, 5000+index)
     end
