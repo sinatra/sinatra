@@ -21,7 +21,7 @@ class IntegrationTest < Test::Unit::TestCase
       cmd << File.expand_path(file, dir).inspect
     end
     cmd << "-I" << File.expand_path('../../lib', __FILE__).inspect
-    cmd << app_file.inspect << '-p' << port << '2>&1'
+    cmd << app_file.inspect << '-o' << '127.0.0.1' << '-p' << port << '2>&1'
     cmd.join(" ")
   end
 
