@@ -42,12 +42,12 @@ gem 'maruku'
 gem 'creole'
 gem 'markaby'
 gem 'radius'
-gem 'yajl-ruby'
 
 if RUBY_ENGINE == 'jruby'
   gem 'nokogiri', '!= 1.5.0'
   gem 'jruby-openssl'
 else
+  gem 'yajl-ruby'
   gem 'nokogiri'
 end
 
