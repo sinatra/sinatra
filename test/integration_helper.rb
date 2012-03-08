@@ -36,6 +36,7 @@ module IntegrationHelper
 
     def run
       return unless installed?
+      kill
       @log     = ""
       @pipe    = IO.popen(command)
       @started = Time.now
@@ -64,7 +65,7 @@ module IntegrationHelper
     def alive?
       3.times { get('/ping') }
       true
-    rescue Errno::ECONNREFUSED, Errno::ECONNRESET => error
+    rescue Errno::ECONNREFUSED, Errno::ECONNRESET, EOFError => error
       false
     end
 
@@ -127,7 +128,12 @@ module IntegrationHelper
       super "with #{server.name}: #{message}" do
         self.server = server
         server.run unless server.alive?
-        instance_eval(&block)
+        begin
+          instance_eval(&block)
+        rescue Exception => error
+          server.kill
+          raise error
+        end
       end
     end
   end
