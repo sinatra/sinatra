@@ -1865,28 +1865,27 @@ The following Ruby versions are officially supported:
   Sinatra 1.4.0 is released.
 
 [ Ruby 1.9.2 ]
-  1.9.2 is fully supported and recommended. Note that Radius and Markaby
-  are currently not 1.9 compatible. Do not use 1.9.2p0, it is known to cause
-  segmentation faults when running Sinatra. Support will continue at least
+  1.9.2 is fully supported and recommended. Do not use 1.9.2p0, it is known to
+  cause segmentation faults when running Sinatra. Support will continue at least
   until the release of Ruby 1.9.4/2.0 and support for the latest 1.9 release
   will continue as long as it is still supported by the Ruby core team.
 
 [ Ruby 1.9.3 ]
-  1.9.3 is fully supported. We recommend waiting for higher patch levels to be
-  released (current one is p0) before using it in production. Please note that
-  switching to 1.9.3 from an earlier version will invalidate all sessions.
+  1.9.3 is fully supported and recommended. Please note that switching to 1.9.3
+  from an earlier version will invalidate all sessions.
 
 [ Rubinius ]
   Rubinius is officially supported (Rubinius >= 1.2.4), everything, including
   all template languages, works. The upcoming 2.0 release is supported as
-  well.
+  well, including 1.9 mode.
 
 [ JRuby ]
-  JRuby is officially supported (JRuby >= 1.6.5). No issues with third party
+  JRuby is officially supported (JRuby >= 1.6.7). No issues with third party
   template libraries are known, however, if you choose to use JRuby, please
   look into JRuby rack handlers, as the Thin web server is not fully supported
   on JRuby. JRuby's support for C extensions is still experimental, which only
-  affects RDiscount, Redcarpet and RedCloth at the moment.
+  affects RDiscount, Redcarpet, RedCloth and Yajl templates as well as Thin
+  and Mongrel at the moment.
 
 We also keep an eye on upcoming Ruby versions.
 
