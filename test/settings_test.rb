@@ -422,9 +422,9 @@ class SettingsTest < Test::Unit::TestCase
   end
 
   describe 'server' do
-    it 'is one of thin, mongrel, webrick' do
-      assert_equal %w[thin mongrel webrick], @base.server
-      assert_equal %w[thin mongrel webrick], @application.server
+    it 'is one of thin, puma, mongrel, webrick' do
+      assert_equal %w[thin puma mongrel webrick], @base.server
+      assert_equal %w[thin puma mongrel webrick], @application.server
     end
   end
 
