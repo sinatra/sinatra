@@ -1943,36 +1943,32 @@ Die folgenden Versionen werden offiziell unterstützt:
   Release von Sinatra 1.4.0 fortgeführt wird.
 
 [ Ruby 1.9.2 ]
-  1.9.2 wird voll unterstützt und empfohlen. Beachte, dass Markaby und Radius
-  momentan noch nicht kompatibel mit 1.9 sind. Version 1.9.2p0 sollte nicht
+  1.9.2 wird voll unterstützt und empfohlen. Version 1.9.2p0 sollte nicht
   verwendet werden, da unter Sinatra immer wieder Segfaults auftreten.
   Unterstützung wird es mindestens bis zum Release von Ruby 1.9.4/2.0 geben und
   das letzte Sinatra Release für 1.9 wird so lange unterstützt, wie das Ruby
   Core-Team 1.9 pflegt.
 
 [ Ruby 1.9.3 ]
-  1.9.3 wird vollständig unterstützt. Momentan wird empfohlen auf einen
-  höheren Pachtlevel zu warten, bevor Sinatra in der Produktion
-  eingesetzt wird (aktueller Patchlevel ist p0). Bei einem Wechsel zu
-  1.9.3 werden alle Sessions ungültig.
-  Obwohl Tests bereits auf 1.9.3 laufen, sind bisher keine Applikationen auf
-  1.9.3 in Produktion bekannt. Ebenso wie bei 1.9.2 besteht die gleiche Warnung 
-  zum Patchlevel 0.
+  1.9.3 wird vollständig unterstützt und empfohlen. Achtung, bei einem Wechsel
+  zu 1.9.3 werden alle Sessions ungültig.
 
 [ Rubinius ]
   Rubinius (rbx >= 1.2.4) wird offiziell unter Einbezug aller Templates
-  unterstützt. Die kommende 2.0 Version wird ebenfalls unterstützt.
+  unterstützt. Die kommende 2.0 Version wird ebenfalls unterstützt, samt 1.9
+  Modus.
 
 [ JRuby ]
-  JRuby wird offiziell unterstützt (JRuby >= 1.6.5). Probleme mit Template-
+  JRuby wird offiziell unterstützt (JRuby >= 1.6.7). Probleme mit Template-
   Bibliotheken Dritter sind nicht bekannt. Falls JRuby zum Einsatz kommt,
   sollte aber darauf geachtet werden, dass ein JRuby-Rack-Handler zum Einsatz
-  kommt – der Thin-Web-Server wird bisher nicht unterstütz. JRubys
-  Unterstützung für C-Erweiterungen sind zur Zeit noch experimenteller Natur,
-  betrifft im Moment aber nur RDiscount, Redcarpet und RedCloth.
+  kommt – die Thin und Mongrel Web-Server werden bisher nicht unterstütz. JRubys
+  Unterstützung für C-Erweiterungen sind zur Zeit ebenfalls experimenteller 
+  Natur, betrifft im Moment aber nur die RDiscount, Redcarpet, RedCloth und 
+  Yajl Templates.
 
 
-Weiterhin werden wir auf kommende Ruby-Versionen ein Auge haben.
+Weiterhin werden wir die kommende Ruby-Versionen im Auge behalten.
 
 Die nachfolgend aufgeführten Ruby-Implementierungen werden offiziell nicht von
 Sinatra unterstützt, funktionieren aber normalerweise:
