@@ -15,11 +15,12 @@ class IntegrationTest < Test::Unit::TestCase
   it 'logs once in development mode' do
     random = "%064x" % Kernel.rand(2**256-1)
     server.get "/ping?x=#{random}"
-    assert_equal 1, server.log.scan("GET /ping?x=#{random}").count
+    count = server.log.scan("GET /ping?x=#{random}").count
+    server.webrick? ? assert(count > 0) : assert_equal(1, count)
   end
 
   it 'streams' do
-    next if server.name == "webrick"
+    next if server.webrick?
     times, chunks = [Time.now], []
     server.get_stream do |chunk|
       next if chunk.empty?

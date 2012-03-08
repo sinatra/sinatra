@@ -120,6 +120,10 @@ module IntegrationHelper
     rescue NotImplementedError
       system "kill -9 #{pipe.pid}"
     end
+
+    def webrick?
+      name.to_s == "webrick"
+    end
   end
 
   def it(message, &block)
