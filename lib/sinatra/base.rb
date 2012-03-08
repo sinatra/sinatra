@@ -87,6 +87,22 @@ module Sinatra
     end
   end
 
+  # Behaves exactly like Rack::CommonLogger with the notable exception that it does nothing,
+  # if another CommonLogger is already in the middleware chane.
+  class CommonLogger < Rack::CommonLogger
+    def call(env)
+      env['sinatra.commonlogger'] ? @app.call(env) : super
+    end
+
+    superclass.class_eval do
+      alias call_without_check call unless method_defined? :call_without_check
+      def call(env)
+        env['sinatra.commonlogger'] = true
+        call_without_check(env)
+      end
+    end
+  end
+
   class NotFound < NameError #:nodoc:
     def http_status; 404 end
   end
@@ -1399,8 +1415,7 @@ module Sinatra
       end
 
       def setup_common_logger(builder)
-        return if defined? WEBrick and ["development", "deployment", nil].include? ENV["RACK_ENV"]
-        builder.use Rack::CommonLogger
+        builder.use Sinatra::CommonLogger
       end
 
       def setup_custom_logger(builder)
@@ -1432,8 +1447,7 @@ module Sinatra
         servers.each do |server_name|
           begin
             return Rack::Handler.get(server_name.to_s)
-          rescue LoadError
-          rescue NameError
+          rescue LoadError, NameError
           end
         end
         fail "Server handler (#{servers.join(',')}) not found."
