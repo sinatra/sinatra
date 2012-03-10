@@ -119,6 +119,7 @@ module IntegrationHelper
       Process.kill("KILL", pipe.pid)
     rescue NotImplementedError
       system "kill -9 #{pipe.pid}"
+    rescue Errno::ESRCH
     end
 
     def webrick?
