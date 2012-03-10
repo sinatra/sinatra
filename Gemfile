@@ -49,6 +49,7 @@ if RUBY_ENGINE == 'jruby'
 else
   gem 'yajl-ruby'
   gem 'nokogiri'
+  gem 'thin'
 end
 
 if RUBY_ENGINE == "ruby"
@@ -65,7 +66,6 @@ if RUBY_ENGINE != 'jruby' or not ENV['TRAVIS']
     gem 'mongrel'
   end
   gem 'RedCloth' unless RUBY_ENGINE == "macruby"
-  gem 'thin'
 
   ## bluecloth is broken
   #gem 'bluecloth'
