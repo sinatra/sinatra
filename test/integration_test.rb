@@ -22,6 +22,7 @@ class IntegrationTest < Test::Unit::TestCase
 
   it 'streams' do
     next if server.webrick?
+    
     times, chunks = [Time.now], []
     server.get_stream do |chunk|
       next if chunk.empty?
@@ -76,7 +77,7 @@ class IntegrationTest < Test::Unit::TestCase
       with\sbackup\sfrom\s#{server}
     }ix
 
-    assert_match exp, server.log
+    assert_match exp, server.err
   end
 
 end

@@ -83,12 +83,16 @@ module IntegrationHelper
     end
 
     def log
-      @log ||= ""
-      loop { @log <<  @pipe.read_nonblock(1) }
-    rescue Exception
-      @log
+      File.read('log/app.log') rescue ""
     end
 
+    def err
+      @err ||= ""
+      loop { @err << @pipe.read_nonblock(1) }
+    rescue Exception
+      @err
+    end
+    
     def installed?
       return @installed unless @installed.nil?
       require server
@@ -154,8 +158,8 @@ module IntegrationHelper
         at_exit { kill }
       end
 
-      def log
-        @pipe.toString
+      def err
+        @out.toString
       end
 
       def kill
@@ -179,10 +183,9 @@ module IntegrationHelper
         vm.argv = command_args # TODO does not set ARGV ?!
         vm.run_scriptlet "ARGV.replace #{command_args.inspect}"
         
-        # set stdout/stderr so we can retrieve log
-        @pipe = java.io.StringWriter.new
-        vm.writer = vm.error_writer = @pipe # $stdout and $stderr
-
+        @out = java.io.StringWriter.new
+        vm.writer = vm.error_writer = @out # $stdout and $stderr
+        
         Thread.new do
           # Hack to ensure that Kernel#caller has the same info as
           # when run from command-line, for Sintra::Application.app_file.
