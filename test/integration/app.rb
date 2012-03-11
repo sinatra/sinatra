@@ -47,9 +47,7 @@ end
 class Subclass < Sinatra::Base
   set :out, nil
   get '/subclass/async' do
-    settings.out << msg and halt(204) if params[:msg]
-    settings.out.close  and halt(204) if params[:close]
-    stream(:keep_open) { |o| settings.out = o }
+    stream(:keep_open) { |o| (settings.out = o) << "hi!" }
   end
 
   get '/subclass/send' do
