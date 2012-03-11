@@ -1422,6 +1422,9 @@ O varias:
                        sección sobre la configuración de protección de ataques
                        más arriba.
 
+[public_dir]           alias para <tt>public_folder</tt>, que se encuentra a
+                       continuación.
+
 [public_folder]        path del directorio desde donde se sirven los archivos
                        públicos.  Solo se utiliza cuando se sirven archivos
                        estáticos (ver la opción <tt>static</tt>).  Si no
