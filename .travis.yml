@@ -16,8 +16,6 @@ env:
 matrix:
   allow_failures:
     - rvm: ruby-head
-    - rvm: 1.9.2
-      env: rack=master
 notifications:
   recipients:
     - k.haase@finn.de
