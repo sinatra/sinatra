@@ -1327,7 +1327,7 @@ module Sinatra
           set :running, true
           yield server if block_given?
         end
-      rescue Errno::EADDRINUSE => e
+      rescue Errno::EADDRINUSE
         $stderr.puts "== Someone is already performing on port #{port}!"
       end
 
