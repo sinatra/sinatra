@@ -1951,31 +1951,27 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
   ya no se corregirán errores por más que se reciban reportes de los mismos.
 
 [ Ruby 1.9.2 ]
-  1.9.2 es soportado y recomendado.  Tené en cuenta que Radius y Markaby no son
-  compatibles con 1.9 actualmente.  Además, no usés 1.9.2p0, porque se producen
-  fallos de segmentación cuando se ejecuta Sinatra.  El soporte se mantendrá al
-  menos hasta que se libere la versión 1.9.4/2.0 de Ruby.  El soporte para la
-  última versión de la serie 1.9 se mantendrá mientras lo haga el core team de
-  Ruby.
+  1.9.2 es soportado y recomendado. No usés 1.9.2p0, porque se producen fallos
+  de segmentación cuando se ejecuta Sinatra.  El soporte se mantendrá al menos
+  hasta que se libere la versión 1.9.4/2.0 de Ruby.  El soporte para la última
+  versión de la serie 1.9 se mantendrá mientras lo haga el core team de Ruby.
 
 [ Ruby 1.9.3 ]
-  1.9.3 es soportado completamente.  De todas maneras, recomendamos esperar a
-  que se liberen niveles de parche superiores (el actual es p0) antes de usarlo
-  en producción.  Es importante notar que el cambio desde una versión anterior a
-  1.9.3 va a invalidar todas las sesiones.
+  1.9.3 es soportado y recomendado. Tené en cuenta que el cambio a 1.9.3 desde
+  una versión anterior va a invalidar todas las sesiones.
 
 [ Rubinius ]
   Rubinius es soportado oficialmente (Rubinius >= 1.2.4).  Todo funciona
   correctamente, incluyendo los lenguajes de plantillas.  La próxima versión,
-  2.0, también es soportada.
+  2.0, también es soportada, incluyendo el modo 1.9.
 
 [ JRuby ]
-  JRuby es soportado oficialmente (JRuby >= 1.6.5).  No se conocen problemas
+  JRuby es soportado oficialmente (JRuby >= 1.6.7).  No se conocen problemas
   con librerías de plantillas de terceras partes.  Sin embargo, si elegís usar
   JRuby, deberías examinar sus Rack handlers porque el servidor web Thin no es
   soportado completamente.  El soporte de JRuby para extensiones C se encuentra
   en una etapa experimental, sin embargo, de momento solamente RDiscount,
-  Redcarpet y RedCloth se ven afectadas.
+  Redcarpet, RedCloth y Yajl, así como Thin y Mongrel se ven afectadas.
 
 Siempre le prestamos atención a las nuevas versiones de Ruby.
 
