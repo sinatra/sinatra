@@ -484,6 +484,18 @@ class SettingsTest < Test::Unit::TestCase
     end
   end
 
+  describe 'public_dir' do
+    it 'is an alias for public_folder' do
+      @base.public_dir = File.dirname(__FILE__)
+      assert_equal File.dirname(__FILE__), @base.public_dir
+      assert_equal @base.public_folder, @base.public_dir
+
+      @application.public_dir = File.dirname(__FILE__)
+      assert_equal File.dirname(__FILE__), @application.public_dir
+      assert_equal @application.public_folder, @application.public_dir
+    end
+  end
+
   describe 'lock' do
     it 'is disabled by default' do
       assert ! @base.lock?

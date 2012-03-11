@@ -1177,6 +1177,14 @@ module Sinatra
         set(:public_folder, value)
       end
 
+      def public_dir=(value)
+        self.public_folder = value
+      end
+
+      def public_dir
+        public_folder
+      end
+
    private
       # Condition for matching host name. Parameter might be String or Regexp.
       def host_name(pattern)
