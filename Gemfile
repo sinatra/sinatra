@@ -29,7 +29,7 @@ repos  = {'tilt' => github % "rtomayko/tilt", 'rack' => github % "rack/rack"}
 end
 
 gem 'haml', '>= 3.0'
-gem 'sass'
+gem 'sass' if RUBY_VERSION < "2.0"
 gem 'builder'
 gem 'erubis'
 gem 'liquid'
