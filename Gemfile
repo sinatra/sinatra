@@ -46,7 +46,7 @@ gem 'radius'
 if RUBY_ENGINE == 'jruby'
   gem 'nokogiri', '!= 1.5.0'
   gem 'jruby-openssl'
-  gem 'trinidad'
+  gem 'trinidad', :git => "https://github.com/trinidad/trinidad.git"
 else
   gem 'yajl-ruby'
   gem 'nokogiri'
