@@ -1258,7 +1258,7 @@ module Sinatra
           [:INT, :TERM].each { |sig| trap(sig) { quit!(server, handler_name) } }
           set :running, true
         end
-      rescue Errno::EADDRINUSE => e
+      rescue Errno::EADDRINUSE
         $stderr.puts "== Someone is already performing on port #{port}!"
       end
 
