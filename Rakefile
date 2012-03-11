@@ -117,6 +117,7 @@ task :authors, [:commit_range, :format, :sep] do |t, a|
     "a_user@mac.com" => blake, "ichverstehe" => "Harry Vangberg",
     "Wu Jiang (nouse)" => "Wu Jiang" }
   `git shortlog -s #{a.commit_range}`.lines.map do |line|
+    line = line.force_encoding 'binary' if line.respond_to? :force_encoding
     num, name = line.split("\t", 2).map(&:strip)
     authors[mapping[name] || name] += num.to_i
     overall += num.to_i
