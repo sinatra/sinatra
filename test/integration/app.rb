@@ -1,6 +1,4 @@
-logger = File.new('log/app.log', "w")
-logger.sync = true
-logger.puts "loading"
+$stderr.puts "loading"
 
 require 'sinatra'
 
@@ -62,6 +60,4 @@ end
 
 use Subclass
 
-use Rack::CommonLogger, logger # to set a custom logger
-
-logger.puts "starting"
+$stderr.puts "starting"

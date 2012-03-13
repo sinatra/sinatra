@@ -82,9 +82,7 @@ module IntegrationHelper
       open("http://127.0.0.1:#{port}#{url}").read
     end
 
-    def log
-      File.read('log/app.log') rescue ""
-    end
+    def log; err; end
 
     def err
       @err ||= ""
@@ -178,7 +176,7 @@ module IntegrationHelper
         # This ensures processing of RUBYOPT which activates Bundler
         vm.provider.ruby_instance_config.process_arguments []
         vm.run_scriptlet "require 'rubygems'; require 'bundler'"
-        vm.run_scriptlet "Bundler.load.setup_environment" # bundle exec
+        vm.run_scriptlet "Bundler.setup" # bundle exec
         
         vm.argv = command_args # TODO does not set ARGV ?!
         vm.run_scriptlet "ARGV.replace #{command_args.inspect}"
