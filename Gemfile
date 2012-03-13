@@ -28,12 +28,13 @@ end
 gem 'haml', '~> 3.0.0', :group => 'haml'
 gem 'builder', :group => 'builder'
 gem 'erubis', :group => 'erubis'
-gem 'less', '~> 1.0', :group => 'less'
 gem 'liquid', :group => 'liquid'
-gem 'slim', :group => 'slim'
-gem 'RedCloth', :group => 'redcloth' if RUBY_VERSION < "1.9.3" and RUBY_ENGINE != 'macruby'
 
 if RUBY_VERSION > '1.8.6'
+  gem 'less', '~> 1.0', :group => 'less'
+  gem 'slim', :group => 'slim'
+  gem 'RedCloth', :group => 'redcloth' if RUBY_VERSION < "1.9.3" and RUBY_ENGINE != 'macruby'
+
   if RUBY_ENGINE == 'jruby'
     gem 'nokogiri', '!= 1.5.0'
   elsif RUBY_ENGINE != 'maglev'
@@ -41,20 +42,16 @@ if RUBY_VERSION > '1.8.6'
   end
   gem 'coffee-script', '>= 2.0', :group => 'coffee-script'
   gem 'rdoc', '< 3.10', :group => 'rdoc'
-end
 
-platforms :ruby do
-  gem 'rdiscount', :group => 'rdiscount'
-end
+  platforms :ruby do
+    gem 'rdiscount', :group => 'rdiscount'
+  end
 
-platforms :ruby_18, :jruby do
-  gem 'json', :group => 'coffee-script'
-  gem 'markaby', :group => 'markaby'
-  gem 'radius', :group => 'radius'
-end
-
-platforms :mri_18 do
-  # bundler platforms are broken
-  next unless RUBY_ENGINE == 'ruby'
-  gem 'rcov', :group => 'rcov'
+  if RUBY_VERSION < '1.9'
+    gem 'json', :group => 'coffee-script'
+    gem 'markaby', :group => 'markaby'
+    gem 'radius', :group => 'radius'
+  end
+else
+  #gem 'nokogiri', '1.4.4'
 end
