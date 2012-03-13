@@ -1282,7 +1282,8 @@ module Sinatra
         set options
         handler      = detect_rack_handler
         handler_name = handler.name.gsub(/.*::/, '')
-        handler.run self, :Host => bind, :Port => port do |server|
+        server_settings = self.respond_to?(:server_settings) ? settings.server_settings : {}
+        handler.run self, server_settings.merge(:Port => port, :Host => bind) do |server|
           unless handler_name =~ /cgi/i
             $stderr.puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
             "on #{port} for #{environment} with backup from #{handler_name}"
