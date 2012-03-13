@@ -65,7 +65,7 @@ module IntegrationHelper
     def alive?
       3.times { get('/ping') }
       true
-    rescue Errno::ECONNREFUSED, Errno::ECONNRESET, EOFError, SystemCallError => error
+    rescue Errno::ECONNREFUSED, Errno::ECONNRESET, EOFError, SystemCallError, OpenURI::HTTPError => error
       false
     end
 
