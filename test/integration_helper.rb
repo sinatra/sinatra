@@ -104,8 +104,12 @@ module IntegrationHelper
 
     def command
       @command ||= begin
-        cmd = [ 'bundle exec ruby' ] + command_args
-        cmd << '2>&1'
+        require 'bundler'
+        spec = Gem.loaded_specs['bundler']
+        cmd = [ "PATH=#{spec.bin_dir}:$PATH exec" ]
+        cmd << "bundle exec ruby"
+        command_args.each { |arg| cmd << arg }
+        cmd << '2>&1' # to have correct pipe.pid we need to `exec`
         cmd.join(" ")
       end
       @command
@@ -122,11 +126,7 @@ module IntegrationHelper
     def kill
       return unless pipe
       info "killing: #{pipe.pid}"
-      if defined?(JRUBY_VERSION)
-        `kill -INT #{pipe.pid}`
-      else
-        Process.kill("KILL", pipe.pid)
-      end
+      Process.kill("KILL", pipe.pid)
     rescue NotImplementedError
       system "kill -9 #{pipe.pid}"
     rescue Errno::ESRCH
@@ -159,7 +159,7 @@ module IntegrationHelper
       end
 
       def err
-        @out.toString
+        @err.toString
       end
 
       def kill
@@ -183,8 +183,8 @@ module IntegrationHelper
         vm.argv = command_args # TODO does not set ARGV ?!
         vm.run_scriptlet "ARGV.replace #{command_args.inspect}"
         
-        @out = java.io.StringWriter.new
-        vm.writer = vm.error_writer = @out # $stdout and $stderr
+        @err = java.io.StringWriter.new
+        vm.writer = vm.error_writer = @err # $stdout and $stderr
         
         Thread.new do
           # Hack to ensure that Kernel#caller has the same info as
