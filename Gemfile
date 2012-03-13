@@ -43,16 +43,18 @@ gem 'creole'
 gem 'markaby'
 gem 'radius'
 
-if RUBY_ENGINE == 'jruby'
-  gem 'nokogiri', '!= 1.5.0'
+platforms :jruby do
   gem 'jruby-openssl'
   gem 'therubyrhino'
-  gem 'trinidad', :git => "git://github.com/trinidad/trinidad.git"
-else
+  gem 'trinidad', :git => "git://github.com/trinidad/trinidad.git", :branch => 'vm_logger'
+end
+
+platforms :ruby do
   gem 'yajl-ruby'
-  gem 'nokogiri'
   gem 'thin'
 end
+
+gem 'nokogiri'
 
 if RUBY_ENGINE == "ruby"
   gem 'less', '~> 2.0'
