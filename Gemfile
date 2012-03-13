@@ -8,6 +8,7 @@
 
 RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
 source :rubygems unless ENV['QUICK']
+gemspec
 
 gem 'rake', '~> 0.8.7'
 gem 'rack-test', '>= 0.5.6'
@@ -52,6 +53,4 @@ if RUBY_VERSION > '1.8.6'
     gem 'markaby', :group => 'markaby'
     gem 'radius', :group => 'radius'
   end
-else
-  #gem 'nokogiri', '1.4.4'
 end

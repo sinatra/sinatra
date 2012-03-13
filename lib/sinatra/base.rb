@@ -5,6 +5,7 @@ require 'rack'
 require 'rack/builder'
 require 'sinatra/showexceptions'
 require 'tilt'
+require 'backports'
 
 module Sinatra
   VERSION = '1.2.8'
