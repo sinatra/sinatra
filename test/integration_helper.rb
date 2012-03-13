@@ -49,12 +49,12 @@ module IntegrationHelper
       raise "Server did not start properly:\n\n#{log}"
     end
 
-    def ping(timeout = 10)
+    def ping(timeout = 30)
       loop do
         return if alive?
         if Time.now - @started > timeout
           $stderr.puts command, log
-          get('/ping')
+          fail "timeout"
         else
           expect "loading"
           sleep 0.1
