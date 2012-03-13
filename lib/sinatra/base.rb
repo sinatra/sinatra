@@ -8,7 +8,7 @@ require 'tilt'
 require 'backports'
 
 module Sinatra
-  VERSION = '1.2.8'
+  VERSION = '1.2.9'
 
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
