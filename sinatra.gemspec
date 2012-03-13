@@ -49,6 +49,9 @@ Gem::Specification.new do |s|
     test/hello.mab
     test/helper.rb
     test/helpers_test.rb
+    test/integration/app.rb
+    test/integration_helper.rb
+    test/integration_test.rb
     test/less_test.rb
     test/liquid_test.rb
     test/mapped_error_test.rb
