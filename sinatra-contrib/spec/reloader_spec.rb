@@ -11,14 +11,14 @@ describe Sinatra::Reloader do
   # Returns the path of the Sinatra application file created by
   # +setup_example_app+.
   def app_file_path
-    File.join(tmp_dir, "example_app_#{@@example_app_counter}.rb")
+    File.join(tmp_dir, "example_app_#{$example_app_counter}.rb")
   end
 
   # Returns the name of the Sinatra application created by
   # +setup_example_app+: 'ExampleApp1' for the first application,
   # 'ExampleApp2' fo the second one, and so on...
   def app_name
-    "ExampleApp#{@@example_app_counter}"
+    "ExampleApp#{$example_app_counter}"
   end
 
   # Returns the (constant of the) Sinatra application created by
@@ -70,8 +70,8 @@ describe Sinatra::Reloader do
   # the new application as the one being tested and enables the
   # reloader.
   def setup_example_app(options={})
-    @@example_app_counter ||= 0
-    @@example_app_counter += 1
+    $example_app_counter ||= 0
+    $example_app_counter += 1
 
     FileUtils.mkdir_p(tmp_dir)
     write_app_file(options)
