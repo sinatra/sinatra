@@ -1339,7 +1339,7 @@ module Sinatra
       end
 
       # Run the Sinatra app as a self-hosted server using
-      # Thin, Mongrel or WEBrick (in that order). If given a block, will call
+      # Thin, Puma, Mongrel, or WEBrick (in that order). If given a block, will call
       # with the constructed handler once we have taken the stage.
       def run!(options={})
         set options
