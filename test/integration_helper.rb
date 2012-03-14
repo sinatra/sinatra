@@ -172,17 +172,16 @@ module IntegrationHelper
         # Create a new container, set load paths and env
         # SINGLETHREAD means create a new runtime
         vm = org.jruby.embed.ScriptingContainer.new(org.jruby.embed.LocalContextScope::SINGLETHREAD)
+        vm.argv = command_args
+        
+        @err = java.io.StringWriter.new
+        vm.output = vm.error = @err # $stdout and $stderr
+        #vm.writer = vm.error_writer = @err # $stdout and $stderr
         
         # This ensures processing of RUBYOPT which activates Bundler
         vm.provider.ruby_instance_config.process_arguments []
         vm.run_scriptlet "require 'rubygems'; require 'bundler'"
         vm.run_scriptlet "Bundler.setup" # bundle exec
-        
-        vm.argv = command_args # TODO does not set ARGV ?!
-        vm.run_scriptlet "ARGV.replace #{command_args.inspect}"
-        
-        @err = java.io.StringWriter.new
-        vm.writer = vm.error_writer = @err # $stdout and $stderr
         
         Thread.new do
           # Hack to ensure that Kernel#caller has the same info as

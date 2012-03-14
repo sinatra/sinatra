@@ -21,7 +21,7 @@ class IntegrationTest < Test::Unit::TestCase
   end
 
   it 'streams' do
-    next if server.webrick?
+    next if server.webrick? || server.name == 'trinidad' # won't work with jruby-rack
     
     times, chunks = [Time.now], []
     server.get_stream do |chunk|
