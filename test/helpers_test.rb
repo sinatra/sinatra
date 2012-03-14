@@ -739,7 +739,7 @@ class HelpersTest < Test::Unit::TestCase
             get '/compare', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'Sun, 26 Sep 2010 23:43:52 GMT' }
             assert_equal 200, status
             assert_equal 'foo', body
-            get '/compare', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'Sun, 26 Sep 2100 23:43:52 GMT' }
+            get '/compare', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'Sun, 26 Sep 2012 23:43:52 GMT' }
             assert_equal 304, status
             assert_equal '', body
           end
