@@ -1367,6 +1367,8 @@ You can also hand in an array in order to disable a list of protections:
 [protection]           Whether or not to enable web attack protections. See
                        protection section above.
 
+[public_dir]           Alias for <tt>public_folder</tt>. See below.
+
 [public_folder]        Path to the folder public files are served from. Only
                        used if static file serving is enabled (see
                        <tt>static</tt> setting below). Inferred from
