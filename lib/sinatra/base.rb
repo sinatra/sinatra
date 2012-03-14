@@ -1371,15 +1371,16 @@ module Sinatra
       # pipeline. The object is guaranteed to respond to #call but may not be
       # an instance of the class new was called on.
       def new(*args, &bk)
-        build(Rack::Builder.new, *args, &bk).to_app
+        build(new!(*args, &bk)).to_app
       end
 
       # Creates a Rack::Builder instance with all the middleware set up and
-      # an instance of this class as end point.
-      def build(builder, *args, &bk)
+      # the given +app+ as end point.
+      def build(app)
+        builder = Rack::Builder.new
         setup_default_middleware builder
         setup_middleware builder
-        builder.run new!(*args, &bk)
+        builder.run app
         builder
       end
 
