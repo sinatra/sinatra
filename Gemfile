@@ -32,7 +32,7 @@ gem 'haml', '>= 3.0'
 gem 'sass' if RUBY_VERSION < "2.0"
 gem 'builder'
 gem 'erubis'
-gem 'liquid' if RUBY_ENGINE == 'rbx' and RUBY_VERSION > '1.9'
+gem 'liquid' unless RUBY_ENGINE == 'rbx' and RUBY_VERSION > '1.9'
 gem 'slim', '~> 1.0'
 gem 'temple', '!= 0.3.3'
 gem 'coffee-script', '>= 2.0'
