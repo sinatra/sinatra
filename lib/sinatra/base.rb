@@ -1185,7 +1185,7 @@ module Sinatra
         public_folder
       end
 
-   private
+    private
       # Condition for matching host name. Parameter might be String or Regexp.
       def host_name(pattern)
         condition { pattern === request.host }
@@ -1347,7 +1347,7 @@ module Sinatra
       end
 
       # Run the Sinatra app as a self-hosted server using
-      # Thin, Mongrel or WEBrick (in that order). If given a block, will call
+      # Thin, Puma, Mongrel, or WEBrick (in that order). If given a block, will call
       # with the constructed handler once we have taken the stage.
       def run!(options={})
         set options
