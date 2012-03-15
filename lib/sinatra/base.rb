@@ -1093,7 +1093,7 @@ module Sinatra
         public_folder
       end
 
-   private
+    private
       # Condition for matching host name. Parameter might be String or Regexp.
       def host_name(pattern)
         condition { pattern === request.host }
