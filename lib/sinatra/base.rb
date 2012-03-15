@@ -97,10 +97,17 @@ module Sinatra
       result, callback = app.call(env), env['async.callback']
       return result unless callback and async?(*result)
       after_response { callback.call result }
+      setup_close(env, *result)
       throw :async
     end
 
     private
+
+    def setup_close(env, status, header, body)
+      return unless body.respond_to? :close and env.include? 'async.close'
+      env['async.close'].callback { body.close }
+      env['async.close'].errback { body.close }
+    end
 
     def after_response(&block)
       raise NotImplementedError, "only supports EventMachine at the moment" unless defined? EventMachine
@@ -333,24 +340,7 @@ module Sinatra
     def stream(keep_open = false)
       scheduler = env['async.callback'] ? EventMachine : Stream
       current   = @params.dup
-
-      block     = proc do |out|
-        begin
-          original, @params = @params, current
-          yield(out)
-        ensure
-          @params = original if original
-        end
-      end
-
-      out = Stream.new(scheduler, keep_open, &block)
-
-      if env['async.close']
-        env['async.close'].callback { out.close }
-        env['async.close'].errback { out.close }
-      end
-
-      body out
+      body Stream.new(scheduler, keep_open) { |out| with_params(current) { yield(out) } }
     end
 
     # Specify response freshness policy for HTTP caches (Cache-Control header).
@@ -536,6 +526,13 @@ module Sinatra
     def etag_matches?(list, new_resource = request.post?)
       return !new_resource if list == '*'
       list.to_s.split(/\s*,\s*/).include? response['ETag']
+    end
+
+    def with_params(temp_params)
+      original, @params = @params, temp_params
+      yield
+    ensure
+      @params = original if original
     end
   end
 
