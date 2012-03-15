@@ -45,7 +45,7 @@ module Sinatra
   # the application you will use them:
   #
   #     require "sinatra/base"
-  #     require "sinatra/link_header"
+  #     require "sinatra/cookies"
   #
   #     class MyApp < Sinatra::Base
   #       helpers Sinatra::Cookies

@@ -127,7 +127,7 @@ All extensions:
 
 ``` ruby
 require 'sinatra/base'
-require 'sinatra/contrib'
+require 'sinatra/contrib/all'
 
 class MyApp < Sinatra::Base
   register Sinatra::Contrib

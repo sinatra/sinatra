@@ -91,7 +91,7 @@ module Sinatra
   #   require "sinatra/streaming"
   #   
   #   class MyApp < Sinatra::Base
-  #     helpers Streaming
+  #     helpers Sinatra::Streaming
   #   end
   module Streaming
     def stream(*)

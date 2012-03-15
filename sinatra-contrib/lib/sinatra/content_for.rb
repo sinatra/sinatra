@@ -46,7 +46,7 @@ module Sinatra
   #     require "sinatra/content_for"
   #
   #     class MyApp < Sinatra::Base
-  #       register Sinatra::ContentFor
+  #       helpers Sinatra::ContentFor
   #
   #       # The rest of your modular application code goes here...
   #     end
@@ -77,6 +77,20 @@ module Sinatra
     # by <tt>yield_content</tt>
     def content_for(key, &block)
       content_blocks[key.to_sym] << capture_later(&block)
+    end
+    
+    # Check if a block of content with the given key was defined. For
+    # example:
+    #
+    #     <% content_for :head do %>
+    #       <script type="text/javascript" src="/foo.js"></script>
+    #     <% end %>
+    #
+    #     <% if content_for? :head %>
+    #       <span>content "head" was defined.</span>
+    #     <% end %>
+    def content_for?(key)
+      content_blocks[key.to_sym].any?
     end
 
     # Render the captured blocks for a given key. For example:
