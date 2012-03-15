@@ -1221,6 +1221,13 @@ module Sinatra
         end
       end
 
+      # Condition for matching HTTP verb.  Useful for defining filters for
+      # routes with the same URL pattern but different HTTP method.  Parameter
+      # can be either String or Regexp.
+      def verb(pattern)
+        condition { pattern === request.request_method }
+      end
+
     public
       # Defining a `GET` handler also automatically defines
       # a `HEAD` handler.

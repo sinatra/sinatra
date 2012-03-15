@@ -679,6 +679,14 @@ Like routes, filters also take conditions:
     # ...
   end
 
+`verb` condition can be used to define filters for routes with the same URL
+pattern but different HTTP method:
+
+  before '/index', :verb => /post/i do
+  end
+
+Both String and Regexp patterns can be used with the `verb` condition.
+
 == Helpers
 
 Use the top-level <tt>helpers</tt> method to define helper methods for use in
