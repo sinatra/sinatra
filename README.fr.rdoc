@@ -1452,6 +1452,8 @@ protection :
 [protection]           défini s'il faut activer ou non la protection contre
                        les attaques web. Voir la section protection précédente.
 
+[public_dir]           alias pour <tt>public_folder</tt>. Voir ci-dessous.
+
 [public_folder]        chemin pour le dossier à partir duquel les fichiers
                        publics sont servis. Utilisé seulement si les fichiers
                        statiques doivent être servis (voir le paramètre
