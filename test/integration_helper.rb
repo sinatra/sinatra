@@ -108,7 +108,7 @@ module IntegrationHelper
           file, dir = RbConfig::CONFIG.values_at('ruby_install_name', 'bindir')
           cmd << File.expand_path(file, dir).inspect
         end
-        cmd << "-I" << File.expand_path('../../lib', __FILE__).inspect
+        cmd << "-w" << "-I" << File.expand_path('../../lib', __FILE__).inspect
         cmd << app_file.inspect << '-s' << server << '-o' << '127.0.0.1' << '-p' << port
         cmd << "-e" << environment.to_s << '2>&1'
         cmd.join " "
@@ -125,6 +125,10 @@ module IntegrationHelper
 
     def webrick?
       name.to_s == "webrick"
+    end
+
+    def warnings
+      log.scan(%r[(?:\(eval|lib/sinatra).*warning:.*$])
     end
   end
 
