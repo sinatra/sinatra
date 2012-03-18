@@ -80,6 +80,6 @@ class IntegrationTest < Test::Unit::TestCase
   it 'does not generate warnings' do
     assert_raise(OpenURI::HTTPError) { server.get '/' }
     server.get '/app_file'
-    assert_empty server.warnings
+    assert_equal [], server.warnings
   end
 end
