@@ -45,11 +45,6 @@ module IntegrationHelper
       at_exit { kill }
     end
 
-    def expect(str)
-      return if log.size < str.size or log[0, str.size] == str
-      raise "Server did not start properly:\n\n#{log}"
-    end
-
     def ping(timeout = 30)
       loop do
         return if alive?
@@ -57,7 +52,6 @@ module IntegrationHelper
           $stderr.puts command, log
           fail "timeout"
         else
-          expect "loading"
           sleep 0.1
         end
       end
