@@ -69,7 +69,6 @@ class IntegrationTest < Test::Unit::TestCase
     end
   end
 
-
   it 'starts the correct server' do
     exp = %r{
       ==\sSinatra/#{Sinatra::VERSION}\s
