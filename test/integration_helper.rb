@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'rbconfig'
 require 'open-uri'
 require 'net/http'
+require 'timeout'
 
 module IntegrationHelper
   class BaseServer
@@ -65,7 +66,7 @@ module IntegrationHelper
     def alive?
       3.times { get('/ping') }
       true
-    rescue Errno::ECONNREFUSED, Errno::ECONNRESET, EOFError, SystemCallError, OpenURI::HTTPError => error
+    rescue Errno::ECONNREFUSED, Errno::ECONNRESET, EOFError, SystemCallError, OpenURI::HTTPError, Timeout::Error => error
       false
     end
 
@@ -79,7 +80,7 @@ module IntegrationHelper
     end
 
     def get(url)
-      open("http://127.0.0.1:#{port}#{url}").read
+      Timeout.timeout(1) { open("http://127.0.0.1:#{port}#{url}").read }
     end
 
     def log
