@@ -66,6 +66,7 @@ if RUBY_ENGINE != 'jruby' or not ENV['TRAVIS']
     gem 'mongrel'
   end
   gem 'RedCloth' unless RUBY_ENGINE == "macruby"
+  gem 'puma'
 
   ## bluecloth is broken
   #gem 'bluecloth'
