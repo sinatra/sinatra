@@ -1064,9 +1064,7 @@ module Sinatra
         when Proc
           getter = value
         when Symbol, Fixnum, FalseClass, TrueClass, NilClass
-          # we have a lot of enable and disable calls, let's optimize those
-          class_eval "def self.#{option}() #{value.inspect} end"
-          getter = nil
+          getter = value.inspect
         when Hash
           setter = proc do |val|
             val = value.merge val if Hash === val
@@ -1074,13 +1072,9 @@ module Sinatra
           end
         end
 
-        (class << self; self; end).class_eval do
-          define_method("#{option}=", &setter) if setter
-          define_method(option,       &getter) if getter
-          unless method_defined? "#{option}?"
-            class_eval "def #{option}?() !!#{option} end"
-          end
-        end
+        define_singleton_method("#{option}=", setter) if setter
+        define_singleton_method(option, getter) if getter
+        define_singleton_method("#{option}?", "!!#{option}") unless method_defined? "#{option}?"
         self
       end
 
@@ -1209,6 +1203,15 @@ module Sinatra
       end
 
     private
+      # Dynamically defines a method on settings.
+      def define_singleton_method(name, content = Proc.new)
+        # replace with call to singleton_class once we're 1.9 only
+        (class << self; self; end).class_eval do
+          undef_method(name) if method_defined? name
+          String === content ? class_eval("def #{name}() #{content}; end") : define_method(name, &content)
+        end
+      end
+
       # Condition for matching host name. Parameter might be String or Regexp.
       def host_name(pattern)
         condition { pattern === request.host }
