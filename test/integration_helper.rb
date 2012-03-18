@@ -129,6 +129,17 @@ module IntegrationHelper
     def warnings
       log.scan(%r[(?:\(eval|lib/sinatra).*warning:.*$])
     end
+
+    def run_test(target, &block)
+      retries ||= 3
+      target.server = self
+      run unless alive?
+      target.instance_eval(&block)
+    rescue Exception => error
+      retries -= 1
+      kill
+      retries < 0 ? retry : raise(error)
+    end
   end
 
   if RUBY_ENGINE == "jruby"
@@ -188,16 +199,7 @@ module IntegrationHelper
   def it(message, &block)
     Server.each do |server|
       next unless server.installed?
-      super "with #{server.name}: #{message}" do
-        self.server = server
-        server.run unless server.alive?
-        begin
-          instance_eval(&block)
-        rescue Exception => error
-          server.kill
-          raise error
-        end
-      end
+      super("with #{server.name}: #{message}") { server.run_test(self, &block) }
     end
   end
 
