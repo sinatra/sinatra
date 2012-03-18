@@ -1324,9 +1324,11 @@ module Sinatra
         end
       end
 
+      URI = ::URI.const_defined?(:Parser) ? ::URI::Parser.new : ::URI
+
       def encoded(char)
-        enc = URI.encode(char)
-        enc = "(?:#{Regexp.escape enc}|#{URI.encode char, /./})" if enc == char
+        enc = URI.escape(char)
+        enc = "(?:#{Regexp.escape enc}|#{URI.escape char, /./})" if enc == char
         enc = "(?:#{enc}|#{encoded('+')})" if char == " "
         enc
       end
