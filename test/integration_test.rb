@@ -33,7 +33,7 @@ class IntegrationTest < Test::Unit::TestCase
   end
 
   it 'streams async' do
-    next unless server.name == 'thin'
+    next unless server.thin?
 
     Timeout.timeout(3) do
       chunks = []
@@ -51,7 +51,7 @@ class IntegrationTest < Test::Unit::TestCase
   end
 
   it 'streams async from subclass' do
-    next unless server.name == 'thin'
+    next unless server.thin?
 
     Timeout.timeout(3) do
       chunks = []
