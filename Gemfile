@@ -52,7 +52,7 @@ else
   gem 'thin'
 end
 
-if RUBY_ENGINE == "ruby"
+if RUBY_ENGINE == "ruby" and RUBY_VERSION > '1.9'
   gem 'less', '~> 2.0'
 else
   gem 'less', '~> 1.0'
