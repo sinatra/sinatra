@@ -41,6 +41,7 @@ module Sinatra
     private
 
     def prefers_plain_text?(env)
+      !(Request.new(env).preferred_type("text/plain","text/html") == "text/html") &&
       [/curl/].index{|item| item =~ env["HTTP_USER_AGENT"]}
     end
 
