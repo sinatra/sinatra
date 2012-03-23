@@ -14,6 +14,7 @@ class CompileTest < Test::Unit::TestCase
     ["/:foo", %r{\A/([^/?#]+)\z}, [
       ["/foo"      , ["foo"]],
       ["/foo?"     , nil],
+      ["/foo.bar"  , ["foo.bar"]],
       ["/foo/bar"  , nil],
       ["/foo%2Fbar", ["foo%2Fbar"]],
       ["/"         , nil],
