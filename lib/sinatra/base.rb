@@ -1,4 +1,4 @@
-# external dependencies
+ # external dependencies
 require 'rack'
 require 'tilt'
 require "rack/protection"
@@ -1302,14 +1302,18 @@ module Sinatra
       def compile(path)
         keys = []
         if path.respond_to? :to_str
-          pattern = path.to_str.gsub(/[^\?\%\\\/\:\*\w]/) { |c| encoded(c) }
+          pad = []
+          pattern = path.to_str.gsub(/[^\?\%\\\/\:\*\w]/) do |c|
+            pad += escaped(c) if c.match(/[\.@]/)
+            encoded(c)
+          end
           pattern.gsub!(/((:\w+)|\*)/) do |match|
             if match == "*"
               keys << 'splat'
               "(.*?)"
             else
               keys << $2[1..-1]
-              "([^/?#]+)"
+              "([^#{pad.join}/?#]+)"
             end
           end
           [/^#{pattern}$/, keys]
@@ -1328,9 +1332,13 @@ module Sinatra
 
       def encoded(char)
         enc = URI.escape(char)
-        enc = "(?:#{Regexp.escape enc}|#{URI.escape char, /./})" if enc == char
+        enc = "(?:#{escaped(char, enc).join('|')})" if enc == char
         enc = "(?:#{enc}|#{encoded('+')})" if char == " "
         enc
+      end
+      
+      def escaped(char, enc = URI.escape(char))
+        [Regexp.escape(enc), URI.escape(char, /./)]
       end
 
     public

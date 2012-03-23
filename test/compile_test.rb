@@ -26,11 +26,6 @@ class CompileTest < Test::Unit::TestCase
     ["/*"                , %r{^/(.*?)$}                                              , "/foo/bar"                       , ["foo/bar"]                         ], 
     ["/:foo/*"           , %r{^/([^/?#]+)/(.*?)$}                                    , "/foo/bar/baz"                   , ["foo", "bar/baz"]                  ], 
     ["/:foo/:bar"        , %r{^/([^/?#]+)/([^/?#]+)$}                                , "/user@example.com/name"         , ["user@example.com", "name"]        ], 
-    ["/:file.:ext"       , %r{^/([^/?#]+)(?:\.|%2E)([^/?#]+)$}                       , "/pony.jpg"                      , ["pony", "jpg"]                     ], 
-    ["/:file.:ext"       , %r{^/([^/?#]+)(?:\.|%2E)([^/?#]+)$}                       , "/pony%2Ejpg"                    , ["pony", "jpg"]                     ], 
-    ["/:file.:ext"       , %r{^/([^/?#]+)(?:\.|%2E)([^/?#]+)$}                       , "/.jpg"                          , nil                                 ], 
-    ["/test.bar"         , %r{^/test(?:\.|%2E)bar$}                                  , "/test.bar"                      , []                                  ], 
-    ["/test.bar"         , %r{^/test(?:\.|%2E)bar$}                                  , "/test0bar"                      , nil                                 ], 
     ["/test$/"           , %r{^/test(?:\$|%24)/$}                                    , "/test$/"                        , []                                  ], 
     ["/te+st/"           , %r{^/te(?:\+|%2B)st/$}                                    , "/te+st/"                        , []                                  ], 
     ["/te+st/"           , %r{^/te(?:\+|%2B)st/$}                                    , "/test/"                         , nil                                 ], 
@@ -43,21 +38,31 @@ class CompileTest < Test::Unit::TestCase
     ["/:foo/*"           , %r{^/([^/?#]+)/(.*?)$}                                    , "/hello%20world/how%20are%20you" , ["hello%20world", "how%20are%20you"]], 
     ["/*/foo/*/*"        , %r{^/(.*?)/foo/(.*?)/(.*?)$}                              , "/bar/foo/bling/baz/boom"        , ["bar", "bling", "baz/boom"]        ], 
     ["/*/foo/*/*"        , %r{^/(.*?)/foo/(.*?)/(.*?)$}                              , "/bar/foo/baz"                   , nil                                 ], 
-    ["/:name.?:format?"  , %r{^/([^/?#]+)(?:\.|%2E)?([^/?#]+)?$}                     , "/foo"                           , ["foo", nil]                        ], 
-    ["/:name.?:format?"  , %r{^/([^/?#]+)(?:\.|%2E)?([^/?#]+)?$}                     , "/.bar"                          , [".bar", nil]                       ],
-    ["/:name.?:format?"  , %r{^/([^/?#]+)(?:\.|%2E)?([^/?#]+)?$}                     , "/foo.bar"                       , ["foo", "bar"]                      ], 
-    ["/:name.?:format?"  , %r{^/([^/?#]+)(?:\.|%2E)?([^/?#]+)?$}                     , "/foo%2Ebar"                     , ["foo", "bar"]                      ], 
-    ["/:user@?:host?"    , %r{^/([^/?#]+)(?:@|%40)?([^/?#]+)?$}                      , "/foo@bar"                       , ["foo", "bar"]                      ],                
-    ["/:user@?:host?"    , %r{^/([^/?#]+)(?:@|%40)?([^/?#]+)?$}                      , "/foo.foo@bar"                   , ["foo.foo", "bar"]                  ],                
-    ["/:user@?:host?"    , %r{^/([^/?#]+)(?:@|%40)?([^/?#]+)?$}                      , "/foo@bar.bar"                   , ["foo", "bar.bar"]                  ],
+    ["/test.bar"         , %r{^/test(?:\.|%2E)bar$}                                  , "/test.bar"                      , []                                  ], 
+    ["/test.bar"         , %r{^/test(?:\.|%2E)bar$}                                  , "/test0bar"                      , nil                                 ], 
+    ["/:file.:ext"       , %r{^/([^\.%2E/?#]+)(?:\.|%2E)([^\.%2E/?#]+)$}             , "/pony.jpg"                      , ["pony", "jpg"]                     ], 
+    ["/:file.:ext"       , %r{^/([^\.%2E/?#]+)(?:\.|%2E)([^\.%2E/?#]+)$}             , "/pony%2Ejpg"                    , ["pony", "jpg"]                     ], 
+    ["/:file.:ext"       , %r{^/([^\.%2E/?#]+)(?:\.|%2E)([^\.%2E/?#]+)$}             , "/.jpg"                          , nil                                 ],
+    ["/:name.?:format?"  , %r{^/([^\.%2E/?#]+)(?:\.|%2E)?([^\.%2E/?#]+)?$}           , "/foo"                           , ["foo", nil]                        ], 
+    ["/:name.?:format?"  , %r{^/([^\.%2E/?#]+)(?:\.|%2E)?([^\.%2E/?#]+)?$}           , "/.bar"                          , [".bar", nil]                       ],
+    ["/:name.?:format?"  , %r{^/([^\.%2E/?#]+)(?:\.|%2E)?([^\.%2E/?#]+)?$}           , "/foo.bar"                       , ["foo", "bar"]                      ], 
+    ["/:name.?:format?"  , %r{^/([^\.%2E/?#]+)(?:\.|%2E)?([^\.%2E/?#]+)?$}           , "/foo%2Ebar"                     , ["foo", "bar"]                      ], 
+    ["/:user@?:host?"    , %r{^/([^@%40/?#]+)(?:@|%40)?([^@%40/?#]+)?$}              , "/foo@bar"                       , ["foo", "bar"]                      ],                
+    ["/:user@?:host?"    , %r{^/([^@%40/?#]+)(?:@|%40)?([^@%40/?#]+)?$}              , "/foo.foo@bar"                   , ["foo.foo", "bar"]                  ],                
+    ["/:user@?:host?"    , %r{^/([^@%40/?#]+)(?:@|%40)?([^@%40/?#]+)?$}              , "/foo@bar.bar"                   , ["foo", "bar.bar"]                  ],
   ].each do |pattern, regexp, example, expected|
     app = nil
     it "generates #{regexp.source} from #{pattern}, with #{example} succeeding" do
       app ||= mock_app {}
       compiled, keys = app.send(:compile, pattern)
-      assert_equal regexp.source, compiled.source
+      
       match = compiled.match(example)
-      match ? assert_equal(expected, match.captures.to_a) : assert_nil(expected)
+      match ? assert_equal(expected, match.captures.to_a) : assert_equal(expected, match)
+      
+      # Compare the regexp last, to see that the captures work,
+      # but the regexp might not the expected one. 
+      #
+      assert_equal regexp, compiled
     end
   end
 end
