@@ -1302,9 +1302,9 @@ module Sinatra
       def compile(path)
         keys = []
         if path.respond_to? :to_str
-          pad = []
+          ignore = ""
           pattern = path.to_str.gsub(/[^\?\%\\\/\:\*\w]/) do |c|
-            pad += escaped(c) if c.match(/[\.@]/)
+            ignore << escaped(c).join if c.match(/[\.@]/)
             encoded(c)
           end
           pattern.gsub!(/((:\w+)|\*)/) do |match|
@@ -1313,7 +1313,7 @@ module Sinatra
               "(.*?)"
             else
               keys << $2[1..-1]
-              "([^#{pad.join}/?#]+)"
+              "([^#{ignore}/?#]+)"
             end
           end
           [/^#{pattern}$/, keys]
