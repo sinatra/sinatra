@@ -83,7 +83,7 @@ class CompileTest < Test::Unit::TestCase
     ]],
     ["/:name.?:format?", %r{\A/([^\.%2E/?#]+)(?:\.|%2E)?([^\.%2E/?#]+)?\z}, [
       ["/foo",       ["foo", nil]],
-      ["/.bar",      [".bar", nil]],
+      ["/.bar",      nil],
       ["/foo.bar",   ["foo", "bar"]],
       ["/foo%2Ebar", ["foo", "bar"]]
     ]], 
@@ -91,7 +91,13 @@ class CompileTest < Test::Unit::TestCase
       ["/foo@bar",     ["foo", "bar"]],
       ["/foo.foo@bar", ["foo.foo", "bar"]],
       ["/foo@bar.bar", ["foo", "bar.bar"]]
-    ]]
+    ]],
+    # From https://gist.github.com/2154980#gistcomment-169469.
+    #
+    # ["/:name(.:format)?", %r{\A/([^\.%2E/?#]+)(?:\(|%28)(?:\.|%2E)([^\.%2E/?#]+)(?:\)|%29)?\z}, [
+    #   ["/foo", ["foo"]],
+    #   ["/foo.bar", ["foo", "bar"]]
+    # ]]
   ].each do |pattern, regexp, examples_expectations|
     app = nil
     examples_expectations.each do |example, expected|
