@@ -2,66 +2,109 @@
 require File.expand_path('../helper', __FILE__)
 
 class CompileTest < Test::Unit::TestCase
-  #  Pattern             | Current Regexp                                           | Example     | Should Be
-  # ---------------------|----------------------------------------------------------|-------------|----------
+  #  Pattern, Current Regexp, [Examples, Should Bes]
+  #
   [
-    ["/"                 , %r{^/$}                                                   , "/"                              , []                                  ], 
-    ["/foo"              , %r{^/foo$}                                                , "/foo"                           , []                                  ], 
-    ["/:foo"             , %r{^/([^/?#]+)$}                                          , "/foo"                           , ["foo"]                             ], 
-    ["/:foo"             , %r{^/([^/?#]+)$}                                          , "/foo?"                          , nil                                 ], 
-    ["/:foo"             , %r{^/([^/?#]+)$}                                          , "/foo/bar"                       , nil                                 ], 
-    ["/:foo"             , %r{^/([^/?#]+)$}                                          , "/foo%2Fbar"                     , ["foo%2Fbar"]                       ], 
-    ["/:foo"             , %r{^/([^/?#]+)$}                                          , "/"                              , nil                                 ], 
-    ["/:foo"             , %r{^/([^/?#]+)$}                                          , "/foo/"                          , nil                                 ], 
-    ["/f\u00F6\u00F6"    , %r{^/f%C3%B6%C3%B6$}                                      , "/f%C3%B6%C3%B6"                 , []                                  ], 
-    ["/:foo/:bar"        , %r{^/([^/?#]+)/([^/?#]+)$}                                , "/foo/bar"                       , ["foo", "bar"]                      ], 
-    ["/hello/:person"    , %r{^/hello/([^/?#]+)$}                                    , "/hello/Frank"                   , ["Frank"]                           ], 
-    ["/?:foo?/?:bar?"    , %r{^/?([^/?#]+)?/?([^/?#]+)?$}                            , "/hello/world"                   , ["hello", "world"]                  ], 
-    ["/?:foo?/?:bar?"    , %r{^/?([^/?#]+)?/?([^/?#]+)?$}                            , "/hello"                         , ["hello", nil]                      ], 
-    ["/?:foo?/?:bar?"    , %r{^/?([^/?#]+)?/?([^/?#]+)?$}                            , "/"                              , [nil, nil]                          ], 
-    ["/?:foo?/?:bar?"    , %r{^/?([^/?#]+)?/?([^/?#]+)?$}                            , ""                               , [nil, nil]                          ], 
-    ["/*"                , %r{^/(.*?)$}                                              , "/"                              , [""]                                ], 
-    ["/*"                , %r{^/(.*?)$}                                              , "/foo"                           , ["foo"]                             ], 
-    ["/*"                , %r{^/(.*?)$}                                              , "/"                              , [""]                                ], 
-    ["/*"                , %r{^/(.*?)$}                                              , "/foo/bar"                       , ["foo/bar"]                         ], 
-    ["/:foo/*"           , %r{^/([^/?#]+)/(.*?)$}                                    , "/foo/bar/baz"                   , ["foo", "bar/baz"]                  ], 
-    ["/:foo/:bar"        , %r{^/([^/?#]+)/([^/?#]+)$}                                , "/user@example.com/name"         , ["user@example.com", "name"]        ], 
-    ["/test$/"           , %r{^/test(?:\$|%24)/$}                                    , "/test$/"                        , []                                  ], 
-    ["/te+st/"           , %r{^/te(?:\+|%2B)st/$}                                    , "/te+st/"                        , []                                  ], 
-    ["/te+st/"           , %r{^/te(?:\+|%2B)st/$}                                    , "/test/"                         , nil                                 ], 
-    ["/te+st/"           , %r{^/te(?:\+|%2B)st/$}                                    , "/teeest/"                       , nil                                 ], 
-    ["/test(bar)/"       , %r{^/test(?:\(|%28)bar(?:\)|%29)/$}                       , "/test(bar)/"                    , []                                  ], 
-    ["/path with spaces" , %r{^/path(?:%20|(?:\+|%2B))with(?:%20|(?:\+|%2B))spaces$} , "/path%20with%20spaces"          , []                                  ], 
-    ["/path with spaces" , %r{^/path(?:%20|(?:\+|%2B))with(?:%20|(?:\+|%2B))spaces$} , "/path%2Bwith%2Bspaces"          , []                                  ], 
-    ["/path with spaces" , %r{^/path(?:%20|(?:\+|%2B))with(?:%20|(?:\+|%2B))spaces$} , "/path+with+spaces"              , []                                  ], 
-    ["/foo&bar"          , %r{^/foo(?:&|%26)bar$}                                    , "/foo&bar"                       , []                                  ], 
-    ["/:foo/*"           , %r{^/([^/?#]+)/(.*?)$}                                    , "/hello%20world/how%20are%20you" , ["hello%20world", "how%20are%20you"]], 
-    ["/*/foo/*/*"        , %r{^/(.*?)/foo/(.*?)/(.*?)$}                              , "/bar/foo/bling/baz/boom"        , ["bar", "bling", "baz/boom"]        ], 
-    ["/*/foo/*/*"        , %r{^/(.*?)/foo/(.*?)/(.*?)$}                              , "/bar/foo/baz"                   , nil                                 ], 
-    ["/test.bar"         , %r{^/test(?:\.|%2E)bar$}                                  , "/test.bar"                      , []                                  ], 
-    ["/test.bar"         , %r{^/test(?:\.|%2E)bar$}                                  , "/test0bar"                      , nil                                 ], 
-    ["/:file.:ext"       , %r{^/([^\.%2E/?#]+)(?:\.|%2E)([^\.%2E/?#]+)$}             , "/pony.jpg"                      , ["pony", "jpg"]                     ], 
-    ["/:file.:ext"       , %r{^/([^\.%2E/?#]+)(?:\.|%2E)([^\.%2E/?#]+)$}             , "/pony%2Ejpg"                    , ["pony", "jpg"]                     ], 
-    ["/:file.:ext"       , %r{^/([^\.%2E/?#]+)(?:\.|%2E)([^\.%2E/?#]+)$}             , "/.jpg"                          , nil                                 ],
-    ["/:name.?:format?"  , %r{^/([^\.%2E/?#]+)(?:\.|%2E)?([^\.%2E/?#]+)?$}           , "/foo"                           , ["foo", nil]                        ], 
-    ["/:name.?:format?"  , %r{^/([^\.%2E/?#]+)(?:\.|%2E)?([^\.%2E/?#]+)?$}           , "/.bar"                          , [".bar", nil]                       ],
-    ["/:name.?:format?"  , %r{^/([^\.%2E/?#]+)(?:\.|%2E)?([^\.%2E/?#]+)?$}           , "/foo.bar"                       , ["foo", "bar"]                      ], 
-    ["/:name.?:format?"  , %r{^/([^\.%2E/?#]+)(?:\.|%2E)?([^\.%2E/?#]+)?$}           , "/foo%2Ebar"                     , ["foo", "bar"]                      ], 
-    ["/:user@?:host?"    , %r{^/([^@%40/?#]+)(?:@|%40)?([^@%40/?#]+)?$}              , "/foo@bar"                       , ["foo", "bar"]                      ],                
-    ["/:user@?:host?"    , %r{^/([^@%40/?#]+)(?:@|%40)?([^@%40/?#]+)?$}              , "/foo.foo@bar"                   , ["foo.foo", "bar"]                  ],                
-    ["/:user@?:host?"    , %r{^/([^@%40/?#]+)(?:@|%40)?([^@%40/?#]+)?$}              , "/foo@bar.bar"                   , ["foo", "bar.bar"]                  ],
-  ].each do |pattern, regexp, example, expected|
+    ["/", %r{\A/\z}, [
+      ["/", []]
+    ]], 
+    ["/foo", %r{\A/foo\z}, [
+      ["/foo", []]
+    ]], 
+    ["/:foo", %r{\A/([^/?#]+)\z}, [
+      ["/foo"      , ["foo"]],
+      ["/foo?"     , nil],
+      ["/foo/bar"  , nil],
+      ["/foo%2Fbar", ["foo%2Fbar"]],
+      ["/"         , nil],
+      ["/foo/"     , nil]
+    ]],
+    ["/f\u00F6\u00F6", %r{\A/f%C3%B6%C3%B6\z}, [
+      ["/f%C3%B6%C3%B6", []]
+    ]], 
+    ["/:foo/:bar", %r{\A/([^/?#]+)/([^/?#]+)\z}, [
+      ["/foo/bar", ["foo", "bar"]]
+    ]], 
+    ["/hello/:person", %r{\A/hello/([^/?#]+)\z}, [
+      ["/hello/Frank", ["Frank"]]
+    ]], 
+    ["/?:foo?/?:bar?", %r{\A/?([^/?#]+)?/?([^/?#]+)?\z}, [
+      ["/hello/world", ["hello", "world"]],
+      ["/hello"      , ["hello", nil]],
+      ["/"           , [nil, nil]],
+      [""            , [nil, nil]]
+    ]], 
+    ["/*", %r{\A/(.*?)\z}, [
+      ["/"       , [""]],
+      ["/foo"    , ["foo"]],
+      ["/"       , [""]],
+      ["/foo/bar", ["foo/bar"]]
+    ]], 
+    ["/:foo/*", %r{\A/([^/?#]+)/(.*?)\z}, [
+      ["/foo/bar/baz", ["foo", "bar/baz"]]
+    ]],
+    ["/:foo/:bar", %r{\A/([^/?#]+)/([^/?#]+)\z}, [
+      ["/user@example.com/name", ["user@example.com", "name"]]
+    ]], 
+    ["/test$/", %r{\A/test(?:\$|%24)/\z}, [
+      ["/test$/", []]
+    ]], 
+    ["/te+st/", %r{\A/te(?:\+|%2B)st/\z}, [
+      ["/te+st/",  []],
+      ["/test/",   nil],
+      ["/teeest/", nil]
+    ]],
+    ["/test(bar)/", %r{\A/test(?:\(|%28)bar(?:\)|%29)/\z}, [
+      ["/test(bar)/", []]
+    ]],
+    ["/path with spaces", %r{\A/path(?:%20|(?:\+|%2B))with(?:%20|(?:\+|%2B))spaces\z}, [
+      ["/path%20with%20spaces", []],
+      ["/path%2Bwith%2Bspaces", []],
+      ["/path+with+spaces",     []]
+    ]],
+    ["/foo&bar", %r{\A/foo(?:&|%26)bar\z}, [
+      ["/foo&bar", []]
+    ]], 
+    ["/:foo/*", %r{\A/([^/?#]+)/(.*?)\z}, [
+      ["/hello%20world/how%20are%20you", ["hello%20world", "how%20are%20you"]]
+    ]], 
+    ["/*/foo/*/*", %r{\A/(.*?)/foo/(.*?)/(.*?)\z}, [
+      ["/bar/foo/bling/baz/boom", ["bar", "bling", "baz/boom"]],
+      ["/bar/foo/baz",            nil],
+    ]],
+    ["/test.bar", %r{\A/test(?:\.|%2E)bar\z}, [
+      ["/test.bar", []],
+      ["/test0bar", nil]
+    ]],
+    ["/:file.:ext", %r{\A/([^\.%2E/?#]+)(?:\.|%2E)([^\.%2E/?#]+)\z}, [
+      ["/pony.jpg",   ["pony", "jpg"]],
+      ["/pony%2Ejpg", ["pony", "jpg"]],
+      ["/.jpg",       nil]
+    ]],
+    ["/:name.?:format?", %r{\A/([^\.%2E/?#]+)(?:\.|%2E)?([^\.%2E/?#]+)?\z}, [
+      ["/foo",       ["foo", nil]],
+      ["/.bar",      [".bar", nil]],
+      ["/foo.bar",   ["foo", "bar"]],
+      ["/foo%2Ebar", ["foo", "bar"]]
+    ]], 
+    ["/:user@?:host?", %r{\A/([^@%40/?#]+)(?:@|%40)?([^@%40/?#]+)?\z}, [
+      ["/foo@bar",     ["foo", "bar"]],
+      ["/foo.foo@bar", ["foo.foo", "bar"]],
+      ["/foo@bar.bar", ["foo", "bar.bar"]]
+    ]]
+  ].each do |pattern, regexp, examples_expectations|
     app = nil
-    it "generates #{regexp.source} from #{pattern}, with #{example} succeeding" do
+    examples_expectations.each do |example, expected|
+      it "generates #{regexp.source} from #{pattern}, with #{example} succeeding" do
+        app ||= mock_app {}
+        compiled, keys = app.send(:compile, pattern)
+        match = compiled.match(example)
+        match ? assert_equal(expected, match.captures.to_a) : assert_equal(expected, match)
+      end
+    end
+    it "generates #{regexp.source} from #{pattern}" do
       app ||= mock_app {}
       compiled, keys = app.send(:compile, pattern)
-      
-      match = compiled.match(example)
-      match ? assert_equal(expected, match.captures.to_a) : assert_equal(expected, match)
-      
-      # Compare the regexp last, to see that the captures work,
-      # but the regexp might not the expected one. 
-      #
       assert_equal regexp, compiled
     end
   end

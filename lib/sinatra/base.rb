@@ -1316,7 +1316,7 @@ module Sinatra
               "([^#{ignore}/?#]+)"
             end
           end
-          [/^#{pattern}$/, keys]
+          [/\A#{pattern}\z/, keys]
         elsif path.respond_to?(:keys) && path.respond_to?(:match)
           [path, path.keys]
         elsif path.respond_to?(:names) && path.respond_to?(:match)
