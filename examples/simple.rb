@@ -1,3 +1,5 @@
-#!/usr/bin/env ruby -I ../lib -I lib
+#!/usr/bin/env ruby
 require 'sinatra'
 get('/') { 'this is a simple app' }
+
+get('/error') { FAIL! }
