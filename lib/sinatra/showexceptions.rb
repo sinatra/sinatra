@@ -22,7 +22,7 @@ module Sinatra
     rescue Exception => e
       errors, env["rack.errors"] = env["rack.errors"], @@eats_errors
 
-      if respond_to?(:prefers_plain_text?) and prefers_plain_text?(env)
+      if prefers_plain_text?(env)
         content_type = "text/plain"
         body = [dump_exception(e)]
       else
@@ -39,6 +39,11 @@ module Sinatra
     end
 
     private
+
+    def prefers_plain_text?(env)
+      !(Request.new(env).preferred_type("text/plain","text/html") == "text/html") &&
+      [/curl/].index{|item| item =~ env["HTTP_USER_AGENT"]}
+    end
 
     def frame_class(frame)
       if frame.filename =~ /lib\/sinatra.*\.rb/
