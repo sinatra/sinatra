@@ -46,7 +46,7 @@ gem 'radius'
 platforms :jruby do
   gem 'jruby-openssl'
   gem 'therubyrhino'
-  gem 'trinidad', :git => "git://github.com/trinidad/trinidad.git", :branch => 'vm_logger'
+  gem 'trinidad', ">= 1.3.5"
 end
 
 platforms :ruby do
