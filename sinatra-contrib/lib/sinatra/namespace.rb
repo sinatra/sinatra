@@ -118,7 +118,7 @@ module Sinatra
       Module.new do
         extend NamespacedMethods
         include InstanceMethods
-        @base, @extensions    = base, []
+        @base, @extensions, @errors = base, [], {}
         @pattern, @conditions = compile(pattern, conditions)
         @templates            = Hash.new { |h,k| @base.templates[k] }
         namespace = self
@@ -134,14 +134,6 @@ module Sinatra
 
       def template_cache
         super.fetch(:nested, @namespace) { Tilt::Cache.new }
-      end
-
-      def error_block!(*keys)
-        if block = keys.inject(nil) { |b,k| b ||= @namespace.errors[k] }
-          instance_eval(&block)
-        else
-          super
-        end
       end
     end
 
@@ -180,16 +172,23 @@ module Sinatra
         @extensions.each { |e| e.send(name, *args) if e.respond_to?(name) }
       end
 
-      def errors
-        @errors ||= {}
-      end
-
       def not_found(&block)
         error(404, &block)
       end
 
-      def error(codes = Exception, &block)
-        [*codes].each { |c| errors[c] = block }
+      def errors
+        base.errors.merge(@errors)
+      end
+
+      def namespace_errors
+        @errors
+      end
+      
+      def error(*codes, &block)
+        args  = Sinatra::Base.send(:compile!, "ERROR", /^#{@pattern}/, block)
+        codes = codes.map { |c| Array(c) }.flatten
+        codes << Exception if codes.empty?
+        codes.each { |c| @errors[c] = args }
       end
 
       def respond_to(*args)

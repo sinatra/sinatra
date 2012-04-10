@@ -487,6 +487,48 @@ describe Sinatra::Namespace do
           get('/de/foo').status.should     == 404
           last_response.body.should        == 'nicht gefunden' unless verb == :head
         end
+
+        it "should handle custom errors in base. Issue #37." do
+          mock_app {
+            error(404) { 'not found...' }
+            namespace('/en') do
+            end
+            namespace('/de') do
+              error(404) { 'nicht gefunden' }
+            end
+          }
+          send(verb, '/foo').status.should == 404
+          last_response.body.should        == 'not found...' unless verb == :head
+          get('/en/foo').status.should     == 404
+          last_response.body.should        == 'not found...' unless verb == :head
+          get('/de/foo').status.should     == 404
+          last_response.body.should        == 'nicht gefunden' unless verb == :head
+        end
+
+        it "should allow custom error handlers with Exception class. Issue #37." do
+          mock_app {
+            class AError < StandardError; end
+            class BError < AError; end
+            
+            error(AError) { body('auth failed');  401}
+            namespace('/en') do
+              get '/foo' do
+                raise BError
+              end
+            end
+            namespace('/de') do
+              error(AError) { body('methode nicht erlaubt'); 406}
+
+              get '/foo' do
+                raise BError
+              end
+            end
+          }
+          get('/en/foo').status.should     == 401
+          last_response.body.should        == 'auth failed' unless verb == :head
+          get('/de/foo').status.should     == 406
+          last_response.body.should        == 'methode nicht erlaubt' unless verb == :head
+        end
       end
 
       describe 'templates' do
