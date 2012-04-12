@@ -423,8 +423,12 @@ class SettingsTest < Test::Unit::TestCase
 
   describe 'server' do
     it 'is one of trinidad, thin, puma, mongrel, webrick' do
-      assert_equal %w[trinidad thin puma mongrel webrick], @base.server
-      assert_equal %w[trinidad thin puma mongrel webrick], @application.server
+      @base.server.each do |server|
+        assert %w[trinidad thin puma mongrel webrick].include?(server)
+      end
+      @application.server.each do |server|
+        assert %w[trinidad thin puma mongrel webrick].include?(server)
+      end
     end
   end
 

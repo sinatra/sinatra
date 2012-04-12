@@ -1,4 +1,5 @@
 $stderr.puts "loading"
+
 require 'sinatra'
 
 configure do

@@ -21,7 +21,8 @@ class IntegrationTest < Test::Unit::TestCase
   end
 
   it 'streams' do
-    next if server.webrick?
+    next if server.webrick? || server.name == 'trinidad' # won't work with jruby-rack
+    
     times, chunks = [Time.now], []
     server.get_stream do |chunk|
       next if chunk.empty?
@@ -69,7 +70,6 @@ class IntegrationTest < Test::Unit::TestCase
     end
   end
 
-
   it 'starts the correct server' do
     exp = %r{
       ==\sSinatra/#{Sinatra::VERSION}\s
@@ -77,6 +77,7 @@ class IntegrationTest < Test::Unit::TestCase
       with\sbackup\sfrom\s#{server}
     }ix
 
-    assert_match exp, server.log
+    assert_match exp, server.err
   end
+
 end

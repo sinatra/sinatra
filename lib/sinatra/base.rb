@@ -1566,7 +1566,7 @@ module Sinatra
 
     set :run, false                       # start server via at-exit hook?
     set :running, false                   # is the built-in server running now?
-    set :server, %w[trinidad thin puma mongrel webrick]
+    set :server, defined?(JRUBY_VERSION) ? %w[trinidad webrick] : %w[thin puma mongrel webrick]
     set :bind, '0.0.0.0'
     set :port, 4567
 

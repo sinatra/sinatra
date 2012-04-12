@@ -4,3 +4,7 @@
 /pkg
 /doc/api
 /Gemfile.lock
+/nbproject
+/.sass-cache/
+/log
+/tmp

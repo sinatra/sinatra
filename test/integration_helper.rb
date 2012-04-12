@@ -1,5 +1,4 @@
 require 'sinatra/base'
-require 'rbconfig'
 require 'open-uri'
 require 'net/http'
 
@@ -38,6 +37,7 @@ module IntegrationHelper
       return unless installed?
       kill
       @log     = ""
+      info "running: #{command}"
       @pipe    = IO.popen(command)
       @started = Time.now
       warn "#{server} up and running on port #{port}" if ping
@@ -49,7 +49,7 @@ module IntegrationHelper
       raise "Server did not start properly:\n\n#{log}"
     end
 
-    def ping(timeout = 10)
+    def ping(timeout = 15)
       loop do
         return if alive?
         if Time.now - @started > timeout
@@ -82,13 +82,15 @@ module IntegrationHelper
       open("http://127.0.0.1:#{port}#{url}").read
     end
 
-    def log
-      @log ||= ""
-      loop { @log <<  @pipe.read_nonblock(1) }
-    rescue Exception
-      @log
-    end
+    def log; err; end
 
+    def err
+      @err ||= ""
+      loop { @err << @pipe.read_nonblock(1) }
+    rescue Exception
+      @err
+    end
+    
     def installed?
       return @installed unless @installed.nil?
       require server
@@ -100,22 +102,28 @@ module IntegrationHelper
 
     def command
       @command ||= begin
-        cmd = ["RACK_ENV=#{environment}", "exec"]
-        if RbConfig.respond_to? :ruby
-          cmd << RbConfig.ruby.inspect
-        else
-          file, dir = RbConfig::CONFIG.values_at('ruby_install_name', 'bindir')
-          cmd << File.expand_path(file, dir).inspect
-        end
-        cmd << "-I" << File.expand_path('../../lib', __FILE__).inspect
-        cmd << app_file.inspect << '-s' << server << '-o' << '127.0.0.1' << '-p' << port
-        cmd << "-e" << environment.to_s << '2>&1'
-        cmd.join " "
+        require 'bundler'
+        spec = Gem.loaded_specs['bundler']
+        cmd = [ "PATH=#{spec.bin_dir}:$PATH exec" ]
+        cmd << "bundle exec ruby"
+        command_args.each { |arg| cmd << arg }
+        cmd << '2>&1' # to have correct pipe.pid we need to `exec`
+        cmd.join(" ")
       end
+      @command
     end
-
+    
+    def command_args
+      [ app_file.inspect ] << 
+        '-s' << server << 
+        '-o' << '127.0.0.1' << 
+        '-p' << port.to_s << 
+        '-e' << environment.to_s
+    end
+    
     def kill
       return unless pipe
+      info "killing: #{pipe.pid}"
       Process.kill("KILL", pipe.pid)
     rescue NotImplementedError
       system "kill -9 #{pipe.pid}"
@@ -125,27 +133,56 @@ module IntegrationHelper
     def webrick?
       name.to_s == "webrick"
     end
+    
+    private
+
+      SILENCE = false
+
+      def info(msg)
+        puts msg unless SILENCE
+      end
+    
   end
 
   if RUBY_ENGINE == "jruby"
     class JRubyServer < BaseServer
+
+      def run
+        return unless installed?
+        kill
+        @thread  = start_vm
+        @started = Time.now
+        warn "#{server} up and running on port #{port}" if ping
+        at_exit { kill }
+      end
+
+      def err
+        @err.toString
+      end
+
+      def kill
+        @thread.kill if @thread
+        @thread = nil
+      end
+      
+      private
+      
       def start_vm
         require 'java'
         # Create a new container, set load paths and env
         # SINGLETHREAD means create a new runtime
         vm = org.jruby.embed.ScriptingContainer.new(org.jruby.embed.LocalContextScope::SINGLETHREAD)
-        vm.load_paths = [File.expand_path('../../lib', __FILE__)]
-        vm.environment = ENV.merge('RACK_ENV' => environment.to_s)
-
+        vm.argv = command_args
+        
+        @err = java.io.StringWriter.new
+        vm.output = vm.error = @err # $stdout and $stderr
+        #vm.writer = vm.error_writer = @err # $stdout and $stderr
+        
         # This ensures processing of RUBYOPT which activates Bundler
         vm.provider.ruby_instance_config.process_arguments []
-        vm.argv = ['-s', server.to_s, '-o', '127.0.0.1', '-p', port.to_s, '-e', environment.to_s]
-
-        # Set stdout/stderr so we can retrieve log
-        @pipe = java.io.ByteArrayOutputStream.new
-        vm.output = java.io.PrintStream.new(@pipe)
-        vm.error  = java.io.PrintStream.new(@pipe)
-
+        vm.run_scriptlet "require 'rubygems'; require 'bundler'"
+        vm.run_scriptlet "Bundler.setup" # bundle exec
+        
         Thread.new do
           # Hack to ensure that Kernel#caller has the same info as
           # when run from command-line, for Sintra::Application.app_file.
@@ -157,24 +194,7 @@ module IntegrationHelper
           vm.terminate
         end
       end
-
-      def run
-        return unless installed?
-        kill
-        @thread  = start_vm
-        @started = Time.now
-        warn "#{server} up and running on port #{port}" if ping
-        at_exit { kill }
-      end
-
-      def log
-        String.from_java_bytes @pipe.to_byte_array
-      end
-
-      def kill
-        @thread.kill if @thread
-        @thread = nil
-      end
+      
     end
     Server = JRubyServer
   else
@@ -189,7 +209,7 @@ module IntegrationHelper
         server.run unless server.alive?
         begin
           instance_eval(&block)
-        rescue Exception => error
+        rescue => error
           server.kill
           raise error
         end
@@ -199,10 +219,10 @@ module IntegrationHelper
 
   def self.extend_object(obj)
     super
-
-    base_port = 5000 + Process.pid % 100
+    
     Sinatra::Base.server.each_with_index do |server, index|
-      Server.run(server, 5000+index)
+      Server.run(server, 5000 + index)
     end
   end
+  
 end
