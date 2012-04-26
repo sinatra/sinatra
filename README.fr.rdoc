@@ -1323,8 +1323,8 @@ Vous pouvez accéder à ces paramètres via <tt>settings</tt> :
 
 Sinatra utilise {Rack::Protection}[https://github.com/rkh/rack-protection#readme]
 pour protéger votre application contre les principales attaques opportunistes.
-Vous pouvez très simplement désactiver cette fonctionnalité (ce qui devrait
-améliorer les performances) :
+Vous pouvez très simplement désactiver cette fonctionnalité (ce qui exposera
+votre application à beaucoup de vulnerabilités courantes) :
 
   disable :protection
 
