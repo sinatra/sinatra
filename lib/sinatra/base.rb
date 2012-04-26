@@ -989,9 +989,13 @@ module Sinatra
     def error_block!(key, *block_params)
       base = settings
       while base.respond_to?(:errors)
-        next base = base.superclass unless args = base.errors[key]
-        args += [block_params]
-        return process_route(*args)
+        next base = base.superclass unless args_array = base.errors[key] 
+        args_array.reverse_each do |args|
+          first = args == args_array.first
+          args += [block_params]
+          resp = process_route(*args)
+          return resp unless resp.nil? && !first
+        end
       end
       return false unless key.respond_to? :superclass and key.superclass < Exception
       error_block!(key.superclass, *block_params)
@@ -1091,11 +1095,11 @@ module Sinatra
       # Define a custom error handler. Optionally takes either an Exception
       # class, or an HTTP status code to specify which errors should be
       # handled.
-      def error(*codes, &block)
+      def error(*codes, &block) 
         args  = compile! "ERROR", //, block
         codes = codes.map { |c| Array(c) }.flatten
         codes << Exception if codes.empty?
-        codes.each { |c| @errors[c] = args }
+        codes.each { |c| (@errors[c] ||= []) << args }
       end
 
       # Sugar for `error(404) { ... }`
