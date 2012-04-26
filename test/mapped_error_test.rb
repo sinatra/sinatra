@@ -14,6 +14,8 @@ class FooStatusOutOfRangeError < RuntimeError
   def code; 4000 end
 end
 
+class FirstError < RuntimeError; end
+class SecondError < RuntimeError; end
 
 class MappedErrorTest < Test::Unit::TestCase
   def test_default
@@ -207,6 +209,41 @@ class MappedErrorTest < Test::Unit::TestCase
       assert_equal 500, status
     end
 
+    it "allows a stack of exception_handlers" do 
+      mock_app {
+        set :raise_errors, false
+        error(FirstError) { 'First!' }
+        error(SecondError) { 'Second!' }
+        get('/'){ raise SecondError }
+      }
+      get '/'
+      assert_equal 500, status
+      assert_equal 'Second!', body
+    end
+
+    it "allows an exception handler to pass control to the next exception handler" do 
+      mock_app {
+        set :raise_errors, false
+        error(500, FirstError) { 'First!' }
+        error(500, SecondError) { pass }
+        get('/') { raise 500 }
+      }
+      get '/'
+      assert_equal 500, status
+      assert_equal 'First!', body
+    end
+
+    it "allows an exception handler to handle the exception" do
+      mock_app {
+        set :raise_errors, false
+        error(500, FirstError) { 'First!' }
+        error(500, SecondError) { 'Second!' }
+        get('/') { raise 500 }
+      }
+      get '/'
+      assert_equal 500, status
+      assert_equal 'Second!', body
+    end
   end
 
   describe 'Custom Error Pages' do
