@@ -13,6 +13,7 @@ class IntegrationTest < Test::Unit::TestCase
   it('only extends main') { assert_equal "true", server.get("/mainonly") }
 
   it 'logs once in development mode' do
+    next if server.puma?
     random = "%064x" % Kernel.rand(2**256-1)
     server.get "/ping?x=#{random}"
     count = server.log.scan("GET /ping?x=#{random}").count

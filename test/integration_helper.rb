@@ -126,6 +126,10 @@ module IntegrationHelper
       name.to_s == "thin"
     end
 
+    def puma?
+      name.to_s == "puma"
+    end
+
     def warnings
       log.scan(%r[(?:\(eval|lib/sinatra).*warning:.*$])
     end
