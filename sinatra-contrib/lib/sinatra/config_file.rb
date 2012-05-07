@@ -10,7 +10,7 @@ module Sinatra
   # the files contains specific environment settings and it will use the
   # corresponding to the current one.
   #
-  # Within the application you can access those options through +settings+.  If
+  # You can access those options through +settings+ within the application. If
   # you try to get the value for a setting that hasn't been defined in the
   # config file for the current environment, you will get whatever it was set
   # to in the application.
