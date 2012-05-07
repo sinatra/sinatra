@@ -44,8 +44,8 @@ module Sinatra
   #
   # === Encoders
   #
-  # Per default it will try to call +to_json+ on the object, but if it doesn't
-  # respond to that message, will use its own, rather simple encoder.  You can
+  # By default it will try to call +to_json+ on the object, but if it doesn't
+  # respond to that message, it will use its own rather simple encoder.  You can
   # easily change that anyways. To use +JSON+, simply require it:
   #
   #   require 'json'

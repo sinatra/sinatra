@@ -6,12 +6,12 @@ module Sinatra
   # = Sinatra::Extension
   #
   # <tt>Sinatra::Extension</tt> is a mixin that provides some syntactic sugar
-  # for your extensions.  It allows you to call directly inside your extension
-  # module almost any <tt>Sinatra::Base</tt> method.  This means you can use
-  # +get+ to define a route, +before+ to define a before filter, +set+ to
-  # define a setting, a so on.
+  # for your extensions. It allows you to call almost any
+  # <tt>Sinatra::Base</tt> method directly inside your extension
+  # module. This means you can use +get+ to define a route, +before+
+  # to define a before filter, +set+ to define a setting and so on.
   #
-  # Is important to be aware that this mixin remembers the methods calls you
+  # Is important to be aware that this mixin remembers the method calls you
   # make, and then, when your extension is registered, replays them on the
   # Sinatra application that has been extended.  In order to do that, it
   # defines a <tt>registered</tt> method, so, if your extension defines one
