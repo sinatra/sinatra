@@ -24,7 +24,8 @@ end
 module DummyApp
   def self.call(env)
     Thread.current[:last_env] = env
-    [200, {'Content-Type' => 'text/plain'}, ['ok']]
+    body = (env['REQUEST_METHOD'] == 'HEAD' ? '' : 'ok')
+    [200, {'Content-Type' => 'text/plain'}, [body]]
   end
 end
 
