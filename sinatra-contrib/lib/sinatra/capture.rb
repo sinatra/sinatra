@@ -3,6 +3,66 @@ require 'sinatra/engine_tracking'
 require 'backports'
 
 module Sinatra
+  #
+  # = Sinatra::Capture
+  #
+  # This extension enables adding blocks inside your templates.
+  # It currently works for erb, slim and haml.
+  #
+  # Example:
+  #
+  #    # in hello_world.erb
+  #
+  #    Say
+  #    <% a = capture do %>World<% end %>
+  #    Hello <%= a %>!
+  #
+  #    # in hello_world.slim
+  #
+  #    | Say
+  #    - a = capture do
+  #      | World
+  #      | Hello #{a.strip}!
+  #
+  #    # in hello_world.haml
+  #
+  #    Say
+  #    - a = capture do
+  #      World
+  #      Hello #{a.strip}!
+  #
+  #
+  # You can also use nested blocks.
+  #
+  # Example
+  #
+  #     # in hello_world.erb
+  #
+  #     Say
+  #     <% a = capture do %>
+  #       <% b = capture do %>World<% end %>
+  #         <%= b %>!
+  #     <% end %>
+  #     Hello <%= a.strip %>
+  #
+  #     # in hello_world.slim
+  #
+  #     | Say
+  #     - a = capture do
+  #       - b = capture do
+  #         | World
+  #       | #{b.strip}!
+  #     | Hello #{a.strip}
+  #
+  #     # in hello_world.haml
+  #
+  #     Say
+  #     - a = capture do
+  #       - b = capture do
+  #         World
+  #       #{b.strip}!
+  #     Hello #{a.strip}
+  #
   module Capture
     include Sinatra::EngineTracking
 
