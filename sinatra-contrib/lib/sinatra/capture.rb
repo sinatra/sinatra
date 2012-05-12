@@ -63,6 +63,31 @@ module Sinatra
   #       #{b.strip}!
   #     Hello #{a.strip}
   #
+  # == Usage
+  #
+  # === Classic Application
+  #
+  # In a classic application simply require the helpers, and start using them:
+  #
+  #     require "sinatra"
+  #     require "sinatra/capture"
+  #
+  #     # The rest of your classic application code goes here...
+  #
+  # === Modular Application
+  #
+  # In a modular application you need to require the helpers, and then tell
+  # the application you will use them:
+  #
+  #     require "sinatra/base"
+  #     require "sinatra/capture"
+  #
+  #     class MyApp < Sinatra::Base
+  #       helpers Sinatra::Capture
+  #
+  #       # The rest of your modular application code goes here...
+  #     end
+  #
   module Capture
     include Sinatra::EngineTracking
 
