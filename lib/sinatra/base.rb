@@ -1617,10 +1617,11 @@ module Sinatra
       server.unshift 'controll_tower'
     else
       server.unshift 'mongrel'  if ruby_engine.nil?
+      server.unshift 'mizuno'   if ruby_engine =='jruby'
       server.unshift 'puma'     if ruby_engine != 'rbx'
       server.unshift 'thin'     if ruby_engine != 'jruby'
       server.unshift 'puma'     if ruby_engine == 'rbx'
-      server.unshift 'trinidat' if ruby_engine =='jruby'
+      server.unshift 'trinidad' if ruby_engine =='jruby'
     end
 
     set :absolute_redirects, true

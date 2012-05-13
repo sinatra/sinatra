@@ -13,7 +13,7 @@ class IntegrationTest < Test::Unit::TestCase
   it('only extends main') { assert_equal "true", server.get("/mainonly") }
 
   it 'logs once in development mode' do
-    next if server.puma?
+    next if server.puma? or RUBY_ENGINE == 'jruby'
     random = "%064x" % Kernel.rand(2**256-1)
     server.get "/ping?x=#{random}"
     count = server.log.scan("GET /ping?x=#{random}").count
@@ -21,7 +21,7 @@ class IntegrationTest < Test::Unit::TestCase
   end
 
   it 'streams' do
-    next if server.webrick?
+    next if server.webrick? or server.trinidad? or server.mizuno?
     times, chunks = [Time.now], []
     server.get_stream do |chunk|
       next if chunk.empty?
@@ -70,6 +70,8 @@ class IntegrationTest < Test::Unit::TestCase
   end
 
   it 'starts the correct server' do
+    next if RUBY_ENGINE == 'jruby'
+
     exp = %r{
       ==\sSinatra/#{Sinatra::VERSION}\s
       has\staken\sthe\sstage\son\s\d+\sfor\sdevelopment\s
