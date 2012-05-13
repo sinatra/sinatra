@@ -960,9 +960,6 @@ module Sinatra
         status(boom.http_status)
       elsif settings.use_code? and boom.respond_to? :code and boom.code.between? 400, 599
         status(boom.code)
-        warn "Using #{boom.class}#code (#{status}) for setting status code. This is deprecated. " \
-          "Use #http_status instead. If this happens unintentional, please \`disable :use_code\`" \
-          " in your application."
       else
         status(500)
       end
@@ -1588,7 +1585,7 @@ module Sinatra
     set :logging, false
     set :protection, true
     set :method_override, false
-    set :use_code, true
+    set :use_code, false
     set :default_encoding, "utf-8"
     set :add_charset, %w[javascript xml xhtml+xml json].map { |t| "application/#{t}" }
     settings.add_charset << /^text\//

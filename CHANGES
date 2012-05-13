@@ -10,9 +10,9 @@
  * The `provides` condition now respects an earlier set content type.
    (Konstantin Haase)
 
- * Exception#code is only used when :use_code is enabled and displays a warning.
-   Moreover, it will be ignored if the value is not between 400 and 599. You
-   should use Exception#http_status instead. (Konstantin Haase)
+ * Exception#code is only used when :use_code is enabled. Moreover, it will
+   be ignored if the value is not between 400 and 599. You should use
+   Exception#http_status instead. (Konstantin Haase)
 
  * Status, headers and body will be set correctly in an after filter when using
    halt in a before filter or route. (Konstantin Haase)

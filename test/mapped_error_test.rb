@@ -14,6 +14,10 @@ class FooStatusOutOfRangeError < RuntimeError
   def code; 4000 end
 end
 
+class FooWithCode < RuntimeError
+  def code; 419 end
+end
+
 class FirstError < RuntimeError; end
 class SecondError < RuntimeError; end
 
@@ -200,9 +204,29 @@ class MappedErrorTest < Test::Unit::TestCase
       assert_equal 'Foo!', body
     end
 
+    it 'does not use Exception#code by default' do
+      mock_app do
+        set :raise_errors, false
+        get('/') { raise FooWithCode }
+      end
+      get '/'
+      assert_equal 500, status
+    end
+
+    it 'uses Exception#code if use_code is enabled' do
+      mock_app do
+        set :raise_errors, false
+        set :use_code, true
+        get('/') { raise FooWithCode }
+      end
+      get '/'
+      assert_equal 419, status
+    end
+
     it 'does not rely on Exception#code for invalid codes' do
       mock_app do
         set :raise_errors, false
+        set :use_code, true
         get('/') { raise FooStatusOutOfRangeError }
       end
       get '/'
