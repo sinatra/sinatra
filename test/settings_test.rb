@@ -422,9 +422,20 @@ class SettingsTest < Test::Unit::TestCase
   end
 
   describe 'server' do
-    it 'is one of thin, puma, mongrel, webrick' do
-      assert_equal %w[thin puma mongrel webrick], @base.server
-      assert_equal %w[thin puma mongrel webrick], @application.server
+    it 'includes webrick' do
+      assert @base.server.include?('webrick')
+      assert @application.server.include?('webrick')
+    end
+
+    it 'includes puma' do
+      assert @base.server.include?('puma')
+      assert @application.server.include?('puma')
+    end
+
+    it 'includes thin' do
+      next if RUBY_ENGINE == 'jruby'
+      assert @base.server.include?('thin')
+      assert @application.server.include?('thin')
     end
   end
 

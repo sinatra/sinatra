@@ -1609,9 +1609,21 @@ module Sinatra
 
     set :run, false                       # start server via at-exit hook?
     set :running, false                   # is the built-in server running now?
-    set :server, %w[thin puma mongrel webrick]
+    set :server, %w[http webrick]
     set :bind, '0.0.0.0'
     set :port, 4567
+
+    ruby_engine = defined?(RUBY_ENGINE) && RUBY_ENGINE
+
+    if ruby_engine == 'macruby'
+      server.unshift 'controll_tower'
+    else
+      server.unshift 'mongrel'  if ruby_engine.nil?
+      server.unshift 'puma'     if ruby_engine != 'rbx'
+      server.unshift 'thin'     if ruby_engine != 'jruby'
+      server.unshift 'puma'     if ruby_engine == 'rbx'
+      server.unshift 'trinidat' if ruby_engine =='jruby'
+    end
 
     set :absolute_redirects, true
     set :prefixed_redirects, false
