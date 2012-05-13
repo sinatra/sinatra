@@ -17,6 +17,11 @@
  * Status, headers and body will be set correctly in an after filter when using
    halt in a before filter or route. (Konstantin Haase)
 
+ * Sinatra::Base.new now returns a Sinatra::Wrapper instance, exposing
+   #settings and #helpers, yet going through the middleware stack on #call.
+   It also implements a nice #inspect, so it plays nice with Rails' `rake
+   routes`. (Konstantin Haase)
+
 = 1.3.3 / Not Yet Released
 
  * When keeping a stream open, set up callback/errback correctly to deal with

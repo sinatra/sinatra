@@ -1409,7 +1409,8 @@ module Sinatra
       # pipeline. The object is guaranteed to respond to #call but may not be
       # an instance of the class new was called on.
       def new(*args, &bk)
-        build(new!(*args, &bk)).to_app
+        instance = new!(*args, &bk)
+        Wrapper.new(build(instance).to_app, instance)
       end
 
       # Creates a Rack::Builder instance with all the middleware set up and
@@ -1722,6 +1723,28 @@ module Sinatra
     end
 
     self.target = Application
+  end
+
+  class Wrapper
+    def initialize(stack, instance)
+      @stack, @instance = stack, instance
+    end
+
+    def settings
+      @instance.settings
+    end
+
+    def helpers
+      @instance
+    end
+
+    def call(env)
+      @stack.call(env)
+    end
+
+    def inspect
+      "#<#{@instance.class} app_file=#{settings.app_file.inspect}>"
+    end
   end
 
   # Create a new Sinatra application. The block is evaluated in the new app's

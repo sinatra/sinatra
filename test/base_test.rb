@@ -56,6 +56,24 @@ class BaseTest < Test::Unit::TestCase
     end
   end
 
+  describe "Sinatra::Base#new" do
+    it 'returns a wrapper' do
+      assert_equal Sinatra::Wrapper, Sinatra::Base.new.class
+    end
+
+    it 'implements a nice inspect' do
+      assert_equal '#<Sinatra::Base app_file=nil>', Sinatra::Base.new.inspect
+    end
+
+    it 'exposes settings' do
+      assert_equal Sinatra::Base.settings, Sinatra::Base.new.settings
+    end
+
+    it 'expses helpers' do
+      assert_equal 'image/jpeg', Sinatra::Base.new.helpers.mime_type(:jpg)
+    end
+  end
+
   describe "Sinatra::Base as Rack middleware" do
     app = lambda { |env|
       headers = {'X-Downstream' => 'true'}
