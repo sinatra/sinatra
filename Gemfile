@@ -47,7 +47,6 @@ if RUBY_ENGINE == 'jruby'
   gem 'nokogiri', '!= 1.5.0'
   gem 'jruby-openssl'
   gem 'trinidad'
-  gem 'mizuno'
 else
   gem 'yajl-ruby'
   gem 'nokogiri'

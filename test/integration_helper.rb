@@ -134,10 +134,6 @@ module IntegrationHelper
       name.to_s == "trinidad"
     end
 
-    def mizuno?
-      name.to_s == "mizuno"
-    end
-
     def warnings
       log.scan(%r[(?:\(eval|lib/sinatra).*warning:.*$])
     end
@@ -145,10 +141,8 @@ module IntegrationHelper
     def run_test(target, &block)
       retries ||= 3
       target.server = self
-      Timeout.timeout(60) do
-        run unless alive?
-        target.instance_eval(&block)
-      end
+      run unless alive?
+      target.instance_eval(&block)
     rescue Exception => error
       retries -= 1
       kill

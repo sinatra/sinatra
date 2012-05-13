@@ -21,7 +21,7 @@ class IntegrationTest < Test::Unit::TestCase
   end
 
   it 'streams' do
-    next if server.webrick? or server.trinidad? or server.mizuno?
+    next if server.webrick? or server.trinidad?
     times, chunks = [Time.now], []
     server.get_stream do |chunk|
       next if chunk.empty?
@@ -70,8 +70,6 @@ class IntegrationTest < Test::Unit::TestCase
   end
 
   it 'starts the correct server' do
-    next if RUBY_ENGINE == 'jruby'
-
     exp = %r{
       ==\sSinatra/#{Sinatra::VERSION}\s
       has\staken\sthe\sstage\son\s\d+\sfor\sdevelopment\s
