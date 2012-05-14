@@ -1,11 +1,11 @@
-require 'sinatra/base'
 require 'sinatra/json'
+require 'sinatra/base'
 
 module Sinatra
-  ##
+  #
   # = Sinatra::RespondWith
   #
-  # This extensions lets Sinatra automatically choose what template to render or
+  # These extensions let Sinatra automatically choose what template to render or
   # action to perform depending on the request's Accept header.
   #
   # Example:
@@ -53,8 +53,8 @@ module Sinatra
   # == Security
   #
   # Since methods are triggered based on client input, this can lead to security
-  # issues (but not as seviere as those might apear in the first place: keep in
-  # mind that only known file extensions are used). You therefore should limit
+  # issues (but not as severe as those might appear in the first place: keep in
+  # mind that only known file extensions are used). You should limit
   # the possible formats you serve.
   #
   # This is possible with the +provides+ condition:
@@ -64,7 +64,7 @@ module Sinatra
   #   end
   #
   # However, since you have to set +provides+ for every route, this extension
-  # adds a app global (class method) `respond_to`, that let's you define content
+  # adds an app global (class method) `respond_to`, that lets you define content
   # types for all routes:
   #
   #   respond_to :html, :json, :xml, :atom
@@ -161,7 +161,7 @@ module Sinatra
       private
 
       def template_for(name, exts)
-        # in production this is cached, so don't worry to much about runtime
+        # in production this is cached, so don't worry too much about runtime
         possible = []
         settings.template_engines[:all].each do |engine|
           exts.each { |ext| possible << [engine, "#{name}.#{ext}"] }

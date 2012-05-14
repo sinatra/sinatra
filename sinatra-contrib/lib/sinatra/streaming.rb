@@ -44,9 +44,9 @@ module Sinatra
   #
   # == Better Middleware Handling
   #
-  # Blocks passed to #map! or #map will actually be applied while streaming
-  # (as you might suspect, #map! applies modifications to the current body,
-  # #map creates a new one):
+  # Blocks passed to #map! or #map will actually be applied when streaming
+  # takes place (as you might have suspected, #map! applies modifications
+  # to the current body, while #map creates a new one):
   #
   #   class StupidMiddleware
   #     def initialize(app) @app = app end
@@ -89,7 +89,7 @@ module Sinatra
   #
   #   require "sinatra/base"
   #   require "sinatra/streaming"
-  #   
+  #
   #   class MyApp < Sinatra::Base
   #     helpers Sinatra::Streaming
   #   end

@@ -78,7 +78,7 @@ module Sinatra
     def content_for(key, &block)
       content_blocks[key.to_sym] << capture_later(&block)
     end
-    
+
     # Check if a block of content with the given key was defined. For
     # example:
     #
@@ -100,7 +100,7 @@ module Sinatra
     #       <%= yield_content :head %>
     #     </head>
     #
-    # Would render everything you declared with <tt>content_for 
+    # Would render everything you declared with <tt>content_for
     # :head</tt> before closing the <tt><head></tt> tag.
     #
     # You can also pass values to the content blocks by passing them

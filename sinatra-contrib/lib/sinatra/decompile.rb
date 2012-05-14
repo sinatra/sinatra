@@ -60,7 +60,7 @@ module Sinatra
     #     end
     #   end
     #
-    # Will return the internal Regexp if unable to reconstruct the pattern,
+    # Will return the internal Regexp if it's unable to reconstruct the pattern,
     # which likely indicates that a Regexp was used in the first place.
     #
     # You can also use this to check whether you could actually use a string
