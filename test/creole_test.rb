@@ -7,7 +7,7 @@ class CreoleTest < Test::Unit::TestCase
   def creole_app(&block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
-      get '/', &block
+      get('/', &block)
     end
     get '/'
   end
@@ -40,7 +40,9 @@ class CreoleTest < Test::Unit::TestCase
   end
 
   it "renders with file layouts" do
-    creole_app { creole 'Hello World', :layout => :layout2, :layout_engine => :erb }
+    creole_app do
+      creole 'Hello World', :layout => :layout2, :layout_engine => :erb
+    end
     assert ok?
     assert_body "ERB Layout!\n<p>Hello World</p>"
   end
@@ -49,9 +51,7 @@ class CreoleTest < Test::Unit::TestCase
     mock_app do
       template(:inner) { "hi" }
       template(:outer) { "<outer><%= creole :inner %></outer>" }
-      get '/' do
-        erb :outer
-      end
+      get('/') { erb :outer }
     end
 
     get '/'

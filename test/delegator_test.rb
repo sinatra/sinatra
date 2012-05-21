@@ -63,9 +63,7 @@ class DelegatorTest < Test::Unit::TestCase
   %w[get put post delete options patch].each do |verb|
     it "delegates #{verb} correctly" do
       delegation_app do
-        send verb, '/hello' do
-          'Hello World'
-        end
+        send(verb, '/hello') { 'Hello World' }
       end
 
       request = Rack::MockRequest.new(@app)

@@ -2,10 +2,10 @@ require File.expand_path('../helper', __FILE__)
 
 class StaticTest < Test::Unit::TestCase
   setup do
-    mock_app {
+    mock_app do
       set :static, true
       set :public_folder, File.dirname(__FILE__)
-    }
+    end
   end
 
   it 'serves GET requests for files in the public directory' do
@@ -82,10 +82,10 @@ class StaticTest < Test::Unit::TestCase
   end
 
   it '404s when .. path traverses outside of public directory' do
-    mock_app {
+    mock_app do
       set :static, true
       set :public_folder, File.dirname(__FILE__) + '/data'
-    }
+    end
     get "/../#{File.basename(__FILE__)}"
     assert not_found?
   end
@@ -97,11 +97,30 @@ class StaticTest < Test::Unit::TestCase
     should_be = file[range]
     expected_range = "bytes #{range.begin}-#{range.end}/#{file.length}"
 
-    assert_equal 206,response.status, "Should be HTTP/1.1 206 Partial content"
-    assert_equal should_be.length, response.body.length, "Unexpected response length for #{http_range}"
-    assert_equal should_be, response.body, "Unexpected response data for #{http_range}"
-    assert_equal should_be.length.to_s, response['Content-Length'], "Incorrect Content-Length for #{http_range}"
-    assert_equal expected_range, response['Content-Range'], "Incorrect Content-Range for #{http_range}"
+    assert_equal(
+      206,response.status,
+      "Should be HTTP/1.1 206 Partial content"
+    )
+    assert_equal(
+      should_be.length,
+      response.body.length,
+      "Unexpected response length for #{http_range}"
+    )
+    assert_equal(
+      should_be,
+      response.body,
+      "Unexpected response data for #{http_range}"
+    )
+    assert_equal(
+      should_be.length.to_s,
+      response['Content-Length'],
+      "Incorrect Content-Length for #{http_range}"
+    )
+    assert_equal(
+      expected_range,
+      response['Content-Range'],
+      "Incorrect Content-Range for #{http_range}"
+    )
   end
 
   it 'handles valid byte ranges correctly' do
@@ -137,8 +156,16 @@ class StaticTest < Test::Unit::TestCase
       request = Rack::MockRequest.new(@app)
       response = request.get("/#{File.basename(__FILE__)}", 'HTTP_RANGE' => http_range)
 
-      assert_equal 200,response.status, "Invalid range '#{http_range}' should be ignored"
-      assert_equal nil,response['Content-Range'], "Invalid range '#{http_range}' should be ignored"
+      assert_equal(
+        200,
+        response.status,
+        "Invalid range '#{http_range}' should be ignored"
+      )
+      assert_equal(
+        nil,
+        response['Content-Range'],
+        "Invalid range '#{http_range}' should be ignored"
+      )
     end
   end
 
@@ -149,8 +176,16 @@ class StaticTest < Test::Unit::TestCase
       request = Rack::MockRequest.new(@app)
       response = request.get("/#{File.basename(__FILE__)}", 'HTTP_RANGE' => http_range)
 
-      assert_equal 416,response.status, "Unsatisfiable range '#{http_range}' should return 416"
-      assert_equal "bytes */#{length}",response['Content-Range'], "416 response should include actual length"
+      assert_equal(
+        416,
+        response.status,
+        "Unsatisfiable range '#{http_range}' should return 416"
+      )
+      assert_equal(
+        "bytes */#{length}",
+        response['Content-Range'],
+        "416 response should include actual length"
+      )
     end
   end
 
@@ -167,11 +202,17 @@ class StaticTest < Test::Unit::TestCase
     assert headers.has_key?('Cache-Control')
     assert_equal headers['Cache-Control'], 'public'
 
-    @app.set :static_cache_control, [:public, :must_revalidate, {:max_age => 300}]
+    @app.set(
+      :static_cache_control,
+      [:public, :must_revalidate, {:max_age => 300}]
+    )
     env = Rack::MockRequest.env_for("/#{File.basename(__FILE__)}")
     status, headers, body = @app.call(env)
     assert headers.has_key?('Cache-Control')
-    assert_equal headers['Cache-Control'], 'public, must-revalidate, max-age=300'
+    assert_equal(
+      headers['Cache-Control'],
+      'public, must-revalidate, max-age=300'
+    )
   end
 
 end

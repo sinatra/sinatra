@@ -7,32 +7,32 @@ class TextileTest < Test::Unit::TestCase
   def textile_app(&block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
-      get '/', &block
+      get('/', &block)
     end
     get '/'
   end
 
   it 'renders inline textile strings' do
-    textile_app { textile 'h1. Hiya' }
+    textile_app { textile('h1. Hiya') }
     assert ok?
     assert_equal "<h1>Hiya</h1>", body
   end
 
   it 'renders .textile files in views path' do
-    textile_app { textile :hello }
+    textile_app { textile(:hello) }
     assert ok?
     assert_equal "<h1>Hello From Textile</h1>", body
   end
 
   it "raises error if template not found" do
-    mock_app { get('/') { textile :no_such_template } }
+    mock_app { get('/') { textile(:no_such_template) } }
     assert_raise(Errno::ENOENT) { get('/') }
   end
 
   it "renders with inline layouts" do
     mock_app do
       layout { 'THIS. IS. #{yield.upcase}!' }
-      get('/') { textile 'Sparta', :layout_engine => :str }
+      get('/') { textile('Sparta', :layout_engine => :str) }
     end
     get '/'
     assert ok?
@@ -40,7 +40,9 @@ class TextileTest < Test::Unit::TestCase
   end
 
   it "renders with file layouts" do
-    textile_app { textile 'Hello World', :layout => :layout2, :layout_engine => :erb }
+    textile_app {
+      textile('Hello World', :layout => :layout2, :layout_engine => :erb)
+    }
     assert ok?
     assert_body "ERB Layout!\n<p>Hello World</p>"
   end
@@ -49,9 +51,7 @@ class TextileTest < Test::Unit::TestCase
     mock_app do
       template(:inner) { "hi" }
       template(:outer) { "<outer><%= textile :inner %></outer>" }
-      get '/' do
-        erb :outer
-      end
+      get('/') { erb :outer }
     end
 
     get '/'

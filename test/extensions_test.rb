@@ -42,9 +42,7 @@ class ExtensionsTest < Test::Unit::TestCase
   end
 
   it 'allows extending by passing a block' do
-    Sinatra::Base.register {
-      def im_in_ur_anonymous_module; end
-    }
+    Sinatra::Base.register { def im_in_ur_anonymous_module; end }
     assert Sinatra::Base.respond_to?(:im_in_ur_anonymous_module)
   end
 

@@ -5,14 +5,14 @@ class BeforeFilterTest < Test::Unit::TestCase
     count = 0
     mock_app do
       get('/') { 'Hello World' }
-      before {
+      before do
         assert_equal 0, count
         count = 1
-      }
-      before {
+      end
+      before do
         assert_equal 1, count
         count = 2
-      }
+      end
     end
 
     get '/'
@@ -22,11 +22,11 @@ class BeforeFilterTest < Test::Unit::TestCase
   end
 
   it "can modify the request" do
-    mock_app {
+    mock_app do
       get('/foo') { 'foo' }
       get('/bar') { 'bar' }
       before { request.path_info = '/bar' }
-    }
+    end
 
     get '/foo'
     assert ok?
@@ -34,10 +34,10 @@ class BeforeFilterTest < Test::Unit::TestCase
   end
 
   it "can modify instance variables available to routes" do
-    mock_app {
+    mock_app do
       before { @foo = 'bar' }
       get('/foo') { @foo }
-    }
+    end
 
     get '/foo'
     assert ok?
@@ -45,13 +45,13 @@ class BeforeFilterTest < Test::Unit::TestCase
   end
 
   it "allows redirects" do
-    mock_app {
+    mock_app do
       before { redirect '/bar' }
       get('/foo') do
         fail 'before block should have halted processing'
         'ORLY?!'
       end
-    }
+    end
 
     get '/foo'
     assert redirect?
@@ -60,13 +60,13 @@ class BeforeFilterTest < Test::Unit::TestCase
   end
 
   it "does not modify the response with its return value" do
-    mock_app {
+    mock_app do
       before { 'Hello World!' }
-      get '/foo' do
+      get('/foo') do
         assert_equal [], response.body
         'cool'
       end
-    }
+    end
 
     get '/foo'
     assert ok?
@@ -74,12 +74,12 @@ class BeforeFilterTest < Test::Unit::TestCase
   end
 
   it "does modify the response with halt" do
-    mock_app {
+    mock_app do
       before { halt 302, 'Hi' }
       get '/foo' do
         "should not happen"
       end
-    }
+    end
 
     get '/foo'
     assert_equal 302, response.status
@@ -87,10 +87,10 @@ class BeforeFilterTest < Test::Unit::TestCase
   end
 
   it "gives you access to params" do
-    mock_app {
+    mock_app do
       before { @foo = params['foo'] }
       get('/foo') { @foo }
-    }
+    end
 
     get '/foo?foo=cool'
     assert ok?
@@ -98,10 +98,10 @@ class BeforeFilterTest < Test::Unit::TestCase
   end
 
   it "properly unescapes parameters" do
-    mock_app {
+    mock_app do
       before { @foo = params['foo'] }
       get('/foo') { @foo }
-    }
+    end
 
     get '/foo?foo=bar%3Abaz%2Fbend'
     assert ok?
@@ -112,9 +112,7 @@ class BeforeFilterTest < Test::Unit::TestCase
     base = Class.new(Sinatra::Base)
     base.before { @foo = 'hello from superclass' }
 
-    mock_app(base) {
-      get('/foo') { @foo }
-    }
+    mock_app(base) { get('/foo') { @foo } }
 
     get '/foo'
     assert_equal 'hello from superclass', body
@@ -122,11 +120,11 @@ class BeforeFilterTest < Test::Unit::TestCase
 
   it 'does not run before filter when serving static files' do
     ran_filter = false
-    mock_app {
+    mock_app do
       before { ran_filter = true }
       set :static, true
       set :public_folder, File.dirname(__FILE__)
-    }
+    end
     get "/#{File.basename(__FILE__)}"
     assert ok?
     assert_equal File.read(__FILE__), body
@@ -176,14 +174,14 @@ class AfterFilterTest < Test::Unit::TestCase
     count = 0
     mock_app do
       get('/') { 'Hello World' }
-      after {
+      after do
         assert_equal 0, count
         count = 1
-      }
-      after {
+      end
+      after do
         assert_equal 1, count
         count = 2
-      }
+      end
     end
 
     get '/'
@@ -193,10 +191,10 @@ class AfterFilterTest < Test::Unit::TestCase
   end
 
   it "allows redirects" do
-    mock_app {
+    mock_app do
       get('/foo') { 'ORLY' }
       after { redirect '/bar' }
-    }
+    end
 
     get '/foo'
     assert redirect?
@@ -205,10 +203,10 @@ class AfterFilterTest < Test::Unit::TestCase
   end
 
   it "does not modify the response with its return value" do
-    mock_app {
+    mock_app do
       get('/foo') { 'cool' }
       after { 'Hello World!' }
-    }
+    end
 
     get '/foo'
     assert ok?
@@ -216,12 +214,12 @@ class AfterFilterTest < Test::Unit::TestCase
   end
 
   it "does modify the response with halt" do
-    mock_app {
+    mock_app do
       get '/foo' do
         "should not be returned"
       end
       after { halt 302, 'Hi' }
-    }
+    end
 
     get '/foo'
     assert_equal 302, response.status
@@ -245,11 +243,11 @@ class AfterFilterTest < Test::Unit::TestCase
 
   it 'does not run after filter when serving static files' do
     ran_filter = false
-    mock_app {
+    mock_app do
       after { ran_filter = true }
       set :static, true
       set :public_folder, File.dirname(__FILE__)
-    }
+    end
     get "/#{File.basename(__FILE__)}"
     assert ok?
     assert_equal File.read(__FILE__), body
@@ -308,9 +306,9 @@ class AfterFilterTest < Test::Unit::TestCase
       before(:host_name => 'example.com') { ran = true }
       get('/') { 'welcome' }
     end
-    get '/', {}, { 'HTTP_HOST' => 'example.org' }
+    get('/', {}, { 'HTTP_HOST' => 'example.org' })
     assert !ran
-    get '/', {}, { 'HTTP_HOST' => 'example.com' }
+    get('/', {}, { 'HTTP_HOST' => 'example.com' })
     assert ran
   end
 
@@ -320,11 +318,11 @@ class AfterFilterTest < Test::Unit::TestCase
       before('/foo', :host_name => 'example.com') { ran = true }
       get('/') { 'welcome' }
     end
-    get '/', {}, { 'HTTP_HOST' => 'example.com' }
+    get('/', {}, { 'HTTP_HOST' => 'example.com' })
     assert !ran
-    get '/foo', {}, { 'HTTP_HOST' => 'example.org' }
+    get('/foo', {}, { 'HTTP_HOST' => 'example.org' })
     assert !ran
-    get '/foo', {}, { 'HTTP_HOST' => 'example.com' }
+    get('/foo', {}, { 'HTTP_HOST' => 'example.com' })
     assert ran
   end
 
@@ -334,9 +332,9 @@ class AfterFilterTest < Test::Unit::TestCase
       after(:host_name => 'example.com') { ran = true }
       get('/') { 'welcome' }
     end
-    get '/', {}, { 'HTTP_HOST' => 'example.org' }
+    get('/', {}, { 'HTTP_HOST' => 'example.org' })
     assert !ran
-    get '/', {}, { 'HTTP_HOST' => 'example.com' }
+    get('/', {}, { 'HTTP_HOST' => 'example.com' })
     assert ran
   end
 
@@ -346,11 +344,11 @@ class AfterFilterTest < Test::Unit::TestCase
       after('/foo', :host_name => 'example.com') { ran = true }
       get('/') { 'welcome' }
     end
-    get '/', {}, { 'HTTP_HOST' => 'example.com' }
+    get('/', {}, { 'HTTP_HOST' => 'example.com' })
     assert !ran
-    get '/foo', {}, { 'HTTP_HOST' => 'example.org' }
+    get('/foo', {}, { 'HTTP_HOST' => 'example.org' })
     assert !ran
-    get '/foo', {}, { 'HTTP_HOST' => 'example.com' }
+    get('/foo', {}, { 'HTTP_HOST' => 'example.com' })
     assert ran
   end
 
@@ -360,9 +358,9 @@ class AfterFilterTest < Test::Unit::TestCase
       before(:user_agent => /foo/) { ran = true }
       get('/') { 'welcome' }
     end
-    get '/', {}, { 'HTTP_USER_AGENT' => 'bar' }
+    get('/', {}, { 'HTTP_USER_AGENT' => 'bar' })
     assert !ran
-    get '/', {}, { 'HTTP_USER_AGENT' => 'foo' }
+    get('/', {}, { 'HTTP_USER_AGENT' => 'foo' })
     assert ran
   end
 
@@ -372,11 +370,11 @@ class AfterFilterTest < Test::Unit::TestCase
       before('/foo', :user_agent => /foo/) { ran = true }
       get('/') { 'welcome' }
     end
-    get '/', {}, { 'HTTP_USER_AGENT' => 'foo' }
+    get('/', {}, { 'HTTP_USER_AGENT' => 'foo' })
     assert !ran
-    get '/foo', {}, { 'HTTP_USER_AGENT' => 'bar' }
+    get('/foo', {}, { 'HTTP_USER_AGENT' => 'bar' })
     assert !ran
-    get '/foo', {}, { 'HTTP_USER_AGENT' => 'foo' }
+    get('/foo', {}, { 'HTTP_USER_AGENT' => 'foo' })
     assert ran
   end
 
@@ -406,9 +404,9 @@ class AfterFilterTest < Test::Unit::TestCase
       after(:user_agent => /foo/) { ran = true }
       get('/') { 'welcome' }
     end
-    get '/', {}, { 'HTTP_USER_AGENT' => 'bar' }
+    get('/', {}, { 'HTTP_USER_AGENT' => 'bar' })
     assert !ran
-    get '/', {}, { 'HTTP_USER_AGENT' => 'foo' }
+    get('/', {}, { 'HTTP_USER_AGENT' => 'foo' })
     assert ran
   end
 
@@ -418,11 +416,11 @@ class AfterFilterTest < Test::Unit::TestCase
       after('/foo', :user_agent => /foo/) { ran = true }
       get('/') { 'welcome' }
     end
-    get '/', {}, { 'HTTP_USER_AGENT' => 'foo' }
+    get('/', {}, { 'HTTP_USER_AGENT' => 'foo' })
     assert !ran
-    get '/foo', {}, { 'HTTP_USER_AGENT' => 'bar' }
+    get('/foo', {}, { 'HTTP_USER_AGENT' => 'bar' })
     assert !ran
-    get '/foo', {}, { 'HTTP_USER_AGENT' => 'foo' }
+    get('/foo', {}, { 'HTTP_USER_AGENT' => 'foo' })
     assert ran
   end
 
@@ -433,7 +431,7 @@ class AfterFilterTest < Test::Unit::TestCase
       get('/') { @type }
     end
 
-    get '/', {}, { 'HTTP_ACCEPT' => '*' }
+    get('/', {}, { 'HTTP_ACCEPT' => '*' })
     assert_body 'txt'
   end
 end
