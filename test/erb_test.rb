@@ -11,10 +11,10 @@ class ERBTest < Test::Unit::TestCase
   end
 
   def erb_app(&block)
-    mock_app {
+    mock_app do
       set :views, File.dirname(__FILE__) + '/views'
-      get '/', &block
-    }
+      get('/', &block)
+    end
     get '/'
   end
 
@@ -35,57 +35,51 @@ class ERBTest < Test::Unit::TestCase
   end
 
   it 'takes a :locals option' do
-    erb_app {
+    erb_app do
       locals = {:foo => 'Bar'}
       erb '<%= foo %>', :locals => locals
-    }
+    end
     assert ok?
     assert_equal 'Bar', body
   end
 
   it "renders with inline layouts" do
-    mock_app {
+    mock_app do
       layout { 'THIS. IS. <%= yield.upcase %>!' }
       get('/') { erb 'Sparta' }
-    }
+    end
     get '/'
     assert ok?
     assert_equal 'THIS. IS. SPARTA!', body
   end
 
   it "renders with file layouts" do
-    erb_app {
-      erb 'Hello World', :layout => :layout2
-    }
+    erb_app { erb 'Hello World', :layout => :layout2 }
     assert ok?
     assert_body "ERB Layout!\nHello World"
   end
 
   it "renders erb with blocks" do
-    mock_app {
+    mock_app do
       def container
         @_out_buf << "THIS."
         yield
         @_out_buf << "SPARTA!"
       end
       def is; "IS." end
-      get '/' do
-        erb '<% container do %> <%= is %> <% end %>'
-      end
-    }
+      get('/') { erb '<% container do %> <%= is %> <% end %>' }
+    end
     get '/'
     assert ok?
     assert_equal 'THIS. IS. SPARTA!', body
   end
 
   it "can be used in a nested fashion for partials and whatnot" do
-    mock_app {
+    mock_app do
       template(:inner) { "<inner><%= 'hi' %></inner>" }
       template(:outer) { "<outer><%= erb :inner %></outer>" }
-      get '/' do
-        erb :outer
-      end
-    }
+      get('/') { erb :outer }
+    end
 
     get '/'
     assert ok?

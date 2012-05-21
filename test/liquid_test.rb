@@ -7,7 +7,7 @@ class LiquidTest < Test::Unit::TestCase
   def liquid_app(&block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
-      get '/', &block
+      get('/', &block)
     end
     get '/'
   end
@@ -46,9 +46,9 @@ class LiquidTest < Test::Unit::TestCase
   end
   
   it "allows passing locals" do
-    liquid_app do
+    liquid_app {
       liquid '{{ value }}', :locals => { :value => 'foo' }
-    end
+    }
     assert ok?
     assert_equal 'foo', body
   end

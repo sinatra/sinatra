@@ -5,22 +5,26 @@ require 'less'
 
 class LessTest < Test::Unit::TestCase
   def less_app(options = {}, &block)
-    mock_app {
+    mock_app do
       set :views, File.dirname(__FILE__) + '/views'
       set options
-      get '/', &block
-    }
+      get('/', &block)
+    end
     get '/'
   end
 
   it 'renders inline Less strings' do
-    less_app { less "@white_color: #fff; #main { background-color: @white_color }" }
+    less_app {
+      less "@white_color: #fff; #main { background-color: @white_color }"
+    }
     assert ok?
     assert_equal "#main{background-color:#ffffff;}", body.gsub(/\s/, "")
   end
 
   it 'defaults content type to css' do
-    less_app { less "@white_color: #fff; #main { background-color: @white_color }" }
+    less_app {
+      less "@white_color: #fff; #main { background-color: @white_color }"
+    }
     assert ok?
     assert_equal "text/css;charset=utf-8", response['Content-Type']
   end
@@ -55,9 +59,7 @@ class LessTest < Test::Unit::TestCase
   end
 
   it "raises error if template not found" do
-    mock_app {
-      get('/') { less :no_such_template }
-    }
+    mock_app { get('/') { less :no_such_template } }
     assert_raise(Errno::ENOENT) { get('/') }
   end
 end

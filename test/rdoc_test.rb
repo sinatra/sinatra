@@ -8,7 +8,7 @@ class RdocTest < Test::Unit::TestCase
   def rdoc_app(&block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
-      get '/', &block
+      get('/', &block)
     end
     get '/'
   end
@@ -41,7 +41,9 @@ class RdocTest < Test::Unit::TestCase
   end
 
   it "renders with file layouts" do
-    rdoc_app { rdoc 'Hello World', :layout => :layout2, :layout_engine => :erb }
+    rdoc_app {
+      rdoc 'Hello World', :layout => :layout2, :layout_engine => :erb
+    }
     assert ok?
     assert_body "ERB Layout!\n<p>Hello World</p>"
   end
@@ -50,9 +52,7 @@ class RdocTest < Test::Unit::TestCase
     mock_app do
       template(:inner) { "hi" }
       template(:outer) { "<outer><%= rdoc :inner %></outer>" }
-      get '/' do
-        erb :outer
-      end
+      get('/') { erb :outer }
     end
 
     get '/'

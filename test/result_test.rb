@@ -2,11 +2,7 @@ require File.expand_path('../helper', __FILE__)
 
 class ResultTest < Test::Unit::TestCase
   it "sets response.body when result is a String" do
-    mock_app {
-      get '/' do
-        'Hello World'
-      end
-    }
+    mock_app { get('/') { 'Hello World' } }
 
     get '/'
     assert ok?
@@ -14,11 +10,7 @@ class ResultTest < Test::Unit::TestCase
   end
 
   it "sets response.body when result is an Array of Strings" do
-    mock_app {
-      get '/' do
-        ['Hello', 'World']
-      end
-    }
+    mock_app { get('/') { ['Hello', 'World'] } }
 
     get '/'
     assert ok?
@@ -26,13 +18,13 @@ class ResultTest < Test::Unit::TestCase
   end
 
   it "sets response.body when result responds to #each" do
-    mock_app {
-      get '/' do
+    mock_app do
+      get('/') do
         res = lambda { 'Hello World' }
         def res.each ; yield call ; end
-        res
+        return res
       end
-    }
+    end
 
     get '/'
     assert ok?
@@ -40,11 +32,7 @@ class ResultTest < Test::Unit::TestCase
   end
 
   it "sets response.body to [] when result is nil" do
-    mock_app {
-      get '/' do
-        nil
-      end
-    }
+    mock_app { get( '/') { nil } }
 
     get '/'
     assert ok?
@@ -53,9 +41,7 @@ class ResultTest < Test::Unit::TestCase
 
   it "sets status, headers, and body when result is a Rack response tuple" do
     mock_app {
-      get '/' do
-        [203, {'Content-Type' => 'foo/bar'}, 'Hello World']
-      end
+      get('/') { [203, {'Content-Type' => 'foo/bar'}, 'Hello World'] }
     }
 
     get '/'
@@ -65,11 +51,7 @@ class ResultTest < Test::Unit::TestCase
   end
 
   it "sets status and body when result is a two-tuple" do
-    mock_app {
-      get '/' do
-        [409, 'formula of']
-      end
-    }
+    mock_app { get('/') { [409, 'formula of'] } }
 
     get '/'
     assert_equal 409, status
@@ -78,18 +60,14 @@ class ResultTest < Test::Unit::TestCase
 
   it "raises a ArgumentError when result is a non two or three tuple Array" do
     mock_app {
-      get '/' do
-        [409, 'formula of', 'something else', 'even more']
-      end
+      get('/') { [409, 'formula of', 'something else', 'even more'] }
     }
 
     assert_raise(ArgumentError) { get '/' }
   end
 
   it "sets status when result is a Fixnum status code" do
-    mock_app {
-      get('/') { 205 }
-    }
+    mock_app { get('/') { 205 } }
 
     get '/'
     assert_equal 205, status

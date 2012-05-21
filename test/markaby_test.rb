@@ -7,7 +7,7 @@ class MarkabyTest < Test::Unit::TestCase
   def markaby_app(&block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
-      get '/', &block
+      get('/', &block)
     end
     get '/'
   end
@@ -67,9 +67,9 @@ class MarkabyTest < Test::Unit::TestCase
   end
   
   it "allows passing locals" do
-    markaby_app do
+    markaby_app {
       markaby 'text value', :locals => { :value => 'foo' }
-    end
+    }
     assert ok?
     assert_equal 'foo', body
   end

@@ -2,12 +2,7 @@ require File.expand_path('../helper', __FILE__)
 
 class SinatraTest < Test::Unit::TestCase
   it 'creates a new Sinatra::Base subclass on new' do
-    app =
-      Sinatra.new do
-        get '/' do
-          'Hello World'
-        end
-      end
+    app = Sinatra.new { get('/') { 'Hello World' } }
     assert_same Sinatra::Base, app.superclass
   end
   

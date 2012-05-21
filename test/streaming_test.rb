@@ -5,7 +5,7 @@ class StreamingTest < Test::Unit::TestCase
 
   it 'returns the concatinated body' do
     mock_app do
-      get '/' do
+      get('/') do
         stream do |out|
           out << "Hello" << " "
           out << "World!"
@@ -115,7 +115,9 @@ class StreamingTest < Test::Unit::TestCase
 
   it 'gives access to route specific params' do
     mock_app do
-      get('/:name') { stream { |o| o << params[:name] }}
+      get('/:name') do
+        stream { |o| o << params[:name] }
+      end
     end
     get '/foo'
     assert_body 'foo'

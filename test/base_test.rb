@@ -7,9 +7,7 @@ class BaseTest < Test::Unit::TestCase
 
   describe 'Sinatra::Base subclasses' do
     class TestApp < Sinatra::Base
-      get '/' do
-        'Hello World'
-      end
+      get('/') { 'Hello World' }
     end
 
     it 'include Rack::Utils' do
@@ -99,9 +97,7 @@ class BaseTest < Test::Unit::TestCase
         super
       end
 
-      get '/' do
-        'Hello from middleware'
-      end
+      get('/') { 'Hello from middleware' }
     end
 
     middleware = TestMiddleware.new(app)
@@ -125,9 +121,7 @@ class BaseTest < Test::Unit::TestCase
     end
 
     class TestMiddleware < Sinatra::Base
-      get '/low-level-forward' do
-        app.call(env)
-      end
+      get('/low-level-forward') { app.call(env) }
     end
 
     it 'can call the downstream app directly and return result' do

@@ -7,7 +7,7 @@ class NokogiriTest < Test::Unit::TestCase
   def nokogiri_app(&block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
-      get '/', &block
+      get('/', &block)
     end
     get '/'
   end
@@ -21,9 +21,7 @@ class NokogiriTest < Test::Unit::TestCase
   it 'renders inline blocks' do
     nokogiri_app do
       @name = "Frank & Mary"
-      nokogiri do |xml|
-        xml.couple @name
-      end
+      nokogiri { |xml| xml.couple @name }
     end
     assert ok?
     assert_body %(<?xml version="1.0"?>\n<couple>Frank &amp; Mary</couple>\n)
@@ -51,9 +49,9 @@ class NokogiriTest < Test::Unit::TestCase
 
   it "renders with file layouts" do
     next if Tilt::VERSION <= "1.1"
-    nokogiri_app do
+    nokogiri_app {
       nokogiri %(xml.em 'Hello World'), :layout => :layout2
-    end
+    }
     assert ok?
     assert_body %(<?xml version="1.0"?>\n<layout>\n  <em>Hello World</em>\n</layout>\n)
   end

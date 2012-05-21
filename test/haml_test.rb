@@ -5,10 +5,10 @@ require 'haml'
 
 class HAMLTest < Test::Unit::TestCase
   def haml_app(&block)
-    mock_app {
+    mock_app do
       set :views, File.dirname(__FILE__) + '/views'
-      get '/', &block
-    }
+      get('/', &block)
+    end
     get '/'
   end
 
@@ -25,35 +25,29 @@ class HAMLTest < Test::Unit::TestCase
   end
 
   it "renders with inline layouts" do
-    mock_app {
+    mock_app do
       layout { %q(%h1= 'THIS. IS. ' + yield.upcase) }
       get('/') { haml '%em Sparta' }
-    }
+    end
     get '/'
     assert ok?
     assert_equal "<h1>THIS. IS. <EM>SPARTA</EM></h1>\n", body
   end
 
   it "renders with file layouts" do
-    haml_app {
-      haml 'Hello World', :layout => :layout2
-    }
+    haml_app { haml 'Hello World', :layout => :layout2 }
     assert ok?
     assert_equal "<h1>HAML Layout!</h1>\n<p>Hello World</p>\n", body
   end
 
   it "raises error if template not found" do
-    mock_app {
-      get('/') { haml :no_such_template }
-    }
+    mock_app { get('/') { haml :no_such_template } }
     assert_raise(Errno::ENOENT) { get('/') }
   end
 
   it "passes HAML options to the Haml engine" do
     mock_app {
-      get '/' do
-        haml "!!!\n%h1 Hello World", :format => :html5
-      end
+      get('/') { haml "!!!\n%h1 Hello World", :format => :html5 }
     }
     get '/'
     assert ok?
@@ -61,27 +55,23 @@ class HAMLTest < Test::Unit::TestCase
   end
 
   it "passes default HAML options to the Haml engine" do
-    mock_app {
+    mock_app do
       set :haml, {:format => :html5}
-      get '/' do
-        haml "!!!\n%h1 Hello World"
-      end
-    }
+      get('/') { haml "!!!\n%h1 Hello World" }
+    end
     get '/'
     assert ok?
     assert_equal "<!DOCTYPE html>\n<h1>Hello World</h1>\n", body
   end
 
   it "merges the default HAML options with the overrides and passes them to the Haml engine" do
-    mock_app {
+    mock_app do
       set :haml, {:format => :html5, :attr_wrapper => '"'} # default HAML attr are <tag attr='single-quoted'>
-      get '/' do
-        haml "!!!\n%h1{:class => :header} Hello World"
-      end
-      get '/html4' do
+      get('/') { haml "!!!\n%h1{:class => :header} Hello World" }
+      get('/html4') {
         haml "!!!\n%h1{:class => 'header'} Hello World", :format => :html4
-      end
-    }
+      }
+    end
     get '/'
     assert ok?
     assert_equal "<!DOCTYPE html>\n<h1 class=\"header\">Hello World</h1>\n", body
