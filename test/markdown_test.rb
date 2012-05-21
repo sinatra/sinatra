@@ -4,7 +4,7 @@ MarkdownTest = proc do
   def markdown_app(&block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
-      get '/', &block
+      get('/', &block)
     end
     get '/'
   end
@@ -48,7 +48,9 @@ MarkdownTest = proc do
   end
 
   it "renders with file layouts" do
-    markdown_app { markdown 'Hello World', :layout => :layout2, :layout_engine => :erb }
+    markdown_app {
+      markdown 'Hello World', :layout => :layout2, :layout_engine => :erb
+    }
     assert ok?
     assert_body "ERB Layout!\n<p>Hello World</p>"
   end
@@ -57,9 +59,7 @@ MarkdownTest = proc do
     mock_app do
       template(:inner) { "hi" }
       template(:outer) { "<outer><%= markdown :inner %></outer>" }
-      get '/' do
-        erb :outer
-      end
+      get('/') { erb :outer }
     end
 
     get '/'

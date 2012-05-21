@@ -10,7 +10,7 @@ class HelpersTest < Test::Unit::TestCase
     code += 2 if [204, 205, 304].include? code
     block ||= proc { }
     mock_app do
-      get '/' do
+      get('/') do
         status code
         instance_eval(&block).inspect
       end
@@ -119,22 +119,16 @@ class HelpersTest < Test::Unit::TestCase
 
   describe 'body' do
     it 'takes a block for defered body generation' do
-      mock_app {
-        get '/' do
-          body { 'Hello World' }
-        end
-      }
+      mock_app do
+        get('/') { body { 'Hello World' } }
+      end
 
       get '/'
       assert_equal 'Hello World', body
     end
 
     it 'takes a String, Array, or other object responding to #each' do
-      mock_app {
-        get '/' do
-          body 'Hello World'
-        end
-      }
+      mock_app { get('/') { body 'Hello World' } }
 
       get '/'
       assert_equal 'Hello World', body
@@ -143,12 +137,12 @@ class HelpersTest < Test::Unit::TestCase
 
   describe 'redirect' do
     it 'uses a 302 when only a path is given' do
-      mock_app {
-        get '/' do
+      mock_app do
+        get('/') do
           redirect '/foo'
           fail 'redirect should halt'
         end
-      }
+      end
 
       get '/'
       assert_equal 302, status
@@ -157,12 +151,12 @@ class HelpersTest < Test::Unit::TestCase
     end
 
     it 'uses the code given when specified' do
-      mock_app {
-        get '/' do
+      mock_app do
+        get('/') do
           redirect '/foo', 301
           fail 'redirect should halt'
         end
-      }
+      end
 
       get '/'
       assert_equal 301, status
@@ -171,11 +165,7 @@ class HelpersTest < Test::Unit::TestCase
     end
 
     it 'redirects back to request.referer when passed back' do
-      mock_app {
-        get '/try_redirect' do
-          redirect back
-        end
-      }
+      mock_app { get('/try_redirect') { redirect back } }
 
       request = Rack::MockRequest.new(@app)
       response = request.get('/try_redirect', 'HTTP_REFERER' => '/foo')
@@ -184,11 +174,7 @@ class HelpersTest < Test::Unit::TestCase
     end
 
     it 'redirects using a non-standard HTTP port' do
-      mock_app {
-        get '/' do
-          redirect '/foo'
-        end
-      }
+      mock_app { get('/') { redirect '/foo' } }
 
       request = Rack::MockRequest.new(@app)
       response = request.get('/', 'SERVER_PORT' => '81')
@@ -196,11 +182,7 @@ class HelpersTest < Test::Unit::TestCase
     end
 
     it 'redirects using a non-standard HTTPS port' do
-      mock_app {
-        get '/' do
-          redirect '/foo'
-        end
-      }
+      mock_app { get('/') { redirect '/foo' } }
 
       request = Rack::MockRequest.new(@app)
       response = request.get('/', 'SERVER_PORT' => '444')
@@ -209,7 +191,7 @@ class HelpersTest < Test::Unit::TestCase
 
     it 'uses 303 for post requests if request is HTTP 1.1' do
       mock_app { post('/') { redirect '/'} }
-      post '/', {}, 'HTTP_VERSION' => 'HTTP/1.1'
+      post('/', {}, 'HTTP_VERSION' => 'HTTP/1.1')
       assert_equal 303, status
       assert_equal '', body
       assert_equal 'http://example.org/', response['Location']
@@ -217,18 +199,14 @@ class HelpersTest < Test::Unit::TestCase
 
     it 'uses 302 for post requests if request is HTTP 1.0' do
       mock_app { post('/') { redirect '/'} }
-      post '/', {}, 'HTTP_VERSION' => 'HTTP/1.0'
+      post('/', {}, 'HTTP_VERSION' => 'HTTP/1.0')
       assert_equal 302, status
       assert_equal '', body
       assert_equal 'http://example.org/', response['Location']
     end
 
     it 'works behind a reverse proxy' do
-      mock_app do
-        get '/' do
-          redirect '/foo'
-        end
-      end
+      mock_app { get('/') { redirect '/foo' } }
 
       request = Rack::MockRequest.new(@app)
       response = request.get('/', 'HTTP_X_FORWARDED_HOST' => 'example.com', 'SERVER_PORT' => '8080')
@@ -237,7 +215,7 @@ class HelpersTest < Test::Unit::TestCase
 
     it 'accepts absolute URIs' do
       mock_app do
-        get '/' do
+        get('/') do
           redirect 'http://google.com'
           fail 'redirect should halt'
         end
@@ -251,7 +229,7 @@ class HelpersTest < Test::Unit::TestCase
 
     it 'accepts absolute URIs with a different schema' do
       mock_app do
-        get '/' do
+        get('/') do
           redirect 'mailto:jsmith@example.com'
           fail 'redirect should halt'
         end
@@ -266,12 +244,12 @@ class HelpersTest < Test::Unit::TestCase
 
   describe 'error' do
     it 'sets a status code and halts' do
-      mock_app {
-        get '/' do
+      mock_app do
+        get('/') do
           error 501
           fail 'error should halt'
         end
-      }
+      end
 
       get '/'
       assert_equal 501, status
@@ -279,12 +257,12 @@ class HelpersTest < Test::Unit::TestCase
     end
 
     it 'takes an optional body' do
-      mock_app {
-        get '/' do
+      mock_app do
+        get('/') do
           error 501, 'FAIL'
           fail 'error should halt'
         end
-      }
+      end
 
       get '/'
       assert_equal 501, status
@@ -292,12 +270,12 @@ class HelpersTest < Test::Unit::TestCase
     end
 
     it 'uses a 500 status code when first argument is a body' do
-      mock_app {
-        get '/' do
+      mock_app do
+        get('/') do
           error 'FAIL'
           fail 'error should halt'
         end
-      }
+      end
 
       get '/'
       assert_equal 500, status
@@ -307,12 +285,12 @@ class HelpersTest < Test::Unit::TestCase
 
   describe 'not_found' do
     it 'halts with a 404 status' do
-      mock_app {
-        get '/' do
+      mock_app do
+        get('/') do
           not_found
           fail 'not_found should halt'
         end
-      }
+      end
 
       get '/'
       assert_equal 404, status
@@ -320,12 +298,12 @@ class HelpersTest < Test::Unit::TestCase
     end
 
     it 'does not set a X-Cascade header' do
-      mock_app {
-        get '/' do
+      mock_app do
+        get('/') do
           not_found
           fail 'not_found should halt'
         end
-      }
+      end
 
       get '/'
       assert_equal 404, status
@@ -335,12 +313,12 @@ class HelpersTest < Test::Unit::TestCase
 
   describe 'headers' do
     it 'sets headers on the response object when given a Hash' do
-      mock_app {
-        get '/' do
+      mock_app do
+        get('/') do
           headers 'X-Foo' => 'bar', 'X-Baz' => 'bling'
           'kthx'
         end
-      }
+      end
 
       get '/'
       assert ok?
@@ -350,12 +328,12 @@ class HelpersTest < Test::Unit::TestCase
     end
 
     it 'returns the response headers hash when no hash provided' do
-      mock_app {
-        get '/' do
+      mock_app do
+        get('/') do
           headers['X-Foo'] = 'bar'
           'kthx'
         end
-      }
+      end
 
       get '/'
       assert ok?
@@ -365,30 +343,30 @@ class HelpersTest < Test::Unit::TestCase
 
   describe 'session' do
     it 'uses the existing rack.session' do
-      mock_app {
-        get '/' do
+      mock_app do
+        get('/') do
           session[:foo]
         end
-      }
+      end
 
-      get '/', {}, { 'rack.session' => { :foo => 'bar' } }
+      get('/', {}, { 'rack.session' => { :foo => 'bar' } })
       assert_equal 'bar', body
     end
 
     it 'creates a new session when none provided' do
-      mock_app {
+      mock_app do
         enable :sessions
 
-        get '/' do
+        get('/') do
           assert session[:foo].nil?
           session[:foo] = 'bar'
           redirect '/hi'
         end
 
-        get '/hi' do
+        get('/hi') do
           "hi #{session[:foo]}"
         end
-      }
+      end
 
       get '/'
       follow_redirect!
@@ -398,7 +376,8 @@ class HelpersTest < Test::Unit::TestCase
     it 'inserts session middleware' do
       mock_app do
         enable :sessions
-        get '/' do
+
+        get('/') do
           assert env['rack.session']
           assert env['rack.session.options']
           'ok'
@@ -412,7 +391,8 @@ class HelpersTest < Test::Unit::TestCase
     it 'sets a default session secret' do
       mock_app do
         enable :sessions
-        get '/' do
+
+        get('/') do
           secret = env['rack.session.options'][:secret]
           assert secret
           assert_equal secret, settings.session_secret
@@ -428,7 +408,8 @@ class HelpersTest < Test::Unit::TestCase
       mock_app do
         enable :sessions
         disable :session_secret
-        get '/' do
+
+        get('/') do
           assert !env['rack.session.options'].include?(:session_secret)
           'ok'
         end
@@ -441,7 +422,8 @@ class HelpersTest < Test::Unit::TestCase
     it 'accepts an options hash' do
       mock_app do
         set :sessions, :foo => :bar
-        get '/' do
+
+        get('/') do
           assert_equal env['rack.session.options'][:foo], :bar
           'ok'
         end
@@ -476,13 +458,13 @@ class HelpersTest < Test::Unit::TestCase
   end
 
   test 'Base.mime_type registers mime type' do
-    mock_app {
+    mock_app do
       mime_type :foo, 'application/foo'
 
-      get '/' do
+      get('/') do
         "foo is #{mime_type(:foo)}"
       end
-    }
+    end
 
     get '/'
     assert_equal 'foo is application/foo', body
@@ -490,12 +472,12 @@ class HelpersTest < Test::Unit::TestCase
 
   describe 'content_type' do
     it 'sets the Content-Type header' do
-      mock_app {
-        get '/' do
+      mock_app do
+        get('/') do
           content_type 'text/plain'
           'Hello World'
         end
-      }
+      end
 
       get '/'
       assert_equal 'text/plain;charset=utf-8', response['Content-Type']
@@ -503,12 +485,12 @@ class HelpersTest < Test::Unit::TestCase
     end
 
     it 'takes media type parameters (like charset=)' do
-      mock_app {
-        get '/' do
+      mock_app do
+        get('/') do
           content_type 'text/html', :charset => 'latin1'
           "<h1>Hello, World</h1>"
         end
-      }
+      end
 
       get '/'
       assert ok?
@@ -518,12 +500,12 @@ class HelpersTest < Test::Unit::TestCase
 
     it "looks up symbols in Rack's mime types dictionary" do
       Rack::Mime::MIME_TYPES['.foo'] = 'application/foo'
-      mock_app {
-        get '/foo.xml' do
+      mock_app do
+        get('/foo.xml') do
           content_type :foo
           "I AM FOO"
         end
-      }
+      end
 
       get '/foo.xml'
       assert ok?
@@ -532,12 +514,12 @@ class HelpersTest < Test::Unit::TestCase
     end
 
     it 'fails when no mime type is registered for the argument provided' do
-      mock_app {
-        get '/foo.xml' do
+      mock_app do
+        get('/foo.xml') do
           content_type :bizzle
           "I AM FOO"
         end
-      }
+      end
 
       assert_raise(RuntimeError) { get '/foo.xml' }
     end
@@ -549,7 +531,7 @@ class HelpersTest < Test::Unit::TestCase
         mime_type :bar, 'application/bar'
         mime_type :baz, 'application/baz'
         add_charset << mime_type(:baz)
-        get '/' do
+        get('/') do
           assert_equal content_type(:txt),    'text/plain;charset=utf-8'
           assert_equal content_type(:css),    'text/css;charset=utf-8'
           assert_equal content_type(:html),   'text/html;charset=utf-8'
@@ -565,28 +547,31 @@ class HelpersTest < Test::Unit::TestCase
           "done"
         end
       end
+
       get '/'
       assert tests_ran
     end
 
     it 'handles already present params' do
       mock_app do
-        get '/' do
+        get('/') do
           content_type 'foo/bar;level=1', :charset => 'utf-8'
           'ok'
         end
       end
+
       get '/'
       assert_equal 'foo/bar;level=1, charset=utf-8', response['Content-Type']
     end
 
     it 'does not add charset if present' do
       mock_app do
-        get '/' do
+        get('/') do
           content_type 'text/plain;charset=utf-16'
           'ok'
         end
       end
+
       get '/'
       assert_equal 'text/plain;charset=utf-16', response['Content-Type']
     end
@@ -594,12 +579,12 @@ class HelpersTest < Test::Unit::TestCase
 
   describe 'attachment' do
     def attachment_app(filename=nil)
-      mock_app {       
-        get '/attachment' do
+      mock_app do
+        get('/attachment') do
           attachment filename
           response.write("<sinatra></sinatra>")
         end
-      }
+      end
     end
     
     it 'sets the Content-Type response header' do
@@ -618,12 +603,13 @@ class HelpersTest < Test::Unit::TestCase
     
     it 'sets the Content-Type response header without extname' do
       mock_app do
-        get '/attachment' do
+        get('/attachment') do
           content_type :atom
           attachment 'test.xml'
           response.write("<sinatra></sinatra>")
         end
       end
+
       get '/attachment'
       assert_equal 'application/atom+xml', response['Content-Type']
       assert_equal '<sinatra></sinatra>', body   
@@ -697,9 +683,7 @@ class HelpersTest < Test::Unit::TestCase
 
     it "returns a 404 when not found" do
       mock_app {
-        get '/' do
-          send_file 'this-file-does-not-exist.txt'
-        end
+        get('/') { send_file 'this-file-does-not-exist.txt' }
       }
       get '/'
       assert not_found?
@@ -746,7 +730,7 @@ class HelpersTest < Test::Unit::TestCase
     it "does not override Content-Type if already set and no explicit type is given" do
       path = @file
       mock_app do
-        get '/' do
+        get('/') do
           content_type :png
           send_file path
         end
@@ -758,7 +742,7 @@ class HelpersTest < Test::Unit::TestCase
     it "does override Content-Type even if already set, if explicit type is given" do
       path = @file
       mock_app do
-        get '/' do
+        get('/') do
           content_type :png
           send_file path, :type => :gif
         end
@@ -771,12 +755,12 @@ class HelpersTest < Test::Unit::TestCase
   describe 'cache_control' do
     setup do
       mock_app do
-        get '/foo' do
+        get('/foo') do
           cache_control :public, :no_cache, :max_age => 60.0
           'Hello World'
         end
 
-        get '/bar' do
+        get('/bar') do
           cache_control :public, :no_cache
           'Hello World'
         end
@@ -797,20 +781,16 @@ class HelpersTest < Test::Unit::TestCase
   describe 'expires' do
     setup do
       mock_app do
-        get '/foo' do
+        get('/foo') do
           expires 60, :public, :no_cache
           'Hello World'
         end
 
-        get '/bar' do
-          expires Time.now
-        end
+        get('/bar') { expires Time.now }
 
-        get '/baz' do
-          expires Time.at(0)
-        end
+        get('/baz') { expires Time.at(0) }
 
-        get '/blah' do
+        get('/blah') do
           obj = Object.new
           def obj.method_missing(*a, &b) 60.send(*a, &b) end
           def obj.is_a?(thing) 60.is_a?(thing) end
@@ -818,9 +798,7 @@ class HelpersTest < Test::Unit::TestCase
           'Hello World'
         end
 
-        get '/boom' do
-          expires '9999'
-        end
+        get('/boom') { expires '9999' }
       end
     end
 
@@ -856,9 +834,7 @@ class HelpersTest < Test::Unit::TestCase
 
   describe 'last_modified' do
     it 'ignores nil' do
-      mock_app do
-        get '/' do last_modified nil; 200; end
-      end
+      mock_app { get('/') { last_modified nil; 200; } }
 
       get '/'
       assert ! response['Last-Modified']
@@ -866,7 +842,7 @@ class HelpersTest < Test::Unit::TestCase
 
     it 'does not change a status other than 200' do
       mock_app do
-        get '/' do
+        get('/') do
           status 299
           last_modified Time.at(0)
           'ok'
@@ -883,7 +859,7 @@ class HelpersTest < Test::Unit::TestCase
       describe "with #{last_modified_time.class.name}" do
         setup do
           mock_app do
-            get '/' do
+            get('/') do
               last_modified last_modified_time
               'Boo!'
             end
@@ -910,12 +886,12 @@ class HelpersTest < Test::Unit::TestCase
 
         context "when there's an invalid If-Modified-Since header" do
           it 'sets the Last-Modified header to a valid RFC 2616 date value' do
-            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'a really weird date' }
+            get('/', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'a really weird date' })
             assert_equal @last_modified_time.httpdate, response['Last-Modified']
           end
 
           it 'conditional GET misses and returns a body' do
-            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'a really weird date' }
+            get('/', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'a really weird date' })
             assert_equal 200, status
             assert_equal 'Boo!', body
           end
@@ -923,28 +899,28 @@ class HelpersTest < Test::Unit::TestCase
 
         context "when the resource has been modified since the If-Modified-Since header date" do
           it 'sets the Last-Modified header to a valid RFC 2616 date value' do
-            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => (@last_modified_time - 1).httpdate }
+            get('/', {}, { 'HTTP_IF_MODIFIED_SINCE' => (@last_modified_time - 1).httpdate })
             assert_equal @last_modified_time.httpdate, response['Last-Modified']
           end
 
           it 'conditional GET misses and returns a body' do
-            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => (@last_modified_time - 1).httpdate }
+            get('/', {}, { 'HTTP_IF_MODIFIED_SINCE' => (@last_modified_time - 1).httpdate })
             assert_equal 200, status
             assert_equal 'Boo!', body
           end
 
           it 'does not rely on string comparison' do
             mock_app do
-              get '/compare' do
+              get('/compare') do
                 last_modified "Mon, 18 Oct 2010 20:57:11 GMT"
                 "foo"
               end
             end
 
-            get '/compare', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'Sun, 26 Sep 2010 23:43:52 GMT' }
+            get('/compare', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'Sun, 26 Sep 2010 23:43:52 GMT' })
             assert_equal 200, status
             assert_equal 'foo', body
-            get '/compare', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'Sun, 26 Sep 2030 23:43:52 GMT' }
+            get('/compare', {}, { 'HTTP_IF_MODIFIED_SINCE' => 'Sun, 26 Sep 2030 23:43:52 GMT' })
             assert_equal 304, status
             assert_equal '', body
           end
@@ -952,12 +928,12 @@ class HelpersTest < Test::Unit::TestCase
 
         context "when the resource has been modified on the exact If-Modified-Since header date" do
           it 'sets the Last-Modified header to a valid RFC 2616 date value' do
-            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => @last_modified_time.httpdate }
+            get('/', {}, { 'HTTP_IF_MODIFIED_SINCE' => @last_modified_time.httpdate })
             assert_equal @last_modified_time.httpdate, response['Last-Modified']
           end
 
           it 'conditional GET matches and halts' do
-            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => @last_modified_time.httpdate }
+            get( '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => @last_modified_time.httpdate })
             assert_equal 304, status
             assert_equal '', body
           end
@@ -965,12 +941,12 @@ class HelpersTest < Test::Unit::TestCase
 
         context "when the resource hasn't been modified since the If-Modified-Since header date" do
           it 'sets the Last-Modified header to a valid RFC 2616 date value' do
-            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => (@last_modified_time + 1).httpdate }
+            get('/', {}, { 'HTTP_IF_MODIFIED_SINCE' => (@last_modified_time + 1).httpdate })
             assert_equal @last_modified_time.httpdate, response['Last-Modified']
           end
 
           it 'conditional GET matches and halts' do
-            get '/', {}, { 'HTTP_IF_MODIFIED_SINCE' => (@last_modified_time + 1).httpdate }
+            get('/', {}, { 'HTTP_IF_MODIFIED_SINCE' => (@last_modified_time + 1).httpdate })
             assert_equal 304, status
             assert_equal '', body
           end
@@ -978,13 +954,13 @@ class HelpersTest < Test::Unit::TestCase
 
         context "If-Unmodified-Since" do
           it 'results in 200 if resource has not been modified' do
-            get '/', {}, { 'HTTP_IF_UNMODIFIED_SINCE' => 'Sun, 26 Sep 2030 23:43:52 GMT' }
+            get('/', {}, { 'HTTP_IF_UNMODIFIED_SINCE' => 'Sun, 26 Sep 2030 23:43:52 GMT' })
             assert_equal 200, status
             assert_equal 'Boo!', body
           end
 
           it 'results in 412 if resource has been modified' do
-            get '/', {}, { 'HTTP_IF_UNMODIFIED_SINCE' => Time.at(0).httpdate }
+            get('/', {}, { 'HTTP_IF_UNMODIFIED_SINCE' => Time.at(0).httpdate })
             assert_equal 412, status
             assert_equal '', body
           end
@@ -997,13 +973,13 @@ class HelpersTest < Test::Unit::TestCase
     context "safe requests" do
       it 'returns 200 for normal requests' do
         mock_app do
-          get '/' do
+          get('/') do
             etag 'foo'
             'ok'
           end
         end
 
-        get('/')
+        get '/'
         assert_status 200
         assert_body 'ok'
       end
@@ -1011,7 +987,7 @@ class HelpersTest < Test::Unit::TestCase
       context "If-None-Match" do
         it 'returns 304 when If-None-Match is *' do
           mock_app do
-            get '/' do
+            get('/') do
               etag 'foo'
               'ok'
             end
@@ -1024,7 +1000,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 200 when If-None-Match is * for new resources' do
           mock_app do
-            get '/' do
+            get('/') do
               etag 'foo', :new_resource => true
               'ok'
             end
@@ -1037,7 +1013,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 304 when If-None-Match is * for existing resources' do
           mock_app do
-            get '/' do
+            get('/') do
               etag 'foo', :new_resource => false
               'ok'
             end
@@ -1050,7 +1026,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 304 when If-None-Match is the etag' do
           mock_app do
-            get '/' do
+            get('/') do
               etag 'foo'
               'ok'
             end
@@ -1063,7 +1039,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 304 when If-None-Match includes the etag' do
           mock_app do
-            get '/' do
+            get('/') do
               etag 'foo'
               'ok'
             end
@@ -1076,7 +1052,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 200 when If-None-Match does not include the etag' do
           mock_app do
-            get '/' do
+            get('/') do
               etag 'foo'
               'ok'
             end
@@ -1089,7 +1065,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'ignores If-Modified-Since if If-None-Match does not match' do
           mock_app do
-            get '/' do
+            get('/') do
               etag 'foo'
               last_modified Time.at(0)
               'ok'
@@ -1103,7 +1079,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'does not change a status code other than 2xx or 304' do
           mock_app do
-            get '/' do
+            get('/') do
               status 499
               etag 'foo'
               'ok'
@@ -1117,7 +1093,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'does change 2xx status codes' do
           mock_app do
-            get '/' do
+            get('/') do
               status 299
               etag 'foo'
               'ok'
@@ -1131,7 +1107,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'does not send a body on 304 status codes' do
           mock_app do
-            get '/' do
+            get('/') do
               status 304
               etag 'foo'
               'ok'
@@ -1147,7 +1123,7 @@ class HelpersTest < Test::Unit::TestCase
       context "If-Match" do
         it 'returns 200 when If-Match is the etag' do
           mock_app do
-            get '/' do
+            get('/') do
               etag 'foo'
               'ok'
             end
@@ -1160,7 +1136,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 200 when If-Match includes the etag' do
           mock_app do
-            get '/' do
+            get('/') do
               etag 'foo'
               'ok'
             end
@@ -1173,7 +1149,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 200 when If-Match is *' do
           mock_app do
-            get '/' do
+            get('/') do
               etag 'foo'
               'ok'
             end
@@ -1186,7 +1162,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 412 when If-Match is * for new resources' do
           mock_app do
-            get '/' do
+            get('/') do
               etag 'foo', :new_resource => true
               'ok'
             end
@@ -1199,7 +1175,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 200 when If-Match is * for existing resources' do
           mock_app do
-            get '/' do
+            get('/') do
               etag 'foo', :new_resource => false
               'ok'
             end
@@ -1212,7 +1188,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 412 when If-Match does not include the etag' do
           mock_app do
-            get '/' do
+            get('/') do
               etag 'foo'
               'ok'
             end
@@ -1228,13 +1204,13 @@ class HelpersTest < Test::Unit::TestCase
     context "idempotent requests" do
       it 'returns 200 for normal requests' do
         mock_app do
-          put '/' do
+          put('/') do
             etag 'foo'
             'ok'
           end
         end
 
-        put('/')
+        put '/'
         assert_status 200
         assert_body 'ok'
       end
@@ -1242,7 +1218,7 @@ class HelpersTest < Test::Unit::TestCase
       context "If-None-Match" do
         it 'returns 412 when If-None-Match is *' do
           mock_app do
-            put '/' do
+            put('/') do
               etag 'foo'
               'ok'
             end
@@ -1255,7 +1231,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 200 when If-None-Match is * for new resources' do
           mock_app do
-            put '/' do
+            put('/') do
               etag 'foo', :new_resource => true
               'ok'
             end
@@ -1268,7 +1244,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 412 when If-None-Match is * for existing resources' do
           mock_app do
-            put '/' do
+            put('/') do
               etag 'foo', :new_resource => false
               'ok'
             end
@@ -1294,7 +1270,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 412 when If-None-Match includes the etag' do
           mock_app do
-            put '/' do
+            put('/') do
               etag 'foo'
               'ok'
             end
@@ -1307,7 +1283,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 200 when If-None-Match does not include the etag' do
           mock_app do
-            put '/' do
+            put('/') do
               etag 'foo'
               'ok'
             end
@@ -1320,7 +1296,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'ignores If-Modified-Since if If-None-Match does not match' do
           mock_app do
-            put '/' do
+            put('/') do
               etag 'foo'
               last_modified Time.at(0)
               'ok'
@@ -1336,7 +1312,7 @@ class HelpersTest < Test::Unit::TestCase
       context "If-Match" do
         it 'returns 200 when If-Match is the etag' do
           mock_app do
-            put '/' do
+            put('/') do
               etag 'foo'
               'ok'
             end
@@ -1349,7 +1325,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 200 when If-Match includes the etag' do
           mock_app do
-            put '/' do
+            put('/') do
               etag 'foo'
               'ok'
             end
@@ -1362,7 +1338,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 200 when If-Match is *' do
           mock_app do
-            put '/' do
+            put('/') do
               etag 'foo'
               'ok'
             end
@@ -1375,7 +1351,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 412 when If-Match is * for new resources' do
           mock_app do
-            put '/' do
+            put('/') do
               etag 'foo', :new_resource => true
               'ok'
             end
@@ -1388,7 +1364,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 200 when If-Match is * for existing resources' do
           mock_app do
-            put '/' do
+            put('/') do
               etag 'foo', :new_resource => false
               'ok'
             end
@@ -1401,7 +1377,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 412 when If-Match does not include the etag' do
           mock_app do
-            put '/' do
+            put('/') do
               etag 'foo'
               'ok'
             end
@@ -1417,7 +1393,7 @@ class HelpersTest < Test::Unit::TestCase
     context "post requests" do
       it 'returns 200 for normal requests' do
         mock_app do
-          post '/' do
+          post('/') do
             etag 'foo'
             'ok'
           end
@@ -1431,7 +1407,7 @@ class HelpersTest < Test::Unit::TestCase
       context "If-None-Match" do
         it 'returns 200 when If-None-Match is *' do
           mock_app do
-            post '/' do
+            post('/') do
               etag 'foo'
               'ok'
             end
@@ -1444,7 +1420,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 200 when If-None-Match is * for new resources' do
           mock_app do
-            post '/' do
+            post('/') do
               etag 'foo', :new_resource => true
               'ok'
             end
@@ -1457,7 +1433,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 412 when If-None-Match is * for existing resources' do
           mock_app do
-            post '/' do
+            post('/') do
               etag 'foo', :new_resource => false
               'ok'
             end
@@ -1470,7 +1446,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 412 when If-None-Match is the etag' do
           mock_app do
-            post '/' do
+            post('/') do
               etag 'foo'
               'ok'
             end
@@ -1483,7 +1459,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 412 when If-None-Match includes the etag' do
           mock_app do
-            post '/' do
+            post('/') do
               etag 'foo'
               'ok'
             end
@@ -1496,7 +1472,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 200 when If-None-Match does not include the etag' do
           mock_app do
-            post '/' do
+            post('/') do
               etag 'foo'
               'ok'
             end
@@ -1509,7 +1485,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'ignores If-Modified-Since if If-None-Match does not match' do
           mock_app do
-            post '/' do
+            post('/') do
               etag 'foo'
               last_modified Time.at(0)
               'ok'
@@ -1525,7 +1501,7 @@ class HelpersTest < Test::Unit::TestCase
       context "If-Match" do
         it 'returns 200 when If-Match is the etag' do
           mock_app do
-            post '/' do
+            post('/') do
               etag 'foo'
               'ok'
             end
@@ -1538,7 +1514,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 200 when If-Match includes the etag' do
           mock_app do
-            post '/' do
+            post('/') do
               etag 'foo'
               'ok'
             end
@@ -1551,7 +1527,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 412 when If-Match is *' do
           mock_app do
-            post '/' do
+            post('/') do
               etag 'foo'
               'ok'
             end
@@ -1564,7 +1540,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 412 when If-Match is * for new resources' do
           mock_app do
-            post '/' do
+            post('/') do
               etag 'foo', :new_resource => true
               'ok'
             end
@@ -1577,7 +1553,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 200 when If-Match is * for existing resources' do
           mock_app do
-            post '/' do
+            post('/') do
               etag 'foo', :new_resource => false
               'ok'
             end
@@ -1590,7 +1566,7 @@ class HelpersTest < Test::Unit::TestCase
 
         it 'returns 412 when If-Match does not include the etag' do
           mock_app do
-            post '/' do
+            post('/') do
               etag 'foo'
               'ok'
             end
@@ -1605,7 +1581,7 @@ class HelpersTest < Test::Unit::TestCase
 
     it 'uses a weak etag with the :weak option' do
       mock_app do
-        get '/' do
+        get('/') do
           etag 'FOO', :weak
           "that's weak, dude."
         end
@@ -1616,24 +1592,20 @@ class HelpersTest < Test::Unit::TestCase
 
     it 'raises an ArgumentError for an invalid strength' do
       mock_app do
-        get '/' do
+        get('/') do
           etag 'FOO', :w00t
           "that's weak, dude."
         end
       end
-      assert_raise(ArgumentError) { get '/' }
+      assert_raise(ArgumentError) { get('/') }
     end
   end
 
   describe 'back' do
     it "makes redirecting back pretty" do
-      mock_app {
-        get '/foo' do
-          redirect back
-        end
-      }
+      mock_app { get('/foo') { redirect back } }
 
-      get '/foo', {}, 'HTTP_REFERER' => 'http://github.com'
+      get('/foo', {}, 'HTTP_REFERER' => 'http://github.com')
       assert redirect?
       assert_equal "http://github.com", response.location
     end
@@ -1693,7 +1665,7 @@ class HelpersTest < Test::Unit::TestCase
     it 'logging works when logging is enabled' do
       mock_app do
         enable :logging
-        get '/' do
+        get('/') do
           logger.info "Program started"
           logger.warn "Nothing to do!"
         end
@@ -1707,7 +1679,7 @@ class HelpersTest < Test::Unit::TestCase
     it 'logging works when logging is disable, but no output is produced' do
       mock_app do
         disable :logging
-        get '/' do
+        get('/') do
           logger.info "Program started"
           logger.warn "Nothing to do!"
         end
@@ -1734,17 +1706,13 @@ class HelpersTest < Test::Unit::TestCase
 
   describe 'Adding new helpers' do
     it 'takes a list of modules to mix into the app' do
-      mock_app {
+      mock_app do
         helpers ::HelperOne, ::HelperTwo
 
-        get '/one' do
-          one
-        end
+        get('/one') { one }
 
-        get '/two' do
-          two
-        end
-      }
+        get('/two') { two }
+      end
 
       get '/one'
       assert_equal '1', body
@@ -1754,32 +1722,26 @@ class HelpersTest < Test::Unit::TestCase
     end
 
     it 'takes a block to mix into the app' do
-      mock_app {
+      mock_app do
         helpers do
           def foo
             'foo'
           end
         end
 
-        get '/' do
-          foo
-        end
-      }
+        get('/') { foo }
+      end
 
       get '/'
       assert_equal 'foo', body
     end
 
     it 'evaluates the block in class context so that methods can be aliased' do
-      mock_app {
-        helpers do
-          alias_method :h, :escape_html
-        end
+      mock_app do
+        helpers { alias_method :h, :escape_html }
 
-        get '/' do
-          h('42 < 43')
-        end
-      }
+        get('/') { h('42 < 43') }
+      end
 
       get '/'
       assert ok?

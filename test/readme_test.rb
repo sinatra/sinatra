@@ -11,29 +11,17 @@ class ReadmeTest < Test::Unit::TestCase
   section "Routes" do
     example do
       mock_app do
-        get '/' do
-          ".. show something .."
-        end
+        get('/') { ".. show something .." }
 
-        post '/' do
-          ".. create something .."
-        end
+        post('/') { ".. create something .." }
 
-        put '/' do
-          ".. replace something .."
-        end
+        put('/') { ".. replace something .." }
 
-        patch '/' do
-          ".. modify something .."
-        end
+        patch('/') { ".. modify something .." }
 
-        delete '/' do
-          ".. annihilate something .."
-        end
+        delete('/') { ".. annihilate something .." }
 
-        options '/' do
-          ".. appease something .."
-        end
+        options('/') { ".. appease something .." }
       end
 
       get '/'
@@ -57,7 +45,7 @@ class ReadmeTest < Test::Unit::TestCase
 
     example do
       mock_app do
-        get '/hello/:name' do
+        get('/hello/:name') do
           # matches "GET /hello/foo" and "GET /hello/bar"
           # params[:name] is 'foo' or 'bar'
           "Hello #{params[:name]}!"
@@ -72,11 +60,7 @@ class ReadmeTest < Test::Unit::TestCase
     end
 
     example do
-      mock_app do
-        get '/hello/:name' do |n|
-          "Hello #{n}!"
-        end
-      end
+      mock_app { get('/hello/:name') { |n| "Hello #{n}!" } }
 
       get '/hello/foo'
       assert_body 'Hello foo!'
@@ -87,12 +71,12 @@ class ReadmeTest < Test::Unit::TestCase
 
     example do
       mock_app do
-        get '/say/*/to/*' do
+        get('/say/*/to/*') do
           # matches /say/hello/to/world
           params[:splat].inspect # => ["hello", "world"]
         end
 
-        get '/download/*.*' do
+        get('/download/*.*') do
           # matches /download/path/to/file.xml
           params[:splat].inspect # => ["path/to/file", "xml"]
         end
@@ -107,9 +91,9 @@ class ReadmeTest < Test::Unit::TestCase
 
     example do
       mock_app do
-        get %r{/hello/([\w]+)} do
+        get(%r{/hello/([\w]+)}) {
           "Hello, #{params[:captures].first}!"
-        end
+        }
       end
 
       get '/hello/foo'
@@ -121,9 +105,9 @@ class ReadmeTest < Test::Unit::TestCase
 
     example do
       mock_app do
-        get %r{/hello/([\w]+)} do |c|
+        get( %r{/hello/([\w]+)}) { |c|
           "Hello, #{c}!"
-        end
+        }
       end
 
       get '/hello/foo'

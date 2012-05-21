@@ -7,7 +7,7 @@ class RadiusTest < Test::Unit::TestCase
   def radius_app(&block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
-      get '/', &block
+      get('/', &block)
     end
     get '/'
   end
@@ -46,9 +46,9 @@ class RadiusTest < Test::Unit::TestCase
   end
   
   it "allows passing locals" do
-    radius_app do
+    radius_app {
       radius '<r:value />', :locals => { :value => 'foo' }
-    end
+    }
     assert ok?
     assert_equal 'foo', body
   end

@@ -3,9 +3,7 @@
 require File.expand_path('../helper', __FILE__)
 
 class ResponseTest < Test::Unit::TestCase
-  setup do
-    @response = Sinatra::Response.new
-  end
+  setup { @response = Sinatra::Response.new }
 
   it "initializes with 200, text/html, and empty body" do
     assert_equal 200, @response.status

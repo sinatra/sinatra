@@ -5,11 +5,11 @@ require 'builder'
 
 class BuilderTest < Test::Unit::TestCase
   def builder_app(options = {}, &block)
-    mock_app {
+    mock_app do
       set :views, File.dirname(__FILE__) + '/views'
       set options
-      get '/', &block
-    }
+      get('/', &block)
+    end
     get '/'
   end
 
@@ -43,49 +43,45 @@ class BuilderTest < Test::Unit::TestCase
   end
 
   it 'renders inline blocks' do
-    builder_app {
+    builder_app do
       @name = "Frank & Mary"
-      builder do |xml|
-        xml.couple @name
-      end
-    }
+      builder { |xml| xml.couple @name }
+    end
     assert ok?
     assert_equal "<couple>Frank &amp; Mary</couple>\n", body
   end
 
   it 'renders .builder files in views path' do
-    builder_app {
+    builder_app do
       @name = "Blue"
       builder :hello
-    }
+    end
     assert ok?
     assert_equal %(<exclaim>You're my boy, Blue!</exclaim>\n), body
   end
 
   it "renders with inline layouts" do
-    mock_app {
-      layout do
-        %(xml.layout { xml << yield })
-      end
+    mock_app do
+      layout { %(xml.layout { xml << yield }) }
       get('/') { builder %(xml.em 'Hello World') }
-    }
+    end
     get '/'
     assert ok?
     assert_equal "<layout>\n<em>Hello World</em>\n</layout>\n", body
   end
 
   it "renders with file layouts" do
-    builder_app {
+    builder_app do
       builder %(xml.em 'Hello World'), :layout => :layout2
-    }
+    end
     assert ok?
     assert_equal "<layout>\n<em>Hello World</em>\n</layout>\n", body
   end
 
   it "raises error if template not found" do
-    mock_app {
+    mock_app do
       get('/') { builder :no_such_template }
-    }
+    end
     assert_raise(Errno::ENOENT) { get('/') }
   end
 end

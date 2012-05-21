@@ -12,11 +12,11 @@ end
 
 class CoffeeTest < Test::Unit::TestCase
   def coffee_app(options = {}, &block)
-    mock_app {
+    mock_app do
       set :views, File.dirname(__FILE__) + '/views'
       set(options)
-      get '/', &block
-    }
+      get('/', &block)
+    end
     get '/'
   end
 
@@ -77,9 +77,7 @@ class CoffeeTest < Test::Unit::TestCase
   it "passes default coffee options to the coffee engine" do
     mock_app do
       set :coffee, :no_wrap => true # default coffee style is :nested
-      get '/' do
-        coffee "alert 'Aye!'\n"
-      end
+      get('/') { coffee "alert 'Aye!'\n" }
     end
     get '/'
     assert ok?

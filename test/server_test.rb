@@ -21,11 +21,11 @@ end
 
 class ServerTest < Test::Unit::TestCase
   setup do
-    mock_app {
+    mock_app do
       set :server, 'mock'
       set :bind, 'foo.local'
       set :port, 9001
-    }
+    end
     $stderr = StringIO.new
   end
 

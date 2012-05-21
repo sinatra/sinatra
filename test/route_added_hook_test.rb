@@ -11,16 +11,16 @@ module RouteAddedTest
 end
 
 class RouteAddedHookTest < Test::Unit::TestCase
-  setup { 
+  setup do
     RouteAddedTest.routes.clear
     RouteAddedTest.procs.clear
-  }
+  end
 
   it "should be notified of an added route" do
-    mock_app(Class.new(Sinatra::Base)) {
+    mock_app(Class.new(Sinatra::Base)) do
       register RouteAddedTest
       get('/') {}
-    }
+    end
 
     assert_equal [["GET", "/"], ["HEAD", "/"]],
       RouteAddedTest.routes
@@ -38,21 +38,21 @@ class RouteAddedHookTest < Test::Unit::TestCase
   end
 
   it "should only run once per extension" do
-    mock_app(Class.new(Sinatra::Base)) {
+    mock_app(Class.new(Sinatra::Base)) do
       register RouteAddedTest
       register RouteAddedTest
       get('/') {}
-    }
+    end
 
     assert_equal [["GET", "/"], ["HEAD", "/"]],
       RouteAddedTest.routes
   end
   
   it "should pass route blocks as an argument" do
-    mock_app(Class.new(Sinatra::Base)) {
+    mock_app(Class.new(Sinatra::Base)) do
       register RouteAddedTest
       get('/') {}
-    }
+    end
 
     assert_kind_of Proc, RouteAddedTest.procs.first    
   end

@@ -6,11 +6,11 @@ require 'sass'
 
 class ScssTest < Test::Unit::TestCase
   def scss_app(options = {}, &block)
-    mock_app {
+    mock_app do
       set :views, File.dirname(__FILE__) + '/views'
       set options
-      get '/', &block
-    }
+      get('/', &block)
+    end
     get '/'
   end
 
@@ -36,9 +36,9 @@ class ScssTest < Test::Unit::TestCase
   end
 
   it 'defaults allows setting content type globally' do
-    scss_app(:scss => { :content_type => 'html' }) do
+    scss_app(:scss => { :content_type => 'html' }) {
       scss "#scss {\n  background-color: white; }\n"
-    end
+    }
     assert ok?
     assert_equal "text/html;charset=utf-8", response['Content-Type']
   end
@@ -56,28 +56,28 @@ class ScssTest < Test::Unit::TestCase
   end
 
   it "raises error if template not found" do
-    mock_app {
-      get('/') { scss :no_such_template }
-    }
+    mock_app { get('/') { scss(:no_such_template) } }
     assert_raise(Errno::ENOENT) { get('/') }
   end
 
   it "passes scss options to the scss engine" do
-    scss_app {
-      scss "#scss {\n  background-color: white;\n  color: black\n}",
+    scss_app do
+      scss(
+        "#scss {\n  background-color: white;\n  color: black\n}",
         :style => :compact
-    }
+      )
+    end
     assert ok?
     assert_equal "#scss { background-color: white; color: black; }\n", body
   end
 
   it "passes default scss options to the scss engine" do
-    mock_app {
+    mock_app do
       set :scss, {:style => :compact} # default scss style is :nested
-      get '/' do
-        scss "#scss {\n  background-color: white;\n  color: black;\n}"
-      end
-    }
+      get('/') {
+        scss("#scss {\n  background-color: white;\n  color: black;\n}") 
+      }
+    end 
     get '/'
     assert ok?
     assert_equal "#scss { background-color: white; color: black; }\n", body
