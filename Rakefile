@@ -56,7 +56,7 @@ end
 # Rcov ================================================================
 
 namespace :test do
-  desc 'Mesures test coverage'
+  desc 'Measures test coverage'
   task :coverage do
     rm_f "coverage"
     sh "rcov -Ilib test/*_test.rb"
