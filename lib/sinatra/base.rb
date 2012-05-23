@@ -77,7 +77,9 @@ module Sinatra
         headers.delete "Content-Length"
         headers.delete "Content-Type"
       elsif Array === body and not [204, 304].include?(status.to_i)
-        headers["Content-Length"] = body.inject(0) { |l, p| l + Rack::Utils.bytesize(p) }.to_s
+        # if some other code has already set Content-Length, don't muck with it
+        # currently, this would be the static file-handler
+        headers["Content-Length"] ||= body.inject(0) { |l, p| l + Rack::Utils.bytesize(p) }.to_s
       end
 
       # Rack::Response#finish sometimes returns self as response body. We don't want that.

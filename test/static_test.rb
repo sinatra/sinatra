@@ -37,6 +37,7 @@ class StaticTest < Test::Unit::TestCase
     assert ok?
     assert_equal '', body
     assert response.headers.include?('Last-Modified')
+    assert_equal File.size(__FILE__).to_s, response['Content-Length']
   end
 
   %w[POST PUT DELETE].each do |verb|
