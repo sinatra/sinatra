@@ -77,7 +77,9 @@ module Sinatra
         headers.delete "Content-Length"
         headers.delete "Content-Type"
       elsif Array === body and not [204, 304].include?(status.to_i)
-        headers["Content-Length"] = body.inject(0) { |l, p| l + Rack::Utils.bytesize(p) }.to_s
+        # if some other code has already set Content-Length, don't muck with it
+        # currently, this would be the static file-handler
+        headers["Content-Length"] ||= body.inject(0) { |l, p| l + Rack::Utils.bytesize(p) }.to_s
       end
 
       # Rack::Response#finish sometimes returns self as response body. We don't want that.
@@ -986,7 +988,7 @@ module Sinatra
     def error_block!(key, *block_params)
       base = settings
       while base.respond_to?(:errors)
-        next base = base.superclass unless args_array = base.errors[key] 
+        next base = base.superclass unless args_array = base.errors[key]
         args_array.reverse_each do |args|
           first = args == args_array.first
           args += [block_params]
@@ -1092,7 +1094,7 @@ module Sinatra
       # Define a custom error handler. Optionally takes either an Exception
       # class, or an HTTP status code to specify which errors should be
       # handled.
-      def error(*codes, &block) 
+      def error(*codes, &block)
         args  = compile! "ERROR", //, block
         codes = codes.map { |c| Array(c) }.flatten
         codes << Exception if codes.empty?
