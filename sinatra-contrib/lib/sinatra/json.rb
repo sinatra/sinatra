@@ -100,7 +100,8 @@ module Sinatra
         fail "invalid: #{o.inspect}" unless a.empty? or a.include? o.class
         case o
         when Float  then o.nan? || o.infinite? ? 'null' : o.inspect
-        when TrueClass, FalseClass, NilClass, Numeric, String then o.inspect
+        when TrueClass, FalseClass, Numeric, String then o.inspect
+        when NilClass then 'null'
         when Array  then map(o, "[%s]") { |e| enc(e) }
         when Hash   then map(o, "{%s}") { |k,v| enc(k, String) + ":" + enc(v) }
         end
