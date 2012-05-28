@@ -12,7 +12,7 @@ module Rack
     class PathTraversal < Base
       def call(env)
         path_was         = env["PATH_INFO"]
-        env["PATH_INFO"] = cleanup path_was if path_was
+        env["PATH_INFO"] = cleanup path_was if path_was && !path_was.empty?
         app.call env
       ensure
         env["PATH_INFO"] = path_was
