@@ -616,7 +616,7 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal '<sinatra></sinatra>', body   
     end
     
-    it 'sets the Content-Type response header without extname' do
+    it 'sets the Content-Type response header with extname' do
       mock_app do
         get '/attachment' do
           content_type :atom
