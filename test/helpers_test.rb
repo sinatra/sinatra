@@ -31,12 +31,12 @@ class HelpersTest < Test::Unit::TestCase
       assert_body 'true'
     end
 
-    it 'is false for status > 404' do
+    it 'is false for status gt 404' do
       status_app(405) { not_found? }
       assert_body 'false'
     end
 
-    it 'is false for status < 404' do
+    it 'is false for status lt 404' do
       status_app(403) { not_found? }
       assert_body 'false'
     end
