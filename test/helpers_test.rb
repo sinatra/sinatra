@@ -828,12 +828,12 @@ class HelpersTest < Test::Unit::TestCase
       assert_not_nil response['Expires']
     end
 
-    it 'allows passing time objects' do
+    it 'allows passing Time.now objects' do
       get '/bar'
       assert_not_nil response['Expires']
     end
 
-    it 'allows passing time objects' do
+    it 'allows passing Time.at objects' do
       get '/baz'
       assert_equal 'Thu, 01 Jan 1970 00:00:00 GMT', response['Expires']
     end
