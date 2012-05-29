@@ -412,7 +412,7 @@ class AfterFilterTest < Test::Unit::TestCase
     assert ran
   end
 
-  it 'is possible to apply user_agent conditions to before filters with a path' do
+  it 'is possible to apply user_agent conditions to after filters with a path' do
     ran = false
     mock_app do
       after('/foo', :user_agent => /foo/) { ran = true }
