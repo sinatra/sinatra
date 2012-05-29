@@ -1474,6 +1474,7 @@ module Sinatra
         options = Hash === protection ? protection.dup : {}
         options[:except] = Array options[:except]
         options[:except] += [:session_hijacking, :remote_token] unless sessions?
+        options[:reaction] ||= :drop_session
         builder.use Rack::Protection, options
       end
 
