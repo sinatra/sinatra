@@ -156,11 +156,11 @@ class BeforeFilterTest < Test::Unit::TestCase
 end
 
 class AfterFilterTest < Test::Unit::TestCase
-  it "executes filters in the order defined" do
+  it "executes before and after filters in correct order" do
     invoked = 0
     mock_app do
       before   { invoked = 2 }
-      get('/') { invoked += 2 }
+      get('/') { invoked += 2; 'hello' }
       after    { invoked *= 2 }
     end
 
@@ -410,7 +410,7 @@ class AfterFilterTest < Test::Unit::TestCase
     assert ran
   end
 
-  it 'is possible to apply user_agent conditions to before filters with a path' do
+  it 'is possible to apply user_agent conditions to after filters with a path' do
     ran = false
     mock_app do
       after('/foo', :user_agent => /foo/) { ran = true }

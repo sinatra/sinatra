@@ -100,7 +100,7 @@ class DelegatorTest < Test::Unit::TestCase
     assert_equal ["helpers", mixin.to_s], app.last_call
   end
 
-  it "registers helpers with the delegation target" do
+  it "registers middleware with the delegation target" do
     app, mixin = mirror, Module.new
     Sinatra.use mixin
     assert_equal ["use", mixin.to_s], app.last_call
