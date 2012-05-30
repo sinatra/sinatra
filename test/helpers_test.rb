@@ -31,12 +31,12 @@ class HelpersTest < Test::Unit::TestCase
       assert_body 'true'
     end
 
-    it 'is false for status > 404' do
+    it 'is false for status gt 404' do
       status_app(405) { not_found? }
       assert_body 'false'
     end
 
-    it 'is false for status < 404' do
+    it 'is false for status lt 404' do
       status_app(403) { not_found? }
       assert_body 'false'
     end
@@ -601,7 +601,7 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal '<sinatra></sinatra>', body   
     end
     
-    it 'sets the Content-Type response header without extname' do
+    it 'sets the Content-Type response header with extname' do
       mock_app do
         get('/attachment') do
           content_type :atom
@@ -812,12 +812,12 @@ class HelpersTest < Test::Unit::TestCase
       assert_not_nil response['Expires']
     end
 
-    it 'allows passing time objects' do
+    it 'allows passing Time.now objects' do
       get '/bar'
       assert_not_nil response['Expires']
     end
 
-    it 'allows passing time objects' do
+    it 'allows passing Time.at objects' do
       get '/baz'
       assert_equal 'Thu, 01 Jan 1970 00:00:00 GMT', response['Expires']
     end
