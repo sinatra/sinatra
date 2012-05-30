@@ -184,7 +184,7 @@ hamlを使うにはhamlライブラリが必要です:
 
 <tt>./views/index.haml</tt>を表示します。
 
-{Haml's options}[http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options]
+{Haml's options}[http://haml.info/docs/yardoc/file.HAML_REFERENCE.html#options]
 はSinatraの設定でグローバルに設定することができます。
 {Options and Configurations}[http://www.sinatrarb.com/configuration.html],
 を参照してそれぞれ設定を上書きして下さい。
