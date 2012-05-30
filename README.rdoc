@@ -344,7 +344,7 @@ to use (and to be thread-safe), you should simply require it first:
 
 === Haml Templates
 
-Dependency::        {haml}[http://haml-lang.com/]
+Dependency::        {haml}[http://haml.info/]
 File Extensions::   <tt>.haml</tt>
 Example::           <tt>haml :index, :format => :html5</tt>
 

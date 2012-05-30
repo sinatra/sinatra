@@ -229,7 +229,7 @@ Rack body对象或者HTTP状态码：
 
 渲染 <tt>./views/index.haml</tt>。
 
-{Haml的选项}[http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options]
+{Haml的选项}[http://haml.info/docs/yardoc/file.HAML_REFERENCE.html#options]
 可以通过Sinatra的配置全局设定，
 参见 {选项和配置}[http://www.sinatrarb.com/configuration.html]，
 也可以个别的被覆盖。

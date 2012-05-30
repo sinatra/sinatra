@@ -323,7 +323,7 @@ render 메서드에서 전달된 옵션값들은 +set+을 통해 설정한 옵�
 
 === Haml 템플릿
 
-의존::        {haml}[http://haml-lang.com/]
+의존::        {haml}[http://haml.info/]
 파일 확장자::   <tt>.haml</tt>
 예::           <tt>haml :index, :format => :html5</tt>
 
