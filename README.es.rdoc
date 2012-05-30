@@ -357,7 +357,7 @@ usarla:
 
 === Plantillas Haml
 
-Dependencias::             {haml}[http://haml-lang.com/]
+Dependencias::             {haml}[http://haml.info/]
 Extensiones de Archivo::   <tt>.haml</tt>
 Ejemplo::                  <tt>haml :index, :format => :html5</tt>
 
