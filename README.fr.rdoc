@@ -363,7 +363,7 @@ chargée au préalable :
 
 === Templates Haml
 
-Dépendances::             {haml}[http://haml-lang.com/]
+Dépendances::             {haml}[http://haml.info/]
 Extensions de fichier::   <tt>.haml</tt>
 Exemple::                 <tt>haml :index, :format => :html5</tt>
 
