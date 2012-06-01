@@ -496,6 +496,12 @@ Ejemplos::                 <tt>markaby { h1 "Bienvenido!" }</tt>
 
 Además, acepta un bloque con la definición de la plantilla (ver el ejemplo).
 
+=== Plantillas RABL
+
+Dependencias::             {rabl}[https://github.com/nesquena/rabl]
+Extensiones de Archivo::   <tt>.rabl</tt>
+Ejemplo::                  <tt>rabl :index</tt>
+
 === Plantillas Slim
 
 Dependencias::             {slim}[http://slim-lang.com/]
