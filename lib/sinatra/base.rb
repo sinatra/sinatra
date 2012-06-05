@@ -645,6 +645,10 @@ module Sinatra
       render :creole, template, options, locals
     end
 
+    def wlang(template, options={}, locals={})
+      render :wlang, template, options, locals
+    end
+
     def yajl(template, options={}, locals={})
       options[:default_content_type] = :json
       render :yajl, template, options, locals
