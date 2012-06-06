@@ -6,6 +6,7 @@ rvm:
   - rbx-19mode
   - jruby-18mode
   - jruby-19mode
+  - jruby-head
   - ruby-head
 env:
   - "rack=1.3.6"
@@ -16,6 +17,7 @@ env:
 matrix:
   allow_failures:
     - rvm: ruby-head
+    - rvm: jruby-head
 notifications:
   recipients:
     - k.haase@finn.de
