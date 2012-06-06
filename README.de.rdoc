@@ -360,7 +360,7 @@ Beginn ein 'require':
 
 === Haml Templates
 
-Abhängigkeit::        {haml}[http://haml-lang.com/]
+Abhängigkeit::        {haml}[http://haml.info/]
 Dateierweiterungs::   <tt>.haml</tt>
 Beispiel::           <tt>haml :index, :format => :html5</tt>
 

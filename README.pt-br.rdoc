@@ -128,7 +128,7 @@ A gem/biblioteca haml é necessária para renderizar templates HAML:
 
 Renderiza <tt>./views/index.haml</tt>.
 
-{Opções Haml}[http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options]
+{Opções Haml}[http://haml.info/docs/yardoc/file.HAML_REFERENCE.html#options]
 podem ser setadas globalmente através das configurações do sinatra,
 veja {Opções e Configurações}[http://www.sinatrarb.com/configuration.html],
 e substitua em uma requisição individual.
