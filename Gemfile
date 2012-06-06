@@ -42,7 +42,7 @@ gem 'maruku'
 gem 'creole'
 gem 'markaby'
 gem 'radius'
-gem 'rabl'
+gem 'rabl' unless RUBY_ENGINE == 'jruby'
 
 if RUBY_ENGINE == 'jruby'
   gem 'nokogiri', '!= 1.5.0'
