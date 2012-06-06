@@ -650,6 +650,11 @@ module Sinatra
       render :yajl, template, options, locals
     end
 
+    def rabl(template, options={}, locals={})
+      Rabl.register!
+      render :rabl, template, options, locals
+    end
+
     # Calls the given block for every possible template file in views,
     # named name.ext, where ext is registered on engine.
     def find_template(views, name, engine)

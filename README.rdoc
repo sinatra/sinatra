@@ -481,6 +481,12 @@ Example::           <tt>markaby { h1 "Welcome!" }</tt>
 
 It also takes a block for inline templates (see example).
 
+=== RABL Templates
+
+Dependency::        {rabl}[https://github.com/nesquena/rabl]
+File Extensions::   <tt>.rabl</tt>
+Example::           <tt>rabl :index</tt>
+
 === Slim Templates
 
 Dependency::        {slim}[http://slim-lang.com/]

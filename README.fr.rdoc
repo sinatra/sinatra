@@ -508,6 +508,12 @@ Exemple::                 <tt>markaby { h1 "Bienvenue !" }</tt>
 
 Ce moteur accepte également un bloc pour des templates en ligne (voir exemple).
 
+=== Templates RABL
+
+Dépendances::             {rabl}[https://github.com/nesquena/rabl]
+Extensions de fichier::   <tt>.rabl</tt>
+Exemple::                 <tt>rabl :index</tt>
+
 === Templates Slim
 
 Dépendances::             {slim}[http://slim-lang.com/]

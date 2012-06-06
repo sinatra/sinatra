@@ -508,6 +508,12 @@ Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 
 === Slim Templates
 
+Abhängigkeit::        {rabl}[https://github.com/nesquena/rabl]
+Dateierweiterungs::   <tt>.rabl</tt>
+Beispiel::           <tt>rabl :index</tt>
+
+=== Slim Templates
+
 Abhängigkeit::        {slim}[http://slim-lang.com/]
 Dateierweiterungs::   <tt>.slim</tt>
 Beispiel::           <tt>slim :index</tt>
