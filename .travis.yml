@@ -16,8 +16,6 @@ env:
 matrix:
   allow_failures:
     - rvm: ruby-head
-    - rvm: rbx-19mode
-    - rvm: jruby-19mode
 notifications:
   recipients:
     - k.haase@finn.de
