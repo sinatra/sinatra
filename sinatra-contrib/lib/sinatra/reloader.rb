@@ -13,7 +13,7 @@ module Sinatra
   #
   # === Classic Application
   #
-  # To enable the realoader in a classic application all you need to do is
+  # To enable the reloader in a classic application all you need to do is
   # require it:
   #
   #     require "sinatra"
@@ -23,7 +23,7 @@ module Sinatra
   #
   # === Modular Application
   #
-  # To enable the realoader in a modular application all you need to do is
+  # To enable the reloader in a modular application all you need to do is
   # require it, and then, register it:
   #
   #     require "sinatra/base"
