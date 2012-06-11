@@ -466,7 +466,11 @@ describe Sinatra::Cookies do
     end
 
     it 'raises an exception if key does not exist' do
-      error = RUBY_VERSION >= '1.9' ? KeyError : IndexError
+      error = if defined? JRUBY_VERSION
+        IndexError
+      else
+        RUBY_VERSION >= '1.9' ? KeyError : IndexError
+      end
       expect { cookies.fetch('foo') }.to raise_exception(error)
     end
 
