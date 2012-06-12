@@ -1,4 +1,6 @@
 require File.expand_path('../helper', __FILE__)
+
+begin
 require 'wlang'
 
 class WLangTest < Test::Unit::TestCase
@@ -61,4 +63,8 @@ class WLangTest < Test::Unit::TestCase
     assert_body "WLang Layout!\nHello World"
   end
 
+end
+
+rescue LoadError
+  warn "#{$!.to_s}: skipping wlang tests"
 end
