@@ -529,6 +529,15 @@ The <tt>:callback</tt> and <tt>:variable</tt> options can be used to decorate th
 
   var resource = {"foo":"bar","baz":"qux"}; present(resource);
 
+=== WLang Templates
+
+Dependency::        {wlang}[https://github.com/blambeau/wlang/]
+File Extensions::   <tt>.wlang</tt>
+Example::           <tt>wlang :index, :locals => { :key => 'value' }</tt>
+
+Since calling ruby methods is not idiomatic in wlang, you almost always want to pass locals
+to it. Layouts written in wlang and +yield+ are supported, though.
+
 === Embedded Templates
 
   get '/' do
