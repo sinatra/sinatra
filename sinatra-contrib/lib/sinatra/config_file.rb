@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require 'yaml'
+require 'erb'
 
 module Sinatra
 
@@ -114,7 +115,7 @@ module Sinatra
         paths.each do |pattern|
           Dir.glob(pattern) do |file|
             $stderr.puts "loading config file '#{file}'" if logging?
-            yaml = config_for_env(YAML.load_file(file)) || {}
+            yaml = config_for_env(YAML.load(ERB.new(IO.read(file)).result)) || {}
             yaml.each_pair do |key, value|
               for_env = config_for_env(value)
               set key, for_env unless value and for_env.nil? and respond_to? key

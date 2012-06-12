@@ -59,6 +59,7 @@ Gem::Specification.new do |s|
     "spec/config_file/key_value_override.yml",
     "spec/config_file/missing_env.yml",
     "spec/config_file/with_envs.yml",
+    "spec/config_file/with_erb.yml",
     "spec/config_file/with_nested_envs.yml",
     "spec/config_file_spec.rb",
     "spec/content_for/different_key.erb",
