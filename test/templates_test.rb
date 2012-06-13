@@ -14,6 +14,8 @@ class TestTemplate < Tilt::Template
   Tilt.register 'test', self
 end
 
+Pathlike = Struct.new(:path)
+
 class TemplatesTest < Test::Unit::TestCase
   def render_app(base=Sinatra::Base, options = {}, &block)
     base, options = Sinatra::Base, base if base.is_a? Hash
@@ -50,6 +52,27 @@ class TemplatesTest < Test::Unit::TestCase
     render_app { render(:test, :hello) }
     assert ok?
     assert_equal "Hello World!\n", body
+  end
+
+  it 'renders Path-like objects given a relative path to views' do
+    render_app{ render(:test, Pathlike.new('hello.test')) }
+    assert ok?
+    assert_equal "Hello World!\n", body
+  end
+
+  it 'renders Path-like objects given an absolute path' do
+    render_app{ render(:test, Pathlike.new(File.expand_path("../views/hello.test", __FILE__))) }
+    assert ok?
+    assert_equal "Hello World!\n", body
+  end
+
+  it 'does not render Path-like objects outside views' do
+    mock_app do
+      get '/' do
+        render :test, Pathlike.new(File.expand_path(__FILE__))
+      end
+    end
+    assert_throws(:layout_missing){ get '/' }
   end
 
   it 'uses the default layout template if not explicitly overridden' do

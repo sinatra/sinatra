@@ -738,7 +738,14 @@ module Sinatra
           path, line = settings.caller_locations.first
           template.new(path, line.to_i, options, &body)
         else
-          raise ArgumentError, "Sorry, don't know how to render #{data.inspect}."
+          if data.respond_to?(:path) and path = data.path
+            path = File.absolute_path(path, views)
+            throw :layout_missing unless path.index(File.expand_path(views))==0
+            throw :layout_missing if eat_errors and not File.exists?(path)
+            template.new(path, 1, options)
+          else
+            raise ArgumentError, "Sorry, don't know how to render #{data.inspect}."
+          end
         end
       end
     end
