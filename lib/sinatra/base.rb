@@ -748,6 +748,7 @@ module Sinatra
       output
     end
 
+    # preserved for backward compatibility
     def compile_template(engine, view, options, views)
       tilt_template(view, options.merge(:engine => engine), views)
     end
@@ -767,7 +768,7 @@ module Sinatra
     def tilt_compile(view, greedy={})
       case view
       when Hash
-        engine     = view[:engine] || find_view_engine(view.to_s, view)
+        engine     = view[:engine]
         engine     = Tilt[engine.to_s] unless Class===engine
         path, line = view[:location]
         options    = view[:options]
