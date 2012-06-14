@@ -34,6 +34,14 @@ class TemplatesTest < Test::Unit::TestCase
     File.unlink(layout) rescue nil
   end
 
+  def with_hello_paths
+    require 'pathname'
+    path = File.dirname(__FILE__) + '/views/hello.test'
+    yield Struct.new(:path).new(path)
+    yield Struct.new(:to_path).new(path)
+    yield Pathname.new(path)
+  end
+
   it 'renders String templates directly' do
     render_app { render(:test, 'Hello World') }
     assert ok?
@@ -52,26 +60,12 @@ class TemplatesTest < Test::Unit::TestCase
     assert_equal "Hello World!\n", body
   end
 
-  it 'renders Pathname from the underlying file' do
-    require 'pathname'
-    path = Pathname.new(File.dirname(__FILE__) + '/views/hello.test')
-    render_app{ render(:test, path) }
-    assert ok?
-    assert_equal "Hello World!\n", body
-  end
-
-  it 'renders objects responding to :path from the file' do
-    path = Struct.new(:path).new(File.dirname(__FILE__) + '/views/hello.test')
-    render_app{ render(:test, path) }
-    assert ok?
-    assert_equal "Hello World!\n", body
-  end
-
-  it 'renders objects responding to :to_path from the file' do
-    path = Struct.new(:to_path).new(File.dirname(__FILE__) + '/views/hello.test')
-    render_app{ render(:test, path) }
-    assert ok?
-    assert_equal "Hello World!\n", body
+  it 'renders path-able objects from their file' do
+    with_hello_paths do |path|
+      render_app{ render(:test, path) }
+      assert ok?
+      assert_equal "Hello World!\n", body
+    end
   end
 
   it 'uses the default layout template if not explicitly overridden' do
