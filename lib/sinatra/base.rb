@@ -782,12 +782,14 @@ module Sinatra
         tilt_compile(greedy)
       when String
         tilt_compile(Proc.new{ view }, greedy)
-      when Path
-        greedy[:engine] ||= find_view_engine(view.to_s, greedy)
-        greedy[:location] = [view.to_s, 1]
-        tilt_compile(greedy)
       else
-        raise ArgumentError, "Sorry, don't know how to render #{view.inspect}."
+        path   = view.path    if view.respond_to?(:path)
+        path ||= view.to_path if view.respond_to?(:to_path)
+        path ||= view.to_s    if defined?(Pathname) and Pathname===view
+        raise ArgumentError, "Sorry, don't know how to render #{view.inspect}." unless path
+        greedy[:engine] ||= find_view_engine(path, greedy)
+        greedy[:location] = [path, 1]
+        tilt_compile(greedy)
       end
     end
 

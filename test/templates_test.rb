@@ -52,6 +52,28 @@ class TemplatesTest < Test::Unit::TestCase
     assert_equal "Hello World!\n", body
   end
 
+  it 'renders Pathname from the underlying file' do
+    require 'pathname'
+    path = Pathname.new(File.dirname(__FILE__) + '/views/hello.test')
+    render_app{ render(:test, path) }
+    assert ok?
+    assert_equal "Hello World!\n", body
+  end
+
+  it 'renders objects responding to :path from the file' do
+    path = Struct.new(:path).new(File.dirname(__FILE__) + '/views/hello.test')
+    render_app{ render(:test, path) }
+    assert ok?
+    assert_equal "Hello World!\n", body
+  end
+
+  it 'renders objects responding to :to_path from the file' do
+    path = Struct.new(:to_path).new(File.dirname(__FILE__) + '/views/hello.test')
+    render_app{ render(:test, path) }
+    assert ok?
+    assert_equal "Hello World!\n", body
+  end
+
   it 'uses the default layout template if not explicitly overridden' do
     with_default_layout do
       render_app { render(:test, :hello) }
