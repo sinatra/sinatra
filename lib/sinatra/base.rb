@@ -746,7 +746,6 @@ module Sinatra
     def tilt_template(view, options, views)
       template_cache.fetch view, options do
         greedy = {}
-        greedy[:original_key] = view
         greedy[:views]        = views
         greedy[:eat_errors]   = options.delete :eat_errors
         greedy[:options]      = options
