@@ -737,56 +737,55 @@ module Sinatra
       output
     end
 
-    def tilt_template(key, options, views)
-      template_cache.fetch key, options do
-        greedy = {}
-        raise "Invalid nil key" if key.nil?
-        greedy[:original_key] = key
-        greedy[:views]        = views
-        greedy[:eat_errors]   = options.delete :eat_errors
-        greedy[:options]      = options
-        greedy[:location]     = settings.caller_locations.first
-        tilt_compile(key, greedy)
-      end
-    end
-
     def compile_template(engine, data, options, views)
       tilt_template([engine, data], options, views)
     end
 
-    def tilt_compile(template, greedy={})
-      case template
+    def tilt_template(view, options, views)
+      template_cache.fetch view, options do
+        greedy = {}
+        greedy[:original_key] = view
+        greedy[:views]        = views
+        greedy[:eat_errors]   = options.delete :eat_errors
+        greedy[:options]      = options
+        greedy[:location]     = settings.caller_locations.first
+        tilt_compile(view, greedy)
+      end
+    end
+
+    def tilt_compile(view, greedy={})
+      case view
       when Hash
-        engine     = template[:engine]
-        path, line = template[:location]
-        options    = template[:options]
-        body       = template[:body]
+        engine     = view[:engine]
+        path, line = view[:location]
+        options    = view[:options]
+        body       = view[:body]
         engine.new(path, line, options, &body)
       when Array
-        greedy[:engine] = find_template_engine(template.first.to_s, greedy)
-        tilt_compile(template.last, greedy)
+        greedy[:engine] = find_template_engine(view.first.to_s, greedy)
+        tilt_compile(view.last, greedy)
       when Symbol
-        greedy[:engine] ||= find_template_engine(template, greedy)
-        body, path, line = settings.templates[template]
+        greedy[:engine] ||= find_template_engine(view, greedy)
+        body, path, line = settings.templates[view]
         if body
           body = body.call if body.respond_to?(:call)
           greedy[:body]     = Proc.new{ body }
           greedy[:location] = [path, line]
         else
-          greedy[:location] = find_template_location(template, greedy)
+          greedy[:location] = find_template_location(view, greedy)
         end
         tilt_compile(greedy)
       when Proc
-        greedy[:body] = template
+        greedy[:body] = view
         tilt_compile(greedy)
       when String
-        tilt_compile(Proc.new{ template }, greedy)
+        tilt_compile(Proc.new{ view }, greedy)
       when Path
-        greedy[:engine] ||= find_template_engine(template, greedy)
-        greedy[:location] = [template.to_s, 1]
+        greedy[:engine] ||= find_template_engine(view.to_s, greedy)
+        greedy[:location] = [view.to_s, 1]
         tilt_compile(greedy)
       else
-        raise ArgumentError, "Sorry, don't know how to render #{template.inspect}."
+        raise ArgumentError, "Sorry, don't know how to render #{view.inspect}."
       end
     end
 
