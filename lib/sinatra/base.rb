@@ -683,6 +683,7 @@ module Sinatra
     # about the view and is guaranteed to contain the infered engine.
     def find_view_location(view, greedy)
       engine, views, eat_errors = greedy.values_at(:engine, :views, :eat_errors)
+      engine = Tilt[engine] unless Class==engine
       found, path, @preferred_extension = false, nil, engine.to_s
       find_template(views, view, engine) do |file|
         path ||= file # keep the initial path rather than the last one
@@ -703,7 +704,14 @@ module Sinatra
       render engine, template, options, locals
     end
 
-    def render(engine, data, options={}, locals={}, &block)
+    def render(engine, view, options={}, locals={}, &block)
+      _render(view, options.merge(:engine => engine), locals, &block)
+    end
+
+    def _render(view, options={}, locals={}, &block)
+      # get the engine to use
+      engine = options[:engine]
+
       # merge app-level options
       options = settings.send(engine).merge(options) if settings.respond_to?(engine)
       options[:outvar]           ||= '@_out_buf'
@@ -723,7 +731,7 @@ module Sinatra
       begin
         layout_was      = @default_layout
         @default_layout = false
-        template        = compile_template(engine, data, options, views)
+        template        = tilt_template(view, options, views)
         output          = template.render(scope, locals, &block)
       ensure
         @default_layout = layout_was
@@ -731,22 +739,24 @@ module Sinatra
 
       # render layout
       if layout
-        options = options.merge(:views => views, :layout => false, :eat_errors => eat_errors, :scope => scope)
-        catch(:layout_missing) { return render(layout_engine, layout, options, locals) { output } }
+        options = options.merge(:engine => layout_engine, :views => views, :layout => false,
+                                :eat_errors => eat_errors, :scope => scope)
+        catch(:layout_missing) { return _render(layout, options, locals) { output } }
       end
 
       output.extend(ContentTyped).content_type = content_type if content_type
       output
     end
 
-    def compile_template(engine, data, options, views)
-      tilt_template([engine, data], options, views)
+    def compile_template(engine, view, options, views)
+      tilt_template(view, options.merge(:engine => engine), views)
     end
 
     def tilt_template(view, options, views)
       template_cache.fetch view, options do
         greedy = {}
         greedy[:views]        = views
+        greedy[:engine]       = options.delete :engine
         greedy[:eat_errors]   = options.delete :eat_errors
         greedy[:options]      = options
         greedy[:location]     = settings.caller_locations.first
@@ -757,14 +767,12 @@ module Sinatra
     def tilt_compile(view, greedy={})
       case view
       when Hash
-        engine     = view[:engine]
+        engine     = view[:engine] || find_view_engine(view.to_s, view)
+        engine     = Tilt[engine.to_s] unless Class===engine
         path, line = view[:location]
         options    = view[:options]
         body       = view[:body]
         engine.new(path, line, options, &body)
-      when Array
-        greedy[:engine] = find_view_engine(view.first.to_s, greedy)
-        tilt_compile(view.last, greedy)
       when Symbol
         greedy[:engine] ||= find_view_engine(view, greedy)
         body, path, line = settings.templates[view]
@@ -780,7 +788,8 @@ module Sinatra
         greedy[:body] = view
         tilt_compile(greedy)
       when String
-        tilt_compile(Proc.new{ view }, greedy)
+        greedy[:body] = Proc.new{ view }
+        tilt_compile(greedy)
       else
         path   = view.path    if view.respond_to?(:path)
         path ||= view.to_path if view.respond_to?(:to_path)
