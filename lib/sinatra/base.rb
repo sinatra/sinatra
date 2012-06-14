@@ -664,25 +664,27 @@ module Sinatra
       end
     end
 
-    # Infers the Tilt engine to use for `template`, either a Symbol denoting a
-    # view name or a String denoting a file path or extension. Returns engine
-    # as a Tilt template class. Raises a runtime error if no engine can be
-    # found.
-    def find_template_engine(template, greedy)
-      if Symbol===template
+    # Infers the Tilt engine to use for `view`, either a Symbol denoting a
+    # view name or a String denoting a file path or file extension. Returns
+    # the engine as a Tilt template class. Raises a runtime error if no engine
+    # can be found.
+    def find_view_engine(view, greedy)
+      if Symbol===view
         raise NotImplementedError
       else
-        engine = Tilt[template.to_s]
-        raise "Template engine not found: #{template}" if engine.nil?
+        engine = Tilt[view.to_s]
+        raise "Template engine not found: #{view}" if engine.nil?
         engine
       end
     end
 
-    # Infers `template`'s location as a `[path, line]` pair.
-    def find_template_location(template, greedy)
+    # Infers the location of `view` location as a `[path, line]` pair. `view` is
+    # always a Symbol denoting a view name. `greedy` contains what we already know
+    # about the view and is guaranteed to contain the infered engine.
+    def find_view_location(view, greedy)
       engine, views, eat_errors = greedy.values_at(:engine, :views, :eat_errors)
       found, path, @preferred_extension = false, nil, engine.to_s
-      find_template(views, template, engine) do |file|
+      find_template(views, view, engine) do |file|
         path ||= file # keep the initial path rather than the last one
         if found = File.exists?(file)
           path = file
@@ -762,17 +764,17 @@ module Sinatra
         body       = view[:body]
         engine.new(path, line, options, &body)
       when Array
-        greedy[:engine] = find_template_engine(view.first.to_s, greedy)
+        greedy[:engine] = find_view_engine(view.first.to_s, greedy)
         tilt_compile(view.last, greedy)
       when Symbol
-        greedy[:engine] ||= find_template_engine(view, greedy)
+        greedy[:engine] ||= find_view_engine(view, greedy)
         body, path, line = settings.templates[view]
         if body
           body = body.call if body.respond_to?(:call)
           greedy[:body]     = Proc.new{ body }
           greedy[:location] = [path, line]
         else
-          greedy[:location] = find_template_location(view, greedy)
+          greedy[:location] = find_view_location(view, greedy)
         end
         tilt_compile(greedy)
       when Proc
@@ -781,7 +783,7 @@ module Sinatra
       when String
         tilt_compile(Proc.new{ view }, greedy)
       when Path
-        greedy[:engine] ||= find_template_engine(view.to_s, greedy)
+        greedy[:engine] ||= find_view_engine(view.to_s, greedy)
         greedy[:location] = [view.to_s, 1]
         tilt_compile(greedy)
       else
