@@ -7,8 +7,13 @@ class TestTemplate < Tilt::Template
   end
 
   def evaluate(scope, locals={}, &block)
-    inner = block ? block.call : ''
-    data + inner
+    inner  = block ? block.call : ''
+    result = data + inner
+    if p = options[:enclose]
+      p = p.upcase if options[:upcase]
+      result = "<#{p}>#{result}</#{p}>"
+    end
+    result
   end
 
   Tilt.register 'test', self
@@ -73,6 +78,24 @@ class TemplatesTest < Test::Unit::TestCase
       render_app{ render(path) }
       assert ok?
       assert_equal "Hello World!\n", body
+    end
+  end
+
+  it 'merges global options with local engine options' do
+    render_app(:test => {:enclose => "g"}) {
+      render(:test, "Hello World!\n", :upcase => true)
+    }
+    assert ok?
+    assert_equal "<G>Hello World!\n</G>", body
+  end
+
+  it 'merges global options with local options when an infered engine as well' do
+    with_hello_paths do |path|
+      render_app(:test => {:enclose => "g"}) {
+        render(path, :upcase => true)
+      }
+      assert ok?
+      assert_equal "<G>Hello World!\n</G>", body
     end
   end
 

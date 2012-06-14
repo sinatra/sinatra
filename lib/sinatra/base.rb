@@ -672,10 +672,13 @@ module Sinatra
       if Symbol===view
         raise NotImplementedError
       else
-        engine = Tilt[extract_path(view)]
+        path   = extract_path(view)
+        engine = Tilt[path]
         raise "Template engine not found: #{view}" if engine.nil?
-        engine
+        ext    = File.extname(path)[1..-1].to_sym
+        engine = ext if Tilt[ext] == engine
       end
+      engine
     end
 
     # Infers the location of `view` location as a `[path, line]` pair. `view` is
