@@ -664,6 +664,35 @@ module Sinatra
       end
     end
 
+    # Infers the Tilt engine to use for `template`, either a Symbol denoting a
+    # view name or a String denoting a file path or extension. Returns engine
+    # as a Tilt template class. Raises a runtime error if no engine can be
+    # found.
+    def find_template_engine(template, greedy)
+      if Symbol===template
+        raise NotImplementedError
+      else
+        engine = Tilt[template.to_s]
+        raise "Template engine not found: #{template}" if engine.nil?
+        engine
+      end
+    end
+
+    # Infers `template`'s location as a `[path, line]` pair.
+    def find_template_location(template, greedy)
+      engine, views, eat_errors = greedy.values_at(:engine, :views, :eat_errors)
+      found, path, @preferred_extension = false, nil, engine.to_s
+      find_template(views, template, engine) do |file|
+        path ||= file # keep the initial path rather than the last one
+        if found = File.exists?(file)
+          path = file
+          break
+        end
+      end
+      throw :layout_missing if eat_errors and not found
+      [path, 1]
+    end
+
   private
     # logic shared between builder and nokogiri
     def render_ruby(engine, template, options={}, locals={}, &block)
@@ -708,40 +737,59 @@ module Sinatra
       output
     end
 
-    def compile_template(engine, data, options, views)
-      eat_errors = options.delete :eat_errors
-      template_cache.fetch engine, data, options do
-        template = Tilt[engine]
-        raise "Template engine not found: #{engine}" if template.nil?
-
-        case data
-        when Symbol
-          body, path, line = settings.templates[data]
-          if body
-            body = body.call if body.respond_to?(:call)
-            template.new(path, line.to_i, options) { body }
-          else
-            found = false
-            @preferred_extension = engine.to_s
-            find_template(views, data, template) do |file|
-              path ||= file # keep the initial path rather than the last one
-              if found = File.exists?(file)
-                path = file
-                break
-              end
-            end
-            throw :layout_missing if eat_errors and not found
-            template.new(path, 1, options)
-          end
-        when Proc, String
-          body = data.is_a?(String) ? Proc.new { data } : data
-          path, line = settings.caller_locations.first
-          template.new(path, line.to_i, options, &body)
-        else
-          raise ArgumentError, "Sorry, don't know how to render #{data.inspect}."
-        end
+    def tilt_template(key, options, views)
+      template_cache.fetch key, options do
+        greedy = {}
+        raise "Invalid nil key" if key.nil?
+        greedy[:original_key] = key
+        greedy[:views]        = views
+        greedy[:eat_errors]   = options.delete :eat_errors
+        greedy[:options]      = options
+        greedy[:location]     = settings.caller_locations.first
+        tilt_compile(key, greedy)
       end
     end
+
+    def compile_template(engine, data, options, views)
+      tilt_template([engine, data], options, views)
+    end
+
+    def tilt_compile(template, greedy={})
+      case template
+      when Hash
+        engine     = template[:engine]
+        path, line = template[:location]
+        options    = template[:options]
+        body       = template[:body]
+        engine.new(path, line, options, &body)
+      when Array
+        greedy[:engine] = find_template_engine(template.first.to_s, greedy)
+        tilt_compile(template.last, greedy)
+      when Symbol
+        greedy[:engine] ||= find_template_engine(template, greedy)
+        body, path, line = settings.templates[template]
+        if body
+          body = body.call if body.respond_to?(:call)
+          greedy[:body]     = Proc.new{ body }
+          greedy[:location] = [path, line]
+        else
+          greedy[:location] = find_template_location(template, greedy)
+        end
+        tilt_compile(greedy)
+      when Proc
+        greedy[:body] = template
+        tilt_compile(greedy)
+      when String
+        tilt_compile(Proc.new{ template }, greedy)
+      when Path
+        greedy[:engine] ||= find_template_engine(template, greedy)
+        greedy[:location] = [template.to_s, 1]
+        tilt_compile(greedy)
+      else
+        raise ArgumentError, "Sorry, don't know how to render #{template.inspect}."
+      end
+    end
+
   end
 
   # Base class for all Sinatra applications and middleware.
