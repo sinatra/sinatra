@@ -664,41 +664,6 @@ module Sinatra
       end
     end
 
-    # Infers the Tilt engine to use for `view`, either a Symbol denoting a
-    # view name or a String denoting a file path or file extension. Returns
-    # the engine as a Tilt template class. Raises a runtime error if no engine
-    # can be found.
-    def find_view_engine(view, greedy)
-      if Symbol===view
-        raise NotImplementedError
-      else
-        path   = extract_path(view)
-        engine = Tilt[path]
-        raise "Template engine not found: #{view}" if engine.nil?
-        ext    = File.extname(path)[1..-1].to_sym
-        engine = ext if Tilt[ext] == engine
-      end
-      engine
-    end
-
-    # Infers the location of `view` location as a `[path, line]` pair. `view` is
-    # always a Symbol denoting a view name. `greedy` contains what we already know
-    # about the view and is guaranteed to contain the infered engine.
-    def find_view_location(view, greedy)
-      engine, views, eat_errors = greedy.values_at(:engine, :views, :eat_errors)
-      engine = Tilt[engine] unless Class==engine
-      found, path, @preferred_extension = false, nil, engine.to_s
-      find_template(views, view, engine) do |file|
-        path ||= file # keep the initial path rather than the last one
-        if found = File.exists?(file)
-          path = file
-          break
-        end
-      end
-      throw :layout_missing if eat_errors and not found
-      [path, 1]
-    end
-
     def render(engine, view=nil, options={}, locals={}, &block)
       engine, view, options, locals = nil, engine, view || {}, options if view.nil? or view.is_a?(Hash)
       options[:engine]   = engine
@@ -757,11 +722,6 @@ module Sinatra
       output
     end
 
-    # preserved for backward compatibility
-    def compile_template(engine, view, options, views)
-      tilt_template(view, options.merge(:engine => engine), views)
-    end
-
     def extract_path(view)
       path   = view.path    if view.respond_to?(:path)
       path ||= view.to_path if view.respond_to?(:to_path)
@@ -813,6 +773,45 @@ module Sinatra
         greedy[:location] = [path, 1]
         tilt_compile(greedy)
       end
+    end
+
+    # Infers the Tilt engine to use for `view`, either a Symbol denoting a view name or a
+    # file path. Returns the engine either as a Tilt template class or an engine name.
+    # Raises a runtime error if no engine can be found.
+    def find_view_engine(view, greedy)
+      if Symbol===view
+        raise NotImplementedError
+      else
+        path   = extract_path(view)
+        engine = Tilt[path]
+        raise "Template engine not found: #{view}" if engine.nil?
+        ext    = File.extname(path)[1..-1].to_sym
+        engine = ext if Tilt[ext] == engine
+      end
+      engine
+    end
+
+    # Infers the location of `view` location as a `[path, line]` pair. `view` is always a
+    # Symbol denoting a view name. `greedy` contains what we already know about the view
+    # and is guaranteed to contain the infered engine.
+    def find_view_location(view, greedy)
+      engine, views, eat_errors = greedy.values_at(:engine, :views, :eat_errors)
+      engine = Tilt[engine] unless Class==engine
+      found, path, @preferred_extension = false, nil, engine.to_s
+      find_template(views, view, engine) do |file|
+        path ||= file # keep the initial path rather than the last one
+        if found = File.exists?(file)
+          path = file
+          break
+        end
+      end
+      throw :layout_missing if eat_errors and not found
+      [path, 1]
+    end
+
+    # preserved for backward compatibility
+    def compile_template(engine, view, options, views)
+      tilt_template(view, options.merge(:engine => engine), views)
     end
 
   end
