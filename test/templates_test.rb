@@ -68,6 +68,14 @@ class TemplatesTest < Test::Unit::TestCase
     end
   end
 
+  it 'infers the engine to use from path extension' do
+    with_hello_paths do |path|
+      render_app{ render(path) }
+      assert ok?
+      assert_equal "Hello World!\n", body
+    end
+  end
+
   it 'uses the default layout template if not explicitly overridden' do
     with_default_layout do
       render_app { render(:test, :hello) }

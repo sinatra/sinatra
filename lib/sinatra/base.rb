@@ -696,6 +696,13 @@ module Sinatra
       [path, 1]
     end
 
+    def render(engine, view=nil, options={}, locals={}, &block)
+      engine, view, options, locals = nil, engine, view || {}, options if view.nil? or view.is_a?(Hash)
+      options[:engine]   = engine
+      options[:locals] ||= locals
+      _render(view, options, &block)
+    end
+
   private
     # logic shared between builder and nokogiri
     def render_ruby(engine, template, options={}, locals={}, &block)
@@ -704,21 +711,20 @@ module Sinatra
       render engine, template, options, locals
     end
 
-    def render(engine, view, options={}, locals={}, &block)
-      _render(view, options.merge(:engine => engine), locals, &block)
-    end
-
-    def _render(view, options={}, locals={}, &block)
+    def _render(view, options={}, &block)
       # get the engine to use
-      engine = options[:engine]
+      engine = options[:engine] || find_view_engine(view, options)
 
       # merge app-level options
-      options = settings.send(engine).merge(options) if settings.respond_to?(engine)
+      if engine.is_a?(Symbol) and settings.respond_to?(engine)
+        options = settings.send(engine).merge(options)
+      end
+
       options[:outvar]           ||= '@_out_buf'
       options[:default_encoding] ||= settings.default_encoding
 
       # extract generic options
-      locals          = options.delete(:locals) || locals         || {}
+      locals          = options.delete(:locals) || {}
       views           = options.delete(:views)  || settings.views || "./views"
       layout          = options.delete(:layout)
       eat_errors      = layout.nil?
@@ -740,8 +746,8 @@ module Sinatra
       # render layout
       if layout
         options = options.merge(:engine => layout_engine, :views => views, :layout => false,
-                                :eat_errors => eat_errors, :scope => scope)
-        catch(:layout_missing) { return _render(layout, options, locals) { output } }
+                                :eat_errors => eat_errors, :scope => scope, :locals => locals)
+        catch(:layout_missing) { return _render(layout, options) { output } }
       end
 
       output.extend(ContentTyped).content_type = content_type if content_type
