@@ -672,7 +672,7 @@ module Sinatra
       if Symbol===view
         raise NotImplementedError
       else
-        engine = Tilt[view.to_s]
+        engine = Tilt[extract_path(view)]
         raise "Template engine not found: #{view}" if engine.nil?
         engine
       end
@@ -753,6 +753,13 @@ module Sinatra
       tilt_template(view, options.merge(:engine => engine), views)
     end
 
+    def extract_path(view)
+      path   = view.path    if view.respond_to?(:path)
+      path ||= view.to_path if view.respond_to?(:to_path)
+      path ||= view.to_s
+      path
+    end
+
     def tilt_template(view, options, views)
       template_cache.fetch view, options do
         greedy = {}
@@ -792,10 +799,7 @@ module Sinatra
         greedy[:body] = Proc.new{ view }
         tilt_compile(greedy)
       else
-        path   = view.path    if view.respond_to?(:path)
-        path ||= view.to_path if view.respond_to?(:to_path)
-        path ||= view.to_s    if defined?(Pathname) and Pathname===view
-        raise ArgumentError, "Sorry, don't know how to render #{view.inspect}." unless path
+        path = extract_path(view)
         greedy[:engine] ||= find_view_engine(path, greedy)
         greedy[:location] = [path, 1]
         tilt_compile(greedy)
