@@ -13,7 +13,7 @@ module Sinatra
   #
   # === Classic Application
   #
-  # To enable the realoader in a classic application all you need to do is
+  # To enable the reloader in a classic application all you need to do is
   # require it:
   #
   #     require "sinatra"
@@ -23,7 +23,7 @@ module Sinatra
   #
   # === Modular Application
   #
-  # To enable the realoader in a modular application all you need to do is
+  # To enable the reloader in a modular application all you need to do is
   # require it, and then, register it:
   #
   #     require "sinatra/base"
@@ -75,7 +75,7 @@ module Sinatra
   module Reloader
 
     # Watches a file so it can tell when it has been updated, and what
-    # elements contains.
+    # elements does it contain.
     class Watcher
 
       # Represents an element of a Sinatra application that may need to
@@ -95,8 +95,8 @@ module Sinatra
       # Collection of file +Watcher+ that can be associated with a
       # Sinatra application.  That way, we can know which files belong
       # to a given application and which files have been modified.  It
-      # also provides a mechanism to inform a Watcher the elements
-      # defined in the file being watched and if it changes should be
+      # also provides a mechanism to inform a Watcher of the elements
+      # defined in the file being watched and if its changes should be
       # ignored.
       class List
         @app_list_map = Hash.new { |hash, key| hash[key] = new }
@@ -113,7 +113,7 @@ module Sinatra
           end
         end
 
-        # Lets the +Watcher+ for the file localted at +path+ know that the
+        # Lets the +Watcher+ for the file located at +path+ know that the
         # +element+ is defined there, and adds the +Watcher+ to the +List+,
         # if it isn't already there.
         def watch(path, element)
@@ -159,7 +159,7 @@ module Sinatra
         !ignore? && !removed? && mtime != File.mtime(path)
       end
 
-      # Updates the file being watched mtime.
+      # Updates the mtime of the file being watched.
       def update
         @mtime = File.mtime(path)
       end

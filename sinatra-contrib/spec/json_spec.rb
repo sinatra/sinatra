@@ -41,8 +41,8 @@ describe Sinatra::JSON do
   end
 
   it "encodes objects to json out of the box" do
-    mock_app { get('/') { json :foo => [1, 'bar'] } }
-    results_in 'foo' => [1, 'bar']
+    mock_app { get('/') { json :foo => [1, 'bar', nil] } }
+    results_in 'foo' => [1, 'bar', nil]
   end
 
   it "sets the content type to 'application/json'" do

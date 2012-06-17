@@ -42,7 +42,7 @@ module Sinatra
   # === Modular Application
   #
   # In a modular application you need to require the helpers, and then tell
-  # the application you will use them:
+  # the application to use them:
   #
   #     require "sinatra/base"
   #     require "sinatra/cookies"

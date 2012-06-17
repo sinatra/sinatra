@@ -53,8 +53,8 @@ module Sinatra
   #
   module LinkHeader
     ##
-    # Set Link HTTP header and returns HTML tags for telling the browser to
-    # prefetch given resources (only supported by Opera and Firefox at the 
+    # Sets Link HTTP header and returns HTML tags for telling the browser to
+    # prefetch given resources (only supported by Opera and Firefox at the
     # moment).
     def prefetch(*urls)
       link(:prefetch, *urls)

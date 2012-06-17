@@ -14,7 +14,7 @@ module Sinatra
   #
   # == Usage
   #
-  # Once you have loaded the extension (see below), you use the +namespace+
+  # Once you have loaded the extension (see below), you can use the +namespace+
   # method to define namespaces in your application.
   #
   # You can define a namespace by a path prefix:
