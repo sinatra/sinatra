@@ -2,117 +2,93 @@
 require File.expand_path('../helper', __FILE__)
 
 class CompileTest < Test::Unit::TestCase
-  #  Pattern, Current Regexp, [Examples, Should Bes]
-  #
-  [
-    ["/", %r{\A/\z}, [
-      ["/", []]
-    ]], 
-    ["/foo", %r{\A/foo\z}, [
-      ["/foo", []]
-    ]], 
-    ["/:foo", %r{\A/([^/?#]+)\z}, [
-      ["/foo"      , ["foo"]],
-      ["/foo?"     , nil],
-      ["/foo.bar"  , ["foo.bar"]],
-      ["/foo/bar"  , nil],
-      ["/foo%2Fbar", ["foo%2Fbar"]],
-      ["/"         , nil],
-      ["/foo/"     , nil]
-    ]],
-    ["/f\u00F6\u00F6", %r{\A/f%C3%B6%C3%B6\z}, [
-      ["/f%C3%B6%C3%B6", []]
-    ]], 
-    ["/:foo/:bar", %r{\A/([^/?#]+)/([^/?#]+)\z}, [
-      ["/foo/bar", ["foo", "bar"]]
-    ]], 
-    ["/hello/:person", %r{\A/hello/([^/?#]+)\z}, [
-      ["/hello/Frank", ["Frank"]]
-    ]], 
-    ["/?:foo?/?:bar?", %r{\A/?([^/?#]+)?/?([^/?#]+)?\z}, [
-      ["/hello/world", ["hello", "world"]],
-      ["/hello"      , ["hello", nil]],
-      ["/"           , [nil, nil]],
-      [""            , [nil, nil]]
-    ]], 
-    ["/*", %r{\A/(.*?)\z}, [
-      ["/"       , [""]],
-      ["/foo"    , ["foo"]],
-      ["/"       , [""]],
-      ["/foo/bar", ["foo/bar"]]
-    ]], 
-    ["/:foo/*", %r{\A/([^/?#]+)/(.*?)\z}, [
-      ["/foo/bar/baz", ["foo", "bar/baz"]]
-    ]],
-    ["/:foo/:bar", %r{\A/([^/?#]+)/([^/?#]+)\z}, [
-      ["/user@example.com/name", ["user@example.com", "name"]]
-    ]], 
-    ["/test$/", %r{\A/test(?:\$|%24)/\z}, [
-      ["/test$/", []]
-    ]], 
-    ["/te+st/", %r{\A/te(?:\+|%2B)st/\z}, [
-      ["/te+st/",  []],
-      ["/test/",   nil],
-      ["/teeest/", nil]
-    ]],
-    ["/test(bar)/", %r{\A/test(?:\(|%28)bar(?:\)|%29)/\z}, [
-      ["/test(bar)/", []]
-    ]],
-    ["/path with spaces", %r{\A/path(?:%20|(?:\+|%2B))with(?:%20|(?:\+|%2B))spaces\z}, [
-      ["/path%20with%20spaces", []],
-      ["/path%2Bwith%2Bspaces", []],
-      ["/path+with+spaces",     []]
-    ]],
-    ["/foo&bar", %r{\A/foo(?:&|%26)bar\z}, [
-      ["/foo&bar", []]
-    ]], 
-    ["/:foo/*", %r{\A/([^/?#]+)/(.*?)\z}, [
-      ["/hello%20world/how%20are%20you", ["hello%20world", "how%20are%20you"]]
-    ]], 
-    ["/*/foo/*/*", %r{\A/(.*?)/foo/(.*?)/(.*?)\z}, [
-      ["/bar/foo/bling/baz/boom", ["bar", "bling", "baz/boom"]],
-      ["/bar/foo/baz",            nil],
-    ]],
-    ["/test.bar", %r{\A/test(?:\.|%2E)bar\z}, [
-      ["/test.bar", []],
-      ["/test0bar", nil]
-    ]],
-    ["/:file.:ext", %r{\A/([^\.%2E/?#]+)(?:\.|%2E)([^\.%2E/?#]+)\z}, [
-      ["/pony.jpg",   ["pony", "jpg"]],
-      ["/pony%2Ejpg", ["pony", "jpg"]],
-      ["/.jpg",       nil]
-    ]],
-    ["/:name.?:format?", %r{\A/([^\.%2E/?#]+)(?:\.|%2E)?([^\.%2E/?#]+)?\z}, [
-      ["/foo",       ["foo", nil]],
-      ["/.bar",      nil],
-      ["/foo.bar",   ["foo", "bar"]],
-      ["/foo%2Ebar", ["foo", "bar"]]
-    ]], 
-    ["/:user@?:host?", %r{\A/([^@%40/?#]+)(?:@|%40)?([^@%40/?#]+)?\z}, [
-      ["/foo@bar",     ["foo", "bar"]],
-      ["/foo.foo@bar", ["foo.foo", "bar"]],
-      ["/foo@bar.bar", ["foo", "bar.bar"]]
-    ]],
-    # From https://gist.github.com/2154980#gistcomment-169469.
-    #
-    # ["/:name(.:format)?", %r{\A/([^\.%2E/?#]+)(?:\(|%28)(?:\.|%2E)([^\.%2E/?#]+)(?:\)|%29)?\z}, [
-    #   ["/foo", ["foo"]],
-    #   ["/foo.bar", ["foo", "bar"]]
-    # ]]
-  ].each do |pattern, regexp, examples_expectations|
-    app = nil
-    examples_expectations.each do |example, expected|
-      it "generates #{regexp.source} from #{pattern}, with #{example} succeeding" do
-        app ||= mock_app {}
-        compiled, keys = app.send(:compile, pattern)
-        match = compiled.match(example)
-        match ? assert_equal(expected, match.captures.to_a) : assert_equal(expected, match)
-      end
-    end
-    it "generates #{regexp.source} from #{pattern}" do
+  
+  def self.parses pattern, example, expected_params
+    it "parses #{example} with #{pattern} into params #{expected_params}" do
       app ||= mock_app {}
       compiled, keys = app.send(:compile, pattern)
-      assert_equal regexp, compiled
+      match = compiled.match(example)
+      fail %Q{"#{example}" does not parse on pattern "#{pattern}".} unless match
+      params = Hash[keys.zip(match.captures)]
+      assert_equal(expected_params, params)
     end
   end
+  def self.fails pattern, example
+    it "does not parse #{example} with #{pattern}" do
+      app ||= mock_app {}
+      compiled, keys = app.send(:compile, pattern)
+      match = compiled.match(example)
+      fail unless match.nil? || match.captures.empty?
+    end
+  end
+  
+  parses "/",    "/",    {}
+  parses "/foo", "/foo", {}
+  
+  parses "/:foo", "/foo",       "foo" => "foo"
+  parses "/:foo", "/foo.bar",   "foo" => "foo.bar"
+  parses "/:foo", "/foo%2Fbar", "foo" => "foo%2Fbar"
+  fails  "/:foo", "/foo?"
+  fails  "/:foo", "/foo/bar"
+  fails  "/:foo", "/"
+  fails  "/:foo", "/foo/"
+  
+  fails  "/f\u00F6\u00F6", "/f%C3%B6%C3%B6"
+  
+  parses "/:foo/:bar", "/foo/bar", "foo" => "foo", "bar" => "bar"
+  
+  parses "/hello/:person", "/hello/Frank", "person" => "Frank"
+  
+  parses "/?:foo?/?:bar?", "/hello/world", "foo" => "hello", "bar" => "world"
+  parses "/?:foo?/?:bar?", "/hello",       "foo" => "hello", "bar" => nil
+  parses "/?:foo?/?:bar?", "/",            "foo" => nil, "bar" => nil
+  parses "/?:foo?/?:bar?", "",             "foo" => nil, "bar" => nil
+  
+  parses "/*", "/",       "splat" => ""
+  parses "/*", "/foo",    "splat" => "foo"
+  parses "/*", "/foo/bar", "splat" => "foo/bar"
+  
+  parses "/:foo/*", "/foo/bar/baz", "foo" => "foo", "splat" => "bar/baz"
+  
+  parses "/:foo/:bar", "/user@example.com/name", "foo" => "user@example.com", "bar" => "name"
+  
+  fails  "/test$/", "/test$/"
+
+  parses "/te+st/", "/te+st/", {}
+  fails  "/te+st/", "/test/"
+  fails  "/te+st/", "/teeest/"
+  
+  parses "/test(bar)/", "/test(bar)/", {}
+  
+  parses "/path with spaces", "/path%20with%20spaces", {}
+  parses "/path with spaces", "/path%2Bwith%2Bspaces", {}
+  parses "/path with spaces", "/path+with+spaces",     {}
+  
+  parses "/foo&bar", "/foo&bar", {}
+  
+  parses "/:foo/*", "/hello%20world/how%20are%20you", "foo" => "hello%20world", "splat" => "how%20are%20you"
+  
+  parses "/*/foo/*/*", "/bar/foo/bling/baz/boom", "splat" => "baz/boom" # TODO
+  fails  "/*/foo/*/*", "/bar/foo/baz"
+  
+  parses "/test.bar", "/test.bar", {}
+  fails  "/test.bar", "/test0bar"
+  
+  parses "/:file.:ext", "/pony.jpg",   "file" => "pony", "ext" => "jpg"
+  parses "/:file.:ext", "/pony%2Ejpg", "file" => "pony", "ext" => "jpg"
+  fails  "/:file.:ext", "/.jpg"
+  
+  parses "/:name.?:format?", "/foo",       "name" => "foo", "format" => nil
+  parses "/:name.?:format?", "/foo.bar",   "name" => "foo", "format" => "bar"
+  parses "/:name.?:format?", "/foo%2Ebar", "name" => "foo", "format" => "bar"
+  fails  "/:name.?:format?", "/.bar"
+  
+  parses "/:user@?:host?", "/foo@bar",     "user" => "foo", "host" => "bar"
+  parses "/:user@?:host?", "/foo.foo@bar", "user" => "foo.foo", "host" => "bar"
+  parses "/:user@?:host?", "/foo@bar.bar", "user" => "foo", "host" => "bar.bar"
+  
+  # From https://gist.github.com/2154980#gistcomment-169469.
+  #
+  # parses "/:name(.:format)?", "/foo", "name" => "foo", "format" => nil
+  # parses "/:name(.:format)?", "/foo.bar", "name" => "foo", "format" => "bar"
 end
