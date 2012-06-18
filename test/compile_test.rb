@@ -20,7 +20,7 @@ class CompileTest < Test::Unit::TestCase
       params = keys.zip(match.captures).reduce({}) do |hash, mapping|
         key, value = mapping
         hash[key] = if existing = hash[key]
-          existing.respond_to?(:each) ? existing << value : [existing, value]
+          existing.respond_to?(:to_ary) ? existing << value : [existing, value]
         else
           value
         end
