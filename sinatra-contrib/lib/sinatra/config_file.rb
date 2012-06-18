@@ -115,7 +115,9 @@ module Sinatra
         paths.each do |pattern|
           Dir.glob(pattern) do |file|
             $stderr.puts "loading config file '#{file}'" if logging?
-            yaml = config_for_env(YAML.load(ERB.new(IO.read(file)).result)) || {}
+            document = IO.read(file)
+            document = ERB.new(document).result if file.include?('.erb.')
+            yaml = config_for_env(YAML.load(document)) || {}
             yaml.each_pair do |key, value|
               for_env = config_for_env(value)
               set key, for_env unless value and for_env.nil? and respond_to? key
