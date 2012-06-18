@@ -135,4 +135,5 @@ class CompileTest < Test::Unit::TestCase
   # converts "/:name(.:format)?", %r{\A/([^\.%2E/?#]+)(?:\(|%28)(?:\.|%2E)([^\.%2E/?#]+)(?:\)|%29)?\z}
   # parses "/:name(.:format)?", "/foo", "name" => "foo", "format" => nil
   # parses "/:name(.:format)?", "/foo.bar", "name" => "foo", "format" => "bar"
+  fails "/:name(.:format)?", "/foo."
 end
