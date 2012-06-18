@@ -107,7 +107,7 @@ describe Sinatra::JSON do
     get('/').body.should == '42'
   end
 
-  describe('Yajl')    { it_should_behave_like "a json encoder", "yajl", "Yajl::Encoder" }
+  describe('Yajl')    { it_should_behave_like "a json encoder", "yajl", "Yajl::Encoder" } unless defined? JRUBY_VERSION
   describe('JSON')    { it_should_behave_like "a json encoder", "json", "::JSON"        }
   describe('OkJson')  { it_should_behave_like "a json encoder", nil,    "OkJson"        }
   describe('to_json') { it_should_behave_like "a json encoder", "json", ":to_json"      }
