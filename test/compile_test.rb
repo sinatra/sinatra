@@ -6,7 +6,7 @@ class CompileTest < Test::Unit::TestCase
   def self.converts pattern, expected_regexp
     it "generates #{expected_regexp.source} from #{pattern}" do
       compiled, _ = compiled pattern
-      assert_equal expected_regexp, compiled
+      assert_equal expected_regexp.source, compiled.source
     end
   end
   def self.parses pattern, example, expected_params
