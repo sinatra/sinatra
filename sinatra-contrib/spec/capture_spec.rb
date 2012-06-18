@@ -20,6 +20,7 @@ describe Sinatra::Capture do
 
   shared_examples_for "a template language" do |engine|
     lang = engine == :erubis ? :erb : engine
+    require "#{engine}"
 
     it "captures content" do
       render(engine, "simple_#{lang}").should == "Say Hello World!"
