@@ -22,7 +22,7 @@ class CompileTest < Test::Unit::TestCase
     it "does not parse #{example} with #{pattern}" do
       compiled, _ = compiled pattern
       match = compiled.match(example)
-      fail %Q{"#{pattern}" does parse "#{example}" but it should fail} unless match.nil?
+      fail %Q{"#{pattern}" does parse "#{example}" but it should fail} if match
     end
   end
   def compiled pattern
