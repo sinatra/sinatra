@@ -14,7 +14,19 @@ class CompileTest < Test::Unit::TestCase
       compiled, keys = compiled pattern
       match = compiled.match(example)
       fail %Q{"#{example}" does not parse on pattern "#{pattern}".} unless match
-      params = Hash[keys.zip(match.captures)]
+      
+      # Aggregate e.g. multiple splat values into one array.
+      #
+      params = keys.zip(match.captures).reduce({}) do |hash, mapping|
+        key, value = mapping
+        hash[key] = if existing = hash[key]
+          existing.respond_to?(:each) ? existing << value : [existing, value]
+        else
+          value
+        end
+        hash
+      end
+      
       assert_equal(expected_params, params)
     end
   end
@@ -46,8 +58,8 @@ class CompileTest < Test::Unit::TestCase
   fails  "/:foo", "/"
   fails  "/:foo", "/foo/"
   
-  # converts "/f\u00F6\u00F6", %r{\A/f%C3%B6%C3%B6\z} # TODO Fails in Ruby 1.8
-  parses "/f\u00F6\u00F6", "/f%C3%B6%C3%B6", {}
+  converts "/föö", %r{\A/f%C3%B6%C3%B6\z}
+  parses "/föö", "/f%C3%B6%C3%B6", {}
   
   converts "/:foo/:bar", %r{\A/([^/?#]+)/([^/?#]+)\z}
   parses "/:foo/:bar", "/foo/bar", "foo" => "foo", "bar" => "bar"
@@ -95,7 +107,7 @@ class CompileTest < Test::Unit::TestCase
   parses "/:foo/*", "/hello%20world/how%20are%20you", "foo" => "hello%20world", "splat" => "how%20are%20you"
   
   converts "/*/foo/*/*", %r{\A/(.*?)/foo/(.*?)/(.*?)\z}
-  parses "/*/foo/*/*", "/bar/foo/bling/baz/boom", "splat" => "baz/boom" # TODO
+  parses "/*/foo/*/*", "/bar/foo/bling/baz/boom", "splat" => ["bar", "bling", "baz/boom"]
   fails  "/*/foo/*/*", "/bar/foo/baz"
   
   converts "/test.bar", %r{\A/test(?:\.|%2E)bar\z}
