@@ -1,3 +1,6 @@
+
+[![Build Status](https://secure.travis-ci.org/sinatra/sinatra-contrib.png)](http://travis-ci.org/sinatra/sinatra-contrib)
+
 Collection of common Sinatra extensions, semi-officially supported.
 
 # Goals
