@@ -22,7 +22,7 @@ class CompileTest < Test::Unit::TestCase
     it "does not parse #{example} with #{pattern}" do
       compiled, _ = compiled pattern
       match = compiled.match(example)
-      fail unless match.nil? || match.captures.empty?
+      fail %Q{"#{pattern}" does parse "#{example}" but it should fail} unless match.nil?
     end
   end
   def compiled pattern
@@ -32,7 +32,7 @@ class CompileTest < Test::Unit::TestCase
   end
   
   converts "/", %r{\A/\z}
-  parses "/",    "/",    {}
+  parses "/", "/", {}
   
   converts "/foo", %r{\A/foo\z}
   parses "/foo", "/foo", {}
@@ -47,7 +47,7 @@ class CompileTest < Test::Unit::TestCase
   fails  "/:foo", "/foo/"
   
   # converts "/f\u00F6\u00F6", %r{\A/f%C3%B6%C3%B6\z} # TODO Fails in Ruby 1.8
-  fails "/f\u00F6\u00F6", "/f%C3%B6%C3%B6"
+  parses "/f\u00F6\u00F6", "/f%C3%B6%C3%B6", {}
   
   converts "/:foo/:bar", %r{\A/([^/?#]+)/([^/?#]+)\z}
   parses "/:foo/:bar", "/foo/bar", "foo" => "foo", "bar" => "bar"
@@ -73,7 +73,7 @@ class CompileTest < Test::Unit::TestCase
   parses "/:foo/:bar", "/user@example.com/name", "foo" => "user@example.com", "bar" => "name"
   
   converts "/test$/", %r{\A/test(?:\$|%24)/\z}
-  fails  "/test$/", "/test$/"
+  parses "/test$/", "/test$/", {}
 
   converts "/te+st/", %r{\A/te(?:\+|%2B)st/\z}
   parses "/te+st/", "/te+st/", {}
