@@ -561,6 +561,16 @@ pour décorer l'objet retourné.
 
   var resource = {"foo":"bar","baz":"qux"}; present(resource);
 
+=== Templates WLang
+
+Dependency::        {wlang}[https://github.com/blambeau/wlang/]
+File Extensions::   <tt>.wlang</tt>
+Example::           <tt>wlang :index, :locals => { :key => 'value' }</tt>
+
+L'appel de code ruby au sein des templates n'est pas idiomatique en wlang. L'écriture de
+templates sans logique est encouragé, via le passage de variables locales. Il est néanmoins
+possible d'écrire un +layout+ en wlang et d'y utiliser +yield+.
+
 === Templates embarqués
 
   get '/' do
