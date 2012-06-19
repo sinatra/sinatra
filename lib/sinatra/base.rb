@@ -1657,25 +1657,44 @@ module Sinatra
       error NotFound do
         content_type 'text/html'
 
-        (<<-HTML).gsub(/^ {8}/, '')
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <style type="text/css">
-          body { text-align:center;font-family:helvetica,arial;font-size:22px;
-            color:#888;margin:20px}
-          #c {margin:0 auto;width:500px;text-align:left}
-          </style>
-        </head>
-        <body>
-          <h2>Sinatra doesn&rsquo;t know this ditty.</h2>
-          <img src='#{uri "/__sinatra__/404.png"}'>
-          <div id="c">
-            Try this:
-            <pre>#{request.request_method.downcase} '#{request.path_info}' do\n  "Hello World"\nend</pre>
-          </div>
-        </body>
-        </html>
+        if self.class == Sinatra::Application
+          code = <<-RUBY.gsub(/^ {12}/, '')
+            #{request.request_method.downcase} '#{request.path_info}' do
+              "Hello World"
+            end
+          RUBY
+        else
+          code = <<-RUBY.gsub(/^ {12}/, '')
+            class #{self.class}
+              #{request.request_method.downcase} '#{request.path_info}' do
+                "Hello World"
+              end
+            end
+          RUBY
+
+          file = settings.app_file.to_s.sub(settings.root.to_s, '').sub(/^\//, '')
+          code = "# in #{file}\n#{code}" unless file.empty?
+        end
+
+        (<<-HTML).gsub(/^ {10}/, '')
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <style type="text/css">
+            body { text-align:center;font-family:helvetica,arial;font-size:22px;
+              color:#888;margin:20px}
+            #c {margin:0 auto;width:500px;text-align:left}
+            </style>
+          </head>
+          <body>
+            <h2>Sinatra doesn&rsquo;t know this ditty.</h2>
+            <img src='#{uri "/__sinatra__/404.png"}'>
+            <div id="c">
+              Try this:
+              <pre>#{code}</pre>
+            </div>
+          </body>
+          </html>
         HTML
       end
     end
