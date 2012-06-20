@@ -23,6 +23,16 @@ describe Sinatra::ConfigFile do
     settings.nested[:a].should == 1
   end
 
+  it 'should render options in ERB tags' do
+    config_file 'key_value.yml.erb'
+    settings.foo.should == "bar"
+    settings.something.should == 42
+    settings.nested['a'].should == 1
+    settings.nested[:a].should == 1
+    settings.nested['b'].should == 2
+    settings.nested[:b].should == 2
+  end
+
   it 'should recognize env specific settings per file' do
     config_file 'with_envs.yml'
     settings.foo.should == 'test'

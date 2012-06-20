@@ -56,6 +56,7 @@ Gem::Specification.new do |s|
     "sinatra-contrib.gemspec",
     "spec/capture_spec.rb",
     "spec/config_file/key_value.yml",
+    "spec/config_file/key_value.yml.erb",
     "spec/config_file/key_value_override.yml",
     "spec/config_file/missing_env.yml",
     "spec/config_file/with_envs.yml",
