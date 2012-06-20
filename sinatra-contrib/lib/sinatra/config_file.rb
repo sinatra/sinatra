@@ -116,7 +116,7 @@ module Sinatra
           Dir.glob(pattern) do |file|
             $stderr.puts "loading config file '#{file}'" if logging?
             document = IO.read(file)
-            document = ERB.new(document).result if file.include?('.erb.')
+            document = ERB.new(document).result if file.split('.').include?('erb')
             yaml = config_for_env(YAML.load(document)) || {}
             yaml.each_pair do |key, value|
               for_env = config_for_env(value)

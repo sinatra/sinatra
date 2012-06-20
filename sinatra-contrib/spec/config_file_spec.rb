@@ -24,7 +24,7 @@ describe Sinatra::ConfigFile do
   end
 
   it 'should render options in ERB tags' do
-    config_file 'key_value.erb.yml'
+    config_file 'key_value.yml.erb'
     settings.foo.should == "bar"
     settings.something.should == 42
     settings.nested['a'].should == 1
