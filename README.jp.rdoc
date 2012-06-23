@@ -426,6 +426,19 @@ Markabyテンプレートを使うにはmarkabyライブラリが必要です:
 
 <tt>./views/index.mab</tt>を表示します。
 
+=== RABL テンプレート
+
+RABLテンプレートを使うにはrablライブラリが必要です:
+
+  # rablを読み込みます
+  require 'rabl'
+
+  get '/' do
+    rabl :index
+  end
+
+<tt>./views/index.rabl</tt>を表示します。
+
 === Slim テンプレート
 
 Slimテンプレートを使うにはslimライブラリが必要です:
