@@ -332,6 +332,10 @@ module Sinatra
       end
 
       alias errback callback
+
+      def closed?
+        @closed
+      end
     end
 
     # Allows to start sending data to the client even though later parts of
