@@ -1,7 +1,7 @@
 # external dependencies
 require 'rack'
 require 'tilt'
-require "rack/protection"
+require 'rack/protection'
 
 # stdlib dependencies
 require 'thread'
