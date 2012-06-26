@@ -669,6 +669,13 @@ module Sinatra
       end
     end
 
+    def render(engine, view=nil, options={}, locals={}, &block)
+      engine, view, options, locals = nil, engine, view || {}, options if view.nil? or view.is_a?(Hash)
+      options[:engine]   = engine
+      options[:locals] ||= locals
+      _render(view, options, &block)
+    end
+
   private
     # logic shared between builder and nokogiri
     def render_ruby(engine, template, options={}, locals={}, &block)
@@ -677,14 +684,20 @@ module Sinatra
       render engine, template, options, locals
     end
 
-    def render(engine, data, options={}, locals={}, &block)
+    def _render(view, options={}, &block)
+      # get the engine to use
+      engine = options[:engine] || find_view_engine(view, options)
+
       # merge app-level options
-      options = settings.send(engine).merge(options) if settings.respond_to?(engine)
+      if engine.is_a?(Symbol) and settings.respond_to?(engine)
+        options = settings.send(engine).merge(options)
+      end
+
       options[:outvar]           ||= '@_out_buf'
       options[:default_encoding] ||= settings.default_encoding
 
       # extract generic options
-      locals          = options.delete(:locals) || locals         || {}
+      locals          = options.delete(:locals) || {}
       views           = options.delete(:views)  || settings.views || "./views"
       layout          = options.delete(:layout)
       eat_errors      = layout.nil?
@@ -697,7 +710,7 @@ module Sinatra
       begin
         layout_was      = @default_layout
         @default_layout = false
-        template        = compile_template(engine, data, options, views)
+        template        = tilt_template(view, options, views)
         output          = template.render(scope, locals, &block)
       ensure
         @default_layout = layout_was
@@ -705,48 +718,107 @@ module Sinatra
 
       # render layout
       if layout
-        options = options.merge(:views => views, :layout => false, :eat_errors => eat_errors, :scope => scope)
-        catch(:layout_missing) { return render(layout_engine, layout, options, locals) { output } }
+        options = options.merge(:engine => layout_engine, :views => views, :layout => false,
+                                :eat_errors => eat_errors, :scope => scope, :locals => locals)
+        catch(:layout_missing) { return _render(layout, options) { output } }
       end
 
       output.extend(ContentTyped).content_type = content_type if content_type
       output
     end
 
-    def compile_template(engine, data, options, views)
-      eat_errors = options.delete :eat_errors
-      template_cache.fetch engine, data, options do
-        template = Tilt[engine]
-        raise "Template engine not found: #{engine}" if template.nil?
+    def extract_path(view)
+      path   = view.path    if view.respond_to?(:path)
+      path ||= view.to_path if view.respond_to?(:to_path)
+      path ||= view.to_s
+      path
+    end
 
-        case data
-        when Symbol
-          body, path, line = settings.templates[data]
-          if body
-            body = body.call if body.respond_to?(:call)
-            template.new(path, line.to_i, options) { body }
-          else
-            found = false
-            @preferred_extension = engine.to_s
-            find_template(views, data, template) do |file|
-              path ||= file # keep the initial path rather than the last one
-              if found = File.exists?(file)
-                path = file
-                break
-              end
-            end
-            throw :layout_missing if eat_errors and not found
-            template.new(path, 1, options)
-          end
-        when Proc, String
-          body = data.is_a?(String) ? Proc.new { data } : data
-          path, line = settings.caller_locations.first
-          template.new(path, line.to_i, options, &body)
-        else
-          raise ArgumentError, "Sorry, don't know how to render #{data.inspect}."
-        end
+    def tilt_template(view, options, views)
+      template_cache.fetch view, options do
+        greedy = {}
+        greedy[:views]        = views
+        greedy[:engine]       = options.delete :engine
+        greedy[:eat_errors]   = options.delete :eat_errors
+        greedy[:options]      = options
+        greedy[:location]     = settings.caller_locations.first
+        tilt_compile(view, greedy)
       end
     end
+
+    def tilt_compile(view, greedy={})
+      case view
+      when Hash
+        engine     = view[:engine]
+        engine     = Tilt[engine.to_s] unless Class===engine
+        path, line = view[:location]
+        options    = view[:options]
+        body       = view[:body]
+        engine.new(path, line, options, &body)
+      when Symbol
+        greedy[:engine] ||= find_view_engine(view, greedy)
+        body, path, line = settings.templates[view]
+        if body
+          body = body.call if body.respond_to?(:call)
+          greedy[:body]     = Proc.new{ body }
+          greedy[:location] = [path, line]
+        else
+          greedy[:location] = find_view_location(view, greedy)
+        end
+        tilt_compile(greedy)
+      when Proc
+        greedy[:body] = view
+        tilt_compile(greedy)
+      when String
+        greedy[:body] = Proc.new{ view }
+        tilt_compile(greedy)
+      else
+        path = extract_path(view)
+        greedy[:engine] ||= find_view_engine(path, greedy)
+        greedy[:location] = [path, 1]
+        tilt_compile(greedy)
+      end
+    end
+
+    # Infers the Tilt engine to use for `view`, either a Symbol denoting a view name or a
+    # file path. Returns the engine either as a Tilt template class or an engine name.
+    # Raises a runtime error if no engine can be found.
+    def find_view_engine(view, greedy)
+      if Symbol===view
+        raise NotImplementedError
+      else
+        path   = extract_path(view)
+        engine = Tilt[path]
+        raise "Template engine not found: #{view}" if engine.nil?
+        ext    = File.extname(path)[1..-1].to_sym
+        engine = ext if Tilt[ext] == engine
+      end
+      engine
+    end
+
+    # Infers the location of `view` location as a `[path, line]` pair. `view` is always a
+    # Symbol denoting a view name. `greedy` contains what we already know about the view
+    # and is guaranteed to contain the infered engine.
+    def find_view_location(view, greedy)
+      engine, views, eat_errors = greedy.values_at(:engine, :views, :eat_errors)
+      engine = Tilt[engine] unless Class==engine
+      found, path, @preferred_extension = false, nil, engine.to_s
+      find_template(views, view, engine) do |file|
+        path ||= file # keep the initial path rather than the last one
+        if found = File.exists?(file)
+          path = file
+          break
+        end
+      end
+      throw :layout_missing if eat_errors and not found
+      [path, 1]
+    end
+
+    # preserved for backward compatibility
+    def compile_template(engine, view, options, views)
+      tilt_template(view, options.merge(:engine => engine), views)
+    end
+
   end
 
   # Base class for all Sinatra applications and middleware.
