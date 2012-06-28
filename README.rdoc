@@ -251,7 +251,7 @@ Use the <tt>:static_cache_control</tt> setting (see below) to add
 
 == Views / Templates
 
-Each template language is exposed as via its own rendering method. These
+Each template language is exposed via its own rendering method. These
 methods simply return a string:
 
   get '/' do
@@ -755,7 +755,7 @@ middleware of choice as you would any other middleware:
   end
 
 To improve security, the session data in the cookie is signed with a session
-secret. A random secret is generate for you by Sinatra. However, since this
+secret. A random secret is generated for you by Sinatra. However, since this
 secret will change with every start of your application, you might want to
 set the secret yourself, so all your application instances share it:
 
@@ -882,15 +882,15 @@ creating your own wrapper:
 
 This allows you to implement streaming APIs,
 {Server Sent Events}[http://dev.w3.org/html5/eventsource/] and can be used as
-basis for {WebSockets}[http://en.wikipedia.org/wiki/WebSocket]. It can also be
+the basis for {WebSockets}[http://en.wikipedia.org/wiki/WebSocket]. It can also be
 used to increase throughput if some but not all content depends on a slow
 resource.
 
-Note that the streaming behavior, especially the number of concurrent request,
+Note that the streaming behavior, especially the number of concurrent requests,
 highly depends on the web server used to serve the application. Some servers,
 like WEBRick, might not even support streaming at all. If the server does not
 support streaming, the body will be sent all at once after the block passed to
-+stream+ finished executing. Streaming does not work at all with Shotgun.
++stream+ finishes executing. Streaming does not work at all with Shotgun.
 
 If the optional parameter is set to +keep_open+, it will not call +close+ on
 the stream object, allowing you to close it at any later point in the
