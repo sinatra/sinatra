@@ -21,4 +21,22 @@ describe Rack::Protection::XSSHeader do
     mock_app with_headers("X-XSS-Protection" => "0")
     get('/').headers["X-XSS-Protection"].should == "0"
   end
+
+  it 'should set the X-Content-Type-Options' do
+    get('/').header["X-Content-Type-Options"].should == "nosniff"
+  end
+
+  it 'should allow changing the nosniff-mode off' do
+    mock_app do
+      use Rack::Protection::XSSHeader, :nosniff => false
+      run DummyApp
+    end
+
+    get('/').headers["X-Content-Type-Options"].should be_nil
+  end
+
+  it 'should not override the header if already set X-Content-Type-Options' do
+    mock_app with_headers("X-Content-Type-Options" => "sniff")
+    get('/').headers["X-Content-Type-Options"].should == "sniff"
+  end
 end

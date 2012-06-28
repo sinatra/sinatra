@@ -12,10 +12,15 @@ module Rack
     # Options:
     # xss_mode:: How the browser should prevent the attack (default: :block)
     class XSSHeader < Base
-      default_options :xss_mode => :block
+      default_options :xss_mode => :block, :nosniff => true
 
       def header
-        { 'X-XSS-Protection' => "1; mode=#{options[:xss_mode]}" }
+        headers = {
+          'X-XSS-Protection' => "1; mode=#{options[:xss_mode]}",
+          'X-Content-Type-Options' => "nosniff"
+        }
+        headers.delete("X-Content-Type-Options") unless options[:nosniff]
+        headers
       end
 
       def call(env)
