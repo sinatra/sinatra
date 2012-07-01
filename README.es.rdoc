@@ -551,6 +551,15 @@ Las opciones <tt>:callback</tt> y <tt>:variable</tt> se pueden utilizar para dec
 
   var resource = {"foo":"bar","baz":"qux"}; present(resource);
 
+=== Plantillas WLang
+
+Dependencias::             {wlang}[https://github.com/blambeau/wlang/]
+Extensiones de Archivo::   <tt>.wlang</tt>
+Ejemplo::                  <tt>wlang :index, :locals => { :clave => 'valor' }</tt>
+
+Como no vas a poder llamar a métodos de Ruby (excepto por +yield+) desde una
+plantilla WLang, casi siempre vas a querer pasarle locales.
+
 === Plantillas Embebidas
 
   get '/' do
