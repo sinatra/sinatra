@@ -66,7 +66,7 @@ module Rack
         when Hash   then escape_hash(object)
         when Array  then object.map { |o| escape(o) }
         when String then escape_string(object)
-        else raise ArgumentError, "cannot escape #{object.inspect}"
+        else nil
         end
       end
 
