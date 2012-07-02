@@ -30,5 +30,15 @@ describe Rack::Protection::EscapedParams do
       get '/', :foo => {:bar => "<bar>"}
       body.should == '&lt;bar&gt;'
     end
+
+    it 'leaves cache-breaker params untouched' do
+      mock_app do |env|
+        request = Rack::Request.new(env)
+        [200, {'Content-Type' => 'text/plain'}, ['hi']]
+      end
+
+      get '/?95df8d9bf5237ad08df3115ee74dcb10'
+      body.should == 'hi'
+    end
   end
 end
