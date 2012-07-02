@@ -551,6 +551,15 @@ Las opciones <tt>:callback</tt> y <tt>:variable</tt> se pueden utilizar para dec
 
   var resource = {"foo":"bar","baz":"qux"}; present(resource);
 
+=== Plantillas WLang
+
+Dependencias::             {wlang}[https://github.com/blambeau/wlang/]
+Extensiones de Archivo::   <tt>.wlang</tt>
+Ejemplo::                  <tt>wlang :index, :locals => { :clave => 'valor' }</tt>
+
+Como no vas a poder llamar a métodos de Ruby (excepto por +yield+) desde una
+plantilla WLang, casi siempre vas a querer pasarle locales.
+
 === Plantillas Embebidas
 
   get '/' do
@@ -1349,10 +1358,10 @@ Podés acceder a estas opciones utilizando el método <tt>settings</tt>:
 === Configurando la Protección de Ataques
 
 Sinatra usa {Rack::Protection}[https://github.com/rkh/rack-protection#readme]
-para defender a tu aplicación de los ataques más comunes.  Tenés que tener en
-cuenta que como consecuencia de esto puede venir asociada una disminución del
-rendimiento de tu aplicación.  Si por este, o algún otro motivo, querés
-desactivar está funcionalidad, podés hacerlo:
+para defender a tu aplicación de los ataques más comunes. Si por algún motivo,
+querés desactivar esta funcionalidad, podés hacerlo como se indica a
+continuación (tené en cuenta que tu aplicación va a quedar expuesta a un
+montón de vulnerabilidades bien conocidas):
 
   disable :protection
 
