@@ -1012,7 +1012,7 @@ Or use a session:
 
 Setting your headers correctly is the foundation for proper HTTP caching.
 
-You can easily set the Cache-Control header with like this:
+You can easily set the Cache-Control header like this:
 
   get '/' do
     cache_control :public
@@ -1033,7 +1033,7 @@ If you are using the +expires+ helper to set the corresponding header,
   end
 
 To properly use caches, you should consider using +etag+ or +last_modified+.
-It is recommended to call those helpers *before* doing heavy lifting, as they
+It is recommended to call those helpers *before* doing any heavy lifting, as they
 will immediately flush a response if the client already has the current
 version in its cache:
 
@@ -1092,7 +1092,7 @@ For sending files, you can use the <tt>send_file</tt> helper method:
     send_file 'foo.png'
   end
 
-It also takes a couple of options:
+It also takes options:
 
   send_file 'foo.png', :type => :jpg
 
@@ -1193,8 +1193,8 @@ You can also pass it a file name:
 
 === Dealing with Date and Time
 
-Sinatra offers a +time_for+ helper method, which, from the given value
-generates a Time object. It is also able to convert +DateTime+, +Date+ and
+Sinatra offers a +time_for+ helper method that generates a Time object
+from the given value. It is also able to convert +DateTime+, +Date+ and
 similar classes:
 
   get '/' do
@@ -1315,7 +1315,7 @@ You can access those options via <tt>settings</tt>:
 Sinatra is using
 {Rack::Protection}[https://github.com/rkh/rack-protection#readme] to defend
 you application against common, opportunistic attacks. You can easily disable
-this behavior (which will open your application to tons of common
+this behavior (which will open up your application to tons of common
 vulnerabilities):
 
   disable :protection
@@ -1337,7 +1337,7 @@ You can also hand in an array in order to disable a list of protections:
                        Enable if your app is running behind a reverse proxy that
                        has not been set up properly. Note that the +url+ helper
                        will still produce absolute URLs, unless you pass in
-                       +false+ as second parameter.
+                       +false+ as the second parameter.
 
                        Disabled per default.
 
@@ -1410,7 +1410,7 @@ You can also hand in an array in order to disable a list of protections:
                        defaults to ['thin', 'mongrel', 'webrick'], order
                        indicates priority.
 
-[sessions]             enable cookie based sessions support using
+[sessions]             enable cookie-based sessions support using
                        <tt>Rack::Session::Cookie</tt>. See 'Using Sessions'
                        section for more information.
 
@@ -1422,7 +1422,7 @@ You can also hand in an array in order to disable a list of protections:
                        trace in the browser.
 
 [static]               Whether Sinatra should handle serving static files.
-                       Disable when using a Server able to do this on its own.
+                       Disable when using a server able to do this on its own.
                        Disabling will boost performance.
                        Enabled per default in classic style, disabled for
                        modular apps.
@@ -1444,17 +1444,17 @@ You can also hand in an array in order to disable a list of protections:
 There are three predefined +environments+: <tt>"development"</tt>,
 <tt>"production"</tt> and <tt>"test"</tt>. Environments can be set
 through the +RACK_ENV+ environment variable. The default value is
-<tt>"development"</tt>. In this mode, all templates are reloaded between
-requests. Special <tt>not_found</tt> and <tt>error</tt> handlers are installed
-for this environment so you will see a stack trace in your browser.
-In <tt>"production"</tt> and <tt>"test"</tt> templates are cached by default.
+<tt>"development"</tt>. In the <tt>"development"</tt> environment all templates are reloaded between
+requests, and special <tt>not_found</tt> and <tt>error</tt> handlers 
+display stack traces in your browser.
+In the <tt>"production"</tt> and <tt>"test"</tt> environments, templates are cached by default.
 
 To run different environments use the <tt>-e</tt> option:
 
   ruby my_app.rb -e [ENVIRONMENT]
 
 You can use predefined methods: +development?+, +test?+ and +production?+ to
-check which enviroment is currently set.
+check the current environment setting.
 
 == Error Handling
 
@@ -1611,7 +1611,7 @@ directories, logging, exception detail page, etc.). That's where
     end
   end
 
-The methods available to <tt>Sinatra::Base</tt> subclasses are exactly as those
+The methods available to <tt>Sinatra::Base</tt> subclasses are exactly the same as those
 available via the top-level DSL. Most top-level apps can be converted to
 <tt>Sinatra::Base</tt> components with two modifications:
 
@@ -1628,13 +1628,13 @@ for details on available options and their behavior.
 
 === Modular vs. Classic Style
 
-Contrary to common belief, there is nothing wrong with classic style. If it
+Contrary to common belief, there is nothing wrong with the classic style. If it
 suits your application, you do not have to switch to a modular application.
 
-The main downsides of using classic style rather than modular style is that
-you may only have one Sinatra application per Ruby process. If you plan to use
-more than one, switch to modular style. There is no reason you cannot mix
-modular and classic style.
+The main disadvantage of using the classic style rather than the modular style is that
+you will only have one Sinatra application per Ruby process. If you plan to use
+more than one, switch to the modular style. There is no reason you cannot mix
+the modular and the classic styles.
 
 If switching from one style to the other, you should be aware of slightly
 different default settings:
@@ -1668,7 +1668,7 @@ Start with:
 
   ruby my_app.rb
 
-Or with a <tt>config.ru</tt>, which allows using any Rack handler:
+Or with a <tt>config.ru</tt> file, which allows using any Rack handler:
 
   # config.ru
   require './my_app'
@@ -1696,15 +1696,15 @@ And a corresponding <tt>config.ru</tt>:
 
 === When to use a config.ru?
 
-Good signs you probably want to use a <tt>config.ru</tt>:
+A <tt>config.ru</tt> file is recommended if:
 
 * You want to deploy with a different Rack handler (Passenger, Unicorn,
   Heroku, ...).
 * You want to use more than one subclass of <tt>Sinatra::Base</tt>.
-* You want to use Sinatra only for middleware, but not as endpoint.
+* You want to use Sinatra only for middleware, and not as an endpoint.
 
-<b>There is no need to switch to a <tt>config.ru</tt> only because you
-switched to modular style, and you don't have to use modular style for running
+<b>There is no need to switch to a <tt>config.ru</tt> simply because you
+switched to the modular style, and you don't have to use the modular style for running
 with a <tt>config.ru</tt>.</b>
 
 === Using Sinatra as Middleware
@@ -1752,7 +1752,7 @@ assign them to a constant, you can do this with <tt>Sinatra.new</tt>:
   my_app = Sinatra.new { get('/') { "hi" } }
   my_app.run!
 
-It takes the application to inherit from as optional argument:
+It takes the application to inherit from as an optional argument:
 
   # config.ru
   require 'sinatra/base'
@@ -1794,7 +1794,7 @@ Every Sinatra application corresponds to a subclass of <tt>Sinatra::Base</tt>.
 If you are using the top-level DSL (<tt>require 'sinatra'</tt>), then this
 class is <tt>Sinatra::Application</tt>, otherwise it is the subclass you
 created explicitly. At class level you have methods like +get+ or +before+, but
-you cannot access the +request+ object or the +session+, as there only is a
+you cannot access the +request+ or +session+ objects, as there is only a
 single application class for all requests.
 
 Options created via +set+ are methods at class level:
@@ -1820,13 +1820,13 @@ You have the application scope binding inside:
 You can reach the scope object (the class) like this:
 
 * Via the object passed to configure blocks (<tt>configure { |c| ... }</tt>)
-* +settings+ from within request scope
+* +settings+ from within the request scope
 
 === Request/Instance Scope
 
 For every incoming request, a new instance of your application class is
 created and all handler blocks run in that scope. From within this scope you
-can access the +request+ and +session+ object or call rendering methods like
+can access the +request+ and +session+ objects or call rendering methods like
 +erb+ or +haml+. You can access the application scope from within the request
 scope via the +settings+ helper:
 
@@ -1855,8 +1855,8 @@ You have the request scope binding inside:
 === Delegation Scope
 
 The delegation scope just forwards methods to the class scope. However, it
-does not behave 100% like the class scope, as you do not have the class
-binding. Only methods explicitly marked for delegation are available and you
+does not behave exactly like the class scope, as you do not have the class
+binding. Only methods explicitly marked for delegation are available, and you
 do not share variables/state with the class scope (read: you have a different
 +self+). You can explicitly add method delegations by calling
 <tt>Sinatra::Delegator.delegate :method_name</tt>.
@@ -1892,14 +1892,14 @@ The following Ruby versions are officially supported:
 [ Ruby 1.8.7 ]
   1.8.7 is fully supported, however, if nothing is keeping you from it, we
   recommend upgrading to 1.9.2 or switching to JRuby or Rubinius. Support for
-  1.8.7 will not be dropped before Sinatra 2.0 and Ruby 2.0 except maybe for
+  1.8.7 will not be dropped before Sinatra 2.0 and Ruby 2.0 except maybe in
   the unlikely event of 1.8.8 being released. Even then, we might continue
   supporting it. <b>Ruby 1.8.6 is no longer supported.</b> If you want to run
   with 1.8.6, downgrade to Sinatra 1.2, which will receive bug fixes until
   Sinatra 1.4.0 is released.
 
 [ Ruby 1.9.2 ]
-  1.9.2 is fully supported and recommended. Do not use 1.9.2p0, it is known to
+  1.9.2 is fully supported and recommended. Do not use 1.9.2p0, as it is known to
   cause segmentation faults when running Sinatra. Support will continue at least
   until the release of Ruby 1.9.4/2.0 and support for the latest 1.9 release
   will continue as long as it is still supported by the Ruby core team.
@@ -1909,8 +1909,8 @@ The following Ruby versions are officially supported:
   from an earlier version will invalidate all sessions.
 
 [ Rubinius ]
-  Rubinius is officially supported (Rubinius >= 1.2.4), everything, including
-  all template languages, works. The upcoming 2.0 release is supported as
+  Rubinius is officially supported (Rubinius >= 1.2.4), everything works, including
+  all template languages. The upcoming 2.0 release is supported as
   well, including 1.9 mode.
 
 [ JRuby ]
@@ -1941,12 +1941,12 @@ both 1.9.4p0 and 2.0.0p0 to be supported.
 Sinatra should work on any operating system supported by the chosen Ruby
 implementation.
 
-You will not be able to run Sinatra on Cardinal, SmallRuby, BlueRuby or any
-Ruby version prior to 1.8.7 as of the time being.
+Sinatra currently doesn't run on Cardinal, SmallRuby, BlueRuby or any
+Ruby version prior to 1.8.7.
 
 == The Bleeding Edge
 
-If you would like to use Sinatra's latest bleeding code, feel free to run your
+If you would like to use Sinatra's latest bleeding-edge code, feel free to run your
 application against the master branch, it should be rather stable.
 
 We also push out prerelease gems from time to time, so you can do a
@@ -1973,7 +1973,7 @@ Then, in your project directory, create a +Gemfile+:
   gem 'haml'                    # for instance, if you use haml
   gem 'activerecord', '~> 3.0'  # maybe you also need ActiveRecord 3.x
 
-Note that you will have to list all your applications dependencies in there.
+Note that you will have to list all your application's dependencies in the +Gemfile+.
 Sinatra's direct dependencies (Rack and Tilt) will, however, be automatically
 fetched and added by Bundler.
 
