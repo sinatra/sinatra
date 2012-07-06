@@ -10,7 +10,7 @@ Gem::Specification.new 'sinatra', Sinatra::VERSION do |s|
   s.files             = `git ls-files`.split("\n") - %w[.gitignore .travis.yml]
   s.test_files        = s.files.select { |p| p =~ /^test\/.*_test.rb/ }
   s.extra_rdoc_files  = s.files.select { |p| p =~ /^README/ } << 'LICENSE'
-  s.rdoc_options      = %w[--line-numbers --inline-source --title Sinatra --main README.rdoc]
+  s.rdoc_options      = %w[--line-numbers --inline-source --title Sinatra --main README.rdoc --encoding=UTF-8]
 
   s.add_dependency 'rack',            '~> 1.3', '>= 1.3.6'
   s.add_dependency 'rack-protection', '~> 1.2'
