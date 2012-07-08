@@ -125,7 +125,7 @@ module Sinatra
 
   Base.set :json_encoder do
     return Yajl::Encoder if defined? Yajl::Encoder
-    return JSON if defined? JSON
+    return ::JSON if defined? ::JSON
     return :to_json if {}.respond_to? :to_json and [].respond_to? :to_json
     Sinatra::JSON
   end
