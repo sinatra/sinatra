@@ -1,4 +1,4 @@
- # external dependencies
+# external dependencies
 require 'rack'
 require 'tilt'
 require "rack/protection"
