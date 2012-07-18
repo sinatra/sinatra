@@ -25,11 +25,11 @@ __END__
 
 @@ layout
 <html>
-  <head> 
-    <title>Super Simple Chat with Sinatra</title> 
+  <head>
+    <title>Super Simple Chat with Sinatra</title>
     <meta charset="utf-8" />
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script> 
-  </head> 
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+  </head>
   <body><%= yield %></body>
 </html>
 

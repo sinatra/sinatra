@@ -55,7 +55,7 @@ class MarkabyTest < Test::Unit::TestCase
     assert_equal "<h1>THIS. IS. <em>SPARTA</em></h1>", body
   end
 
-  it 'renders inline markaby blocks with file layouts' do    
+  it 'renders inline markaby blocks with file layouts' do
     markaby_app { markaby(:layout => :layout2) { text "Hello World" } }
     assert ok?
     assert_equal "<h1>Markaby Layout!</h1><p>Hello World</p>", body
@@ -65,7 +65,7 @@ class MarkabyTest < Test::Unit::TestCase
     mock_app { get('/') { markaby :no_such_template } }
     assert_raise(Errno::ENOENT) { get('/') }
   end
-  
+
   it "allows passing locals" do
     markaby_app {
       markaby 'text value', :locals => { :value => 'foo' }

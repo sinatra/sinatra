@@ -75,9 +75,9 @@ class ScssTest < Test::Unit::TestCase
     mock_app do
       set :scss, {:style => :compact} # default scss style is :nested
       get('/') {
-        scss("#scss {\n  background-color: white;\n  color: black;\n}") 
+        scss("#scss {\n  background-color: white;\n  color: black;\n}")
       }
-    end 
+    end
     get '/'
     assert ok?
     assert_equal "#scss { background-color: white; color: black; }\n", body

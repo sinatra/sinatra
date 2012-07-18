@@ -1348,7 +1348,7 @@ module Sinatra
         enc = "(?:#{enc}|#{encoded('+')})" if char == " "
         enc
       end
-      
+
       def escaped(char, enc = URI.escape(char))
         [Regexp.escape(enc), URI.escape(char, /./)]
       end

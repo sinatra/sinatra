@@ -44,7 +44,7 @@ class LiquidTest < Test::Unit::TestCase
     mock_app { get('/') { liquid :no_such_template } }
     assert_raise(Errno::ENOENT) { get('/') }
   end
-  
+
   it "allows passing locals" do
     liquid_app {
       liquid '{{ value }}', :locals => { :value => 'foo' }
