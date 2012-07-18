@@ -47,13 +47,13 @@ class RouteAddedHookTest < Test::Unit::TestCase
     assert_equal [["GET", "/"], ["HEAD", "/"]],
       RouteAddedTest.routes
   end
-  
+
   it "should pass route blocks as an argument" do
     mock_app(Class.new(Sinatra::Base)) do
       register RouteAddedTest
       get('/') {}
     end
 
-    assert_kind_of Proc, RouteAddedTest.procs.first    
+    assert_kind_of Proc, RouteAddedTest.procs.first
   end
 end

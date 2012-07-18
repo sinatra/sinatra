@@ -50,7 +50,7 @@ class YajlTest < Test::Unit::TestCase
   it 'decorates the json with a callback' do
     yajl_app do
       yajl(
-        'json = { :foo => "bar" }', 
+        'json = { :foo => "bar" }',
         { :callback => 'baz' }
       )
     end

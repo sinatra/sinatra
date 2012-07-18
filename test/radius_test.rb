@@ -44,7 +44,7 @@ class RadiusTest < Test::Unit::TestCase
     mock_app { get('/') { radius :no_such_template } }
     assert_raise(Errno::ENOENT) { get('/') }
   end
-  
+
   it "allows passing locals" do
     radius_app {
       radius '<r:value />', :locals => { :value => 'foo' }

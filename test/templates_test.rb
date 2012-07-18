@@ -288,7 +288,7 @@ __END__
 @@ foo
 this is foo
 
-@@ bar 
+@@ bar
 There's a space after 'bar'!
 
 @@ foo bar
