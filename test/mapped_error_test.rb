@@ -211,7 +211,7 @@ class MappedErrorTest < Test::Unit::TestCase
       assert_equal 500, status
     end
 
-    it "allows a stack of exception_handlers" do 
+    it "allows a stack of exception_handlers" do
       mock_app do
         set :raise_errors, false
         error(FirstError) { 'First!' }
@@ -223,7 +223,7 @@ class MappedErrorTest < Test::Unit::TestCase
       assert_equal 'Second!', body
     end
 
-    it "allows an exception handler to pass control to the next exception handler" do 
+    it "allows an exception handler to pass control to the next exception handler" do
       mock_app do
         set :raise_errors, false
         error(500, FirstError) { 'First!' }

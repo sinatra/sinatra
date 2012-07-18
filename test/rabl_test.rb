@@ -34,7 +34,7 @@ class RablTest < Test::Unit::TestCase
     assert ok?
     assert_equal '{"openstruct":{"bar":"baz"}}', body
   end
-  
+
   it "renders with file layouts" do
     rabl_app {
       @foo = OpenStruct.new(:bar => 'baz')
@@ -43,14 +43,14 @@ class RablTest < Test::Unit::TestCase
     assert ok?
     assert_equal '{"qux":{"openstruct":{"bar":"baz"}}}', body
   end
-  
+
   it "raises error if template not found" do
     mock_app {
       get('/') { rabl :no_such_template }
     }
     assert_raise(Errno::ENOENT) { get('/') }
   end
-  
+
   it "passes rabl options to the rabl engine" do
     mock_app do
       get('/') do
@@ -65,7 +65,7 @@ class RablTest < Test::Unit::TestCase
     assert ok?
     assert_body '<?xml version="1.0" encoding="UTF-8"?><openstruct><bar>baz</bar></openstruct>'
   end
-  
+
   it "passes default rabl options to the rabl engine" do
     mock_app do
       set :rabl, :format => 'xml'
@@ -81,7 +81,7 @@ class RablTest < Test::Unit::TestCase
     assert ok?
     assert_body '<?xml version="1.0" encoding="UTF-8"?><openstruct><bar>baz</bar></openstruct>'
   end
-  
+
 end
 
 rescue LoadError
