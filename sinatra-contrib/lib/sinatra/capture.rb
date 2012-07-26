@@ -6,8 +6,9 @@ module Sinatra
   #
   # = Sinatra::Capture
   #
-  # This extension enables adding blocks inside your templates.
+  # Extension that enables blocks inside other extensions.
   # It currently works for erb, slim and haml.
+  # Enables mixing of different template languages.
   #
   # Example:
   #
@@ -22,7 +23,7 @@ module Sinatra
   #    | Say
   #    - a = capture do
   #      | World
-  #      | Hello #{a.strip}!
+  #    |  Hello #{a}!
   #
   #    # in hello_world.haml
   #
@@ -45,23 +46,16 @@ module Sinatra
   #     <% end %>
   #     Hello <%= a.strip %>
   #
-  #     # in hello_world.slim
   #
-  #     | Say
-  #     - a = capture do
-  #       - b = capture do
-  #         | World
-  #       | #{b.strip}!
-  #     | Hello #{a.strip}
+  # The main advantage of capture is mixing of different template engines.
   #
-  #     # in hello_world.haml
+  # Example
   #
-  #     Say
-  #     - a = capture do
-  #       - b = capture do
-  #         World
-  #       #{b.strip}!
-  #     Hello #{a.strip}
+  #    # in mix_me_up.slim
+  #
+  #    - two = capture do
+  #      - erb "<%= 1 + 1 %>"
+  #    | 1 + 1 = #{two}
   #
   # == Usage
   #
