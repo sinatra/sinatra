@@ -5,7 +5,7 @@ class SinatraTest < Test::Unit::TestCase
     app = Sinatra.new { get('/') { 'Hello World' } }
     assert_same Sinatra::Base, app.superclass
   end
-  
+
   it "responds to #template_cache" do
     assert_kind_of Tilt::Cache, Sinatra::Base.new!.template_cache
   end
