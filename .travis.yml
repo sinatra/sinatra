@@ -17,7 +17,6 @@ env:
 # using env: would cause many permutations to exclude, so...
 before_install:
   - export JRUBY_OPTS="--server -Xcext.enabled=false -Xcompile.invokedynamic=false"
-jdk: oraclejdk7
 matrix:
   allow_failures:
     - rvm: ruby-head
