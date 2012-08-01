@@ -1,27 +1,27 @@
 = Sinatra
 <i>Atenção: Este documento é apenas uma tradução da versão em inglês e pode estar desatualizado.</i>
 
-Sinatra é uma DSL para criar rapidamente aplicações web em Ruby com o mínimo de
-esforço:
+Sinatra é uma DSL para criar aplicações web em Ruby com o mínimo de esforço e rapidez:
 
   # minhaapp.rb
-  require 'rubygems'
   require 'sinatra'
+
   get '/' do
     'Olá Mundo!'
   end
 
 Instale a gem e execute como:
 
-  sudo gem install sinatra
-  ruby minhaapp.rb
+  gem install sinatra
+  ruby -rubygems minhaapp.rb
 
 Acesse em: http://localhost:4567
 
+Recomendamos a execução de <tt>gem install thin</tt>. Caso esteja disponível, o Sinatra irá usar.
+
 == Rotas
 
-No Sinatra, uma rota é um metodo HTTP associado a uma URL correspondente padrão.
-Cada rota é associada a um bloco:
+No Sinatra, uma rota é um método HTTP emparelhado com um padrão de URL. Cada rota possui um bloco de execução:
 
   get '/' do
     .. mostrando alguma coisa ..
@@ -35,15 +35,21 @@ Cada rota é associada a um bloco:
     .. atualizando alguma coisa ..
   end
 
-  delete '/' do
-    .. apagando alguma coisa ..
+  patch '/' do
+    .. modificando alguma coisa ..
   end
 
-Rotas são encontradas na ordem em que são definidas. A primeira rota que
-é encontrada invoca o pedido.
+  delete '/' do
+    .. removendo alguma coisa ..
+  end
 
-Padrões de rota podem incluir parâmetros nomeados, acessáveis via a
-hash <tt>params</tt>:
+  options '/' do
+    .. estabelecendo alguma coisa ..
+  end
+
+As rotas são interpretadas na ordem em que são definidos. A primeira rota encontrada responde ao pedido.
+
+Padrões de rota podem conter parâmetros nomeados, acessível através do hash <tt>params</tt>:
 
   get '/ola/:nome' do
     # corresponde a "GET /ola/foo" e "GET /ola/bar"
@@ -51,14 +57,13 @@ hash <tt>params</tt>:
     "Olá #{params[:nome]}!"
   end
 
-Você também pode acessar parâmetros nomeados via bloco de parâmetros:
+Você também pode acessar parâmetros nomeados através dos parâmetros de um bloco:
 
   get '/ola/:nome' do |n|
     "Olá #{n}!"
   end
 
-Padrões de rota também podem incluir parâmetros splat (ou curingas), acessáveis
-via o array <tt>params[:splat]</tt>.
+Padrões de rota também podem conter parâmetros splat (wildcard), acessível através do array <tt>params[: splat]</tt>:
 
   get '/diga/*/para/*' do
     # corresponde a /diga/ola/para/mundo
@@ -70,26 +75,150 @@ via o array <tt>params[:splat]</tt>.
     params[:splat] # => ["pasta/do/arquivo", "xml"]
   end
 
-Rotas se correspondem com expressões regulares:
+Ou com parâmetros de um bloco:
+
+  get '/download/*.*' do |pasta, ext|
+    [pasta, ext] # => ["pasta/do/arquivo", "xml"]
+  end
+
+Rotas podem corresponder com expressões regulares:
 
   get %r{/ola/([\w]+)} do
     "Olá, #{params[:captures].first}!"
   end
 
-Ou com um bloco de parâmetro:
+Ou com parâmetros de um bloco:
 
   get %r{/ola/([\w]+)} do |c|
-    "Hello, #{c}!"
+    "Olá, #{c}!"
   end
 
-Rotas podem incluir uma variedade de condições correspondes, tal como o agente usuário:
+Padrões de rota podem contar com parâmetros opcionais:
+
+  get '/posts.?:formato?' do
+    # corresponde a "GET /posts" e qualquer extensão "GET /posts.json", "GET /posts.xml", etc.
+  end
+
+A propósito, a menos que você desative a proteção contra ataques (veja abaixo), o caminho solicitado pode ser alterado antes de concluir a comparação com as suas rotas.
+
+=== Condições
+
+Rotas podem incluir uma variedade de condições, tal como o <tt>user agent</tt>:
 
   get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
-    "Você está utilizando a versão #{params[:agent][0]} do Songbird."
+    "Você está usando o Songbird versão #{params[:agent][0]}"
   end
 
   get '/foo' do
-    # Corresponde a um navegador não Songbird
+    # Correspondente a navegadores que não sejam Songbird
+  end
+
+Outras condições disponíveis são <tt>host_name</tt> e <tt>provides</tt>:
+
+  get '/', :host_name => /^admin\./ do
+    "Área administrativa. Acesso negado!"
+  end
+
+  get '/', :provides => 'html' do
+    haml :index
+  end
+
+  get '/', :provides => ['rss', 'atom', 'xml'] do
+    builder :feed
+  end
+
+Você pode facilmente definir suas próprias condições:
+
+  set(:probabilidade) { |valor| condition { rand <= valor } }
+
+  get '/ganha_um_carro', :probabilidade => 0.1 do
+    "Você ganhou!"
+  end
+
+  get '/ganha_um_carro' do
+    "Sinto muito, você perdeu."
+  end
+
+Use splat, para uma condição que levam vários valores:
+
+  set(:auth) do |*roles|   # <- observe o splat aqui
+    condition do
+      unless logged_in? && roles.any? {|role| current_user.in_role? role }
+        redirect "/login/", 303
+      end
+    end
+  end
+
+  get "/minha/conta/", :auth => [:usuario, :administrador] do
+    "Detalhes da sua conta"
+  end
+
+  get "/apenas/administrador/", :auth => :administrador do
+    "Apenas administradores são permitidos aqui!"
+  end
+
+=== Retorno de valores
+
+O valor de retorno do bloco de uma rota determina pelo menos o corpo da resposta passado para o cliente HTTP, ou pelo menos o próximo middleware na pilha Rack. Frequentemente, isto é uma <tt>string</tt>, tal como nos exemplos acima. Mas, outros valores também são aceitos.
+
+Você pode retornar uma resposta válida ou um objeto para o Rack, sendo eles de qualquer tipo de objeto que queira. Além disto, é possível retornar um código de status HTTP.
+
+* Um array com três elementros: [status (Fixnum), cabecalho (Hash), corpo da resposta (responde à #each)]
+
+* Um array com dois elementros: [status (Fixnum), corpo da resposta (responde à #each)]
+
+* Um objeto que responda à #each sem passar nada, mas, sim, <tt>strings</tt> para um dado bloco
+
+* Um objeto <tt>Fixnum</tt> representando o código de status
+
+Dessa forma, podemos implementar facilmente um exemplo de streaming:
+
+  class Stream
+    def each
+      100.times { |i| yield "#{i}\n" }
+    end
+  end
+
+  get('/') { Stream.new }
+
+Você também pode usar o método auxiliar <tt>stream</tt> (descrito abaixo) para incorporar a lógica de streaming na rota.
+
+=== Custom Route Matchers
+
+Como apresentado acima, a estrutura do Sinatra conta com suporte embutido para uso de padrões de String e expressões regulares como validadores de rota. No entanto, ele não pára por aí. Você pode facilmente definir os seus próprios validadores:
+
+  class AllButPattern
+    Match = Struct.new(:captures)
+
+    def initialize(except)
+      @except   = except
+      @captures = Match.new([])
+    end
+
+    def match(str)
+      @captures unless @except === str
+    end
+  end
+
+  def all_but(pattern)
+    AllButPattern.new(pattern)
+  end
+
+  get all_but("/index") do
+    # ...
+  end
+
+Note que o exemplo acima pode ser robusto e complicado em excesso. Pode também ser implementado como:
+
+  get // do
+    pass if request.path_info == "/index"
+    # ...
+  end
+
+Ou, usando algo mais denso à frente:
+
+  get %r{^(?!/index$)} do
+    # ...
   end
 
 == Arquivos estáticos
