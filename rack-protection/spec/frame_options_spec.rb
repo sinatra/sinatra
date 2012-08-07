@@ -3,7 +3,7 @@ require File.expand_path('../spec_helper.rb', __FILE__)
 describe Rack::Protection::FrameOptions do
   it_behaves_like "any rack application"
 
-  it 'should set the X-XSS-Protection' do
+  it 'should set the X-Frame-Options' do
     get('/').headers["X-Frame-Options"].should == "sameorigin"
   end
 
