@@ -361,21 +361,21 @@ Beginn ein 'require':
 === Haml Templates
 
 Abhängigkeit::        {haml}[http://haml.info/]
-Dateierweiterungs::   <tt>.haml</tt>
+Dateierweiterung::   <tt>.haml</tt>
 Beispiel::           <tt>haml :index, :format => :html5</tt>
 
 === Erb Templates
 
 Abhängigkeit::        {erubis}[http://www.kuwata-lab.com/erubis/] oder
-                    erb (included in Ruby)
-Dateierweiterungs::   <tt>.erb</tt>, <tt>.rhtml</tt> oder <tt>.erubis</tt>
-                    (nur Erubis)
-Beispiel::           <tt>erb :index</tt>
+                      erb (included in Ruby)
+Dateierweiterungen::  <tt>.erb</tt>, <tt>.rhtml</tt> oder <tt>.erubis</tt>
+                      (nur Erubis)
+Beispiel::            <tt>erb :index</tt>
 
 === Builder Templates
 
 Abhängigkeit::        {builder}[http://builder.rubyforge.org/]
-Dateierweiterungs::   <tt>.builder</tt>
+Dateierweiterung::   <tt>.builder</tt>
 Beispiel::           <tt>builder { |xml| xml.em "Hallo" }</tt>
 
 Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
@@ -383,7 +383,7 @@ Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 === Nokogiri Templates
 
 Abhängigkeit::        {nokogiri}[http://nokogiri.org/]
-Dateierweiterungs::   <tt>.nokogiri</tt>
+Dateierweiterung::   <tt>.nokogiri</tt>
 Beispiel::           <tt>nokogiri { |xml| xml.em "Hallo" }</tt>
 
 Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
@@ -391,25 +391,25 @@ Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 === Sass Templates
 
 Abhängigkeit::        {sass}[http://sass-lang.com/]
-Dateierweiterungs::   <tt>.sass</tt>
+Dateierweiterung::   <tt>.sass</tt>
 Beispiel::           <tt>sass :stylesheet, :style => :expanded</tt>
 
 === SCSS Templates
 
 Abhängigkeit::        {sass}[http://sass-lang.com/]
-Dateierweiterungs::   <tt>.scss</tt>
+Dateierweiterung::   <tt>.scss</tt>
 Beispiel::           <tt>scss :stylesheet, :style => :expanded</tt>
 
 === Less Templates
 
 Abhängigkeit::        {less}[http://www.lesscss.org/]
-Dateierweiterungs::   <tt>.less</tt>
+Dateierweiterung::   <tt>.less</tt>
 Beispiel::           <tt>less :stylesheet</tt>
 
 === Liquid Templates
 
 Abhängigkeit::        {liquid}[http://www.liquidmarkup.org/]
-Dateierweiterungs::   <tt>.liquid</tt>
+Dateierweiterung::   <tt>.liquid</tt>
 Beispiel::           <tt>liquid :index, :locals => { :key => 'Wert' }</tt>
 
 Da man aus dem Liquid-Template heraus keine Ruby-Methoden aufrufen kann
@@ -419,11 +419,11 @@ denen man Variablen weitergibt.
 === Markdown Templates
 
 Abhängigkeit::        {rdiscount}[https://github.com/rtomayko/rdiscount],
-                    {redcarpet}[https://github.com/tanoku/redcarpet],
-                    {bluecloth}[http://deveiate.org/projects/BlueCloth],
-                    {kramdown}[http://kramdown.rubyforge.org/] *oder*
-                    {maruku}[http://maruku.rubyforge.org/]
-Dateierweiterungs::   <tt>.markdown</tt>, <tt>.mkd</tt> und <tt>.md</tt>
+                      {redcarpet}[https://github.com/tanoku/redcarpet],
+                      {bluecloth}[http://deveiate.org/projects/BlueCloth],
+                      {kramdown}[http://kramdown.rubyforge.org/] *oder*
+                      {maruku}[http://maruku.rubyforge.org/]
+Dateierweiterungen:: <tt>.markdown</tt>, <tt>.mkd</tt> und <tt>.md</tt>
 Beispiel::           <tt>markdown :index, :layout_engine => :erb</tt>
 
 Da man aus den Markdown-Templates heraus keine Ruby-Methoden aufrufen und auch
@@ -446,7 +446,7 @@ Templates zu verwenden und einen anderen für das Layout, indem die
 === Textile Templates
 
 Abhängigkeit::        {RedCloth}[http://redcloth.org/]
-Dateierweiterungs::   <tt>.textile</tt>
+Dateierweiterung::   <tt>.textile</tt>
 Beispiel::           <tt>textile :index, :layout_engine => :erb</tt>
 
 Da man aus dem Textile-Template heraus keine Ruby-Methoden aufrufen und auch
@@ -469,7 +469,7 @@ Templates zu verwenden und einen anderen für das Layout, indem die
 === RDoc Templates
 
 Abhängigkeit::        {rdoc}[http://rdoc.rubyforge.org/]
-Dateierweiterungs::   <tt>.rdoc</tt>
+Dateierweiterung::   <tt>.rdoc</tt>
 Beispiel::           <tt>textile :README, :layout_engine => :erb</tt>
 
 Da man aus dem RDoc-Template heraus keine Ruby-Methoden aufrufen und auch
@@ -492,7 +492,7 @@ Templates zu verwenden und einen anderen für das Layout, indem die
 === Radius Templates
 
 Abhängigkeit::        {radius}[http://radius.rubyforge.org/]
-Dateierweiterungs::   <tt>.radius</tt>
+Dateierweiterung::   <tt>.radius</tt>
 Beispiel::           <tt>radius :index, :locals => { :key => 'Wert' }</tt>
 
 Da man aus dem Radius-Template heraus keine Ruby-Methoden aufrufen kann, wird
@@ -501,27 +501,27 @@ man üblicherweise locals verwenden wollen, mit denen man Variablen weitergibt.
 === Markaby Templates
 
 Abhängigkeit::        {markaby}[http://markaby.github.com/]
-Dateierweiterungs::   <tt>.mab</tt>
+Dateierweiterung::   <tt>.mab</tt>
 Beispiel::           <tt>markaby { h1 "Willkommen!" }</tt>
 
 Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 
-=== Slim Templates
+=== RABL Templates
 
 Abhängigkeit::        {rabl}[https://github.com/nesquena/rabl]
-Dateierweiterungs::   <tt>.rabl</tt>
+Dateierweiterung::   <tt>.rabl</tt>
 Beispiel::           <tt>rabl :index</tt>
 
 === Slim Templates
 
 Abhängigkeit::        {slim}[http://slim-lang.com/]
-Dateierweiterungs::   <tt>.slim</tt>
+Dateierweiterung::   <tt>.slim</tt>
 Beispiel::           <tt>slim :index</tt>
 
 === Creole Templates
 
 Abhängigkeit::        {creole}[https://github.com/minad/creole]
-Dateierweiterungs::   <tt>.creole</tt>
+Dateierweiterung::   <tt>.creole</tt>
 Beispiel::           <tt>creole :wiki, :layout_engine => :erb</tt>
 
 Da man aus dem Creole-Template heraus keine Ruby-Methoden aufrufen und auch
@@ -545,8 +545,18 @@ Templates zu verwenden und einen anderen für das Layout, indem die
 
 Abhängigkeit::        {coffee-script}[https://github.com/josh/ruby-coffee-script]
                       und eine {Möglichkeit JavaScript auszuführen}[https://github.com/sstephenson/execjs/blob/master/README.md#readme]
-Dateierweiterungs::   <tt>.coffee</tt>
-Beispiel::            <tt>coffee :index</tt>
+Dateierweiterung::   <tt>.coffee</tt>
+Beispiel::           <tt>coffee :index</tt>
+
+=== WLang Templates
+
+Abhängigkeit::       {wlang}[https://github.com/blambeau/wlang/]
+Dateierweiterung::   <tt>.wlang</tt>
+Beispiel::           <tt>wlang :index, :locals => { :key => 'value' }</tt>
+
+Ruby-Methoden in wlang aufzurufen entspricht nicht den idiomatischen Vorgaben
+von wlang, es bietet sich deshalb an, <tt>:locals</tt> zu verwenden.
+Layouts, die wlang und +yield+ verwenden, werden aber trotzdem unterstützt.
 
 === Eingebettete Templates
 
@@ -1327,8 +1337,9 @@ Diese Einstellungen sind über +settings+ erreichbar:
 Sinatra verwendet
 {Rack::Protection}[https://github.com/rkh/rack-protection#readme], um die
 Anwendung vor häufig vorkommenden Angriffen zu schützen. Diese Voreinstellung
-lässt sich selbstverständlich auch deaktivieren, z.B. um
-Geschwindigkeitsvorteile zu gewinnen:
+lässt sich selbstverständlich deaktivieren, der damit verbundene
+Geschwindigkeitszuwachs steht aber in keinem Verhätnis zu den möglichen
+Risiken.
 
   disable :protection
 
@@ -1417,6 +1428,8 @@ Schutzmechanismen zu deaktivieren:
                         Option). Leitet sich von der <tt>app_file</tt>
                         Einstellung ab, wenn nicht gesetzt.
 
+[public_dir]            Alias für <tt>public_folder</tt>, s.o.
+
 [reload_templates]      Im development-Modus aktiviert.
 
 [root]                  Wurzelverzeichnis des Projekts. Leitet sich von der
@@ -1448,7 +1461,10 @@ Schutzmechanismen zu deaktivieren:
                         automatisch aktiviert, wenn die Umgebung auf
                         <tt>"development"</tt> eingestellt ist. Ansonsten ist
                         diese Option deaktiviert.
-
+                        Kann auch auf <tt>:after_handler</tt> gestellt werden,
+                        um eine anwendungsspezifische Fehlerbehandlung 
+                        auszulösen, bevor der Fehlerverlauf im Browser
+                        angezeigt wird.
 
 [static]                Entscheidet, ob Sinatra statische Dateien zur Verfügung
                         stellen soll oder nicht.
