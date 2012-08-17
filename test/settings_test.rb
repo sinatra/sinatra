@@ -446,7 +446,7 @@ class SettingsTest < Test::Unit::TestCase
     end
 
     it 'defaults to the file subclassing' do
-      assert_equal __FILE__, Sinatra.new.app_file
+      assert_equal File.expand_path(__FILE__), Sinatra.new.app_file
     end
   end
 
