@@ -1,7 +1,29 @@
-= 1.3.3 / Not Yet Released
+= 1.3.3 / 2012-08-19
+
+ * Improved documentation. (burningTyger, Konstantin Haase, Gabriel Andretta,
+   Anurag Priyam, michelc)
+
+ * No longer modify the load path. (Konstantin Haase)
 
  * When keeping a stream open, set up callback/errback correctly to deal with
    clients closing the connection. (Konstantin Haase)
+
+ * Fix bug where having a query param and a URL param by the same name would
+   concatinate the two values. (Konstantin Haase)
+
+ * Prevent douplicated log output when application is already wrapped in a
+   `Rack::CommonLogger`. (Konstantin Haase)
+
+ * Fix issue where `Rack::Link` and Rails were preventing indefinite streaming.
+   (Konstantin Haase)
+
+ * No longer cause warnings when running Ruby with `-w`. (Konstantin Haase)
+
+ * HEAD requests on static files no longer report a Content-Length of 0, but
+   instead the proper length. (Konstantin Haase)
+
+ * When protecting against CSRF attacks, drop the session instead of refusing
+   the request. (Konstantin Haase)
 
 = 1.3.2 / 2011-12-30
 
