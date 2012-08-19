@@ -42,8 +42,8 @@ gem 'maruku'
 gem 'creole'
 gem 'markaby'
 gem 'radius'
-gem 'wlang', '>= 2.0.1'
-gem 'rabl' unless RUBY_ENGINE == 'jruby'
+gem 'wlang', '>= 2.0.1' unless RUBY_ENGINE == "maglev"
+gem 'rabl' unless RUBY_ENGINE =~ /jruby|maglev/
 
 if RUBY_ENGINE == 'jruby'
   gem 'nokogiri', '!= 1.5.0'
