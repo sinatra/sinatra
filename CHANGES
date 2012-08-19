@@ -11,7 +11,7 @@
  * Fix bug where having a query param and a URL param by the same name would
    concatinate the two values. (Konstantin Haase)
 
- * Prevent douplicated log output when application is already wrapped in a
+ * Prevent duplicated log output when application is already wrapped in a
    `Rack::CommonLogger`. (Konstantin Haase)
 
  * Fix issue where `Rack::Link` and Rails were preventing indefinite streaming.
