@@ -9,7 +9,7 @@
    clients closing the connection. (Konstantin Haase)
 
  * Fix bug where having a query param and a URL param by the same name would
-   concatinate the two values. (Konstantin Haase)
+   concatenate the two values. (Konstantin Haase)
 
  * Prevent duplicated log output when application is already wrapped in a
    `Rack::CommonLogger`. (Konstantin Haase)
