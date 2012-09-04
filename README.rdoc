@@ -1111,7 +1111,7 @@ error handlers) through the <tt>request</tt> method:
     request.host                # "example.com"
     request.get?                # true (similar methods for other verbs)
     request.form_data?          # false
-    request["SOME_HEADER"]      # value of SOME_HEADER header
+    request["some_param"]       # value of some_param parameter. [] is a shorcut to the params hash.
     request.referrer            # the referrer of the client or '/'
     request.user_agent          # user agent (used by :agent condition)
     request.cookies             # hash of browser cookies
