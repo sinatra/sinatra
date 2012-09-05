@@ -12,6 +12,14 @@ describe Rack::Protection::JsonCsrf do
       get('/', {}, 'HTTP_REFERER' => 'http://evil.com').should_not be_ok
     end
 
+    it "accepts requests with json responses with a remote referrer when there's an origin header set" do
+      get('/', {}, 'HTTP_REFERER' => 'http://good.com', 'HTTP_ORIGIN' => 'http://good.com').should be_ok
+    end
+
+    it "accepts requests with json responses with a remote referrer when there's an x-origin header set" do
+      get('/', {}, 'HTTP_REFERER' => 'http://good.com', 'HTTP_X_ORIGIN' => 'http://good.com').should be_ok
+    end
+
     it "accepts get requests with json responses with a local referrer" do
       get('/', {}, 'HTTP_REFERER' => '/').should be_ok
     end
