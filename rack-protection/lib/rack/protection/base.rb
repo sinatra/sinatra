@@ -81,6 +81,10 @@ module Rack
         URI.parse(ref).host || Request.new(env).host
       end
 
+      def origin(env)
+        env['HTTP_ORIGIN'] || env['HTTP_X_ORIGIN']
+      end
+
       def random_string(secure = defined? SecureRandom)
         secure ? SecureRandom.hex(32) : "%032x" % rand(2**128-1)
       rescue NotImplementedError

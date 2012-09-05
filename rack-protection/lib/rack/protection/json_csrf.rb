@@ -16,7 +16,7 @@ module Rack
       def call(env)
         status, headers, body = app.call(env)
         if headers['Content-Type'].to_s.split(';', 2).first =~ /^\s*application\/json\s*$/
-          if referrer(env) != Request.new(env).host
+          if origin(env).nil? and referrer(env) != Request.new(env).host
             result = react(env)
             warn env, "attack prevented by #{self.class}"
           end
