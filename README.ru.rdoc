@@ -2030,4 +2030,4 @@ SemVerTag.
 * API документация к {последнему релизу}[http://rubydoc.info/gems/sinatra]
   или {текущему HEAD}[http://rubydoc.info/github/sinatra/sinatra] на
   http://rubydoc.info
-* {Сервер непрерывной интеграции}[http://ci.rkh.im/view/Sinatra/]
+* {Сервер непрерывной интеграции}[http://travis-ci.org/#!/sinatra/sinatra]
