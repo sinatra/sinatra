@@ -679,20 +679,23 @@ module Sinatra
 
     def render(engine, data, options={}, locals={}, &block)
       # merge app-level options
-      options = settings.send(engine).merge(options) if settings.respond_to?(engine)
-      options[:outvar]           ||= '@_out_buf'
-      options[:default_encoding] ||= settings.default_encoding
+      engine_options  = settings.respond_to?(engine) ? settings.send(engine) : {}
+      options         = engine_options.merge(options)
 
       # extract generic options
       locals          = options.delete(:locals) || locals         || {}
       views           = options.delete(:views)  || settings.views || "./views"
       layout          = options.delete(:layout)
       eat_errors      = layout.nil?
-      engine_layout   = settings.send(engine)[:layout] if settings.respond_to?(engine)
-      layout          = engine_layout || @default_layout if layout.nil? or layout == true
+      layout          = engine_options[:layout] if layout.nil? or layout == true
+      layout          = @default_layout         if layout.nil? or layout == true
       content_type    = options.delete(:content_type)  || options.delete(:default_content_type)
       layout_engine   = options.delete(:layout_engine) || engine
       scope           = options.delete(:scope)         || self
+
+      # set some defaults
+      options[:outvar]           ||= '@_out_buf'
+      options[:default_encoding] ||= settings.default_encoding
 
       # compile and render template
       begin
