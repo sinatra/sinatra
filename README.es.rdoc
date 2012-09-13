@@ -2102,4 +2102,4 @@ siguiendo las especificaciones SemVer y SemVerTag.
   {última versión liberada}[http://rubydoc.info/gems/sinatra] o para la
   {rama de desarrollo actual}[http://rubydoc.info/github/sinatra/sinatra]
   en http://rubydoc.info/
-* {Servidor de IC}[http://travis-ci.org/#!/sinatra/sinatra]
+* {Servidor de CI}[http://travis-ci.org/sinatra/sinatra]

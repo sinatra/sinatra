@@ -2111,5 +2111,5 @@ SemVer und SemVerTag.
 * API Dokumentation für die {aktuelle Version}[http://rubydoc.info/gems/sinatra]
   oder für {HEAD}[http://rubydoc.info/github/sinatra/sinatra] auf
   http://rubydoc.info
-* {CI Server}[http://travis-ci.org/#!/sinatra/sinatra]
+* {CI Server}[http://travis-ci.org/sinatra/sinatra]
 

@@ -1929,4 +1929,4 @@ SemVer 및 SemVerTag 둘 다 해당된.
 * {Sinatra Recipes}[http://recipes.sinatrarb.com/] 커뮤니티가 만드는 레시피
 * http://rubydoc.info에 있는 {최종 릴리스}[http://rubydoc.info/gems/sinatra]
   또는 {current HEAD}[http://rubydoc.info/github/sinatra/sinatra]에 대한 API 문서
-* {CI server}[http://travis-ci.org/#!/sinatra/sinatra]
+* {CI server}[http://travis-ci.org/sinatra/sinatra]
