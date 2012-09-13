@@ -34,6 +34,21 @@ class TemplatesTest < Test::Unit::TestCase
     File.unlink(layout) rescue nil
   end
 
+  it 'falls back to engine layout' do
+    mock_app do
+      template(:layout3) { 'Layout 3!<%= yield %>' }
+      set :erb, :layout => :layout3
+
+      get('/') do
+        erb('Hello World!', { :layout => true })
+      end
+    end
+
+    get '/'
+    assert ok?
+    assert_equal "Layout 3!Hello World!", body
+  end
+
   it 'renders String templates directly' do
     render_app { render(:test, 'Hello World') }
     assert ok?
