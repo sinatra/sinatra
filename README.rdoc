@@ -2029,4 +2029,4 @@ SemVerTag.
 * API documentation for the {latest release}[http://rubydoc.info/gems/sinatra]
   or the {current HEAD}[http://rubydoc.info/github/sinatra/sinatra] on
   http://rubydoc.info
-* {CI server}[http://ci.rkh.im/view/Sinatra/]
+* {CI server}[http://travis-ci.org/#!/sinatra/sinatra]

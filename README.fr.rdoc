@@ -2130,4 +2130,4 @@ SemVer que SemVerTag.
 * Documentation API de la {dernière version}[http://rubydoc.info/gems/sinatra]
   ou du {HEAD courant}[http://rubydoc.info/github/sinatra/sinatra] sur
   http://rubydoc.info
-* {CI server}[http://ci.rkh.im/view/Sinatra/]
+* {CI server}[http://travis-ci.org/#!/sinatra/sinatra]
