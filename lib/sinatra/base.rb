@@ -688,7 +688,8 @@ module Sinatra
       views           = options.delete(:views)  || settings.views || "./views"
       layout          = options.delete(:layout)
       eat_errors      = layout.nil?
-      layout          = @default_layout if layout.nil? or layout == true
+      engine_layout   = settings.send(engine)[:layout] if settings.respond_to?(engine)
+      layout          = engine_layout || @default_layout if layout.nil? or layout == true
       content_type    = options.delete(:content_type)  || options.delete(:default_content_type)
       layout_engine   = options.delete(:layout_engine) || engine
       scope           = options.delete(:scope)         || self
