@@ -1634,7 +1634,7 @@ module Sinatra
     ruby_engine = defined?(RUBY_ENGINE) && RUBY_ENGINE
 
     if ruby_engine == 'macruby'
-      server.unshift 'controll_tower'
+      server.unshift 'control_tower'
     else
       server.unshift 'mongrel'  if ruby_engine.nil?
       server.unshift 'puma'     if ruby_engine != 'rbx'
