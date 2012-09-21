@@ -1,4 +1,3 @@
-
 [![Build Status](https://secure.travis-ci.org/sinatra/sinatra-contrib.png)](http://travis-ci.org/sinatra/sinatra-contrib)
 
 Collection of common Sinatra extensions, semi-officially supported.
@@ -72,6 +71,12 @@ Currently included:
 
 * `sinatra/test_helpers`: Helper methods to ease testing your Sinatra
   application. Partly extracted from Sinatra. Testing framework agnostic
+
+# Installation
+Add `gem 'sinatra-contrib'` to *Gemfile*, then execute `bundle install`.  
+
+If you don't use Bundler, install the gem manually by executing `gem install sinatra-contrib` in your command line.
+
 
 # Usage
 
