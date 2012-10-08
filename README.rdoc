@@ -1590,7 +1590,7 @@ is recommended:
     end
   end
 
-  Note: If you are using Sinatra in the modular style, replace <tt>Sinatra::Application</tt> above with the class name of your app.
+Note: If you are using Sinatra in the modular style, replace <tt>Sinatra::Application</tt> above with the class name of your app.
 
 == Sinatra::Base - Middleware, Libraries, and Modular Apps
 
