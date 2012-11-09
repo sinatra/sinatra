@@ -154,11 +154,11 @@ describe Sinatra::Cookies do
       end.should be_nil
     end
 
-    it 'expiers existing cookies' do
+    it 'expires existing cookies' do
       cookie_route("foo=bar") do
         cookies.clear
         response['Set-Cookie']
-      end.should include("foo=; expires=Thu, 01-Jan-1970 00:00:00 GMT")
+      end.should include("foo=;", "expires=Thu, 01-Jan-1970 00:00:00 GMT")
     end
   end
 
@@ -185,16 +185,32 @@ describe Sinatra::Cookies do
     it 'removes response cookies from cookies hash' do
       cookie_route do
         cookies['foo'] = 'bar'
-        cookies.clear
+        cookies.delete 'foo'
         cookies['foo']
       end.should be_nil
     end
 
-    it 'expiers existing cookies' do
+    it 'expires existing cookies' do
       cookie_route("foo=bar") do
         cookies.delete 'foo'
         response['Set-Cookie']
-      end.should include("foo=; expires=Thu, 01-Jan-1970 00:00:00 GMT")
+      end.should include("foo=;", "expires=Thu, 01-Jan-1970 00:00:00 GMT")
+    end
+
+    it 'honours the app cookie_options' do
+      @cookie_app.class_eval do
+        set :cookie_options, {
+          :path => '/foo',
+          :domain => 'bar.com',
+          :secure => true,
+          :httponly => true
+        }
+      end
+      cookie_header = cookie_route("foo=bar") do
+        cookies.delete 'foo'
+        response['Set-Cookie']
+      end
+      cookie_header.should include("path=/foo;", "domain=bar.com;", "secure;", "HttpOnly")
     end
 
     it 'does not touch other cookies' do
