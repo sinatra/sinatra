@@ -11,7 +11,7 @@ module Sinatra
   # Allows you to read cookies:
   #
   #   get '/' do
-  #     "value: #{cookie[:something]}"
+  #     "value: #{cookies[:something]}"
   #   end
   #
   # And of course to write cookies:
