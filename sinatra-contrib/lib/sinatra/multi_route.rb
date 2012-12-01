@@ -19,6 +19,12 @@ module Sinatra
   #     # ...
   #   end
   #
+  # Or for multiple verbs and multiple routes:
+  #
+  #   route :get, :post, ['/foo', '/bar'] do
+  #     # ...
+  #   end
+  #
   # Or even for custom verbs:
   #
   #   route 'LIST', '/' do
