@@ -95,9 +95,22 @@ module Sinatra
   #
   # Be aware that if you have a different environment, besides development,
   # test and production, you will also need to adjust the +environments+
-  # setting.  For instance, when you also have a staging environment:
+  # setting, otherwise the settings will not load.  For instance, when
+  # you also have a staging environment:
   #
   #     set :environments, %w{development test production staging}
+  #
+  # If you wish to provide defaults that may be shared among all the environments,
+  # this can be done by using one of the existing environments as the default using
+  # the YAML alias, and then overwriting values in the other environments:
+  #
+  #     development: &common_settings
+  #       foo: 'foo'
+  #       bar: 'bar'
+  #
+  #     production:
+  #       <<: *common_settings
+  #       bar: 'baz' # override the default value
   #
   module ConfigFile
 
