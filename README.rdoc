@@ -1314,7 +1314,7 @@ You can access those options via <tt>settings</tt>:
 
 Sinatra is using
 {Rack::Protection}[https://github.com/rkh/rack-protection#readme] to defend
-you application against common, opportunistic attacks. You can easily disable
+your application against common, opportunistic attacks. You can easily disable
 this behavior (which will open up your application to tons of common
 vulnerabilities):
 
