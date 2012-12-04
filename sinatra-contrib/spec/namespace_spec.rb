@@ -19,20 +19,20 @@ describe Sinatra::Namespace do
   verbs.each do |verb|
     describe "HTTP #{verb.to_s.upcase}" do
       describe 'pattern generation' do
-        it "should add routes including prefix to the base app" do
+        it "adds routes including prefix to the base app" do
           namespace("/foo") { send(verb, "/bar") { "baz" }}
           send(verb, "/foo/bar").should be_ok
           body.should == "baz" unless verb == :head
           send(verb, "/foo/baz").should_not be_ok
         end
 
-        it "should allows adding routes with no path" do
+        it "allows adding routes with no path" do
           namespace("/foo") { send(verb) { "bar" } }
           send(verb, "/foo").should be_ok
           body.should == "bar" unless verb == :head
         end
 
-        it "allows unsing regular expressions" do
+        it "allows using regular expressions" do
           namespace("/foo") { send(verb, /\/\d\d/) { "bar" }}
           send(verb, "/foo/12").should be_ok
           body.should == "bar" unless verb == :head
