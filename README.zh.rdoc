@@ -1016,7 +1016,7 @@ Sinatra并不理解。使用 +mime_type+ 通过文件扩展名来注册它们：
 
 这些辅助方法并不会为你做任何缓存，而是将必要的信息传送给你的缓存
 如果你在寻找缓存的快速解决方案，试试
-{rack-cache}[http://rtomayko.github.com/rack-cache/]:
+{rack-cache}[https://github.com/rtomayko/rack-cache]:
 
   require "rack/cache"
   require "sinatra"

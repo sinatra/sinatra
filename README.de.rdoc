@@ -419,7 +419,7 @@ denen man Variablen weitergibt.
 === Markdown Templates
 
 Abhängigkeit::        {rdiscount}[https://github.com/rtomayko/rdiscount],
-                      {redcarpet}[https://github.com/tanoku/redcarpet],
+                      {redcarpet}[https://github.com/vmg/redcarpet],
                       {bluecloth}[http://deveiate.org/projects/BlueCloth],
                       {kramdown}[http://kramdown.rubyforge.org/] *oder*
                       {maruku}[http://maruku.rubyforge.org/]
@@ -1069,7 +1069,7 @@ ebenso ist es möglich einen
 Diese Helfer führen nicht das eigentliche Caching aus, sondern geben die dafür
 notwendigen Informationen an den Cache weiter. Für schnelle Reverse-Proxy
 Cache-Lösungen bietet sich z.B.
-{rack-cache}[http://rtomayko.github.com/rack-cache/] an:
+{rack-cache}[https://github.com/rtomayko/rack-cache] an:
 
   require "rack/cache"
   require "sinatra"

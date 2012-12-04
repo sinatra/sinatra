@@ -402,7 +402,7 @@ template, you almost always want to pass locals to it.
 === Markdown Templates
 
 Dependency::        {rdiscount}[https://github.com/rtomayko/rdiscount],
-                    {redcarpet}[https://github.com/tanoku/redcarpet],
+                    {redcarpet}[https://github.com/vmg/redcarpet],
                     {bluecloth}[http://deveiate.org/projects/BlueCloth],
                     {kramdown}[http://kramdown.rubyforge.org/] *or*
                     {maruku}[http://maruku.rubyforge.org/]
@@ -1051,7 +1051,7 @@ It is also possible to use a
 
 These helpers will not do any caching for you, but rather feed the necessary
 information to your cache. If you are looking for a quick reverse-proxy caching
-solution, try {rack-cache}[http://rtomayko.github.com/rack-cache/]:
+solution, try {rack-cache}[https://github.com/rtomayko/rack-cache]:
 
   require "rack/cache"
   require "sinatra"
