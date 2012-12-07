@@ -2,7 +2,8 @@
 <i>Fontos megjegyzés: Ez a dokumentum csak egy fordítása az angol nyelvű
 változat, és lehet, hogy nem naprakész.</i>
 
-A Sinatra egy DSL webalkalmazások Ruby nyelven történő fejlesztéséhez, minimális
+A Sinatra egy {DSL}[http://en.wikipedia.org/wiki/Domain-specific_language]
+webalkalmazások Ruby nyelven történő fejlesztéséhez, minimális
 energiabefektetéssel:
 
   # myapp.rb

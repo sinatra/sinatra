@@ -1,7 +1,7 @@
 = Sinatra
 <i>注） 本文書は英語から翻訳したものであり、その内容が最新でない場合もあります。最新の情報はオリジナルの英語版を参照して下さい。</i>
 
-SinatraはRubyで下記のような最小労力で手早くウェブアプリケーションを作成するためのDSLです。
+SinatraはRubyで下記のような最小労力で手早くウェブアプリケーションを作成するための{DSL}[http://ja.wikipedia.org/wiki/ドメイン固有言語]です。
 
   # myapp.rb
   require 'sinatra'

@@ -2,8 +2,8 @@
 <i>Attention : Ce document correspond à la traduction de la version anglaise et
 il n'est peut être plus à jour.</i>
 
-Sinatra est un DSL pour créer rapidement et facilement des applications web en
-Ruby :
+Sinatra est un {DSL}[http://fr.wikipedia.org/wiki/Langage_dédié] pour
+créer rapidement et facilement des applications web en Ruby :
 
   # mon_application.rb
   require 'sinatra'
