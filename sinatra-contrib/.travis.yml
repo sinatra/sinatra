@@ -17,3 +17,6 @@ notifications:
   - ohhgabriel@gmail.com
   - inbox@trevorbramble.com
   - katrina.owen@gmail.com
+matrix:
+  allow_failures:
+    - rvm: ruby-head
