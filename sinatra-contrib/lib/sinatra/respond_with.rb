@@ -138,8 +138,11 @@ module Sinatra
             if args.any?
               locals = { :object => object }
               locals.merge! object.to_hash if object.respond_to? :to_hash
-              args << { :locals => locals }
-              halt send(*args)
+
+              renderer = args.first
+              options = args[1..-1] + [{:locals => locals}]
+
+              halt send(renderer, *options)
             end
           end
           if object
