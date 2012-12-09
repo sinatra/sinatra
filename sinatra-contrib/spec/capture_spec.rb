@@ -61,13 +61,13 @@ Say
 Hello <%= a.strip %>
 
 @@ simple_slim
-| Say 
+| Say
 - a = capture do
   | World
 | Hello #{a.strip}!
 
 @@ nested_slim
-| Say 
+| Say
 - a = capture do
   - b = capture do
     | World
