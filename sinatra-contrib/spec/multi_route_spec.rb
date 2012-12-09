@@ -20,7 +20,7 @@ describe Sinatra::MultiRoute do
     body.should be == 'normal'
   end
 
-  it 'supports multpile routes' do
+  it 'supports multiple routes' do
     get('/foo').should be_ok
     body.should be == 'paths'
     get('/bar').should be_ok
@@ -31,7 +31,7 @@ describe Sinatra::MultiRoute do
     @count.should be == 4
   end
 
-  it 'supports multpile verbs' do
+  it 'supports multiple verbs' do
     post('/').should be_ok
     body.should be == 'verb'
     put('/').should be_ok
