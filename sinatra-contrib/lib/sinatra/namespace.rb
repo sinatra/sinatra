@@ -262,8 +262,8 @@ module Sinatra
         result
       end
 
-      def method_missing(meth, *args, &block)
-        base.send(meth, *args, &block)
+      def method_missing(method, *args, &block)
+        base.send(method, *args, &block)
       end
     end
 

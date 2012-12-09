@@ -118,9 +118,9 @@ module Sinatra
         @app.halt 406
       end
 
-      def method_missing(meth, *args, &block)
-        return super if args.any? or block.nil? or not @app.mime_type(meth)
-        on(meth, &block)
+      def method_missing(method, *args, &block)
+        return super if args.any? or block.nil? or not @app.mime_type(method)
+        on(method, &block)
       end
     end
 
@@ -148,8 +148,8 @@ module Sinatra
           if object
             exts.each do |ext|
               halt json(object) if ext == :json
-              next unless object.respond_to? meth = "to_#{ext}"
-              halt(*object.send(meth))
+              next unless object.respond_to? method = "to_#{ext}"
+              halt(*object.send(method))
             end
           end
           false
