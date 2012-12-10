@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   # general infos
   s.name        = "rack-protection"
-  s.version     = "1.2.0"
+  s.version     = "1.3.0"
   s.description = "You should use protection!"
   s.homepage    = "http://github.com/rkh/rack-protection"
   s.summary     = s.description
@@ -10,21 +10,37 @@ Gem::Specification.new do |s|
   # generated from git shortlog -sn
   s.authors = [
     "Konstantin Haase",
-    "Akzhan Abdulin",
+    "Alex Rodionov",
+    "Chris Mytton",
     "Corey Ward",
     "David Kellum",
     "Fojas",
-    "Martin Mauch"
+    "Mael Clerambault",
+    "Martin Mauch",
+    "SAKAI, Kazuaki",
+    "Stanislav Savulchik",
+    "Steve Agalloco",
+    "Akzhan Abdulin",
+    "TOBY",
+    "Bjørge Næss"
   ]
 
   # generated from git shortlog -sne
   s.email = [
     "konstantin.mailinglists@googlemail.com",
-    "akzhan.abdulin@gmail.com",
+    "p0deje@gmail.com",
+    "self@hecticjeff.net",
     "coreyward@me.com",
     "dek-oss@gravitext.com",
     "developer@fojasaur.us",
-    "martin.mauch@gmail.com"
+    "mael@clerambault.fr",
+    "martin.mauch@gmail.com",
+    "kaz.july.7@gmail.com",
+    "s.savulchik@gmail.com",
+    "steve.agalloco@gmail.com",
+    "akzhan.abdulin@gmail.com",
+    "toby.net.info.mail+git@gmail.com",
+    "bjoerge@bengler.no"
   ]
 
   # generated from git ls-files
@@ -39,6 +55,7 @@ Gem::Specification.new do |s|
     "lib/rack/protection/escaped_params.rb",
     "lib/rack/protection/form_token.rb",
     "lib/rack/protection/frame_options.rb",
+    "lib/rack/protection/http_origin.rb",
     "lib/rack/protection/ip_spoofing.rb",
     "lib/rack/protection/json_csrf.rb",
     "lib/rack/protection/path_traversal.rb",
@@ -52,6 +69,7 @@ Gem::Specification.new do |s|
     "spec/escaped_params_spec.rb",
     "spec/form_token_spec.rb",
     "spec/frame_options_spec.rb",
+    "spec/http_origin_spec.rb",
     "spec/ip_spoofing_spec.rb",
     "spec/json_csrf_spec.rb",
     "spec/path_traversal_spec.rb",
