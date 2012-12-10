@@ -98,8 +98,16 @@ module Rack
       alias default_reaction deny
 
       def html?(headers)
-        type = headers.detect { |k,v| k.downcase == 'content-type' }.last[/^\w+\/\w+/]
-        type == 'text/html' or type == 'application/xhtml'
+        if type = headers.detect { |k,v| k.downcase == 'content-type' }
+          case type.last[/^\w+\/\w+/]
+          when 'text/html', 'application/xhtml'
+            true
+          else
+            false
+          end
+        else
+          false
+        end
       end
     end
   end
