@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   # general infos
   s.name        = "rack-protection"
-  s.version     = "1.3.0"
+  s.version     = "1.3.1"
   s.description = "You should use protection!"
   s.homepage    = "http://github.com/rkh/rack-protection"
   s.summary     = s.description
@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.authors = [
     "Konstantin Haase",
     "Alex Rodionov",
+    "Chris Heald",
     "Chris Mytton",
     "Corey Ward",
     "David Kellum",
@@ -29,6 +30,7 @@ Gem::Specification.new do |s|
   s.email = [
     "konstantin.mailinglists@googlemail.com",
     "p0deje@gmail.com",
+    "cheald@gmail.com",
     "self@hecticjeff.net",
     "coreyward@me.com",
     "dek-oss@gravitext.com",
