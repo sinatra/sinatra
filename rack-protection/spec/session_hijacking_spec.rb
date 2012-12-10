@@ -31,6 +31,20 @@ describe Rack::Protection::SessionHijacking do
     session.should be_empty
   end
 
+  it "accepts requests with the same Accept-Language header" do
+    session = {:foo => :bar}
+    get '/', {}, 'rack.session' => session, 'HTTP_ACCEPT_LANGUAGE' => 'a'
+    get '/', {}, 'rack.session' => session, 'HTTP_ACCEPT_LANGUAGE' => 'a'
+    session.should_not be_empty
+  end
+
+  it "comparison of Accept-Language header is not case sensitive" do
+    session = {:foo => :bar}
+    get '/', {}, 'rack.session' => session, 'HTTP_ACCEPT_LANGUAGE' => 'a'
+    get '/', {}, 'rack.session' => session, 'HTTP_ACCEPT_LANGUAGE' => 'A'
+    session.should_not be_empty
+  end
+
   it "accepts requests with a changing Version header"do
     session = {:foo => :bar}
     get '/', {}, 'rack.session' => session, 'HTTP_VERSION' => '1.0'

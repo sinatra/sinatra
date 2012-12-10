@@ -28,7 +28,8 @@ module Rack
       end
 
       def encrypt(value)
-        options[:encrypt_tracking] ? super(value) : value.to_s
+        value = value.to_s.downcase
+        options[:encrypt_tracking] ? super(value) : value
       end
     end
   end
