@@ -10,7 +10,8 @@ module Rack
         :reaction    => :default_reaction, :logging   => true,
         :message     => 'Forbidden',       :encryptor => Digest::SHA1,
         :session_key => 'rack.session',    :status    => 403,
-        :allow_empty_referrer => true
+        :allow_empty_referrer => true,
+        :html_types           => %w[text/html application/xhtml]
       }
 
       attr_reader :app, :options
@@ -98,16 +99,8 @@ module Rack
       alias default_reaction deny
 
       def html?(headers)
-        if type = headers.detect { |k,v| k.downcase == 'content-type' }
-          case type.last[/^\w+\/\w+/]
-          when 'text/html', 'application/xhtml'
-            true
-          else
-            false
-          end
-        else
-          false
-        end
+        return false unless header = headers.detect { |k,v| k.downcase == 'content-type' }
+        options[:html_types].include? header.last[/^\w+\/\w+/]
       end
     end
   end

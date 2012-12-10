@@ -20,12 +20,12 @@ describe Rack::Protection do
 
   describe "#html?" do
     context "given an appropriate content-type header" do
-      subject { Rack::Protection::Base.new(nil).html?({'content-type' => "text/html"}) }
+      subject { Rack::Protection::Base.new(nil).html? 'content-type' => "text/html" }
       it { should be_true }
     end
 
     context "given an inappropriate content-type header" do
-      subject { Rack::Protection::Base.new(nil).html?({'content-type' => "image/gif"}) }
+      subject { Rack::Protection::Base.new(nil).html? 'content-type' => "image/gif" }
       it { should be_false }
     end
 
