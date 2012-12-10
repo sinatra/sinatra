@@ -17,4 +17,21 @@ describe Rack::Protection do
     get '/', {}, 'rack.session' => session, 'HTTP_FOO' => 'BAR'
     session.should be_empty
   end
+
+  describe "#html?" do
+    context "given an appropriate content-type header" do
+      subject { Rack::Protection::Base.new(nil).html?({'content-type' => "text/html"}) }
+      it { should be_true }
+    end
+
+    context "given an inappropriate content-type header" do
+      subject { Rack::Protection::Base.new(nil).html?({'content-type' => "image/gif"}) }
+      it { should be_false }
+    end
+
+    context "given no content-type header" do
+      subject { Rack::Protection::Base.new(nil).html?({}) }
+      it { should be_false }
+    end
+  end
 end
