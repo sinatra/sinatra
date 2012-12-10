@@ -4,7 +4,11 @@ describe Rack::Protection::FrameOptions do
   it_behaves_like "any rack application"
 
   it 'should set the X-Frame-Options' do
-    get('/').headers["X-Frame-Options"].should == "sameorigin"
+    get('/', {}, 'wants' => 'text/html').headers["X-Frame-Options"].should == "sameorigin"
+  end
+
+  it 'should not set the X-Frame-Options for other content types' do
+    get('/', {}, 'wants' => 'text/foo').headers["X-Frame-Options"].should be_nil
   end
 
   it 'should allow changing the protection mode' do
@@ -14,11 +18,11 @@ describe Rack::Protection::FrameOptions do
       run DummyApp
     end
 
-    get('/').headers["X-Frame-Options"].should == "deny"
+    get('/', {}, 'wants' => 'text/html').headers["X-Frame-Options"].should == "deny"
   end
 
   it 'should not override the header if already set' do
     mock_app with_headers("X-Frame-Options" => "allow")
-    get('/').headers["X-Frame-Options"].should == "allow"
+    get('/', {}, 'wants' => 'text/html').headers["X-Frame-Options"].should == "allow"
   end
 end

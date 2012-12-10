@@ -25,7 +25,8 @@ module Rack
 
       def call(env)
         status, headers, body = @app.call(env)
-        [status, header.merge(headers), body]
+        headers = header.merge(headers) if options[:nosniff] and html?(headers)
+        [status, headers, body]
       end
     end
   end

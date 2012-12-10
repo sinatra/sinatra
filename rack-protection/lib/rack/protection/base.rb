@@ -96,6 +96,11 @@ module Rack
       end
 
       alias default_reaction deny
+
+      def html?(headers)
+        type = headers.detect { |k,v| k.downcase == 'content-type' }.last[/^\w+\/\w+/]
+        type == 'text/html' or type == 'application/xhtml'
+      end
     end
   end
 end
