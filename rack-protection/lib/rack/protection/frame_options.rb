@@ -18,8 +18,13 @@ module Rack
     #                 to allow embedding from the same origin (default).
     class FrameOptions < XSSHeader
       default_options :frame_options => :sameorigin
+
       def header
-        { 'X-Frame-Options' => options[:frame_options].to_s }
+        @header ||= begin
+          frame_options = options[:frame_options]
+          frame_options = options[:frame_options].to_s.upcase unless frame_options.respond_to? :to_str
+          { 'X-Frame-Options' => frame_options.to_str }
+        end
       end
     end
   end
