@@ -50,7 +50,7 @@ Prevented by:
 Prevented by:
 
 * `Rack::Protection::EscapedParams` (not included by `use Rack::Protection`)
-* `Rack::Protection::XssHeader` (Internet Explorer only)
+* `Rack::Protection::XSSHeader` (Internet Explorer only)
 
 ## Clickjacking
 
