@@ -1,3 +1,4 @@
+---
 rvm:
   - 1.8.7
   - 1.9.2
@@ -8,19 +9,8 @@ rvm:
   - jruby-19mode
   - jruby-head
   - ruby-head
-env:
-  - "rack=1.3.6"
-  - "rack=1.4.1"
-  - "rack=master"
-  - "tilt=1.3.3"
-  - "tilt=master"
-# using env: would cause many permutations to exclude, so...
-before_install:
-  - export JRUBY_OPTS="--server -Xcext.enabled=false -Xcompile.invokedynamic=false"
 matrix:
-  allow_failures:
-    - rvm: ruby-head
-    - rvm: jruby-head
-notifications:
-  recipients:
-    - k.haase@finn.de
+  include:
+    - { rvm: 1.8.7, env: tilt=master }
+    - { rvm: 1.9.3, env: rack=master }
+    - { rvm: 1.9.3, env: tilt=master }
