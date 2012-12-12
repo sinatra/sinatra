@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   # general infos
   s.name        = "rack-protection"
-  s.version     = "1.3.1"
+  s.version     = "1.3.2"
   s.description = "You should use protection!"
   s.homepage    = "http://github.com/rkh/rack-protection"
   s.summary     = s.description
@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
     "Steve Agalloco",
     "Akzhan Abdulin",
     "TOBY",
-    "Bjørge Næss"
+    "Bj\u{f8}rge N\u{e6}ss"
   ]
 
   # generated from git shortlog -sne

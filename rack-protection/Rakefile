@@ -1,3 +1,4 @@
+# encoding: utf-8
 $LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
 
 begin
@@ -15,12 +16,14 @@ task 'rack-protection.gemspec' do
   require 'rack/protection/version'
   content = File.read 'rack-protection.gemspec'
 
+  # fetch data
   fields = {
     :authors => `git shortlog -sn`.scan(/[^\d\s].*/),
     :email   => `git shortlog -sne`.scan(/[^<]+@[^>]+/),
     :files   => `git ls-files`.split("\n").reject { |f| f =~ /^(\.|Gemfile)/ }
   }
 
+  # insert data
   fields.each do |field, values|
     updated = "  s.#{field} = ["
     updated << values.map { |v| "\n    %p" % v }.join(',')
@@ -28,7 +31,12 @@ task 'rack-protection.gemspec' do
     content.sub!(/  s\.#{field} = \[\n(    .*\n)*  \]/, updated)
   end
 
+  # set version
   content.sub! /(s\.version.*=\s+).*/, "\\1\"#{Rack::Protection::VERSION}\""
+
+  # escape unicode
+  content.gsub!(/./) { |c| c.bytesize > 1 ? "\\u{#{c.codepoints.first.to_s(16)}}" : c }
+
   File.open('rack-protection.gemspec', 'w') { |f| f << content }
 end
 
