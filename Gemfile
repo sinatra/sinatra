@@ -32,7 +32,6 @@ gem 'haml', '>= 3.0'
 gem 'sass' if RUBY_VERSION < "2.0"
 gem 'builder'
 gem 'erubis'
-gem 'liquid' unless RUBY_ENGINE == 'rbx' and RUBY_VERSION > '1.9'
 gem 'slim', '~> 1.0'
 gem 'temple', '!= 0.3.3'
 gem 'coffee-script', '>= 2.0'
@@ -42,8 +41,12 @@ gem 'maruku'
 gem 'creole'
 gem 'markaby'
 gem 'radius'
-gem 'wlang', '>= 2.0.1' unless RUBY_ENGINE == "maglev"
 gem 'rabl' unless RUBY_ENGINE =~ /jruby|maglev/
+
+unless RUBY_ENGINE == 'rbx' and RUBY_VERSION > '1.9'
+  gem 'wlang', '>= 2.0.1' unless RUBY_ENGINE == "maglev"
+  gem 'liquid'
+end
 
 if RUBY_ENGINE == 'jruby'
   gem 'nokogiri', '!= 1.5.0'
