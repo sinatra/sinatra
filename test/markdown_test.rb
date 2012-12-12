@@ -74,7 +74,8 @@ Tilt.mappings['md'].each do |t|
     t.new { "" }
     klass = Class.new(Test::Unit::TestCase) { define_method(:engine) { t }}
     klass.class_eval(&MarkdownTest)
-    Object.const_set t.name[/[^:]+(?=Template$)/] << "Test", klass
+    name = t.name[/[^:]+$/].sub(/Template$/, '') << "Test"
+    Object.const_set name, klass
   rescue LoadError
     warn "#{$!}: skipping markdown tests with #{t}"
   end
