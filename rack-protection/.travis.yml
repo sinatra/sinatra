@@ -1,6 +1,4 @@
 ---
-rvm: []
-env: []
 matrix:
   exclude: [{}]
   include:
