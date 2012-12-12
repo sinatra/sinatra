@@ -252,8 +252,8 @@ module Sinatra
 
     # Set the Content-Disposition to "attachment" with the specified filename,
     # instructing the user agents to prompt to save.
-    def attachment(filename=nil)
-      response['Content-Disposition'] = 'attachment'
+    def attachment(filename = nil, disposition = 'attachment')
+      response['Content-Disposition'] = disposition.to_s
       if filename
         params = '; filename="%s"' % File.basename(filename)
         response['Content-Disposition'] << params
@@ -268,11 +268,11 @@ module Sinatra
         content_type opts[:type] || File.extname(path), :default => 'application/octet-stream'
       end
 
-      if opts[:disposition] == 'attachment' || opts[:filename]
-        attachment opts[:filename] || path
-      elsif opts[:disposition] == 'inline'
-        response['Content-Disposition'] = 'inline'
-      end
+      disposition = opts[:disposition]
+      filename    = opts[:filename]
+      disposition = 'attachment' if disposition.nil? and filename
+      filename    = path         if filename.nil?
+      attachment(filename, disposition) if disposition
 
       last_modified opts[:last_modified] if opts[:last_modified]
 
