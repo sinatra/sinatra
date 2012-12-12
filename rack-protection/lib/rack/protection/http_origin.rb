@@ -11,20 +11,20 @@ module Rack
     # Does not accept unsafe HTTP requests when value of Origin HTTP request header
     # does not match default or whitelisted URIs.
     class HttpOrigin < Base
+      DEFAULT_PORTS = { 'http' => 80, 'https' => 443, 'coffee' => 80 }
       default_reaction :deny
 
+      def base_url(env)
+        request = Rack::Request.new(env)
+        port = ":#{request.port}" unless request.port == DEFAULT_PORTS[request.scheme]
+        "#{request.scheme}://#{request.host}#{port}"
+      end
+
       def accepts?(env)
-        # only for unsafe request methods
-        safe?(env) and return true
-        # ignore if origin is not set
-        origin = env['HTTP_ORIGIN'] or return true
-
-        # check base url
-        Request.new(env).base_url == origin and return true
-
-        # check whitelist
-        options[:origin_whitelist] or return false
-        options[:origin_whitelist].include?(origin)
+        return true if safe? env
+        return true unless origin = env['HTTP_ORIGIN']
+        return true if base_url(env) == origin
+        Array(options[:origin_whitelist]).include? origin
       end
 
     end

@@ -1,5 +1,6 @@
 require 'rack/protection'
 require 'rack/test'
+require 'rack'
 require 'forwardable'
 require 'stringio'
 
@@ -19,6 +20,10 @@ if version == "1.3"
       env[ENV_SESSION_KEY].merge! session_was if session_was
     end
   end
+end
+
+unless Rack::MockResponse.method_defined? :header
+  Rack::MockResponse.send(:alias_method, :header, :headers)
 end
 
 module DummyApp
