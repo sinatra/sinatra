@@ -5,6 +5,11 @@ require File.expand_path('../helper', __FILE__)
 class ResponseTest < Test::Unit::TestCase
   setup { @response = Sinatra::Response.new }
 
+  def assert_same_body(a, b)
+    enum = Enumerable.const_get(:Enumerator)
+    assert_equal enum.new(a).to_a, enum.new(b).to_a
+  end
+
   it "initializes with 200, text/html, and empty body" do
     assert_equal 200, @response.status
     assert_equal 'text/html', @response['Content-Type']
@@ -35,7 +40,7 @@ class ResponseTest < Test::Unit::TestCase
     @response.body = ['Hello', 'World!', '✈']
     status, headers, body = @response.finish
     assert_equal '14', headers['Content-Length']
-    assert_equal @response.body, body
+    assert_same_body @response.body, body
   end
 
   it 'does not call #to_ary or #inject on the body' do
@@ -49,11 +54,11 @@ class ResponseTest < Test::Unit::TestCase
 
   it 'does not nest a Sinatra::Response' do
     @response.body = Sinatra::Response.new ["foo"]
-    assert_equal @response.body, ["foo"]
+    assert_same_body @response.body, ["foo"]
   end
 
   it 'does not nest a Rack::Response' do
     @response.body = Rack::Response.new ["foo"]
-    assert_equal @response.body, ["foo"]
+    assert_same_body @response.body, ["foo"]
   end
 end
