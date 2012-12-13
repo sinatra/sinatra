@@ -1640,7 +1640,7 @@ Start with:
 
 Or with a <tt>config.ru</tt>, which allows using any Rack handler:
 
-  # config.ru
+  # config.ru (run with rackup)
   require './my_app'
   run MyApp
 
@@ -1724,7 +1724,7 @@ assign them to a constant, you can do this with <tt>Sinatra.new</tt>:
 
 It takes the application to inherit from as optional argument:
 
-  # config.ru
+  # config.ru (run with rackup)
   require 'sinatra/base'
 
   controller = Sinatra.new do
