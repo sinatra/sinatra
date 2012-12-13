@@ -520,6 +520,12 @@ Dependency::        {coffee-script}[https://github.com/josh/ruby-coffee-script]
 File Extension::   <tt>.coffee</tt>
 Example::           <tt>coffee :index</tt>
 
+=== Stylus Templates
+
+Dependency::        {ruby-stylus}[https://github.com/lucasmazza/ruby-stylus]
+File Extensions::   <tt>.styl</tt>
+Example::           <tt>stylus :index</tt>
+
 === Yajl Templates
 
 Dependency::        {yajl-ruby}[https://github.com/brianmario/yajl-ruby]
