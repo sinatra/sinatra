@@ -20,7 +20,6 @@ begin
     end
 
     it 'renders inline Stylus strings' do
-      assert false, 'waiting response on how stylus can be rendered inline'
       stylus_app { stylus "a margin auto\n" }
       assert ok?
       assert body.include?("a {\n  margin: auto;\n}\n")
