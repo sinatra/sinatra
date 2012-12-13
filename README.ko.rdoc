@@ -378,7 +378,7 @@ Liquid 템플릿에서는 루비 메서드(+yield+ 제외)를 호출할 수 없�
 === Markdown 템플릿
 
 의존::               {rdiscount}[https://github.com/rtomayko/rdiscount],
-                    {redcarpet}[https://github.com/tanoku/redcarpet],
+                    {redcarpet}[https://github.com/vmg/redcarpet],
                     {bluecloth}[http://deveiate.org/projects/BlueCloth],
                     {kramdown}[http://kramdown.rubyforge.org/] *또는*
                     {maruku}[http://maruku.rubyforge.org/]
@@ -1000,7 +1000,7 @@ Cache-Control 헤더를 다음과 같이 간단하게 설정할 수 있다:
 
 이들 헬퍼는 어떠한 캐싱도 하지 않으며, 대신 필요한 정보를 캐시에 제공한다.
 여러분이 만약 손쉬운 리버스 프록시(reverse-proxy) 캐싱 솔루션을 찾고 있다면,
-{rack-cache}[http://rtomayko.github.com/rack-cache/]를 써보라:
+{rack-cache}[https://github.com/rtomayko/rack-cache]를 써보라:
 
   require "rack/cache"
   require "sinatra"

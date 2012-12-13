@@ -407,7 +407,7 @@ Thin — это более производительный и функцион�
 
 === Markdown шаблоны
 
-Зависимости::          {rdiscount}[https://github.com/rtomayko/rdiscount], {redcarpet}[https://github.com/tanoku/redcarpet], {bluecloth}[http://deveiate.org/projects/BlueCloth], {kramdown}[http://kramdown.rubyforge.org/] или {maruku}[http://maruku.rubyforge.org/]
+Зависимости::          {rdiscount}[https://github.com/rtomayko/rdiscount], {redcarpet}[https://github.com/vmg/redcarpet], {bluecloth}[http://deveiate.org/projects/BlueCloth], {kramdown}[http://kramdown.rubyforge.org/] или {maruku}[http://maruku.rubyforge.org/]
 Расширения файлов::   <tt>.markdown</tt>, <tt>.mkd</tt> and <tt>.md</tt>
 Пример::              <tt>markdown :index, :layout_engine => :erb</tt>
 
@@ -1059,7 +1059,7 @@ Thin — это более производительный и функцион�
 
 Эти методы-помощники не станут ничего кэшировать для вас, но они дадут
 необходимую информацию для вашего кэша. Если вы ищите легкое решение для
-кэширования, попробуйте {rack-cache}[http://rtomayko.github.com/rack-cache/]:
+кэширования, попробуйте {rack-cache}[https://github.com/rtomayko/rack-cache]:
 
   require 'rack/cache'
   require 'sinatra'

@@ -415,7 +415,7 @@ plantilla Liquid, casi siempre vas a querer pasarle locales.
 === Plantillas Markdown
 
 Dependencias::             {rdiscount}[https://github.com/rtomayko/rdiscount],
-                           {redcarpet}[https://github.com/tanoku/redcarpet],
+                           {redcarpet}[https://github.com/vmg/redcarpet],
                            {bluecloth}[http://deveiate.org/projects/BlueCloth],
                            {kramdown}[http://kramdown.rubyforge.org/] *o*
                            {maruku}[http://maruku.rubyforge.org/]
@@ -1089,7 +1089,7 @@ También es posible usar una
 Estos helpers no van a cachear nada por vos, sino que van a facilitar la
 información necesaria para poder hacerlo.  Si estás buscando soluciones rápidas
 de cacheo con proxys inversos, mirá
-{rack-cache}[http://rtomayko.github.com/rack-cache/]:
+{rack-cache}[https://github.com/rtomayko/rack-cache]:
 
   require "rack/cache"
   require "sinatra"
