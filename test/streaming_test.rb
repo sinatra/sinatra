@@ -139,4 +139,11 @@ class StreamingTest < Test::Unit::TestCase
     get '/'
     assert ran
   end
+
+  it 'has a public interface to inspect its open/closed state' do
+    stream = Stream.new(Stream) { |out| out << :foo }
+    assert !stream.closed?
+    stream.close
+    assert stream.closed?
+  end
 end
