@@ -420,7 +420,7 @@ template Liquid, vous aurez sûrement à lui passer des variables locales.
 === Templates Markdown
 
 Dépendances::             {rdiscount}[https://github.com/rtomayko/rdiscount],
-                          {redcarpet}[https://github.com/tanoku/redcarpet],
+                          {redcarpet}[https://github.com/vmg/redcarpet],
                           {bluecloth}[http://deveiate.org/projects/BlueCloth],
                           {kramdown}[http://kramdown.rubyforge.org/] *ou*
                           {maruku}[http://maruku.rubyforge.org/]
@@ -1112,7 +1112,7 @@ Il est également possible d'utiliser un
 Ces méthodes ne sont pas chargées de mettre des données en cache, mais elles
 fournissent les informations nécessaires pour votre cache. Si vous êtes à la
 recherche de solutions rapides pour un reverse-proxy de cache, essayez
-{rack-cache}[http://rtomayko.github.com/rack-cache/] :
+{rack-cache}[https://github.com/rtomayko/rack-cache] :
 
   require "rack/cache"
   require "sinatra"
