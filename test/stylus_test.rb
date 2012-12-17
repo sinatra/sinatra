@@ -5,7 +5,7 @@ begin
 
   begin
     Stylus.compile '1'
-  rescue Exception
+  rescue RuntimeError
     raise LoadError, 'unable to find Stylus compiler'
   end
 
@@ -20,7 +20,7 @@ begin
     end
 
     it 'renders inline Stylus strings' do
-      stylus_app { stylus "a margin auto\n" }
+      stylus_app { stylus "a\n margin auto\n" }
       assert ok?
       assert body.include?("a {\n  margin: auto;\n}\n")
     end
