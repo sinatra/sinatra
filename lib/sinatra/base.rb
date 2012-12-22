@@ -289,7 +289,7 @@ module Sinatra
     # Class of the response body in case you use #stream.
     #
     # Three things really matter: The front and back block (back being the
-    # blog generating content, front the one sending it to the client) and
+    # block generating content, front the one sending it to the client) and
     # the scheduler, integrating with whatever concurrency feature the Rack
     # handler is using.
     #
