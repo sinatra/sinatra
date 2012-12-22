@@ -897,18 +897,33 @@ the stream object, allowing you to close it at any later point in the
 execution flow. This only works on evented servers, like Thin and Rainbows.
 Other servers will still close the stream:
 
+  # long polling
+
   set :server, :thin
   connections = []
 
-  get '/' do
-    # keep stream open
+  get '/subscribe' do
+    # register a client's interest in server events
     stream(:keep_open) { |out| connections << out }
+
+    # purge dead connections
+    connections.reject!(&:closed?)
+
+    # acknowledge
+    "subscribed"
   end
 
-  post '/' do
-    # write to all open streams
-    connections.each { |out| out << params[:message] << "\n" }
-    "message sent"
+  post '/message' do
+    connections.each do |out|
+      # notify client that a new message has arrived
+      out << message << "\n"
+
+      # indicate client to connect again
+      out.close
+    end
+
+    # acknowledge
+    "message received"
   end
 
 === Logging
