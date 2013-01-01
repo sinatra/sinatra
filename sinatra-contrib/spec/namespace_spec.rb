@@ -54,7 +54,7 @@ describe Sinatra::Namespace do
           send(verb, "/fox/bar").should be_ok
           body.should == "fox" unless verb == :head
         end
-  
+
         it "sets params correctly from route" do
           namespace("/foo") { send(verb, "/:bar") { params[:bar] }}
           send(verb, "/foo/bar").should be_ok
@@ -89,7 +89,7 @@ describe Sinatra::Namespace do
         it 'allows defining routes without a pattern' do
           namespace(%r{/foo}) { send(verb) { 'bar' } }
           send(verb, '/foo').should be_ok
-          body.should == 'bar' unless verb == :head 
+          body.should == 'bar' unless verb == :head
         end
       end
 
@@ -509,7 +509,7 @@ describe Sinatra::Namespace do
           mock_app {
             class AError < StandardError; end
             class BError < AError; end
-            
+
             error(AError) { body('auth failed');  401}
             namespace('/en') do
               get '/foo' do

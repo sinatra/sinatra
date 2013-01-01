@@ -183,7 +183,7 @@ module Sinatra
       def namespace_errors
         @errors
       end
-      
+
       def error(*codes, &block)
         args  = Sinatra::Base.send(:compile!, "ERROR", /^#{@pattern}/, block)
         codes = codes.map { |c| Array(c) }.flatten

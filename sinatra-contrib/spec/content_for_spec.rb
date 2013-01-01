@@ -138,13 +138,13 @@ describe Sinatra::ContentFor do
           render(inner, :passes_values).should == "<i>1</i>2"
         end
       end
-      
+
       describe "with content_for? in Ruby" do
-        it 'renders block if key is set' do 
+        it 'renders block if key is set' do
           content_for(:foo) { "foot" }
           render(inner, :footer).should == "foot"
         end
-        
+
         it 'does not render a block if different key' do
           content_for(:different_key) { "foot" }
           render(inner, :footer).should be_empty
