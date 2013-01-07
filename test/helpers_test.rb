@@ -240,6 +240,17 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal '', body
       assert_equal 'mailto:jsmith@example.com', response['Location']
     end
+
+    it 'accepts a URI object instead of a String' do
+      mock_app do
+        get('/') { redirect URI.parse('http://sinatrarb.com') }
+      end
+
+      get '/'
+      assert_equal 302, status
+      assert_equal '', body
+      assert_equal 'http://sinatrarb.com', response['Location']
+    end
   end
 
   describe 'error' do
