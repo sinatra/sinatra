@@ -141,7 +141,7 @@ get '/foo' do
 end
 ```
 
-Other available conditions are +host_name+ and +provides+:
+Other available conditions are `host_name` and `provides`:
 
 ```ruby
 get '/', :host_name => /^admin\./ do
@@ -221,7 +221,7 @@ end
 get('/') { Stream.new }
 ```
 
-You can also use the +stream+ helper method (described below) to reduce boiler
+You can also use the `stream` helper method (described below) to reduce boiler
 plate and embed the streaming logic in the route.
 
 ### Custom Route Matchers
@@ -447,7 +447,7 @@ Dependency::        [liquid](http://www.liquidmarkup.org/)
 File Extension::   `.liquid`
 Example::           `liquid :index, :locals => { :key => 'value' }`
 
-Since you cannot call Ruby methods (except for +yield+) from a Liquid
+Since you cannot call Ruby methods (except for `yield`) from a Liquid
 template, you almost always want to pass locals to it.
 
 #### Markdown Templates
@@ -468,7 +468,7 @@ engine:
 erb :overview, :locals => { :text => markdown(:introduction) }
 ```
 
-Note that you may also call the +markdown+ method from within other templates:
+Note that you may also call the `markdown` method from within other templates:
 
 ```ruby
 %h1 Hello From Haml!
@@ -492,7 +492,7 @@ therefore will usually use it in combination with another rendering engine:
 erb :overview, :locals => { :text => textile(:introduction) }
 ```
 
-Note that you may also call the +textile+ method from within other templates:
+Note that you may also call the `textile` method from within other templates:
 
 ```ruby
 %h1 Hello From Haml!
@@ -516,7 +516,7 @@ therefore will usually use it in combination with another rendering engine:
 erb :overview, :locals => { :text => rdoc(:introduction) }
 ```
 
-Note that you may also call the +rdoc+ method from within other templates:
+Note that you may also call the `rdoc` method from within other templates:
 
 ```ruby
 %h1 Hello From Haml!
@@ -569,7 +569,7 @@ therefore will usually use it in combination with another rendering engine:
 erb :overview, :locals => { :text => creole(:introduction) }
 ```
 
-Note that you may also call the +creole+ method from within other templates:
+Note that you may also call the `creole` method from within other templates:
 
 ```ruby
 %h1 Hello From Haml!
@@ -614,7 +614,7 @@ File Extension::   `.wlang`
 Example::           `wlang :index, :locals => { :key => 'value' }`
 
 Since calling ruby methods is not idiomatic in wlang, you almost always want to pass locals
-to it. Layouts written in wlang and +yield+ are supported, though.
+to it. Layouts written in wlang and `yield` are supported, though.
 
 #### Embedded Templates
 
@@ -761,7 +761,7 @@ after do
 end
 ```
 
-Note: Unless you use the +body+ method rather than just returning a String from
+Note: Unless you use the `body` method rather than just returning a String from
 the routes, the body will not yet be available in the after filter, since it is
 generated later on.
 
@@ -1133,7 +1133,7 @@ get '/foo' do
 end
 ```
 
-Any additional parameters are handled like arguments passed to +halt+:
+Any additional parameters are handled like arguments passed to `halt`:
 
 ```ruby
 redirect to('/bar'), 303
@@ -1537,7 +1537,7 @@ vulnerabilities):
 disable :protection
 ```
 
-To skip a single defense layer, set +protection+ to an options hash:
+To skip a single defense layer, set `protection` to an options hash:
 
 ```ruby
 set :protection, :except => :path_traversal
@@ -1681,7 +1681,7 @@ not set.
 
 ## Environments
 
-There are three predefined +environments+: `"development"`,
+There are three predefined `environments`: `"development"`,
 `"production"` and `"test"`. Environments can be set
 through the `RACK_ENV` environment variable. The default value is
 `"development"`. In the `"development"` environment all templates are reloaded between
@@ -1795,7 +1795,7 @@ get '/hello' do
 end
 ```
 
-The semantics of +use+ are identical to those defined for the
+The semantics of `use` are identical to those defined for the
 [Rack::Builder](http://rack.rubyforge.org/doc/classes/Rack/Builder.html) DSL
 (most frequently used from rackup files). For example, the `use` method
 accepts multiple/variable args as well as blocks:
@@ -1809,7 +1809,7 @@ end
 Rack is distributed with a variety of standard middleware for logging,
 debugging, URL routing, authentication, and session handling. Sinatra uses
 many of these components automatically based on configuration so you
-typically don't have to +use+ them explicitly.
+typically don't have to `use` them explicitly.
 
 You can find useful middleware in
 [rack](https://github.com/rack/rack/tree/master/lib/rack),
@@ -1882,7 +1882,7 @@ The methods available to `Sinatra::Base` subclasses are exactly the same as thos
 available via the top-level DSL. Most top-level apps can be converted to
 `Sinatra::Base` components with two modifications:
 
-* Your file should require `sinatra/base` instead of +sinatra+;
+* Your file should require `sinatra/base` instead of `sinatra`;
   otherwise, all of Sinatra's DSL methods are imported into the main
   namespace.
 * Put your app's routes, error handlers, filters, and options in a subclass
@@ -2103,7 +2103,7 @@ You have the application scope binding inside:
 
 * Your application class body
 * Methods defined by extensions
-* The block passed to +helpers+
+* The block passed to `helpers`
 * Procs/blocks used as value for `set`
 * The block passed to `Sinatra.new`
 
@@ -2172,12 +2172,14 @@ ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
 
 Options are:
 
+```
   -h # help
   -p # set the port (default is 4567)
   -o # set the host (default is 0.0.0.0)
   -e # set the environment (default is development)
   -s # specify rack server/handler (default is thin)
   -x # turn on the mutex lock (default is off)
+```
 
 ## Requirement
 
