@@ -1855,41 +1855,44 @@ class MyApp < Sinatra::Base
   end
 end
 ```
+
 You have the application scope binding inside:
 
 * Your application class body
 * Methods defined by extensions
 * The block passed to +helpers+
-* Procs/blocks used as value for +set+
+* Procs/blocks used as value for `set`
 * The block passed to `Sinatra.new`
 
 You can reach the scope object (the class) like this:
 
 * Via the object passed to configure blocks (`configure { |c| ... }`)
-* +settings+ from within the request scope
+* `settings` from within the request scope
 
-=== Request/Instance Scope
+### Request/Instance Scope
 
 For every incoming request, a new instance of your application class is
 created and all handler blocks run in that scope. From within this scope you
-can access the +request+ and +session+ objects or call rendering methods like
-+erb+ or +haml+. You can access the application scope from within the request
-scope via the +settings+ helper:
+can access the `request` and `session` objects or call rendering methods like
+`erb` or `haml`. You can access the application scope from within the request
+scope via the `settings` helper:
 
-  class MyApp < Sinatra::Base
-    # Hey, I'm in the application scope!
-    get '/define_route/:name' do
-      # Request scope for '/define_route/:name'
-      @value = 42
+```ruby
+class MyApp < Sinatra::Base
+  # Hey, I'm in the application scope!
+  get '/define_route/:name' do
+    # Request scope for '/define_route/:name'
+    @value = 42
 
-      settings.get("/#{params[:name]}") do
-        # Request scope for "/#{params[:name]}"
-        @value # => nil (not the same request)
-      end
-
-      "Route defined!"
+    settings.get("/#{params[:name]}") do
+      # Request scope for "/#{params[:name]}"
+      @value # => nil (not the same request)
     end
+
+    "Route defined!"
   end
+end
+```
 
 You have the request scope binding inside:
 
@@ -1898,13 +1901,13 @@ You have the request scope binding inside:
 * helper methods
 * templates/views
 
-=== Delegation Scope
+### Delegation Scope
 
 The delegation scope just forwards methods to the class scope. However, it
 does not behave exactly like the class scope, as you do not have the class
 binding. Only methods explicitly marked for delegation are available, and you
 do not share variables/state with the class scope (read: you have a different
-+self+). You can explicitly add method delegations by calling
+`self`). You can explicitly add method delegations by calling
 `Sinatra::Delegator.delegate :method_name`.
 
 You have the delegate scope binding inside:
@@ -1913,14 +1916,16 @@ You have the delegate scope binding inside:
 * An object extended with the `Sinatra::Delegator` mixin
 
 Have a look at the code for yourself: here's the
-{Sinatra::Delegator mixin}[https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/base.rb#L1609-1633]
-being {extending the main object}[https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/main.rb#L28-30].
+[Sinatra::Delegator mixin](https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/base.rb#L1609-1633)
+being [extending the main object](https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/main.rb#L28-30).
 
-== Command Line
+## Command Line
 
 Sinatra applications can be run directly:
 
-  ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
+```ruby
+ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
+```
 
 Options are:
 
@@ -1931,12 +1936,12 @@ Options are:
   -s # specify rack server/handler (default is thin)
   -x # turn on the mutex lock (default is off)
 
-== Requirement
+## Requirement
 
 The following Ruby versions are officially supported:
 
-[ Ruby 1.8.7 ]
-  1.8.7 is fully supported, however, if nothing is keeping you from it, we
+** Ruby 1.8.7 **
+>  1.8.7 is fully supported, however, if nothing is keeping you from it, we
   recommend upgrading to 1.9.2 or switching to JRuby or Rubinius. Support for
   1.8.7 will not be dropped before Sinatra 2.0 and Ruby 2.0 except maybe in
   the unlikely event of 1.8.8 being released. Even then, we might continue
@@ -1944,23 +1949,23 @@ The following Ruby versions are officially supported:
   with 1.8.6, downgrade to Sinatra 1.2, which will receive bug fixes until
   Sinatra 1.4.0 is released.
 
-[ Ruby 1.9.2 ]
-  1.9.2 is fully supported and recommended. Do not use 1.9.2p0, as it is known to
+** Ruby 1.9.2 **
+>  1.9.2 is fully supported and recommended. Do not use 1.9.2p0, as it is known to
   cause segmentation faults when running Sinatra. Support will continue at least
   until the release of Ruby 1.9.4/2.0 and support for the latest 1.9 release
   will continue as long as it is still supported by the Ruby core team.
 
-[ Ruby 1.9.3 ]
-  1.9.3 is fully supported and recommended. Please note that switching to 1.9.3
+** Ruby 1.9.3 **
+>  1.9.3 is fully supported and recommended. Please note that switching to 1.9.3
   from an earlier version will invalidate all sessions.
 
-[ Rubinius ]
-  Rubinius is officially supported (Rubinius >= 1.2.4), everything works, including
+** Rubinius **
+>  Rubinius is officially supported (Rubinius >= 1.2.4), everything works, including
   all template languages. The upcoming 2.0 release is supported as
   well, including 1.9 mode.
 
-[ JRuby ]
-  JRuby is officially supported (JRuby >= 1.6.7). No issues with third party
+** JRuby **
+>  JRuby is officially supported (JRuby >= 1.6.7). No issues with third party
   template libraries are known, however, if you choose to use JRuby, please
   look into JRuby rack handlers, as the Thin web server is not fully supported
   on JRuby. JRuby's support for C extensions is still experimental, which only
