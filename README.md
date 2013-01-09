@@ -1346,14 +1346,14 @@ You can also hand in an array in order to disable a list of protections:
 
 __**absolute_redirects**__
 
-If disabled, Sinatra will allow relative redirects,
-however, Sinatra will no longer conform with RFC 2616
-(HTTP 1.1), which only allows absolute redirects.
+>If disabled, Sinatra will allow relative redirects,
+>however, Sinatra will no longer conform with RFC 2616
+>(HTTP 1.1), which only allows absolute redirects.
 
-Enable if your app is running behind a reverse proxy that
-has not been set up properly. Note that the `url` helper
-will still produce absolute URLs, unless you pass in
-`false` as the second parameter.
+>Enable if your app is running behind a reverse proxy that
+>has not been set up properly. Note that the `url` helper
+>will still produce absolute URLs, unless you pass in
+>`false` as the second parameter.
 
 Disabled per default.
 
