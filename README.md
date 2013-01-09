@@ -2331,7 +2331,7 @@ SemVerTag.
 * [Contributing](http://www.sinatrarb.com/contributing) - Find a bug? Need
   help? Have a patch?
 * [Issue tracker](http://github.com/sinatra/sinatra/issues)
-* [Twitter][http://twitter.com/sinatra)
+* [Twitter](http://twitter.com/sinatra)
 * [Mailing List](http://groups.google.com/group/sinatrarb/topics)
 * [IRC: #sinatra](irc://chat.freenode.net/#sinatra) on http://freenode.net
 * [Sinatra Book](http://sinatra-book.gittr.com) Cookbook Tutorial
