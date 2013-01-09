@@ -1940,7 +1940,7 @@ Options are:
 
 The following Ruby versions are officially supported:
 
-** Ruby 1.8.7 **
+**Ruby 1.8.7**
 >  1.8.7 is fully supported, however, if nothing is keeping you from it, we
   recommend upgrading to 1.9.2 or switching to JRuby or Rubinius. Support for
   1.8.7 will not be dropped before Sinatra 2.0 and Ruby 2.0 except maybe in
@@ -1949,22 +1949,22 @@ The following Ruby versions are officially supported:
   with 1.8.6, downgrade to Sinatra 1.2, which will receive bug fixes until
   Sinatra 1.4.0 is released.
 
-** Ruby 1.9.2 **
+**Ruby 1.9.2**
 >  1.9.2 is fully supported and recommended. Do not use 1.9.2p0, as it is known to
   cause segmentation faults when running Sinatra. Support will continue at least
   until the release of Ruby 1.9.4/2.0 and support for the latest 1.9 release
   will continue as long as it is still supported by the Ruby core team.
 
-** Ruby 1.9.3 **
+**Ruby 1.9.3**
 >  1.9.3 is fully supported and recommended. Please note that switching to 1.9.3
   from an earlier version will invalidate all sessions.
 
-** Rubinius **
+**Rubinius**
 >  Rubinius is officially supported (Rubinius >= 1.2.4), everything works, including
   all template languages. The upcoming 2.0 release is supported as
   well, including 1.9 mode.
 
-** JRuby **
+**JRuby**
 >  JRuby is officially supported (JRuby >= 1.6.7). No issues with third party
   template libraries are known, however, if you choose to use JRuby, please
   look into JRuby rack handlers, as the Thin web server is not fully supported
@@ -1995,34 +1995,40 @@ implementation.
 Sinatra currently doesn't run on Cardinal, SmallRuby, BlueRuby or any
 Ruby version prior to 1.8.7.
 
-== The Bleeding Edge
+## The Bleeding Edge
 
 If you would like to use Sinatra's latest bleeding-edge code, feel free to run your
 application against the master branch, it should be rather stable.
 
 We also push out prerelease gems from time to time, so you can do a
 
-  gem install sinatra --pre
+```ruby
+gem install sinatra --pre
+```
 
 To get some of the latest features.
 
-=== With Bundler
+### With Bundler
 
 If you want to run your application with the latest Sinatra, using
-{Bundler}[http://gembundler.com/] is the recommended way.
+[Bundler](http://gembundler.com/) is the recommended way.
 
 First, install bundler, if you haven't:
 
-  gem install bundler
+```ruby
+gem install bundler
+```
 
-Then, in your project directory, create a +Gemfile+:
+Then, in your project directory, create a `Gemfile`:
 
-  source :rubygems
-  gem 'sinatra', :git => "git://github.com/sinatra/sinatra.git"
+```ruby
+source :rubygems
+gem 'sinatra', :git => "git://github.com/sinatra/sinatra.git"
 
-  # other dependencies
-  gem 'haml'                    # for instance, if you use haml
-  gem 'activerecord', '~> 3.0'  # maybe you also need ActiveRecord 3.x
+# other dependencies
+gem 'haml'                    # for instance, if you use haml
+gem 'activerecord', '~> 3.0'  # maybe you also need ActiveRecord 3.x
+```
 
 Note that you will have to list all your application's dependencies in the +Gemfile+.
 Sinatra's direct dependencies (Rack and Tilt) will, however, be automatically
@@ -2030,54 +2036,63 @@ fetched and added by Bundler.
 
 Now you can run your app like this:
 
-  bundle exec ruby myapp.rb
+```ruby
+bundle exec ruby myapp.rb
+```
 
-=== Roll Your Own
+### Roll Your Own
 
 Create a local clone and run your app with the `sinatra/lib` directory
 on the `$LOAD_PATH`:
 
-  cd myapp
-  git clone git://github.com/sinatra/sinatra.git
-  ruby -Isinatra/lib myapp.rb
+```ruby
+cd myapp
+git clone git://github.com/sinatra/sinatra.git
+ruby -Isinatra/lib myapp.rb
+```
 
 To update the Sinatra sources in the future:
 
-  cd myapp/sinatra
-  git pull
-
-=== Install Globally
+```ruby
+cd myapp/sinatra
+git pull
+```
+### Install Globally
 
 You can build the gem on your own:
 
-  git clone git://github.com/sinatra/sinatra.git
-  cd sinatra
-  rake sinatra.gemspec
-  rake install
+```ruby
+git clone git://github.com/sinatra/sinatra.git
+cd sinatra
+rake sinatra.gemspec
+rake install
+```
 
 If you install gems as root, the last step should be
 
-  sudo rake install
+```ruby
+sudo rake install
+```
 
-== Versioning
+## Versioning
 
-Sinatra follows {Semantic Versioning}[http://semver.org/], both SemVer and
+Sinatra follows [Semantic Versioning](http://semver.org/), both SemVer and
 SemVerTag.
 
-== Further Reading
+## Further Reading
 
-* {Project Website}[http://www.sinatrarb.com/] - Additional documentation,
+* [Project Website](http://www.sinatrarb.com/) - Additional documentation,
   news, and links to other resources.
-* {Contributing}[http://www.sinatrarb.com/contributing] - Find a bug? Need
+* [Contributing](http://www.sinatrarb.com/contributing) - Find a bug? Need
   help? Have a patch?
-* {Issue tracker}[http://github.com/sinatra/sinatra/issues]
-* {Twitter}[http://twitter.com/sinatra]
-* {Mailing List}[http://groups.google.com/group/sinatrarb/topics]
-* {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] on http://freenode.net
-* {Sinatra Book}[http://sinatra-book.gittr.com] Cookbook Tutorial
-* {Sinatra Recipes}[http://recipes.sinatrarb.com/] Community
+* [Issue tracker](http://github.com/sinatra/sinatra/issues)
+* [Twitter][http://twitter.com/sinatra)
+* [Mailing List](http://groups.google.com/group/sinatrarb/topics)
+* [IRC: #sinatra](irc://chat.freenode.net/#sinatra) on http://freenode.net
+* [Sinatra Book](http://sinatra-book.gittr.com) Cookbook Tutorial
+* [Sinatra Recipes](http://recipes.sinatrarb.com/) Community
   contributed recipes
-* API documentation for the {latest release}[http://rubydoc.info/gems/sinatra]
-  or the {current HEAD}[http://rubydoc.info/github/sinatra/sinatra] on
+* API documentation for the [latest release](http://rubydoc.info/gems/sinatra)
+  or the [current HEAD](http://rubydoc.info/github/sinatra/sinatra) on
   http://rubydoc.info
-* {CI server}[http://travis-ci.org/sinatra/sinatra]
+* [CI server](http://travis-ci.org/sinatra/sinatra)
