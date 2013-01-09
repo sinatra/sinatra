@@ -2291,7 +2291,7 @@ on the `$LOAD_PATH`:
 ```ruby
 cd myapp
 git clone git://github.com/sinatra/sinatra.git
-ruby -Isinatra/lib myapp.rb
+ruby -I sinatra/lib myapp.rb
 ```
 
 To update the Sinatra sources in the future:
