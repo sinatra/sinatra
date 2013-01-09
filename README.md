@@ -1344,7 +1344,7 @@ You can also hand in an array in order to disable a list of protections:
 
 ### Available Settings
 
-____**absolute_redirects**____
+**absolute_redirects**
 
 > If disabled, Sinatra will allow relative redirects, however, Sinatra will no 
 longer conform with RFC 2616 (HTTP 1.1), which only allows absolute redirects.
@@ -1355,109 +1355,129 @@ pass in `false` as the second parameter.
 
 > Disabled per default.
 
-__**add_charsets**__         
+**add_charsets**
 > mime types the `content_type` helper will automatically add the charset info to.
-
 You should add to it rather than overriding this option:
 
- settings.add_charsets << "application/foobar"
+   settings.add_charsets << "application/foobar"
 
-[app_file]             Path to the main application file, used to detect project
-                       root, views and public folder and inline templates.
+**app_file**
 
-[bind]                 IP address to bind to (default: 0.0.0.0).
-                       Only used for built-in server.
+> Path to the main application file, used to detect project root, views and public 
+folder and inline templates.
 
-[default_encoding]     encoding to assume if unknown
-                       (defaults to `"utf-8"`).
+**bind**
 
-[dump_errors]          display errors in the log.
+> IP address to bind to (default: 0.0.0.0). Only used for built-in server.
 
-[environment]          current environment, defaults to `ENV['RACK_ENV']`,
-                       or `"development"` if not available.
+**default_encoding**
 
-[logging]              use the logger.
+> encoding to assume if unknown (defaults to `"utf-8"`).
 
-[lock]                 Places a lock around every request, only running
-                       processing on request per Ruby process concurrently.
+**dump_errors**
 
-                       Enabled if your app is not thread-safe.
-                       Disabled per default.
+> display errors in the log.
 
-[method_override]      use `_method` magic to allow put/delete forms in
-                       browsers that don't support it.
+**environment**
 
-[port]                 Port to listen on. Only used for built-in server.
+> current environment, defaults to `ENV['RACK_ENV']`, or `"development"` if 
+not available.
 
-[prefixed_redirects]   Whether or not to insert `request.script_name`
-                       into redirects if no absolute path is given. That way
-                       `redirect '/foo'` would behave like
-                       `redirect to('/foo')`. Disabled per default.
+**logging**
+> use the logger.
 
-[protection]           Whether or not to enable web attack protections. See
-                       protection section above.
+**lock**
+> Places a lock around every request, only running processing on request 
+per Ruby process concurrently.
 
-[public_dir]           Alias for `public_folder`. See below.
+> Enabled if your app is not thread-safe. Disabled per default.
 
-[public_folder]        Path to the folder public files are served from. Only
-                       used if static file serving is enabled (see
-                       `static` setting below). Inferred from
-                       `app_file` setting if not set.
+**method_override**
+> use `_method` magic to allow put/delete forms in browsers that 
+don't support it.
 
-[reload_templates]     whether or not to reload templates between requests.
-                       Enabled in development mode.
+**port**
+> Port to listen on. Only used for built-in server.
 
-[root]                 Path to project root folder. Inferred from +app_file+
-                       setting if not set.
+**prefixed_redirects**
+> Whether or not to insert `request.script_name` into redirects if no 
+absolute path is given. That way `redirect '/foo'` would behave like
+`redirect to('/foo')`. Disabled per default.
 
-[raise_errors]         raise exceptions (will stop application). Enabled
-                       by default when `environment` is set to
-                       `"test"`, disabled otherwise.
+**protection**
+> Whether or not to enable web attack protections. See protection section above.
 
-[run]                  if enabled, Sinatra will handle starting the web server,
-                       do not enable if using rackup or other means.
+**public_dir**
+> Alias for `public_folder`. See below.
 
-[running]              is the built-in server running now?
-                       do not change this setting!
+**public_folder**
+> Path to the folder public files are served from. Only used if static 
+file serving is enabled (see `static` setting below). Inferred from 
+`app_file` setting if not set.
 
-[server]               server or list of servers to use for built-in server.
-                       defaults to ['thin', 'mongrel', 'webrick'], order
-                       indicates priority.
+**reload_templates**
+> Whether or not to reload templates between requests. Enabled in development mode.
 
-[sessions]             enable cookie-based sessions support using
-                       `Rack::Session::Cookie`. See 'Using Sessions'
-                       section for more information.
+**root**
+> Path to project root folder. Inferred from `app_file` setting if not set.
 
-[show_exceptions]      show a stack trace in the browser when an exception
-                       happens. Enabled by default when `environment`
-                       is set to `"development"`, disabled otherwise.
-                       Can also be set to `:after_handler` to trigger
-                       app-specified error handling before showing a stack
-                       trace in the browser.
+**raise_errors**
+> raise exceptions (will stop application). Enabled by default when 
+`environment` is set to `"test"`, disabled otherwise.
 
-[static]               Whether Sinatra should handle serving static files.
-                       Disable when using a server able to do this on its own.
-                       Disabling will boost performance.
-                       Enabled per default in classic style, disabled for
-                       modular apps.
+**run**
+> if enabled, Sinatra will handle starting the web server, do not 
+enable if using rackup or other means.
 
-[static_cache_control] When Sinatra is serving static files, set this to add
-                       `Cache-Control` headers to the responses. Uses the
-                       +cache_control+ helper. Disabled by default.
-                       Use an explicit array when setting multiple values:
-                       `set :static_cache_control, [:public, :max_age => 300]`
+**running**
+> is the built-in server running now? do not change this setting!
 
-[threaded]             If set to +true+, will tell Thin to use
-                       `EventMachine.defer` for processing the request.
+**server**
+> server or list of servers to use for built-in server. defaults to 
+['thin', 'mongrel', 'webrick'], order indicates priority.
 
-[views]                Path to the views folder. Inferred from `app_file`
-                       setting if not set.
+**sessions**
+> Enable cookie-based sessions support using `Rack::Session::Cookie`.
+ See 'Using Sessions' section for more information.
 
-== Environments
+**show_exceptions**
+
+> Show a stack trace in the browser when an exception
+happens. Enabled by default when `environment`
+is set to `"development"`, disabled otherwise.
+
+> Can also be set to `:after_handler` to trigger
+app-specified error handling before showing a stack
+trace in the browser.
+
+**static**
+
+> Whether Sinatra should handle serving static files.
+> Disable when using a server able to do this on its own.
+> Disabling will boost performance.
+> Enabled per default in classic style, disabled for
+modular apps.
+
+**static_cache_control**
+> When Sinatra is serving static files, set this to add
+`Cache-Control` headers to the responses. Uses the
+`cache_control` helper. Disabled by default.
+Use an explicit array when setting multiple values:
+`set :static_cache_control, [:public, :max_age => 300]`
+
+**threaded**
+> If set to `true`, will tell Thin to use `EventMachine.defer` 
+for processing the request.
+
+**views**
+> Path to the views folder. Inferred from `app_file` setting if 
+not set.
+
+## Environments
 
 There are three predefined +environments+: `"development"`,
 `"production"` and `"test"`. Environments can be set
-through the +RACK_ENV+ environment variable. The default value is
+through the `RACK_ENV` environment variable. The default value is
 `"development"`. In the `"development"` environment all templates are reloaded between
 requests, and special `not_found` and `error` handlers 
 display stack traces in your browser.
@@ -1465,100 +1485,102 @@ In the `"production"` and `"test"` environments, templates are cached by default
 
 To run different environments use the `-e` option:
 
-  ruby my_app.rb -e [ENVIRONMENT]
+    ruby my_app.rb -e [ENVIRONMENT]
 
 You can use predefined methods: +development?+, +test?+ and +production?+ to
 check the current environment setting.
 
-== Error Handling
+## Error Handling
 
 Error handlers run within the same context as routes and before filters, which
 means you get all the goodies it has to offer, like `haml`,
 `erb`, `halt`, etc.
 
-=== Not Found
+### Not Found
 
 When a `Sinatra::NotFound` exception is raised, or the response's status
 code is 404, the `not_found` handler is invoked:
 
-  not_found do
-    'This is nowhere to be found.'
-  end
+```ruby
+not_found do
+  'This is nowhere to be found.'
+end
+```
 
-=== Error
+### Error
 
-The +error+ handler is invoked any time an exception is raised from a route
+The `error` handler is invoked any time an exception is raised from a route
 block or a filter. The exception object can be obtained from the
 `sinatra.error` Rack variable:
 
-  error do
-    'Sorry there was a nasty error - ' + env['sinatra.error'].name
-  end
+    error do
+      'Sorry there was a nasty error - ' + env['sinatra.error'].name
+    end
 
 Custom errors:
 
-  error MyCustomError do
-    'So what happened was...' + env['sinatra.error'].message
-  end
+    error MyCustomError do
+      'So what happened was...' + env['sinatra.error'].message
+    end
 
 Then, if this happens:
 
-  get '/' do
-    raise MyCustomError, 'something bad'
-  end
+    get '/' do
+      raise MyCustomError, 'something bad'
+    end
 
 You get this:
 
-  So what happened was... something bad
+    So what happened was... something bad
 
 Alternatively, you can install an error handler for a status code:
 
-  error 403 do
-    'Access forbidden'
-  end
+    error 403 do
+      'Access forbidden'
+    end
 
-  get '/secret' do
-    403
-  end
+    get '/secret' do
+      403
+    end
 
 Or a range:
 
-  error 400..510 do
-    'Boom'
-  end
+    error 400..510 do
+      'Boom'
+    end
 
 Sinatra installs special `not_found` and `error` handlers when
 running under the development environment.
 
-== Rack Middleware
+## Rack Middleware
 
-Sinatra rides on Rack[http://rack.rubyforge.org/], a minimal standard
+Sinatra rides on [Rack](http://rack.rubyforge.org/), a minimal standard
 interface for Ruby web frameworks. One of Rack's most interesting capabilities
 for application developers is support for "middleware" -- components that sit
 between the server and your application monitoring and/or manipulating the
 HTTP request/response to provide various types of common functionality.
 
 Sinatra makes building Rack middleware pipelines a cinch via a top-level
-+use+ method:
+`use` method:
 
-  require 'sinatra'
-  require 'my_custom_middleware'
+    require 'sinatra'
+    require 'my_custom_middleware'
 
-  use Rack::Lint
-  use MyCustomMiddleware
+    use Rack::Lint
+    use MyCustomMiddleware
 
-  get '/hello' do
-    'Hello World'
-  end
+    get '/hello' do
+      'Hello World'
+    end
 
 The semantics of +use+ are identical to those defined for the
-Rack::Builder[http://rack.rubyforge.org/doc/classes/Rack/Builder.html] DSL
+[Rack::Builder](http://rack.rubyforge.org/doc/classes/Rack/Builder.html) DSL
 (most frequently used from rackup files). For example, the +use+ method
 accepts multiple/variable args as well as blocks:
 
-  use Rack::Auth::Basic do |username, password|
-    username == 'admin' && password == 'secret'
-  end
+    use Rack::Auth::Basic do |username, password|
+      username == 'admin' && password == 'secret'
+    end
 
 Rack is distributed with a variety of standard middleware for logging,
 debugging, URL routing, authentication, and session handling. Sinatra uses
@@ -1566,47 +1588,48 @@ many of these components automatically based on configuration so you
 typically don't have to +use+ them explicitly.
 
 You can find useful middleware in
-{rack}[https://github.com/rack/rack/tree/master/lib/rack],
-{rack-contrib}[https://github.com/rack/rack-contrib#readme],
-with {CodeRack}[http://coderack.org/] or in the
-{Rack wiki}[https://github.com/rack/rack/wiki/List-of-Middleware].
+[rack](https://github.com/rack/rack/tree/master/lib/rack),
+[rack-contrib](https://github.com/rack/rack-contrib#readm),
+with [CodeRack](http://coderack.org/) or in the
+[Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
 
 == Testing
 
 Sinatra tests can be written using any Rack-based testing library or framework.
-{Rack::Test}[http://rdoc.info/github/brynary/rack-test/master/frames]
+[Rack::Test](http://rdoc.info/github/brynary/rack-test/master/frames)
 is recommended:
 
-  require 'my_sinatra_app'
-  require 'test/unit'
-  require 'rack/test'
+    require 'my_sinatra_app'
+    require 'test/unit'
+    require 'rack/test'
 
-  class MyAppTest < Test::Unit::TestCase
-    include Rack::Test::Methods
+    class MyAppTest < Test::Unit::TestCase
+      include Rack::Test::Methods
 
-    def app
-      Sinatra::Application
+      def app
+        Sinatra::Application
+      end
+
+      def test_my_default
+        get '/'
+        assert_equal 'Hello World!', last_response.body
+      end
+
+      def test_with_params
+        get '/meet', :name => 'Frank'
+        assert_equal 'Hello Frank!', last_response.body
+      end
+
+      def test_with_rack_env
+        get '/', {}, 'HTTP_USER_AGENT' => 'Songbird'
+        assert_equal "You're using Songbird!", last_response.body
+      end
     end
 
-    def test_my_default
-      get '/'
-      assert_equal 'Hello World!', last_response.body
-    end
+Note: If you are using Sinatra in the modular style, replace `Sinatra::Application` 
+above with the class name of your app.
 
-    def test_with_params
-      get '/meet', :name => 'Frank'
-      assert_equal 'Hello Frank!', last_response.body
-    end
-
-    def test_with_rack_env
-      get '/', {}, 'HTTP_USER_AGENT' => 'Songbird'
-      assert_equal "You're using Songbird!", last_response.body
-    end
-  end
-
-Note: If you are using Sinatra in the modular style, replace `Sinatra::Application` above with the class name of your app.
-
-== Sinatra::Base - Middleware, Libraries, and Modular Apps
+## Sinatra::Base - Middleware, Libraries, and Modular Apps
 
 Defining your app at the top-level works well for micro-apps but has
 considerable drawbacks when building reusable components such as Rack
@@ -1616,16 +1639,16 @@ Sinatra extensions. The top-level assumes a micro-app style configuration
 directories, logging, exception detail page, etc.). That's where
 `Sinatra::Base` comes into play:
 
-  require 'sinatra/base'
+    require 'sinatra/base'
 
-  class MyApp < Sinatra::Base
-    set :sessions, true
-    set :foo, 'bar'
+    class MyApp < Sinatra::Base
+      set :sessions, true
+      set :foo, 'bar'
 
-    get '/' do
-      'Hello world!'
+      get '/' do
+        'Hello world!'
+      end
     end
-  end
 
 The methods available to `Sinatra::Base` subclasses are exactly the same as those
 available via the top-level DSL. Most top-level apps can be converted to
@@ -1639,10 +1662,10 @@ available via the top-level DSL. Most top-level apps can be converted to
 
 `Sinatra::Base` is a blank slate. Most options are disabled by default,
 including the built-in server. See
-{Options and Configuration}[http://sinatra.github.com/configuration.html]
+[Options and Configuration](http://sinatra.github.com/configuration.html)
 for details on available options and their behavior.
 
-=== Modular vs. Classic Style
+### Modular vs. Classic Style
 
 Contrary to common belief, there is nothing wrong with the classic style. If it
 suits your application, you do not have to switch to a modular application.
@@ -1665,52 +1688,52 @@ different default settings:
   static              true                    false
 
 
-=== Serving a Modular Application
+### Serving a Modular Application
 
 There are two common options for starting a modular app, actively starting with
 `run!`:
 
-  # my_app.rb
-  require 'sinatra/base'
+    # my_app.rb
+    require 'sinatra/base'
 
-  class MyApp < Sinatra::Base
-    # ... app code here ...
+    class MyApp < Sinatra::Base
+      # ... app code here ...
 
-    # start the server if ruby file executed directly
-    run! if app_file == $0
-  end
+      # start the server if ruby file executed directly
+      run! if app_file == $0
+    end
 
 Start with:
 
-  ruby my_app.rb
+    ruby my_app.rb
 
 Or with a `config.ru` file, which allows using any Rack handler:
 
-  # config.ru (run with rackup)
-  require './my_app'
-  run MyApp
+    # config.ru (run with rackup)
+    require './my_app'
+    run MyApp
 
 Run:
 
-  rackup -p 4567
+    rackup -p 4567
 
-=== Using a Classic Style Application with a config.ru
+### Using a Classic Style Application with a config.ru
 
 Write your app file:
 
-  # app.rb
-  require 'sinatra'
+    # app.rb
+    require 'sinatra'
 
-  get '/' do
-    'Hello world!'
-  end
+    get '/' do
+      'Hello world!'
+    end
 
 And a corresponding `config.ru`:
 
-  require './app'
-  run Sinatra::Application
+    require './app'
+    run Sinatra::Application
 
-=== When to use a config.ru?
+### When to use a config.ru?
 
 A `config.ru` file is recommended if:
 
@@ -1719,112 +1742,119 @@ A `config.ru` file is recommended if:
 * You want to use more than one subclass of `Sinatra::Base`.
 * You want to use Sinatra only for middleware, and not as an endpoint.
 
-<b>There is no need to switch to a `config.ru` simply because you
+**There is no need to switch to a `config.ru` simply because you
 switched to the modular style, and you don't have to use the modular style for running
-with a `config.ru`.</b>
+with a `config.ru`.**
 
-=== Using Sinatra as Middleware
+### Using Sinatra as Middleware
 
 Not only is Sinatra able to use other Rack middleware, any Sinatra application
 can in turn be added in front of any Rack endpoint as middleware itself. This
 endpoint could be another Sinatra application, or any other Rack-based
 application (Rails/Ramaze/Camping/...):
 
-  require 'sinatra/base'
+    require 'sinatra/base'
 
-  class LoginScreen < Sinatra::Base
-    enable :sessions
+    class LoginScreen < Sinatra::Base
+      enable :sessions
 
-    get('/login') { haml :login }
+      get('/login') { haml :login }
 
-    post('/login') do
-      if params[:name] == 'admin' && params[:password] == 'admin'
-        session['user_name'] = params[:name]
-      else
-        redirect '/login'
-      end
-    end
-  end
-
-  class MyApp < Sinatra::Base
-    # middleware will run before filters
-    use LoginScreen
-
-    before do
-      unless session['user_name']
-        halt "Access denied, please <a href='/login'>login</a>."
+      post('/login') do
+        if params[:name] == 'admin' && params[:password] == 'admin'
+          session['user_name'] = params[:name]
+        else
+          redirect '/login'
+        end
       end
     end
 
-    get('/') { "Hello #{session['user_name']}." }
-  end
+    class MyApp < Sinatra::Base
+      # middleware will run before filters
+      use LoginScreen
 
-=== Dynamic Application Creation
+      before do
+        unless session['user_name']
+          halt "Access denied, please <a href='/login'>login</a>."
+        end
+      end
+
+      get('/') { "Hello #{session['user_name']}." }
+    end
+
+### Dynamic Application Creation
 
 Sometimes you want to create new applications at runtime without having to
 assign them to a constant, you can do this with `Sinatra.new`:
 
-  require 'sinatra/base'
-  my_app = Sinatra.new { get('/') { "hi" } }
-  my_app.run!
+```ruby
+require 'sinatra/base'
+my_app = Sinatra.new { get('/') { "hi" } }
+my_app.run!
+```
 
 It takes the application to inherit from as an optional argument:
 
-  # config.ru (run with rackup)
-  require 'sinatra/base'
+```ruby
+# config.ru (run with rackup)
+require 'sinatra/base'
 
-  controller = Sinatra.new do
-    enable :logging
-    helpers MyHelpers
-  end
+controller = Sinatra.new do
+  enable :logging
+  helpers MyHelpers
+end
 
-  map('/a') do
-    run Sinatra.new(controller) { get('/') { 'a' } }
-  end
+map('/a') do
+  run Sinatra.new(controller) { get('/') { 'a' } }
+end
 
-  map('/b') do
-    run Sinatra.new(controller) { get('/') { 'b' } }
-  end
+map('/b') do
+  run Sinatra.new(controller) { get('/') { 'b' } }
+end
+```
 
 This is especially useful for testing Sinatra extensions or using Sinatra in
 your own library.
 
 This also makes using Sinatra as middleware extremely easy:
 
-  require 'sinatra/base'
+```ruby
+require 'sinatra/base'
 
-  use Sinatra do
-    get('/') { ... }
-  end
+use Sinatra do
+  get('/') { ... }
+end
 
-  run RailsProject::Application
+run RailsProject::Application
+```
 
-== Scopes and Binding
+## Scopes and Binding
 
 The scope you are currently in determines what methods and variables are
 available.
 
-=== Application/Class Scope
+### Application/Class Scope
 
 Every Sinatra application corresponds to a subclass of `Sinatra::Base`.
 If you are using the top-level DSL (`require 'sinatra'`), then this
 class is `Sinatra::Application`, otherwise it is the subclass you
-created explicitly. At class level you have methods like +get+ or +before+, but
-you cannot access the +request+ or +session+ objects, as there is only a
+created explicitly. At class level you have methods like `get` or `before`, but
+you cannot access the `request` or `session` objects, as there is only a
 single application class for all requests.
 
-Options created via +set+ are methods at class level:
+Options created via `set` are methods at class level:
 
-    class MyApp < Sinatra::Base
-      # Hey, I'm in the application scope!
-      set :foo, 42
-      foo # => 42
+```ruby
+class MyApp < Sinatra::Base
+  # Hey, I'm in the application scope!
+  set :foo, 42
+  foo # => 42
 
-      get '/foo' do
-        # Hey, I'm no longer in the application scope!
-      end
-    end
-
+  get '/foo' do
+    # Hey, I'm no longer in the application scope!
+  end
+end
+```
 You have the application scope binding inside:
 
 * Your application class body
