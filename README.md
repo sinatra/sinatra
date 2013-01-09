@@ -1344,7 +1344,7 @@ You can also hand in an array in order to disable a list of protections:
 
 ### Available Settings
 
-__**absolute_redirects**__
+____**absolute_redirects**____
 
 > If disabled, Sinatra will allow relative redirects, however, Sinatra will no 
 longer conform with RFC 2616 (HTTP 1.1), which only allows absolute redirects.
