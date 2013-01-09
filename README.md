@@ -396,70 +396,86 @@ get('/') { markdown :index }
 
 #### Haml Templates
 
-Dependency::        [haml](http://haml.info/)
-File Extension::   `.haml`
-Example::           `haml :index, :format => :html5`
+```ruby
+    Dependency          [haml](http://haml.info/)
+    File Extension      .haml
+    Example             haml :index, :format => :html5
+```
 
 #### Erb Templates
 
-Dependency::        [erubis](http://www.kuwata-lab.com/erubis/) or
-                    erb (included in Ruby)
-File Extensions::   `.erb`, `.rhtml` or `.erubis` (Erubis only)
-Example::           `erb :index`
+```ruby
+    Dependency          [erubis](http://www.kuwata-lab.com/erubis/) or erb (included in Ruby)
+    File Extensions     .erb, .rhtml or .erubis (Erubis only)
+    Example             erb :index
+```
 
 #### Builder Templates
 
-Dependency::        [builder](http://builder.rubyforge.org/)
-File Extension::   `.builder`
-Example::           `builder { |xml| xml.em "hi" }`
+```ruby
+    Dependency          [builder](http://builder.rubyforge.org/)
+    File Extension      .builder
+    Example             builder { |xml| xml.em "hi" }
+```
 
 It also takes a block for inline templates (see example).
 
 #### Nokogiri Templates
 
-Dependency::        [nokogiri](http://nokogiri.org/)
-File Extension::   `.nokogiri`
-Example::           `nokogiri { |xml| xml.em "hi" }`
+```ruby
+    Dependency          [nokogiri](http://nokogiri.org/)
+    File Extension      .nokogiri
+    Example             nokogiri { |xml| xml.em "hi" }
+```
 
 It also takes a block for inline templates (see example).
 
 #### Sass Templates
 
-Dependency::        [sass](http://sass-lang.com/)
-File Extension::   `.sass`
-Example::           `sass :stylesheet, :style => :expanded`
+```ruby
+    Dependency          [sass](http://sass-lang.com/)
+    File Extension      .sass
+    Example             sass :stylesheet, :style => :expanded
+```
 
 #### SCSS Templates
 
-Dependency::        [sass](http://sass-lang.com/)
-File Extension::   `.scss`
-Example::           `scss :stylesheet, :style => :expanded`
+```ruby
+    Dependency          [sass](http://sass-lang.com/)
+    File Extension      .scss
+    Example             scss :stylesheet, :style => :expanded
+```
 
 #### Less Templates
 
-Dependency::        [less](http://www.lesscss.org/)
-File Extension::   `.less`
-Example::           `less :stylesheet`
+```ruby
+    Dependency          [less](http://www.lesscss.org/)
+    File Extension      .less
+    Example             less :stylesheet
+```
 
 #### Liquid Templates
 
-Dependency::        [liquid](http://www.liquidmarkup.org/)
-File Extension::   `.liquid`
-Example::           `liquid :index, :locals => { :key => 'value' }`
+```ruby
+    Dependency          [liquid](http://www.liquidmarkup.org/)
+    File Extension      .liquid
+    Example             liquid :index, :locals => { :key => 'value' }
+```
 
 Since you cannot call Ruby methods (except for `yield`) from a Liquid
 template, you almost always want to pass locals to it.
 
 #### Markdown Templates
 
-Dependency::        [rdiscount](https://github.com/rtomayko/rdiscount),
-                    [redcarpet](https://github.com/vmg/redcarpet),
-                    [bluecloth](http://deveiate.org/projects/BlueCloth),
-                    [kramdown](http://kramdown.rubyforge.org/) *or*
-                    [maruku](http://maruku.rubyforge.org/)
-File Extensions::   `.markdown`, `.mkd` and `.md`
-Example::           `markdown :index, :layout_engine => :erb`
-
+```ruby
+    Dependency          [rdiscount](https://github.com/rtomayko/rdiscount),
+                        [redcarpet](https://github.com/vmg/redcarpet),
+                        [bluecloth](http://deveiate.org/projects/BlueCloth),
+                        [kramdown](http://kramdown.rubyforge.org/) *or*
+                        [maruku](http://maruku.rubyforge.org/)
+    File Extensions     .markdown, .mkd and .md
+    Example             markdown :index, :layout_engine => :erb
+```
 It is not possible to call methods from markdown, nor to pass locals to it.
 You therefore will usually use it in combination with another rendering
 engine:
@@ -481,9 +497,11 @@ template than for the layout by passing the `:layout_engine` option.
 
 #### Textile Templates
 
-Dependency::        [RedCloth](http://redcloth.org/)
-File Extension::   `.textile`
-Example::           `textile :index, :layout_engine => :erb`
+```ruby
+    Dependency          [RedCloth](http://redcloth.org/)
+    File Extension      .textile
+    Example             textile :index, :layout_engine => :erb
+```
 
 It is not possible to call methods from textile, nor to pass locals to it. You
 therefore will usually use it in combination with another rendering engine:
@@ -505,9 +523,11 @@ template than for the layout by passing the `:layout_engine` option.
 
 #### RDoc Templates
 
-Dependency::        [rdoc](http://rdoc.rubyforge.org/)
-File Extension::   `.rdoc`
-Example::           `rdoc :README, :layout_engine => :erb`
+```ruby
+    Dependency          [rdoc](http://rdoc.rubyforge.org/)
+    File Extension      .rdoc
+    Example             rdoc :README, :layout_engine => :erb
+```
 
 It is not possible to call methods from rdoc, nor to pass locals to it. You
 therefore will usually use it in combination with another rendering engine:
@@ -529,38 +549,48 @@ template than for the layout by passing the `:layout_engine` option.
 
 #### Radius Templates
 
-Dependency::        [radius](http://radius.rubyforge.org/)
-File Extension::   `.radius`
-Example::           `radius :index, :locals => { :key => 'value' }`
+```ruby
+    Dependency          [radius](http://radius.rubyforge.org/)
+    File Extension      .radius
+    Example             radius :index, :locals => { :key => 'value' }
+```
 
 Since you cannot call Ruby methods directly from a Radius template, you almost
 always want to pass locals to it.
 
-### Markaby Templates
+#### Markaby Templates
 
-Dependency::        [markaby](http://markaby.github.com/)
-File Extension::   `.mab`
-Example::           `markaby { h1 "Welcome!" }`
+```ruby
+    Dependency          [markaby](http://markaby.github.com/)
+    File Extension      .mab
+    Example             markaby { h1 "Welcome!" }
+```
 
 It also takes a block for inline templates (see example).
 
 #### RABL Templates
 
-Dependency::        [rabl](https://github.com/nesquena/rabl)
-File Extension::   `.rabl`
-Example::           `rabl :index`
+```ruby
+    Dependency          [rabl](https://github.com/nesquena/rabl)
+    File Extension      .rabl
+    Example             rabl :index
+```
 
 #### Slim Templates
 
-Dependency::        [slim](http://slim-lang.com/)
-File Extension::   `.slim`
-Example::           `slim :index`
+```ruby
+    Dependency          [slim](http://slim-lang.com/)
+    File Extension      .slim
+    Example             slim :index
+```
 
 #### Creole Templates
 
-Dependency::        [creole](https://github.com/minad/creole)
-File Extension::   `.creole`
-Example::           `creole :wiki, :layout_engine => :erb`
+```ruby
+    Dependency          [creole](https://github.com/minad/creole)
+    File Extension      .creole
+    Example             creole :wiki, :layout_engine => :erb
+```
 
 It is not possible to call methods from creole, nor to pass locals to it. You
 therefore will usually use it in combination with another rendering engine:
@@ -582,16 +612,24 @@ template than for the layout by passing the `:layout_engine` option.
 
 #### CoffeeScript Templates
 
-Dependency::        [coffee-script](https://github.com/josh/ruby-coffee-script)
-                    and a [way to execute javascript](https://github.com/sstephenson/execjs/blob/master/README.md#readme)
-File Extension::   `.coffee`
-Example::           `coffee :index`
+```ruby
+    Dependency          [coffee-script][coffee] and a [way to execute javascript][execjs]
+    File Extension      .coffee
+    Example::           coffee :index
+```
+[coffee]: https://github.com/josh/ruby-coffee-script "Ruby Coffee Script"
+[execjs]: https://github.com/sstephenson/execjs/blob/master/README.md#readme "ExecJS Readme"
 
 #### Yajl Templates
 
-Dependency::        [yajl-ruby](https://github.com/brianmario/yajl-ruby)
-File Extension::   `.yajl`
-Example::           `yajl :index, :locals => { :key => 'qux' }, :callback => 'present', :variable => 'resource' `
+```ruby
+    Dependency          [yajl-ruby](https://github.com/brianmario/yajl-ruby)
+    File Extension      .yajl
+    Example             yajl :index, 
+                              :locals => { :key => 'qux' }, 
+                              :callback => 'present', 
+                              :variable => 'resource'
+```
 
 The template source is evaluated as a Ruby string, and the 
 resulting json variable is converted #to_json.
@@ -609,10 +647,11 @@ var resource = {"foo":"bar","baz":"qux"}; present(resource);
 
 #### WLang Templates
 
-Dependency::        [wlang](https://github.com/blambeau/wlang/)
-File Extension::   `.wlang`
-Example::           `wlang :index, :locals => { :key => 'value' }`
-
+```ruby
+    Dependency          [wlang](https://github.com/blambeau/wlang/)
+    File Extension      .wlang
+    Example             wlang :index, :locals => { :key => 'value' }
+```
 Since calling ruby methods is not idiomatic in wlang, you almost always want to pass locals
 to it. Layouts written in wlang and `yield` are supported, though.
 
