@@ -482,7 +482,7 @@ It also takes a block for inline templates (see example).
   </tr>
   <tr>
     <td>Example</td>
-    <td><tt>nokogiri { |xml| xml.e</td>m "hi" }</tt></td>
+    <td><tt>nokogiri { |xml| xml.em "hi" }</tt></td>
   </tr>
 </table>
 
@@ -565,6 +565,7 @@ template, you almost always want to pass locals to it.
   <tr>
     <td>Dependency</td>
     <td>
+      Anyone of:
       <ul>
         <li><a href="https://github.com/rtomayko/rdiscount title="RDiscount">RDiscount</a></li>
         <li><a href="https://github.com/vmg/redcarpet title="RedCarpet">RedCarpet</a></li>
