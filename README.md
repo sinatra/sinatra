@@ -348,24 +348,24 @@ Available Options:
   <dt>locals</dt>
   <dd>
     List of locals passed to the document. Handy with partials.
-    Example: `erb "<%= foo %>", :locals => {:foo => "bar"}`
+    Example: <tt>erb "<%= foo %>", :locals => {:foo => "bar"}</tt>
   </dd>
 
   <dt>default_encoding</dt>
   <dd>
     String encoding to use if uncertain. Defaults to
-    `settings.default_encoding`.
+    <tt>settings.default_encoding</tt>.
   </dd>
 
   <dt>views</dt>
   <dd>
-    Views folder to load templates from. Defaults to `settings.views`.
+    Views folder to load templates from. Defaults to <tt>settings.views</tt>.
   </dd>
 
   <dt>layout</dt>
   <dd>
-    Whether to use a layout (`true` or `false`), if it's a Symbol, specifies
-    what template to use. Example: `erb :index, :layout => !request.xhr?`
+    Whether to use a layout (<tt>true</tt> or <tt>false</tt>), if it's a Symbol, specifies
+    what template to use. Example: <tt>erb :index, :layout => !request.xhr?</tt>
   </dd>
 
   <dt>content_type</dt>
@@ -383,20 +383,19 @@ Available Options:
   <dd>
     Template engine to use for rendering the layout. Useful for languages that
     do not support layouts otherwise. Defaults to the engine used for the
-    template. Example: `set :rdoc, :layout_engine => :erb`
+    template. Example: <tt>set :rdoc, :layout_engine => :erb</tt>
   </dd>
 
   <dd>
     Templates are assumed to be located directly under the `./views`
     directory. To use a different views directory:
+  <tt>set :views, settings.root + '/templates'</tt>
   </dd>
-
-  <pre>set :views, settings.root + '/templates'</pre>
 
   <dd>
     One important thing to remember is that you always have to reference
     templates with symbols, even if they're in a subdirectory (in this
-    case, use: `'subdir/template'`). You must use a symbol because
+    case, use: <tt>'subdir/template'</tt>). You must use a symbol because
     otherwise rendering methods will render any strings passed to them
     directly.
   </dd>
@@ -441,11 +440,11 @@ to use (and to be thread-safe), you should simply require it first:
   </tr>
   <tr>
     <td>File Extensions</td>
-    <td><pre>.erb</pre>, <pre>.rhtml</pre> or <pre>.erubis</pre> (Erubis only)</td>
+    <td><tt>.erb</tt>, <tt>.rhtml</tt> or <tt>.erubis</tt> (Erubis only)</td>
   </tr>
   <tr>
     <td>Example</td>
-    <td><pre>erb :index</pre></td>
+    <td><tt>erb :index</tt></td>
   </tr>
 </table>
 
@@ -460,11 +459,11 @@ to use (and to be thread-safe), you should simply require it first:
   </tr>
   <tr>
     <td>File Extension</td>
-    <td><pre>.builder</pre></td>
+    <td><tt>.builder</tt></td>
   </tr>
   <tr>
     <td>Example</td>
-    <td><pre>builder { |xml| xml.em "hi" }</pre></td>
+    <td><tt>builder { |xml| xml.em "hi" }</tt></td>
   </tr>
 </table>
 
@@ -479,11 +478,11 @@ It also takes a block for inline templates (see example).
   </tr>
   <tr>
     <td>File Extension</td>
-    <td><pre>.nokogiri</pre></td>
+    <td><tt>.nokogiri</tt></td>
   </tr>
   <tr>
     <td>Example</td>
-    <td><pre>nokogiri { |xml| xml.e</td>m "hi" }</pre></td>
+    <td><tt>nokogiri { |xml| xml.e</td>m "hi" }</tt></td>
   </tr>
 </table>
 
@@ -498,11 +497,11 @@ It also takes a block for inline templates (see example).
   </tr>
   <tr>
     <td>File Extension</td>
-    <td><pre>.sass</pre></td>
+    <td><tt>.sass</tt></td>
   </tr>
   <tr>
     <td>Example</td>
-    <td><pre>sass :stylesheet, :style => :expanded</pre></td>
+    <td><tt>sass :stylesheet, :style => :expanded</tt></td>
   </tr>
 </table>
 
@@ -515,11 +514,11 @@ It also takes a block for inline templates (see example).
   </tr>
   <tr>
     <td>File Extension</td>
-    <td><pre>.scss</pre></td>
+    <td><tt>.scss</tt></td>
   </tr>
   <tr>
     <td>Example</td>
-    <td><pre>scss :stylesheet, :style => :expanded</pre></td>
+    <td><tt>scss :stylesheet, :style => :expanded</tt></td>
   </tr>
 </table>
 
@@ -532,11 +531,11 @@ It also takes a block for inline templates (see example).
   </tr>
   <tr>
     <td>File Extension</td>
-    <td><pre>.less</pre></td>
+    <td><tt>.less</tt></td>
   </tr>
   <tr>
     <td>Example</td>
-    <td><pre>less :stylesheet</pre></td>
+    <td><tt>less :stylesheet</tt></td>
   </tr>
 </table>
 
@@ -549,11 +548,11 @@ It also takes a block for inline templates (see example).
   </tr>
   <tr>
     <td>File Extension</td>
-    <td><pre>.liquid</pre></td>
+    <td><tt>.liquid</tt></td>
   </tr>
   <tr>
     <td>Example</td>
-    <td><pre>liquid :index, :locals => { :key => 'value' }</pre></td>
+    <td><tt>liquid :index, :locals => { :key => 'value' }</tt></td>
   </tr>
 </table>
 
@@ -577,11 +576,11 @@ template, you almost always want to pass locals to it.
   </tr>
   <tr>
     <td>File Extensions</td>
-    <td><pre>.markdown</pre>, <pre>.mkd</pre> and <pre>.md</pre></td>
+    <td><tt>.markdown</tt>, <tt>.mkd</tt> and <tt>.md</tt></td>
   </tr>
   <tr>
     <td>Example</td>
-    <td><pre>markdown :index, :layout_engine => :erb</pre></td>
+    <td><tt>markdown :index, :layout_engine => :erb</tt></td>
   </tr>
 </table>
 
@@ -613,11 +612,11 @@ template than for the layout by passing the `:layout_engine` option.
   </tr>
   <tr>
     <td>File Extension</td>
-    <td><pre>.textile</pre></td>
+    <td><tt>.textile</tt></td>
   </tr>
   <tr>
     <td>Example</td>
-    <td><pre>textile :index, :layout_engine => :erb</pre></td>
+    <td><tt>textile :index, :layout_engine => :erb</tt></td>
   </tr>
 </table>
 
@@ -649,11 +648,11 @@ template than for the layout by passing the `:layout_engine` option.
   </tr>
   <tr>
     <td>File Extension</td>
-    <td><pre>.rdoc</pre></td>
+    <td><tt>.rdoc</tt></td>
   </tr>
   <tr>
     <td>Example</td>
-    <td><pre>rdoc :README, :layout_engine => :erb</pre></td>
+    <td><tt>rdoc :README, :layout_engine => :erb</tt></td>
   </tr>
 </table>
 
@@ -684,11 +683,11 @@ template than for the layout by passing the `:layout_engine` option.
   </tr>
   <tr>
     <td>File Extension</td>
-    <td><pre>.radius</pre></td>
+    <td><tt>.radius</tt></td>
   </tr>
   <tr>
     <td>Example</td>
-    <td><pre>radius :index, :locals => { :key => 'value' }</pre></td>
+    <td><tt>radius :index, :locals => { :key => 'value' }</tt></td>
   </tr>
 </table>
 
@@ -704,11 +703,11 @@ always want to pass locals to it.
   </tr>
   <tr>
     <td>File Extension</td>
-    <td><pre>.mab</pre></td>
+    <td><tt>.mab</tt></td>
   </tr>
   <tr>
     <td>Example</td>
-    <td><pre>markaby { h1 "Welcome!" }</pre></td>
+    <td><tt>markaby { h1 "Welcome!" }</tt></td>
   </tr>
 </table>
 
@@ -723,11 +722,11 @@ It also takes a block for inline templates (see example).
   </tr>
   <tr>
     <td>File Extension</td>
-    <td><pre>.rabl</pre></td>
+    <td><tt>.rabl</tt></td>
   </tr>
   <tr>
     <td>Example</td>
-    <td><pre>rabl :index</pre></td>
+    <td><tt>rabl :index</tt></td>
   </tr>
 </table>
 
@@ -740,11 +739,11 @@ It also takes a block for inline templates (see example).
   </tr>
   <tr>
     <td>File Extension</td>
-    <td><pre>.slim</pre></td>
+    <td><tt>.slim</tt></td>
   </tr>
   <tr>
     <td>Example</td>
-    <td><pre>slim :index</pre></td>
+    <td><tt>slim :index</tt></td>
   </tr>
 </table>
 
@@ -757,11 +756,11 @@ It also takes a block for inline templates (see example).
   </tr>
   <tr>
     <td>File Extension</td>
-    <td><pre>.creole</pre></td>
+    <td><tt>.creole</tt></td>
   </tr>
   <tr>
     <td>Example</td>
-    <td><pre>creole :wiki, :layout_engine => :erb</pre></td>
+    <td><tt>creole :wiki, :layout_engine => :erb</tt></td>
   </tr>
 </table>
 
@@ -799,11 +798,11 @@ template than for the layout by passing the `:layout_engine` option.
   </tr>
   <tr>
     <td>File Extension</td>
-    <td><pre>.coffee</pre></td>
+    <td><tt>.coffee</tt></td>
   </tr>
   <tr>
     <td>Example</td>
-    <td><pre>coffee :index</pre></td>
+    <td><tt>coffee :index</tt></td>
   </tr>
 </table>
 
@@ -816,17 +815,17 @@ template than for the layout by passing the `:layout_engine` option.
   </tr>
   <tr>
     <td>File Extension</td>
-    <td><pre>.yajl</pre></td>
+    <td><tt>.yajl</tt></td>
   </tr>
   <tr>
     <td>Example</td>
     <td>
-      <pre>
+      <tt>
         yajl :index, 
              :locals => { :key => 'qux' }, 
              :callback => 'present', 
              :variable => 'resource'
-      </pre>
+      </tt>
     </td>
   </tr>
 </table>
@@ -855,11 +854,11 @@ The `:callback` and `:variable` options can be used to decorate the rendered obj
   </tr>
   <tr>
     <td>File Extension</td>
-    <td><pre>.wlang</pre></td>
+    <td><tt>.wlang</tt></td>
   </tr>
   <tr>
     <td>Example</td>
-    <td><pre>wlang :index, :locals => { :key => 'value' }</pre></td>
+    <td><tt>wlang :index, :locals => { :key => 'value' }</tt></td>
   </tr>
 </table>
 
@@ -1547,8 +1546,8 @@ The options are:
 
   </dt>disposition</dt>
     <dd>
-      used for Content-Disposition, possible value: <pre>nil</pre> (default),
-      <pre>:attachment</pre> and <pre>:inline</pre>
+      used for Content-Disposition, possible value: <tt>nil</tt> (default),
+      <tt>:attachment</tt> and <tt>:inline</tt>
     </dd>
 
   <dt>length</dt>
@@ -1658,7 +1657,7 @@ similar classes:
 ```
 
 This method is used internally by `expires`, `last_modified` and akin. You can
-therefore easily extend the behavior of those methods by overriding `time_fo`r
+therefore easily extend the behavior of those methods by overriding `time_for`
 in your application:
 
 ```ruby
@@ -1814,39 +1813,36 @@ You can also hand in an array in order to disable a list of protections:
   </dd>
   <dd>
     Enable if your app is running behind a reverse proxy that has not been set up 
-    properly. Note that the <pre>url</pre> helper will still produce absolute URLs, unless you 
-    pass in <pre>false</pre> as the second parameter.
+    properly. Note that the <tt>url</tt> helper will still produce absolute URLs, unless you 
+    pass in <tt>false</tt> as the second parameter.
   </dd>
   <dd>Disabled per default.</dd>
 
   <dt>add_charsets</dt>
   <dd>
-    mime types the <pre>content_type</pre> helper will automatically add the charset info to.
+    mime types the <tt>content_type</tt> helper will automatically add the charset info to.
     You should add to it rather than overriding this option:
+    <tt>settings.add_charsets << "application/foobar"</tt>
   </dd>
 
-<pre>
-    settings.add_charsets << "application/foobar"
-</pre>
+  <dt>app_file</dt>
+  <dd>
+    Path to the main application file, used to detect project root, views and public 
+    folder and inline templates.
+  </dd>
 
-<dt>app_file</dt>
-<dd>
-  Path to the main application file, used to detect project root, views and public 
-  folder and inline templates.
-</dt>
+  <dt>bind</dt>
+  <dd>IP address to bind to (default: 0.0.0.0). Only used for built-in server.</dd>
 
-<dt>bind</dt>
-<dd>IP address to bind to (default: 0.0.0.0). Only used for built-in server.</dd>
-
-<dt>default_encoding</dt>
-<dd>encoding to assume if unknown (defaults to <pre>"utf-8"</pre>).</dd>
+  <dt>default_encoding</dt>
+  <dd>encoding to assume if unknown (defaults to <tt>"utf-8"</tt>).</dd>
 
   <dt>dump_errors</dt>
   <dd>display errors in the log.</dd>
 
   <dt>environment</dt>
   <dd>
-    current environment, defaults to <pre>ENV['RACK_ENV']</pre>, or <pre>"development"</pre> if 
+    current environment, defaults to <tt>ENV['RACK_ENV']</tt>, or <tt>"development"</tt> if 
     not available.
   </dd>
 
@@ -1862,7 +1858,7 @@ You can also hand in an array in order to disable a list of protections:
 
   <dt>method_override</dt>
   <dd>
-    use <pre>_method</pre> magic to allow put/delete forms in browsers that 
+    use <tt>_method</tt> magic to allow put/delete forms in browsers that 
     don't support it.
   </dd>
 
@@ -1871,22 +1867,22 @@ You can also hand in an array in order to disable a list of protections:
 
   <dt>prefixed_redirects</dt>
   <dd>
-    Whether or not to insert <pre>request.script_name</pre> into redirects if no 
-    absolute path is given. That way <pre>redirect '/foo'</pre> would behave like
-    <pre>redirect to('/foo')</pre>. Disabled per default.
+    Whether or not to insert <tt>request.script_name</tt> into redirects if no 
+    absolute path is given. That way <tt>redirect '/foo'</tt> would behave like
+    <tt>redirect to('/foo')</tt>. Disabled per default.
   </dd>
 
   <dt>protection</dt>
   <dd>Whether or not to enable web attack protections. See protection section above.</dd>
 
   <dt>public_dir</dt>
-  <dd>Alias for <pre>public_folder</pre>. See below.</dd>
+  <dd>Alias for <tt>public_folder</tt>. See below.</dd>
 
   <dt>public_folder</dt>
   <dd>
     Path to the folder public files are served from. Only used if static 
-    file serving is enabled (see <pre>static</pre> setting below). Inferred from 
-    <pre>app_file</pre> setting if not set.
+    file serving is enabled (see <tt>static</tt> setting below). Inferred from 
+    <tt>app_file</tt> setting if not set.
   </dd>
 
   <dt>reload_templates</dt>
@@ -1896,13 +1892,13 @@ You can also hand in an array in order to disable a list of protections:
 
   <dt>root</dt>
   <dd>
-    Path to project root folder. Inferred from <pre>app_file</pre> setting if not set.
+    Path to project root folder. Inferred from <tt>app_file</tt> setting if not set.
   </dd>
 
   <dt>raise_errors</dt>
   <dd>
     raise exceptions (will stop application). Enabled by default when 
-    <pre>environment</pre> is set to <pre>"test"</pre>, disabled otherwise.
+    <tt>environment</tt> is set to <tt>"test"</tt>, disabled otherwise.
   </dd>
 
   <dt>run</dt>
@@ -1922,18 +1918,18 @@ You can also hand in an array in order to disable a list of protections:
 
   <dt>sessions</dt>
   <dd>
-    Enable cookie-based sessions support using <pre>Rack::Session::Cookie</pre>.
+    Enable cookie-based sessions support using <tt>Rack::Session::Cookie</tt>.
      See 'Using Sessions' section for more information.
   </dd>
 
   <dt>show_exceptions</dt>
   <dd>
     Show a stack trace in the browser when an exception
-    happens. Enabled by default when <pre>environment</pre>
-    is set to <pre>"development"</pre>, disabled otherwise.
+    happens. Enabled by default when <tt>environment</tt>
+    is set to <tt>"development"</tt>, disabled otherwise.
   </dd>
   <dd>
-    Can also be set to <pre>:after_handler</pre> to trigger
+    Can also be set to <tt>:after_handler</tt> to trigger
     app-specified error handling before showing a stack
     trace in the browser.
   </dd>
@@ -1950,23 +1946,23 @@ You can also hand in an array in order to disable a list of protections:
   <dt>static_cache_control</dt>
   <dd>
     When Sinatra is serving static files, set this to add
-    <pre>Cache-Control</pre> headers to the responses. Uses the
-    <pre>cache_control</pre> helper. Disabled by default.
+    <tt>Cache-Control</tt> headers to the responses. Uses the
+    <tt>cache_control</tt> helper. Disabled by default.
   </dd>
   <dd>
     Use an explicit array when setting multiple values:
-    <pre>set :static_cache_control, [:public, :max_age => 300]</pre>
+    <tt>set :static_cache_control, [:public, :max_age => 300]</tt>
   </dd>
 
   <dt>threaded</dt>
   <dd>
-    If set to <pre>true</pre>, will tell Thin to use <pre>EventMachine.defer</pre> 
+    If set to <tt>true</tt>, will tell Thin to use <tt>EventMachine.defer</tt> 
     for processing the request.
   </dd>
 
   <dt>views</dt>
   <dd>
-    Path to the views folder. Inferred from <pre>app_filei</pre> setting if 
+    Path to the views folder. Inferred from <tt>app_file</tt> setting if 
     not set.
   </dd>
 </dl>
@@ -1987,7 +1983,7 @@ To run different environments use the `-e` option:
     ruby my_app.rb -e [ENVIRONMENT]
 ```
 
-You can use predefined methods: +development?+, +test?+ and +production?+ to
+You can use predefined methods: `development?`, `test?` and `production?` to
 check the current environment setting.
 
 ## Error Handling
