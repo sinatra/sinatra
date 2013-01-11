@@ -421,11 +421,11 @@ to use (and to be thread-safe), you should simply require it first:
   </tr>
   <tr>
     <td>File Extension</td>
-    <td><pre>.haml</pre></td>
+    <td><tt>.haml</tt></td>
   </tr>
   <tr>
     <td>Example</td>
-    <td><pre>haml :index, :format => :html5</pre></td>
+    <td><tt>haml :index, :format => :html5</tt></td>
   </tr>
 </table>
 
