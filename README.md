@@ -391,9 +391,7 @@ Available Options:
     directory. To use a different views directory:
   </dd>
 
-```ruby
-    set :views, settings.root + '/templates'
-```
+  <pre>set :views, settings.root + '/templates'</pre>
 
   <dd>
     One important thing to remember is that you always have to reference
@@ -419,15 +417,15 @@ to use (and to be thread-safe), you should simply require it first:
 <table>
   <tr>
     <td>Dependency</td>
-    <td>[haml](http://haml.info/)</td>
+    <td><a href="http://haml.info/" title="haml">haml</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
-    <td>.haml</td>
+    <td><pre>.haml</pre></td>
   </tr>
   <tr>
     <td>Example</td>
-    <td>haml :index, :format => :html5</td>
+    <td><pre>haml :index, :format => :html5</pre></td>
   </tr>
 </table>
 
@@ -436,97 +434,170 @@ to use (and to be thread-safe), you should simply require it first:
 <table>
   <tr>
     <td>Dependency</td>
-    <td>[erubis](http://www.kuwata-lab.com/erubis/) or erb (included in Ruby)</td>
+    <td>
+      <a href="http://www.kuwata-lab.com/erubis/" title="erubis">erubis</a>
+      or erb (included in Ruby)
+    </td>
   </tr>
   <tr>
     <td>File Extensions</td>
-    <td>.erb, .rhtml or .erubis (Erubis only)</td>
+    <td><pre>.erb</pre>, <pre>.rhtml</pre> or <pre>.erubis</pre> (Erubis only)</td>
   </tr>
   <tr>
     <td>Example</td>
-    <td>erb :index</td>
+    <td><pre>erb :index</pre></td>
   </tr>
 </table>
 
 #### Builder Templates
 
-```ruby
-    Dependency          [builder](http://builder.rubyforge.org/)
-    File Extension      .builder
-    Example             builder { |xml| xml.em "hi" }
-```
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td>
+      <a href="http://builder.rubyforge.org/" title="builder">builder</a>
+    </td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><pre>.builder</pre></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><pre>builder { |xml| xml.em "hi" }</pre></td>
+  </tr>
+</table>
 
 It also takes a block for inline templates (see example).
 
 #### Nokogiri Templates
 
-```ruby
-    Dependency          [nokogiri](http://nokogiri.org/)
-    File Extension      .nokogiri
-    Example             nokogiri { |xml| xml.em "hi" }
-```
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="http://nokogiri.org/" title="nokogiri">nokogiri</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><pre>.nokogiri</pre></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><pre>nokogiri { |xml| xml.e</td>m "hi" }</pre></td>
+  </tr>
+</table>
 
 It also takes a block for inline templates (see example).
 
 #### Sass Templates
 
-```ruby
-    Dependency          [sass](http://sass-lang.com/)
-    File Extension      .sass
-    Example             sass :stylesheet, :style => :expanded
-```
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><pre>.sass</pre></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><pre>sass :stylesheet, :style => :expanded</pre></td>
+  </tr>
+</table>
 
 #### SCSS Templates
 
-```ruby
-    Dependency          [sass](http://sass-lang.com/)
-    File Extension      .scss
-    Example             scss :stylesheet, :style => :expanded
-```
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><pre>.scss</pre></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><pre>scss :stylesheet, :style => :expanded</pre></td>
+  </tr>
+</table>
 
 #### Less Templates
 
-```ruby
-    Dependency          [less](http://www.lesscss.org/)
-    File Extension      .less
-    Example             less :stylesheet
-```
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="http://www.lesscss.org/" title="less">less</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><pre>.less</pre></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><pre>less :stylesheet</pre></td>
+  </tr>
+</table>
 
 #### Liquid Templates
 
-```ruby
-    Dependency          [liquid](http://www.liquidmarkup.org/)
-    File Extension      .liquid
-    Example             liquid :index, :locals => { :key => 'value' }
-```
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="http://www.liquidmarkup.org/" title="liquid">liquid</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><pre>.liquid</pre></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><pre>liquid :index, :locals => { :key => 'value' }</pre></td>
+  </tr>
+</table>
 
 Since you cannot call Ruby methods (except for `yield`) from a Liquid
 template, you almost always want to pass locals to it.
 
 #### Markdown Templates
 
-```ruby
-    Dependency          [rdiscount](https://github.com/rtomayko/rdiscount),
-                        [redcarpet](https://github.com/vmg/redcarpet),
-                        [bluecloth](http://deveiate.org/projects/BlueCloth),
-                        [kramdown](http://kramdown.rubyforge.org/) *or*
-                        [maruku](http://maruku.rubyforge.org/)
-    File Extensions     .markdown, .mkd and .md
-    Example             markdown :index, :layout_engine => :erb
-```
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td>
+      <ul>
+        <li><a href="https://github.com/rtomayko/rdiscount title="RDiscount">RDiscount</a></li>
+        <li><a href="https://github.com/vmg/redcarpet title="RedCarpet">RedCarpet</a></li>
+        <li><a href="http://deveiate.org/projects/BlueCloth title="BlueCloth">BlueCloth</a></li>
+        <li><a href="http://kramdown.rubyforge.org/" title="kramdown">kramdown</a></li>
+        <li><a href="http://maruku.rubyforge.org/" title="maruku">maruku</a></li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>File Extensions</td>
+    <td><pre>.markdown</pre>, <pre>.mkd</pre> and <pre>.md</pre></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><pre>markdown :index, :layout_engine => :erb</pre></td>
+  </tr>
+</table>
+
 It is not possible to call methods from markdown, nor to pass locals to it.
 You therefore will usually use it in combination with another rendering
 engine:
 
 ```ruby
-erb :overview, :locals => { :text => markdown(:introduction) }
+    erb :overview, :locals => { :text => markdown(:introduction) }
 ```
 
 Note that you may also call the `markdown` method from within other templates:
 
 ```ruby
-%h1 Hello From Haml!
-%p= markdown(:greetings)
+    %h1 Hello From Haml!
+    %p= markdown(:greetings)
 ```
 
 Since you cannot call Ruby from Markdown, you cannot use layouts written in
@@ -535,24 +606,34 @@ template than for the layout by passing the `:layout_engine` option.
 
 #### Textile Templates
 
-```ruby
-    Dependency          [RedCloth](http://redcloth.org/)
-    File Extension      .textile
-    Example             textile :index, :layout_engine => :erb
-```
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="http://redcloth.org/" title="RedCloth">RedCloth</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><pre>.textile</pre></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><pre>textile :index, :layout_engine => :erb</pre></td>
+  </tr>
+</table>
+
 
 It is not possible to call methods from textile, nor to pass locals to it. You
 therefore will usually use it in combination with another rendering engine:
 
 ```ruby
-erb :overview, :locals => { :text => textile(:introduction) }
+    erb :overview, :locals => { :text => textile(:introduction) }
 ```
 
 Note that you may also call the `textile` method from within other templates:
 
 ```ruby
-%h1 Hello From Haml!
-%p= textile(:greetings)
+    %h1 Hello From Haml!
+    %p= textile(:greetings)
 ```
 
 Since you cannot call Ruby from Textile, you cannot use layouts written in
@@ -561,24 +642,33 @@ template than for the layout by passing the `:layout_engine` option.
 
 #### RDoc Templates
 
-```ruby
-    Dependency          [rdoc](http://rdoc.rubyforge.org/)
-    File Extension      .rdoc
-    Example             rdoc :README, :layout_engine => :erb
-```
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="http://rdoc.rubyforge.org/" title="RDoc">RDoc</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><pre>.rdoc</pre></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><pre>rdoc :README, :layout_engine => :erb</pre></td>
+  </tr>
+</table>
 
 It is not possible to call methods from rdoc, nor to pass locals to it. You
 therefore will usually use it in combination with another rendering engine:
 
 ```ruby
-erb :overview, :locals => { :text => rdoc(:introduction) }
+    erb :overview, :locals => { :text => rdoc(:introduction) }
 ```
 
 Note that you may also call the `rdoc` method from within other templates:
 
 ```ruby
-%h1 Hello From Haml!
-%p= rdoc(:greetings)
+    %h1 Hello From Haml!
+    %p= rdoc(:greetings)
 ```
 
 Since you cannot call Ruby from RDoc, you cannot use layouts written in
@@ -587,61 +677,106 @@ template than for the layout by passing the `:layout_engine` option.
 
 #### Radius Templates
 
-```ruby
-    Dependency          [radius](http://radius.rubyforge.org/)
-    File Extension      .radius
-    Example             radius :index, :locals => { :key => 'value' }
-```
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="http://radius.rubyforge.org/" title="Radius">Radius</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><pre>.radius</pre></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><pre>radius :index, :locals => { :key => 'value' }</pre></td>
+  </tr>
+</table>
 
 Since you cannot call Ruby methods directly from a Radius template, you almost
 always want to pass locals to it.
 
 #### Markaby Templates
 
-```ruby
-    Dependency          [markaby](http://markaby.github.com/)
-    File Extension      .mab
-    Example             markaby { h1 "Welcome!" }
-```
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="http://markaby.github.com/" title="Markaby">Markaby</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><pre>.mab</pre></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><pre>markaby { h1 "Welcome!" }</pre></td>
+  </tr>
+</table>
 
 It also takes a block for inline templates (see example).
 
 #### RABL Templates
 
-```ruby
-    Dependency          [rabl](https://github.com/nesquena/rabl)
-    File Extension      .rabl
-    Example             rabl :index
-```
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="https://github.com/nesquena/rabl" title="Rabl">Rabl</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><pre>.rabl</pre></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><pre>rabl :index</pre></td>
+  </tr>
+</table>
 
 #### Slim Templates
 
-```ruby
-    Dependency          [slim](http://slim-lang.com/)
-    File Extension      .slim
-    Example             slim :index
-```
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="http://slim-lang.com/" title="Slim Lang">Slim Lang</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><pre>.slim</pre></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><pre>slim :index</pre></td>
+  </tr>
+</table>
 
 #### Creole Templates
 
-```ruby
-    Dependency          [creole](https://github.com/minad/creole)
-    File Extension      .creole
-    Example             creole :wiki, :layout_engine => :erb
-```
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="https://github.com/minad/creole" title="Creole">Creole</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><pre>.creole</pre></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><pre>creole :wiki, :layout_engine => :erb</pre></td>
+  </tr>
+</table>
 
 It is not possible to call methods from creole, nor to pass locals to it. You
 therefore will usually use it in combination with another rendering engine:
 
 ```ruby
-erb :overview, :locals => { :text => creole(:introduction) }
+    erb :overview, :locals => { :text => creole(:introduction) }
 ```
 
 Note that you may also call the `creole` method from within other templates:
 
 ```ruby
-%h1 Hello From Haml!
-%p= creole(:greetings)
+    %h1 Hello From Haml!
+    %p= creole(:greetings)
 ```
 
 Since you cannot call Ruby from Creole, you cannot use layouts written in
@@ -650,55 +785,93 @@ template than for the layout by passing the `:layout_engine` option.
 
 #### CoffeeScript Templates
 
-```ruby
-    Dependency          [coffee-script][coffee] and a [way to execute javascript][execjs]
-    File Extension      .coffee
-    Example::           coffee :index
-```
-[coffee]: https://github.com/josh/ruby-coffee-script "Ruby Coffee Script"
-[execjs]: https://github.com/sstephenson/execjs/blob/master/README.md#readme "ExecJS Readme"
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td>
+      <a href="https://github.com/josh/ruby-coffee-script" title="Ruby CoffeeScript">
+        CoffeeScript
+      </a> and a 
+      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
+        way to execute javascript
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><pre>.coffee</pre></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><pre>coffee :index</pre></td>
+  </tr>
+</table>
 
 #### Yajl Templates
 
-```ruby
-    Dependency          [yajl-ruby](https://github.com/brianmario/yajl-ruby)
-    File Extension      .yajl
-    Example             yajl :index, 
-                              :locals => { :key => 'qux' }, 
-                              :callback => 'present', 
-                              :variable => 'resource'
-```
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="https://github.com/brianmario/yajl-ruby" title="yajl-ruby">yajl-ruby</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><pre>.yajl</pre></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td>
+      <pre>
+        yajl :index, 
+             :locals => { :key => 'qux' }, 
+             :callback => 'present', 
+             :variable => 'resource'
+      </pre>
+    </td>
+  </tr>
+</table>
+
 
 The template source is evaluated as a Ruby string, and the 
-resulting json variable is converted #to_json.
+resulting json variable is converted using `#to_json`.
 
 ```ruby
-json = { :foo => 'bar' }
-json[:baz] = key
+    json = { :foo => 'bar' }
+    json[:baz] = key
 ```
 
 The `:callback` and `:variable` options can be used to decorate the rendered object.
 
 ```ruby
-var resource = {"foo":"bar","baz":"qux"}; present(resource);
+    var resource = {"foo":"bar","baz":"qux"}; present(resource);
 ```
 
 #### WLang Templates
 
-```ruby
-    Dependency          [wlang](https://github.com/blambeau/wlang/)
-    File Extension      .wlang
-    Example             wlang :index, :locals => { :key => 'value' }
-```
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="https://github.com/blambeau/wlang/" title="wlang">wlang</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><pre>.wlang</pre></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><pre>wlang :index, :locals => { :key => 'value' }</pre></td>
+  </tr>
+</table>
+
 Since calling ruby methods is not idiomatic in wlang, you almost always want to pass locals
 to it. Layouts written in wlang and `yield` are supported, though.
 
 #### Embedded Templates
 
 ```ruby
-get '/' do
-  haml '%div.title Hello World'
-end
+    get '/' do
+      haml '%div.title Hello World'
+    end
 ```
 
 Renders the embedded template string.
@@ -709,19 +882,19 @@ Templates are evaluated within the same context as route handlers. Instance
 variables set in route handlers are directly accessible by templates:
 
 ```ruby
-get '/:id' do
-  @foo = Foo.find(params[:id])
-  haml '%h1= @foo.name'
-end
+    get '/:id' do
+      @foo = Foo.find(params[:id])
+      haml '%h1= @foo.name'
+    end
 ```
 
 Or, specify an explicit Hash of local variables:
 
 ```ruby
-get '/:id' do
-  foo = Foo.find(params[:id])
-  haml '%h1= bar.name', :locals => { :bar => foo }
-end
+    get '/:id' do
+      foo = Foo.find(params[:id])
+      haml '%h1= bar.name', :locals => { :bar => foo }
+    end
 ```
 
 This is typically used when rendering templates as partials from within
@@ -732,20 +905,20 @@ other templates.
 Templates may be defined at the end of the source file:
 
 ```ruby
-require 'sinatra'
+    require 'sinatra'
 
-get '/' do
-  haml :index
-end
+    get '/' do
+      haml :index
+    end
 
-__END__
+    __END__
 
-@@ layout
-%html
-  = yield
+    @@ layout
+    %html
+      = yield
 
-@@ index
-%div.title Hello world.
+    @@ index
+    %div.title Hello world.
 ```
 
 NOTE: Inline templates defined in the source file that requires sinatra are
@@ -757,17 +930,17 @@ have inline templates in other source files.
 Templates may also be defined using the top-level `template` method:
 
 ```ruby
-template :layout do
-  "%html\n  =yield\n"
-end
+    template :layout do
+      "%html\n  =yield\n"
+    end
 
-template :index do
-  '%div.title Hello World!'
-end
+    template :index do
+      '%div.title Hello World!'
+    end
 
-get '/' do
-  haml :index
-end
+    get '/' do
+      haml :index
+    end
 ```
 
 If a template named "layout" exists, it will be used each time a template
@@ -776,9 +949,9 @@ is rendered. You can individually disable layouts by passing
 `set :haml, :layout => false`:
 
 ```ruby
-get '/' do
-  haml :index, :layout => !request.xhr?
-end
+    get '/' do
+      haml :index, :layout => !request.xhr?
+    end
 ```
 
 ### Associating File Extensions
@@ -788,7 +961,7 @@ To associate a file extension with a template engine, use
 `tt` for Textile templates, you can do the following:
 
 ```ruby
-Tilt.register :tt, Tilt[:textile]
+    Tilt.register :tt, Tilt[:textile]
 ```
 
 ### Adding Your Own Template Engine
@@ -796,15 +969,15 @@ Tilt.register :tt, Tilt[:textile]
 First, register your engine with Tilt, then create a rendering method:
 
 ```ruby
-Tilt.register :myat, MyAwesomeTemplateEngine
+    Tilt.register :myat, MyAwesomeTemplateEngine
 
-helpers do
-  def myat(*args) render(:myat, *args) end
-end
+    helpers do
+      def myat(*args) render(:myat, *args) end
+    end
 
-get '/' do
-  myat :index
-end
+    get '/' do
+      myat :index
+    end
 ```
 
 Renders `./views/index.myat`. See https://github.com/rtomayko/tilt to
@@ -817,15 +990,15 @@ context as the routes will be and can modify the request and response. Instance
 variables set in filters are accessible by routes and templates:
 
 ```ruby
-before do
-  @note = 'Hi!'
-  request.path_info = '/foo/bar/baz'
-end
+    before do
+      @note = 'Hi!'
+      request.path_info = '/foo/bar/baz'
+    end
 
-get '/foo/*' do
-  @note #=> 'Hi!'
-  params[:splat] #=> 'bar/baz'
-end
+    get '/foo/*' do
+      @note #=> 'Hi!'
+      params[:splat] #=> 'bar/baz'
+    end
 ```
 
 After filters are evaluated after each request within the same context and can
@@ -833,9 +1006,9 @@ also modify the request and response. Instance variables set in before filters
 and routes are accessible by after filters:
 
 ```ruby
-after do
-  puts response.status
-end
+    after do
+      puts response.status
+    end
 ```
 
 Note: Unless you use the `body` method rather than just returning a String from
@@ -846,25 +1019,25 @@ Filters optionally take a pattern, causing them to be evaluated only if the
 request path matches that pattern:
 
 ```ruby
-before '/protected/*' do
-  authenticate!
-end
+    before '/protected/*' do
+      authenticate!
+    end
 
-after '/create/:slug' do |slug|
-  session[:last_slug] = slug
-end
+    after '/create/:slug' do |slug|
+      session[:last_slug] = slug
+    end
 ```
 
 Like routes, filters also take conditions:
 
 ```ruby
-before :agent => /Songbird/ do
-  # ...
-end
+    before :agent => /Songbird/ do
+      # ...
+    end
 
-after '/blog/*', :host_name => 'example.com' do
-  # ...
-end
+    after '/blog/*', :host_name => 'example.com' do
+      # ...
+    end
 ```
 
 ## Helpers
@@ -873,29 +1046,29 @@ Use the top-level `helpers` method to define helper methods for use in
 route handlers and templates:
 
 ```ruby
-helpers do
-  def bar(name)
-    "#{name}bar"
-  end
-end
+    helpers do
+      def bar(name)
+        "#{name}bar"
+      end
+    end
 
-get '/:name' do
-  bar(params[:name])
-end
+    get '/:name' do
+      bar(params[:name])
+    end
 ```
 
 Alternatively, helper methods can be separately defined in a module:
 
 ```ruby
-module FooUtils
-  def foo(name) "#{name}foo" end
-end
+    module FooUtils
+      def foo(name) "#{name}foo" end
+    end
 
-module BarUtils
-  def bar(name) "#{name}bar" end
-end
+    module BarUtils
+      def bar(name) "#{name}bar" end
+    end
 
-helpers FooUtils, BarUtils
+    helpers FooUtils, BarUtils
 ```
 
 The effect is the same as including the modules in the application class.
@@ -906,15 +1079,15 @@ A session is used to keep state during requests. If activated, you have one
 session hash per user session:
 
 ```ruby
-enable :sessions
+    enable :sessions
 
-get '/' do
-  "value = " << session[:value].inspect
-end
+    get '/' do
+      "value = " << session[:value].inspect
+    end
 
-get '/:value' do
-  session[:value] = params[:value]
-end
+    get '/:value' do
+      session[:value] = params[:value]
+    end
 ```
 
 Note that `enable :sessions` actually stores all data in a cookie. This
@@ -924,15 +1097,15 @@ do so, do **not** call `enable :sessions`, but instead pull in your
 middleware of choice as you would any other middleware:
 
 ```ruby
-use Rack::Session::Pool, :expire_after => 2592000
+    use Rack::Session::Pool, :expire_after => 2592000
 
-get '/' do
-  "value = " << session[:value].inspect
-end
+    get '/' do
+      "value = " << session[:value].inspect
+    end
 
-get '/:value' do
-  session[:value] = params[:value]
-end
+    get '/:value' do
+      session[:value] = params[:value]
+    end
 ```
 
 To improve security, the session data in the cookie is signed with a session
@@ -941,14 +1114,14 @@ secret will change with every start of your application, you might want to
 set the secret yourself, so all your application instances share it:
 
 ```ruby
-set :session_secret, 'super secret'
+    set :session_secret, 'super secret'
 ```
 
 If you want to configure it further, you may also store a hash with options in
 the `sessions` setting:
 
 ```ruby
-set :sessions, :domain => 'foo.com'
+    set :sessions, :domain => 'foo.com'
 ```
 
 ### Halting
@@ -956,37 +1129,37 @@ set :sessions, :domain => 'foo.com'
 To immediately stop a request within a filter or route use:
 
 ```ruby
-halt
+    halt
 ```
 
 You can also specify the status when halting:
 
 ```ruby
-halt 410
+    halt 410
 ```
 
 Or the body:
 
 ```ruby
-halt 'this will be the body'
+    halt 'this will be the body'
 ```
 
 Or both:
 
 ```ruby
-halt 401, 'go away!'
+    halt 401, 'go away!'
 ```
 
 With headers:
 
 ```ruby
-halt 402, {'Content-Type' => 'text/plain'}, 'revenge'
+    halt 402, {'Content-Type' => 'text/plain'}, 'revenge'
 ```
 
 It is of course possible to combine a template with `halt`:
 
 ```ruby
-halt erb(:error)
+    halt erb(:error)
 ```
 
 ### Passing
@@ -994,14 +1167,14 @@ halt erb(:error)
 A route can punt processing to the next matching route using `pass`:
 
 ```ruby
-get '/guess/:who' do
-  pass unless params[:who] == 'Frank'
-  'You got me!'
-end
+    get '/guess/:who' do
+      pass unless params[:who] == 'Frank'
+      'You got me!'
+    end
 
-get '/guess/*' do
-  'You missed!'
-end
+    get '/guess/*' do
+      'You missed!'
+    end
 ```
 
 The route block is immediately exited and control continues with the next
@@ -1013,14 +1186,14 @@ Sometimes `pass` is not what you want, instead you would like to get the result
 of calling another route. Simply use `call` to achieve this:
 
 ```ruby
-get '/foo' do
-  status, headers, body = call env.merge("PATH_INFO" => '/bar')
-  [status, headers, body.map(&:upcase)]
-end
+    get '/foo' do
+      status, headers, body = call env.merge("PATH_INFO" => '/bar')
+      [status, headers, body.map(&:upcase)]
+    end
 
-get '/bar' do
-  "bar"
-end
+    get '/bar' do
+      "bar"
+    end
 ```
 
 Note that in the example above, you would ease testing and increase performance
@@ -1041,13 +1214,13 @@ set the body at an arbitrary point in the execution flow. You can do so with the
 access the body:
 
 ```ruby
-get '/foo' do
-  body "bar"
-end
+    get '/foo' do
+      body "bar"
+    end
 
-after do
-  puts body
-end
+    after do
+      puts body
+    end
 ```
 
 It is also possible to pass a block to `body`, which will be executed by the
@@ -1056,13 +1229,13 @@ Rack handler (this can be used to implement streaming, see "Return Values").
 Similar to the body, you can also set the status code and headers:
 
 ```ruby
-get '/foo' do
-  status 418
-  headers \
-    "Allow"   => "BREW, POST, GET, PROPFIND, WHEN",
-    "Refresh" => "Refresh: 20; http://www.ietf.org/rfc/rfc2324.txt"
-  body "I'm a tea pot!"
-end
+    get '/foo' do
+      status 418
+      headers \
+        "Allow"   => "BREW, POST, GET, PROPFIND, WHEN",
+        "Refresh" => "Refresh: 20; http://www.ietf.org/rfc/rfc2324.txt"
+      body "I'm a tea pot!"
+    end
 ```
 
 Like `body`, `headers` and `status` with no arguments can be used to access
@@ -1076,15 +1249,15 @@ the client closes the connection. You can use the `stream` helper to avoid
 creating your own wrapper:
 
 ```ruby
-get '/' do
-  stream do |out|
-    out << "It's gonna be legen -\n"
-    sleep 0.5
-    out << " (wait for it) \n"
-    sleep 1
-    out << "- dary!\n"
-  end
-end
+    get '/' do
+      stream do |out|
+        out << "It's gonna be legen -\n"
+        sleep 0.5
+        out << " (wait for it) \n"
+        sleep 1
+        out << "- dary!\n"
+      end
+    end
 ```
 
 This allows you to implement streaming APIs,
@@ -1105,34 +1278,34 @@ execution flow. This only works on evented servers, like Thin and Rainbows.
 Other servers will still close the stream:
 
 ```ruby
-# long polling
+    # long polling
 
-set :server, :thin
-connections = []
+    set :server, :thin
+    connections = []
 
-get '/subscribe' do
-  # register a client's interest in server events
-  stream(:keep_open) { |out| connections << out }
+    get '/subscribe' do
+      # register a client's interest in server events
+      stream(:keep_open) { |out| connections << out }
 
-  # purge dead connections
-  connections.reject!(&:closed?)
+      # purge dead connections
+      connections.reject!(&:closed?)
 
-  # acknowledge
-  "subscribed"
-end
+      # acknowledge
+      "subscribed"
+    end
 
-post '/message' do
-  connections.each do |out|
-    # notify client that a new message has arrived
-    out << message << "\n"
+    post '/message' do
+      connections.each do |out|
+        # notify client that a new message has arrived
+        out << message << "\n"
 
-    # indicate client to connect again
-    out.close
-  end
+        # indicate client to connect again
+        out.close
+      end
 
-  # acknowledge
-  "message received"
-end
+      # acknowledge
+      "message received"
+    end
 ```
 
 ### Logging
@@ -1140,10 +1313,10 @@ end
 In the request scope, the `logger` helper exposes a `Logger` instance:
 
 ```ruby
-get '/' do
-  logger.info "loading data"
-  # ...
-end
+    get '/' do
+      logger.info "loading data"
+      # ...
+    end
 ```
 
 This logger will automatically take your Rack handler's logging settings into
@@ -1155,11 +1328,11 @@ default, so if you inherit from `Sinatra::Base`, you probably want to
 enable it yourself:
 
 ```ruby
-class MyApp < Sinatra::Base
-  configure :production, :development do
-    enable :logging
-  end
-end
+    class MyApp < Sinatra::Base
+      configure :production, :development do
+        enable :logging
+      end
+    end
 ```
 
 To avoid any logging middleware to be set up, set the `logging` setting to
@@ -1173,18 +1346,18 @@ When using `send_file` or static files you may have mime types Sinatra
 doesn't understand. Use `mime_type` to register them by file extension:
 
 ```ruby
-configure do
-  mime_type :foo, 'text/foo'
-end
+    configure do
+      mime_type :foo, 'text/foo'
+    end
 ```
 
 You can also use it with the `content_type` helper:
 
 ```ruby
-get '/' do
-  content_type :foo
-  "foo foo foo"
-end
+    get '/' do
+      content_type :foo
+      "foo foo foo"
+    end
 ```
 
 ### Generating URLs
@@ -1193,7 +1366,7 @@ For generating URLs you should use the `url` helper method, for instance, in
 Haml:
 
 ```ruby
-%a{:href => url('/foo')} foo
+    %a{:href => url('/foo')} foo
 ```
 
 It takes reverse proxies and Rack routers into account, if present.
@@ -1205,51 +1378,51 @@ This method is also aliased to `to` (see below for an example).
 You can trigger a browser redirect with the `redirect` helper method:
 
 ```ruby
-get '/foo' do
-  redirect to('/bar')
-end
+    get '/foo' do
+      redirect to('/bar')
+    end
 ```
 
 Any additional parameters are handled like arguments passed to `halt`:
 
 ```ruby
-redirect to('/bar'), 303
-redirect 'http://google.com', 'wrong place, buddy'
+    redirect to('/bar'), 303
+    redirect 'http://google.com', 'wrong place, buddy'
 ```
 
 You can also easily redirect back to the page the user came from with
 `redirect back`:
 
 ```ruby
-get '/foo' do
-  "<a href='/bar'>do something</a>"
-end
+    get '/foo' do
+      "<a href='/bar'>do something</a>"
+    end
 
-get '/bar' do
-  do_something
-  redirect back
-end
+    get '/bar' do
+      do_something
+      redirect back
+    end
 ```
 
 To pass arguments with a redirect, either add them to the query:
 
 ```ruby
-redirect to('/bar?sum=42')
+    redirect to('/bar?sum=42')
 ```
 
 Or use a session:
 
 ```ruby
-enable :sessions
+    enable :sessions
 
-get '/foo' do
-  session[:secret] = 'foo'
-  redirect to('/bar')
-end
+    get '/foo' do
+      session[:secret] = 'foo'
+      redirect to('/bar')
+    end
 
-get '/bar' do
-  session[:secret]
-end
+    get '/bar' do
+      session[:secret]
+    end
 ```
 
 ### Cache Control
@@ -1259,27 +1432,27 @@ Setting your headers correctly is the foundation for proper HTTP caching.
 You can easily set the Cache-Control header like this:
 
 ```ruby
-get '/' do
-  cache_control :public
-  "cache it!"
-end
+    get '/' do
+      cache_control :public
+      "cache it!"
+    end
 ```
 
 Pro tip: Set up caching in a before filter:
 
 ```ruby
-before do
-  cache_control :public, :must_revalidate, :max_age => 60
-end
+    before do
+      cache_control :public, :must_revalidate, :max_age => 60
+    end
 ```
 
 If you are using the `expires` helper to set the corresponding header,
 `Cache-Control` will be set automatically for you:
 
 ```ruby
-before do
-  expires 500, :public, :must_revalidate
-end
+    before do
+      expires 500, :public, :must_revalidate
+    end
 ```
 
 To properly use caches, you should consider using `etag` or `last_modified`.
@@ -1288,19 +1461,19 @@ will immediately flush a response if the client already has the current
 version in its cache:
 
 ```ruby
-get '/article/:id' do
-  @article = Article.find params[:id]
-  last_modified @article.updated_at
-  etag @article.sha1
-  erb :article
-end
+    get '/article/:id' do
+      @article = Article.find params[:id]
+      last_modified @article.updated_at
+      etag @article.sha1
+      erb :article
+    end
 ```
 
 It is also possible to use a
 [weak ETag](http://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation):
 
 ```ruby
-etag @article.sha1, :weak
+    etag @article.sha1, :weak
 ```
 
 These helpers will not do any caching for you, but rather feed the necessary
@@ -1308,16 +1481,16 @@ information to your cache. If you are looking for a quick reverse-proxy caching
 solution, try [rack-cache](https://github.com/rtomayko/rack-cache):
 
 ```ruby
-require "rack/cache"
-require "sinatra"
+    require "rack/cache"
+    require "sinatra"
 
-use Rack::Cache
+    use Rack::Cache
 
-get '/' do
-  cache_control :public, :max_age => 36000
-  sleep 5
-  "hello"
-end
+    get '/' do
+      cache_control :public, :max_age => 36000
+      sleep 5
+      "hello"
+    end
 ```
 
 Use the `:static_cache_control` setting (see below) to add
@@ -1331,17 +1504,17 @@ resources (for instance for post requests), are treated as new resources. You
 can change this behavior by passing in a `:new_resource` option:
 
 ```ruby
-get '/create' do
-  etag '', :new_resource => true
-  Article.create
-  erb :new_article
-end
+    get '/create' do
+      etag '', :new_resource => true
+      Article.create
+      erb :new_article
+    end
 ```
 
 If you still want to use a weak ETag, pass in a `:kind` option:
 
 ```ruby
-etag '', :new_resource => true, :kind => :weak
+    etag '', :new_resource => true, :kind => :weak
 ```
 
 ### Sending Files
@@ -1349,15 +1522,15 @@ etag '', :new_resource => true, :kind => :weak
 For sending files, you can use the `send_file` helper method:
 
 ```ruby
-get '/' do
-  send_file 'foo.png'
-end
+    get '/' do
+      send_file 'foo.png'
+    end
 ```
 
 It also takes options:
 
 ```ruby
-send_file 'foo.png', :type => :jpg
+    send_file 'foo.png', :type => :jpg
 ```
 
 The options are:
@@ -1374,8 +1547,8 @@ The options are:
 
   </dt>disposition</dt>
     <dd>
-      used for Content-Disposition, possible values: `nil` (default),
-      `:attachment` and `:inline`
+      used for Content-Disposition, possible value: <pre>nil</pre> (default),
+      <pre>:attachment</pre> and <pre>:inline</pre>
     </dd>
 
   <dt>length</dt>
@@ -1641,19 +1814,20 @@ You can also hand in an array in order to disable a list of protections:
   </dd>
   <dd>
     Enable if your app is running behind a reverse proxy that has not been set up 
-    properly. Note that the `url` helper will still produce absolute URLs, unless you 
-    pass in `false` as the second parameter.
+    properly. Note that the <pre>url</pre> helper will still produce absolute URLs, unless you 
+    pass in <pre>false</pre> as the second parameter.
   </dd>
   <dd>Disabled per default.</dd>
 
   <dt>add_charsets</dt>
   <dd>
-    mime types the `content_type` helper will automatically add the charset info to.
+    mime types the <pre>content_type</pre> helper will automatically add the charset info to.
     You should add to it rather than overriding this option:
   </dd>
-```ruby
-   settings.add_charsets << "application/foobar"
-```
+
+<pre>
+    settings.add_charsets << "application/foobar"
+</pre>
 
 <dt>app_file</dt>
 <dd>
@@ -1665,14 +1839,14 @@ You can also hand in an array in order to disable a list of protections:
 <dd>IP address to bind to (default: 0.0.0.0). Only used for built-in server.</dd>
 
 <dt>default_encoding</dt>
-<dd>encoding to assume if unknown (defaults to `"utf-8"`).</dd>
+<dd>encoding to assume if unknown (defaults to <pre>"utf-8"</pre>).</dd>
 
   <dt>dump_errors</dt>
   <dd>display errors in the log.</dd>
 
   <dt>environment</dt>
   <dd>
-    current environment, defaults to `ENV['RACK_ENV']`, or `"development"` if 
+    current environment, defaults to <pre>ENV['RACK_ENV']</pre>, or <pre>"development"</pre> if 
     not available.
   </dd>
 
@@ -1688,7 +1862,7 @@ You can also hand in an array in order to disable a list of protections:
 
   <dt>method_override</dt>
   <dd>
-    use `_method` magic to allow put/delete forms in browsers that 
+    use <pre>_method</pre> magic to allow put/delete forms in browsers that 
     don't support it.
   </dd>
 
@@ -1697,22 +1871,22 @@ You can also hand in an array in order to disable a list of protections:
 
   <dt>prefixed_redirects</dt>
   <dd>
-    Whether or not to insert `request.script_name` into redirects if no 
-    absolute path is given. That way `redirect '/foo'` would behave like
-    `redirect to('/foo')`. Disabled per default.
+    Whether or not to insert <pre>request.script_name</pre> into redirects if no 
+    absolute path is given. That way <pre>redirect '/foo'</pre> would behave like
+    <pre>redirect to('/foo')</pre>. Disabled per default.
   </dd>
 
   <dt>protection</dt>
   <dd>Whether or not to enable web attack protections. See protection section above.</dd>
 
   <dt>public_dir</dt>
-  <dd>Alias for `public_folder`. See below.</dd>
+  <dd>Alias for <pre>public_folder</pre>. See below.</dd>
 
   <dt>public_folder</dt>
   <dd>
     Path to the folder public files are served from. Only used if static 
-    file serving is enabled (see `static` setting below). Inferred from 
-    `app_file` setting if not set.
+    file serving is enabled (see <pre>static</pre> setting below). Inferred from 
+    <pre>app_file</pre> setting if not set.
   </dd>
 
   <dt>reload_templates</dt>
@@ -1722,13 +1896,13 @@ You can also hand in an array in order to disable a list of protections:
 
   <dt>root</dt>
   <dd>
-    Path to project root folder. Inferred from `app_file` setting if not set.
+    Path to project root folder. Inferred from <pre>app_file</pre> setting if not set.
   </dd>
 
   <dt>raise_errors</dt>
   <dd>
     raise exceptions (will stop application). Enabled by default when 
-    `environment` is set to `"test"`, disabled otherwise.
+    <pre>environment</pre> is set to <pre>"test"</pre>, disabled otherwise.
   </dd>
 
   <dt>run</dt>
@@ -1748,18 +1922,18 @@ You can also hand in an array in order to disable a list of protections:
 
   <dt>sessions</dt>
   <dd>
-    Enable cookie-based sessions support using `Rack::Session::Cookie`.
+    Enable cookie-based sessions support using <pre>Rack::Session::Cookie</pre>.
      See 'Using Sessions' section for more information.
   </dd>
 
   <dt>show_exceptions</dt>
   <dd>
     Show a stack trace in the browser when an exception
-    happens. Enabled by default when `environment`
-    is set to `"development"`, disabled otherwise.
+    happens. Enabled by default when <pre>environment</pre>
+    is set to <pre>"development"</pre>, disabled otherwise.
   </dd>
   <dd>
-    Can also be set to `:after_handler` to trigger
+    Can also be set to <pre>:after_handler</pre> to trigger
     app-specified error handling before showing a stack
     trace in the browser.
   </dd>
@@ -1776,23 +1950,23 @@ You can also hand in an array in order to disable a list of protections:
   <dt>static_cache_control</dt>
   <dd>
     When Sinatra is serving static files, set this to add
-    `Cache-Control` headers to the responses. Uses the
-    `cache_control` helper. Disabled by default.
+    <pre>Cache-Control</pre> headers to the responses. Uses the
+    <pre>cache_control</pre> helper. Disabled by default.
   </dd>
   <dd>
     Use an explicit array when setting multiple values:
-    `set :static_cache_control, [:public, :max_age => 300]`
+    <pre>set :static_cache_control, [:public, :max_age => 300]</pre>
   </dd>
 
   <dt>threaded</dt>
   <dd>
-    If set to `true`, will tell Thin to use `EventMachine.defer` 
+    If set to <pre>true</pre>, will tell Thin to use <pre>EventMachine.defer</pre> 
     for processing the request.
   </dd>
 
-  <dt>views**</dt>
+  <dt>views</dt>
   <dd>
-    Path to the views folder. Inferred from `app_file` setting if 
+    Path to the views folder. Inferred from <pre>app_filei</pre> setting if 
     not set.
   </dd>
 </dl>
