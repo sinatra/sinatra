@@ -84,9 +84,18 @@ module Sinatra
 
       # Rack::Response#finish sometimes returns self as response body. We don't want that.
       status, headers, result = super
-      result = body if result == self || Rack::BodyProxy === result
+      result = body if self == result
       [status, headers, result]
     end
+    
+    def ==(other)
+      [:status, :headers, :body, :length].each do |attribute|
+        return false unless other.respond_to?(attribute)
+        return false unless self.__send__(attribute) == other.__send__(attribute)
+      end
+      true
+    end
+    
   end
 
   # Some Rack handlers (Thin, Rainbows!) implement an extended body object protocol, however,
