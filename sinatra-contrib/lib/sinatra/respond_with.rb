@@ -224,6 +224,7 @@ module Sinatra
       :css  => [:less,  :sass, :scss],
       :xml  => [:builder, :nokogiri],
       :js   => [:coffee],
+      :json => [:yajl],
       :html => [:erb, :erubis, :haml, :slim, :liquid, :radius, :mab, :markdown,
         :textile, :rdoc],
       :all  => Sinatra::Templates.instance_methods.map(&:to_sym) + [:mab] -
