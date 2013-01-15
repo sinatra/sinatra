@@ -72,7 +72,7 @@ module Sinatra
 
     def session
       return {} unless last_request?
-      raise Rack::Test:Error, "session not enabled for app" unless last_env["rack.session"] or app.session?
+      raise Rack::Test::Error, "session not enabled for app" unless last_env["rack.session"] or app.session?
       last_request.session
     end
 
