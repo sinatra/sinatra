@@ -949,6 +949,7 @@ module Sinatra
       res = catch(:halt) { yield }
       res = [res] if Fixnum === res or String === res
       if Array === res and Fixnum === res.first
+        res = res.dup
         status(res.shift)
         body(res.pop)
         headers(*res)
