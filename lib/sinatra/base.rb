@@ -1327,7 +1327,7 @@ module Sinatra
           pattern = path.to_str.gsub(/[^\?\%\\\/\:\*\w]/) do |c|
             ignore << escaped(c).join if c.match(/[\.@]/)
             patt = encoded(c)
-            patt.gsub(/%\h\h/) do |match|
+            patt.gsub(/%[\da-fA-F]{2}/) do |match|
               match.split(//).map {|char| char =~ /[A-Z]/ ? "[#{char}#{char.tr('A-Z', 'a-z')}]" : char}.join
             end
           end
@@ -1369,7 +1369,7 @@ module Sinatra
 
       def safe_ignore(ignore)
         unsafe_ignore = []
-        ignore = ignore.gsub(/%\h\h/) do |hex|
+        ignore = ignore.gsub(/%[\da-fA-F]{2}/) do |hex|
           unsafe_ignore << hex[1..2]
           ''
         end
