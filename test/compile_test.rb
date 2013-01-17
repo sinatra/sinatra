@@ -58,7 +58,7 @@ class CompileTest < Test::Unit::TestCase
   fails  "/:foo", "/"
   fails  "/:foo", "/foo/"
 
-  converts "/föö", %r{\A/f%C3%B6%C3%B6\z}
+  converts "/föö", %r{\A/f%[Cc]3%[Bb]6%[Cc]3%[Bb]6\z}
   parses "/föö", "/f%C3%B6%C3%B6", {}
 
   converts "/:foo/:bar", %r{\A/([^/?#]+)/([^/?#]+)\z}
@@ -87,7 +87,7 @@ class CompileTest < Test::Unit::TestCase
   converts "/test$/", %r{\A/test(?:\$|%24)/\z}
   parses "/test$/", "/test$/", {}
 
-  converts "/te+st/", %r{\A/te(?:\+|%2B)st/\z}
+  converts "/te+st/", %r{\A/te(?:\+|%2[Bb])st/\z}
   parses "/te+st/", "/te+st/", {}
   fails  "/te+st/", "/test/"
   fails  "/te+st/", "/teeest/"
@@ -95,7 +95,7 @@ class CompileTest < Test::Unit::TestCase
   converts "/test(bar)/", %r{\A/test(?:\(|%28)bar(?:\)|%29)/\z}
   parses "/test(bar)/", "/test(bar)/", {}
 
-  converts "/path with spaces", %r{\A/path(?:%20|(?:\+|%2B))with(?:%20|(?:\+|%2B))spaces\z}
+  converts "/path with spaces", %r{\A/path(?:%20|(?:\+|%2[Bb]))with(?:%20|(?:\+|%2[Bb]))spaces\z}
   parses "/path with spaces", "/path%20with%20spaces", {}
   parses "/path with spaces", "/path%2Bwith%2Bspaces", {}
   parses "/path with spaces", "/path+with+spaces",     {}
@@ -110,22 +110,22 @@ class CompileTest < Test::Unit::TestCase
   parses "/*/foo/*/*", "/bar/foo/bling/baz/boom", "splat" => ["bar", "bling", "baz/boom"]
   fails  "/*/foo/*/*", "/bar/foo/baz"
 
-  converts "/test.bar", %r{\A/test(?:\.|%2E)bar\z}
+  converts "/test.bar", %r{\A/test(?:\.|%2[Ee])bar\z}
   parses "/test.bar", "/test.bar", {}
   fails  "/test.bar", "/test0bar"
 
-  converts "/:file.:ext", %r{\A/([^\.%2E/?#]+)(?:\.|%2E)([^\.%2E/?#]+)\z}
+  converts "/:file.:ext", %r{\A/((?:[^\./?#%]|(?:%[^2].|%[2][^Ee]))+)(?:\.|%2[Ee])((?:[^\./?#%]|(?:%[^2].|%[2][^Ee]))+)\z}
   parses "/:file.:ext", "/pony.jpg",   "file" => "pony", "ext" => "jpg"
   parses "/:file.:ext", "/pony%2Ejpg", "file" => "pony", "ext" => "jpg"
   fails  "/:file.:ext", "/.jpg"
 
-  converts "/:name.?:format?", %r{\A/([^\.%2E/?#]+)(?:\.|%2E)?([^\.%2E/?#]+)?\z}
+  converts "/:name.?:format?", %r{\A/((?:[^\./?#%]|(?:%[^2].|%[2][^Ee]))+)(?:\.|%2[Ee])?((?:[^\./?#%]|(?:%[^2].|%[2][^Ee]))+)?\z}
   parses "/:name.?:format?", "/foo",       "name" => "foo", "format" => nil
   parses "/:name.?:format?", "/foo.bar",   "name" => "foo", "format" => "bar"
   parses "/:name.?:format?", "/foo%2Ebar", "name" => "foo", "format" => "bar"
   fails  "/:name.?:format?", "/.bar"
 
-  converts "/:user@?:host?", %r{\A/([^@%40/?#]+)(?:@|%40)?([^@%40/?#]+)?\z}
+  converts "/:user@?:host?", %r{\A/((?:[^@/?#%]|(?:%[^4].|%[4][^0]))+)(?:@|%40)?((?:[^@/?#%]|(?:%[^4].|%[4][^0]))+)?\z}
   parses "/:user@?:host?", "/foo@bar",     "user" => "foo", "host" => "bar"
   parses "/:user@?:host?", "/foo.foo@bar", "user" => "foo.foo", "host" => "bar"
   parses "/:user@?:host?", "/foo@bar.bar", "user" => "foo", "host" => "bar.bar"
@@ -136,4 +136,18 @@ class CompileTest < Test::Unit::TestCase
   # parses "/:name(.:format)?", "/foo", "name" => "foo", "format" => nil
   # parses "/:name(.:format)?", "/foo.bar", "name" => "foo", "format" => "bar"
   fails "/:name(.:format)?", "/foo."
+
+  parses "/:id/test.bar", "/3/test.bar", {"id" => "3"}
+  parses "/:id/test.bar", "/2/test.bar", {"id" => "2"}
+  parses "/:id/test.bar", "/2E/test.bar", {"id" => "2E"}
+  parses "/:id/test.bar", "/2e/test.bar", {"id" => "2e"}
+  fails  "/:id/test.bar", "/%2E/test.bar"
+
+  parses "/:file.:ext", "/pony%2ejpg", "file" => "pony", "ext" => "jpg"
+  parses "/:file.:ext", "/pony%E6%AD%A3%2Ejpg", "file" => "pony%E6%AD%A3", "ext" => "jpg"
+  parses "/:file.:ext", "/pony%e6%ad%a3%2ejpg", "file" => "pony%e6%ad%a3", "ext" => "jpg"
+  parses "/:file.:ext", "/pony正%2Ejpg", "file" => "pony正", "ext" => "jpg"
+  parses "/:file.:ext", "/pony正%2ejpg", "file" => "pony正", "ext" => "jpg"
+  fails  "/:file.:ext", "/pony正..jpg"
+  fails  "/:file.:ext", "/pony正.%2ejpg"
 end
