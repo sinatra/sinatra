@@ -1326,7 +1326,10 @@ module Sinatra
           ignore = ""
           pattern = path.to_str.gsub(/[^\?\%\\\/\:\*\w]/) do |c|
             ignore << escaped(c).join if c.match(/[\.@]/)
-            encoded(c)
+            patt = encoded(c)
+            patt.gsub(/%\h\h/) do |match|
+              match.split(//).map {|char| char =~ /[A-Z]/ ? "[#{char}#{char.tr('A-Z', 'a-z')}]" : char}.join
+            end
           end
           pattern.gsub!(/((:\w+)|\*)/) do |match|
             if match == "*"
@@ -1334,7 +1337,9 @@ module Sinatra
               "(.*?)"
             else
               keys << $2[1..-1]
-              "([^#{ignore}/?#]+)"
+              ignore_pattern = safe_ignore(ignore)
+
+              ignore_pattern
             end
           end
           [/\A#{pattern}\z/, keys]
@@ -1360,6 +1365,29 @@ module Sinatra
 
       def escaped(char, enc = URI.escape(char))
         [Regexp.escape(enc), URI.escape(char, /./)]
+      end
+
+      def safe_ignore(ignore)
+        unsafe_ignore = []
+        ignore = ignore.gsub(/%\h\h/) do |hex|
+          unsafe_ignore << hex[1..2]
+          ''
+        end
+        unsafe_patterns = unsafe_ignore.map do |unsafe|
+          chars = unsafe.split(//).map do |char|
+            if char =~ /[A-Z]/
+              char <<= char.tr('A-Z', 'a-z')
+            end
+            char
+          end
+
+          "|(?:%[^#{chars[0]}].|%[#{chars[0]}][^#{chars[1]}])"
+        end
+        if unsafe_patterns.length > 0
+          "((?:[^#{ignore}/?#%]#{unsafe_patterns.join()})+)"
+        else
+          "([^#{ignore}/?#]+)"
+        end
       end
 
     public
