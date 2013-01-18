@@ -64,7 +64,7 @@ module Sinatra
   # http://rack.rubyforge.org/doc/classes/Rack/Response/Helpers.html
   class Response < Rack::Response
     def body=(value)
-      value = value.body while Rack::Response === value
+      value = value.body while (Rack::Response === value) or (defined?(Rack::BodyProxy) && Rack::BodyProxy === value)
       @body = String === value ? [value.to_str] : value
     end
 
