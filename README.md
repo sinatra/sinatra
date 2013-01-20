@@ -566,13 +566,11 @@ template, you almost always want to pass locals to it.
     <td>Dependency</td>
     <td>
       Anyone of:
-      <ul>
-        <li><a href="https://github.com/rtomayko/rdiscount title="RDiscount">RDiscount</a></li>
-        <li><a href="https://github.com/vmg/redcarpet title="RedCarpet">RedCarpet</a></li>
-        <li><a href="http://deveiate.org/projects/BlueCloth title="BlueCloth">BlueCloth</a></li>
-        <li><a href="http://kramdown.rubyforge.org/" title="kramdown">kramdown</a></li>
-        <li><a href="http://maruku.rubyforge.org/" title="maruku">maruku</a></li>
-      </ul>
+        <a href="https://github.com/rtomayko/rdiscount title="RDiscount">RDiscount</a>,
+        <a href="https://github.com/vmg/redcarpet title="RedCarpet">RedCarpet</a>,
+        <a href="http://deveiate.org/projects/BlueCloth title="BlueCloth">BlueCloth</a>,
+        <a href="http://kramdown.rubyforge.org/" title="kramdown">kramdown</a>,
+        <a href="http://maruku.rubyforge.org/" title="maruku">maruku</a>
     </td>
   </tr>
   <tr>
