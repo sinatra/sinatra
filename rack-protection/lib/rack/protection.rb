@@ -20,7 +20,11 @@ module Rack
     def self.new(app, options = {})
       # does not include: RemoteReferrer, AuthenticityToken and FormToken
       except = Array options[:except]
+      use_these = Array options[:use]
       Rack::Builder.new do
+        use ::Rack::Protection::RemoteReferrer,   options if use_these.include? :remote_referrer
+        use ::Rack::Protection::AuthenticityToken,options if use_these.include? :authenticity_token
+        use ::Rack::Protection::FormToken,        options if use_these.include? :form_token
         use ::Rack::Protection::FrameOptions,     options unless except.include? :frame_options
         use ::Rack::Protection::HttpOrigin,       options unless except.include? :http_origin
         use ::Rack::Protection::IPSpoofing,       options unless except.include? :ip_spoofing
