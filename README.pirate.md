@@ -1,7 +1,7 @@
 # Sinatra
 
 Sinatra is a [DSL](http://en.wikipedia.org/wiki/Domain-specific_language) for
-quickly creating web applications in Ruby with minimal effort:
+quickly creating web arrplications in Ruby with minimal effort:
 
 ```ruby
     # myapp.rb
@@ -162,12 +162,12 @@ You can easily define your own conditions:
 ```ruby
     set(:probability) { |value| condition { rand <= value } }
 
-    get '/win_a_car', :probability => 0.1 do
-      "You won!"
+    get '/win_a_vessel', :probability => 0.1 do
+      "Ye won!"
     end
 
-    get '/win_a_car' do
-      "Sorry, you lost."
+    get '/win_a_vessel' do
+      "Ye lost a vessel!"
     end
 ```
 
@@ -182,12 +182,12 @@ For a condition that takes multiple values use a splat:
       end
     end
 
-    get "/my/account/", :auth => [:user, :admin] do
-      "Your Account Details"
+    get "/quarters/me/", :auth => [:privateer, :captain] do
+      "Your Quarters"
     end
 
-    get "/only/admin/", :auth => :admin do
-      "Only admins are allowed here!"
+    get "/quarters/captain/", :auth => :captain do
+      "Only Captain is allowed here!"
     end
 ```
 
@@ -375,7 +375,7 @@ Available Options:
 
   <dt>scope</dt>
   <dd>
-    Scope to render template under. Defaults to the application instance. If you
+    Scope to render template under. Defaults to the arrplication instance. If you
     change this, instance variables and helper methods will not be available.
   </dd>
 
@@ -1069,7 +1069,7 @@ Alternatively, helper methods can be separately defined in a module:
     helpers FooUtils, BarUtils
 ```
 
-The effect is the same as including the modules in the application class.
+The effect is the same as including the modules in the arrplication class.
 
 ### Using Sessions
 
@@ -1108,8 +1108,8 @@ middleware of choice as you would any other middleware:
 
 To improve security, the session data in the cookie is signed with a session
 secret. A random secret is generated for you by Sinatra. However, since this
-secret will change with every start of your application, you might want to
-set the secret yourself, so all your application instances share it:
+secret will change with every start of your arrplication, you might want to
+set the secret yourself, so all your arrplication instances share it:
 
 ```ruby
     set :session_secret, 'super secret'
@@ -1198,7 +1198,7 @@ Note that in the example above, you would ease testing and increase performance
 by simply moving `"bar"` into a helper used by both `/foo`
 and `/bar`.
 
-If you want the request to be sent to the same application instance rather than
+If you want the request to be sent to the same arrplication instance rather than
 a duplicate, use `call!` instead of `call`.
 
 Check out the Rack specification if you want to learn more about `call`.
@@ -1265,7 +1265,7 @@ used to increase throughput if some but not all content depends on a slow
 resource.
 
 Note that the streaming behavior, especially the number of concurrent requests,
-highly depends on the web server used to serve the application. Some servers,
+highly depends on the web server used to serve the arrplication. Some servers,
 like WEBRick, might not even support streaming at all. If the server does not
 support streaming, the body will be sent all at once after the block passed to
 `stream` finishes executing. Streaming does not work at all with Shotgun.
@@ -1494,7 +1494,7 @@ solution, try [rack-cache](https://github.com/rtomayko/rack-cache):
 Use the `:static_cache_control` setting (see below) to add
 `Cache-Control` header info to static files.
 
-According to RFC 2616 your application should behave differently if the If-Match
+According to RFC 2616 your arrplication should behave differently if the If-Match
 or If-None-Match header is set to `*` depending on whether the resource
 requested is already in existence. Sinatra assumes resources for safe (like get)
 and idempotent (like put) requests are already in existence, whereas other
@@ -1657,7 +1657,7 @@ similar classes:
 
 This method is used internally by `expires`, `last_modified` and akin. You can
 therefore easily extend the behavior of those methods by overriding `time_for`
-in your application:
+in your arrplication:
 
 ```ruby
     helpers do
@@ -1783,8 +1783,8 @@ You can access those options via `settings`:
 
 Sinatra is using
 [Rack::Protection](https://github.com/rkh/rack-protection#readme) to defend
-your application against common, opportunistic attacks. You can easily disable
-this behavior (which will open up your application to tons of common
+your arrplication against common, opportunistic attacks. You can easily disable
+this behavior (which will open up your arrplication to tons of common
 vulnerabilities):
 
 ```ruby
@@ -1826,7 +1826,7 @@ You can also hand in an array in order to disable a list of protections:
 
   <dt>app_file</dt>
   <dd>
-    Path to the main application file, used to detect project root, views and public 
+    Path to the main arrplicati file, used to detect project root, views and public 
     folder and inline templates.
   </dd>
 
@@ -1896,7 +1896,7 @@ You can also hand in an array in order to disable a list of protections:
 
   <dt>raise_errors</dt>
   <dd>
-    raise exceptions (will stop application). Enabled by default when 
+    raise exceptions (will stop arrplicati). Enabled by default when 
     <tt>environment</tt> is set to <tt>"test"</tt>, disabled otherwise.
   </dd>
 
@@ -2063,8 +2063,8 @@ running under the development environment.
 
 Sinatra rides on [Rack](http://rack.rubyforge.org/), a minimal standard
 interface for Ruby web frameworks. One of Rack's most interesting capabilities
-for application developers is support for "middleware" -- components that sit
-between the server and your application monitoring and/or manipulating the
+for arrplicati developers is support for "middleware" -- components that sit
+between the server and your arrplicati monitoring and/or manipulating the
 HTTP request/response to provide various types of common functionality.
 
 Sinatra makes building Rack middleware pipelines a cinch via a top-level
@@ -2148,7 +2148,7 @@ Defining your app at the top-level works well for micro-apps but has
 considerable drawbacks when building reusable components such as Rack
 middleware, Rails metal, simple libraries with a server component, or even
 Sinatra extensions. The top-level assumes a micro-app style configuration
-(e.g., a single application file, `./public` and `./views`
+(e.g., a single arrplicati file, `./public` and `./views`
 directories, logging, exception detail page, etc.). That's where
 `Sinatra::Base` comes into play:
 
@@ -2183,10 +2183,10 @@ for details on available options and their behavior.
 ### Modular vs. Classic Style
 
 Contrary to common belief, there is nothing wrong with the classic style. If it
-suits your application, you do not have to switch to a modular application.
+suits your arrpplication, you do not have to switch to a modular arrplication.
 
 The main disadvantage of using the classic style rather than the modular style is that
-you will only have one Sinatra application per Ruby process. If you plan to use
+you will only have one Sinatra arrplication per Ruby process. If you plan to use
 more than one, switch to the modular style. There is no reason you cannot mix
 the modular and the classic styles.
 
@@ -2276,10 +2276,10 @@ with a `config.ru`.**
 
 ### Using Sinatra as Middleware
 
-Not only is Sinatra able to use other Rack middleware, any Sinatra application
+Not only is Sinatra able to use other Rack middleware, any Sinatra arrplication
 can in turn be added in front of any Rack endpoint as middleware itself. This
-endpoint could be another Sinatra application, or any other Rack-based
-application (Rails/Ramaze/Camping/...):
+endpoint could be another Sinatra arrplication, or any other Rack-based
+arrplication (Rails/Ramaze/Camping/...):
 
 ```ruby
     require 'sinatra/base'
@@ -2312,9 +2312,9 @@ application (Rails/Ramaze/Camping/...):
     end
 ```
 
-### Dynamic Application Creation
+### Dynamic Arrpplication Creation
 
-Sometimes you want to create new applications at runtime without having to
+Sometimes you want to create new arrpplications at runtime without having to
 assign them to a constant, you can do this with `Sinatra.new`:
 
 ```ruby
@@ -2323,7 +2323,7 @@ assign them to a constant, you can do this with `Sinatra.new`:
     my_app.run!
 ```
 
-It takes the application to inherit from as an optional argument:
+It takes the arrpplication to inherit from as an optional argument:
 
 ```ruby
     # config.ru (run with rackup)
@@ -2363,32 +2363,32 @@ This also makes using Sinatra as middleware extremely easy:
 The scope you are currently in determines what methods and variables are
 available.
 
-### Application/Class Scope
+### Arrpplication/Class Scope
 
-Every Sinatra application corresponds to a subclass of `Sinatra::Base`.
+Every Sinatra arrplication corresponds to a subclass of `Sinatra::Base`.
 If you are using the top-level DSL (`require 'sinatra'`), then this
 class is `Sinatra::Application`, otherwise it is the subclass you
 created explicitly. At class level you have methods like `get` or `before`, but
 you cannot access the `request` or `session` objects, as there is only a
-single application class for all requests.
+single arrpplication class for all requests.
 
 Options created via `set` are methods at class level:
 
 ```ruby
     class MyApp < Sinatra::Base
-      # Hey, I'm in the application scope!
+      # Hey, I'm in the arrpplication scope!
       set :foo, 42
       foo # => 42
 
       get '/foo' do
-        # Hey, I'm no longer in the application scope!
+        # Hey, I'm no longer in the arrpplication scope!
       end
     end
 ```
 
-You have the application scope binding inside:
+You have the arrpplication scope binding inside:
 
-* Your application class body
+* Yer arrpplication class body
 * Methods defined by extensions
 * The block passed to `helpers`
 * Procs/blocks used as value for `set`
@@ -2401,15 +2401,15 @@ You can reach the scope object (the class) like this:
 
 ### Request/Instance Scope
 
-For every incoming request, a new instance of your application class is
-created and all handler blocks run in that scope. From within this scope you
+For every incoming request, a new instance of your arrpplication class be
+created and all handler blocks be run in that scope. From within this scope ye
 can access the `request` and `session` objects or call rendering methods like
-`erb` or `haml`. You can access the application scope from within the request
+`erb` or `haml`. Ye can access the arrpplication scope from within the request
 scope via the `settings` helper:
 
 ```ruby
     class MyApp < Sinatra::Base
-      # Hey, I'm in the application scope!
+      # Hey, I'm in the arrpplication scope!
       get '/define_route/:name' do
         # Request scope for '/define_route/:name'
         @value = 42
@@ -2451,7 +2451,7 @@ being [extending the main object](https://github.com/sinatra/sinatra/blob/ca0636
 
 ## Command Line
 
-Sinatra applications can be run directly:
+Sinatra arrplications can be run directly:
 
 ```ruby
     ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
@@ -2474,7 +2474,7 @@ The following Ruby versions are officially supported:
 <dl>
   <dt>Ruby 1.8.7</dt>
   <dd>
-    1.8.7 is fully supported, however, if nothing is keeping you from it, we
+    1.8.7 be fully supported, however, if nothing is keeping you from it, we
     recommend upgrading to 1.9.2 or switching to JRuby or Rubinius. Support for
     1.8.7 will not be dropped before Sinatra 2.0 and Ruby 2.0 except maybe in
     the unlikely event of 1.8.8 being released. Even then, we might continue
@@ -2485,7 +2485,7 @@ The following Ruby versions are officially supported:
 
   <dt>Ruby 1.9.2</dt>
   <dd>
-    1.9.2 is fully supported and recommended. Do not use 1.9.2p0, as it is known to
+    1.9.2 be fully supported and recommended. Do not use 1.9.2p0, as it is known to
     cause segmentation faults when running Sinatra. Support will continue at least
     until the release of Ruby 1.9.4/2.0 and support for the latest 1.9 release
     will continue as long as it is still supported by the Ruby core team.
@@ -2493,20 +2493,20 @@ The following Ruby versions are officially supported:
 
   <dt>Ruby 1.9.3</dt>
   <dd>
-    1.9.3 is fully supported and recommended. Please note that switching to 1.9.3
+    1.9.3 be fully supported and recommended. Please note that switching to 1.9.3
     from an earlier version will invalidate all sessions.
   </dd>
 
   <dt>Rubinius</dt>
   <dd>
-    Rubinius is officially supported (Rubinius >= 1.2.4), everything works, including
+    Rubinius be officially supported (Rubinius >= 1.2.4), everything works, including
     all template languages. The upcoming 2.0 release is supported as
     well, including 1.9 mode.
   </dd>
 
   <dt>JRuby</dt>
   <dd>
-    JRuby is officially supported (JRuby >= 1.6.7). No issues with third party
+    JRuby be officially supported (JRuby >= 1.6.7). No issues with third party
     template libraries are known, however, if you choose to use JRuby, please
     look into JRuby rack handlers, as the Thin web server is not fully supported
     on JRuby. JRuby's support for C extensions is still experimental, which only
@@ -2516,7 +2516,7 @@ The following Ruby versions are officially supported:
 </dl>
 We also keep an eye on upcoming Ruby versions.
 
-The following Ruby implementations are not officially supported but still are
+The following Ruby implementations be not officially supported but still be
 known to run Sinatra:
 
 * Older versions of JRuby and Rubinius
@@ -2539,8 +2539,8 @@ Ruby version prior to 1.8.7.
 
 ## The Bleeding Edge
 
-If you would like to use Sinatra's latest bleeding-edge code, feel free to run your
-application against the master branch, it should be rather stable.
+If ye'd like to use Sinatra's latest bleeding-edge code, feel free to run yer
+arrpplication against the master branch, it should be rather stable.
 
 We also push out prerelease gems from time to time, so you can do a
 
@@ -2552,7 +2552,7 @@ To get some of the latest features.
 
 ### With Bundler
 
-If you want to run your application with the latest Sinatra, using
+If ye be wantin to run yer arrpplication with the latest Sinatra, using
 [Bundler](http://gembundler.com/) is the recommended way.
 
 First, install bundler, if you haven't:
@@ -2572,7 +2572,7 @@ Then, in your project directory, create a `Gemfile`:
     gem 'activerecord', '~> 3.0'  # maybe you also need ActiveRecord 3.x
 ```
 
-Note that you will have to list all your application's dependencies in the `Gemfile`.
+Note that ye'll have to list all your arrplication's dependencies in the `Gemfile`.
 Sinatra's direct dependencies (Rack and Tilt) will, however, be automatically
 fetched and added by Bundler.
 
@@ -2584,7 +2584,7 @@ Now you can run your app like this:
 
 ### Roll Your Own
 
-Create a local clone and run your app with the `sinatra/lib` directory
+Create a local clone and run yer app with the `sinatra/lib` directory
 on the `$LOAD_PATH`:
 
 ```ruby
@@ -2601,7 +2601,7 @@ To update the Sinatra sources in the future:
 ```
 ### Install Globally
 
-You can build the gem on your own:
+Ye can build the gem on your own:
 
 ```ruby
     git clone git://github.com/sinatra/sinatra.git
@@ -2610,7 +2610,7 @@ You can build the gem on your own:
     rake install
 ```
 
-If you install gems as root, the last step should be
+If ye install gems as root, the last step should be
 
 ```ruby
     sudo rake install
@@ -2618,7 +2618,7 @@ If you install gems as root, the last step should be
 
 ## Versioning
 
-Sinatra follows [Semantic Versioning](http://semver.org/), both SemVer and
+Sinatra be followin [Semantic Versioning](http://semver.org/), both SemVer and
 SemVerTag.
 
 ## Further Reading
