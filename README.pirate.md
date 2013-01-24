@@ -65,7 +65,7 @@ Route patterns may include named parameters, accessible via the
     get '/hello/:name' do
       # matches "GET /hello/foo" and "GET /hello/bar"
       # params[:name] is 'foo' or 'bar'
-      "Hello #{params[:name]}!"
+      "Ahoy #{params[:name]}!"
     end
 ```
 
@@ -73,7 +73,7 @@ You can also access named parameters via block parameters:
 
 ```ruby
     get '/hello/:name' do |n|
-      "Hello #{n}!"
+      "Ahoy #{n}!"
     end
 ```
 
@@ -104,7 +104,7 @@ Route matching with Regular Expressions:
 
 ```ruby
     get %r{/hello/([\w]+)} do
-      "Hello, #{params[:captures].first}!"
+      "Ahoy, #{params[:captures].first}!"
     end
 ```
 
@@ -112,7 +112,7 @@ Or with a block parameter:
 
 ```ruby
     get %r{/hello/([\w]+)} do |c|
-      "Hello, #{c}!"
+      "Ahoy, #{c}!"
     end
 ```
 
@@ -594,7 +594,7 @@ engine:
 Note that you may also call the `markdown` method from within other templates:
 
 ```ruby
-    %h1 Hello From Haml!
+    %h1 Ahoy From Haml!
     %p= markdown(:greetings)
 ```
 
@@ -630,7 +630,7 @@ therefore will usually use it in combination with another rendering engine:
 Note that you may also call the `textile` method from within other templates:
 
 ```ruby
-    %h1 Hello From Haml!
+    %h1 Ahoy From Haml!
     %p= textile(:greetings)
 ```
 
@@ -665,7 +665,7 @@ therefore will usually use it in combination with another rendering engine:
 Note that you may also call the `rdoc` method from within other templates:
 
 ```ruby
-    %h1 Hello From Haml!
+    %h1 Ahoy From Haml!
     %p= rdoc(:greetings)
 ```
 
@@ -773,7 +773,7 @@ therefore will usually use it in combination with another rendering engine:
 Note that you may also call the `creole` method from within other templates:
 
 ```ruby
-    %h1 Hello From Haml!
+    %h1 Ahoy From Haml!
     %p= creole(:greetings)
 ```
 
@@ -868,7 +868,7 @@ to it. Layouts written in wlang and `yield` are supported, though.
 
 ```ruby
     get '/' do
-      haml '%div.title Hello World'
+      haml '%div.title Ahoy World'
     end
 ```
 
@@ -916,7 +916,7 @@ Templates may be defined at the end of the source file:
       = yield
 
     @@ index
-    %div.title Hello world.
+    %div.title Ahoy world.
 ```
 
 NOTE: Inline templates defined in the source file that requires sinatra are
@@ -933,7 +933,7 @@ Templates may also be defined using the top-level `template` method:
     end
 
     template :index do
-      '%div.title Hello World!'
+      '%div.title Ahoy World!'
     end
 
     get '/' do
@@ -1617,7 +1617,7 @@ The `request.body` is an IO or StringIO object:
     post "/api" do
       request.body.rewind  # in case someone already read it
       data = JSON.parse request.body.read
-      "Hello #{data['name']}!"
+      "Ahoy #{data['name']}!"
     end
 ```
 
@@ -2078,7 +2078,7 @@ Sinatra makes building Rack middleware pipelines a cinch via a top-level
     use MyCustomMiddleware
 
     get '/hello' do
-      'Hello World'
+      'Ahoy World'
     end
 ```
 
@@ -2124,12 +2124,12 @@ is recommended:
 
       def test_my_default
         get '/'
-        assert_equal 'Hello World!', last_response.body
+        assert_equal 'Ahoy World!', last_response.body
       end
 
       def test_with_params
         get '/meet', :name => 'Frank'
-        assert_equal 'Hello Frank!', last_response.body
+        assert_equal 'Ahoy Frank!', last_response.body
       end
 
       def test_with_rack_env
@@ -2160,7 +2160,7 @@ directories, logging, exception detail page, etc.). That's where
       set :foo, 'bar'
 
       get '/' do
-        'Hello world!'
+        'Ahoy world!'
       end
     end
 ```
@@ -2250,7 +2250,7 @@ Write your app file:
     require 'sinatra'
 
     get '/' do
-      'Hello world!'
+      'Ahoy world!'
     end
 ```
 
@@ -2308,7 +2308,7 @@ arrplication (Rails/Ramaze/Camping/...):
         end
       end
 
-      get('/') { "Hello #{session['user_name']}." }
+      get('/') { "Ahoy #{session['user_name']}." }
     end
 ```
 
