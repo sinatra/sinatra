@@ -8,7 +8,7 @@ quickly creating web applications in Ruby with minimal effort:
     require 'sinatra'
 
     get '/' do
-      'Hello world!'
+      'Ahoy world!'
     end
 ```
 
@@ -31,7 +31,7 @@ Each route is associated with a block:
 
 ```ruby
     get '/' do
-      .. show something ..
+      .. scour something ..
     end
 
     post '/' do
@@ -47,7 +47,7 @@ Each route is associated with a block:
     end
 
     delete '/' do
-      .. annihilate something ..
+      .. keelhaul something ..
     end
 
     options '/' do
