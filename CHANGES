@@ -10,6 +10,8 @@
  * Fix default content type for Sinatra::Response with latest Rack release.
    (Konstantin Haase)
 
+ * Fix regression where + was no longer treated like space. (Ross Boucher)
+
 = 1.3.3 / 2012-08-19
 
  * Improved documentation. (burningTyger, Konstantin Haase, Gabriel Andretta,
