@@ -61,4 +61,20 @@ class ResponseTest < Test::Unit::TestCase
     @response.body = Rack::Response.new ["foo"]
     assert_same_body @response.body, ["foo"]
   end
+
+  it 'perform equality comparison based on the status, headers, body and length' do
+    assert_equal @response, Sinatra::Response.new
+    assert_equal @response, Rack::Response.new
+    assert_not_equal @response, Sinatra::Response.new("foo")
+    assert_not_equal @response, Rack::Response.new("foo")
+    assert_not_equal @response, Object
+    
+    test_response = Sinatra::Response.new
+    test_response.headers["Content-Type"] = "application/json"
+    assert_not_equal @response, test_response
+    
+    test_response = Sinatra::Response.new
+    test_response.length = 3
+    assert_not_equal @response, test_response
+  end
 end
