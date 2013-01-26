@@ -53,6 +53,7 @@ class CompileTest < Test::Unit::TestCase
   parses "/:foo", "/foo",       "foo" => "foo"
   parses "/:foo", "/foo.bar",   "foo" => "foo.bar"
   parses "/:foo", "/foo%2Fbar", "foo" => "foo%2Fbar"
+  parses "/:foo", "/%0Afoo",    "foo" => "%0Afoo"
   fails  "/:foo", "/foo?"
   fails  "/:foo", "/foo/bar"
   fails  "/:foo", "/"
