@@ -63,6 +63,11 @@ module Sinatra
   # http://rack.rubyforge.org/doc/classes/Rack/Response.html
   # http://rack.rubyforge.org/doc/classes/Rack/Response/Helpers.html
   class Response < Rack::Response
+    def initialize(*)
+      super
+      headers['Content-Type'] ||= 'text/html'
+    end
+
     def body=(value)
       value = value.body while Rack::Response === value
       @body = String === value ? [value.to_str] : value
