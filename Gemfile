@@ -42,11 +42,8 @@ gem 'creole'
 gem 'markaby'
 gem 'radius'
 gem 'rabl' unless RUBY_ENGINE =~ /jruby|maglev/
-
-unless RUBY_ENGINE == 'rbx' and RUBY_VERSION > '1.9'
-  gem 'wlang', '>= 2.0.1' unless RUBY_ENGINE == "maglev"
-  gem 'liquid'
-end
+gem 'wlang', '>= 2.0.1' unless RUBY_ENGINE =~ /jruby|rbx/
+gem 'liquid' unless RUBY_ENGINE == 'rbx' and RUBY_VERSION > '1.9'
 
 if RUBY_ENGINE == 'jruby'
   gem 'nokogiri', '!= 1.5.0'
