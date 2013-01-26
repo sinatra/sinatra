@@ -76,7 +76,7 @@ Tilt.mappings['md'].each do |t|
     klass.class_eval(&MarkdownTest)
     name = t.name[/[^:]+$/].sub(/Template$/, '') << "Test"
     Object.const_set name, klass
-  rescue LoadError
+  rescue LoadError, NameError
     warn "#{$!}: skipping markdown tests with #{t}"
   end
 end
