@@ -145,7 +145,7 @@ Other available conditions be `host_name` and `provides`:
 
 ```ruby
     get '/', :host_name => /^admin\./ do
-      "Captani's Quarters! No enterin!"
+      "Captain's Quarters! No enterin!"
     end
 
     get '/', :provides => 'html' do
