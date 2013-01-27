@@ -1,7 +1,7 @@
 # Sinatra
 
 Sinatra is a [DSL](http://en.wikipedia.org/wiki/Domain-specific_language) for
-quickly creating web arrplications in Ruby with minimal effort:
+quickly creating web arrplications in Ruby with minimal squabblin:
 
 ```ruby
     # myapp.rb
@@ -82,12 +82,12 @@ via the `params[:splat]` array:
 
 ```ruby
     get '/say/*/to/*' do
-      # matches /say/hello/to/world
+      # be matchin /say/hello/to/world
       params[:splat] # => ["hello", "world"]
     end
 
     get '/download/*.*' do
-      # matches /download/path/to/file.xml
+      # be matchin /download/path/to/file.xml
       params[:splat] # => ["path/to/file", "xml"]
     end
 ```
@@ -120,11 +120,11 @@ Route patterns may have optional parameters:
 
 ```ruby
     get '/posts.?:format?' do
-      # matches "GET /posts" and any extension "GET /posts.json", "GET /posts.xml" etc.
+      # be matchin "GET /posts" and any extension "GET /posts.json", "GET /posts.xml" etc.
     end
 ```
 
-By the way, unless you disable the path traversal attack protection (see below),
+By the way, unless ye disable the path traversal attack protection (see below),
 the request path might be modified before matching against your routes.
 
 ## Conditions
@@ -133,19 +133,19 @@ Routes may include a variety of matching conditions, such as the user agent:
 
 ```ruby
     get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
-      "You're using Songbird version #{params[:agent][0]}"
+      "Yer using Songbird version #{params[:agent][0]}"
     end
 
     get '/foo' do
-      # Matches non-songbird browsers
+      # Be matchin non-songbird browsers
     end
 ```
 
-Other available conditions are `host_name` and `provides`:
+Other available conditions be `host_name` and `provides`:
 
 ```ruby
     get '/', :host_name => /^admin\./ do
-      "Admin Area, Access denied!"
+      "Captani's Quarters! No enterin!"
     end
 
     get '/', :provides => 'html' do
@@ -157,7 +157,7 @@ Other available conditions are `host_name` and `provides`:
     end
 ```
 
-You can easily define your own conditions:
+Ye can easily define your own conditions:
 
 ```ruby
     set(:probability) { |value| condition { rand <= value } }
@@ -330,7 +330,7 @@ engine:
     end
 ```
 
-You can also set options per template language in general:
+Ye can also set options per template language in general:
 
 ```ruby
     set :haml, :format => :html5
