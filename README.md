@@ -16,7 +16,7 @@ Install the gem and run with:
 
 ```ruby
     gem install sinatra
-    ruby -rubygems myapp.rb
+    ruby myapp.rb
 ```
 
 View at: http://localhost:4567

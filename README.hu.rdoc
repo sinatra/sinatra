@@ -15,7 +15,7 @@ energiabefektetéssel:
 Telepítsd a gem-et és indítsd el az alkalmazást a következőképpen:
 
   sudo gem install sinatra
-  ruby -rubygems myapp.rb
+  ruby myapp.rb
 
 Az alkalmazás elérhető lesz itt: http://localhost:4567
 
