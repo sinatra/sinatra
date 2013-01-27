@@ -15,7 +15,7 @@ para criar aplicações web em Ruby com o mínimo de esforço e rapidez:
 Instale a gem e execute como:
 
   gem install sinatra
-  ruby -rubygems minhaapp.rb
+  ruby minhaapp.rb
 
 Acesse em: http://localhost:4567
 

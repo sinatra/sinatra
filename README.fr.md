@@ -18,7 +18,7 @@ Installez la gem et lancez avec :
 
 ```bash
 $ gem install sinatra
-$ ruby -rubygems mon_application.rb
+$ ruby mon_application.rb
 ```
 
 Le résultat est visible sur : http://localhost:4567

@@ -14,7 +14,7 @@ Sinatra는 최소한의 노력으로 루비 기반 웹 애플리케이션을 신
 다음과 같이 젬을 설치하고 실행한다:
 
   gem install sinatra
-  ruby -rubygems myapp.rb
+  ruby myapp.rb
 
 확인: http://localhost:4567
 

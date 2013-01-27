@@ -15,7 +15,7 @@ Sinatra是一个基于Ruby语言，以最小精力为代价快速创建web应用
 安装gem然后运行：
 
   gem install sinatra
-  ruby -rubygems myapp.rb
+  ruby myapp.rb
 
 在该地址查看： http://localhost:4567
 
