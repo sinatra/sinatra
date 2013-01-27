@@ -20,7 +20,7 @@ Einfach via `rubygems` installieren und starten:
 
 ```ruby
     gem install sinatra
-    ruby -rubygems myapp.rb
+    ruby myapp.rb
 ```
 
 Die Seite kann nun unter http://localhost:4567 betrachtet werden.
