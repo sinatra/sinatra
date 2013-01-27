@@ -12,7 +12,7 @@ SinatraはRubyで下記のような最小労力で手早くウェブアプリケ
 gemをインストールして動かしてみる。
 
   gem install sinatra
-  ruby -rubygems myapp.rb
+  ruby myapp.rb
 
 http://localhost:4567 を見る。
 

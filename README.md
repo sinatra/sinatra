@@ -16,7 +16,7 @@ Install the gem and run with:
 
 ```ruby
     gem install sinatra
-    ruby -rubygems myapp.rb
+    ruby myapp.rb
 ```
 
 View at: http://localhost:4567
@@ -566,9 +566,9 @@ template, you almost always want to pass locals to it.
     <td>Dependency</td>
     <td>
       Anyone of:
-        <a href="https://github.com/rtomayko/rdiscount title="RDiscount">RDiscount</a>,
-        <a href="https://github.com/vmg/redcarpet title="RedCarpet">RedCarpet</a>,
-        <a href="http://deveiate.org/projects/BlueCloth title="BlueCloth">BlueCloth</a>,
+        <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
+        <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
+        <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
         <a href="http://kramdown.rubyforge.org/" title="kramdown">kramdown</a>,
         <a href="http://maruku.rubyforge.org/" title="maruku">maruku</a>
     </td>
