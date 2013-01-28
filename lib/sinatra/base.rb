@@ -16,12 +16,16 @@ module Sinatra
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
   class Request < Rack::Request
+    HEADER_PARAM = /;[\d\w.]+=(?:[\d\w.]+|"(?:[^"\\]|\\.)*")?/
+    HEADER_VALUE_WITH_PARAMS = /(?:(?:\w+|\*)\/(?:\w+|\*))(?:#{HEADER_PARAM})*/
+
     # Returns an array of acceptable media types for the response
     def accept
-      @env['sinatra.accept'] ||= begin
-        entries = @env['HTTP_ACCEPT'].to_s.split(',')
-        entries.map { |e| accept_entry(e) }.sort_by(&:last).map(&:first)
+      @env['sinatra.accept_entries'] ||= begin
+        entries = @env['HTTP_ACCEPT'].to_s.scan(HEADER_VALUE_WITH_PARAMS)
+        entries.map { |e| accept_entry(e) }.sort_by(&:last)
       end
+      @env['sinatra.accept'] ||= @env['sinatra.accept_entries'].map(&:first)
     end
 
     def preferred_type(*types)
@@ -51,10 +55,11 @@ module Sinatra
     private
 
     def accept_entry(entry)
-      type, *options = entry.delete(' ').split(';')
+      type = entry.delete(' ').split(';').first
+      options = entry.scan(HEADER_PARAM).map { |s| s[1..-1] }
       quality = 0 # we sort smallest first
       options.delete_if { |e| quality = 1 - e[2..-1].to_f if e.start_with? 'q=' }
-      [type, [quality, type.count('*'), 1 - options.size]]
+      [type, options, [quality, type.count('*'), 1 - options.size]]
     end
   end
 

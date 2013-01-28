@@ -431,7 +431,7 @@ class AfterFilterTest < Test::Unit::TestCase
       get('/') { @type }
     end
 
-    get('/', {}, { 'HTTP_ACCEPT' => '*' })
+    get('/', {}, { 'HTTP_ACCEPT' => '*/*' })
     assert_body 'txt'
   end
 end
