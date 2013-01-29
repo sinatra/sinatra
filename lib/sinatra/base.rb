@@ -275,7 +275,10 @@ module Sinatra
       params.delete :charset if mime_type.include? 'charset'
       unless params.empty?
         mime_type << (mime_type.include?(';') ? ', ' : ';')
-        mime_type << params.map { |kv| kv.join('=') }.join(', ')
+        mime_type << params.map do |key, val|
+          val = val.inspect if val =~ /[";,]/
+          "#{key}=#{val}"
+        end.join(', ')
       end
       response['Content-Type'] = mime_type
     end
