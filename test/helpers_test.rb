@@ -586,6 +586,29 @@ class HelpersTest < Test::Unit::TestCase
       get '/'
       assert_equal 'text/plain;charset=utf-16', response['Content-Type']
     end
+
+    it 'properly encodes parameters with delimiter characters' do
+      mock_app do
+        before '/comma' do
+          content_type 'image/png', :comment => 'Hello, world!'
+        end
+        before '/semicolon' do
+          content_type 'image/png', :comment => 'semi;colon'
+        end
+        before '/quote' do
+          content_type 'image/png', :comment => '"Whatever."'
+        end
+
+        get('*') { 'ok' }
+      end
+
+      get '/comma'
+      assert_equal 'image/png;comment="Hello, world!"', response['Content-Type']
+      get '/semicolon'
+      assert_equal 'image/png;comment="semi;colon"', response['Content-Type']
+      get '/quote'
+      assert_equal 'image/png;comment="\"Whatever.\""', response['Content-Type']
+    end
   end
 
   describe 'attachment' do
