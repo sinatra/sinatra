@@ -42,4 +42,19 @@ class RequestTest < Test::Unit::TestCase
     dumped = Marshal.dump(request.params)
     assert_equal 'bar', Marshal.load(dumped)['foo']
   end
+
+  it "exposes the preferred type's parameters" do
+    request = Sinatra::Request.new(
+      'HTTP_ACCEPT' => 'image/jpeg; compress=0.25'
+    )
+    assert_equal({ 'compress' => '0.25' }, request.preferred_type.params)
+  end
+
+  it "properly decodes MIME type parameters" do
+    request = Sinatra::Request.new(
+      'HTTP_ACCEPT' => 'image/jpeg;unquoted=0.25;quoted="0.25";chartest="\";,\x"'
+    )
+    expected = { 'unquoted' => '0.25', 'quoted' => '0.25', 'chartest' => '";,x' }
+    assert_equal(expected, request.preferred_type.params)
+  end
 end
