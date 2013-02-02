@@ -64,6 +64,21 @@ class TemplatesTest < Test::Unit::TestCase
     assert_equal "Layout!!! Hello World!", body
   end
 
+  it 'renders no layout if layout if falsy' do
+    mock_app do
+      template(:layout) { 'Layout!!! <%= yield %>' }
+      set :erb, :layout => true
+
+      get('/') do
+        erb('Hello World!', { :layout => nil })
+      end
+    end
+
+    get '/'
+    assert ok?
+    assert_equal "Hello World!", body
+  end
+
   it 'renders String templates directly' do
     render_app { render(:test, 'Hello World') }
     assert ok?
