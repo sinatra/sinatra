@@ -1295,7 +1295,7 @@ Other servers will still close the stream:
     post '/message' do
       connections.each do |out|
         # notify client that a new message has arrived
-        out << message << "\n"
+        out << params[:message] << "\n"
 
         # indicate client to connect again
         out.close
