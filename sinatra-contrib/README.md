@@ -48,7 +48,7 @@ Currently included:
 
 * `sinatra/namespace`: Adds namespace support to Sinatra.
 
-* `sinatra/respond_with`: Choose action and/or template depending automatically
+* `sinatra/respond_with`: Choose action and/or template automatically
   depending on the incoming request. Adds helpers `respond_to` and
   `respond_with`.
 
