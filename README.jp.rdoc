@@ -784,7 +784,7 @@ SinatraはRack[http://rack.rubyforge.org/]というRubyのWEBフレームワー�
 向けに一番興味深い機能はミドルウェア(サーバとアプリケーション間に介在し、モニタリング、HTTPリクエストとレスポンス
 の手動操作ができるなど、一般的な機能のいろいろなことを提供するもの)をサポートすることです。
 
-Sinatraではトップレベルの+user+ メソッドを使ってRackにパイプラインを構築します。
+Sinatraではトップレベルの+use+ メソッドを使ってRackにパイプラインを構築します。
 
   require 'sinatra'
   require 'my_custom_middleware'
