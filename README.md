@@ -2057,7 +2057,8 @@ Or a range:
 ```
 
 Sinatra installs special `not_found` and `error` handlers when
-running under the development environment.
+running under the development environment to display nice stack traces
+and additional debugging information in your browser.
 
 ## Rack Middleware
 
