@@ -109,7 +109,7 @@ module Sinatra
       options[:json_encoder] || settings.json_encoder
     end
 
-    def resolve_encoder_action(object = {}, encoder)
+    def resolve_encoder_action(object, encoder)
       [:encode, :generate].each do |method|
         return encoder.send(method, object) if encoder.respond_to? method
       end
@@ -117,9 +117,9 @@ module Sinatra
         object.__send__(encoder)
       else 
         fail "#{encoder} does not respond to #generate nor #encode"
-      end
-    end    
-  end
+      end #if
+    end #resolve_encoder_action  
+  end #JSON
 
   Base.set :json_encoder do
     ::MultiJson
