@@ -11,6 +11,8 @@ group :development, :test do
   platform :ruby do
     gem 'yajl-ruby'
   end
+
+  gem 'multi_json'
 end
 
 # Allows stuff like `tilt=1.2.2 bundle install` or `tilt=master ...`.

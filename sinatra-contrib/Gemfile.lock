@@ -27,6 +27,7 @@ GEM
     eventmachine (0.12.10)
     haml (3.1.4)
     json (1.6.5)
+    multi_json (1.6.0)
     rack (1.4.1)
     rack-protection (1.2.0)
       rack
@@ -55,6 +56,7 @@ DEPENDENCIES
   erubis
   haml
   json
+  multi_json
   rack
   rake
   rspec (~> 2.3)
