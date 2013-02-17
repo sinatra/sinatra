@@ -199,7 +199,7 @@ module Sinatra
   # Methods available to routes, before/after filters, and views.
   module Helpers
     # Set or retrieve the response status code.
-    def status(value=nil)
+    def status(value = nil)
       response.status = value if value
       response.status
     end
@@ -253,7 +253,7 @@ module Sinatra
     alias to uri
 
     # Halt processing and return the error status provided.
-    def error(code, body=nil)
+    def error(code, body = nil)
       code, body    = 500, code.to_str if code.respond_to? :to_str
       response.body = body unless body.nil?
       halt code
@@ -265,7 +265,7 @@ module Sinatra
     end
 
     # Set multiple response headers with Hash.
-    def headers(hash=nil)
+    def headers(hash = nil)
       response.headers.merge! hash if hash
       response.headers
     end
@@ -630,8 +630,8 @@ module Sinatra
       @default_layout = :layout
     end
 
-    def erb(template, options = {}, locals = {})
-      render :erb, template, options, locals
+    def erb(template, options = {}, locals = {}, &block)
+      render(:erb, template, options, locals, &block)
     end
 
     def erubis(template, options = {}, locals = {})
@@ -640,8 +640,8 @@ module Sinatra
       render :erubis, template, options, locals
     end
 
-    def haml(template, options = {}, locals = {})
-      render :haml, template, options, locals
+    def haml(template, options = {}, locals = {}, &block)
+      render(:haml, template, options, locals, &block)
     end
 
     def sass(template, options = {}, locals = {})
@@ -659,13 +659,13 @@ module Sinatra
       render :less, template, options, locals
     end
 
-    def builder(template=nil, options = {}, locals = {}, &block)
+    def builder(template = nil, options = {}, locals = {}, &block)
       options[:default_content_type] = :xml
       render_ruby(:builder, template, options, locals, &block)
     end
 
-    def liquid(template, options = {}, locals = {})
-      render :liquid, template, options, locals
+    def liquid(template, options = {}, locals = {}, &block)
+      render(:liquid, template, options, locals, &block)
     end
 
     def markdown(template, options = {}, locals = {})
@@ -680,11 +680,11 @@ module Sinatra
       render :rdoc, template, options, locals
     end
 
-    def radius(template,  options ={}, locals = {})
+    def radius(template, options = {}, locals = {})
       render :radius, template, options, locals
     end
 
-    def markaby(template = nil,  options ={}, locals = {}, &block)
+    def markaby(template = nil, options = {}, locals = {}, &block)
       render_ruby(:mab, template, options, locals, &block)
     end
 
@@ -698,16 +698,16 @@ module Sinatra
       render_ruby(:nokogiri, template, options, locals, &block)
     end
 
-    def slim(template, options = {}, locals = {})
-      render :slim, template, options, locals
+    def slim(template, options = {}, locals = {}, &block)
+      render(:slim, template, options, locals, &block)
     end
 
     def creole(template, options = {}, locals = {})
       render :creole, template, options, locals
     end
 
-    def wlang(template, options = {}, locals = {})
-      render :wlang, template, options, locals
+    def wlang(template, options = {}, locals = {}, &block)
+      render(:wlang, template, options, locals, &block)
     end
 
     def yajl(template, options = {}, locals = {})
