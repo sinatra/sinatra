@@ -77,6 +77,24 @@ class SlimTest < Test::Unit::TestCase
     assert ok?
     assert_body '<x foo="bar"></x>'
   end
+
+  it "can rendere truly nested layouts by accepting a layout and a block with the contents" do
+    mock_app do
+      template(:main_outer_layout) { "h1 Title\n== yield" }
+      template(:an_inner_layout) { "h2 Subtitle\n== yield" }
+      template(:a_page) { "p Contents." }
+      get('/') do
+        slim :main_outer_layout, :layout => false do
+          slim :an_inner_layout do
+            slim :a_page
+          end
+        end
+      end
+    end
+    get '/'
+    assert ok?
+    assert_body "<h1>Title</h1>\n<h2>Subtitle</h2>\n<p>Contents.</p>\n"
+  end
 end
 
 rescue LoadError
