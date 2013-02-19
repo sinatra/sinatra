@@ -18,258 +18,269 @@ describe Sinatra::Namespace do
 
   verbs.each do |verb|
     describe "HTTP #{verb.to_s.upcase}" do
-      describe 'pattern generation' do
-        it "adds routes including prefix to the base app" do
-          namespace("/foo") { send(verb, "/bar") { "baz" }}
-          send(verb, "/foo/bar").should be_ok
-          body.should == "baz" unless verb == :head
-          send(verb, "/foo/baz").should_not be_ok
+
+      it 'prefixes the path with the namespace' do
+        namespace('/foo') { send(verb, '/bar') { 'baz' }}
+        send(verb, '/foo/bar').should be_ok
+        body.should == 'baz' unless verb == :head
+        send(verb, '/foo/baz').should_not be_ok
+      end
+
+      context 'when namespace is a string' do
+        it 'accepts routes with no path' do
+          namespace('/foo') { send(verb) { 'bar' } }
+          send(verb, '/foo').should be_ok
+          body.should == 'bar' unless verb == :head
         end
 
-        it "allows adding routes with no path" do
-          namespace("/foo") { send(verb) { "bar" } }
-          send(verb, "/foo").should be_ok
-          body.should == "bar" unless verb == :head
-        end
-
-        it "allows using regular expressions" do
-          namespace("/foo") { send(verb, /\/\d\d/) { "bar" }}
-          send(verb, "/foo/12").should be_ok
-          body.should == "bar" unless verb == :head
-          send(verb, "/foo/123").should_not be_ok
-        end
-
-        it "allows using regular expressions for the prefix" do
-          namespace(/\/\d\d/) { send(verb, /\/\d\d/) { "foo" }}
-          send(verb, "/23/12").should be_ok
-          body.should == "foo" unless verb == :head
-          send(verb, "/123/12").should_not be_ok
-        end
-
-        it "sets params correctly from namespace" do
-          namespace("/:foo") { send(verb, "/bar") { params[:foo] }}
-          send(verb, "/foo/bar").should be_ok
-          body.should == "foo" unless verb == :head
-          send(verb, "/foo/baz").should_not be_ok
-          send(verb, "/fox/bar").should be_ok
-          body.should == "fox" unless verb == :head
-        end
-
-        it "sets params correctly from route" do
-          namespace("/foo") { send(verb, "/:bar") { params[:bar] }}
-          send(verb, "/foo/bar").should be_ok
-          body.should == "bar" unless verb == :head
-          send(verb, "/foo/baz").should be_ok
-          body.should == "baz" unless verb == :head
-        end
-
-        it "allows splats to be combined from namespace and route" do
-          namespace("/*") { send(verb, "/*") { params[:splat].join " - " }}
+        it 'accepts the path as a named parameter' do
+          namespace('/foo') { send(verb, '/:bar') { params[:bar] }}
           send(verb, '/foo/bar').should be_ok
-          body.should == "foo - bar" unless verb == :head
+          body.should == 'bar' unless verb == :head
+          send(verb, '/foo/baz').should be_ok
+          body.should == 'baz' unless verb == :head
         end
 
-        it "sets params correctly from namespace if simple regexp is used for route" do
-          namespace("/:foo") { send(verb, %r{/bar}) { params[:foo] }}
-          send(verb, "/foo/bar").should be_ok
-          body.should == "foo" unless verb == :head
-          send(verb, "/foo/baz").should_not be_ok
-          send(verb, "/fox/bar").should be_ok
-          body.should == "fox" unless verb == :head
+        it 'accepts the path as a regular expression' do
+          namespace('/foo') { send(verb, /\/\d\d/) { 'bar' }}
+          send(verb, '/foo/12').should be_ok
+          body.should == 'bar' unless verb == :head
+          send(verb, '/foo/123').should_not be_ok
+        end
+      end
+
+      context 'when namespace is a named parameter' do
+        it 'accepts routes with no path' do
+          namespace('/:foo') { send(verb) { 'bar' } }
+          send(verb, '/foo').should be_ok
+          body.should == 'bar' unless verb == :head
         end
 
-        it "sets params correctly from route if simple regexp is used for namespace" do
-          namespace(%r{/foo}) { send(verb, "/:bar") { params[:bar] }}
-          send(verb, "/foo/bar").should be_ok
-          body.should == "bar" unless verb == :head
-          send(verb, "/foo/baz").should be_ok
-          body.should == "baz" unless verb == :head
+        it 'sets the parameter correctly' do
+          namespace('/:foo') { send(verb, '/bar') { params[:foo] }}
+          send(verb, '/foo/bar').should be_ok
+          body.should == 'foo' unless verb == :head
+          send(verb, '/fox/bar').should be_ok
+          body.should == 'fox' unless verb == :head
+          send(verb, '/foo/baz').should_not be_ok
         end
 
-        it 'allows defining routes without a pattern' do
+        it 'accepts the path as a named parameter' do
+          namespace('/:foo') { send(verb, '/:bar') { params[:bar] }}
+          send(verb, '/foo/bar').should be_ok
+          body.should == 'bar' unless verb == :head
+          send(verb, '/foo/baz').should be_ok
+          body.should == 'baz' unless verb == :head
+        end
+
+        it 'accepts the path as regular expression' do
+          namespace('/:foo') { send(verb, %r{/bar}) { params[:foo] }}
+          send(verb, '/foo/bar').should be_ok
+          body.should == 'foo' unless verb == :head
+          send(verb, '/fox/bar').should be_ok
+          body.should == 'fox' unless verb == :head
+          send(verb, '/foo/baz').should_not be_ok
+        end
+      end
+
+      context 'when namespace is a regular expression' do
+        it 'accepts routes with no path' do
           namespace(%r{/foo}) { send(verb) { 'bar' } }
           send(verb, '/foo').should be_ok
           body.should == 'bar' unless verb == :head
         end
+
+        it 'accepts the path as a named parameter' do
+          namespace(%r{/foo}) { send(verb, '/:bar') { params[:bar] }}
+          send(verb, '/foo/bar').should be_ok
+          body.should == 'bar' unless verb == :head
+          send(verb, '/foo/baz').should be_ok
+          body.should == 'baz' unless verb == :head
+        end
+
+        it 'accepts the path as a regular expression' do
+          namespace(/\/\d\d/) { send(verb, /\/\d\d/) { 'foo' }}
+          send(verb, '/23/12').should be_ok
+          body.should == 'foo' unless verb == :head
+          send(verb, '/123/12').should_not be_ok
+        end
+      end
+
+      context 'when namespace is a splat' do
+        it 'accepts the path as a splat' do
+          namespace('/*') { send(verb, '/*') { params[:splat].join ' - ' }}
+          send(verb, '/foo/bar').should be_ok
+          body.should == 'foo - bar' unless verb == :head
+        end
+      end
+
+      describe 'before-filters' do
+        specify 'are triggered' do
+          ran = false
+          namespace('/foo') { before { ran = true }}
+          send(verb, '/foo')
+          ran.should be_true
+        end
+
+        specify 'are not triggered for a different namespace' do
+          ran = false
+          namespace('/foo') { before { ran = true }}
+          send(verb, '/fox')
+          ran.should be_false
+        end
+      end
+
+      describe 'after-filters' do
+        specify 'are triggered' do
+          ran = false
+          namespace('/foo') { after { ran = true }}
+          send(verb, '/foo')
+          ran.should be_true
+        end
+
+        specify 'are not triggered for a different namespace' do
+          ran = false
+          namespace('/foo') { after { ran = true }}
+          send(verb, '/fox')
+          ran.should be_false
+        end
       end
 
       describe 'conditions' do
-        it 'allows using conditions for namespaces' do
-          mock_app do
-            namespace(:host_name => 'example.com') { send(verb) { 'yes' }}
-            send(verb, '/') { 'no' }
+        context 'when the namespace has no prefix' do
+          specify 'are accepted in the namespace' do
+            mock_app do
+              namespace(:host_name => 'example.com') { send(verb) { 'yes' }}
+              send(verb, '/') { 'no' }
+            end
+            send(verb, '/', {}, 'HTTP_HOST' => 'example.com')
+            last_response.should be_ok
+            body.should == 'yes' unless verb == :head
+            send(verb, '/', {}, 'HTTP_HOST' => 'example.org')
+            last_response.should be_ok
+            body.should == 'no' unless verb == :head
           end
-          send(verb, '/', {}, 'HTTP_HOST' => 'example.com')
-          last_response.should be_ok
-          body.should == 'yes' unless verb == :head
-          send(verb, '/', {}, 'HTTP_HOST' => 'example.org')
-          last_response.should be_ok
-          body.should == 'no' unless verb == :head
-        end
 
-        it 'allows using conditions for before filters' do
-          namespace '/foo' do
-            before(:host_name => 'example.com') { @yes = "yes" }
-            send(verb) { @yes || "no" }
+          specify 'are accepted in the route definition' do
+            namespace :host_name => 'example.com' do
+              send(verb, '/foo', :provides => :txt) { 'ok' }
+            end
+            send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain').should be_ok
+            send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/html').should_not be_ok
+            send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org', 'HTTP_ACCEPT' => 'text/plain').should_not be_ok
           end
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com')
-          last_response.should be_ok
-          body.should == 'yes' unless verb == :head
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org')
-          last_response.should be_ok
-          body.should == 'no' unless verb == :head
-        end
 
-        it 'allows using conditions for after filters' do
-          ran = false
-          namespace '/foo' do
-            before(:host_name => 'example.com') { ran = true }
-            send(verb) { "ok" }
+          specify 'are accepted in the before-filter' do
+            ran = false
+            namespace :provides => :txt do
+              before('/foo', :host_name => 'example.com') { ran = true }
+              send(verb, '/*') { 'ok' }
+            end
+            send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org', 'HTTP_ACCEPT' => 'text/plain')
+            ran.should be_false
+            send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/html')
+            ran.should be_false
+            send(verb, '/bar', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
+            ran.should be_false
+            send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
+            ran.should be_true
           end
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org')
-          ran.should be_false
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com')
-          ran.should be_true
-        end
 
-        it 'allows using conditions for routes' do
-          namespace '/foo' do
-            send(verb, :host_name => 'example.com') { "ok" }
+          specify 'are accepted in the after-filter' do
+            ran = false
+            namespace :provides => :txt do
+              after('/foo', :host_name => 'example.com') { ran = true }
+              send(verb, '/*') { 'ok' }
+            end
+            send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org', 'HTTP_ACCEPT' => 'text/plain')
+            ran.should be_false
+            send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/html')
+            ran.should be_false
+            send(verb, '/bar', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
+            ran.should be_false
+            send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
+            ran.should be_true
           end
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com').should be_ok
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org').should_not be_ok
         end
 
-        it 'allows using conditions for before filters and the namespace' do
-          ran = false
-          namespace '/', :provides => :txt do
-            before(:host_name => 'example.com') { ran = true }
-            send(verb) { "ok" }
+        context 'when the namespace is a string' do
+          specify 'are accepted in the namespace' do
+            namespace '/foo', :host_name => 'example.com' do
+              send(verb) { 'ok' }
+            end
+            send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com').should be_ok
+            send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org').should_not be_ok
           end
-          send(verb, '/', {}, 'HTTP_HOST' => 'example.org', 'HTTP_ACCEPT' => 'text/plain')
-          ran.should be_false
-          send(verb, '/', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/html')
-          ran.should be_false
-          send(verb, '/', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
-          ran.should be_true
-        end
 
-        it 'allows using conditions for routes and the namespace' do
-          namespace '/foo', :host_name => 'example.com' do
-            send(verb, :provides => :txt) { "ok" }
+          specify 'are accepted in the before-filter' do
+            namespace '/foo' do
+              before(:host_name => 'example.com') { @yes = 'yes' }
+              send(verb) { @yes || 'no' }
+            end
+            send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com')
+            last_response.should be_ok
+            body.should == 'yes' unless verb == :head
+            send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org')
+            last_response.should be_ok
+            body.should == 'no' unless verb == :head
           end
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain').should be_ok
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/html').should_not be_ok
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org', 'HTTP_ACCEPT' => 'text/plain').should_not be_ok
-        end
 
-        it 'allows combining conditions with a prefix for namespaces' do
-          namespace '/', :host_name => 'example.com' do
-            send(verb) { "ok" }
+          specify 'are accepted in the after-filter' do
+            ran = false
+            namespace '/foo' do
+              before(:host_name => 'example.com') { ran = true }
+              send(verb) { 'ok' }
+            end
+            send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org')
+            ran.should be_false
+            send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com')
+            ran.should be_true
           end
-          send(verb, '/', {}, 'HTTP_HOST' => 'example.com').should be_ok
-          send(verb, '/', {}, 'HTTP_HOST' => 'example.org').should_not be_ok
-        end
 
-        it 'allows combining conditions with a prefix for before filters' do
-          ran = false
-          namespace :provides => :txt do
-            before('/foo', :host_name => 'example.com') { ran = true }
-            send(verb, '/*') { "ok" }
+          specify 'are accepted in the route definition' do
+            namespace '/foo' do
+              send(verb, :host_name => 'example.com') { 'ok' }
+            end
+            send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com').should be_ok
+            send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org').should_not be_ok
           end
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org', 'HTTP_ACCEPT' => 'text/plain')
-          ran.should be_false
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/html')
-          ran.should be_false
-          send(verb, '/bar', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
-          ran.should be_false
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
-          ran.should be_true
-        end
 
-        it 'allows combining conditions with a prefix for after filters' do
-          ran = false
-          namespace :provides => :txt do
-            after('/foo', :host_name => 'example.com') { ran = true }
-            send(verb, '/*') { "ok" }
+          context 'when the namespace has a condition' do
+            specify 'are accepted in the before-filter' do
+              ran = false
+              namespace '/', :provides => :txt do
+                before(:host_name => 'example.com') { ran = true }
+                send(verb) { 'ok' }
+              end
+              send(verb, '/', {}, 'HTTP_HOST' => 'example.org', 'HTTP_ACCEPT' => 'text/plain')
+              ran.should be_false
+              send(verb, '/', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/html')
+              ran.should be_false
+              send(verb, '/', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
+              ran.should be_true
+            end
+
+            specify 'are accepted in the filters' do
+              ran = false
+              namespace '/f', :provides => :txt do
+                before('oo', :host_name => 'example.com') { ran = true }
+                send(verb, '/*') { 'ok' }
+              end
+              send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org', 'HTTP_ACCEPT' => 'text/plain')
+              ran.should be_false
+              send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/html')
+              ran.should be_false
+              send(verb, '/far', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
+              ran.should be_false
+              send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
+              ran.should be_true
+            end
           end
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org', 'HTTP_ACCEPT' => 'text/plain')
-          ran.should be_false
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/html')
-          ran.should be_false
-          send(verb, '/bar', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
-          ran.should be_false
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
-          ran.should be_true
-        end
-
-        it 'allows combining conditions with a prefix for routes' do
-          namespace :host_name => 'example.com' do
-            send(verb, '/foo', :provides => :txt) { "ok" }
-          end
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain').should be_ok
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/html').should_not be_ok
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org', 'HTTP_ACCEPT' => 'text/plain').should_not be_ok
-        end
-
-        it 'allows combining conditions with a prefix for filters and the namespace' do
-          ran = false
-          namespace '/f', :provides => :txt do
-            before('oo', :host_name => 'example.com') { ran = true }
-            send(verb, '/*') { "ok" }
-          end
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org', 'HTTP_ACCEPT' => 'text/plain')
-          ran.should be_false
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/html')
-          ran.should be_false
-          send(verb, '/far', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
-          ran.should be_false
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
-          ran.should be_true
-        end
-
-        it 'allows combining conditions with a prefix for routes and the namespace' do
-          namespace '/f', :host_name => 'example.com' do
-            send(verb, 'oo', :provides => :txt) { "ok" }
-          end
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain').should be_ok
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/html').should_not be_ok
-          send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org', 'HTTP_ACCEPT' => 'text/plain').should_not be_ok
-        end
-      end
-
-      describe 'filters' do
-        it 'should trigger before filters for namespaces' do
-          ran = false
-          namespace('/foo') { before { ran = true }}
-          send(verb, '/foo')
-          ran.should be_true
-        end
-
-        it 'should trigger after filters for namespaces' do
-          ran = false
-          namespace('/foo') { after { ran = true }}
-          send(verb, '/foo')
-          ran.should be_true
-        end
-
-        it 'should not trigger before filter for different namespaces' do
-          ran = false
-          namespace('/foo') { before { ran = true }}
-          send(verb, '/fox')
-          ran.should be_false
-        end
-
-        it 'should not trigger after filter for different namespaces' do
-          ran = false
-          namespace('/foo') { after { ran = true }}
-          send(verb, '/fox')
-          ran.should be_false
         end
       end
 
       describe 'helpers' do
-        it "allows defining helpers with the helpers method" do
+        it 'are defined using the helpers method' do
           namespace '/foo' do
             helpers do
               def magic
@@ -286,7 +297,7 @@ describe Sinatra::Namespace do
           body.should == '42' unless verb == :head
         end
 
-        it "allows defining helpers without the helpers method" do
+        it 'can be defined as normal methods' do
           namespace '/foo' do
             def magic
               42
@@ -301,7 +312,7 @@ describe Sinatra::Namespace do
           body.should == '42' unless verb == :head
         end
 
-        it "allows using helper mixins with the helpers method" do
+        it 'can be defined using module mixins' do
           mixin = Module.new do
             def magic
               42
@@ -319,7 +330,7 @@ describe Sinatra::Namespace do
           body.should == '42' unless verb == :head
         end
 
-        it "makes helpers defined inside a namespace not available to routes outside that namespace" do
+        specify 'are unavailable outside the namespace where they are defined' do
           mock_app do
             namespace '/foo' do
               def magic
@@ -339,7 +350,7 @@ describe Sinatra::Namespace do
           proc { send verb, '/' }.should raise_error(NameError)
         end
 
-        it "makes helper mixins used inside a namespace not available to routes outside that namespace" do
+        specify 'are unavailable outside the namespace that they are mixed into' do
           mixin = Module.new do
             def magic
               42
@@ -362,7 +373,7 @@ describe Sinatra::Namespace do
           proc { send verb, '/' }.should raise_error(NameError)
         end
 
-        it "allows accessing helpers defined outside the namespace" do
+        specify 'are available to nested namespaces' do
           mock_app do
             helpers do
               def magic
@@ -381,7 +392,7 @@ describe Sinatra::Namespace do
           body.should == '42' unless verb == :head
         end
 
-        it "allows calling super in helpers overwritten inside a namespace" do
+        specify 'can call super from nested definitions' do
           mock_app do
             helpers do
               def magic
@@ -436,7 +447,7 @@ describe Sinatra::Namespace do
           body.should == '42' unless verb == :head
         end
 
-        it 'does not use helpers of nested namespaces outside that namespace' do
+        specify 'does not provide access to nested helper methods' do
           namespace '/foo' do
             namespace '/bar' do
               def magic
@@ -456,15 +467,15 @@ describe Sinatra::Namespace do
           proc { send verb, '/foo' }.should raise_error(NameError)
         end
 
-        it 'sets params correctly' do
+        it 'accepts a nested namespace as a named parameter' do
           namespace('/:a') { namespace('/:b') { send(verb) { params[:a] }}}
           send(verb, '/foo/bar').should be_ok
           body.should ==  'foo' unless verb == :head
         end
       end
 
-      describe 'error handlers' do
-        it "should allow custom error handlers with not found" do
+      describe 'error handling' do
+        it 'can be customized using the not_found block' do
           namespace('/de') do
             not_found { 'nicht gefunden' }
           end
@@ -476,7 +487,7 @@ describe Sinatra::Namespace do
           last_response.body.should        == 'nicht gefunden' unless verb == :head
         end
 
-        it "should allow custom error handlers with error" do
+        it 'can be customized for specific error codes' do
           namespace('/de') do
             error(404) { 'nicht gefunden' }
           end
@@ -488,15 +499,15 @@ describe Sinatra::Namespace do
           last_response.body.should        == 'nicht gefunden' unless verb == :head
         end
 
-        it "should handle custom errors in base. Issue #37." do
-          mock_app {
+        it 'falls back to the handler defined in the base app' do
+          mock_app do
             error(404) { 'not found...' }
             namespace('/en') do
             end
             namespace('/de') do
               error(404) { 'nicht gefunden' }
             end
-          }
+          end
           send(verb, '/foo').status.should == 404
           last_response.body.should        == 'not found...' unless verb == :head
           get('/en/foo').status.should     == 404
@@ -505,25 +516,33 @@ describe Sinatra::Namespace do
           last_response.body.should        == 'nicht gefunden' unless verb == :head
         end
 
-        it "should allow custom error handlers with Exception class. Issue #37." do
-          mock_app {
+        it 'can be customized for specific Exception classes' do
+          mock_app do
             class AError < StandardError; end
             class BError < AError; end
 
-            error(AError) { body('auth failed');  401}
+            error(AError) do
+              body('auth failed')
+              401
+            end
+
             namespace('/en') do
               get '/foo' do
                 raise BError
               end
             end
+
             namespace('/de') do
-              error(AError) { body('methode nicht erlaubt'); 406}
+              error(AError) do
+                body('methode nicht erlaubt')
+                406
+              end
 
               get '/foo' do
                 raise BError
               end
             end
-          }
+          end
           get('/en/foo').status.should     == 401
           last_response.body.should        == 'auth failed' unless verb == :head
           get('/de/foo').status.should     == 406
@@ -531,91 +550,83 @@ describe Sinatra::Namespace do
         end
       end
 
-      describe 'templates' do
-        it "allows using templates from the base" do
-          mock_app do
-            template(:foo) { 'hi' }
-            send(verb, '/') { erb :foo }
-            namespace '/foo' do
-              send(verb) { erb :foo }
+      unless verb == :head
+        describe 'templates' do
+          specify 'default to the base app\'s template' do
+            mock_app do
+              template(:foo) { 'hi' }
+              send(verb, '/') { erb :foo }
+              namespace '/foo' do
+                send(verb) { erb :foo }
+              end
             end
+
+            send(verb, '/').body.should == 'hi'
+            send(verb, '/foo').body.should == 'hi'
           end
 
-          if verb != :head
-            send(verb, '/').body.should == "hi"
-            send(verb, '/foo').body.should == "hi"
-          end
-        end
-
-        it "allows to define nested templates" do
-          mock_app do
-            template(:foo) { 'hi' }
-            send(verb, '/') { erb :foo }
-            namespace '/foo' do
-              template(:foo) { 'ho' }
-              send(verb) { erb :foo }
+          specify 'can be nested' do
+            mock_app do
+              template(:foo) { 'hi' }
+              send(verb, '/') { erb :foo }
+              namespace '/foo' do
+                template(:foo) { 'ho' }
+                send(verb) { erb :foo }
+              end
             end
+
+            send(verb, '/').body.should == 'hi'
+            send(verb, '/foo').body.should == 'ho'
           end
 
-          if verb != :head
-            send(verb, '/').body.should == "hi"
-            send(verb, '/foo').body.should == "ho"
-          end
-        end
-
-        it "allows to define nested layouts" do
-          mock_app do
-            layout { 'Hello <%= yield %>!' }
-            template(:foo) { 'World' }
-            send(verb, '/') { erb :foo }
-            namespace '/foo' do
-              layout { 'Hi <%= yield %>!' }
-              send(verb) { erb :foo }
+          specify 'can use a custom views directory' do
+            mock_app do
+              set :views, File.expand_path('../namespace', __FILE__)
+              send(verb, '/') { erb :foo }
+              namespace('/foo') do
+                set :views, File.expand_path('../namespace/nested', __FILE__)
+                send(verb) { erb :foo }
+              end
             end
-          end
 
-          if verb != :head
-            send(verb, '/').body.should == "Hello World!"
-            send(verb, '/foo').body.should == "Hi World!"
-          end
-        end
-
-        it "allows using templates from the base" do
-          mock_app do
-            layout { "he said: <%= yield %>" }
-            template(:foo) { 'hi' }
-            send(verb, '/') { erb :foo }
-            namespace '/foo' do
-              template(:foo) { 'ho' }
-              send(verb) { erb :foo }
-            end
-          end
-
-          if verb != :head
-            send(verb, '/').body.should == "he said: hi"
-            send(verb, '/foo').body.should == "he said: ho"
-          end
-        end
-
-        it "allows setting a different views directory" do
-          mock_app do
-            set :views, File.expand_path('../namespace', __FILE__)
-            send(verb, '/') { erb :foo }
-            namespace('/foo') do
-              set :views, File.expand_path('../namespace/nested', __FILE__)
-              send(verb) { erb :foo }
-            end
-          end
-
-          if verb != :head
             send(verb, '/').body.should == "hi\n"
             send(verb, '/foo').body.should == "ho\n"
+          end
+
+          specify 'default to the base app\'s layout' do
+            mock_app do
+              layout { 'he said: <%= yield %>' }
+              template(:foo) { 'hi' }
+              send(verb, '/') { erb :foo }
+              namespace '/foo' do
+                template(:foo) { 'ho' }
+                send(verb) { erb :foo }
+              end
+            end
+
+            send(verb, '/').body.should == 'he said: hi'
+            send(verb, '/foo').body.should == 'he said: ho'
+          end
+
+          specify 'can define nested layouts' do
+            mock_app do
+              layout { 'Hello <%= yield %>!' }
+              template(:foo) { 'World' }
+              send(verb, '/') { erb :foo }
+              namespace '/foo' do
+                layout { 'Hi <%= yield %>!' }
+                send(verb) { erb :foo }
+              end
+            end
+
+            send(verb, '/').body.should == 'Hello World!'
+            send(verb, '/foo').body.should == 'Hi World!'
           end
         end
       end
 
       describe 'extensions' do
-        it 'allows read access to settings' do
+        specify 'provide read access to settings' do
           value = nil
           mock_app do
             set :foo, 42
@@ -626,9 +637,9 @@ describe Sinatra::Namespace do
           value.should == 42
         end
 
-        it 'allows registering extensions for a namespace only' do
+        specify 'can be registered within a namespace' do
           a = b = nil
-          extension = Module.new { define_method(:views) { "CUSTOM!!!" } }
+          extension = Module.new { define_method(:views) { 'CUSTOM!!!' } }
           mock_app do
             namespace '/' do
               register extension
@@ -640,7 +651,7 @@ describe Sinatra::Namespace do
           b.should_not == 'CUSTOM!!!'
         end
 
-        it 'triggers route_added hook' do
+        specify 'trigger the route_added hook' do
           route = nil
           extension = Module.new
           extension.singleton_class.class_eval do
@@ -656,7 +667,7 @@ describe Sinatra::Namespace do
           route[1].should == '/foo'
         end
 
-        it 'prevents changing app global settings' do
+        specify 'prevent app-global settings from being changed' do
           proc { namespace('/') { set :foo, :bar }}.should raise_error
         end
       end
