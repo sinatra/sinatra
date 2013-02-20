@@ -90,44 +90,39 @@ module Sinatra
   module JSON
     class << self
       def encode(object)
-        enc object, Array, Hash
-      end
-
-      private
-
-      def enc(o, *a)
-        o = o.to_s if o.is_a? Symbol
-        fail "invalid: #{o.inspect}" unless a.empty? or a.include? o.class
-        case o
-        when Float  then o.nan? || o.infinite? ? 'null' : o.inspect
-        when TrueClass, FalseClass, Numeric, String then o.inspect
-        when NilClass then 'null'
-        when Array  then map(o, "[%s]") { |e| enc(e) }
-        when Hash   then map(o, "{%s}") { |k,v| enc(k, String) + ":" + enc(v) }
-        end
-      end
-
-      def map(o, wrapper, &block)
-        wrapper % o.map(&block).join(',')
+        ::MultiJson.dump(object)
       end
     end
 
     def json(object, options = {})
-      encoder = options[:encoder] || settings.json_encoder
-      content_type options[:content_type] || settings.json_content_type
-      if encoder.respond_to? :encode then encoder.encode(object)
-      elsif encoder.respond_to? :generate then encoder.generate(object)
-      elsif encoder.is_a? Symbol then object.__send__(encoder)
-      else fail "#{encoder} does not respond to #generate nor #encode"
-      end
+      content_type resolve_content_type(options)
+      resolve_encoder_action  object, resolve_encoder(options)
     end
-  end
+
+    private
+
+    def resolve_content_type(options = {})
+      options[:content_type] || settings.json_content_type
+    end
+
+    def resolve_encoder(options = {})
+      options[:json_encoder] || settings.json_encoder
+    end
+
+    def resolve_encoder_action(object, encoder)
+      [:encode, :generate].each do |method|
+        return encoder.send(method, object) if encoder.respond_to? method
+      end
+      if encoder.is_a? Symbol
+        object.__send__(encoder)
+      else 
+        fail "#{encoder} does not respond to #generate nor #encode"
+      end #if
+    end #resolve_encoder_action  
+  end #JSON
 
   Base.set :json_encoder do
-    return Yajl::Encoder if defined? Yajl::Encoder
-    return ::JSON if defined? ::JSON
-    return :to_json if {}.respond_to? :to_json and [].respond_to? :to_json
-    Sinatra::JSON
+    ::MultiJson
   end
 
   Base.set :json_content_type, :json
