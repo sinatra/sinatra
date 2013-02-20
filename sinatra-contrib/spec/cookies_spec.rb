@@ -124,13 +124,6 @@ describe Sinatra::Cookies do
       cookie_jar['foo'].should be == 'bar'
     end
 
-    it 'sets a cookie with extra options' do
-      cookie_route do
-        cookies['foo', :path => '/baz'] = 'bar'
-        response['Set-Cookie'].lines.detect { |l| l.start_with? 'foo=' }
-      end.should include('path=/baz')
-    end
-
     it 'adds a value to the cookies hash' do
       cookie_route do
         cookies['foo'] = 'bar'
