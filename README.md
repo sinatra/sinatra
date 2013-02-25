@@ -401,6 +401,16 @@ Available Options:
   </dd>
 </dl>
 
+#### Embedded Templates
+
+```ruby
+    get '/' do
+      haml '%div.title Hello World'
+    end
+```
+
+Renders the embedded template string.
+
 ### Available Template Languages
 
 Some languages have multiple implementations. To specify what implementation
@@ -863,16 +873,6 @@ The `:callback` and `:variable` options can be used to decorate the rendered obj
 
 Since calling ruby methods is not idiomatic in wlang, you almost always want to pass locals
 to it. Layouts written in wlang and `yield` are supported, though.
-
-#### Embedded Templates
-
-```ruby
-    get '/' do
-      haml '%div.title Hello World'
-    end
-```
-
-Renders the embedded template string.
 
 ### Accessing Variables in Templates
 
