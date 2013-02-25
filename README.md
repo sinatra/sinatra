@@ -401,7 +401,7 @@ Available Options:
   </dd>
 </dl>
 
-#### Embedded Templates
+#### Literal Templates
 
 ```ruby
     get '/' do
@@ -409,7 +409,7 @@ Available Options:
     end
 ```
 
-Renders the embedded template string.
+Renders the template string.
 
 ### Available Template Languages
 
