@@ -63,7 +63,7 @@ end
 
 if RUBY_ENGINE != 'jruby' or not ENV['TRAVIS']
   # C extensions
-  gem 'rdiscount'
+  gem 'rdiscount' if RUBY_VERSION != '1.9.2'
   platforms(:ruby_18) do
     gem 'redcarpet'
     gem 'mongrel'
