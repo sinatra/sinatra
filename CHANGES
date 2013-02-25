@@ -1,4 +1,10 @@
-= 1.3.4 / 2012-01-26
+= 1.3.5 / 2013-02-25
+
+ * Fix for RubyGems 2.0 (Uchio KONDO)
+
+ * Improve documentation (Konstantin Haase)
+
+= 1.3.4 / 2013-01-26
 
  * Improve documentation. (Kashyap, Stanislav Chistenko, Konstantin Haase,
    ymmtmsys, Anurag Priyam)
