@@ -41,6 +41,23 @@
  * When port is not set explicitly, use $PORT env variable if set and only
    default to 4567 if not. Plays nice with foreman. (Konstantin Haase)
 
+= 1.3.4 / 2012-01-26
+
+ * Improve documentation. (Kashyap, Stanislav Chistenko, Konstantin Haase,
+   ymmtmsys, Anurag Priyam)
+
+ * Adjustments to template system to work with Tilt edge. (Konstantin Haase)
+
+ * Fix streaming with latest Rack release. (Konstantin Haase)
+
+ * Fix default content type for Sinatra::Response with latest Rack release.
+   (Konstantin Haase)
+
+ * Fix regression where + was no longer treated like space. (Ross Boucher)
+
+* Status, headers and body will be set correctly in an after filter when using
+  halt in a before filter or route. (Konstantin Haase)
+
 = 1.3.3 / 2012-08-19
 
  * Improved documentation. (burningTyger, Konstantin Haase, Gabriel Andretta,
@@ -67,6 +84,9 @@
 
  * When protecting against CSRF attacks, drop the session instead of refusing
    the request. (Konstantin Haase)
+
+ * Status, headers and body will be set correctly in an after filter when using
+   halt in a before filter or route. (Konstantin Haase)
 
 = 1.3.2 / 2011-12-30
 
