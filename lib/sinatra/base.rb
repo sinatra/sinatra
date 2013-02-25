@@ -1628,14 +1628,14 @@ module Sinatra
 
     public
       CALLERS_TO_IGNORE = [ # :nodoc:
-        /\/sinatra(\/(base|main|showexceptions))?\.rb$/, # all sinatra code
-        /lib\/tilt.*\.rb$/,                              # all tilt code
-        /^\(.*\)$/,                                      # generated code
-        /rubygems\/custom_require\.rb$/,                 # rubygems require hacks
-        /active_support/,                                # active_support require hacks
-        /bundler(\/runtime)?\.rb/,                       # bundler require hacks
-        /<internal:/,                                    # internal in ruby >= 1.9.2
-        /src\/kernel\/bootstrap\/[A-Z]/                  # maglev kernel files
+        /\/sinatra(\/(base|main|showexceptions))?\.rb$/,    # all sinatra code
+        /lib\/tilt.*\.rb$/,                                 # all tilt code
+        /^\(.*\)$/,                                         # generated code
+        /rubygems\/(custom|core_ext\/kernel)_require\.rb$/, # rubygems require hacks
+        /active_support/,                                   # active_support require hacks
+        /bundler(\/runtime)?\.rb/,                          # bundler require hacks
+        /<internal:/,                                       # internal in ruby >= 1.9.2
+        /src\/kernel\/bootstrap\/[A-Z]/                     # maglev kernel files
       ]
 
       # contrary to what the comment said previously, rubinius never supported this
