@@ -898,6 +898,43 @@ Or, specify an explicit Hash of local variables:
 This is typically used when rendering templates as partials from within
 other templates.
 
+### Templates with `yield` and nested layouts
+
+A layout is usually just a template that calls `yield`.
+Such a template can by used either through the `:template` option as
+described above, or it can be rendered with a block as follows:
+
+```ruby
+    erb :post, :layout => false do
+      erb :index
+    end
+```
+
+This code is mostly equivalent to `erb :index, :layout => :post`.
+
+Passing blocks to rendering methods is most useful for creating nested
+layouts:
+
+```ruby
+    erb :main_layout, :layout => false do
+      erb :admin_layout do
+        erb :user
+      end
+    end
+```
+
+This can also be done in fewer lines of code with:
+
+```ruby
+    erb :admin_layout, :layout => :main_layout do
+      erb :user
+    end
+```
+
+Currently the following rendering method accept a block: `erb`, `haml`,
+`liquid`, `slim `, `wlang`.
+Also the general `render` method accepts a block.
+
 ### Inline Templates
 
 Templates may be defined at the end of the source file:
