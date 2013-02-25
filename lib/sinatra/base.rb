@@ -612,7 +612,7 @@ module Sinatra
   #
   # Possible options are:
   #   :content_type   The content type to use, same arguments as content_type.
-  #   :layout         If set to false, no layout is rendered, otherwise
+  #   :layout         If set to something falsy, no layout is rendered, otherwise
   #                   the specified layout is used (Ignored for `sass` and `less`)
   #   :layout_engine  Engine to use for rendering the layout.
   #   :locals         A hash with local variables that should be available
@@ -746,13 +746,15 @@ module Sinatra
       # extract generic options
       locals          = options.delete(:locals) || locals         || {}
       views           = options.delete(:views)  || settings.views || "./views"
-      layout          = options.delete(:layout)
+      layout          = options[:layout]
+      layout          = false if layout.nil? && options.include?(:layout)
       eat_errors      = layout.nil?
       layout          = engine_options[:layout] if layout.nil? or layout == true
       layout          = @default_layout         if layout.nil? or layout == true
       content_type    = options.delete(:content_type)  || options.delete(:default_content_type)
       layout_engine   = options.delete(:layout_engine) || engine
       scope           = options.delete(:scope)         || self
+      options.delete(:layout)
 
       # set some defaults
       options[:outvar]           ||= '@_out_buf'
