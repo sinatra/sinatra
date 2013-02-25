@@ -16,11 +16,14 @@ module Sinatra
   # The request object. See Rack::Request for more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
   class Request < Rack::Request
+    HEADER_PARAM = /\s*[\w.]+=(?:[\w.]+|"(?:[^"\\]|\\.)*")?\s*/
+    HEADER_VALUE_WITH_PARAMS = /(?:(?:\w+|\*)\/(?:\w+|\*))\s*(?:;#{HEADER_PARAM})*/
+
     # Returns an array of acceptable media types for the response
     def accept
       @env['sinatra.accept'] ||= begin
-        entries = @env['HTTP_ACCEPT'].to_s.split(',')
-        entries.map { |e| accept_entry(e) }.sort_by(&:last).map(&:first)
+        entries = @env['HTTP_ACCEPT'].to_s.scan(HEADER_VALUE_WITH_PARAMS)
+        entries.map { |e| AcceptEntry.new(e) }.sort
       end
     end
 
@@ -50,11 +53,37 @@ module Sinatra
 
     private
 
-    def accept_entry(entry)
-      type, *options = entry.delete(' ').split(';')
-      quality = 0 # we sort smallest first
-      options.delete_if { |e| quality = 1 - e[2..-1].to_f if e.start_with? 'q=' }
-      [type, [quality, type.count('*'), 1 - options.size]]
+    class AcceptEntry
+      attr_accessor :params
+
+      def initialize(entry)
+        params = entry.scan(HEADER_PARAM).map do |s|
+          key, value = s.strip.split('=', 2)
+          value = value[1..-2].gsub(/\\(.)/, '\1') if value.start_with?('"')
+          [key, value]
+        end
+
+        @type = entry[/[^;]+/].delete(' ')
+        @params = Hash[params]
+        @q = @params.delete('q') { "1.0" }.to_f
+      end
+
+      def <=>(other)
+        other.priority <=> self.priority
+      end
+
+      def priority
+        # We sort in descending order; better matches should be higher.
+        [ @q, -@type.count('*'), @params.size ]
+      end
+
+      def [](param)
+        @params[param]
+      end
+
+      def to_str
+        @type
+      end
     end
   end
 
@@ -270,7 +299,10 @@ module Sinatra
       params.delete :charset if mime_type.include? 'charset'
       unless params.empty?
         mime_type << (mime_type.include?(';') ? ', ' : ';')
-        mime_type << params.map { |kv| kv.join('=') }.join(', ')
+        mime_type << params.map do |key, val|
+          val = val.inspect if val =~ /[";,]/
+          "#{key}=#{val}"
+        end.join(', ')
       end
       response['Content-Type'] = mime_type
     end
@@ -1285,7 +1317,8 @@ module Sinatra
           if type = response['Content-Type']
             types.include? type or types.include? type[/^[^;]+/]
           elsif type = request.preferred_type(types)
-            content_type(type)
+            params = (type.respond_to?(:params) ? type.params : {})
+            content_type(type, params)
             true
           else
             false
