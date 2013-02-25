@@ -779,7 +779,7 @@ class RoutingTest < Test::Unit::TestCase
       get('*', :provides => :html) { 'html' }
     end
 
-    get '/', {}, { 'HTTP_ACCEPT' => '*' }
+    get '/', {}, { 'HTTP_ACCEPT' => '*/*' }
     assert ok?
     assert_equal 'text/plain;charset=utf-8', response.headers['Content-Type']
     assert_body 'txt'
@@ -826,7 +826,7 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 'default', body
   end
 
-  it 'respects user agent prefferences for the content type' do
+  it 'respects user agent preferences for the content type' do
     mock_app { get('/', :provides => [:png, :html]) { content_type }}
     get '/', {}, { 'HTTP_ACCEPT' => 'image/png;q=0.5,text/html;q=0.8' }
     assert_body 'text/html;charset=utf-8'
@@ -879,6 +879,55 @@ class RoutingTest < Test::Unit::TestCase
     assert_body 'image/png'
     get '/', {}, { 'HTTP_ACCEPT' => 'image/png;q=0.5, text/*;q=0.7' }
     assert_body 'text/html;charset=utf-8'
+  end
+
+  it 'supplies a default quality of 1.0' do
+    mock_app { get('/', :provides => [:png, :html]) { content_type }}
+    get '/', {}, { 'HTTP_ACCEPT' => 'image/png;q=0.5, text/*' }
+    assert_body 'text/html;charset=utf-8'
+  end
+
+  it 'orders types with equal quality by parameter count' do
+    mock_app do
+      get('/', :provides => [:png, :jpg]) { content_type }
+    end
+
+    lo_png = 'image/png;q=0.5'
+    hi_png = 'image/png;q=0.5;profile=FOGRA40;gamma=0.8'
+    jpeg   = 'image/jpeg;q=0.5;compress=0.25'
+
+    get '/', {}, { 'HTTP_ACCEPT' => "#{lo_png}, #{jpeg}" }
+    assert_body 'image/jpeg'
+    get '/', {}, { 'HTTP_ACCEPT' => "#{hi_png}, #{jpeg}" }
+    assert_body 'image/png'
+  end
+
+  it 'ignores the quality parameter when ordering by parameter count' do
+    mock_app do
+      get('/', :provides => [:png, :jpg]) { content_type }
+    end
+
+    lo_png = 'image/png'
+    hi_png = 'image/png;profile=FOGRA40;gamma=0.8'
+    jpeg   = 'image/jpeg;q=1.0;compress=0.25'
+
+    get '/', {}, { 'HTTP_ACCEPT' => "#{jpeg}, #{lo_png}" }
+    assert_body 'image/jpeg'
+    get '/', {}, { 'HTTP_ACCEPT' => "#{jpeg}, #{hi_png}" }
+    assert_body 'image/png'
+  end
+
+  it 'properly handles quoted strings in parameters' do
+    mock_app do
+      get('/', :provides => [:png, :jpg]) { content_type }
+    end
+
+    get '/', {}, { 'HTTP_ACCEPT' => 'image/png;q=0.5;profile=",image/jpeg,"' }
+    assert_body 'image/png'
+    get '/', {}, { 'HTTP_ACCEPT' => 'image/png;q=0.5,image/jpeg;q=0;x=";q=1.0"' }
+    assert_body 'image/png'
+    get '/', {}, { 'HTTP_ACCEPT' => 'image/png;q=0.5,image/jpeg;q=0;x="\";q=1.0"' }
+    assert_body 'image/png'
   end
 
   it 'accepts both text/javascript and application/javascript for js' do
