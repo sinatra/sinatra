@@ -805,7 +805,7 @@ template than for the layout by passing the `:layout_engine` option.
     <td>
       <a href="https://github.com/josh/ruby-coffee-script" title="Ruby CoffeeScript">
         CoffeeScript
-      </a> and a 
+      </a> and a
       <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
         way to execute javascript
       </a>
@@ -836,9 +836,9 @@ template than for the layout by passing the `:layout_engine` option.
     <td>Example</td>
     <td>
       <tt>
-        yajl :index, 
-             :locals => { :key => 'qux' }, 
-             :callback => 'present', 
+        yajl :index,
+             :locals => { :key => 'qux' },
+             :callback => 'present',
              :variable => 'resource'
       </tt>
     </td>
@@ -846,7 +846,7 @@ template than for the layout by passing the `:layout_engine` option.
 </table>
 
 
-The template source is evaluated as a Ruby string, and the 
+The template source is evaluated as a Ruby string, and the
 resulting json variable is converted using `#to_json`.
 
 ```ruby
@@ -1859,12 +1859,12 @@ that case you can get it to set up session based protections by passing the `:se
 <dl>
   <dt>absolute_redirects</dt>
   <dd>
-    If disabled, Sinatra will allow relative redirects, however, Sinatra will no 
+    If disabled, Sinatra will allow relative redirects, however, Sinatra will no
     longer conform with RFC 2616 (HTTP 1.1), which only allows absolute redirects.
   </dd>
   <dd>
-    Enable if your app is running behind a reverse proxy that has not been set up 
-    properly. Note that the <tt>url</tt> helper will still produce absolute URLs, unless you 
+    Enable if your app is running behind a reverse proxy that has not been set up
+    properly. Note that the <tt>url</tt> helper will still produce absolute URLs, unless you
     pass in <tt>false</tt> as the second parameter.
   </dd>
   <dd>Disabled per default.</dd>
@@ -1878,7 +1878,7 @@ that case you can get it to set up session based protections by passing the `:se
 
   <dt>app_file</dt>
   <dd>
-    Path to the main application file, used to detect project root, views and public 
+    Path to the main application file, used to detect project root, views and public
     folder and inline templates.
   </dd>
 
@@ -1893,7 +1893,7 @@ that case you can get it to set up session based protections by passing the `:se
 
   <dt>environment</dt>
   <dd>
-    current environment, defaults to <tt>ENV['RACK_ENV']</tt>, or <tt>"development"</tt> if 
+    current environment, defaults to <tt>ENV['RACK_ENV']</tt>, or <tt>"development"</tt> if
     not available.
   </dd>
 
@@ -1902,14 +1902,14 @@ that case you can get it to set up session based protections by passing the `:se
 
   <dt>lock</dt>
   <dd>
-    Places a lock around every request, only running processing on request 
+    Places a lock around every request, only running processing on request
     per Ruby process concurrently.
   </dd>
   <dd>Enabled if your app is not thread-safe. Disabled per default.</dd>
 
   <dt>method_override</dt>
   <dd>
-    use <tt>_method</tt> magic to allow put/delete forms in browsers that 
+    use <tt>_method</tt> magic to allow put/delete forms in browsers that
     don't support it.
   </dd>
 
@@ -1918,7 +1918,7 @@ that case you can get it to set up session based protections by passing the `:se
 
   <dt>prefixed_redirects</dt>
   <dd>
-    Whether or not to insert <tt>request.script_name</tt> into redirects if no 
+    Whether or not to insert <tt>request.script_name</tt> into redirects if no
     absolute path is given. That way <tt>redirect '/foo'</tt> would behave like
     <tt>redirect to('/foo')</tt>. Disabled per default.
   </dd>
@@ -1931,8 +1931,8 @@ that case you can get it to set up session based protections by passing the `:se
 
   <dt>public_folder</dt>
   <dd>
-    Path to the folder public files are served from. Only used if static 
-    file serving is enabled (see <tt>static</tt> setting below). Inferred from 
+    Path to the folder public files are served from. Only used if static
+    file serving is enabled (see <tt>static</tt> setting below). Inferred from
     <tt>app_file</tt> setting if not set.
   </dd>
 
@@ -1948,13 +1948,13 @@ that case you can get it to set up session based protections by passing the `:se
 
   <dt>raise_errors</dt>
   <dd>
-    raise exceptions (will stop application). Enabled by default when 
+    raise exceptions (will stop application). Enabled by default when
     <tt>environment</tt> is set to <tt>"test"</tt>, disabled otherwise.
   </dd>
 
   <dt>run</dt>
   <dd>
-    if enabled, Sinatra will handle starting the web server, do not 
+    if enabled, Sinatra will handle starting the web server, do not
     enable if using rackup or other means.
   </dd>
 
@@ -1963,7 +1963,7 @@ that case you can get it to set up session based protections by passing the `:se
 
   <dt>server</dt>
   <dd>
-    server or list of servers to use for built-in server. defaults to 
+    server or list of servers to use for built-in server. defaults to
     ['thin', 'mongrel', 'webrick'], order indicates priority.
   </dd>
 
@@ -2007,13 +2007,13 @@ that case you can get it to set up session based protections by passing the `:se
 
   <dt>threaded</dt>
   <dd>
-    If set to <tt>true</tt>, will tell Thin to use <tt>EventMachine.defer</tt> 
+    If set to <tt>true</tt>, will tell Thin to use <tt>EventMachine.defer</tt>
     for processing the request.
   </dd>
 
   <dt>views</dt>
   <dd>
-    Path to the views folder. Inferred from <tt>app_file</tt> setting if 
+    Path to the views folder. Inferred from <tt>app_file</tt> setting if
     not set.
   </dd>
 
@@ -2030,7 +2030,7 @@ There are three predefined `environments`: `"development"`,
 `"production"` and `"test"`. Environments can be set
 through the `RACK_ENV` environment variable. The default value is
 `"development"`. In the `"development"` environment all templates are reloaded between
-requests, and special `not_found` and `error` handlers 
+requests, and special `not_found` and `error` handlers
 display stack traces in your browser.
 In the `"production"` and `"test"` environments, templates are cached by default.
 
@@ -2198,7 +2198,7 @@ is recommended:
     end
 ```
 
-Note: If you are using Sinatra in the modular style, replace `Sinatra::Application` 
+Note: If you are using Sinatra in the modular style, replace `Sinatra::Application`
 above with the class name of your app.
 
 ## Sinatra::Base - Middleware, Libraries, and Modular Apps
