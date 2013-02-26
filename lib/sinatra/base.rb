@@ -849,7 +849,7 @@ module Sinatra
 
       @response['Content-Type'] = nil
       invoke { dispatch! }
-      invoke { error_block!(response.status) }
+      invoke { error_block!(response.status) } unless @env['sinatra.error']
 
       unless @response['Content-Type']
         if Array === body and body[0].respond_to? :content_type
