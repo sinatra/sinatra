@@ -106,6 +106,7 @@ Routen mit regulären Ausdrücken sind auch möglich:
     get %r{/hallo/([\w]+)} do
       "Hallo, #{params[:captures].first}!"
     end
+```
 
 Und auch hier können Block-Parameter genutzt werden:
 
