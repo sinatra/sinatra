@@ -1845,6 +1845,15 @@ You can also hand in an array in order to disable a list of protections:
     set :protection, :except => [:path_traversal, :session_hijacking]
 ```
 
+By default, Sinatra will only set up session based protection if `:sessions`
+has been enabled. Sometimes you want to set up sessions on your own, though. In
+that case you can get it to set up session based protections by passing the `:session` option:
+
+```ruby
+    use Rack::Session::Pool
+    set :protection, :session => true
+```
+
 ### Available Settings
 
 <dl>

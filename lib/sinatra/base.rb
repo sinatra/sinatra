@@ -1590,8 +1590,9 @@ module Sinatra
       def setup_protection(builder)
         return unless protection?
         options = Hash === protection ? protection.dup : {}
+        protect_session  = options.fetch(:session) { sessions? }
         options[:except] = Array options[:except]
-        options[:except] += [:session_hijacking, :remote_token] unless sessions?
+        options[:except] += [:session_hijacking, :remote_token] unless protect_session
         options[:reaction] ||= :drop_session
         builder.use Rack::Protection, options
       end
