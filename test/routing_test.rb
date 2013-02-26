@@ -359,6 +359,17 @@ class RoutingTest < Test::Unit::TestCase
     assert not_found?
   end
 
+  it "does not convert plus sign into space as the value of a named param" do
+    mock_app do
+      get '/:test' do
+        params["test"]
+      end
+    end
+    get '/bob+ross'
+    assert ok?
+    assert_equal 'bob+ross', body
+  end
+
   it "literally matches parens in paths" do
     route_def '/test(bar)/'
 
