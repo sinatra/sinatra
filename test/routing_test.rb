@@ -100,6 +100,19 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal "<h1>Not Found</h1>", response.body
   end
 
+  it "recalculates body length correctly for 404 response" do
+    mock_app {
+      get '/' do
+        @response["Content-Length"] = "30"
+        raise Sinatra::NotFound
+      end
+    }
+
+    get "/"
+    assert_equal "18", response["Content-Length"]
+    assert_equal 404, status
+  end
+
   it 'matches empty PATH_INFO to "/" if no route is defined for ""' do
     mock_app do
       get '/' do
