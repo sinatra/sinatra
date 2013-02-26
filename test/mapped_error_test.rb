@@ -281,25 +281,5 @@ class MappedErrorTest < Test::Unit::TestCase
       assert_equal 507, status
       assert_equal 'Error: 507', body
     end
-
-    class FooError < RuntimeError
-    end
-
-    it 'runs after exception mappings and overwrites body' do
-      mock_app do
-        set :raise_errors, false
-        error FooError do
-          response.status = 502
-          'from exception mapping'
-        end
-        error(500) { 'from 500 handler' }
-        error(502) { 'from custom error page' }
-
-        get('/') { raise FooError }
-      end
-      get '/'
-      assert_equal 502, status
-      assert_equal 'from custom error page', body
-    end
   end
 end

@@ -280,6 +280,72 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal 'FAIL', body
     end
 
+    it 'should not invoke error handler when setting status inside an error handler' do
+      mock_app do
+        disable :raise_errors
+        not_found do
+          body "not_found handler"
+          status 404
+        end
+
+        error do
+          body "error handler"
+          status 404
+        end
+
+        get '/' do
+          raise
+        end
+      end
+
+      get '/'
+      assert_equal 404, status
+      assert_equal 'error handler', body
+    end
+
+    it 'should not invoke error handler when halting with 500 inside an error handler' do
+      mock_app do
+        disable :raise_errors
+        not_found do
+          body "not_found handler"
+          halt 404
+        end
+
+        error do
+          body "error handler"
+          halt 404
+        end
+
+        get '/' do
+          raise
+        end
+      end
+
+      get '/'
+      assert_equal 404, status
+      assert_equal 'error handler', body
+    end
+
+    it 'should not invoke not_found handler when halting with 404 inside a not found handler' do
+      mock_app do
+        disable :raise_errors
+
+        not_found do
+          body "not_found handler"
+          halt 500
+        end
+
+        error do
+          body "error handler"
+          halt 500
+        end
+      end
+
+      get '/'
+      assert_equal 500, status
+      assert_equal 'not_found handler', body
+    end
+
     it 'uses a 500 status code when first argument is a body' do
       mock_app do
         get('/') do

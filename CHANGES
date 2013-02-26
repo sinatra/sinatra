@@ -67,6 +67,9 @@
 
  * Default to only serving localhost in development mode. (Postmodern)
 
+ * Setting status code to 404 in error handler no longer triggers not_found
+   handler. (Konstantin Haase)
+
  * Improve documentation. (Kashyap, Stanislav Chistenko, Zachary Scott, 
    Anthony Accomazzo, Peter Suschlik, Rachel Mehl, ymmtmsys, Anurag Priyam,
    burningTyger, Tony Miller, akicho8, Vasily Polovnyov, Markus Prinz,
