@@ -70,6 +70,17 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 'pass', response.headers['X-Cascade']
   end
 
+  it "404s and does not set X-Cascade header when no route satisfies the request and x_cascade has been disabled" do
+    mock_app {
+      disable :x_cascade
+      get('/foo') { }
+    }
+    get '/bar'
+    assert_equal 404, status
+    assert_equal nil, response.headers['X-Cascade']
+  end
+
+
   it "allows using unicode" do
     mock_app do
       get('/föö') { }

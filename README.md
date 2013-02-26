@@ -2016,6 +2016,12 @@ that case you can get it to set up session based protections by passing the `:se
     Path to the views folder. Inferred from <tt>app_file</tt> setting if 
     not set.
   </dd>
+
+  <dt>x_cascade</dt>
+  <dd>
+    Whether or not to set the X-Cascade header if no route matches.
+    Defaults to `true`.
+  </dd>
 </dl>
 
 ## Environments

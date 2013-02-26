@@ -1054,7 +1054,7 @@ module Sinatra
     end
 
     if not_found?
-      headers['X-Cascade'] = 'pass'
+      headers['X-Cascade'] = 'pass' if settings.x_cascade?
       body '<h1>Not Found</h1>'
     end
 
@@ -1710,6 +1710,7 @@ module Sinatra
     set :method_override, false
     set :use_code, false
     set :default_encoding, "utf-8"
+    set :x_cascade, true
     set :add_charset, %w[javascript xml xhtml+xml json].map { |t| "application/#{t}" }
     settings.add_charset << /^text\//
 
