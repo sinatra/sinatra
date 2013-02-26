@@ -135,8 +135,9 @@ task :toc, [:readme] do |t, a|
   end
 
   puts "* [Sinatra](#sinatra)"
+  title = Regexp.new('(?<=\* )(.*)') # so Ruby 1.8 doesn't complain
   File.binread(a.readme).scan(/^##.*/) do |line|
-    puts line.gsub(/#(?=#)/, '    ').gsub('#', '*').gsub(/(?<=\* )(.*)/) { "[#{$1}](##{link($1)})" }
+    puts line.gsub(/#(?=#)/, '    ').gsub('#', '*').gsub(title) { "[#{$1}](##{link($1)})" }
   end
 end
 
