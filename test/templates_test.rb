@@ -196,9 +196,16 @@ class TemplatesTest < Test::Unit::TestCase
   end
 
   it 'loads templates from specified views directory' do
-    render_app { render( :test, :hello, :views => settings.views + '/foo') }
+    render_app { render(:test, :hello, :views => settings.views + '/foo') }
 
     assert_equal "from another views directory\n", body
+  end
+
+  it 'takes views directory into consideration for caching' do
+    render_app do
+      render(:test, :hello) + render(:test, :hello, :views => settings.views + '/foo')
+    end
+    assert_equal "Hello World!\nfrom another views directory\n", body
   end
 
   it 'passes locals to the layout' do
