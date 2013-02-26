@@ -126,6 +126,21 @@ task :authors, [:commit_range, :format, :sep] do |t, a|
   puts authors.sort_by { |n,c| -c }.map { |e| a.format % e }.join(a.sep)
 end
 
+desc "generates TOC"
+task :toc, [:readme] do |t, a|
+  a.with_defaults :readme => 'README.md'
+
+  def self.link(title)
+    title.downcase.gsub(/(?!-)\W /, '-').gsub(' ', '-').gsub(/(?!-)\W/, '')
+  end
+
+  puts "* [Sinatra](#sinatra)"
+  title = Regexp.new('(?<=\* )(.*)') # so Ruby 1.8 doesn't complain
+  File.binread(a.readme).scan(/^##.*/) do |line|
+    puts line.gsub(/#(?=#)/, '    ').gsub('#', '*').gsub(title) { "[#{$1}](##{link($1)})" }
+  end
+end
+
 # PACKAGING ============================================================
 
 if defined?(Gem)
@@ -166,7 +181,7 @@ if defined?(Gem)
 
   task 'release' => ['test', package('.gem')] do
     if File.binread("CHANGES") =~ /= \d\.\d\.\d . not yet released$/i
-      fail 'please update changes first' unless %x{git symbolic-ref HEAD} == "refs/heads/prerelease\n"
+      fail 'please update changes first'
     end
 
     sh <<-SH

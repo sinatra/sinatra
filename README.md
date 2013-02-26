@@ -24,6 +24,91 @@ View at: http://localhost:4567
 It is recommended to also run `gem install thin`, which Sinatra will
 pick up if available.
 
+## Table of Contents
+
+* [Sinatra](#sinatra)
+    * [Table of Contents](#table-of-contents)
+    * [Routes](#routes)
+    * [Conditions](#conditions)
+        * [Return Values](#return-values)
+        * [Custom Route Matchers](#custom-route-matchers)
+        * [Static Files](#static-files)
+        * [Views / Templates](#views--templates)
+            * [Literal Templates](#literal-templates)
+        * [Available Template Languages](#available-template-languages)
+            * [Haml Templates](#haml-templates)
+            * [Erb Templates](#erb-templates)
+            * [Builder Templates](#builder-templates)
+            * [Nokogiri Templates](#nokogiri-templates)
+            * [Sass Templates](#sass-templates)
+            * [SCSS Templates](#scss-templates)
+            * [Less Templates](#less-templates)
+            * [Liquid Templates](#liquid-templates)
+            * [Markdown Templates](#markdown-templates)
+            * [Textile Templates](#textile-templates)
+            * [RDoc Templates](#rdoc-templates)
+            * [Radius Templates](#radius-templates)
+            * [Markaby Templates](#markaby-templates)
+            * [RABL Templates](#rabl-templates)
+            * [Slim Templates](#slim-templates)
+            * [Creole Templates](#creole-templates)
+            * [CoffeeScript Templates](#coffeescript-templates)
+            * [Stylus Templates](#stylus-templates)
+            * [Yajl Templates](#yajl-templates)
+            * [WLang Templates](#wlang-templates)
+        * [Accessing Variables in Templates](#accessing-variables-in-templates)
+        * [Templates with `yield` and nested layouts](#templates-with-yield-and-nested-layouts)
+        * [Inline Templates](#inline-templates)
+        * [Named Templates](#named-templates)
+        * [Associating File Extensions](#associating-file-extensions)
+        * [Adding Your Own Template Engine](#adding-your-own-template-engine)
+    * [Filters](#filters)
+    * [Helpers](#helpers)
+        * [Using Sessions](#using-sessions)
+        * [Halting](#halting)
+        * [Passing](#passing)
+        * [Triggering Another Route](#triggering-another-route)
+        * [Setting Body, Status Code and Headers](#setting-body-status-code-and-headers)
+        * [Streaming Responses](#streaming-responses)
+        * [Logging](#logging)
+        * [Mime Types](#mime-types)
+        * [Generating URLs](#generating-urls)
+        * [Browser Redirect](#browser-redirect)
+        * [Cache Control](#cache-control)
+        * [Sending Files](#sending-files)
+        * [Accessing the Request Object](#accessing-the-request-object)
+        * [Attachments](#attachments)
+        * [Dealing with Date and Time](#dealing-with-date-and-time)
+        * [Looking Up Template Files](#looking-up-template-files)
+    * [Configuration](#configuration)
+        * [Configuring attack protection](#configuring-attack-protection)
+        * [Available Settings](#available-settings)
+    * [Environments](#environments)
+    * [Error Handling](#error-handling)
+        * [Not Found](#not-found)
+        * [Error](#error)
+    * [Rack Middleware](#rack-middleware)
+    * [Testing](#testing)
+    * [Sinatra::Base - Middleware, Libraries, and Modular Apps](#sinatrabase---middleware-libraries-and-modular-apps)
+        * [Modular vs. Classic Style](#modular-vs-classic-style)
+        * [Serving a Modular Application](#serving-a-modular-application)
+        * [Using a Classic Style Application with a config.ru](#using-a-classic-style-application-with-a-configru)
+        * [When to use a config.ru?](#when-to-use-a-configru)
+        * [Using Sinatra as Middleware](#using-sinatra-as-middleware)
+        * [Dynamic Application Creation](#dynamic-application-creation)
+    * [Scopes and Binding](#scopes-and-binding)
+        * [Application/Class Scope](#applicationclass-scope)
+        * [Request/Instance Scope](#requestinstance-scope)
+        * [Delegation Scope](#delegation-scope)
+    * [Command Line](#command-line)
+    * [Requirement](#requirement)
+    * [The Bleeding Edge](#the-bleeding-edge)
+        * [With Bundler](#with-bundler)
+        * [Roll Your Own](#roll-your-own)
+        * [Install Globally](#install-globally)
+    * [Versioning](#versioning)
+    * [Further Reading](#further-reading)
+
 ## Routes
 
 In Sinatra, a route is an HTTP method paired with a URL-matching pattern.
@@ -820,6 +905,43 @@ template than for the layout by passing the `:layout_engine` option.
     <td><tt>coffee :index</tt></td>
   </tr>
 </table>
+
+#### Stylus Templates
+
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td>
+      <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
+        Stylus
+      </a> and a
+      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
+        way to execute javascript
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><tt>.styl</tt></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><tt>stylus :index</tt></td>
+  </tr>
+</table>
+
+Before being able to use Stylus templates, you need to load `stylus` and
+`stylus/tilt` first:
+
+``` ruby
+require 'sinatra'
+require 'stylus'
+require 'stylus/tilt'
+
+get '/' do
+  stylus :example
+end
+```
 
 #### Yajl Templates
 
@@ -2262,16 +2384,49 @@ the modular and the classic styles.
 If switching from one style to the other, you should be aware of slightly
 different default settings:
 
-```
-Setting             Classic                 Modular
+<table>
+  <tr>
+    <th>Setting</th>
+    <th>Classic</th>
+    <th>Modular</th>
+  </tr>
 
-app_file            file loading sinatra    file subclassing Sinatra::Base
-run                 $0 == app_file          false
-logging             true                    false
-method_override     true                    false
-inline_templates    true                    false
-static              true                    false
-```
+  <tr>
+    <td>app_file</td>
+    <td>file loading sinatra</td>
+    <td>file subclassing Sinatra::Base</td>
+  </tr>
+
+  <tr>
+    <td>run</td>
+    <td>$0 == app_file</td>
+    <td>false</td>
+  </tr>
+
+  <tr>
+    <td>logging</td>
+    <td>true</td>
+    <td>false</td>
+  </tr>
+
+  <tr>
+    <td>method_override</td>
+    <td>true</td>
+    <td>false</td>
+  </tr>
+
+  <tr>
+    <td>inline_templates</td>
+    <td>true</td>
+    <td>false</td>
+  </tr>
+
+  <tr>
+    <td>static</td>
+    <td>true</td>
+    <td>false</td>
+  </tr>
+</table>
 
 ### Serving a Modular Application
 

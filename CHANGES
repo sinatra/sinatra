@@ -6,6 +6,8 @@
 
  * Add support for Wlang templates. (Bernard Lambeau)
 
+ * Add support for Stylus templates. (Juan David Pastas, Konstantin Haase)
+
  * You can now pass a block to ERb, Haml, Slim, Liquid and Wlang templates,
    which will be used when calling `yield` in the template. (Alexey Muranov)
 
