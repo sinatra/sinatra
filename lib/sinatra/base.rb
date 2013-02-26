@@ -1180,7 +1180,8 @@ module Sinatra
 
       # Sugar for `error(404) { ... }`
       def not_found(&block)
-        error 404, &block
+        error(404, &block)
+        error(Sinatra::NotFound, &block)
       end
 
       # Define a named template. The block must return the template source.
