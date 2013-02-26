@@ -1152,9 +1152,9 @@ module Sinatra
           end
         end
 
-        define_singleton_method("#{option}=", setter) if setter
-        define_singleton_method(option, getter) if getter
-        define_singleton_method("#{option}?", "!!#{option}") unless method_defined? "#{option}?"
+        define_singleton("#{option}=", setter) if setter
+        define_singleton(option, getter) if getter
+        define_singleton("#{option}?", "!!#{option}") unless method_defined? "#{option}?"
         self
       end
 
@@ -1284,7 +1284,7 @@ module Sinatra
 
     private
       # Dynamically defines a method on settings.
-      def define_singleton_method(name, content = Proc.new)
+      def define_singleton(name, content = Proc.new)
         # replace with call to singleton_class once we're 1.9 only
         (class << self; self; end).class_eval do
           undef_method(name) if method_defined? name
