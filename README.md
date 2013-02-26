@@ -845,7 +845,18 @@ template than for the layout by passing the `:layout_engine` option.
   </tr>
 </table>
 
-Before being able to use Stylus templates, you need to `require 'stylus/tilt'`.
+Before being able to use Stylus templates, you need to load `stylus` and
+`stylus/tilt` first:
+
+``` ruby
+require 'sinatra'
+require 'stylus'
+require 'stylus/tilt'
+
+get '/' do
+  stylus :example
+end
+```
 
 #### Yajl Templates
 

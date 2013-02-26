@@ -1,6 +1,7 @@
 require File.expand_path('../helper', __FILE__)
 
 begin
+  require 'stylus'
   require 'stylus/tilt'
 
   begin
