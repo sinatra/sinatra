@@ -166,7 +166,7 @@ if defined?(Gem)
 
   task 'release' => ['test', package('.gem')] do
     if File.binread("CHANGES") =~ /= \d\.\d\.\d . not yet released$/i
-      fail 'please update changes first'
+      fail 'please update changes first' unless %x{git symbolic-ref HEAD} == "refs/heads/prerelease\n"
     end
 
     sh <<-SH
