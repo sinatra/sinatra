@@ -126,6 +126,20 @@ task :authors, [:commit_range, :format, :sep] do |t, a|
   puts authors.sort_by { |n,c| -c }.map { |e| a.format % e }.join(a.sep)
 end
 
+desc "generates TOC"
+task :toc, [:readme] do |t, a|
+  a.with_defaults :readme => 'README.md'
+
+  def self.link(title)
+    title.downcase.gsub(/(?!-)\W /, '-').gsub(' ', '-').gsub(/(?!-)\W/, '')
+  end
+
+  puts "* [Sinatra](#sinatra)"
+  File.binread(a.readme).scan(/^##.*/) do |line|
+    puts line.gsub(/#(?=#)/, '    ').gsub('#', '*').gsub(/(?<=\* )(.*)/) { "[#{$1}](##{link($1)})" }
+  end
+end
+
 # PACKAGING ============================================================
 
 if defined?(Gem)
