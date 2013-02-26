@@ -303,6 +303,18 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal 'error handler', body
     end
 
+    it 'should not reset the content-type to html for error handlers' do
+      mock_app do
+        disable :raise_errors
+        before    { content_type "application/json;charset=utf-8" }
+        not_found { JSON.dump("error" => "Not Found") }
+      end
+
+      get '/'
+      assert_equal 404, status
+      assert_equal 'application/json;charset=utf-8', response.content_type
+    end
+
     it 'should not invoke error handler when halting with 500 inside an error handler' do
       mock_app do
         disable :raise_errors
