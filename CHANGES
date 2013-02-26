@@ -83,6 +83,9 @@
 
  * Fix mixed indentation for private methods. (Robin Dupret)
 
+ * Recalculate Content-Length even if hard coded if body is reset. Relevant
+   mostly for error handlers. (Nathan Esquenazi, Konstantin Haase)
+
  * Take views option into account for template caching. (Konstantin Haase)
 
 = 1.3.5 / 2013-02-25
