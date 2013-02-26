@@ -77,6 +77,8 @@
 
  * Fix mixed indentation for private methods. (Robin Dupret)
 
+ * Take views option into account for template caching. (Konstantin Haase)
+
 = 1.3.5 / 2013-02-25
 
  * Fix for RubyGems 2.0 (Uchio KONDO)

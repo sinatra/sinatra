@@ -782,7 +782,7 @@ module Sinatra
 
     def compile_template(engine, data, options, views)
       eat_errors = options.delete :eat_errors
-      template_cache.fetch engine, data, options do
+      template_cache.fetch engine, data, options, views do
         template = Tilt[engine]
         raise "Template engine not found: #{engine}" if template.nil?
 
