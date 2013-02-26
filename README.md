@@ -2034,14 +2034,24 @@ requests, and special `not_found` and `error` handlers
 display stack traces in your browser.
 In the `"production"` and `"test"` environments, templates are cached by default.
 
-To run different environments use the `-e` option:
+To run different environments, set the `RACK_ENV` environment variable:
 
-```ruby
-    ruby my_app.rb -e [ENVIRONMENT]
+```shell
+    RACK_ENV=production ruby my_app.rb
 ```
 
 You can use predefined methods: `development?`, `test?` and `production?` to
-check the current environment setting.
+check the current environment setting:
+
+```ruby
+    get '/' do
+      if settings.development?
+        "development!"
+      else
+        "not development!"
+      end
+    end
+```
 
 ## Error Handling
 
