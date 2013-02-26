@@ -950,7 +950,7 @@ module Sinatra
     route = @request.path_info
     route = '/' if route.empty? and not settings.empty_path_info?
     return unless match = pattern.match(route)
-    values += match.captures.to_a.map { |v| force_encoding URI.decode_www_form_component(v) if v }
+    values += match.captures.to_a.map { |v| force_encoding URI.decode(v) if v }
 
     if values.any?
       original, @params = params, params.merge('splat' => [], 'captures' => values)
