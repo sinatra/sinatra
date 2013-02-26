@@ -557,5 +557,26 @@ class SettingsTest < Test::Unit::TestCase
         assert !MiddlewareTracker.used.include?(Rack::Protection::PathTraversal)
       end
     end
+
+    it 'sets up RemoteToken if sessions are enabled' do
+      MiddlewareTracker.track do
+        Sinatra.new { enable :sessions }.new
+        assert_include MiddlewareTracker.used, Rack::Protection::RemoteToken
+      end
+    end
+
+    it 'does not set up RemoteToken if sessions are disabled' do
+      MiddlewareTracker.track do
+        Sinatra.new.new
+        assert !MiddlewareTracker.used.include?(Rack::Protection::RemoteToken)
+      end
+    end
+
+    it 'sets up RemoteToken if it is configured to' do
+      MiddlewareTracker.track do
+        Sinatra.new { set :protection, :session => true }.new
+        assert_include MiddlewareTracker.used, Rack::Protection::RemoteToken
+      end
+    end
   end
 end
