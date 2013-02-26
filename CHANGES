@@ -87,7 +87,7 @@
    Alexey Muranov, Konstantin Haase)
 
  * Convert documentation to Markdown. (Kashyap, Robin Dupret, burningTyger,
-   Vasily Polovnyov)
+   Vasily Polovnyov, Iain Barnett)
 
  * Don't set not_found content type to HTML in development mode with custom
    not_found handler. (Konstantin Haase)
