@@ -386,6 +386,12 @@ Available Options:
     template. Example: <tt>set :rdoc, :layout_engine => :erb</tt>
   </dd>
 
+  <dt>layout_options</dt>
+  <dd>
+    Special options only used for rendering the layout. Example:
+    <tt>set :rdoc, :layout_options => { :views => 'views/layouts' }</tt>
+  </dd>
+
   <dd>
     Templates are assumed to be located directly under the `./views`
     directory. To use a different views directory:
