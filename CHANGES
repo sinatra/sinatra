@@ -10,6 +10,8 @@ Backported from 1.4.0:
 
  * Improve documentation (Konstantin Haase)
 
+ * No longer override `define_singleton_method`. (Konstantin Haase)
+
 = 1.3.4 / 2013-01-26
 
  * Improve documentation. (Kashyap, Stanislav Chistenko, Konstantin Haase,
