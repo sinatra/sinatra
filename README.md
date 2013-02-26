@@ -401,6 +401,16 @@ Available Options:
   </dd>
 </dl>
 
+#### Literal Templates
+
+```ruby
+    get '/' do
+      haml '%div.title Hello World'
+    end
+```
+
+Renders the template string.
+
 ### Available Template Languages
 
 Some languages have multiple implementations. To specify what implementation
@@ -864,16 +874,6 @@ The `:callback` and `:variable` options can be used to decorate the rendered obj
 Since calling ruby methods is not idiomatic in wlang, you almost always want to pass locals
 to it. Layouts written in wlang and `yield` are supported, though.
 
-#### Embedded Templates
-
-```ruby
-    get '/' do
-      haml '%div.title Hello World'
-    end
-```
-
-Renders the embedded template string.
-
 ### Accessing Variables in Templates
 
 Templates are evaluated within the same context as route handlers. Instance
@@ -897,6 +897,43 @@ Or, specify an explicit Hash of local variables:
 
 This is typically used when rendering templates as partials from within
 other templates.
+
+### Templates with `yield` and nested layouts
+
+A layout is usually just a template that calls `yield`.
+Such a template can by used either through the `:template` option as
+described above, or it can be rendered with a block as follows:
+
+```ruby
+    erb :post, :layout => false do
+      erb :index
+    end
+```
+
+This code is mostly equivalent to `erb :index, :layout => :post`.
+
+Passing blocks to rendering methods is most useful for creating nested
+layouts:
+
+```ruby
+    erb :main_layout, :layout => false do
+      erb :admin_layout do
+        erb :user
+      end
+    end
+```
+
+This can also be done in fewer lines of code with:
+
+```ruby
+    erb :admin_layout, :layout => :main_layout do
+      erb :user
+    end
+```
+
+Currently the following rendering method accept a block: `erb`, `haml`,
+`liquid`, `slim `, `wlang`.
+Also the general `render` method accepts a block.
 
 ### Inline Templates
 
