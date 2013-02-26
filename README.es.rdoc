@@ -537,6 +537,12 @@ Dependencias::             {coffee-script}[https://github.com/josh/ruby-coffee-s
 Extensiones de Archivo::   <tt>.coffee</tt>
 Ejemplo::                  <tt>coffee :index</tt>
 
+=== Plantillas Stylus
+
+Dependencias::             {ruby-stylus}[https://github.com/lucasmazza/ruby-stylus]
+Extensiones de Archivo::   <tt>.styl</tt>
+Ejemplo::                  <tt>stylus :index</tt>
+
 === Plantillas Yajl
 
 Dependencias::             {yajl-ruby}[https://github.com/brianmario/yajl-ruby]
