@@ -845,6 +845,8 @@ template than for the layout by passing the `:layout_engine` option.
   </tr>
 </table>
 
+Before being able to use Stylus templates, you need to `require 'stylus/tilt'`.
+
 #### Yajl Templates
 
 <table>
