@@ -78,6 +78,9 @@
  * Convert documentation to Markdown. (Kashyap, Robin Dupret, burningTyger,
    Vasily Polovnyov)
 
+ * Don't set not_found content type to HTML in development mode with custom
+   not_found handler. (Konstantin Haase)
+
  * Fix mixed indentation for private methods. (Robin Dupret)
 
  * Take views option into account for template caching. (Konstantin Haase)
