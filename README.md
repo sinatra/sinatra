@@ -2262,16 +2262,49 @@ the modular and the classic styles.
 If switching from one style to the other, you should be aware of slightly
 different default settings:
 
-```
-Setting             Classic                 Modular
+<table>
+  <tr>
+    <th>Setting</th>
+    <th>Classic</th>
+    <th>Modular</th>
+  </tr>
 
-app_file            file loading sinatra    file subclassing Sinatra::Base
-run                 $0 == app_file          false
-logging             true                    false
-method_override     true                    false
-inline_templates    true                    false
-static              true                    false
-```
+  <tr>
+    <td>app_file</td>
+    <td>file loading sinatra</td>
+    <td>file subclassing Sinatra::Base</td>
+  </tr>
+
+  <tr>
+    <td>run</td>
+    <td>$0 == app_file</td>
+    <td>false</td>
+  </tr>
+
+  <tr>
+    <td>logging</td>
+    <td>true</td>
+    <td>false</td>
+  </tr>
+
+  <tr>
+    <td>method_override</td>
+    <td>true</td>
+    <td>false</td>
+  </tr>
+
+  <tr>
+    <td>inline_templates</td>
+    <td>true</td>
+    <td>false</td>
+  </tr>
+
+  <tr>
+    <td>static</td>
+    <td>true</td>
+    <td>false</td>
+  </tr>
+</table>
 
 ### Serving a Modular Application
 
