@@ -97,6 +97,9 @@
  * Recalculate Content-Length even if hard coded if body is reset. Relevant
    mostly for error handlers. (Nathan Esquenazi, Konstantin Haase)
 
+ * Plus sing is once again kept as such when used for URL matches. (Konstantin
+   Haase)
+
  * Take views option into account for template caching. (Konstantin Haase)
 
 = 1.3.5 / 2013-02-25
