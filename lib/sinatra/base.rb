@@ -752,9 +752,10 @@ module Sinatra
       eat_errors      = layout.nil?
       layout          = engine_options[:layout] if layout.nil? or layout == true
       layout          = @default_layout         if layout.nil? or layout == true
-      content_type    = options.delete(:content_type)  || options.delete(:default_content_type)
-      layout_engine   = options.delete(:layout_engine) || engine
-      scope           = options.delete(:scope)         || self
+      layout_options  = options.delete(:layout_options) || {}
+      content_type    = options.delete(:content_type)   || options.delete(:default_content_type)
+      layout_engine   = options.delete(:layout_engine)  || engine
+      scope           = options.delete(:scope)          || self
       options.delete(:layout)
 
       # set some defaults
@@ -774,6 +775,7 @@ module Sinatra
       # render layout
       if layout
         options = options.merge(:views => views, :layout => false, :eat_errors => eat_errors, :scope => scope)
+        options.merge! layout_options
         catch(:layout_missing) { return render(layout_engine, layout, options, locals) { output } }
       end
 

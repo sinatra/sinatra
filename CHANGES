@@ -60,6 +60,9 @@
 
  * Improve Accept header parsing, expose parameters. (Pieter van de Bruggen)
 
+ * Add `layout_options` render option. Allows you, amongst other things, to
+   render a layout from a different folder. (Konstantin Haase)
+
  * Explicitly setting `layout` to `nil` is treated like setting it to `false`.
    (richo)
 
