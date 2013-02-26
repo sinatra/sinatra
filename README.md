@@ -821,6 +821,30 @@ template than for the layout by passing the `:layout_engine` option.
   </tr>
 </table>
 
+#### Stylus Templates
+
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td>
+      <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
+        Stylus
+      </a> and a
+      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
+        way to execute javascript
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><tt>.styl</tt></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><tt>stylus :index</tt></td>
+  </tr>
+</table>
+
 #### Yajl Templates
 
 <table>

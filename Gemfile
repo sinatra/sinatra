@@ -44,6 +44,7 @@ gem 'radius'
 gem 'rabl' unless RUBY_ENGINE =~ /jruby|maglev/
 gem 'wlang', '>= 2.0.1' unless RUBY_ENGINE =~ /jruby|rbx/
 gem 'liquid' unless RUBY_ENGINE == 'rbx' and RUBY_VERSION > '1.9'
+gem 'stylus'
 
 if RUBY_ENGINE == 'jruby'
   gem 'nokogiri', '!= 1.5.0'
