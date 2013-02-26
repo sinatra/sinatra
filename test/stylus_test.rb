@@ -4,7 +4,7 @@ begin
   require 'stylus'
 
   begin
-    Stylus.compile '1'
+    Tilt[:styl].new { "1" }.render
   rescue RuntimeError
     raise LoadError, 'unable to find Stylus compiler'
   end
