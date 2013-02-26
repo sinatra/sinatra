@@ -133,6 +133,33 @@ class HelpersTest < Test::Unit::TestCase
       get '/'
       assert_equal 'Hello World', body
     end
+
+    it 'can be used with other objects' do
+      mock_app do
+        get '/' do
+          body :hello => 'from json'
+        end
+
+        after do
+          if Hash === response.body
+            body response.body[:hello]
+          end
+        end
+      end
+
+      get '/'
+      assert_body 'from json'
+    end
+
+    it 'can be set in after filter' do
+      mock_app do
+        get('/') { body 'route'  }
+        after    { body 'filter' }
+      end
+
+      get '/'
+      assert_body 'filter'
+    end
   end
 
   describe 'redirect' do
