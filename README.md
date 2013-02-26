@@ -832,7 +832,8 @@ template than for the layout by passing the `:layout_engine` option.
       </a> and a
       <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
         way to execute javascript
-      </a>
+      </a>, it also requires and as of yet unreleased version of
+      <a href="https://github.com/rtomayko/tilt">Tilt</a>
     </td>
   </tr>
   <tr>
