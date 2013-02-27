@@ -24,8 +24,6 @@ View at: http://localhost:4567
 It is recommended to also run `gem install thin`, which Sinatra will
 pick up if available.
 
-<div id="github-toc">
-
 ## Table of Contents
 
 * [Sinatra](#sinatra)
@@ -110,8 +108,6 @@ pick up if available.
         * [Install Globally](#install-globally)
     * [Versioning](#versioning)
     * [Further Reading](#further-reading)
-
-</div>
 
 ## Routes
 
