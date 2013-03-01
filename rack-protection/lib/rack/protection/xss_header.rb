@@ -14,18 +14,10 @@ module Rack
     class XSSHeader < Base
       default_options :xss_mode => :block, :nosniff => true
 
-      def header
-        headers = {
-          'X-XSS-Protection' => "1; mode=#{options[:xss_mode]}",
-          'X-Content-Type-Options' => "nosniff"
-        }
-        headers.delete("X-Content-Type-Options") unless options[:nosniff]
-        headers
-      end
-
       def call(env)
         status, headers, body = @app.call(env)
-        headers = header.merge(headers) if options[:nosniff] and html?(headers)
+        headers['X-XSS-Protection']       ||= "1; mode=#{options[:xss_mode]}" if html? headers
+        headers['X-Content-Type-Options'] ||= 'nosniff'                       if options[:nosniff]
         [status, headers, body]
       end
     end

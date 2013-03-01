@@ -16,15 +16,21 @@ module Rack
     # frame_options:: Defines who should be allowed to embed the page in a
     #                 frame. Use :deny to forbid any embedding, :sameorigin
     #                 to allow embedding from the same origin (default).
-    class FrameOptions < XSSHeader
+    class FrameOptions < Base
       default_options :frame_options => :sameorigin
 
-      def header
-        @header ||= begin
+      def frame_options
+        @frame_options ||= begin
           frame_options = options[:frame_options]
           frame_options = options[:frame_options].to_s.upcase unless frame_options.respond_to? :to_str
-          { 'X-Frame-Options' => frame_options.to_str }
+          frame_options.to_str
         end
+      end
+
+      def call(env)
+        status, headers, body        = @app.call(env)
+        headers['X-Frame-Options'] ||= frame_options if html? headers
+        [status, headers, body]
       end
     end
   end

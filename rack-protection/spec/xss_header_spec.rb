@@ -34,6 +34,12 @@ describe Rack::Protection::XSSHeader do
     get('/', {}, 'wants' => 'text/html').header["X-Content-Type-Options"].should == "nosniff"
   end
 
+
+  it 'should set the X-Content-Type-Options for other content types' do
+    get('/', {}, 'wants' => 'application/foo').header["X-Content-Type-Options"].should == "nosniff"
+  end
+
+
   it 'should allow changing the nosniff-mode off' do
     mock_app do
       use Rack::Protection::XSSHeader, :nosniff => false
