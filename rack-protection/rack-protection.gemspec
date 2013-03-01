@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   # general infos
   s.name        = "rack-protection"
-  s.version     = "1.3.2"
+  s.version     = "1.4.0"
   s.description = "You should use protection!"
   s.homepage    = "http://github.com/rkh/rack-protection"
   s.summary     = s.description
@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
     "Chris Mytton",
     "Corey Ward",
     "David Kellum",
+    "Egor Homakov",
     "Fojas",
     "Mael Clerambault",
     "Martin Mauch",
@@ -23,7 +24,7 @@ Gem::Specification.new do |s|
     "Steve Agalloco",
     "Akzhan Abdulin",
     "TOBY",
-    "Bj\u{f8}rge N\u{e6}ss"
+    "Bj\u00F8rge N\u00E6ss"
   ]
 
   # generated from git shortlog -sne
@@ -34,6 +35,7 @@ Gem::Specification.new do |s|
     "self@hecticjeff.net",
     "coreyward@me.com",
     "dek-oss@gravitext.com",
+    "homakov@gmail.com",
     "developer@fojasaur.us",
     "mael@clerambault.fr",
     "martin.mauch@gmail.com",

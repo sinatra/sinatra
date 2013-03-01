@@ -14,14 +14,17 @@ task(:spec) { ruby '-S rspec spec' }
 desc "generate gemspec"
 task 'rack-protection.gemspec' do
   require 'rack/protection/version'
-  content = File.read 'rack-protection.gemspec'
+  content = File.binread 'rack-protection.gemspec'
 
   # fetch data
   fields = {
-    :authors => `git shortlog -sn`.scan(/[^\d\s].*/),
-    :email   => `git shortlog -sne`.scan(/[^<]+@[^>]+/),
-    :files   => `git ls-files`.split("\n").reject { |f| f =~ /^(\.|Gemfile)/ }
+    :authors => `git shortlog -sn`.force_encoding('utf-8').scan(/[^\d\s].*/),
+    :email   => `git shortlog -sne`.force_encoding('utf-8').scan(/[^<]+@[^>]+/),
+    :files   => `git ls-files`.force_encoding('utf-8').split("\n").reject { |f| f =~ /^(\.|Gemfile)/ }
   }
+
+  # double email :(
+  fields[:email].delete("konstantin.haase@gmail.com")
 
   # insert data
   fields.each do |field, values|
