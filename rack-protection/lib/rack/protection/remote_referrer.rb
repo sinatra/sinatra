@@ -9,9 +9,6 @@ module Rack
     #
     # Does not accept unsafe HTTP requests if the Referer [sic] header is set to
     # a different host.
-    #
-    # Combine with NoReferrer to also block remote requests from non-HTTP pages
-    # (FTP/HTTPS/...).
     class RemoteReferrer < Base
       default_reaction :deny
 
