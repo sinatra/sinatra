@@ -14,14 +14,21 @@ module Rack
       default_reaction :deny
 
       def call(env)
+        request               = Request.new(env)
         status, headers, body = app.call(env)
-        if headers['Content-Type'].to_s.split(';', 2).first =~ /^\s*application\/json\s*$/
-          if origin(env).nil? and referrer(env) != Request.new(env).host
-            result = react(env)
-            warn env, "attack prevented by #{self.class}"
-          end
+
+        if has_vector? request, headers
+          warn env, "attack prevented by #{self.class}"
+          react(env)
+        else
+          [status, headers, body]
         end
-        result or [status, headers, body]
+      end
+
+      def has_vector?(request, headers)
+        return false if request.xhr?
+        return false unless headers['Content-Type'].to_s.split(';', 2).first =~ /^\s*application\/json\s*$/
+        origin(request.env).nil? and referrer(request.env) != request.host
       end
     end
   end

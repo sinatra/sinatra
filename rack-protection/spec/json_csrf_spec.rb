@@ -27,6 +27,10 @@ describe Rack::Protection::JsonCsrf do
     it "accepts get requests with json responses with no referrer" do
       get('/', {}).should be_ok
     end
+
+    it "accepts XHR requests" do
+      get('/', {}, 'HTTP_REFERER' => 'http://evil.com', 'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest').should be_ok
+    end
   end
 
   describe 'not json response' do
