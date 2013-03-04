@@ -1095,8 +1095,3 @@ Sinatraのソースを更新する方法:
 
 -   [IRC: \#sinatra](irc://chat.freenode.net/#sinatra) on
     [freenode.net](http://freenode.net)
-
-[[Validate]](http://validator.w3.org/check/referer)
-
-Generated with the [Darkfish Rdoc
-Generator](http://deveiate.org/projects/Darkfish-Rdoc/) 2.
