@@ -96,7 +96,7 @@ module Sinatra
         headers["Content-Length"] = body.inject(0) { |l, p| l + Rack::Utils.bytesize(p) }.to_s
       end
 
-      [status.to_i, header, result]
+      [status.to_i, headers, result]
     end
 
     private
@@ -130,7 +130,7 @@ module Sinatra
 
     private
 
-    def setup_close(env, status, header, body)
+    def setup_close(env, status, headers, body)
       return unless body.respond_to? :close and env.include? 'async.close'
       env['async.close'].callback { body.close }
       env['async.close'].errback { body.close }
