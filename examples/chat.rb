@@ -25,11 +25,11 @@ __END__
 
 @@ layout
 <html>
-  <head> 
-    <title>Super Simple Chat with Sinatra</title> 
+  <head>
+    <title>Super Simple Chat with Sinatra</title>
     <meta charset="utf-8" />
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script> 
-  </head> 
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+  </head>
   <body><%= yield %></body>
 </html>
 
@@ -42,6 +42,9 @@ __END__
 
 @@ chat
 <pre id='chat'></pre>
+<form>
+  <input id='msg' placeholder='type message here...' />
+</form>
 
 <script>
   // reading
@@ -49,13 +52,10 @@ __END__
   es.onmessage = function(e) { $('#chat').append(e.data + "\n") };
 
   // writing
-  $("form").live("submit", function(e) {
+  $("form").on('submit',function(e) {
     $.post('/', {msg: "<%= user %>: " + $('#msg').val()});
     $('#msg').val(''); $('#msg').focus();
     e.preventDefault();
   });
 </script>
 
-<form>
-  <input id='msg' placeholder='type message here...' />
-</form>
