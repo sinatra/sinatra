@@ -531,7 +531,10 @@ class HelpersTest < Test::Unit::TestCase
         end
       end
 
-      get '/'
+      # Silence warnings since Rack::Session::Cookie complains about the non-present session secret
+      silence_warnings do
+        get '/'
+      end
       assert_body 'ok'
     end
 
