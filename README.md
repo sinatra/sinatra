@@ -484,21 +484,16 @@ Available Options:
     Special options only used for rendering the layout. Example:
     <tt>set :rdoc, :layout_options => { :views => 'views/layouts' }</tt>
   </dd>
-
-  <dd>
-    Templates are assumed to be located directly under the `./views`
-    directory. To use a different views directory:
-  <tt>set :views, settings.root + '/templates'</tt>
-  </dd>
-
-  <dd>
-    One important thing to remember is that you always have to reference
-    templates with symbols, even if they're in a subdirectory (in this
-    case, use: <tt>'subdir/template'</tt>). You must use a symbol because
-    otherwise rendering methods will render any strings passed to them
-    directly.
-  </dd>
 </dl>
+    
+Templates are assumed to be located directly under the `./views` directory. To 
+use a different views directory: 
+<tt>set :views, settings.root + '/templates'</tt>
+
+One important thing to remember is that you always have to reference templates 
+with symbols, even if they're in a subdirectory (in this case, use:
+<tt>'subdir/template'</tt>). You must use a symbol because otherwise rendering
+methods will render any strings passed to them directly.
 
 #### Literal Templates
 
@@ -977,14 +972,15 @@ end
 
 
 The template source is evaluated as a Ruby string, and the
-resulting json variable is converted using `#to_json`.
+resulting json variable is converted using `#to_json`:
 
 ``` ruby
 json = { :foo => 'bar' }
 json[:baz] = key
 ```
 
-The `:callback` and `:variable` options can be used to decorate the rendered object.
+The `:callback` and `:variable` options can be used to decorate the rendered
+object:
 
 ``` ruby
 var resource = {"foo":"bar","baz":"qux"}; present(resource);
@@ -2013,7 +2009,7 @@ set :protection, :session => true
   </dd>
 
   <dt>bind</dt>
-  <dd>IP address to bind to (default: 0.0.0.0). Only used for built-in server.</dd>
+  <dd>IP address to bind to (default: <tt>0.0.0.0</tt>). Only used for built-in server.</dd>
 
   <dt>default_encoding</dt>
   <dd>encoding to assume if unknown (defaults to <tt>"utf-8"</tt>).</dd>
@@ -2094,7 +2090,7 @@ set :protection, :session => true
   <dt>server</dt>
   <dd>
     server or list of servers to use for built-in server. defaults to
-    ['thin', 'mongrel', 'webrick'], order indicates priority.
+    <tt>['thin', 'mongrel', 'webrick']</tt>, order indicates priority.
   </dd>
 
   <dt>sessions</dt>
@@ -2150,7 +2146,7 @@ set :protection, :session => true
   <dt>x_cascade</dt>
   <dd>
     Whether or not to set the X-Cascade header if no route matches.
-    Defaults to `true`.
+    Defaults to <tt>true</tt>.
   </dd>
 </dl>
 
