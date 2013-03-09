@@ -87,7 +87,7 @@
    Alexey Muranov, Konstantin Haase)
 
  * Convert documentation to Markdown. (Kashyap, Robin Dupret, burningTyger,
-   Vasily Polovnyov, Iain Barnett)
+   Vasily Polovnyov, Iain Barnett, Giuseppe Capizzi, Neil West)
 
  * Don't set not_found content type to HTML in development mode with custom
    not_found handler. (Konstantin Haase)
@@ -101,6 +101,14 @@
    Haase)
 
  * Take views option into account for template caching. (Konstantin Haase)
+
+ * Consistent use of `headers` instead of `header` internally. (Patricio Mac Adden)
+
+ * Fix compatibility to RDoc 4. (Bohuslav Kabrda)
+
+ * Make chat example work with latest jQuery. (loveky, Tony Miller)
+
+ * Make tests run without warnings. (Patricio Mac Adden)
 
 = 1.3.5 / 2013-02-25
 
