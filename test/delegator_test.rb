@@ -60,7 +60,7 @@ class DelegatorTest < Test::Unit::TestCase
     assert_equal Sinatra::Application, Sinatra::Delegator.target
   end
 
-  %w[get put post delete options patch].each do |verb|
+  %w[get put post delete options patch link unlink].each do |verb|
     it "delegates #{verb} correctly" do
       delegation_app do
         send(verb, '/hello') { 'Hello World' }

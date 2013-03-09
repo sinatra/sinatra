@@ -97,6 +97,14 @@ class Test::Unit::TestCase
     request(uri, env.merge(:method => "PATCH", :params => params), &block)
   end
 
+  def link(uri, params = {}, env = {}, &block)
+    request(uri, env.merge(:method => "LINK", :params => params), &block)
+  end
+
+  def unlink(uri, params = {}, env = {}, &block)
+    request(uri, env.merge(:method => "UNLINK", :params => params), &block)
+  end
+
   # Delegate other missing methods to response.
   def method_missing(name, *args, &block)
     if response && response.respond_to?(name)

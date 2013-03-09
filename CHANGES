@@ -1,5 +1,7 @@
 = 1.4.0 / Not Yet Released
 
+ * Add support for LINK and UNLINK requests. (Konstantin Haase)
+
  * Add support for Yajl templates. (Jamie Hodge)
 
  * Add support for Rabl templates. (Jesse Cooke)

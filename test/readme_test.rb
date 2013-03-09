@@ -22,6 +22,10 @@ class ReadmeTest < Test::Unit::TestCase
         delete('/') { ".. annihilate something .." }
 
         options('/') { ".. appease something .." }
+
+        link('/') { ".. affiliate something .." }
+
+        unlink('/') { ".. separate something .." }
       end
 
       get '/'
@@ -41,6 +45,12 @@ class ReadmeTest < Test::Unit::TestCase
 
       options '/'
       assert_body '.. appease something ..'
+
+      link '/'
+      assert_body '.. affiliate something ..'
+
+      unlink '/'
+      assert_body '.. separate something ..'
     end
 
     example do

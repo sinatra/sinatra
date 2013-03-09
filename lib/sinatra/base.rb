@@ -48,7 +48,15 @@ module Sinatra
     end
 
     def idempotent?
-      safe? or put? or delete?
+      safe? or put? or delete? or link? or unlink?
+    end
+
+    def link?
+      request_method == "LINK"
+    end
+
+    def unlink?
+      request_method == "UNLINK"
     end
 
     private
@@ -1354,6 +1362,8 @@ module Sinatra
       def head(path, opts = {}, &bk)    route 'HEAD',    path, opts, &bk end
       def options(path, opts = {}, &bk) route 'OPTIONS', path, opts, &bk end
       def patch(path, opts = {}, &bk)   route 'PATCH',   path, opts, &bk end
+      def link(path, opts = {}, &bk)    route 'LINK',    path, opts, &bk end
+      def unlink(path, opts = {}, &bk)  route 'UNLINK',  path, opts, &bk end
 
     private
       def route(verb, path, options = {}, &block)
@@ -1860,10 +1870,10 @@ module Sinatra
       end
     end
 
-    delegate :get, :patch, :put, :post, :delete, :head, :options, :template, :layout,
-             :before, :after, :error, :not_found, :configure, :set, :mime_type,
-             :enable, :disable, :use, :development?, :test?, :production?,
-             :helpers, :settings, :register
+    delegate :get, :patch, :put, :post, :delete, :head, :options, :link, :unlink,
+             :template, :layout, :before, :after, :error, :not_found, :configure,
+             :set, :mime_type, :enable, :disable, :use, :development?, :test?,
+             :production?, :helpers, :settings, :register
 
     class << self
       attr_accessor :target
