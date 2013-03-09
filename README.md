@@ -138,6 +138,14 @@ end
 options '/' do
   .. appease something ..
 end
+
+link '/' do
+  .. affiliate something ..
+end
+
+unlink '/' do
+  .. separate something ..
+end
 ```
 
 Routes are matched in the order they are defined. The first route that

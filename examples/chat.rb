@@ -42,6 +42,9 @@ __END__
 
 @@ chat
 <pre id='chat'></pre>
+<form>
+  <input id='msg' placeholder='type message here...' />
+</form>
 
 <script>
   // reading
@@ -56,6 +59,3 @@ __END__
   });
 </script>
 
-<form>
-  <input id='msg' placeholder='type message here...' />
-</form>
