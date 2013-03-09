@@ -99,8 +99,8 @@ desc "list of contributors"
 task :thanks, [:release,:backports] do |t, a|
   a.with_defaults :release => "#{prev_version}..HEAD",
     :backports => "#{prev_feature}.0..#{prev_feature}.x"
-  included = `git log --format=format:"%aN\t%s" #{a.release}`.lines.to_a
-  excluded = `git log --format=format:"%aN\t%s" #{a.backports}`.lines.to_a
+  included = `git log --format=format:"%aN\t%s" #{a.release}`.lines.map { |l| l.force_encoding('binary') }
+  excluded = `git log --format=format:"%aN\t%s" #{a.backports}`.lines.map { |l| l.force_encoding('binary') }
   commits  = (included - excluded).group_by { |c| c[/^[^\t]+/] }
   authors  = commits.keys.sort_by { |n| - commits[n].size } - team
   puts authors[0..-2].join(', ') << " and " << authors.last,
