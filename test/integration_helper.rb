@@ -86,7 +86,8 @@ module IntegrationHelper
 
     def installed?
       return @installed unless @installed.nil?
-      require server
+      s = server == 'HTTP' ? 'net/http/server' : server
+      require s
       @installed = true
     rescue LoadError
       warn "#{server} is not installed, skipping integration tests"
@@ -132,6 +133,10 @@ module IntegrationHelper
 
     def trinidad?
       name.to_s == "trinidad"
+    end
+
+    def net_http_server?
+      name.to_s == 'HTTP'
     end
 
     def warnings

@@ -17,7 +17,13 @@ class IntegrationTest < Test::Unit::TestCase
     random = "%064x" % Kernel.rand(2**256-1)
     server.get "/ping?x=#{random}"
     count = server.log.scan("GET /ping?x=#{random}").count
-    server.webrick? ? assert(count > 0) : assert_equal(1, count)
+    if server.net_http_server?
+      assert_equal 0, count
+    elsif server.webrick?
+      assert(count > 0)
+    else
+      assert_equal(1, count)
+    end
   end
 
   it 'streams' do
