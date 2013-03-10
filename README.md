@@ -30,11 +30,11 @@ pick up if available.
     * [Table of Contents](#table-of-contents)
     * [Routes](#routes)
     * [Conditions](#conditions)
-        * [Return Values](#return-values)
-        * [Custom Route Matchers](#custom-route-matchers)
-        * [Static Files](#static-files)
-        * [Views / Templates](#views--templates)
-            * [Literal Templates](#literal-templates)
+    * [Return Values](#return-values)
+    * [Custom Route Matchers](#custom-route-matchers)
+    * [Static Files](#static-files)
+    * [Views / Templates](#views--templates)
+        * [Literal Templates](#literal-templates)
         * [Available Template Languages](#available-template-languages)
             * [Haml Templates](#haml-templates)
             * [Erb Templates](#erb-templates)
@@ -284,7 +284,7 @@ get "/only/admin/", :auth => :admin do
 end
 ```
 
-### Return Values
+## Return Values
 
 The return value of a route block determines at least the response body passed
 on to the HTTP client, or at least the next middleware in the Rack stack.
@@ -317,7 +317,7 @@ get('/') { Stream.new }
 You can also use the `stream` helper method (described below) to reduce boiler
 plate and embed the streaming logic in the route.
 
-### Custom Route Matchers
+## Custom Route Matchers
 
 As shown above, Sinatra ships with built-in support for using String patterns
 and regular expressions as route matches. However, it does not stop there. You
@@ -364,7 +364,7 @@ get %r{^(?!/index$)} do
 end
 ```
 
-### Static Files
+## Static Files
 
 Static files are served from the `./public` directory. You can specify
 a different location by setting the `:public_folder` option:
@@ -380,7 +380,7 @@ Note that the public directory name is not included in the URL. A file
 Use the `:static_cache_control` setting (see below) to add
 `Cache-Control` header info.
 
-### Views / Templates
+## Views / Templates
 
 Each template language is exposed via its own rendering method. These
 methods simply return a string:
@@ -495,7 +495,7 @@ with symbols, even if they're in a subdirectory (in this case, use:
 <tt>'subdir/template'</tt>). You must use a symbol because otherwise rendering
 methods will render any strings passed to them directly.
 
-#### Literal Templates
+### Literal Templates
 
 ``` ruby
 get '/' do
