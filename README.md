@@ -2703,45 +2703,44 @@ The following Ruby versions are officially supported:
   <dt>Ruby 1.8.7</dt>
   <dd>
     1.8.7 is fully supported, however, if nothing is keeping you from it, we
-    recommend upgrading to 1.9.2 or switching to JRuby or Rubinius. Support for
-    1.8.7 will not be dropped before Sinatra 2.0 and Ruby 2.0 except maybe in
-    the unlikely event of 1.8.8 being released. Even then, we might continue
-    supporting it. <b>Ruby 1.8.6 is no longer supported.</b> If you want to run
-    with 1.8.6, downgrade to Sinatra 1.2, which will receive bug fixes until
-    Sinatra 1.4.0 is released.
+    recommend upgrading or switching to JRuby or Rubinius. Support for 1.8.7
+    will not be dropped before Sinatra 2.0. **Ruby 1.8.6 is no longer supported.**
   </dd>
 
   <dt>Ruby 1.9.2</dt>
   <dd>
-    1.9.2 is fully supported and recommended. Do not use 1.9.2p0, as it is known to
-    cause segmentation faults when running Sinatra. Support will continue at least
-    until the release of Ruby 1.9.4/2.0 and support for the latest 1.9 release
-    will continue as long as it is still supported by the Ruby core team.
+    1.9.2 is fully supported. Do not use 1.9.2p0, as it is known to cause
+    segmentation faults when running Sinatra. Official support will continue
+    at least until the release of Sinatra 1.5.
   </dd>
 
   <dt>Ruby 1.9.3</dt>
   <dd>
     1.9.3 is fully supported and recommended. Please note that switching to 1.9.3
-    from an earlier version will invalidate all sessions.
+    from an earlier version will invalidate all sessions. 1.9.3 will be supported
+    until the release of Sinatra 2.0.
+  </dd>
+
+  <dt>Ruby 2.0.0</dt>
+  <dd>
+    2.0.0 is fully supported and recommended. There are currently no plans to drop
+    official support for it.
   </dd>
 
   <dt>Rubinius</dt>
   <dd>
-    Rubinius is officially supported (Rubinius >= 1.2.4), everything works, including
-    all template languages. The upcoming 2.0 release is supported as
-    well, including 1.9 mode.
+    Rubinius is officially supported (Rubinius >= 2.x). It is recommendended to
+    `gem install puma`.
   </dd>
 
   <dt>JRuby</dt>
   <dd>
-    JRuby is officially supported (JRuby >= 1.6.7). No issues with third party
-    template libraries are known, however, if you choose to use JRuby, please
-    look into JRuby rack handlers, as the Thin web server is not fully supported
-    on JRuby. JRuby's support for C extensions is still experimental, which only
-    affects RDiscount, Redcarpet, RedCloth and Yajl templates as well as Thin
-    and Mongrel at the moment.
+    The latest stable release of JRuby is officially supported. It is not
+    recommended to use C extensions with JRuby. It is recommended to
+    `gem install trinidad`.
   </dd>
 </dl>
+
 We also keep an eye on upcoming Ruby versions.
 
 The following Ruby implementations are not officially supported but still are
@@ -2755,12 +2754,14 @@ known to run Sinatra:
 Not being officially supported means if things only break there and not on a
 supported platform, we assume it's not our issue but theirs.
 
-We also run our CI against ruby-head (the upcoming 2.0.0) and the 1.9.4
-branch, but we can't guarantee anything, since it is constantly moving. Expect
-both 1.9.4p0 and 2.0.0p0 to be supported.
+We also run our CI against ruby-head (the upcoming 2.1.0), but we can't
+guarantee anything, since it is constantly moving. Expect 2.1.0 to be fully
+supported.
 
 Sinatra should work on any operating system supported by the chosen Ruby
 implementation.
+
+If you run MacRuby, you should `gem install control_tower`.
 
 Sinatra currently doesn't run on Cardinal, SmallRuby, BlueRuby or any
 Ruby version prior to 1.8.7.
