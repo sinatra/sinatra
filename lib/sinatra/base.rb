@@ -71,9 +71,10 @@ module Sinatra
           [key, value]
         end
 
-        @type = entry[/[^;]+/].delete(' ')
+        @entry  = entry
+        @type   = entry[/[^;]+/].delete(' ')
         @params = Hash[params]
-        @q = @params.delete('q') { "1.0" }.to_f
+        @q      = @params.delete('q') { "1.0" }.to_f
       end
 
       def <=>(other)
@@ -85,12 +86,20 @@ module Sinatra
         [ @q, -@type.count('*'), @params.size ]
       end
 
-      def [](param)
-        @params[param]
-      end
-
       def to_str
         @type
+      end
+
+      def to_s(full = false)
+        full ? entry : to_str
+      end
+
+      def respond_to?(*args)
+        super or to_str.respond_to?(*args)
+      end
+
+      def method_missing(*args, &block)
+        to_str.send(*args, &block)
       end
     end
   end

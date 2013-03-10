@@ -50,6 +50,17 @@ class RequestTest < Test::Unit::TestCase
     assert_equal({ 'compress' => '0.25' }, request.preferred_type.params)
   end
 
+  it "makes accept types behave like strings" do
+    request = Sinatra::Request.new('HTTP_ACCEPT' => 'image/jpeg; compress=0.25')
+    assert_equal 'image/jpeg', request.preferred_type.to_s
+    assert_equal 'image/jpeg', request.preferred_type.to_str
+    assert_equal 'image',      request.preferred_type.split('/').first
+
+    String.instance_methods.each do |method|
+      assert request.preferred_type.respond_to? method
+    end
+  end
+
   it "properly decodes MIME type parameters" do
     request = Sinatra::Request.new(
       'HTTP_ACCEPT' => 'image/jpeg;unquoted=0.25;quoted="0.25";chartest="\";,\x"'
