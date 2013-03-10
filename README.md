@@ -2654,8 +2654,8 @@ end
 
 You have the request scope binding inside:
 
-* get/head/post/put/delete/options blocks
-* before/after filters
+* get, head, post, put, delete, options, patch, link, and unlink blocks
+* before and after filters
 * helper methods
 * templates/views
 
