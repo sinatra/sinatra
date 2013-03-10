@@ -2089,8 +2089,8 @@ set :protection, :session => true
 
   <dt>server</dt>
   <dd>
-    server or list of servers to use for built-in server. defaults to
-    <tt>['thin', 'mongrel', 'webrick']</tt>, order indicates priority.
+    Server or list of servers to use for built-in server. order indicates priority,
+    default depends on Ruby implementation.
   </dd>
 
   <dt>sessions</dt>
