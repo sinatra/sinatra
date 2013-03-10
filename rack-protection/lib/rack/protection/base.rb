@@ -11,6 +11,7 @@ module Rack
         :message     => 'Forbidden',       :encryptor => Digest::SHA1,
         :session_key => 'rack.session',    :status    => 403,
         :allow_empty_referrer => true,
+        :report_key           => "protection.failed",
         :html_types           => %w[text/html application/xhtml]
       }
 
@@ -61,6 +62,10 @@ module Rack
 
       def deny(env)
         [options[:status], {'Content-Type' => 'text/plain'}, [options[:message]]]
+      end
+
+      def report(env)
+        env[options[:report_key]] = true
       end
 
       def session?(env)

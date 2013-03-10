@@ -18,6 +18,18 @@ describe Rack::Protection do
     session.should be_empty
   end
 
+  it 'passes errors through if :reaction => :report is used' do
+    mock_app do
+      use Rack::Protection, :reaction => :report
+      run proc { |e| [200, {'Content-Type' => 'text/plain'}, [e["protection.failed"].to_s]] }
+    end
+
+    session = {:foo => :bar}
+    post('/', {}, 'rack.session' => session, 'HTTP_ORIGIN' => 'http://malicious.com')
+    last_response.should be_ok
+    body.should == "true"
+  end
+
   describe "#html?" do
     context "given an appropriate content-type header" do
       subject { Rack::Protection::Base.new(nil).html? 'content-type' => "text/html" }
