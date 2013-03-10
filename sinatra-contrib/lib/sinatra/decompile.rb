@@ -70,18 +70,25 @@ module Sinatra
     def decompile(pattern, keys = nil, *)
       # Everything in here is basically just the reverse of
       # Sinatra::Base#compile
+      #
+      # Sinatra 2.0 will come with a mechanism for this, making this obsolete.
       pattern, keys = pattern if pattern.respond_to? :to_ary
       keys, str     = keys.try(:dup), pattern.inspect
       return pattern unless str.start_with? '/' and str.end_with? '/'
-      str.gsub! /^\/\^?|\$?\/$/, ''
+      str.gsub! /^\/(\^|\\A)?|(\$|\\z)?\/$/, ''
       str.gsub! encoded(' '), ' '
       return pattern if str =~ /^[\.\+]/
-      str.gsub! /\([^\(\)]*\)/ do |part|
+      capture = '((?:[^\.\/?#%]|(?:%[^2].|%[2][^Ee]))+)'
+      str.gsub! /\([^\(\)]*\)|\([^\(\)]*\([^\(\)]*\)[^\(\)]*\)|#{Regexp.escape(capture)}/ do |part|
         case part
         when '(.*?)'
           return pattern if keys.shift != 'splat'
           '*'
-        when '([^\/?#]+)'
+        when /^\(\?\:(\\*.)\|%[\w\[\]]+\)$/
+          $1
+        when /^\(\?\:(%\d+)\|([^\)]+|\([^\)]+\))\)$/
+          URI.unescape($1)
+        when '([^\/?#]+)', capture
           return pattern if keys.empty?
           ":" << keys.shift
         when /^\(\?\:\\?(.)\|/
@@ -102,8 +109,8 @@ module Sinatra
 
     def encoded(char)
       return super if defined? super
-      enc = URI.encode(char)
-      enc = "(?:#{Regexp.escape enc}|#{URI.encode char, /./})" if enc == char
+      enc = URI.escape(char)
+      enc = "(?:#{escaped(char, enc).join('|')})" if enc == char
       enc = "(?:#{enc}|#{encoded('+')})" if char == " "
       enc
     end
