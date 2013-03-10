@@ -8,8 +8,7 @@ class ResponseTest < Test::Unit::TestCase
   end
 
   def assert_same_body(a, b)
-    enum = Enumerable.const_get(:Enumerator)
-    assert_equal enum.new(a).to_a, enum.new(b).to_a
+    assert_equal a.to_enum(:each).to_a, b.to_enum(:each).to_a
   end
 
   it "initializes with 200, text/html, and empty body" do
