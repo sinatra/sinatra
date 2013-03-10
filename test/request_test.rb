@@ -57,7 +57,8 @@ class RequestTest < Test::Unit::TestCase
     assert_equal 'image',      request.preferred_type.split('/').first
 
     String.instance_methods.each do |method|
-      assert request.preferred_type.respond_to? method
+      next unless "".respond_to? method
+      assert request.preferred_type.respond_to?(method), "responds to #{method}"
     end
   end
 
