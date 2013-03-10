@@ -2704,7 +2704,7 @@ The following Ruby versions are officially supported:
   <dd>
     1.8.7 is fully supported, however, if nothing is keeping you from it, we
     recommend upgrading or switching to JRuby or Rubinius. Support for 1.8.7
-    will not be dropped before Sinatra 2.0. **Ruby 1.8.6 is no longer supported.**
+    will not be dropped before Sinatra 2.0. Ruby 1.8.6 is no longer supported.
   </dd>
 
   <dt>Ruby 1.9.2</dt>
