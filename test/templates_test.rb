@@ -223,16 +223,13 @@ class TemplatesTest < Test::Unit::TestCase
   end
 
   it 'sets layout-only options via layout_options' do
-    mock_app do
-      get '/' do
-        render(:str, :in_a,
-          :views          => settings.views + '/a',
-          :layout_options => { :views => settings.views },
-          :layout         => :layout2)
-      end
+    render_app do
+      render(:str, :in_a,
+        :views          => settings.views + '/a',
+        :layout_options => { :views => settings.views },
+        :layout         => :layout2)
     end
 
-    get '/'
     assert ok?
     assert_equal "<h1>String Layout!</h1>\nGimme an A!\n", body
   end
