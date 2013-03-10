@@ -177,7 +177,7 @@ module Sinatra
       end
 
       def errors
-        base.errors.merge(@errors)
+        base.errors.merge(namespace_errors)
       end
 
       def namespace_errors
@@ -188,7 +188,10 @@ module Sinatra
         args  = Sinatra::Base.send(:compile!, "ERROR", /^#{@pattern}/, block)
         codes = codes.map { |c| Array(c) }.flatten
         codes << Exception if codes.empty?
-        codes.each { |c| @errors[c] = args }
+        codes.each do |c|
+          errors = @errors[c] ||= []
+          errors << args
+        end
       end
 
       def respond_to(*args)

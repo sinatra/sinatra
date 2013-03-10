@@ -1,3 +1,4 @@
+ENV['RACK_ENV'] = 'test'
 require 'sinatra/contrib'
 
 RSpec.configure do |config|
