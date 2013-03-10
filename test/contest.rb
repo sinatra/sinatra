@@ -82,7 +82,9 @@ private
   end
 
   def self.test_name(name)
-    "test_#{sanitize_name(name).gsub(/\s+/,'_')}".to_sym
+    name = "test_#{sanitize_name(name).gsub(/\s+/,'_')}_0"
+    name = name.succ while method_defined? name
+    name.to_sym
   end
 
   def self.sanitize_name(name)
