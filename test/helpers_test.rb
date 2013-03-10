@@ -574,6 +574,12 @@ class HelpersTest < Test::Unit::TestCase
     it 'returns the argument when given a media type string' do
       assert_equal 'text/plain', mime_type('text/plain')
     end
+
+    it 'turns AcceptEntry into String' do
+      type = mime_type(Sinatra::Request::AcceptEntry.new('text/plain'))
+      assert_equal String, type.class
+      assert_equal 'text/plain', type
+    end
   end
 
   test 'Base.mime_type registers mime type' do

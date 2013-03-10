@@ -1255,7 +1255,8 @@ module Sinatra
 
       # Lookup or register a mime type in Rack's mime registry.
       def mime_type(type, value = nil)
-        return type if type.nil? || type.to_s.include?('/')
+        return type      if type.nil?
+        return type.to_s if type.to_s.include?('/')
         type = ".#{type}" unless type.to_s[0] == ?.
         return Rack::Mime.mime_type(type, nil) unless value
         Rack::Mime::MIME_TYPES[type] = value
