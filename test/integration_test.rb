@@ -82,7 +82,8 @@ class IntegrationTest < Test::Unit::TestCase
       with\sbackup\sfrom\s#{server}
     }ix
 
-    assert_match exp, server.log
+    # because Net HTTP Server logs to $stderr by default
+    assert_match exp, server.log unless server.net_http_server?
   end
 
   it 'does not generate warnings' do
