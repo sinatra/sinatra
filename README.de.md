@@ -818,13 +818,15 @@ Creole geschrieben werden. Es ist aber möglich, einen Renderer für die Templat
 zu verwenden und einen anderen für das Layout, indem die `:layout_engine`-Option
 verwendet wird.
 
-### CoffeeScript Templates
+#### CoffeeScript Templates
 
 <table>
   <tr>
     <td>Abhängigkeit</td>
-    <td><a href="https://github.com/josh/ruby-coffee-script">coffee-script</a> und eine <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme">Möglichkeit JavaScript auszuführen</a>.</td>
-  <tr>
+    <td><a href="https://github.com/josh/ruby-coffee-script">coffee-script</a> 
+        und eine <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme">Möglichkeit JavaScript auszuführen</a>.
+    </td>
+  </tr>
     <td>Dateierweiterung</td>
     <td><tt>.coffee</tt></td>
   </tr>
@@ -910,7 +912,7 @@ verwendet werden:
 var resource = {"foo":"bar","baz":"qux"}; present(resource);
 ```
 
-### WLang Templates
+#### WLang Templates
 
 <table>
   <tr>
