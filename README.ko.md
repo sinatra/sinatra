@@ -1705,20 +1705,25 @@ set :protection, :except => [:path_traversal, :session_hijacking]
     <tt>settings.add_charsets << "application/foobar"</tt>
   </dd>
 
-  <dt>app_file<dt>
+  <dt>app_file</dt>
   <dd>메인 애플리케이션 파일의 경로. 프로젝트 루트와 뷰, 그리고 public 폴더, 인라인 템플릿을
-   파악할 때 사용됨.</dd>
+   파악할 때 사용됨.
+  </dd>
 
-  <dt>bind<dt>
+  <dt>bind</dt>
   <dd>바인드할 IP 주소(기본값: 0.0.0.0).
-   오직 빌트인(built-in) 서버에서만 사용됨.</dd>
+   오직 빌트인(built-in) 서버에서만 사용됨.
+  </dd>
 
   <dt>default_encoding</dt>
   <dd>모를 때 가정할 인코딩
-   (기본값은 <tt>"utf-8"</tt>).</dd>
+   (기본값은 <tt>"utf-8"</tt>).
+  </dd>
 
   <dt>dump_errors</dt>
-  <dd>로그로 에러 출력.</dd>
+  <dd>
+    로그로 에러 출력.
+  </dd>
 
   <dt>environment</dt>
   <dd>현재 환경, 기본값은 <tt>ENV['RACK_ENV']</tt> 또는 알 수 없을 경우 "development".</dd>
@@ -1806,6 +1811,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
   <dt>views</dt>
   <dd>뷰 폴더 경로. 설정하지 않은 경우 <tt>app_file</tt>로부터 유추됨.</dd>
 </dl>
+
 
 ## 환경(Environments)
 
