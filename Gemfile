@@ -75,12 +75,9 @@ if RUBY_ENGINE != 'jruby' or not ENV['TRAVIS']
   end
   gem 'RedCloth' unless RUBY_ENGINE == "macruby"
   gem 'puma'
-
-  ## bluecloth is broken
-  #gem 'bluecloth'
 end
 
-gem 'net-http-server'
+gem 'net-http-server' unless RUBY_VERSION == '1.8.7' || RUBY_ENGINE =~ /jruby|rbx/
 
 platforms :ruby_18, :jruby do
   gem 'json' unless RUBY_VERSION > '1.9' # is there a jruby but 1.8 only selector?
