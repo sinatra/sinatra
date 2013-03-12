@@ -86,7 +86,8 @@ module IntegrationHelper
 
     def installed?
       return @installed unless @installed.nil?
-      require server
+      s = server == 'HTTP' ? 'net/http/server' : server
+      require s
       @installed = true
     rescue LoadError
       warn "#{server} is not installed, skipping integration tests"
@@ -102,7 +103,7 @@ module IntegrationHelper
           file, dir = RbConfig::CONFIG.values_at('ruby_install_name', 'bindir')
           cmd << File.expand_path(file, dir).inspect
         end
-        cmd << "-w" unless thin?
+        cmd << "-w" unless thin? || net_http_server?
         cmd << "-I" << File.expand_path('../../lib', __FILE__).inspect
         cmd << app_file.inspect << '-s' << server << '-o' << '127.0.0.1' << '-p' << port
         cmd << "-e" << environment.to_s << '2>&1'
@@ -132,6 +133,10 @@ module IntegrationHelper
 
     def trinidad?
       name.to_s == "trinidad"
+    end
+
+    def net_http_server?
+      name.to_s == 'HTTP'
     end
 
     def warnings
