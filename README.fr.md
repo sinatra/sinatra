@@ -479,7 +479,7 @@ exemple).
   </tr>
   <tr>
     <td>Exemple</td>
-    <td><tt>nokogiri { |xml| xml.em "salut" }</p>
+    <td><tt>nokogiri { |xml| xml.em "salut" }</tt>
     </td>
   </tr>
 </table>
