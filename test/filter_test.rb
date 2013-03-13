@@ -153,6 +153,27 @@ class BeforeFilterTest < Test::Unit::TestCase
     get '/foo/bar'
     assert_equal subpath, 'bar'
   end
+
+  it 'can catch exceptions in before filters and handle them properly' do
+    doodle = ''
+    mock_app do
+      before do
+        doodle += 'This begins'
+        raise StandardError, "before"
+      end
+      get "/" do
+        doodle = 'and runs'
+      end
+      error 500 do
+        "Error handled #{env['sinatra.error'].message}"
+      end
+    end
+
+    doodle = ''
+    get '/'
+    assert_equal 'Error handled before', body
+    assert_equal 'This begins', doodle
+  end
 end
 
 class AfterFilterTest < Test::Unit::TestCase
@@ -442,25 +463,25 @@ class AfterFilterTest < Test::Unit::TestCase
         doodle += ' and after'
         raise StandardError, "after"
       end
-      get :foo do
+      get "/foo" do
         doodle = 'Been now'
         raise StandardError, "now"
       end
-      get :index do
+      get "/" do
         doodle = 'Been now'
       end
       error 500 do
-        "We broke #{env['sinatra.error'].message}"
+        "Error handled #{env['sinatra.error'].message}"
       end
     end
 
     get '/foo'
-    assert_equal 'We broke now', body
-    assert_equal 'Been now', doodle
+    assert_equal 'Error handled now', body
+    assert_equal 'Been now and after', doodle
 
     doodle = ''
     get '/'
-    assert_equal 'We broke after', body
+    assert_equal 'Error handled after', body
     assert_equal 'Been now and after', doodle
   end
 end
