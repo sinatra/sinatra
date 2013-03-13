@@ -1053,7 +1053,11 @@ module Sinatra
   rescue ::Exception => boom
     invoke { handle_exception!(boom) }
   ensure
-    filter! :after unless env['sinatra.static_file']
+    begin
+      filter! :after unless env['sinatra.static_file']
+    rescue ::Exception => boom
+      invoke { handle_exception!(boom) } unless @env['sinatra.error']
+    end
   end
 
   # Error handling during requests.
