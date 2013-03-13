@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   # general infos
   s.name        = "rack-protection"
-  s.version     = "1.4.0"
+  s.version     = "1.5.0"
   s.description = "You should use protection!"
   s.homepage    = "http://github.com/rkh/rack-protection"
   s.summary     = s.description
@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
     "Corey Ward",
     "David Kellum",
     "Egor Homakov",
+    "Florian Gilcher",
     "Fojas",
     "Mael Clerambault",
     "Martin Mauch",
@@ -31,11 +32,11 @@ Gem::Specification.new do |s|
   s.email = [
     "konstantin.mailinglists@googlemail.com",
     "p0deje@gmail.com",
-    "cheald@gmail.com",
     "self@hecticjeff.net",
     "coreyward@me.com",
     "dek-oss@gravitext.com",
     "homakov@gmail.com",
+    "florian.gilcher@asquera.de",
     "developer@fojasaur.us",
     "mael@clerambault.fr",
     "martin.mauch@gmail.com",
@@ -44,7 +45,8 @@ Gem::Specification.new do |s|
     "steve.agalloco@gmail.com",
     "akzhan.abdulin@gmail.com",
     "toby.net.info.mail+git@gmail.com",
-    "bjoerge@bengler.no"
+    "bjoerge@bengler.no",
+    "cheald@gmail.com"
   ]
 
   # generated from git ls-files
