@@ -118,7 +118,7 @@ class HelpersTest < Test::Unit::TestCase
   end
 
   describe 'body' do
-    it 'takes a block for defered body generation' do
+    it 'takes a block for deferred body generation' do
       mock_app do
         get('/') { body { 'Hello World' } }
       end
@@ -798,7 +798,7 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal 'text/plain;charset=utf-8', response['Content-Type']
     end
 
-    it 'sets the Content-Type response header if type option is set to a file extesion' do
+    it 'sets the Content-Type response header if type option is set to a file extension' do
       send_file_app :type => 'html'
       get '/file.txt'
       assert_equal 'text/html;charset=utf-8', response['Content-Type']
@@ -822,7 +822,7 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal File.mtime(@file).httpdate, response['Last-Modified']
     end
 
-    it 'allows passing in a differen Last-Modified response header with :last_modified' do
+    it 'allows passing in a different Last-Modified response header with :last_modified' do
       time = Time.now
       send_file_app :last_modified => time
       get '/file.txt'
@@ -873,7 +873,7 @@ class HelpersTest < Test::Unit::TestCase
       assert_status 201
     end
 
-    it "is able to send files with unkown mime type" do
+    it "is able to send files with unknown mime type" do
       @file = File.dirname(__FILE__) + '/file.foobar'
       File.open(@file, 'wb') { |io| io.write('Hello World') }
       send_file_app

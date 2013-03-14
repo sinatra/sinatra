@@ -67,7 +67,7 @@ class BaseTest < Test::Unit::TestCase
       assert_equal Sinatra::Base.settings, Sinatra::Base.new.settings
     end
 
-    it 'expses helpers' do
+    it 'exposes helpers' do
       assert_equal 'image/jpeg', Sinatra::Base.new.helpers.mime_type(:jpg)
     end
   end

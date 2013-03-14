@@ -288,7 +288,7 @@ class AfterFilterTest < Test::Unit::TestCase
     assert ran_filter
   end
 
-  it 'changes to path_info from a pattern matching before filter are respoected when routing' do
+  it 'changes to path_info from a pattern matching before filter are respected when routing' do
     mock_app do
       before('/foo') { request.path_info = '/bar' }
       get('/bar') { 'blah' }
