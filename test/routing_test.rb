@@ -776,6 +776,9 @@ class RoutingTest < Test::Unit::TestCase
       get '/foo', :provides => :html do
         env['HTTP_ACCEPT']
       end
+      get '/stream', :provides => 'text/event-stream' do
+        env['HTTP_ACCEPT']
+      end
     }
 
     get '/', {}, { 'HTTP_ACCEPT' => 'application/xml' }
@@ -791,6 +794,13 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 'text/html;q=0.9', body
 
     get '/foo', {}, { 'HTTP_ACCEPT' => '' }
+    assert !ok?
+
+    get '/stream', {}, { 'HTTP_ACCEPT' => 'text/event-stream' }
+    assert ok?
+    assert_equal 'text/event-stream', body
+
+    get '/stream', {}, { 'HTTP_ACCEPT' => '' }
     assert !ok?
   end
 
