@@ -63,7 +63,7 @@ class WLangTest < Test::Unit::TestCase
     assert_body "WLang Layout!\nHello World"
   end
 
-  it "can rendere truly nested layouts by accepting a layout and a block with the contents" do
+  it "can rendered truly nested layouts by accepting a layout and a block with the contents" do
     mock_app do
       template(:main_outer_layout) { "<h1>Title</h1>\n>{ yield }" }
       template(:an_inner_layout) { "<h2>Subtitle</h2>\n>{ yield }" }
