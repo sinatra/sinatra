@@ -17,7 +17,7 @@ module Sinatra
   # http://rack.rubyforge.org/doc/classes/Rack/Request.html
   class Request < Rack::Request
     HEADER_PARAM = /\s*[\w.]+=(?:[\w.]+|"(?:[^"\\]|\\.)*")?\s*/
-    HEADER_VALUE_WITH_PARAMS = /(?:(?:\w+|\*)\/(?:\w+\-*\w+|\*))\s*(?:;#{HEADER_PARAM})*/
+    HEADER_VALUE_WITH_PARAMS = /(?:(?:\w+|\*)\/(?:\w+(?:\.|\-|\+)?|\*)*)\s*(?:;#{HEADER_PARAM})*/
 
     # Returns an array of acceptable media types for the response
     def accept
