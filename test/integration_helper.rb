@@ -176,7 +176,7 @@ module IntegrationHelper
 
         Thread.new do
           # Hack to ensure that Kernel#caller has the same info as
-          # when run from command-line, for Sintra::Application.app_file.
+          # when run from command-line, for Sinatra::Application.app_file.
           # Also, line numbers are zero-based in JRuby's parser
           vm.provider.runtime.current_context.set_file_and_line(app_file, 0)
           # Run the app

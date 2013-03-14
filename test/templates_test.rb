@@ -281,7 +281,7 @@ class TemplatesTest < Test::Unit::TestCase
     assert_equal 'template in subclass', body
   end
 
-  it "is possible to use a different engine for the layout than for the template itself explicitely" do
+  it "is possible to use a different engine for the layout than for the template itself explicitly" do
     render_app do
       settings.template(:layout) { 'Hello <%= yield %>!' }
       render :str, "<%= 'World' %>", :layout_engine => :erb
