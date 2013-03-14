@@ -41,9 +41,9 @@ class StreamingTest < Test::Unit::TestCase
   it 'calls the callback after it is done' do
     step   = 0
     final  = 0
-    stream = Stream.new { |o| 10.times { step += 1 }}
+    stream = Stream.new { 10.times { step += 1 }}
     stream.callback { final = step }
-    stream.each { |str| }
+    stream.each { }
     assert_equal 10, final
   end
 
@@ -52,7 +52,7 @@ class StreamingTest < Test::Unit::TestCase
     final  = 0
     stream = Stream.new(Stream, :keep_open) { |o| 10.times { step += 1 } }
     stream.callback { final = step }
-    stream.each { |str| }
+    stream.each { }
     assert_equal 0, final
   end
 
@@ -61,7 +61,7 @@ class StreamingTest < Test::Unit::TestCase
     stream = Stream.new { }
     stream.callback { a = true }
     stream.callback { b = true }
-    stream.each { |str| }
+    stream.each { }
     assert a, 'should trigger first callback'
     assert b, 'should trigger second callback'
   end
@@ -110,7 +110,7 @@ class StreamingTest < Test::Unit::TestCase
 
   it 'does not trigger an infinite loop if you call close in a callback' do
     stream = Stream.new { |out| out.callback { out.close }}
-    stream.each { |str| }
+    stream.each { }
   end
 
   it 'gives access to route specific params' do
