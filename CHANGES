@@ -333,6 +333,20 @@
  * Fix handling of broken query params when displaying exceptions. (Luke
    Jahnke)
 
+= 1.2.9 (backports release) / 2013-03-15
+
+IMPORTANT: THIS IS THE LAST 1.2.x RELEASE, PLEASE UPGRADE.
+
+ * Display EOL warning when loading Sinatra. (Konstantin Haase)
+
+ * Improve documentation. (Anurag Priyam, Konstantin Haase)
+
+ * Do not modify the load path. (Konstantin Haase)
+
+ * Display deprecation warning if RUBY_IGNORE_CALLERS is used. (Konstantin Haase)
+
+ * Add backports library so we can still run on Ruby 1.8.6. (Konstantin Haase)
+
 = 1.2.8 (backports release) / 2011-12-30
 
 Backported from 1.3.2:
