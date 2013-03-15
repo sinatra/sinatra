@@ -28,3 +28,7 @@ end
 # include would include the module in Object
 # extend only extends the `main` object
 extend Sinatra::Delegator
+
+class Rack::Builder
+  include Sinatra::Delegator
+end

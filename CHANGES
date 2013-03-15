@@ -1,3 +1,7 @@
+= 1.4.0 / not yet released
+
+ * Make delegated methods available in config.ru (Konstantin Haase)
+
 = 1.4.0 / 2013-03-15
 
  * Add support for LINK and UNLINK requests. (Konstantin Haase)
