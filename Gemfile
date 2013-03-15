@@ -32,7 +32,7 @@ gem 'erubis', :group => 'erubis'
 gem 'liquid', :group => 'liquid'
 
 if RUBY_VERSION > '1.8.6'
-  gem 'less', '~> 1.0', :group => 'less'
+  #gem 'less', '~> 1.0', :group => 'less'
   gem 'slim', :group => 'slim'
   gem 'RedCloth', :group => 'redcloth' if RUBY_VERSION < "1.9.3" and RUBY_ENGINE != 'macruby'
 
