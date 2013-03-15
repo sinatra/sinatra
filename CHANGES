@@ -39,7 +39,7 @@
  * In addition to WebRick, Thin and Mongrel, Sinatra will now automatically pick
    up Puma, Trinidad, ControlTower or Net::HTTP::Server when installed. The
    logic for picking the server has been improved and now depends on the Ruby
-   implementation used. (Mark Rada, Konstantin Haase)
+   implementation used. (Mark Rada, Konstantin Haase, Patricio Mac Adden)
 
  * "Sinatra doesn't know this ditty" pages now show the app class when running
    a modular application. This helps detecting where the response came from when
@@ -62,7 +62,8 @@
 
  * Make route parsing regex more robust. (Zoltan Dezso, Konstantin Haase)
 
- * Improve Accept header parsing, expose parameters. (Pieter van de Bruggen)
+ * Improve Accept header parsing, expose parameters. (Pieter van de Bruggen,
+   Konstantin Haase)
 
  * Add `layout_options` render option. Allows you, amongst other things, to
    render a layout from a different folder. (Konstantin Haase)
@@ -86,7 +87,7 @@
  * Improve documentation. (Kashyap, Stanislav Chistenko, Zachary Scott, 
    Anthony Accomazzo, Peter Suschlik, Rachel Mehl, ymmtmsys, Anurag Priyam,
    burningTyger, Tony Miller, akicho8, Vasily Polovnyov, Markus Prinz,
-   Alexey Muranov, Konstantin Haase)
+   Alexey Muranov, Erik Johnson, Vipul A M, Konstantin Haase)
 
  * Convert documentation to Markdown. (Kashyap, Robin Dupret, burningTyger,
    Vasily Polovnyov, Iain Barnett, Giuseppe Capizzi, Neil West)
@@ -111,6 +112,12 @@
  * Make chat example work with latest jQuery. (loveky, Tony Miller)
 
  * Make tests run without warnings. (Patricio Mac Adden)
+
+ * Make sure value returned by `mime_type` is a String or nil, even when a
+   different object is passed in, like an AcceptEntry. (Konstantin Haase)
+
+ * Exceptions in `after` filter are now handled like any other exception.
+   (Nathan Esquenazi)
 
 = 1.3.5 / 2013-02-25
 
