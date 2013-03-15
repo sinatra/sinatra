@@ -1,4 +1,4 @@
-= 1.4.0 / not yet released
+= 1.4.1 / not yet released
 
  * Make delegated methods available in config.ru (Konstantin Haase)
 
