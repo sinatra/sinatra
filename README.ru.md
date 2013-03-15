@@ -416,7 +416,7 @@ set :views, settings.root + '/templates'
 `:'subdir/template'`). Вы должны использовать символы, потому что иначе
 шаблонизаторы попросту отображают любые строки, переданные им.
 
-#### Буквальные шаблоны
+### Буквальные шаблоны
 
 ```ruby
 get '/' do
@@ -436,7 +436,7 @@ require 'rdiscount' # или require 'bluecloth'
 get('/') { markdown :index }
 ```
 
-### Haml шаблоны
+#### Haml шаблоны
 
 <table>
   <tr>
@@ -453,7 +453,7 @@ get('/') { markdown :index }
   </tr>
 </table>
 
-### Erb шаблоны
+#### Erb шаблоны
 
 <table>
   <tr>
@@ -473,7 +473,7 @@ get('/') { markdown :index }
   </tr>
 </table>
 
-### Builder шаблоны
+#### Builder шаблоны
 
 <table>
   <tr>
@@ -494,7 +494,7 @@ get('/') { markdown :index }
 
 Блок также используется и для встроенных шаблонов (см. пример).
 
-### Nokogiri шаблоны
+#### Nokogiri шаблоны
 
 <table>
   <tr>
@@ -513,7 +513,7 @@ get('/') { markdown :index }
 
 Блок также используется и для встроенных шаблонов (см. пример).
 
-### Sass шаблоны
+#### Sass шаблоны
 
 <table>
   <tr>
@@ -530,7 +530,7 @@ get('/') { markdown :index }
   </tr>
 </table>
 
-### SCSS шаблоны
+#### SCSS шаблоны
 
 <table>
   <tr>
@@ -547,7 +547,7 @@ get('/') { markdown :index }
   </tr>
 </table>
 
-### Less шаблоны
+#### Less шаблоны
 
 <table>
   <tr>
@@ -564,7 +564,7 @@ get('/') { markdown :index }
   </tr>
 </table>
 
-### Liquid шаблоны
+#### Liquid шаблоны
 
 <table>
   <tr>
@@ -584,7 +584,7 @@ get('/') { markdown :index }
 Так как в Liquid шаблонах невозможно вызывать методы из Ruby (кроме `yield`), то
 вы почти всегда будете передавать в шаблон локальные переменные.
 
-### Markdown шаблоны
+#### Markdown шаблоны
 
 <table>
   <tr>
@@ -628,7 +628,7 @@ erb :overview, :locals => { :text => markdown(:introduction) }
 один шаблонизатор для отображения шаблона, а другой для лэйаута с помощью
 опции `:layout_engine`.
 
-### Textile шаблоны
+#### Textile шаблоны
 
 <table>
   <tr>
@@ -665,7 +665,7 @@ erb :overview, :locals => { :text => textile(:introduction) }
 один шаблонизатор для отображения шаблона, а другой для лэйаута с помощью
 опции `:layout_engine`.
 
-### RDoc шаблоны
+#### RDoc шаблоны
 
 <table>
   <tr>
@@ -702,7 +702,7 @@ erb :overview, :locals => { :text => rdoc(:introduction) }
 для отображения шаблона, а другой для лэйаута с помощью опции
 `:layout_engine`.
 
-### Radius шаблоны
+#### Radius шаблоны
 
 <table>
   <tr>
@@ -722,7 +722,7 @@ erb :overview, :locals => { :text => rdoc(:introduction) }
 Так как в Radius шаблонах невозможно вызывать методы из Ruby напрямую, то вы
 почти всегда будете передавать в шаблон локальные переменные.
 
-### Markaby шаблоны
+#### Markaby шаблоны
 
 <table>
   <tr>
@@ -741,7 +741,7 @@ erb :overview, :locals => { :text => rdoc(:introduction) }
 
 Блок также используется и для встроенных шаблонов (см. пример).
 
-### RABL шаблоны
+#### RABL шаблоны
 
 <table>
   <tr>
@@ -758,7 +758,7 @@ erb :overview, :locals => { :text => rdoc(:introduction) }
   </tr>
 </table>
 
-### Slim шаблоны
+#### Slim шаблоны
 
 <table>
   <tr>
@@ -775,7 +775,7 @@ erb :overview, :locals => { :text => rdoc(:introduction) }
   </tr>
 </table>
 
-### Creole шаблоны
+#### Creole шаблоны
 
 <table>
   <tr>
@@ -812,7 +812,7 @@ erb :overview, :locals => { :text => creole(:introduction) }
 один шаблонизатор для отображения шаблона, а другой для лэйаута с помощью
 опции `:layout_engine`.
 
-### CoffeeScript шаблоны
+#### CoffeeScript шаблоны
 
 <table>
   <tr>
@@ -836,7 +836,7 @@ erb :overview, :locals => { :text => creole(:introduction) }
   </tr>
 </table>
 
-### Yajl шаблоны
+#### Yajl шаблоны
 
 <table>
   <tr>
@@ -875,7 +875,7 @@ json[:baz] = key
 var resource = {"foo":"bar","baz":"qux"}; present(resource);
 ```
 
-### WLang шаблоны
+#### WLang шаблоны
 
 <table>
   <tr>
