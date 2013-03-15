@@ -416,7 +416,7 @@ haml :'unterverzeichnis/template'
 
 Rendering-Methoden rendern jeden String direkt.
 
-#### Direkte Templates
+### Direkte Templates
 
 ``` ruby
 get '/' do
@@ -437,7 +437,7 @@ require 'rdiscount' # oder require 'bluecloth'
 get('/') { markdown :index }
 ```
 
-### Haml Templates
+#### Haml Templates
 
 <table>
   <tr>
@@ -455,7 +455,7 @@ get('/') { markdown :index }
 </table>
 
 
-### Erb Templates
+#### Erb Templates
 
 <table>
   <tr>
@@ -474,7 +474,7 @@ get('/') { markdown :index }
 </table>
 
 
-### Builder Templates
+#### Builder Templates
 
 <table>
   <tr>
@@ -493,7 +493,7 @@ get('/') { markdown :index }
 
 Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 
-### Nokogiri Templates
+#### Nokogiri Templates
 
 <table>
   <tr>
@@ -512,7 +512,7 @@ Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 
 Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 
-### Sass Templates
+#### Sass Templates
 
 <table>
   <tr>
@@ -530,7 +530,7 @@ Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 </table>
 
 
-### SCSS Templates
+#### SCSS Templates
 
 <table>
   <tr>
@@ -548,7 +548,7 @@ Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 </table>
 
 
-### Less Templates
+#### Less Templates
 
 <table>
   <tr>
@@ -566,7 +566,7 @@ Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 </table>
 
 
-### Liquid Templates
+#### Liquid Templates
 
 <table>
   <tr>
@@ -587,7 +587,7 @@ Da man aus dem Liquid-Template heraus keine Ruby-Methoden aufrufen kann
 (ausgenommen `yield`), wird man üblicherweise locals verwenden wollen, mit
 denen man Variablen weitergibt.
 
-### Markdown Templates
+#### Markdown Templates
 
 <table>
   <tr>
@@ -631,7 +631,7 @@ in Markdown geschrieben werden. Es ist aber möglich, einen Renderer für die
 Templates zu verwenden und einen anderen für das Layout, indem die
 `:layout_engine`-Option verwendet wird.
 
-### Textile Templates
+#### Textile Templates
 
 <table>
   <tr>
@@ -669,7 +669,7 @@ in Textile geschrieben werden. Es ist aber möglich, einen Renderer für die
 Templates zu verwenden und einen anderen für das Layout, indem die
 `:layout_engine`-Option verwendet wird.
 
-### RDoc Templates
+#### RDoc Templates
 
 <table>
   <tr>
@@ -707,7 +707,7 @@ RDoc geschrieben werden. Es ist aber möglich, einen Renderer für die Templates
 zu verwenden und einen anderen für das Layout, indem die
 `:layout_engine`-Option verwendet wird.
 
-### Radius Templates
+#### Radius Templates
 
 <table>
   <tr>
@@ -727,7 +727,7 @@ zu verwenden und einen anderen für das Layout, indem die
 Da man aus dem Radius-Template heraus keine Ruby-Methoden aufrufen kann, wird
 man üblicherweise locals verwenden wollen, mit denen man Variablen weitergibt.
 
-### Markaby Templates
+#### Markaby Templates
 
 <table>
   <tr>
@@ -746,7 +746,7 @@ man üblicherweise locals verwenden wollen, mit denen man Variablen weitergibt.
 
 Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 
-### RABL Templates
+#### RABL Templates
 
 <table>
   <tr>
@@ -763,7 +763,7 @@ Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
   </tr>
 </table>
 
-### Slim Templates
+#### Slim Templates
 
 <table>
   <tr>
@@ -780,7 +780,7 @@ Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
   </tr>
 </table>
 
-### Creole Templates
+#### Creole Templates
 
 <table>
   <tr>
@@ -1204,7 +1204,7 @@ Einstellungen ablegen.
 set :sessions, :domain => 'foo.com'
 ```
 
-## Anhalten
+### Anhalten
 
 Zum sofortigen Stoppen eines Request in einem Filter oder einer Route:
 
@@ -1242,7 +1242,7 @@ Natürlich ist es auch möglich, ein Template mit `halt` zu verwenden:
 halt erb(:error)
 ```
 
-## Weiterspringen
+### Weiterspringen
 
 Eine Route kann mittels `pass` zu der nächsten passenden Route springen:
 
@@ -1431,7 +1431,7 @@ diesem Fall `nil` zurückgeben wird. Üblicherweise wird das eingesetzt, wenn ei
 eigener Logger eingerichtet werden soll. Sinatra wird dann verwenden, was in 
 `env['rack.logger']` eingetragen ist.
 
-## Mime-Types
+### Mime-Types
 
 Wenn `send_file` oder statische Dateien verwendet werden, kann es vorkommen,
 dass Sinatra den Mime-Typ nicht kennt. Registriert wird dieser mit `mime_type`
@@ -1656,7 +1656,7 @@ Ruby-Prozess auch andere Möglichkeiten genutzt. Bei Verwendung der
 `send_file`-Helfer-Methode kümmert sich Sinatra selbstständig um die
 Range-Requests.
 
-## Das Request-Objekt
+### Das Request-Objekt
 
 Auf das `request`-Objekt der eigehenden Anfrage kann vom Anfrage-Scope aus
 zugegriffen werden:
@@ -1823,7 +1823,7 @@ Inhalt gecached, solange nicht im Entwicklungsmodus gearbeitet wird. Das sollte
 im Hinterkopf behalten werden, wenn irgendwelche verrückten Methoden
 zusammenbastelt werden.
 
-## Konfiguration
+### Konfiguration
 
 Wird einmal beim Starten in jedweder Umgebung ausgeführt:
 
@@ -1877,7 +1877,7 @@ get '/' do
 end
 ```
 
-### Einstellung des Angriffsschutzes
+#### Einstellung des Angriffsschutzes
 
 Sinatra verwendet
 [Rack::Protection](https://github.com/rkh/rack-protection#readme), um die
@@ -1903,7 +1903,7 @@ Schutzmechanismen zu deaktivieren:
 ```ruby
 set :protection, :except => [:path_traversal, :session_hijacking]
 ```
-## Mögliche Einstellungen
+#### Mögliche Einstellungen
 
 <dl>
   <dt>absolute_redirects</dt>
@@ -2214,7 +2214,7 @@ end
 Hinweis: Wird Sinatra modular verwendet, muss <tt>Sinatra::Application</tt> mit
 dem Namen der Applikations-Klasse ersetzt werden.
 
-[[##]] Sinatra::Base - Middleware, Bibliotheken und modulare Anwendungen
+## Sinatra::Base - Middleware, Bibliotheken und modulare Anwendungen
 
 Das Definieren einer Top-Level-Anwendung funktioniert gut für
 Mikro-Anwendungen, hat aber Nachteile, wenn wiederverwendbare Komponenten wie
