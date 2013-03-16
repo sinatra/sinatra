@@ -305,7 +305,7 @@ module Sinatra
           key, value = line.split(';', 2).first.to_s.split('=', 2)
           next if key.nil?
           key = Rack::Utils.unescape(key)
-          if line.include? "expires=Thu, 01-Jan-1970 00:00:00 GMT"
+          if line =~ /expires=Thu, 01[-\s]Jan[-\s]1970/
             @deleted << key
           else
             @deleted.delete key

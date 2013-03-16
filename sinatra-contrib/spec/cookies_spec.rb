@@ -158,7 +158,7 @@ describe Sinatra::Cookies do
       cookie_route("foo=bar") do
         cookies.clear
         response['Set-Cookie']
-      end.should include("foo=;", "expires=Thu, 01-Jan-1970 00:00:00 GMT")
+      end.should include("foo=;", "expires=", "1970 00:00:00")
     end
   end
 
@@ -194,7 +194,7 @@ describe Sinatra::Cookies do
       cookie_route("foo=bar") do
         cookies.delete 'foo'
         response['Set-Cookie']
-      end.should include("foo=;", "expires=Thu, 01-Jan-1970 00:00:00 GMT")
+      end.should include("foo=;", "expires=", "1970 00:00:00")
     end
 
     it 'honours the app cookie_options' do
