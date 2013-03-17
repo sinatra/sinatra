@@ -15,7 +15,7 @@ get '/' do
 end
 ```
 
-Instalá la gem y ejecutá la aplicación con:
+Instalá el gem y corré la aplicación con:
 
 ```  shell
 gem install sinatra
@@ -58,11 +58,11 @@ options '/' do
 end
 ```
 
-Las rutas son comparadas en el orden en el que son definidas. La primer ruta
+Las rutas son comparadas en el orden en el que son definidas. La primera ruta
 que coincide con la petición es invocada.
 
 Los patrones de las rutas pueden incluir parámetros nombrados, accesibles a
-través de el hash `params`:
+través del hash `params`:
 
 ``` ruby
 get '/hola/:nombre' do
@@ -76,6 +76,9 @@ También podés acceder a los parámetros nombrados usando parámetros de bloque
 
 ``` ruby
 get '/hola/:nombre' do |n|
+  # coincide con "GET /hola/foo" y "GET /hola/bar"
+  # params[:nombre] es 'foo' o 'bar'
+  # n almacena params[:nombre]
   "Hola #{n}!"
 end
 ```
@@ -128,7 +131,7 @@ get '/posts.?:formato?' do
 end
 ```
 
-A propósito, a menos que desactivés la protección para el ataque *path
+A propósito, a menos que desactives la protección para el ataque *path
 traversal* (ver más abajo), el path de la petición puede ser modificado
 antes de que se compare con los de tus rutas.
 
@@ -201,10 +204,10 @@ end
 
 ### Valores de Retorno
 
-El valor de retorno de un bloque de ruta determina al menos el cuerpo de la
+El valor de retorno de un bloque de ruta que determina al menos el cuerpo de la
 respuesta que se le pasa al cliente HTTP o al siguiente middleware en la pila
 de Rack. Lo más común es que sea un string, como en los ejemplos anteriores.
-Sin embargo, otros valor también son aceptados.
+Sin embargo, otros valores también son aceptados.
 
 Podés devolver cualquier objeto que sea una respuesta Rack válida, un objeto
 que represente el cuerpo de una respuesta Rack o un código de estado HTTP:
@@ -377,7 +380,7 @@ Opciones disponibles:
 
   <dt>layout</dt>
   <dd>
-    Si es <tt>true</tt> o <tt>false</tt> indica que se debe usar, o nó, un layout,
+    Si es <tt>true</tt> o <tt>false</tt> indica que se debe usar, o no, un layout,
     respectivamente. También puede ser un símbolo que especifique qué plantilla
     usar. Ejemplo: <tt>erb :index, :layout => !request.xhr?</tt>
   </dd>
@@ -412,9 +415,9 @@ Opciones disponibles:
   <dd>
     Es importante acordarse que siempre tenés que referenciar a las plantillas con
     símbolos, incluso cuando se encuentran en un subdirectorio (en este caso
-    tenés que usar: <tt>'subdir/plantilla'</tt>). Tenés que usar un símbolo porque los
-    métodos de renderización van a renderizar directamente cualquier string que se
-    les pase como argumento.
+    tenés que usar: `:'subdir/plantilla'` o `'subdir/plantilla'.to_sym`). Tenés que
+    usar un símbolo porque los métodos de renderización van a renderizar
+    directamente cualquier string que se les pase como argumento.
   </dd>
 </dl>
 
@@ -872,7 +875,6 @@ distinto al de la plantilla pasando la opción `:layout_engine`.
   </tr>
 </table>
 
-
 El contenido de La plantilla se evalúa como código Ruby, y la variable `json` es convertida a JSON mediante `#to_json`.
 
 ``` ruby
@@ -1057,7 +1059,7 @@ after do
 end
 ```
 
-Nota: A menos que usés el método `body` en lugar de simplemente devolver un
+Nota: A menos que uses el método `body` en lugar de simplemente devolver un
 string desde una ruta, el cuerpo de la respuesta no va a estar disponible en
 un filtro after, debido a que todavía no se ha generado.
 
@@ -1125,7 +1127,7 @@ incluir los módulos en la clase de la aplicación.
 ### Usando Sesiones
 
 Una sesión es usada para mantener el estado a través de distintas peticiones.
-Cuando están activadas, tenés un hash de sesión para cada sesión de usuario:
+Cuando están activadas, proporciona un hash de sesión para cada sesión de usuario:
 
 ``` ruby
 enable :sessions
@@ -1140,8 +1142,8 @@ end
 ```
 
 Tené en cuenta que `enable :sessions` guarda todos los datos en una
-cookie, lo que no es siempre deseable (guardar muchos datos va a incrementar
-tu tráfico, por citar un ejemplo). Podés usar cualquier middleware Rack para
+cookie, lo cual no es siempre deseable (guardar muchos datos va a incrementar
+el tráfico, por citar un ejemplo). Podés usar cualquier middleware Rack para
 manejar sesiones, de la misma manera que usarías cualquier otro middleware,
 pero con la salvedad de que *no* tenés que llamar a `enable :sessions`:
 
@@ -1230,7 +1232,7 @@ end
 ```
 
 Se sale inmediatamente del bloque de la ruta y se le pasa el control a la
-siguiente ruta que coincida. Si no coincide ninguna ruta, se devuelve un 404.
+siguiente ruta que coincida. Si no coincide ninguna ruta, se devuelve 404.
 
 ### Ejecutando Otra Ruta
 
@@ -1413,7 +1415,7 @@ Para generar URLs deberías usar el método `url`. Por ejemplo, en Haml:
 
 Tiene en cuenta proxies inversos y encaminadores de Rack, si están presentes.
 
-Este método también puede invocarse mediante su alias `to`  (mirá un ejemplo
+Este método también puede invocarse mediante su alias `to` (mirá un ejemplo
 a continuación).
 
 ### Redirección del Navegador
@@ -1524,7 +1526,7 @@ etag @articulo.sha1, :weak
 
 Estos helpers no van a cachear nada por vos, sino que van a facilitar la
 información necesaria para poder hacerlo. Si estás buscando soluciones rápidas
-de cacheo con proxys inversos, mirá
+de cacheo con proxys reversos, mirá
 [rack-cache](https://github.com/rtomayko/rack-cache):
 
 ``` ruby
@@ -1548,7 +1550,7 @@ De acuerdo con la RFC 2616 tu aplicación debería comportarse diferente si a la
 cabeceras If-Match o If-None-Match se le asigna el valor `*` cuando el
 recurso solicitado ya existe. Sinatra asume para peticiones seguras (como get)
 e idempotentes (como put) que el recurso existe, mientras que para el resto
-(como post), que no. Podes cambiar este comportamiento con la opción
+(como post) asume que no. Podes cambiar este comportamiento con la opción
 `:new_resource`:
 
 ``` ruby
@@ -1643,7 +1645,7 @@ get '/foo' do
   request.path                # "/ejemplo/foo"
   request.ip                  # dirección IP del cliente
   request.secure?             # false (sería true sobre ssl)
-  request.forwarded?          # true (si se está corriendo atrás de un proxy inverso)
+  request.forwarded?          # true (si se está corriendo atrás de un proxy reverso)
   requuest.env                # hash de entorno directamente entregado por Rack
 end
 ```
@@ -1766,7 +1768,7 @@ helpers do
 end
 ```
 
-¡Es muy fácil convertir estos ejemplos en una extensión y compartirla!.
+¡Es muy fácil convertir estos ejemplos en una extensión y compartirla!
 
 Notá que `find_template` no verifica si un archivo existe realmente, sino
 que llama al bloque que recibe para cada path posible. Esto no representa un
@@ -1864,7 +1866,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
     1.1), que solamente permite redirecciones absolutas.
 
     Activalo si tu apliación está corriendo atrás de un proxy
-    inverso que no se ha configurado adecuadamente. Notá que
+    reverso que no se ha configurado adecuadamente. Notá que
     el helper <tt>url</tt> va a seguir produciendo URLs absolutas, a
     menos que le pasés <tt>false</tt> como segundo parámetro.
 
@@ -1996,7 +1998,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
   <dt>run</dt>
   <dd>
     Cuando está habilitada, Sinatra se va a encargar de
-    iniciar el servidor web, no la habilités cuando estés
+    iniciar el servidor web, no la habilites cuando estés
     usando rackup o algún otro medio.
   </dd>
 
@@ -2033,7 +2035,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
     Define si Sinatra debe encargarse de servir archivos
     estáticos.
 
-    Deshabilitala cuando usés un servidor capaz de
+    Deshabilitala cuando uses un servidor capaz de
     hacerlo por sí solo, porque mejorará el
     rendimiento. Se encuentra habilitada por
     defecto en el estilo clásico y desactivado en el
@@ -2156,7 +2158,7 @@ cuando se ejecuta dentro del entorno de desarrollo "development".
 
 Sinatra corre sobre Rack[http://rack.rubyforge.org/], una interfaz minimalista
 que es un estándar para frameworks webs escritos en Ruby. Una de las
-capacidades más interesantes de Rack para los desarrolladores de aplicaciones
+características más interesantes de Rack para los desarrolladores de aplicaciones
 es el soporte de "middleware" -- componentes que se ubican entre el servidor y
 tu aplicación, supervisando y/o manipulando la petición/respuesta HTTP para
 proporcionar varios tipos de funcionalidades comunes.
@@ -2176,9 +2178,9 @@ get '/hola' do
 end
 ```
 
-Las semánticas de `use` son idénticas a las definidas para el DSL
+La semántica de `use` es idéntica a la definida para el DSL
 Rack::Builder[http://rack.rubyforge.org/doc/classes/Rack/Builder.html] (más
-frecuentemente usado desde archivos rackup). Por ejemplo, el método `use`
+frecuentemente usado en archivos rackup). Por ejemplo, el método `use`
 acepta argumentos múltiples/variables así como bloques:
 
 ``` ruby
@@ -2237,7 +2239,7 @@ end
 
 Definir tu aplicación en el top-level funciona bien para micro-aplicaciones
 pero trae inconvenientes considerables a la hora de construir componentes
-reutilizables como Rack middleware, Rails metal, simple librerías con un
+reutilizables como Rack middleware, Rails metal, librerías simples con un
 componente de servidor, o incluso extensiones de Sinatra. El DSL de top-level
 asume una configuración apropiada para micro-aplicaciones (por ejemplo, un
 único archivo de aplicación, los directorios `./public` y
@@ -2574,7 +2576,7 @@ Tenés la ligadura al ámbito de delegación dentro de:
 * La ligadura del top-level, si hiciste `require "sinatra"`
 * Un objeto extendido con el mixin `Sinatra::Delegator`
 
-Pegale una mirada al código: acá está el
+Hechale un vistazo al código: acá está el
 [Sinatra::Delegator mixin](https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/base.rb#L1609-1633)
 que [extiende el objeto main](https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/main.rb#L28-30).
 
@@ -2605,7 +2607,7 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
   <dt>Ruby 1.8.7</dt>
   <dd>
     1.8.7 es soportado completamente. Sin embargo, si no hay nada que te lo
-    prohíba, te recomendamos que usés 1.9.2 o cambies a JRuby o Rubinius. No se
+    prohiba, te recomendamos que uses 1.9.2 o cambies a JRuby o Rubinius. No se
     dejará de dar soporte a 1.8.7 hasta Sinatra 2.0 y Ruby 2.0, aunque si se
     libera la versión 1.8.8 de Ruby las cosas podrían llegar a cambiar. Sin
     embargo, que eso ocurra es muy poco probable, e incluso el caso de que lo
@@ -2617,7 +2619,7 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
 
   <dt>Ruby 1.9.2</dt>
   <dd>
-    1.9.2 es soportado y recomendado. No usés 1.9.2p0, porque se producen fallos
+    1.9.2 es soportado y recomendado. No uses 1.9.2p0, porque se producen fallos
     de segmentación cuando se ejecuta Sinatra. El soporte se mantendrá al menos
     hasta que se libere la versión 1.9.4/2.0 de Ruby. El soporte para la última
     versión de la serie 1.9 se mantendrá mientras lo haga el core team de Ruby.
@@ -2655,16 +2657,16 @@ oficialmente. De cualquier manera, pueden ejecutar Sinatra:
 * Versiones anteriores de JRuby y Rubinius
 * Ruby Enterprise Edition
 * MacRuby, Maglev e IronRuby
-* Ruby 1.9.0 y 1.9.1 (pero no te recomendamos que los usés)
+* Ruby 1.9.0 y 1.9.1 (pero no te recomendamos que los uses)
 
 No estar soportada oficialmente, significa que si las cosas solamente se rompen
 ahí y no en una plataforma soportada, asumimos que no es nuestro problema sino
 el suyo.
 
 Nuestro servidor CI también se ejecuta sobre ruby-head (que será la próxima
-versión 2.0.0) y la rama 1.9.4. Como están en movimiento constante, no podemos
+versión 2.1.0) y la rama 1.9.4. Como están en movimiento constante, no podemos
 garantizar nada. De todas formas, podés contar con que tanto 1.9.4-p0 como
-2.0.0-p0 sea soportadas.
+2.1.0-p0 sea soportadas.
 
 Sinatra debería funcionar en cualquier sistema operativo soportado por la
 implementación de Ruby elegida.
@@ -2677,7 +2679,7 @@ BlueRuby o cualquier versión de Ruby anterior a 1.8.7.
 Si querés usar el código de Sinatra más reciente, sentite libre de ejecutar
 tu aplicación sobre la rama master, en general es bastante estable.
 
-También liberamos prereleases de vez en cuando, así, podés hacer
+También liberamos prereleases de vez en cuando, así, podés hacer:
 
 ``` shell
 gem install sinatra --pre
