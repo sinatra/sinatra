@@ -15,7 +15,6 @@ matrix:
     - { rvm: 1.9.3, env: sinatra=master }
     - { rvm: 1.9.3, env: rack=master    }
     - { rvm: 1.9.3, env: tilt=master    }
-matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
