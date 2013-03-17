@@ -12,9 +12,9 @@ rvm:
   - rbx-19mode
 matrix:
   include:
-    - { rvm: 1.9.3, env: tilt=master }
-    - { rvm: 1.9.3, env: rack=master }
-    - { rvm: 1.9.3, env: tilt=master }
+    - { rvm: 1.9.3, env: sinatra=master }
+    - { rvm: 1.9.3, env: rack=master    }
+    - { rvm: 1.9.3, env: tilt=master    }
 matrix:
   allow_failures:
     - rvm: ruby-head
