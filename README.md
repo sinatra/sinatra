@@ -12,10 +12,15 @@ get '/' do
 end
 ```
 
-Install the gem and run with:
+Install the gem:
 
 ``` shell
 gem install sinatra
+```
+
+And run with:
+
+``` shell
 ruby myapp.rb
 ```
 
@@ -166,6 +171,9 @@ You can also access named parameters via block parameters:
 
 ``` ruby
 get '/hello/:name' do |n|
+  # matches "GET /hello/foo" and "GET /hello/bar"
+  # params[:name] is 'foo' or 'bar'
+  # n stores params[:name]
   "Hello #{n}!"
 end
 ```
@@ -488,12 +496,13 @@ Available Options:
     
 Templates are assumed to be located directly under the `./views` directory. To 
 use a different views directory: 
-<tt>set :views, settings.root + '/templates'</tt>
+`set :views, settings.root + '/templates'`
 
 One important thing to remember is that you always have to reference templates 
 with symbols, even if they're in a subdirectory (in this case, use:
-<tt>'subdir/template'</tt>). You must use a symbol because otherwise rendering
-methods will render any strings passed to them directly.
+`:'subdir/template'` or `'subdir/template'.to_sym`). You must use a symbol
+because otherwise rendering methods will render any strings passed to them
+directly.
 
 ### Literal Templates
 
@@ -722,7 +731,6 @@ template than for the layout by passing the `:layout_engine` option.
     <td><tt>textile :index, :layout_engine => :erb</tt></td>
   </tr>
 </table>
-
 
 It is not possible to call methods from textile, nor to pass locals to it. You
 therefore will usually use it in combination with another rendering engine:
@@ -1033,7 +1041,7 @@ other templates.
 ### Templates with `yield` and nested layouts
 
 A layout is usually just a template that calls `yield`.
-Such a template can by used either through the `:template` option as
+Such a template can be used either through the `:template` option as
 described above, or it can be rendered with a block as follows:
 
 ``` ruby
@@ -1993,7 +2001,7 @@ set :protection, :session => true
     properly. Note that the <tt>url</tt> helper will still produce absolute URLs, unless you
     pass in <tt>false</tt> as the second parameter.
   </dd>
-  <dd>Disabled per default.</dd>
+  <dd>Disabled by default.</dd>
 
   <dt>add_charsets</dt>
   <dd>
@@ -2730,14 +2738,14 @@ The following Ruby versions are officially supported:
   <dt>Rubinius</dt>
   <dd>
     Rubinius is officially supported (Rubinius >= 2.x). It is recommendended to
-    `gem install puma`.
+    <tt>gem install puma</tt>.
   </dd>
 
   <dt>JRuby</dt>
   <dd>
     The latest stable release of JRuby is officially supported. It is not
     recommended to use C extensions with JRuby. It is recommended to
-    `gem install trinidad`.
+    <tt>gem install trinidad</tt>.
   </dd>
 </dl>
 
@@ -2828,6 +2836,7 @@ To update the Sinatra sources in the future:
 cd myapp/sinatra
 git pull
 ```
+
 ### Install Globally
 
 You can build the gem on your own:
