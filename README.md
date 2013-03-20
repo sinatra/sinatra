@@ -2017,7 +2017,7 @@ set :protection, :session => true
   </dd>
 
   <dt>bind</dt>
-  <dd>IP address to bind to (default: <tt>0.0.0.0</tt> <em>or</em> <tt>localhost</tt> if your <pre>environment</pre> is set to development.). Only used for built-in server.</dd>
+  <dd>IP address to bind to (default: <tt>0.0.0.0</tt> <em>or</em> <tt>localhost</tt> if your `environment` is set to development.). Only used for built-in server.</dd>
 
   <dt>default_encoding</dt>
   <dd>encoding to assume if unknown (defaults to <tt>"utf-8"</tt>).</dd>
