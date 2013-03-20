@@ -1414,34 +1414,38 @@ module Sinatra
       end
 
       def compile(path)
-        keys = []
         if path.respond_to? :to_str
-          ignore = ""
-          pattern = path.to_str.gsub(/[^\?\%\\\/\:\*\w]/) do |c|
-            ignore << escaped(c).join if c.match(/[\.@]/)
-            patt = encoded(c)
-            patt.gsub(/%[\da-fA-F]{2}/) do |match|
-              match.split(//).map {|char| char =~ /[A-Z]/ ? "[#{char}#{char.tr('A-Z', 'a-z')}]" : char}.join
+          keys = []
+          postfix = '/' if path[-1] == '/'
+          segments = path.split('/').map! do |segment|
+            ignore = ""
+            pattern = segment.to_str.gsub(/[^\?\%\\\/\:\*\w]/) do |c|
+              ignore << escaped(c).join if c.match(/[\.@]/)
+              patt = encoded(c)
+              patt.gsub(/%[\da-fA-F]{2}/) do |match|
+                match.split(//).map {|char| char =~ /[A-Z]/ ? "[#{char}#{char.tr('A-Z', 'a-z')}]" : char}.join
+              end
             end
-          end
-          pattern.gsub!(/((:\w+)|\*)/) do |match|
-            if match == "*"
-              keys << 'splat'
-              "(.*?)"
-            else
-              keys << $2[1..-1]
-              ignore_pattern = safe_ignore(ignore)
+            pattern.gsub!(/((:\w+)|\*)/) do |match|
+              if match == "*"
+                keys << 'splat'
+                "(.*?)"
+              else
+                keys << $2[1..-1]
+                ignore_pattern = safe_ignore(ignore)
 
-              ignore_pattern
+                ignore_pattern
+              end
             end
+            pattern
           end
-          [/\A#{pattern}\z/, keys]
+          [/\A#{segments.join('/')}#{postfix}\z/, keys]
         elsif path.respond_to?(:keys) && path.respond_to?(:match)
           [path, path.keys]
         elsif path.respond_to?(:names) && path.respond_to?(:match)
           [path, path.names]
         elsif path.respond_to? :match
-          [path, keys]
+          [path, []]
         else
           raise TypeError, path
         end
