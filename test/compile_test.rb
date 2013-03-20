@@ -150,6 +150,11 @@ class CompileTest < Test::Unit::TestCase
   parses '/10.1/:id', '/10.1/test', "id" => "test"
   parses '/10.1/:id', '/10.1/te.st', "id" => "te.st"
 
+  parses '/:a/:b.?:c?', '/a/b',     "a" => "a",   "b" => "b", "c" => nil
+  parses '/:a/:b.?:c?', '/a/b.c',   "a" => "a",   "b" => "b", "c" => "c"
+  parses '/:a/:b.?:c?', '/a.b/c',   "a" => "a.b", "b" => "c", "c" => nil
+  parses '/:a/:b.?:c?', '/a.b/c.d', "a" => "a.b", "b" => "c", "c" => "d"
+
   parses "/:file.:ext", "/pony%2ejpg", "file" => "pony", "ext" => "jpg"
   parses "/:file.:ext", "/pony%E6%AD%A3%2Ejpg", "file" => "pony%E6%AD%A3", "ext" => "jpg"
   parses "/:file.:ext", "/pony%e6%ad%a3%2ejpg", "file" => "pony%e6%ad%a3", "ext" => "jpg"
