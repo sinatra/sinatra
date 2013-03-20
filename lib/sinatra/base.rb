@@ -28,9 +28,11 @@ module Sinatra
     end
 
     def preferred_type(*types)
-      return accept.first if types.empty?
+      accepts = accept # just evaluate once
+      return accepts.first if types.empty?
       types.flatten!
-      accept.detect do |pattern|
+      return types.first if accepts.empty?
+      accepts.detect do |pattern|
         type = types.detect { |t| File.fnmatch(pattern, t) }
         return type if type
       end

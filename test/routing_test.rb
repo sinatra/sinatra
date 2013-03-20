@@ -899,7 +899,17 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 'application/xml', body
     assert_equal 'application/xml;charset=utf-8', response.headers['Content-Type']
 
-    get '/', {}, { :accept => 'text/html' }
+    get '/', {}, {}
+    assert ok?
+    assert_equal '', body
+    assert_equal 'application/xml;charset=utf-8', response.headers['Content-Type']
+
+    get '/', {}, { 'HTTP_ACCEPT' => '*/*' }
+    assert ok?
+    assert_equal '*/*', body
+    assert_equal 'application/xml;charset=utf-8', response.headers['Content-Type']
+
+    get '/', {}, { 'HTTP_ACCEPT' => 'text/html;q=0.9' }
     assert !ok?
 
     get '/foo', {}, { 'HTTP_ACCEPT' => 'text/html;q=0.9' }
@@ -907,6 +917,14 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 'text/html;q=0.9', body
 
     get '/foo', {}, { 'HTTP_ACCEPT' => '' }
+    assert ok?
+    assert_equal '', body
+
+    get '/foo', {}, { 'HTTP_ACCEPT' => '*/*' }
+    assert ok?
+    assert_equal '*/*', body
+
+    get '/foo', {}, { 'HTTP_ACCEPT' => 'application/xml' }
     assert !ok?
 
     get '/stream', {}, { 'HTTP_ACCEPT' => 'text/event-stream' }
@@ -914,6 +932,14 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 'text/event-stream', body
 
     get '/stream', {}, { 'HTTP_ACCEPT' => '' }
+    assert ok?
+    assert_equal '', body
+
+    get '/stream', {}, { 'HTTP_ACCEPT' => '*/*' }
+    assert ok?
+    assert_equal '*/*', body
+
+    get '/stream', {}, { 'HTTP_ACCEPT' => 'application/xml' }
     assert !ok?
   end
 
@@ -959,20 +985,6 @@ class RoutingTest < Test::Unit::TestCase
     end
   end
 
-  it 'degrades gracefully when optional accept header is not provided' do
-    mock_app {
-      get '/', :provides => :xml do
-        env['HTTP_ACCEPT']
-      end
-      get '/' do
-        'default'
-      end
-    }
-    get '/'
-    assert ok?
-    assert_equal 'default', body
-  end
-
   it 'respects user agent preferences for the content type' do
     mock_app { get('/', :provides => [:png, :html]) { content_type }}
     get '/', {}, { 'HTTP_ACCEPT' => 'image/png;q=0.5,text/html;q=0.8' }
@@ -986,8 +998,6 @@ class RoutingTest < Test::Unit::TestCase
       get('/', :provides => :xml) { content_type }
       get('/') { 'no match' }
     end
-    get '/'
-    assert_body 'no match'
     get '/', {}, { 'HTTP_ACCEPT' => 'foo/*' }
     assert_body 'no match'
     get '/', {}, { 'HTTP_ACCEPT' => 'application/*' }
