@@ -1416,7 +1416,7 @@ module Sinatra
       def compile(path)
         if path.respond_to? :to_str
           keys = []
-          postfix = '/' if path[-1] == '/'
+          postfix = '/' if path =~ /\/\z/
           segments = path.split('/').map! do |segment|
             ignore = ""
             pattern = segment.to_str.gsub(/[^\?\%\\\/\:\*\w]/) do |c|
