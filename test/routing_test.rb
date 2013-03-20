@@ -877,7 +877,7 @@ class RoutingTest < Test::Unit::TestCase
       application/x-pkcs7-mime
       application/x-pkcs7-signature
     )
-    
+
     mime_types.each { |mime_type| assert mime_type.match(Sinatra::Request::HEADER_VALUE_WITH_PARAMS) }
   end
 
