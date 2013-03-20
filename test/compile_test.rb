@@ -144,6 +144,9 @@ class CompileTest < Test::Unit::TestCase
   parses "/:id/test.bar", "/2e/test.bar", {"id" => "2e"}
   fails  "/:id/test.bar", "/%2E/test.bar"
 
+  parses '/10/:id', '/10/test', "id" => "test"
+  parses '/10/:id', '/10/te.st', "id" => "te.st"
+
   parses '/10.1/:id', '/10.1/test', "id" => "test"
   parses '/10.1/:id', '/10.1/te.st', "id" => "te.st"
 
