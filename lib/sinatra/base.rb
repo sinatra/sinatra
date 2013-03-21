@@ -1416,34 +1416,66 @@ module Sinatra
       end
 
       def compile(path)
-        keys = []
         if path.respond_to? :to_str
-          ignore = ""
-          pattern = path.to_str.gsub(/[^\?\%\\\/\:\*\w]/) do |c|
-            ignore << escaped(c).join if c.match(/[\.@]/)
-            patt = encoded(c)
-            patt.gsub(/%[\da-fA-F]{2}/) do |match|
-              match.split(//).map {|char| char =~ /[A-Z]/ ? "[#{char}#{char.tr('A-Z', 'a-z')}]" : char}.join
+          keys = []
+          
+          # We append a / at the end if there was one.
+          # Reason: Splitting does not split off an empty
+          # string at the end if the split separator
+          # is at the end.
+          #
+          postfix = '/' if path =~ /\/\z/
+          
+          # Split the path into pieces in between forward slashes.
+          #
+          segments = path.split('/').map! do |segment|
+            ignore = []
+            
+            # Special character handling.
+            #
+            pattern = segment.to_str.gsub(/[^\?\%\\\/\:\*\w]/) do |c|
+              ignore << escaped(c).join if c.match(/[\.@]/)
+              patt = encoded(c)
+              patt.gsub(/%[\da-fA-F]{2}/) do |match|
+                match.split(//).map {|char| char =~ /[A-Z]/ ? "[#{char}#{char.tr('A-Z', 'a-z')}]" : char}.join
+              end
+            end
+            
+            ignore = ignore.uniq.join
+            
+            # Key handling.
+            #
+            pattern.gsub(/((:\w+)|\*)/) do |match|
+              if match == "*"
+                keys << 'splat'
+                "(.*?)"
+              else
+                keys << $2[1..-1]
+                ignore_pattern = safe_ignore(ignore)
+                
+                ignore_pattern
+              end
             end
           end
-          pattern.gsub!(/((:\w+)|\*)/) do |match|
-            if match == "*"
-              keys << 'splat'
-              "(.*?)"
+          
+          # Special case handling.
+          #
+          if segment = segments.pop
+            if segment.match(/\[\^\\\./)
+              parts = segment.rpartition(/\[\^\\\./)
+              parts[1] = '[^'
+              segments << parts.join
             else
-              keys << $2[1..-1]
-              ignore_pattern = safe_ignore(ignore)
-
-              ignore_pattern
+              segments << segment
             end
           end
-          [/\A#{pattern}\z/, keys]
+          [/\A#{segments.join('/')}#{postfix}\z/, keys]
         elsif path.respond_to?(:keys) && path.respond_to?(:match)
           [path, path.keys]
         elsif path.respond_to?(:names) && path.respond_to?(:match)
           [path, path.names]
         elsif path.respond_to? :match
-          [path, keys]
+          [path, []]
         else
           raise TypeError, path
         end
