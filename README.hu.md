@@ -343,7 +343,7 @@ kérés alkalmával kiértékelődnek, így módosíthatják a kérést és a
 választ egyaránt. A szűrőkbe felvett példányváltozók elérhetőek lesznek
 az útvonalakban és a sablonokban is:
 
-```rubu
+```ruby
   before do
     @note = 'Csá!'
     request.path_info = '/foo/bar/baz'
