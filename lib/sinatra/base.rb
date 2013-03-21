@@ -1460,7 +1460,7 @@ module Sinatra
           #
           if segment = segments.pop
             if segment.match(/\[\^\\\./)
-              parts = segment.rpartition /\[\^\\\./
+              parts = segment.rpartition(/\[\^\\\./)
               parts[1] = '[^'
               segments << parts.join
             else
