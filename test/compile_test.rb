@@ -13,7 +13,7 @@ class CompileTest < Test::Unit::TestCase
     it "parses #{example} with #{pattern} into params #{expected_params}" do
       compiled, keys = compiled pattern
       match = compiled.match(example)
-      fail %Q{"#{example}" does not parse on pattern "#{pattern}".} unless match
+      fail %Q{"#{example}" does not parse on pattern "#{pattern}" (compiled pattern is #{compiled.source}).} unless match
 
       # Aggregate e.g. multiple splat values into one array.
       #
@@ -115,15 +115,19 @@ class CompileTest < Test::Unit::TestCase
   parses "/test.bar", "/test.bar", {}
   fails  "/test.bar", "/test0bar"
   
-  converts "/:file.:ext", %r{\A/((?:[^\./?#%]|(?:%[^2].|%[2][^Ee]))+)(?:\.|%2[Ee])((?:[^\./?#%]|(?:%[^2].|%[2][^Ee]))+)\z}
+  converts "/:file.:ext", %r{\A/((?:[^\./?#%]|(?:%[^2].|%[2][^Ee]))+)(?:\.|%2[Ee])((?:[^/?#%]|(?:%[^2].|%[2][^Ee]))+)\z}
   parses "/:file.:ext", "/pony.jpg",   "file" => "pony", "ext" => "jpg"
   parses "/:file.:ext", "/pony%2Ejpg", "file" => "pony", "ext" => "jpg"
   fails  "/:file.:ext", "/.jpg"
   
-  converts "/:name.?:format?", %r{\A/((?:[^\./?#%]|(?:%[^2].|%[2][^Ee]))+)(?:\.|%2[Ee])?((?:[^\./?#%]|(?:%[^2].|%[2][^Ee]))+)?\z}
+  converts "/:name.?:format?", %r{\A/((?:[^\./?#%]|(?:%[^2].|%[2][^Ee]))+)(?:\.|%2[Ee])?((?:[^/?#%]|(?:%[^2].|%[2][^Ee]))+)?\z}
   parses "/:name.?:format?", "/foo",       "name" => "foo", "format" => nil
   parses "/:name.?:format?", "/foo.bar",   "name" => "foo", "format" => "bar"
   parses "/:name.?:format?", "/foo%2Ebar", "name" => "foo", "format" => "bar"
+  parses "/:name?.?:format", "/.bar", "name" => nil, "format" => "bar"
+  parses "/:name?.?:format?", "/.bar", "name" => nil, "format" => "bar"
+  parses "/:name?.:format?", "/.bar", "name" => nil, "format" => "bar"
+  fails  "/:name.:format", "/.bar"
   fails  "/:name.?:format?", "/.bar"
   
   converts "/:user@?:host?", %r{\A/((?:[^@/?#%]|(?:%[^4].|%[4][^0]))+)(?:@|%40)?((?:[^@/?#%]|(?:%[^4].|%[4][^0]))+)?\z}
@@ -142,28 +146,36 @@ class CompileTest < Test::Unit::TestCase
   parses "/:id/test.bar", "/2/test.bar", {"id" => "2"}
   parses "/:id/test.bar", "/2E/test.bar", {"id" => "2E"}
   parses "/:id/test.bar", "/2e/test.bar", {"id" => "2e"}
-  parses  "/:id/test.bar", "/%2E/test.bar", {"id" => "%2E"}
+  parses "/:id/test.bar", "/%2E/test.bar", {"id" => "%2E"}
   
   parses '/10/:id', '/10/test', "id" => "test"
   parses '/10/:id', '/10/te.st', "id" => "te.st"
   
   parses '/10.1/:id', '/10.1/test', "id" => "test"
   parses '/10.1/:id', '/10.1/te.st', "id" => "te.st"
+  parses '/:foo/:id', '/10.1/te.st', "foo" => "10.1", "id" => "te.st"
+  parses '/:foo/:id', '/10.1.2/te.st', "foo" => "10.1.2", "id" => "te.st"
+  parses '/:foo.:bar/:id', '/10.1/te.st', "foo" => "10", "bar" => "1", "id" => "te.st"
+  fails '/:foo.:bar/:id', '/10.1.2/te.st' # We don't do crazy.
   
-  parses '/:a/:b.?:c?', '/a/b',     "a" => "a",   "b" => "b", "c" => nil
-  parses '/:a/:b.?:c?', '/a/b.c',   "a" => "a",   "b" => "b", "c" => "c"
-  parses '/:a/:b.?:c?', '/a.b/c',   "a" => "a.b", "b" => "c", "c" => nil
-  parses '/:a/:b.?:c?', '/a.b/c.d', "a" => "a.b", "b" => "c", "c" => "d"
+  parses '/:a/:b.?:c?', '/a/b',       "a" => "a",   "b" => "b", "c" => nil
+  parses '/:a/:b.?:c?', '/a/b.c',     "a" => "a",   "b" => "b", "c" => "c"
+  parses '/:a/:b.?:c?', '/a.b/c',     "a" => "a.b", "b" => "c", "c" => nil
+  parses '/:a/:b.?:c?', '/a.b/c.d',   "a" => "a.b", "b" => "c", "c" => "d"
+  fails  '/:a/:b.?:c?', '/a.b/c.d/e'
   
   parses "/:file.:ext", "/pony%2ejpg", "file" => "pony", "ext" => "jpg"
   parses "/:file.:ext", "/pony%E6%AD%A3%2Ejpg", "file" => "pony%E6%AD%A3", "ext" => "jpg"
   parses "/:file.:ext", "/pony%e6%ad%a3%2ejpg", "file" => "pony%e6%ad%a3", "ext" => "jpg"
   parses "/:file.:ext", "/pony正%2Ejpg", "file" => "pony正", "ext" => "jpg"
   parses "/:file.:ext", "/pony正%2ejpg", "file" => "pony正", "ext" => "jpg"
-  fails  "/:file.:ext", "/pony正..jpg"
+  parses "/:file.:ext", "/pony正..jpg", "file" => "pony正", "ext" => ".jpg"
   fails  "/:file.:ext", "/pony正.%2ejpg"
   
-  # parses "/:foo.:bar", "/file.tar.gz", "foo" => "file", "bar" => "tar.gz"
+  converts "/:name.:format", %r{\A/((?:[^\./?#%]|(?:%[^2].|%[2][^Ee]))+)(?:\.|%2[Ee])((?:[^/?#%]|(?:%[^2].|%[2][^Ee]))+)\z}
+  parses "/:name.:format", "/file.tar.gz", "name" => "file", "format" => "tar.gz"
+  parses "/:name.:format1.:format2", "/file.tar.gz", "name" => "file", "format1" => "tar", "format2" => "gz"
+  parses "/:name.:format1.:format2", "/file.temp.tar.gz", "name" => "file", "format1" => "temp", "format2" => "tar.gz"
   
   # From issue #688.
   #
