@@ -1,3 +1,12 @@
+= 1.4.2 / 2013-03-21
+
+ * Fix parsing error for case where both the pattern and the captured part
+   contain a dot. (Florian Hanke, Konstantin Haase)
+
+ * Missing Accept header is treated like */*. (Greg Denton)
+
+ * Improve documentation. (Patricio Mac Adden, Joe Bottigliero)
+
 = 1.4.1 / 2013-03-15
 
  * Make delegated methods available in config.ru (Konstantin Haase)
