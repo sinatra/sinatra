@@ -1418,19 +1418,19 @@ module Sinatra
       def compile(path)
         if path.respond_to? :to_str
           keys = []
-          
+
           # We append a / at the end if there was one.
           # Reason: Splitting does not split off an empty
           # string at the end if the split separator
           # is at the end.
           #
           postfix = '/' if path =~ /\/\z/
-          
+
           # Split the path into pieces in between forward slashes.
           #
           segments = path.split('/').map! do |segment|
             ignore = []
-            
+
             # Special character handling.
             #
             pattern = segment.to_str.gsub(/[^\?\%\\\/\:\*\w]/) do |c|
@@ -1440,9 +1440,9 @@ module Sinatra
                 match.split(//).map {|char| char =~ /[A-Z]/ ? "[#{char}#{char.tr('A-Z', 'a-z')}]" : char}.join
               end
             end
-            
+
             ignore = ignore.uniq.join
-            
+
             # Key handling.
             #
             pattern.gsub(/((:\w+)|\*)/) do |match|
@@ -1452,12 +1452,12 @@ module Sinatra
               else
                 keys << $2[1..-1]
                 ignore_pattern = safe_ignore(ignore)
-                
+
                 ignore_pattern
               end
             end
           end
-          
+
           # Special case handling.
           #
           if segment = segments.pop
