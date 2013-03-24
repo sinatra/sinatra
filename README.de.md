@@ -1,32 +1,36 @@
 # Sinatra
 
 *Wichtig: Dieses Dokument ist eine Übersetzung aus dem Englischen und unter
-Umständen nicht auf dem aktuellen Stand.*
+Umständen nicht auf dem aktuellen Stand (aktuell Sinatra 1.4.2).*
 
 Sinatra ist eine
 [DSL](http://de.wikipedia.org/wiki/Domänenspezifische_Sprache), die das
 schnelle Erstellen von Webanwendungen in Ruby mit minimalem Aufwand
 ermöglicht:
 
+Sinatra via `rubygems` installieren:
+
+```shell
+gem install sinatra
+```
+
+Eine Date mit dem Namen `myapp.rb` erstellen:
+
 ```ruby
-# myapp.rb
 require 'sinatra'
 get '/' do
   'Hallo Welt!'
 end
 ```
 
-Einfach via `rubygems` installieren und starten:
+und im gleichen Verzeichnis ausführen:
 
-```ruby
-gem install sinatra
+```shell
 ruby myapp.rb
 ```
 
-Die Seite kann nun unter http://localhost:4567 betrachtet werden.
-
-Es wird empfohlen, den Thin-Server via `gem install thin` zu installieren, den
-Sinatra dann, soweit vorhanden, automatisch verwendet.
+Die Seite kann nun unter [http://localhost:4567](http://localhost:4567)
+aufgerufen werden.
 
 ## Inhalt
 
@@ -145,7 +149,6 @@ end
 unlink '/' do
   .. trenne etwas ..
 end
-
 ```
 
 Die Routen werden in der Reihenfolge durchlaufen, in der sie definiert wurden.
@@ -157,7 +160,7 @@ Die Muster der Routen können benannte Parameter beinhalten, die über den
 ```ruby
 get '/hallo/:name' do
   # passt auf "GET /hallo/foo" und "GET /hallo/bar"
-  # params[:name] ist 'foo' oder 'bar'
+  # params[:name] ist dann 'foo' oder 'bar'
   "Hallo #{params[:name]}!"
 end
 ```
@@ -166,16 +169,17 @@ Man kann auf diese auch mit Block-Parametern zugreifen:
 
 ```ruby
 get '/hallo/:name' do |n|
+  # n entspricht hier params[:name]
   "Hallo #{n}!"
 end
 ```
 
-Routen-Muster können auch mit Splat- oder Wildcard-Parametern über das
+Routen-Muster können auch mit sog. Splat- oder Wildcard-Parametern über das
 `params[:splat]`-Array angesprochen werden:
 
 ```ruby
 get '/sag/*/zu/*' do
-  # passt auf /sag/hallo/zu/welt
+  # passt z.B. auf /sag/hallo/zu/welt
   params[:splat] # => ["hallo", "welt"]
 end
 
@@ -224,21 +228,25 @@ Abgleich mit den Routen modifiziert wird.
 
 ### Bedingungen
 
-An Routen können eine Vielzahl von Bedingungen angehängt werden, die erfüllt
+An Routen können eine Vielzahl von Bedingungen geknüpft werden, die erfüllt
 sein müssen, damit der Block ausgeführt wird. Möglich wäre etwa eine
-Einschränkung des User-Agents:
+Einschränkung des User-Agents über die interne Bedingung `:agent`:
 
 ```ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
   "Du verwendest Songbird Version #{params[:agent][0]}"
 end
+```
 
+Wird Songbird als Browser nicht verwendet, springt Sinatra zur nächsten Route:
+
+```ruby
 get '/foo' do
   # passt auf andere Browser
 end
 ```
 
-Andere mitgelieferte Bedingungen sind `host_name` und `provides`:
+Andere mitgelieferte Bedingungen sind `:host_name` und `:provides`:
 
 ```ruby
 get '/', :host_name => /^admin\./ do
@@ -254,12 +262,12 @@ get '/', :provides => ['rss', 'atom', 'xml'] do
 end
 ```
 
-Es können auch andere Bedingungen relativ einfach hinzugefügt werden:
+Eigene Bedingungen können relativ einfach hinzugefügt werden:
 
 ```ruby
-set(:probability) { |value| condition { rand <= value } }
+set(:wahrscheinlichkeit) { |value| condition { rand <= value } }
 
-get '/auto_gewinnen', :probability => 0.1 do
+get '/auto_gewinnen', :wahrscheinlichkeit => 0.1 do
   "Du hast gewonnen!"
 end
 
@@ -307,7 +315,6 @@ einen Rack-Rückgabewert, einen Rack-Body oder einen HTTP-Status-Code handelt:
 *   Ein Objekt, das auf `#each` antwortet und den an diese Methode übergebenen
     Block nur mit Strings als Übergabewerte aufruft.
 *   Ein Fixnum, das den Status-Code festlegt.
-
 
 Damit lässt sich relativ einfach Streaming implementieren:
 
@@ -370,16 +377,17 @@ get %r{^(?!/index$)} do
   # ...
 end
 ```
+
 ## Statische Dateien
 
-Statische Dateien werden aus dem `./public`-Ordner ausgeliefert. Es ist möglich,
+Statische Dateien werden im `./public`-Ordner erwartet. Es ist möglich,
 einen anderen Ort zu definieren, indem man die `:public_folder`-Option setzt:
 
 ```ruby
 set :public_folder, File.dirname(__FILE__) + '/static'
 ```
 
-Zu beachten ist, dass der Ordnername public nicht Teil der URL ist. Die Datei
+Zu beachten ist, dass der Ordnername `public` nicht Teil der URL ist. Die Datei
 `./public/css/style.css` ist unter `http://example.com/css/style.css` zu finden.
 
 Um den `Cache-Control`-Header mit Informationen zu versorgen, verwendet man
@@ -426,7 +434,8 @@ get '/' do
 end
 ```
 
-Für alle Templates können auch generelle Einstellungen festgelegt werden:
+Für alle Templates können auch Einstellungen, die für alle Routen gelten,
+festgelegt werden:
 
 ```ruby
 set :haml, :format => :html5
@@ -443,7 +452,7 @@ Einstellungen:
 
 <dl>
   <dt>locals</dt>
-  <dd>Liste von lokalen Variablen, die and das Dokument weitergegeben werden.
+  <dd>Liste von lokalen Variablen, die an das Dokument weitergegeben werden.
     Praktisch für Partials:
 
     <tt>erb "<%= foo %>", :locals => {:foo => "bar"}</tt></dd>
@@ -453,7 +462,7 @@ Einstellungen:
     auf <tt>settings.default_encoding</tt>.</dd>
       
   <dt>views</dt>
-  <dd>Ordner, aus dem die Templates heraus geladen werden. Voreingestellt auf
+  <dd>Ordner, aus dem die Templates geladen werden. Voreingestellt auf
     <tt>settings.views</tt>.</dd>
       
   <dt>layout</dt>
@@ -464,7 +473,7 @@ Einstellungen:
     <tt>erb :index, :layout => !request.xhr?</tt></dd>
       
   <dt>content_type</dt>
-  <dd>Content-Type den das Template ausgibt. Voreinstellung hängt von der
+  <dd>Content-Typ den das Template ausgibt. Voreinstellung hängt von der
     Templatesprache ab.</dd>
       
   <dt>scope</dt>
@@ -478,6 +487,7 @@ Einstellungen:
     den Renderer, der für das Template verwendet wird:
 
     <tt>set :rdoc, :layout_engine => :erb</tt></dd>
+    
   <dt>layout_options</dt>
   <dd>Besondere Einstellungen, die nur für das Rendering verwendet werden:
 
@@ -1045,8 +1055,8 @@ Templates eingesetzt.
 
 ### Templates mit `yield` und verschachtelte Layouts
 
-Ein Layout ist üblicherweise ein Template, dass ein `yield` aufruft. Ein solches
-Template kann entweder wie oben beschrieben über die `:template` option
+Ein Layout ist üblicherweise ein Template, das ein `yield` aufruft. Ein solches
+Template kann entweder wie oben beschrieben über die `:template` Option
 verwendet werden oder mit einem Block gerendert werden:
 
 ``` ruby
@@ -1130,7 +1140,9 @@ verwendet. Durch `:layout => false` kann das Ausführen verhindert werden:
 
 ```ruby
 get '/' do
-  haml :index, :layout => request.xhr?
+  haml :index, :layout => !request.xhr?
+  # !request.xhr? prüft, ob es sich um einen asynchronen Request handelt.
+  # wenn nicht, dann verwende ein Layout (negiert durch !)
 end
 ```
 
@@ -1194,8 +1206,8 @@ after do
 end
 ```
 
-Filter können optional auch mit einem Muster ausgestattet werden, welches auf
-den Request-Pfad passen muss, damit der Filter ausgeführt wird:
+Filter können optional auch mit einem Muster ausgestattet werden, das auf den
+Request-Pfad passen muss, damit der Filter ausgeführt wird:
 
 ```ruby
 before '/protected/*' do
@@ -1278,7 +1290,7 @@ wählen, damit sich alle Instanzen der Applikation dasselbe Session-Secret
 teilen:
 
 ```ruby
-set :session_secret, 'super secret'
+set :session_secret, 'super_geheimes_Gegeimnis'
 ```
 
 Zur weiteren Konfiguration kann man einen Hash mit Optionen in den `sessions`
@@ -1296,7 +1308,7 @@ Zum sofortigen Stoppen eines Request in einem Filter oder einer Route:
 halt
 ```
 
-Der Status kann beim Stoppen auch angegeben werden:
+Der Status kann beim Stoppen mit angegeben werden:
 
 ```ruby
 halt 410
@@ -1347,8 +1359,9 @@ gefunden wird.
 
 ### Eine andere Route ansteuern
 
-Manchmal entspricht `pass` nicht den Anforderungen, wenn das Ergebnis einer
-anderen Route gefordert wird. Um das zu erreichen, lässt sich `call` nutzen:
+Wenn nicht zu einer anderen Route gesprungen werden soll, sondern nur das
+Ergebnis einer anderen Route gefordert wird, kann `call` für einen internen
+Request verwendet werden:
 
 ```ruby
 get '/foo' do
@@ -1369,16 +1382,13 @@ Wenn der Request innerhalb derselben Applikations-Instanz aufgerufen und keine
 Kopie der Instanz erzeugt werden soll, kann `call!` anstelle von `call`
 verwendet werden.
 
-Die Rack-Spezifikationen enthalten weitere Informationen zu `call`.
-
 ### Body, Status-Code und Header setzen
 
-Es ist möglich und empfohlen, den Status-Code sowie den Response-Body mit
-einem Returnwert in der Route zu setzen. In manchen Situationen kann es jedoch
-sein, dass der Body an irgendeiner anderen Stelle während der Ausführung
-gesetzt wird. Das lässt sich mit der Helfer-Methode `body` bewerkstelligen.
-Wird `body` verwendet, lässt sich der Body jederzeit über diese Methode
-aufrufen:
+Es ist möglich und empfohlen, den Status-Code sowie den Response-Body mit einem
+Returnwert in der Route zu setzen. In manchen Situationen kann es jedoch sein,
+dass der Body an anderer Stelle während der Ausführung gesetzt werden soll.
+Dafür kann man die Helfer-Methode `body` einsetzen. Ist sie gesetzt, kann sie zu
+einem späteren Zeitpunkt aufgerufen werden:
 
 ```ruby
 get '/foo' do
@@ -1430,7 +1440,7 @@ end
 ```
 
 Damit lassen sich Streaming-APIs realisieren, sog. 
-[Server Sent Events](http://dev.w3.org/html5/eventsource/) die als Basis für
+[Server Sent Events](http://dev.w3.org/html5/eventsource/), die als Basis für
 [WebSockets](http://en.wikipedia.org/wiki/WebSocket) dienen. Ebenso können sie
 verwendet werden, um den Durchsatz zu erhöhen, wenn ein Teil der Daten von
 langsamen Ressourcen abhängig ist.
@@ -1987,6 +1997,7 @@ Schutzmechanismen zu deaktivieren:
 ```ruby
 set :protection, :except => [:path_traversal, :session_hijacking]
 ```
+
 #### Mögliche Einstellungen
 
 <dl>
@@ -2010,8 +2021,9 @@ set :protection, :except => [:path_traversal, :session_hijacking]
   Inline-, View- und öffentliche Verzeichnis des Projekts festzustellen.</dd>
 
   <dt>bind</dt>
-  <dd>IP-Address, an die gebunden wird (Standardwert: <tt>0.0.0.0</tt>). Wird
-  nur für den eingebauten Server verwendet.</dd>
+  <dd>IP-Address, an die gebunden wird (Standardwert: <tt>0.0.0.0</tt>
+  <em>oder</em> <tt>localhost</tt>). Wird  nur für den eingebauten Server
+  verwendet.</dd>
 
   <dt>default_encoding</dt>
   <dd>Das Encoding, falls keines angegeben wurde. Standardwert ist
@@ -2080,8 +2092,8 @@ set :protection, :except => [:path_traversal, :session_hijacking]
 
   <dt>server</dt>
   <dd>Server oder Liste von Servern, die als eingebaute Server zur Verfügung
-  stehen. Standardmäßig auf <tt>[‘thin’, ‘mongrel’, ‘webrick’]</tt>
-  voreingestellt. Die Anordnung gibt die Priorität vor.</dd>
+  stehen. Die Reihenfolge gibt die Priorität vor, die Voreinstellung hängt von 
+  der verwendenten Ruby Implementierung ab.</dd>
 
   <dt>sessions</dt>
   <dd>Sessions auf Cookiebasis mittels
@@ -2134,7 +2146,7 @@ und `"test"` werden Templates automatisch gecached.
 Um die Anwendung in einer anderen Umgebung auszuführen kann man die `-e`
 Option verwenden:
 
-```
+```shell
 ruby my_app.rb -e [ENVIRONMENT]
 ```
 
@@ -2187,7 +2199,7 @@ end
 
 bekommt man dieses:
 
-```
+```shell
 Au weia, etwas Schlimmes ist passiert
 ```
 
@@ -2426,7 +2438,7 @@ end
 
 Starte mit:
 
-```
+```shell
 ruby mein_app.rb
 ```
 
@@ -2441,7 +2453,7 @@ run MeineApp
 
 Starte:
 
-```
+```shell
 rackup -p 4567
 ```
 
@@ -2637,8 +2649,8 @@ end
 
 Im Anfrage-Scope befindet man sich:
 
-*   In get/head/post/put/delete-Blöcken
-*   In before/after-Filtern
+*   In get, head, post, put, delete, options, patch, link und unlink Blöcken
+*   In before und after Filtern
 *   In Helfer-Methoden
 *   In Templates
 
@@ -2668,7 +2680,7 @@ eingebunden](http://github.com/sinatra/sinatra/blob/master/lib/sinatra/main.rb
 
 Sinatra-Anwendungen können direkt von der Kommandozeile aus gestartet werden:
 
-```
+```shell
 ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-h HOST] [-s HANDLER]
 ```
 
@@ -2688,67 +2700,52 @@ Die Optionen sind:
 Die folgenden Versionen werden offiziell unterstützt:
 
 <dl>
-  <dt>Ruby 1.8.7</dt>
-  <dd>1.8.7 wird vollständig unterstützt, aber solange nichts dagegen spricht,
-  wird ein Update auf 1.9.2 oder ein Umstieg auf JRuby/Rubinius empfohlen.
-  Unterstützung für 1.8.7 wird es mindestens bis Sinatra 2.0 und Ruby 2.0
-  geben, es sei denn, dass der unwahrscheinliche Fall eintritt und 1.8.8
-  rauskommt. Doch selbst dann ist es eher wahrscheinlich, dass 1.8.7 weiterhin
-  unterstützt wird. <b>Ruby 1.8.6 wird nicht mehr unterstützt.</b> Soll Sinatra
-  unter 1.8.6 eingesetzt werden, muss Sinatra 1.2 verwendet werden, dass noch
-  bis zum Release von Sinatra 1.4.0 fortgeführt wird.</dd>
+<dt>Ruby 1.8.7</dt>
+<dd>1.8.7 wird vollständig unterstützt, ein Wechsel zu JRuby oder Rubinius wird
+aber empfohlen. Ruby 1.8.7 wird noch bis Sinatra 2.0 unterstützt werden. Frühere
+Versionen von Ruby sind nicht kompatibel mit Sinatra.</dd>
 
-  <dt>Ruby 1.9.2</dt>
-  <dd>1.9.2 wird voll unterstützt und empfohlen. Version 1.9.2p0 sollte nicht
-  verwendet werden, da unter Sinatra immer wieder Segfaults auftreten.
-  Unterstützung wird es mindestens bis zum Release von Ruby 1.9.4/2.0 geben und
-  das letzte Sinatra Release für 1.9 wird so lange unterstützt, wie das Ruby
-  Core-Team 1.9 pflegt.</dd>
+<dt>Ruby 1.9.2</dt>
+<dd>1.9.2 wird mindestens bis Sinatra 1.5 voll unterstützt. Version 1.9.2p0
+sollte nicht verwendet werden, da unter Sinatra immer wieder Segfaults
+auftreten.</dd>
 
-  <dt>Ruby 1.9.3</dt>
-  <dd>1.9.3 wird vollständig unterstützt und empfohlen. Achtung, bei einem
-  Wechsel zu 1.9.3 werden alle Sessions ungültig.</dd>
+<dt>Ruby 1.9.3</dt>
+<dd>1.9.3 wird vollständig unterstützt und empfohlen. Achtung, bei einem
+Upgrade von einer früheren Version von Ruby zu Ruby 1.9.3 werden alle Sessions
+ungültig. Ruby 1.9.3 wird bis Sinatra 2.0 unterstützt werden.</dd>
 
-  <dt>Rubinius</dt>
-  <dd>Rubinius (rbx >= 1.2.4) wird offiziell unter Einbezug aller Templates
-  unterstützt. Die kommende 2.0 Version wird ebenfalls unterstützt, samt 1.9
-  Modus.</dd>
+<dt>Rubinius</dt>
+<dd>Rubinius (Version >= 2.x) wird offiziell unterstützt. Es wird empfohlen, den
+<a href="http://puma.io">Puma Server</a> zu installieren (<tt>gem install puma
+</tt>)</dd>
 
-  <dt>JRuby</dt>
-  <dd>JRuby wird offiziell unterstützt (JRuby >= 1.6.7). Probleme mit
-  Template- Bibliotheken Dritter sind nicht bekannt. Falls JRuby zum Einsatz
-  kommt, sollte aber darauf geachtet werden, dass ein JRuby-Rack-Handler zum
-  Einsatz kommt – die Thin und Mongrel Web-Server werden bisher nicht
-  unterstütz. JRubys Unterstützung für C-Erweiterungen sind zur Zeit ebenfalls
-  experimenteller Natur, betrifft im Moment aber nur die RDiscount, Redcarpet,
-  RedCloth und [[Yajl]] Templates.</dd>
+<dt>JRuby</dt>
+<dd>Aktuelle JRuby Versionen werden offiziell unterstützt. Es wird empfohlen,
+keine C-Erweiterungen zu verwenden und als Server Trinidad zu verwenden 
+(<tt>gem install trinidad</tt>).</dd>
 </dl>
-
-Weiterhin werden wir die kommende Ruby-Versionen im Auge behalten.
 
 Die nachfolgend aufgeführten Ruby-Implementierungen werden offiziell nicht von
 Sinatra unterstützt, funktionieren aber normalerweise:
 
 *   Ruby Enterprise Edition
 *   Ältere Versionen von JRuby und Rubinius
-*   MacRuby, Maglev, IronRuby
-*   Ruby 1.9.0 und 1.9.1 (wird jedoch nicht empfohlen, s.o.)
-
+*   MacRuby (<tt>gem install control_tower</tt> wird empfohlen), Maglev, IronRuby
+*   Ruby 1.9.0 und 1.9.1
 
 Nicht offiziell unterstützt bedeutet, dass wenn Sachen nicht funktionieren,
 wir davon ausgehen, dass es nicht an Sinatra sondern an der jeweiligen
-Implentierung liegt.
+Implementierung liegt.
 
 Im Rahmen unserer CI (Kontinuierlichen Integration) wird bereits ruby-head
-(das kommende Ruby 2.0.0) und 1.9.4 mit eingebunden. Da noch alles im Fluss
-ist, kann zur Zeit für nichts garantiert werden. Es kann aber erwartet werden,
-dass Ruby 2.0.0p0 und 1.9.4p0 von Sinatra unterstützt werden wird.
+(das kommende Ruby 2.1.0) mit eingebunden. Es kann davon ausgegangen
+werden, dass Sinatra Ruby 2.1.0 vollständig unterstützen wird.
 
-Sinatra sollte auf jedem Betriebssystem laufen, dass den gewählten Ruby-
-Interpreter unterstützt.
+Sinatra sollte auf jedem Betriebssystem laufen, dass einen funktionierenden
+Ruby-Interpreter aufweist.
 
-Sinatra wird aktuell nicht unter Cardinal, SmallRuby, BleuRuby oder
-irgendeiner  Version von Ruby vor 1.8.7 laufen.
+Sinatra läuft aktuell nicht unter Cardinal, SmallRuby, BlueRuby oder Ruby <= 1.8.7.
 
 ## Der neuste Stand (The Bleeding Edge)
 
@@ -2756,7 +2753,7 @@ Um auf dem neusten Stand zu bleiben, kann der Master-Branch verwendet werden.
 Er sollte recht stabil sein. Ebenso gibt es von Zeit zu Zeit prerelease Gems,
 die so installiert werden:
 
-```
+```shell
 gem install sinatra --pre
 ```
 
@@ -2768,7 +2765,7 @@ nachfolgenden Weg.
 
 Soweit Bundler noch nicht installiert ist:
 
-```
+```shell
 gem install bundler
 ```
 
@@ -2790,16 +2787,16 @@ Gemfile von Sinatra hinzugefügt.
 
 Jetzt kannst du deine Applikation starten:
 
-```
+```shell
 bundle exec ruby myapp.rb
 ```
 
 ### Eigenes Repository
 Um auf dem neuesten Stand von Sinatras Code zu sein, kann eine lokale Kopie
-angelegt werden. Gestartet wird in der Anwendung mit dem `sinatra/lib`- Ordner
+angelegt werden. Gestartet wird in der Anwendung mit dem `sinatra/lib`-Ordner
 im `LOAD_PATH`:
 
-```
+```shell
 cd myapp
 git clone git://github.com/sinatra/sinatra.git
 ruby -Isinatra/lib myapp.rb
@@ -2820,7 +2817,7 @@ end
 
 Um Sinatra-Code von Zeit zu Zeit zu aktualisieren:
 
-```
+```shell
 cd myproject/sinatra
 git pull
 ```
@@ -2829,7 +2826,7 @@ git pull
 
 Aus der eigenen lokalen Kopie kann nun auch ein globales Gem gebaut werden:
 
-```
+```shell
 git clone git://github.com/sinatra/sinatra.git
 cd sinatra
 rake sinatra.gemspec
@@ -2839,7 +2836,7 @@ rake install
 Falls Gems als Root installiert werden sollen, sollte die letzte Zeile
 folgendermaßen lauten:
 
-```
+```shell
 sudo rake install
 ```
 
@@ -2857,7 +2854,8 @@ SemVer und SemVerTag.
 *   [Issue-Tracker](http://github.com/sinatra/sinatra/issues)
 *   [Twitter](http://twitter.com/sinatra)
 *   [Mailing-Liste](http://groups.google.com/group/sinatrarb)
-*   [ #sinatra](irc://chat.freenode.net/#sinatra) auf http://freenode.net
+*   [#sinatra](irc://chat.freenode.net/#sinatra) auf http://freenode.net Es 
+    gibt dort auch immer wieder deutschsprachige Entwickler, die gerne weiterhelfen.
 *   [Sinatra Book](http://sinatra-book.gittr.com) Kochbuch Tutorial
 *   [Sinatra Recipes](http://recipes.sinatrarb.com/) Sinatra-Rezepte aus der
     Community
