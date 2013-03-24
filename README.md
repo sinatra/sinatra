@@ -2093,18 +2093,18 @@ set :protection, :session => true
   </dd>
 
   <dt>running</dt>
-  <dd>is the built-in server running now? do not change this setting!</dd>
+  <dd>is the built-in server running now? Do not change this setting!</dd>
 
   <dt>server</dt>
   <dd>
-    Server or list of servers to use for built-in server. order indicates priority,
-    default depends on Ruby implementation.
+    Server or list of servers to use for built-in server. Order indicates
+    priority, default depends on Ruby implementation.
   </dd>
 
   <dt>sessions</dt>
   <dd>
     Enable cookie-based sessions support using <tt>Rack::Session::Cookie</tt>.
-     See 'Using Sessions' section for more information.
+    See 'Using Sessions' section for more information.
   </dd>
 
   <dt>show_exceptions</dt>
