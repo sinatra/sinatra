@@ -9,6 +9,7 @@ matrix:
     - { rvm: 1.9.3,         env: rack=master }
     - { rvm: rbx-18mode,    env: rack=1.1.3  }
     - { rvm: rbx-19mode,    env: rack=stable }
+    - { rvm: rbx-20mode,    env: rack=stable }
     - { rvm: jruby-18mode,  env: rack=1.1.3  }
     - { rvm: jruby-19mode,  env: rack=stable }
     - { rvm: jruby-20mode,  env: rack=stable }
