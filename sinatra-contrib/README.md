@@ -8,13 +8,6 @@ Collection of common Sinatra extensions, semi-officially supported.
 * High code quality, high test coverage
 * Include plugins people usually ask for a lot
 
-# TODO
-
-* Write documentation, integrate into Sinatra website
-* Finish imports and rewrites
-* Wrap up first release
-* Find contributors (both code and docs)
-
 # Included extensions
 
 ## Common Extensions
