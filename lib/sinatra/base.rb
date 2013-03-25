@@ -1795,7 +1795,7 @@ module Sinatra
     set :running, false                   # is the built-in server running now?
     set :server, %w[HTTP webrick]
     set :bind, Proc.new { development? ? 'localhost' : '0.0.0.0' }
-    set :port, Integer(ENV['PORT'] || 4567)
+    set :port, Integer(ENV['PORT'] && !ENV['PORT'].empty? ? ENV['PORT'] : 4567)
 
     ruby_engine = defined?(RUBY_ENGINE) && RUBY_ENGINE
 
