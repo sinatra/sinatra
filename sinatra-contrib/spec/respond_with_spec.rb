@@ -228,6 +228,12 @@ describe Sinatra::RespondWith do
         req(:pdf).should be_ok
         body.should == "hi"
       end
+
+      it 'uses yajl for json' do
+        respond_with :baz
+        req(:json).should be_ok
+        body.should == "\"yajl!\""
+      end
     end
 
     describe 'customizing' do
