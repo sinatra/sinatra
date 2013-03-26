@@ -1,4 +1,6 @@
 require 'backports'
+require 'multi_json'
+
 require_relative 'spec_helper'
 require_relative 'okjson'
 
