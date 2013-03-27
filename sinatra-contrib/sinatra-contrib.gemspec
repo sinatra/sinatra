@@ -1,7 +1,8 @@
 # Run `rake sinatra-contrib.gemspec` to update the gemspec.
+require File.expand_path('../lib/sinatra/contrib/version', __FILE__)
 Gem::Specification.new do |s|
   s.name        = "sinatra-contrib"
-  s.version     = "1.4.0"
+  s.version     = Sinatra::Contrib::VERSION
   s.description = "Collection of useful Sinatra extensions"
   s.homepage    = "http://github.com/sinatra/sinatra-contrib"
   s.summary     = s.description
