@@ -117,8 +117,8 @@ Gem::Specification.new do |s|
   s.add_dependency "tilt",      "~> 1.3"
   s.add_dependency "rack-test"
   s.add_dependency "rack-protection"
-  s.add_dependency "eventmachine"
 
+  s.add_development_dependency "eventmachine"
   s.add_development_dependency "rspec", "~> 2.3"
   s.add_development_dependency "haml"
   s.add_development_dependency "erubis"
