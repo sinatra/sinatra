@@ -850,6 +850,8 @@ module Sinatra
     include Helpers
     include Templates
 
+    URI = ::URI.const_defined?(:Parser) ? ::URI::Parser.new : ::URI
+
     attr_accessor :app
     attr_reader   :template_cache
 
@@ -971,7 +973,7 @@ module Sinatra
       route = @request.path_info
       route = '/' if route.empty? and not settings.empty_path_info?
       return unless match = pattern.match(route)
-      values += match.captures.to_a.map { |v| force_encoding URI.decode(v) if v }
+      values += match.captures.to_a.map { |v| force_encoding URI.unescape(v) if v }
 
       if values.any?
         original, @params = params, params.merge('splat' => [], 'captures' => values)
@@ -1485,8 +1487,6 @@ module Sinatra
           raise TypeError, path
         end
       end
-
-      URI = ::URI.const_defined?(:Parser) ? ::URI::Parser.new : ::URI
 
       def encoded(char)
         enc = URI.escape(char)
