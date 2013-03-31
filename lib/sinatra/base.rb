@@ -943,6 +943,7 @@ module Sinatra
       if routes = base.routes[@request.request_method]
         routes.each do |pattern, keys, conditions, block|
           pass_block = process_route(pattern, keys, conditions) do |*args|
+            env['sinatra.route'] = block.instance_variable_get(:@route_name)
             route_eval { block[*args] }
           end
         end
@@ -1415,9 +1416,12 @@ module Sinatra
         pattern, keys           = compile path
         conditions, @conditions = @conditions, []
 
-        [ pattern, keys, conditions, block.arity != 0 ?
-            proc { |a,p| unbound_method.bind(a).call(*p) } :
-            proc { |a,p| unbound_method.bind(a).call } ]
+        wrapper                 = block.arity != 0 ?
+          proc { |a,p| unbound_method.bind(a).call(*p) } :
+          proc { |a,p| unbound_method.bind(a).call }
+        wrapper.instance_variable_set(:@route_name, method_name)
+
+        [ pattern, keys, conditions, wrapper ]
       end
 
       def compile(path)

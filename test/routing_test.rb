@@ -1378,4 +1378,14 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal 4, signature.length
     assert list.include?(signature)
   end
+
+  it "sets env['sinatra.route'] to the matched route" do
+    mock_app do
+      after do
+        assert_equal 'GET /users/:id/status', env['sinatra.route']
+      end
+      get('/users/:id/status') { 'ok' }
+    end
+    get '/users/1/status'
+  end
 end
