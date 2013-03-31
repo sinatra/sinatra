@@ -1,5 +1,6 @@
 require File.expand_path('../helper', __FILE__)
 require 'date'
+require 'json'
 
 class HelpersTest < Test::Unit::TestCase
   def test_default
