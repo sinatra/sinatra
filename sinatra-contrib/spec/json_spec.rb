@@ -33,7 +33,6 @@ end
 describe Sinatra::JSON do
   def mock_app(&block)
     super do
-      helpers Sinatra::JSON
       class_eval(&block)
     end
   end
