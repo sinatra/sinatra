@@ -78,8 +78,9 @@ module Sinatra
       str.gsub! /^\/(\^|\\A)?|(\$|\\z)?\/$/, ''
       str.gsub! encoded(' '), ' '
       return pattern if str =~ /^[\.\+]/
-      capture = '((?:[^\.\/?#%]|(?:%[^2].|%[2][^Ee]))+)'
-      str.gsub! /\([^\(\)]*\)|\([^\(\)]*\([^\(\)]*\)[^\(\)]*\)|#{Regexp.escape(capture)}/ do |part|
+      str.gsub! '((?:[^\.\/?#%]|(?:%[^2].|%[2][^Ee]))+)', '([^\/?#]+)'
+      str.gsub! '((?:[^\/?#%]|(?:%[^2].|%[2][^Ee]))+)', '([^\/?#]+)'
+      str.gsub! /\([^\(\)]*\)|\([^\(\)]*\([^\(\)]*\)[^\(\)]*\)/ do |part|
         case part
         when '(.*?)'
           return pattern if keys.shift != 'splat'
@@ -88,7 +89,7 @@ module Sinatra
           $1
         when /^\(\?\:(%\d+)\|([^\)]+|\([^\)]+\))\)$/
           URI.unescape($1)
-        when '([^\/?#]+)', capture
+        when '([^\/?#]+)'
           return pattern if keys.empty?
           ":" << keys.shift
         when /^\(\?\:\\?(.)\|/
