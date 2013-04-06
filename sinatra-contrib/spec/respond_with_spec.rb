@@ -229,10 +229,12 @@ describe Sinatra::RespondWith do
         body.should == "hi"
       end
 
-      it 'uses yajl for json' do
-        respond_with :baz
-        req(:json).should be_ok
-        body.should == "\"yajl!\""
+      unless defined? JRUBY_VERSION
+        it 'uses yajl for json' do
+          respond_with :baz
+          req(:json).should be_ok
+          body.should == "\"yajl!\""
+        end
       end
     end
 
