@@ -852,7 +852,7 @@ module Sinatra
 
     URI = ::URI.const_defined?(:Parser) ? ::URI::Parser.new : ::URI
 
-    attr_accessor :app
+    attr_accessor :app, :env, :request, :response, :params
     attr_reader   :template_cache
 
     def initialize(app = nil)
@@ -866,8 +866,6 @@ module Sinatra
     def call(env)
       dup.call!(env)
     end
-
-    attr_accessor :env, :request, :response, :params
 
     def call!(env) # :nodoc:
       @env      = env
@@ -1119,6 +1117,23 @@ module Sinatra
     end
 
     class << self
+      CALLERS_TO_IGNORE = [ # :nodoc:
+        /\/sinatra(\/(base|main|showexceptions))?\.rb$/,    # all sinatra code
+        /lib\/tilt.*\.rb$/,                                 # all tilt code
+        /^\(.*\)$/,                                         # generated code
+        /rubygems\/(custom|core_ext\/kernel)_require\.rb$/, # rubygems require hacks
+        /active_support/,                                   # active_support require hacks
+        /bundler(\/runtime)?\.rb/,                          # bundler require hacks
+        /<internal:/,                                       # internal in ruby >= 1.9.2
+        /src\/kernel\/bootstrap\/[A-Z]/                     # maglev kernel files
+      ]
+
+      # contrary to what the comment said previously, rubinius never supported this
+      if defined?(RUBY_IGNORE_CALLERS)
+        warn "RUBY_IGNORE_CALLERS is deprecated and will no longer be supported by Sinatra 2.0"
+        CALLERS_TO_IGNORE.concat(RUBY_IGNORE_CALLERS)
+      end
+
       attr_reader :routes, :filters, :templates, :errors
 
       # Removes all routes, filters, middleware and extension hooks from the
@@ -1320,6 +1335,129 @@ module Sinatra
         public_folder
       end
 
+      # Defining a `GET` handler also automatically defines
+      # a `HEAD` handler.
+      def get(path, opts = {}, &block)
+        conditions = @conditions.dup
+        route('GET', path, opts, &block)
+
+        @conditions = conditions
+        route('HEAD', path, opts, &block)
+      end
+
+      def put(path, opts = {}, &bk)     route 'PUT',     path, opts, &bk end
+      def post(path, opts = {}, &bk)    route 'POST',    path, opts, &bk end
+      def delete(path, opts = {}, &bk)  route 'DELETE',  path, opts, &bk end
+      def head(path, opts = {}, &bk)    route 'HEAD',    path, opts, &bk end
+      def options(path, opts = {}, &bk) route 'OPTIONS', path, opts, &bk end
+      def patch(path, opts = {}, &bk)   route 'PATCH',   path, opts, &bk end
+      def link(path, opts = {}, &bk)    route 'LINK',    path, opts, &bk end
+      def unlink(path, opts = {}, &bk)  route 'UNLINK',  path, opts, &bk end
+
+      # Makes the methods defined in the block and in the Modules given
+      # in `extensions` available to the handlers and templates
+      def helpers(*extensions, &block)
+        class_eval(&block)   if block_given?
+        include(*extensions) if extensions.any?
+      end
+
+      # Register an extension. Alternatively take a block from which an
+      # extension will be created and registered on the fly.
+      def register(*extensions, &block)
+        extensions << Module.new(&block) if block_given?
+        @extensions += extensions
+        extensions.each do |extension|
+          extend extension
+          extension.registered(self) if extension.respond_to?(:registered)
+        end
+      end
+
+      def development?; environment == :development end
+      def production?;  environment == :production  end
+      def test?;        environment == :test        end
+
+      # Set configuration options for Sinatra and/or the app.
+      # Allows scoping of settings for certain environments.
+      def configure(*envs, &block)
+        yield self if envs.empty? || envs.include?(environment.to_sym)
+      end
+
+      # Use the specified Rack middleware
+      def use(middleware, *args, &block)
+        @prototype = nil
+        @middleware << [middleware, args, block]
+      end
+
+      def quit!(server, handler_name)
+        # Use Thin's hard #stop! if available, otherwise just #stop.
+        server.respond_to?(:stop!) ? server.stop! : server.stop
+        $stderr.puts "\n== Sinatra has ended his set (crowd applauds)" unless handler_name =~/cgi/i
+      end
+
+      # Run the Sinatra app as a self-hosted server using
+      # Thin, Puma, Mongrel, or WEBrick (in that order). If given a block, will call
+      # with the constructed handler once we have taken the stage.
+      def run!(options = {})
+        set options
+        handler         = detect_rack_handler
+        handler_name    = handler.name.gsub(/.*::/, '')
+        server_settings = settings.respond_to?(:server_settings) ? settings.server_settings : {}
+        handler.run self, server_settings.merge(:Port => port, :Host => bind) do |server|
+          unless handler_name =~ /cgi/i
+            $stderr.puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
+            "on #{port} for #{environment} with backup from #{handler_name}"
+          end
+          [:INT, :TERM].each { |sig| trap(sig) { quit!(server, handler_name) } }
+          server.threaded = settings.threaded if server.respond_to? :threaded=
+          set :running, true
+          yield server if block_given?
+        end
+      rescue Errno::EADDRINUSE
+        $stderr.puts "== Someone is already performing on port #{port}!"
+      end
+
+      # The prototype instance used to process requests.
+      def prototype
+        @prototype ||= new
+      end
+
+      # Create a new instance without middleware in front of it.
+      alias new! new unless method_defined? :new!
+
+      # Create a new instance of the class fronted by its middleware
+      # pipeline. The object is guaranteed to respond to #call but may not be
+      # an instance of the class new was called on.
+      def new(*args, &bk)
+        instance = new!(*args, &bk)
+        Wrapper.new(build(instance).to_app, instance)
+      end
+
+      # Creates a Rack::Builder instance with all the middleware set up and
+      # the given +app+ as end point.
+      def build(app)
+        builder = Rack::Builder.new
+        setup_default_middleware builder
+        setup_middleware builder
+        builder.run app
+        builder
+      end
+
+      def call(env)
+        synchronize { prototype.call(env) }
+      end
+
+      # Like Kernel#caller but excluding certain magic entries and without
+      # line / method information; the resulting array contains filenames only.
+      def caller_files
+        cleaned_caller(1).flatten
+      end
+
+      # Like caller_files, but containing Arrays rather than strings with the
+      # first element being the file, and the second being the line.
+      def caller_locations
+        cleaned_caller 2
+      end
+
       private
 
       # Dynamically defines a method on settings.
@@ -1366,29 +1504,6 @@ module Sinatra
           end
         end
       end
-
-      public
-
-      # Defining a `GET` handler also automatically defines
-      # a `HEAD` handler.
-      def get(path, opts = {}, &block)
-        conditions = @conditions.dup
-        route('GET', path, opts, &block)
-
-        @conditions = conditions
-        route('HEAD', path, opts, &block)
-      end
-
-      def put(path, opts = {}, &bk)     route 'PUT',     path, opts, &bk end
-      def post(path, opts = {}, &bk)    route 'POST',    path, opts, &bk end
-      def delete(path, opts = {}, &bk)  route 'DELETE',  path, opts, &bk end
-      def head(path, opts = {}, &bk)    route 'HEAD',    path, opts, &bk end
-      def options(path, opts = {}, &bk) route 'OPTIONS', path, opts, &bk end
-      def patch(path, opts = {}, &bk)   route 'PATCH',   path, opts, &bk end
-      def link(path, opts = {}, &bk)    route 'LINK',    path, opts, &bk end
-      def unlink(path, opts = {}, &bk)  route 'UNLINK',  path, opts, &bk end
-
-      private
 
       def route(verb, path, options = {}, &block)
         # Because of self.options.host
@@ -1526,102 +1641,6 @@ module Sinatra
         end
       end
 
-      public
-
-      # Makes the methods defined in the block and in the Modules given
-      # in `extensions` available to the handlers and templates
-      def helpers(*extensions, &block)
-        class_eval(&block)   if block_given?
-        include(*extensions) if extensions.any?
-      end
-
-      # Register an extension. Alternatively take a block from which an
-      # extension will be created and registered on the fly.
-      def register(*extensions, &block)
-        extensions << Module.new(&block) if block_given?
-        @extensions += extensions
-        extensions.each do |extension|
-          extend extension
-          extension.registered(self) if extension.respond_to?(:registered)
-        end
-      end
-
-      def development?; environment == :development end
-      def production?;  environment == :production  end
-      def test?;        environment == :test        end
-
-      # Set configuration options for Sinatra and/or the app.
-      # Allows scoping of settings for certain environments.
-      def configure(*envs, &block)
-        yield self if envs.empty? || envs.include?(environment.to_sym)
-      end
-
-      # Use the specified Rack middleware
-      def use(middleware, *args, &block)
-        @prototype = nil
-        @middleware << [middleware, args, block]
-      end
-
-      def quit!(server, handler_name)
-        # Use Thin's hard #stop! if available, otherwise just #stop.
-        server.respond_to?(:stop!) ? server.stop! : server.stop
-        $stderr.puts "\n== Sinatra has ended his set (crowd applauds)" unless handler_name =~/cgi/i
-      end
-
-      # Run the Sinatra app as a self-hosted server using
-      # Thin, Puma, Mongrel, or WEBrick (in that order). If given a block, will call
-      # with the constructed handler once we have taken the stage.
-      def run!(options = {})
-        set options
-        handler         = detect_rack_handler
-        handler_name    = handler.name.gsub(/.*::/, '')
-        server_settings = settings.respond_to?(:server_settings) ? settings.server_settings : {}
-        handler.run self, server_settings.merge(:Port => port, :Host => bind) do |server|
-          unless handler_name =~ /cgi/i
-            $stderr.puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
-            "on #{port} for #{environment} with backup from #{handler_name}"
-          end
-          [:INT, :TERM].each { |sig| trap(sig) { quit!(server, handler_name) } }
-          server.threaded = settings.threaded if server.respond_to? :threaded=
-          set :running, true
-          yield server if block_given?
-        end
-      rescue Errno::EADDRINUSE
-        $stderr.puts "== Someone is already performing on port #{port}!"
-      end
-
-      # The prototype instance used to process requests.
-      def prototype
-        @prototype ||= new
-      end
-
-      # Create a new instance without middleware in front of it.
-      alias new! new unless method_defined? :new!
-
-      # Create a new instance of the class fronted by its middleware
-      # pipeline. The object is guaranteed to respond to #call but may not be
-      # an instance of the class new was called on.
-      def new(*args, &bk)
-        instance = new!(*args, &bk)
-        Wrapper.new(build(instance).to_app, instance)
-      end
-
-      # Creates a Rack::Builder instance with all the middleware set up and
-      # the given +app+ as end point.
-      def build(app)
-        builder = Rack::Builder.new
-        setup_default_middleware builder
-        setup_middleware builder
-        builder.run app
-        builder
-      end
-
-      def call(env)
-        synchronize { prototype.call(env) }
-      end
-
-      private
-
       def setup_default_middleware(builder)
         builder.use ExtendedRack
         builder.use ShowExceptions       if show_exceptions?
@@ -1704,39 +1723,6 @@ module Sinatra
           yield
         end
       end
-
-      public
-
-      CALLERS_TO_IGNORE = [ # :nodoc:
-        /\/sinatra(\/(base|main|showexceptions))?\.rb$/,    # all sinatra code
-        /lib\/tilt.*\.rb$/,                                 # all tilt code
-        /^\(.*\)$/,                                         # generated code
-        /rubygems\/(custom|core_ext\/kernel)_require\.rb$/, # rubygems require hacks
-        /active_support/,                                   # active_support require hacks
-        /bundler(\/runtime)?\.rb/,                          # bundler require hacks
-        /<internal:/,                                       # internal in ruby >= 1.9.2
-        /src\/kernel\/bootstrap\/[A-Z]/                     # maglev kernel files
-      ]
-
-      # contrary to what the comment said previously, rubinius never supported this
-      if defined?(RUBY_IGNORE_CALLERS)
-        warn "RUBY_IGNORE_CALLERS is deprecated and will no longer be supported by Sinatra 2.0"
-        CALLERS_TO_IGNORE.concat(RUBY_IGNORE_CALLERS)
-      end
-
-      # Like Kernel#caller but excluding certain magic entries and without
-      # line / method information; the resulting array contains filenames only.
-      def caller_files
-        cleaned_caller(1).flatten
-      end
-
-      # Like caller_files, but containing Arrays rather than strings with the
-      # first element being the file, and the second being the line.
-      def caller_locations
-        cleaned_caller 2
-      end
-
-      private
 
       # used for deprecation warnings
       def warn(message)
