@@ -19,7 +19,7 @@ module Rack
 
         if has_vector? request, headers
           warn env, "attack prevented by #{self.class}"
-          react(env)
+          react(env) or [status, headers, body]
         else
           [status, headers, body]
         end
