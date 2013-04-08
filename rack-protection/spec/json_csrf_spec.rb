@@ -31,6 +31,7 @@ describe Rack::Protection::JsonCsrf do
     it "accepts XHR requests" do
       get('/', {}, 'HTTP_REFERER' => 'http://evil.com', 'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest').should be_ok
     end
+
   end
 
   describe 'not json response' do
@@ -40,5 +41,19 @@ describe Rack::Protection::JsonCsrf do
       get('/', {}).status.should == 304
     end
 
+  end
+
+  describe 'with drop_session as default reaction' do
+    it 'reset the session' do
+      mock_app do
+        use Rack::Protection, :reaction => :drop_session
+        run proc { |e| [200, {'Content-Type' => 'application/json'}, []]}
+      end
+
+      session = {:foo => :bar}
+      get('/', {}, 'HTTP_REFERER' => 'http://evil.com', 'rack.session' => session)
+      last_response.should be_ok
+      session.should be_empty
+    end
   end
 end
