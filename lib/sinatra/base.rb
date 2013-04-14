@@ -1137,7 +1137,7 @@ module Sinatra
       attr_reader :routes, :filters, :templates, :errors
 
       # Removes all routes, filters, middleware and extension hooks from the
-      # current class (not routes/filters/... defined by it's superclass).
+      # current class (not routes/filters/... defined by its superclass).
       def reset!
         @conditions     = []
         @routes         = {}
@@ -1424,7 +1424,7 @@ module Sinatra
       # Create a new instance without middleware in front of it.
       alias new! new unless method_defined? :new!
 
-      # Create a new instance of the class frontend by it's middleware
+      # Create a new instance of the class frontend by its middleware
       # pipeline. The object is guaranteed to respond to #call but may not be
       # an instance of the class new was called on.
       def new(*args, &bk)
