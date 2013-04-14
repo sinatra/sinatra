@@ -106,7 +106,7 @@ module Sinatra
     end
   end
 
-  # The response object. See Rack::Response and Rack::ResponseHelpers for
+  # The response object. See Rack::Response and Rack::Response::Helpers for
   # more info:
   # http://rack.rubyforge.org/doc/classes/Rack/Response.html
   # http://rack.rubyforge.org/doc/classes/Rack/Response/Helpers.html
@@ -1137,7 +1137,7 @@ module Sinatra
       attr_reader :routes, :filters, :templates, :errors
 
       # Removes all routes, filters, middleware and extension hooks from the
-      # current class (not routes/filters/... defined by its superclass).
+      # current class (not routes/filters/... defined by it's superclass).
       def reset!
         @conditions     = []
         @routes         = {}
@@ -1424,7 +1424,7 @@ module Sinatra
       # Create a new instance without middleware in front of it.
       alias new! new unless method_defined? :new!
 
-      # Create a new instance of the class fronted by its middleware
+      # Create a new instance of the class frontend by it's middleware
       # pipeline. The object is guaranteed to respond to #call but may not be
       # an instance of the class new was called on.
       def new(*args, &bk)
