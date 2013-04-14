@@ -1424,7 +1424,7 @@ module Sinatra
       # Create a new instance without middleware in front of it.
       alias new! new unless method_defined? :new!
 
-      # Create a new instance of the class frontend by its middleware
+      # Create a new instance of the class fronted by its middleware
       # pipeline. The object is guaranteed to respond to #call but may not be
       # an instance of the class new was called on.
       def new(*args, &bk)
