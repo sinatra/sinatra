@@ -19,16 +19,27 @@ module Rack
       end
 
       def cleanup(path)
-        parts     = []
-        unescaped = path.gsub('%2e', '.').gsub('%2f', '/')
+        if path.respond_to?(:encoding)
+          # Ruby 1.9+ M17N
+          encoding = path.encoding
+          dot   = '.'.encode(encoding)
+          slash = '/'.encode(encoding)
+        else
+          # Ruby 1.8
+          dot   = '.'
+          slash = '/'
+        end
 
-        unescaped.split('/').each do |part|
-          next if part.empty? or part == '.'
+        parts     = []
+        unescaped = path.gsub(/%2e/i, dot).gsub(/%2f/i, slash)
+
+        unescaped.split(slash).each do |part|
+          next if part.empty? or part == dot
           part == '..' ? parts.pop : parts << part
         end
 
-        cleaned = '/' << parts.join('/')
-        cleaned << '/' if parts.any? and unescaped =~ /\/\.{0,2}$/
+        cleaned = slash + parts.join(slash)
+        cleaned << slash if parts.any? and unescaped =~ %r{/\.{0,2}$}
         cleaned
       end
     end
