@@ -14,8 +14,8 @@ describe Rack::Protection::PathTraversal do
 
     { # yes, this is ugly, feel free to change that
       '/..' => '/', '/a/../b' => '/b', '/a/../b/' => '/b/', '/a/.' => '/a/',
-      '/%2e.' => '/', '/a/%2e%2e/b' => '/b', '/a%2f%2e%2e%2fb/' => '/b/',
-      '//' => '/', '/%2fetc%2fpasswd' => '/etc/passwd'
+      '/%2e.' => '/', '/a/%2E%2e/b' => '/b', '/a%2f%2E%2e%2Fb/' => '/b/',
+      '//' => '/', '/%2fetc%2Fpasswd' => '/etc/passwd'
     }.each do |a, b|
       it("replaces #{a.inspect} with #{b.inspect}") { get(a).body.should == b }
     end

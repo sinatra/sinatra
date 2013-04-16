@@ -20,7 +20,7 @@ module Rack
 
       def cleanup(path)
         parts     = []
-        unescaped = path.gsub('%2e', '.').gsub('%2f', '/')
+        unescaped = path.gsub(/%2e/i, '.').gsub(/%2f/i, '/')
 
         unescaped.split('/').each do |part|
           next if part.empty? or part == '.'
