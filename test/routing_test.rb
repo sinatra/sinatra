@@ -669,6 +669,24 @@ class RoutingTest < Test::Unit::TestCase
     assert "this", body
   end
 
+  it "uses optional block passed to pass as route block if no other route is found and superclass has non-matching routes" do
+    base = Class.new(Sinatra::Base)
+    base.get('/foo') { 'foo in baseclass' }
+
+    mock_app(base) {
+      get "/" do
+        pass do
+          "this"
+        end
+        "not this"
+      end
+    }
+
+    get "/"
+    assert_equal 200, status
+    assert "this", body
+  end
+
   it "passes when matching condition returns false" do
     mock_app {
       condition { params[:foo] == 'bar' }
