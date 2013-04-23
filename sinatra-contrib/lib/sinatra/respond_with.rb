@@ -14,7 +14,7 @@ module Sinatra
   #   get '/' do
   #     data = { :name => 'example' }
   #     request.accept.each do |type|
-  #       case type
+  #       case type.to_s
   #       when 'text/html'
   #         halt haml(:index, :locals => data)
   #       when 'text/json'
