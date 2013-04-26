@@ -16,7 +16,7 @@ get '/' do
 end
 ```
 
-Instale a gem e execute como:
+Instale a gem e execute o arquivo criado acima:
 
 ``` shell
 gem install sinatra
@@ -25,8 +25,8 @@ ruby minhaapp.rb
 
 Acesse em: [localhost:4567](http://localhost:4567)
 
-Recomendamos a execução de `gem install thin`. Caso esteja disponível, o
-Sinatra irá usar.
+Recomendamos a execução de `gem install thin`. Caso esta gem esteja disponível, o
+Sinatra irá utilizá-la.
 
 ## Rotas
 
@@ -59,7 +59,7 @@ options '/' do
 end
 ```
 
-As rotas são interpretadas na ordem em que são definidos. A primeira
+As rotas são interpretadas na ordem em que são definidas. A primeira
 rota encontrada responde ao pedido.
 
 Padrões de rota podem conter parâmetros nomeados, acessível através do
