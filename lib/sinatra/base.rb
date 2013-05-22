@@ -1389,52 +1389,50 @@ module Sinatra
       end
 
       def quit!
-        if running
-          # Use Thin's hard #stop! if available, otherwise just #stop.
-          s = running_server
-          s.respond_to?(:stop!) ? s.stop! : s.stop
-          disable :running
-          set :running_server, nil
-          $stderr.puts "\n== Sinatra has ended his set (crowd applauds)" unless handler_name =~/cgi/i
-          set :handler_name, nil
-        end
+        return unless running
+        # Use Thin's hard #stop! if available, otherwise just #stop.
+        s = running_server
+        s.respond_to?(:stop!) ? s.stop! : s.stop
+        disable :running
+        set :running_server, nil
+        $stderr.puts "\n== Sinatra has ended his set (crowd applauds)" unless handler_name =~/cgi/i
+        set :handler_name, nil
       end
 
       # Run the Sinatra app as a self-hosted server using
       # Thin, Puma, Mongrel, or WEBrick (in that order). If given a block, will call
       # with the constructed handler once we have taken the stage.
       def run!(options = {})
-        unless running
-          set options
-          handler         = detect_rack_handler
-          handler_name    = handler.name.gsub(/.*::/, '')
-          server_settings = settings.respond_to?(:server_settings) ? settings.server_settings : {}
+        return if running
+        set options
+        handler         = detect_rack_handler
+        handler_name    = handler.name.gsub(/.*::/, '')
+        server_settings = settings.respond_to?(:server_settings) ? settings.server_settings : {}
 
-          begin
-            handler.run self, server_settings.merge(:Port => port, :Host => bind) do |server|
-              unless handler_name =~ /cgi/i
-                $stderr.puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
-                "on #{port} for #{environment} with backup from #{handler_name}"
-              end
-
-              unless traps_setup
-                [:INT, :TERM].each { |sig| trap(sig) { quit!; exit } }
-                enable :traps_setup
-              end
-
-              enable :running
-              set :running_server, server
-              set :handler_name, handler_name
-              server.threaded = settings.threaded if server.respond_to? :threaded=
-
-              yield server if block_given?
+        begin
+          handler.run self, server_settings.merge(:Port => port, :Host => bind) do |server|
+            unless handler_name =~ /cgi/i
+              $stderr.puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
+              "on #{port} for #{environment} with backup from #{handler_name}"
             end
-          rescue Errno::EADDRINUSE
-            disable :running
-            set :running_server, nil
-            set :handler_name, nil
-            $stderr.puts "== Someone is already performing on port #{port}!"
+
+            unless traps_setup
+              [:INT, :TERM].each { |sig| trap(sig) { quit!; exit } }
+              enable :traps_setup
+            end
+
+            enable :running
+            set :running_server, server
+            set :handler_name, handler_name
+            server.threaded = settings.threaded if server.respond_to? :threaded=
+
+            yield server if block_given?
           end
+        rescue Errno::EADDRINUSE
+          disable :running
+          set :running_server, nil
+          set :handler_name, nil
+          $stderr.puts "== Someone is already performing on port #{port}!"
         end
       end
 
