@@ -14,7 +14,7 @@ Sinatra via `rubygems` installieren:
 gem install sinatra
 ```
 
-Eine Date mit dem Namen `myapp.rb` erstellen:
+Eine Datei mit dem Namen `myapp.rb` erstellen:
 
 ```ruby
 require 'sinatra'
