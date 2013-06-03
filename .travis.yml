@@ -19,3 +19,4 @@ matrix:
     - { rvm: 1.9.3, env: tilt=master }
   allow_failures:
     - env: tilt=master
+    - rvm: rbx-19mode
