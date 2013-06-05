@@ -52,6 +52,7 @@ class RequestTest < Test::Unit::TestCase
 
   it "makes accept types behave like strings" do
     request = Sinatra::Request.new('HTTP_ACCEPT' => 'image/jpeg; compress=0.25')
+    assert                     request.accept?('image/jpeg')
     assert_equal 'image/jpeg', request.preferred_type.to_s
     assert_equal 'image/jpeg', request.preferred_type.to_str
     assert_equal 'image',      request.preferred_type.split('/').first

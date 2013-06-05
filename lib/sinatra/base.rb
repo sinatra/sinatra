@@ -27,6 +27,10 @@ module Sinatra
       end
     end
 
+    def accept?(type)
+      preferred_type.include?(type)
+    end
+
     def preferred_type(*types)
       accepts = accept # just evaluate once
       return accepts.first if types.empty?
@@ -38,7 +42,6 @@ module Sinatra
       end
     end
 
-    alias accept? preferred_type
     alias secure? ssl?
 
     def forwarded?
