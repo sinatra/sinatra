@@ -1,4 +1,4 @@
-= 1.4.3 / Not Yet Released
+= 1.4.3 / 2013-06-07
 
  * Running a Sinatra file directly or via `run!` it will now ignore an
    empty $PORT env variable. (noxqsgit)
