@@ -1,3 +1,24 @@
+= 1.4.3 / Not Yet Released
+
+ * Running a Sinatra file directly or via `run!` it will now ignore an
+   empty $PORT env variable. (noxqsgit)
+
+ * Improve documentation. (burningTyger, Patricio Mac Adden,
+   Konstantin Haase, Diogo Scudelletti, Dominic Imhof)
+
+ * Expose matched pattern as env["sinatra.route"]. (Aman Gupta)
+
+ * Fix warning on Ruby 2.0. (Craig Little)
+
+ * Improve running subset of tests in isolation. (Viliam Pucik)
+
+ * Reorder private/public methods. (Patricio Mac Adden)
+
+ * Loosen version dependency for rack, so it runs with Rails 3.2.
+   (Konstantin Haase)
+
+ * Request#accept? now returns true instead of a truthy value. (Alan Harris)
+
 = 1.4.2 / 2013-03-21
 
  * Fix parsing error for case where both the pattern and the captured part
