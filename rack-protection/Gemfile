@@ -1,4 +1,5 @@
 source "http://rubygems.org"
+# encoding: utf-8
 
 gem 'rake'
 
