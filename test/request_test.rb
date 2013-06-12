@@ -63,6 +63,11 @@ class RequestTest < Test::Unit::TestCase
     end
   end
 
+  it "accepts types when wildcards are requested" do
+    request = Sinatra::Request.new('HTTP_ACCEPT' => 'image/*')
+    assert request.accept?('image/jpeg')
+  end
+
   it "properly decodes MIME type parameters" do
     request = Sinatra::Request.new(
       'HTTP_ACCEPT' => 'image/jpeg;unquoted=0.25;quoted="0.25";chartest="\";,\x"'

@@ -28,7 +28,7 @@ module Sinatra
     end
 
     def accept?(type)
-      preferred_type.include?(type)
+      preferred_type(type).include?(type)
     end
 
     def preferred_type(*types)
