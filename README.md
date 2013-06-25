@@ -1299,6 +1299,13 @@ the `sessions` setting:
 set :sessions, :domain => 'foo.com'
 ```
 
+To share your session across other apps on subdomains of foo.com, prefix the
+domain with a *.* like this instead:
+
+``` ruby
+set :sessions, :domain => '.foo.com'
+```
+
 ### Halting
 
 To immediately stop a request within a filter or route use:
