@@ -41,6 +41,7 @@ Rake::TestTask.new(:test) do |t|
   t.test_files = FileList['test/*_test.rb']
   t.ruby_opts = ['-rubygems'] if defined? Gem
   t.ruby_opts << '-I.'
+  t.warning = true
 end
 
 Rake::TestTask.new(:"test:core") do |t|
@@ -51,6 +52,7 @@ Rake::TestTask.new(:"test:core") do |t|
   t.test_files = core_tests.map {|n| "test/#{n}_test.rb"}
   t.ruby_opts = ["-rubygems"] if defined? Gem
   t.ruby_opts << "-I."
+  t.warning = true
 end
 
 # Rcov ================================================================
