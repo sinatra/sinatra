@@ -772,7 +772,7 @@ module Sinatra
     def render(engine, data, options = {}, locals = {}, &block)
       # merge app-level options
       engine_options  = settings.respond_to?(engine) ? settings.send(engine) : {}
-      options         = engine_options.merge(options)
+      options.merge!(engine_options) { |key, v1, v2| v1 }
 
       # extract generic options
       locals          = options.delete(:locals) || locals         || {}
@@ -804,8 +804,8 @@ module Sinatra
 
       # render layout
       if layout
-        options = options.merge(:views => views, :layout => false, :eat_errors => eat_errors, :scope => scope)
-        options.merge! layout_options
+        options.merge!(:views => views, :layout => false, :eat_errors => eat_errors, :scope => scope)
+               .merge!(layout_options)
         catch(:layout_missing) { return render(layout_engine, layout, options, locals) { output } }
       end
 
