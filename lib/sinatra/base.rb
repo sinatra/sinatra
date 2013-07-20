@@ -22,8 +22,8 @@ module Sinatra
     # Returns an array of acceptable media types for the response
     def accept
       @env['sinatra.accept'] ||= begin
-        @env['HTTP_ACCEPT'].to_s.scan(HEADER_VALUE_WITH_PARAMS)
-        .map! { |e| AcceptEntry.new(e) }.sort
+        @env['HTTP_ACCEPT'].to_s.scan(HEADER_VALUE_WITH_PARAMS).
+          map! { |e| AcceptEntry.new(e) }.sort
       end
     end
 
@@ -804,8 +804,8 @@ module Sinatra
 
       # render layout
       if layout
-        options.merge!(:views => views, :layout => false, :eat_errors => eat_errors, :scope => scope)
-               .merge!(layout_options)
+        options.merge!(:views => views, :layout => false, :eat_errors => eat_errors, :scope => scope).
+                merge!(layout_options)
         catch(:layout_missing) { return render(layout_engine, layout, options, locals) { output } }
       end
 
