@@ -37,7 +37,7 @@ class ResponseTest < Test::Unit::TestCase
 
   it 'Calculates the Content-Length using the bytesize of the body' do
     @response.body = ['Hello', 'World!', '✈']
-    status, headers, body = @response.finish
+    _, headers, body = @response.finish
     assert_equal '14', headers['Content-Length']
     assert_same_body @response.body, body
   end
