@@ -114,6 +114,7 @@ module Sinatra
   # http://rack.rubyforge.org/doc/classes/Rack/Response.html
   # http://rack.rubyforge.org/doc/classes/Rack/Response/Helpers.html
   class Response < Rack::Response
+    DROP_BODY_RESPONSES = [204, 205, 304]
     def initialize(*)
       super
       headers['Content-Type'] ||= 'text/html'
@@ -161,7 +162,7 @@ module Sinatra
     end
 
     def drop_body?
-      [204, 205, 304].include?(status.to_i)
+      DROP_BODY_RESPONSES.include?(status.to_i)
     end
   end
 
