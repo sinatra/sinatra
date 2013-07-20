@@ -70,7 +70,7 @@ module Sinatra
       attr_accessor :params
 
       def initialize(entry)
-        params = entry.scan(HEADER_PARAM).map do |s|
+        params = entry.scan(HEADER_PARAM).map! do |s|
           key, value = s.strip.split('=', 2)
           value = value[1..-2].gsub(/\\(.)/, '\1') if value.start_with?('"')
           [key, value]
@@ -79,7 +79,7 @@ module Sinatra
         @entry  = entry
         @type   = entry[/[^;]+/].delete(' ')
         @params = Hash[params]
-        @q      = @params.delete('q') { "1.0" }.to_f
+        @q      = @params.delete('q') { 1.0 }.to_f
       end
 
       def <=>(other)
