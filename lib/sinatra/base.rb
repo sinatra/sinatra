@@ -513,6 +513,7 @@ module Sinatra
     rescue ArgumentError
     end
 
+    ETAG_KINDS = [:strong, :weak]
     # Set the response entity tag (HTTP 'ETag' header) and halt if conditional
     # GET matches. The +value+ argument is an identifier that uniquely
     # identifies the current version of the resource. The +kind+ argument
@@ -528,12 +529,12 @@ module Sinatra
       kind         = options[:kind] || :strong
       new_resource = options.fetch(:new_resource) { request.post? }
 
-      unless [:strong, :weak].include?(kind)
+      unless ETAG_KINDS.include?(kind)
         raise ArgumentError, ":strong or :weak expected"
       end
 
       value = '"%s"' % value
-      value = 'W/' + value if kind == :weak
+      value = "W/#{value}" if kind == :weak
       response['ETag'] = value
 
       if success? or status == 304
