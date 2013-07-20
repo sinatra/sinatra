@@ -454,7 +454,7 @@ module Sinatra
       hash.each do |key, value|
         key = key.to_s.tr('_', '-')
         value = value.to_i if key == "max-age"
-        values << [key, value].join('=')
+        values << "#{key}=#{value}"
       end
 
       response['Cache-Control'] = values.join(', ') if values.any?
