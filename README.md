@@ -2744,7 +2744,7 @@ The following Ruby versions are officially supported:
 
   <dt>Rubinius</dt>
   <dd>
-    Rubinius is officially supported (Rubinius >= 2.x). It is recommendended to
+    Rubinius is officially supported (Rubinius >= 2.x). It is recommended to
     <tt>gem install puma</tt>.
   </dd>
 
