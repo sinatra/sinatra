@@ -445,7 +445,7 @@ class AfterFilterTest < Test::Unit::TestCase
     assert ran
   end
 
-  it 'only triggeres provides condition if conforms with current Content-Type' do
+  it 'only triggers provides condition if conforms with current Content-Type' do
     mock_app do
       before(:provides => :txt)  { @type = 'txt' }
       before(:provides => :html) { @type = 'html' }
