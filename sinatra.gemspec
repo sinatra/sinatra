@@ -13,6 +13,6 @@ Gem::Specification.new 'sinatra', Sinatra::VERSION do |s|
   s.rdoc_options      = %w[--line-numbers --inline-source --title Sinatra --main README.rdoc --encoding=UTF-8]
 
   s.add_dependency 'rack', '~> 1.4'
-  s.add_dependency 'tilt', '~> 1.3', '>= 1.3.4'
+  s.add_dependency 'tilt', '>= 1.3.4', '< 3.0'
   s.add_dependency 'rack-protection', '~> 1.4'
 end
