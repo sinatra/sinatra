@@ -48,7 +48,7 @@ class SlimTest < Test::Unit::TestCase
   HTML4_DOCTYPE = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"
 
   it "passes slim options to the slim engine" do
-    mock_app { get('/') { slim("x foo='bar'", :attr_wrapper => "'") }}
+    mock_app { get('/') { slim("x foo='bar'", :attr_quote => "'") }}
     get '/'
     assert ok?
     assert_body "<x foo='bar'></x>"
@@ -56,7 +56,7 @@ class SlimTest < Test::Unit::TestCase
 
   it "passes default slim options to the slim engine" do
     mock_app do
-      set :slim, :attr_wrapper => "'"
+      set :slim, :attr_quote => "'"
       get('/') { slim("x foo='bar'") }
     end
     get '/'
@@ -66,9 +66,9 @@ class SlimTest < Test::Unit::TestCase
 
   it "merges the default slim options with the overrides and passes them to the slim engine" do
     mock_app do
-      set :slim, :attr_wrapper => "'"
+      set :slim, :attr_quote => "'"
       get('/') { slim("x foo='bar'") }
-      get('/other') { slim("x foo='bar'", :attr_wrapper => '"') }
+      get('/other') { slim("x foo='bar'", :attr_quote => '"') }
     end
     get '/'
     assert ok?
