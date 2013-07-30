@@ -105,9 +105,9 @@ Sinatra utilise le server Thin quand il est disponible.
     * [Ligne de commande](#ligne-de-commande)
     * [Configuration nécessaire](#configuration-nécessaire)
     * [Essuyer les plâtres](#essuyer-les-plâtres)
-        * [Avec Bundler](#avec-bundler)
-        * [Faites le vous-même](#faites-le-vous-même)
-        * [Installez globalement](#installez-globalement)
+        * [Installer avec Bundler](#installer-avec-bundler)
+        * [Faire un clone local](#faire-un-clone-local)
+        * [Installer globalement](#installer-globalement)
     * [Versions](#versions)
     * [Mais encore](#mais-encore)
 
@@ -2670,7 +2670,7 @@ Les applications Sinatra peuvent être lancées directement :
 ruby mon_application.rb [-h] [-x] [-e ENVIRONNEMENT] [-p PORT] [-o HOTE] [-s SERVEUR]
 ```
 
-Les options sont :
+Avec les options :
 
 ```
 -h # aide
@@ -2687,40 +2687,45 @@ Les versions suivantes de Ruby sont officiellement supportées :
 
 <dl>
   <dt>Ruby 1.8.7</dt>
-  <dd>1.8.7 est complètement supporté, toutefois si rien ne vous en empêche,
-  nous vous recommandons de passer à 1.9.2 ou bien de passer à JRuby ou
-  Rubinius. Le support de Ruby 1.8.7 ne sera pas supprimé avant la sortie de
-  Sinatra 2.0 et de Ruby 2.0, à moins qu’un improbable Ruby 1.8.8
-  apparaisse. Et même dans ce cas, nous pourrions continuer à le supporter.
-  **Ruby 1.8.6 n’est plus supporté**. Si vous souhaitez utiliser la
-  version 1.8.6, vous devez revenir à Sinatra 1.2 qui continuera à recevoir
-  des corrections de bugs tant que Sinatra 1.4.0 ne sera pas livré.</dd>
+  <dd>
+    1.8.7 est complètement supporté, toutefois si rien ne vous en empêche,
+    nous vous recommandons de faire une mise à jour ou bien de passer à JRuby
+    ou Rubinius. Le support de Ruby 1.8.7 ne sera pas supprimé avant la sortie
+    de Sinatra 2.0. Ruby 1.8.6 n’est plus supporté.
+  </dd>
 
   <dt>Ruby 1.9.2</dt>
-  <dd>1.9.2 est totalement supporté et recommandé. N’utilisez pas 1.9.2p0 car
-  il provoque des erreurs de segmentation à l’exécution de Sinatra. Son
-  support continuera au minimum jusqu’à la sortie de Ruby 1.9.4/2.0 et le
-  support de la dernière version 1.9 se poursuivra aussi longtemps que la
-  core team de Ruby la supportera.</dd>
+  <dd>
+    1.9.2 est totalement supporté. N’utilisez pas 1.9.2p0 car il provoque des
+    erreurs de segmentation à l’exécution de Sinatra. Son support continuera
+    au minimum jusqu’à la sortie de Sinatra 1.5.
+  </dd>
 
   <dt>Ruby 1.9.3</dt>
-  <dd>1.9.3 est totalement supporté et recommandé. Nous vous rappelons que
-  passer à 1.9.3 depuis une version précédente annulera toutes les
-  sessions.</dd>
+  <dd>
+    1.9.3 est totalement supporté et recommandé. Nous vous rappelons que passer
+    à 1.9.3 depuis une version précédente annulera toutes les sessions. 1.9.3
+    sera supporté jusqu'à la sortie de Sinatra 2.0.
+  </dd>
 
+  <dt>Ruby 2.0.0</dt>
+  <dd>
+    2.0.0 est totalement supporté et recommandé. L'abandon de son support
+    officiel n'est pas à l'ordre du jour.
+  </dd>
 
   <dt>Rubinius</dt>
-  <dd>Rubinius est officiellement supporté (Rubinius <= 1.2.4), tout
-  fonctionne, y compris tous les langages de template. La version 2.0 à
-  venir est également supportée.</dd>
+  <dd>
+    Rubinius est officiellement supporté (Rubinius >= 2.x). Un <tt>gem install
+    puma</tt> est recommandé.
+  </dd>
 
   <dt>JRuby</dt>
-  <dd>JRuby est officiellement supporté (JRuby <= 1.6.5). Aucune anomalie
-  avec des bibliothèques de templates tierces ne sont connues. Toutefois, si
-  vous choisissez JRuby, alors tournez vous vers des gestionnaires Rack JRuby
-  car le serveur Thin n’est pas complètement supporté par JRuby. Le
-  support des extensions C dans JRuby est encore expérimental, ce qui
-  n’affecte que RDiscount, Redcarpet and RedCloth pour l’instant.</dd>
+  <dd>
+    La dernière version stable de JRuby est officiellement supportée. Il est
+    déconseillé d'utiliser des extensions C avec JRuby. Un <tt>gem install
+    trinidad</tt> est recommandé.
+  </dd>
 </dl>
 
 Nous gardons également un oeil sur les versions Ruby à venir.
@@ -2734,72 +2739,72 @@ sont malgré tout connues pour permettre de faire fonctionner Sinatra :
 * Ruby 1.9.0 et 1.9.1 (mais nous déconseillons leur utilisation)
 
 Le fait de ne pas être officiellement supporté signifie que si quelque chose
-ne fonctionne pas uniquement sur cette plateforme alors c'est un problème de la
+ne fonctionne pas sur cette plateforme uniquement alors c'est un problème de la
 plateforme et pas un bug de Sinatra.
 
 Nous lançons également notre intégration continue (CI) avec ruby-head (la
-future 2.0.0) et la branche 1.9.4, mais étant donné les évolutions continuelles,
-nous ne pouvont rien garantir, si ce n'est que les versions 1.9.4p0 et 2.0.0p0
-seront supportées.
+future 2.1.0), mais nous ne pouvont rien garantir étant donné les évolutions
+continuelles. La version 2.1.0 devrait être totalement supportée.
 
 Sinatra devrait fonctionner sur n'importe quel système d'exploitation
-supportant l'implémentation Ruby choisie.
+supporté par l'implémentation Ruby choisie.
 
-Il n'est pas possible d'utiliser Sinatra sur Cardinal, SmallRuby, Blueuby ou
+Si vous utilisez MacRuby, vous devriez `gem install control_tower`.
+
+Il n'est pas possible d'utiliser Sinatra sur Cardinal, SmallRuby, BlueRuby ou
 toute version de Ruby antérieure à 1.8.7 à l'heure actuelle.
 
 ## Essuyer les plâtres
 
-Si vous voulez utiliser la toute dernière version de Sinatra, n'ayez pas peur
-de faire tourner votre application sur la branche master, cela devrait être
+Si vous souhaitez tester la toute dernière version de Sinatra, n'hésitez pas
+à faire tourner votre application sur la branche master, celle-ci devrait être
 stable.
 
-Nous publions également une gem de prerelease de temps en temps que vous
-pouvez installer comme suit :
+Pour cela, la méthode la plus simple est d'installer une gem de prerelease que
+nous publions de temps en temps :
 
 ``` ruby
 gem install sinatra --pre
 ```
+Ce qui permet de bénéficier des toutes dernières fonctionnalités.
 
-afin d'avoir les toutes dernières fonctionnalités.
+### Installer avec Bundler
 
-### Avec Bundler
+Il est cependant conseillé de passer par [Bundler](http://gembundler.com/) pour
+faire tourner votre application avec la dernière version de Sinatra.
 
-Si vous voulez faire tourner votre application avec le tout dernier
-Sinatra, [Bundler](http://gembundler.com/) est recommandé.
-
-Tout d'abord, installer bundler si vous ne l'avez pas :
+Pour commencer, installez bundler si nécessaire :
 
 ``` shell
 gem install bundler
 ```
 
-Ensuite, dans le dossier de votre projet, créez un fichier `Gemfile` :
+Ensuite, créez un fichier `Gemfile` dans le dossier de votre projet :
 
 ``` ruby
 source 'https://rubygems.org'
 gem 'sinatra', :github => "sinatra/sinatra"
 
 # autres dépendances
-gem 'haml'                    # par exemple, si vous utilisez haml
-gem 'activerecord', '~> 3.0'  # peut-être que vous avez également besoin
-                              # de ActiveRecord 3.x
+gem 'haml'                    # si par exemple vous utilisez haml
+gem 'activerecord', '~> 3.0'  # au cas où vous auriez besoin de ActiveRecord 3.x
 ```
 
-Notez que vous aurez à lister toutes les dépendances de votre application dans
-ce fichier. Les dépendances directes de Sinatra (Rack et Tilt) seront
+Notez que vous devez lister toutes les dépendances de votre application dans
+ce fichier `Gemfile`. Les dépendances directes de Sinatra (Rack et Tilt) seront
 automatiquement téléchargées et ajoutées par Bundler.
 
-Maintenant, vous pouvez faire tourner votre application de la façon suivante :
+Vous pouvez alors lancer votre application de la façon suivante :
 
 ``` shell
 bundle exec ruby myapp.rb
 ```
 
-### Faites le vous-même
+### Faire un clone local
 
-Créez un clone local et démarrez votre application avec le dossier
-`sinatra/lib` dans le `$LOAD_PATH` :
+Si vous ne souhaitez pas employer Bundler, vous pouvez cloner Sinatra en local
+dans votre projet et démarrez votre application avec le dossier `sinatra/lib`
+dans le `$LOAD_PATH` :
 
 ``` shell
 cd myapp
@@ -2807,16 +2812,17 @@ git clone git://github.com/sinatra/sinatra.git
 ruby -I sinatra/lib myapp.rb
 ```
 
-A l'avenir, pour mettre à jour le code source de Sinatra :
+Et de temps en temps, vous devrez récupérer la dernière version du code source
+de Sinatra :
 
 ``` shell
 cd myapp/sinatra
 git pull
 ```
 
-### Installez globalement
+### Installer globalement
 
-Vous pouvez construire la gem vous-même :
+Une dernière méthode consiste à construire la gem vous-même :
 
 ``` shell
 git clone git://github.com/sinatra/sinatra.git
@@ -2825,7 +2831,7 @@ rake sinatra.gemspec
 rake install
 ```
 
-Si vous installez les gems en tant que root, la dernière étape sera :
+Si vous installez les gems en tant que root, vous devez encore faire un :
 
 ``` shell
 sudo rake install
@@ -2845,7 +2851,7 @@ SemVer que SemVerTag.
 * [Suivi des problèmes](http://github.com/sinatra/sinatra/issues)
 * [Twitter](http://twitter.com/sinatra)
 * [Mailing List](http://groups.google.com/group/sinatrarb/topics)
-* [IRC : #sinatra](irc://chat.freenode.net/#sinatra) sur http://freenode.net
+* IRC : [#sinatra](irc://chat.freenode.net/#sinatra) sur http://freenode.net
 * [Sinatra Book](http://sinatra-book.gittr.com) Tutoriels et recettes
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) trucs et astuces rédigés par
   la communauté
