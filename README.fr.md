@@ -378,9 +378,9 @@ Options disponibles :
 
   <dt>layout</dt>
   <dd>
-    S'il faut ou non utiliser un +layout+ (+true+ or +false+). Indique le
-    template à utiliser lorsque c'est un symbole. Exemple : <tt>erb :index,
-    :layout => !request.xhr?</tt>.
+    S'il faut ou non utiliser un layout (<tt>true</tt> ou <tt>false</tt>).
+    Indique le template à utiliser lorsque c'est un symbole. Exemple :
+    <tt>erb :index, :layout => !request.xhr?</tt>.
   </dd>
 
   <dt>content_type</dt>
@@ -398,8 +398,8 @@ Options disponibles :
 
   <dt>layout_engine</dt>
   <dd>
-    Moteur de rendu à utiliser pour le +layout+. Utile pour les langages ne
-    supportant pas les +layouts+. Il s'agit par défaut du moteur utilisé pour
+    Moteur de rendu à utiliser pour le layout. Utile pour les langages ne
+    supportant pas les layouts. Il s'agit par défaut du moteur utilisé pour
     le rendu du template. Exemple : <tt>set :rdoc, :layout_engine => :erb</tt>
   </dd>
 
@@ -788,7 +788,7 @@ exemple).
   </tr>
 </table>
 
-Il n'est pas possible d'appeler des méthodes depuis markdown, ni de lui
+Il n'est pas possible d'appeler des méthodes depuis creole, ni de lui
 passer des variables locales. Par conséquent, il sera souvent utilisé en
 combinaison avec un autre moteur de rendu :
 
@@ -796,17 +796,17 @@ combinaison avec un autre moteur de rendu :
 erb :overview, :locals => { :text => markdown(:introduction) }
 ```
 
-Notez que vous pouvez également appeler la méthode +markdown+ au sein d'autres
+Notez que vous pouvez également appeler la méthode `creole` au sein d'autres
 templates :
 
 ``` ruby
 %h1 Hello From Haml !
-%p= markdown(:greetings)
+%p= creole(:greetings)
 ```
 
-Comme vous ne pouvez pas appeler de Ruby au sein de Markdown, vous ne pouvez
-pas utiliser de +layouts+ écrits en Markdown. Toutefois, il est possible
-d'utiliser un moteur de rendu différent pour le template et pour le +layout+
+Comme vous ne pouvez pas appeler de Ruby au sein de Creole, vous ne pouvez
+pas utiliser de layouts écrits en Creole. Toutefois, il est possible
+d'utiliser un moteur de rendu différent pour le template et pour le layout
 en utilisant l'option `:layout_engine`.
 
 ### Templates CoffeeScript
@@ -1029,7 +1029,7 @@ end
 
 Note : Le corps de la réponse n'est pas disponible au niveau du filtre after
 car il ne sera généré que plus tard (sauf dans le cas où vous utilisez la
-méthode +body+ au lieu de simplement renvoyer une chaine depuis vos routes).
+méthode `body` au lieu de simplement renvoyer une chaine depuis vos routes).
 
 Les filtres peuvent être associés à un masque, ce qui permet de limiter leur
 exécution aux cas où la requête correspond à ce masque :
@@ -1093,7 +1093,7 @@ l'application.
 ### Utiliser les sessions
 
 Une session est utilisée pour conserver un état entre les requêtes. Une fois
-activées, vous avez un +hash+ de session par session utilisateur :
+activées, vous avez un hash de session par session utilisateur :
 
 ``` ruby
 enable :sessions
@@ -1107,12 +1107,12 @@ get '/:value' do
 end
 ```
 
-Notez que <tt>enable :sessions</tt> enregistre en fait toutes les données dans
-un +cookie+. Ce n'est pas toujours ce que vous voulez (enregistrer beaucoup de
+Notez que `enable :sessions` enregistre en fait toutes les données dans
+un cookie. Ce n'est pas toujours ce que vous voulez (enregistrer beaucoup de
 données va augmenter le traffic par exemple). Vous pouvez utiliser n'importe
-quel +middleware+ Rack de session afin d'éviter cela. N'utiliser *pas*
-<tt>enable :sessions</tt> dans ce cas mais charger le +middleware+ de votre
-choix comme vous le feriez pour n'importe quel autre +middleware+ :
+quel middleware Rack de session afin d'éviter cela. N'utilisez **pas**
+`enable :sessions` dans ce cas mais chargez le middleware de votre
+choix comme vous le feriez pour n'importe quel autre middleware :
 
 ``` ruby
 use Rack::Session::Pool, :expire_after => 2592000
@@ -1137,7 +1137,7 @@ set :session_secret, 'super secret'
 ```
 
 Si vous souhaitez avoir plus de contrôle, vous pouvez également enregistrer un
-+hash+ avec des options lors de la configuration de `sessions` :
+hash avec des options lors de la configuration de `sessions` :
 
 ``` ruby
 set :sessions, :domain => 'foo.com'
@@ -1204,9 +1204,9 @@ Si aucun des masques suivants ne correspond, un code 404 est retourné.
 
 ### Déclencher une autre route
 
-Parfois, +pass+ n'est pas ce que vous recherchez, au lieu de cela vous
+Parfois, `pass` n'est pas ce que vous recherchez, au lieu de cela vous
 souhaitez obtenir le résultat d'une autre route. Pour cela, utilisez
-simplement call :
+simplement `call` :
 
 ``` ruby
 get '/foo' do
@@ -1236,7 +1236,7 @@ Il est possible et recommandé de définir le code retour et le corps de la
 réponse au moyen de la valeur de retour d'un bloc définissant une route.
 Quoiqu'il en soit, dans certains cas vous pourriez avoir besoin de définir
 le coprs de la réponse à un moment arbitraire de l'exécution. Vous pouvez le
-faire au moyen de la méthode +body+. Si vous faites ainsi, vous pouvez alors
+faire au moyen de la méthode `body`. Si vous faites ainsi, vous pouvez alors
 utiliser cette même méthode pour accéder au corps de la réponse :
 
 ``` ruby
@@ -1299,11 +1299,11 @@ Le fonctionnement du streaming, notamment le nombre de requêtes simultanées,
 dépend énormément du serveur web utilisé. Certains ne prennent pas du tout en
 charge le streaming (WEBRick par exemple). Lorsque le serveur ne gère pas le
 streaming, la partie body de la réponse sera envoyée au client en une seule
-fois, après que l'exécution du bloc passé au helper +stream+ sera terminée. Le
+fois, après que l'exécution du bloc passé au helper `stream` sera terminée. Le
 streaming ne fonctionne pas du tout avec Shotgun.
 
-En utilisant le helper +stream+ avec le paramètre +keep_open+, il n'appelera
-pas la méthode +close+ du flux, vous laissant la possibilité de le fermer à
+En utilisant le helper stream avec le paramètre `keep_open`, il n'appelera
+pas la méthode `close` du flux, vous laissant la possibilité de le fermer à
 tout moment au cours de l'exécution. Ceci ne fonctionne qu'avec les serveurs
 evented (ie non threadés) tels que Thin et Rainbows. Les autres serveurs
 fermeront malgré tout le flux :
@@ -1326,8 +1326,8 @@ end
 
 ### Journalisation (Logging)
 
-Dans le contexte de la requête, la méthode utilitaire +logger+ expose une
-instance de +logger+ :
+Dans le contexte de la requête, la méthode utilitaire `logger` expose une
+instance de `Logger` :
 
 ``` ruby
 get '/' do
@@ -1355,7 +1355,7 @@ end
 
 Si vous souhaitez utiliser votre propre logger, vous devez définir le paramètre
 `logging` à `nil` pour être certain qu'aucun middleware de logging ne sera
-installé (notez toutefois que +logger+ renverra alors +nil+). Dans ce cas,
+installé (notez toutefois que `logger` renverra alors `nil`). Dans ce cas,
 Sinatra utilisera ce qui sera présent dans `env['rack.logger']`.
 
 ### Types Mime
@@ -1381,7 +1381,7 @@ end
 
 ### Former des URLs
 
-Pour former des URLs, vous devriez utiliser la méthode +url+, par exemple en
+Pour former des URLs, vous devriez utiliser la méthode `url`, par exemple en
 Haml :
 
 ``` ruby
@@ -1390,7 +1390,7 @@ Haml :
 
 Cela prend en compte les proxy inverse et les routeurs Rack, s'ils existent.
 
-Cette méthode est également disponible sous l'alias +to+ (voir ci-dessous
+Cette méthode est également disponible sous l'alias `to` (voir ci-dessous
 pour un exemple).
 
 ### Redirection du navigateur
@@ -1460,7 +1460,7 @@ get '/' do
 end
 ```
 
-Conseil de pro : définir le cache dans un filtre +before+ :
+Conseil de pro : définir le cache dans un filtre before :
 
 ``` ruby
 before do
@@ -1468,7 +1468,7 @@ before do
 end
 ```
 
-Si vous utilisez la méthode +expires+ pour définir l'entête correspondant,
+Si vous utilisez la méthode `expires` pour définir l'entête correspondant,
 `Cache-Control` sera alors défini automatiquement :
 
 ``` ruby
@@ -1477,8 +1477,8 @@ before do
 end
 ```
 
-Pour utiliser correctement les caches, vous devriez utiliser +etag+ ou
-+last_modified+. Il est recommandé d'utiliser ces méthodes *avant* de faire
+Pour utiliser correctement les caches, vous devriez utiliser `etag` ou
+`last_modified`. Il est recommandé d'utiliser ces méthodes *avant* de faire
 d'importantes modifications, car elles vont immédiatement déclencher la réponse
 si le client a déjà la version courante dans son cache :
 
@@ -1543,8 +1543,7 @@ etag '', :new_resource => true, :kind => :weak
 
 ### Envoyer des fichiers
 
-Pour envoyer des fichiers, vous pouvez utiliser la méthode
-`send_file` :
+Pour envoyer des fichiers, vous pouvez utiliser la méthode `send_file` :
 
 ``` ruby
 get '/' do
@@ -1567,34 +1566,41 @@ Les options sont :
   </dd>
 
   <dt>last_modified</dt>
-  <dd>valeur pour l’entête Last-Modified, par défaut la date de modification
-du fichier</dd>
+  <dd>
+    valeur pour l’entête Last-Modified, par défaut la date de modification du
+    fichier
+  </dd>
 
   <dt>type</dt>
-  <dd>type de contenu à utiliser, deviné à partir de l’extension de fichier
-  si absent</dd>
+  <dd>
+    type de contenu à utiliser, deviné à partir de l’extension de fichier si
+    absent
+  </dd>
 
   <dt>disposition</dt>
-  <dd>utilisé pour Content-Disposition, les valuers possibles étant :
-  `nil` (par défaut), `:attachment` et `:inline`</dd>
+  <dd>
+    utilisé pour Content-Disposition, les valuers possibles étant : <tt>nil</tt>
+    (par défaut), <tt>:attachment</tt> et <tt>:inline</tt>
+  </dd>
 
   <dt>length</dt>
   <dd>entête Content-Length, par défaut la taille du fichier</dd>
 
   <dt>status</dt>
-  <dd>code état à renvoyer. Utile quand un fichier statique sert de page
-  d’erreur.</dd>
+  <dd>
+    code état à renvoyer. Utile quand un fichier statique sert de page d’erreur.
+  </dd>
 </dl>
 
-Si le gestionnaire Rack le supporte, d'autres moyens que le +streaming+ via le
+Si le gestionnaire Rack le supporte, d'autres moyens que le streaming via le
 processus Ruby seront utilisés. Si vous utilisez cette méthode, Sinatra gérera
-automatiquement les requêtes de type +range+.
+automatiquement les requêtes de type range.
 
 ### Accéder à l'objet requête
 
 L'objet correspondant à la requête envoyée peut être récupéré dans le contexte
 de la requête (filtres, routes, gestionnaires d'erreur) au moyen de la méthode
-+request+ :
+`request` :
 
 ``` ruby
 # application tournant à l'adresse http://exemple.com/exemple
@@ -1655,7 +1661,7 @@ end
 
 ### Fichiers joints
 
-Vous pouvez utiliser la méthode +attachment+ pour indiquer au navigateur que
+Vous pouvez utiliser la méthode `attachment` pour indiquer au navigateur que
 la réponse devrait être stockée sur le disque plutôt qu'affichée :
 
 
@@ -1677,8 +1683,8 @@ end
 
 ### Gérer Date et Time
 
-Sinatra fourni un helper +time_for+ pour convertir une valeur donnée en
-objet `Time`. Il peut aussi faire la conversion à partir d'objets +DateTime+,
+Sinatra fourni un helper `time_for` pour convertir une valeur donnée en
+objet `Time`. Il peut aussi faire la conversion à partir d'objets `DateTime`,
 `Date` ou de classes similaires :
 
 ``` ruby
@@ -1688,9 +1694,9 @@ get '/' do
 end
 ```
 
-Cette méthode est utilisée en interne par +expires+, +last_modified+ et
+Cette méthode est utilisée en interne par `expires`, `last_modified` et
 consorts. Par conséquent, vous pouvez très facilement étendre le
-fonctionnement de ces méthodes en surchargeant le helper +time_for+ dans
+fonctionnement de ces méthodes en surchargeant le helper `time_for` dans
 votre application :
 
 ``` ruby
@@ -1756,7 +1762,7 @@ d'autres !
 
 Notez que `find_template` ne vérifie pas que le fichier existe mais
 va plutôt exécuter le bloc pour tous les chemins possibles. Cela n'induit pas
-un problème de performance dans le sens où `render` va utiliser +break+ dès
+un problème de performance dans le sens où `render` va utiliser `break` dès
 qu'un fichier est trouvé. De plus, l'emplacement des templates (et leur
 contenu) est mis en cache si vous n'êtes pas en mode développement. Vous
 devriez garder cela en tête si vous écrivez une méthode vraiment dingue.
@@ -1985,21 +1991,21 @@ set :protection, :except => [:path_traversal, :session_hijacking]
 
 Il existe trois environnements prédéfinis : `"development"`,
 `"production"` et `"test"`. Les environements peuvent être
-sélectionné via la variable d'environnement +RACK_ENV+. Sa valeur par défaut
+sélectionné via la variable d'environnement `RACK_ENV`. Sa valeur par défaut
 est `"development"`. Dans ce mode, tous les templates sont rechargés à
 chaque requête. Des handlers spécifiques pour `not_found` et
 `error` sont installés pour vous permettre d'avoir une pile de trace
 dans votre navigateur. En mode `"production"` et `"test"` les
 templates sont mis en cache par défaut.
 
-Pour exécuter votre application dans un environnement différent, utilisez
-l'option `-e` de Ruby :
+Pour exécuter votre application dans un environnement différent, définissez la
+variable d'environnement `RACK_ENV` :
 
 ``` shell
-ruby mon_application.rb -e [ENVIRONMENT]
+RACK_ENV=production ruby my_app.rb
 ```
 
-Vous pouvez utiliser une des méthodes +development?+, +test?+ et +production?+
+Vous pouvez utiliser une des méthodes `development?`, `test?` et `production?`
 pour déterminer quel est l'environnement en cours.
 
 ## Gérer les erreurs
@@ -2021,7 +2027,7 @@ end
 
 ### Error
 
-Le gestionnaire +error+ est invoqué à chaque fois qu'une exception est
+Le gestionnaire `error` est invoqué à chaque fois qu'une exception est
 soulevée dans une route ou un filtre. L'objet exception est accessible via la
 variable Rack `sinatra.error` :
 
@@ -2086,7 +2092,7 @@ visualiser/manipuler la requête/réponse HTTP, et d'offrir diverses
 fonctionnalités classiques.
 
 Sinatra permet de construire facilement des middlewares Rack via la méthode de
-haut niveau +use+ :
+haut niveau `use` :
 
 ``` ruby
 require 'sinatra'
@@ -2100,10 +2106,10 @@ get '/bonjour' do
 end
 ```
 
-La sémantique de +use+ est identique à celle définie dans le DSL de
+La sémantique de `use` est identique à celle définie dans le DSL de
 [Rack::Builder](http://rack.rubyforge.org/doc/classes/Rack/Builder.html)
 (le plus souvent utilisé dans un fichier rackup). Par exemple, la méthode
-+use+ accepte divers arguments ainsi que des blocs :
+`use` accepte divers arguments ainsi que des blocs :
 
 ```
 use Rack::Auth::Basic do |login, password|
@@ -2382,11 +2388,11 @@ Toute application Sinatra correspond à une sous-classe de `Sinatra::Base`.
 Si vous utilisez le DSL haut niveau (`require 'sinatra'`), alors cette
 classe est `Sinatra::Application`, sinon il s'agit de la sous-classe que
 vous avez définie. Dans le contexte de la classe, vous avez accès aux méthodes
-telles que `get` ou `before`, mais vous n'avez pas accès aux objets +request+
-ou +session+ car c'est la même classe d'application qui traitera toutes les
+telles que `get` ou `before`, mais vous n'avez pas accès aux objets `request`
+ou `session` car c'est la même classe d'application qui traitera toutes les
 requêtes.
 
-Les options définies au moyen de +set+ deviennent des méthodes de classe :
+Les options définies au moyen de `set` deviennent des méthodes de classe :
 
 ``` ruby
 class MonApp < Sinatra::Base
@@ -2479,7 +2485,7 @@ Les options sont :
 -h # aide
 -p # déclare le port (4567 par défaut)
 -o # déclare l'hôte (0.0.0.0 par défaut)
--e # déclare l'environnement (+development+ par défaut)
+-e # déclare l'environnement (development par défaut)
 -s # déclare le serveur/gestionnaire à utiliser (thin par défaut)
 -x # active le mutex lock (off par défaut)
 ```
@@ -2557,7 +2563,7 @@ Si vous voulez utiliser la toute dernière version de Sinatra, n'ayez pas peur
 de faire tourner votre application sur la branche master, cela devrait être
 stable.
 
-Nous publions également une gem de +prerelease+ de temps en temps que vous
+Nous publions également une gem de prerelease de temps en temps que vous
 pouvez installer comme suit :
 
 ``` ruby
@@ -2577,7 +2583,7 @@ Tout d'abord, installer bundler si vous ne l'avez pas :
 gem install bundler
 ```
 
-Ensuite, dans le dossier de votre projet, créez un fichier +Gemfile+ :
+Ensuite, dans le dossier de votre projet, créez un fichier `Gemfile` :
 
 ``` ruby
 source :rubygems
@@ -2627,7 +2633,7 @@ rake sinatra.gemspec
 rake install
 ```
 
-Si vous installez les gems en tant que +root+, la dernière étape sera :
+Si vous installez les gems en tant que root, la dernière étape sera :
 
 ``` shell
 sudo rake install
