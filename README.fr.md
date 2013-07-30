@@ -26,6 +26,91 @@ Le résultat est visible sur : http://localhost:4567
 Il est recommandé d'exécuter également `gem install thin`, pour que
 Sinatra utilise le server Thin quand il est disponible.
 
+## Table des matières
+
+* [Sinatra](#sinatra)
+    * [Table des matières](#table-des-matières)
+    * [Routes](#routes)
+    * [Conditions](#conditions)
+    * [Valeurs de retour](#valeurs-de-retour)
+    * [Masques de route spécifiques](#masques-de-route-spécifiques)
+    * [Fichiers statiques](#fichiers-statiques)
+    * [Vues / Templates](#vues--templates)
+        * [Templates littéraux](#templates-littéraux)
+        * [Langages de template disponibles](#langages-de-template-disponibles)
+            * [Templates Haml](#templates-haml)
+            * [Templates Erb](#templates-erb)
+            * [Templates Builder](#templates-builder)
+            * [Templates Nokogiri](#templates-nokogiri)
+            * [Templates Sass](#templates-sass)
+            * [Templates SCSS](#templates-scss)
+            * [Templates Less](#templates-less)
+            * [Templates Liquid](#templates-liquid)
+            * [Templates Markdown](#templates-markdown)
+            * [Templates Textile](#templates-textile)
+            * [Templates RDoc](#templates-rdoc)
+            * [Templates Radius](#templates-radius)
+            * [Templates Markaby](#templates-markaby)
+            * [Templates RABL](#templates-rabl)
+            * [Templates Slim](#templates-slim)
+            * [Templates Creole](#templates-creole)
+            * [Templates CoffeeScript](#templates-coffeescript)
+            * [Templates Stylus](#templates-stylus)
+            * [Templates Yajl](#templates-yajl)
+            * [Templates WLang](#templates-wlang)
+        * [Accéder aux variables dans un Template](#accéder-aux-variables-dans-un-template)
+        * [Templates avec `yield` et layouts imbriqués](#templates-avec-yield-et-layouts-imbriqués)
+        * [Templates dans le fichier source](#templates-dans-le-fichier-source)
+        * [Templates nommés](#templates-nommés)
+        * [Associer des extensions de fichier](#associer-des-extensions-de-fichier)
+        * [Ajouter son propre moteur de rendu](#ajouter-son-propre-moteur-de-rendu)
+    * [Filtres](#filtres)
+    * [Helpers](#helpers)
+        * [Utiliser les sessions](#utiliser-les-sessions)
+        * [Halt](#halt)
+        * [Passer](#passer)
+        * [Déclencher une autre route](#déclencher-une-autre-route)
+        * [Définir le corps, le code retour et les entêtes](#définir-le-corps-le-code-retour-et-les-entêtes)
+        * [Faire du streaming](#faire-du-streaming)
+        * [Journalisation (Logging)](#journalisation-logging)
+        * [Types Mime](#types-mime)
+        * [Former des URLs](#former-des-urls)
+        * [Redirection du navigateur](#redirection-du-navigateur)
+        * [Contrôle du cache](#contrôle-du-cache)
+        * [Envoyer des fichiers](#envoyer-des-fichiers)
+        * [Accéder à l'objet requête](#accéder-à-lobjet-requête)
+        * [Fichiers joints](#fichiers-joints)
+        * [Gérer Date et Time](#gérer-date-et-time)
+        * [Chercher les fichiers de templates](#chercher-les-fichiers-de-templates)
+    * [Configuration](#configuration)
+        * [Se protéger des attaques](#se-protéger-des-attaques)
+        * [Paramètres disponibles](#paramètres-disponibles)
+    * [Environements](#environements)
+    * [Gérer les erreurs](#gérer-les-erreurs)
+        * [NotFound](#notfound)
+        * [Error](#error)
+    * [Les Middlewares Rack](#les-middlewares-rack)
+    * [Tester](#tester)
+    * [Sinatra::Base - Les Middlewares, Bibliothèques, et Applications Modulaires](#sinatrabase---les-middlewares-bibliothèques-et-applications-modulaires)
+        * [Style modulaire vs. style classique](#style-modulaire-vs-style-classique)
+        * [Servir une application modulaire](#servir-une-application-modulaire)
+        * [Utiliser une application de style classique avec un fichier config.ru](#utiliser-une-application-de-style-classique-avec-un-fichier-configru)
+        * [Quand utiliser un fichier config.ru ?](#quand-utiliser-un-fichier-configru-)
+        * [Utiliser Sinatra comme Middleware](#utiliser-sinatra-comme-middleware)
+        * [Création dynamique d'applications](#création-dynamique-dapplications)
+    * [Contextes et Binding](#contextes-et-binding)
+        * [Contexte de l'application/classe](#contexte-de-lapplication-classe)
+        * [Contexte de la requête/instance](#contexte-de-la-requête-instance)
+        * [Le contexte de délégation](#le-contexte-de-délégation)
+    * [Ligne de commande](#ligne-de-commande)
+    * [Configuration nécessaire](#configuration-nécessaire)
+    * [Essuyer les plâtres](#essuyer-les-plâtres)
+        * [Avec Bundler](#avec-bundler)
+        * [Faites le vous-même](#faites-le-vous-même)
+        * [Installez globalement](#installez-globalement)
+    * [Versions](#versions)
+    * [Mais encore](#mais-encore)
+
 ## Routes
 
 Dans Sinatra, une route est une méthode HTTP couplée à un masque (pattern)
@@ -131,7 +216,7 @@ A ce propos, à moins d'avoir désactivé la protection contre les attaques par
 "path transversal" (voir plus loin), l'URL demandée peut avoir été modifiée
 avant d'être comparée à vos routes.
 
-### Conditions
+## Conditions
 
 Les routes peuvent définir toutes sortes de conditions, comme par exemple le
 "user agent" :
@@ -197,7 +282,7 @@ get "/reserve/aux/admins/", :auth => :admin do
 end
 ```
 
-### Valeurs de retour
+## Valeurs de retour
 
 La valeur renvoyée par le bloc correspondant à une route constitue le corps de
 la réponse qui sera transmise au client HTTP ou du moins au prochain middleware
@@ -232,7 +317,7 @@ Vous pouvez aussi utiliser le helper `stream` (présenté un peu plus loin) pour
 éviter la surcharge et intégrer le traitement relatif au streaming dans le bloc
 de code de la route.
 
-### Masques de route spécifiques
+## Masques de route spécifiques
 
 Comme cela a été vu auparavant, Sinatra offre la possibilité d'utiliser des
 masques sous forme de chaines de caractères ou des expressions régulières
@@ -423,6 +508,16 @@ ce cas, utilisez `:'sous_repertoire/template'`). Il faut utiliser
 un symbole car les méthodes de rendu évaluent le contenu des chaînes de
 caractères au lieu de les considérer comme un chemin vers un fichier.
 
+### Templates littéraux
+
+``` ruby
+get '/' do
+  haml '%div.title Bonjour le monde'
+end
+```
+
+Générera le code du template spécifié dans la chaîne de caractères.
+
 ### Langages de template disponibles
 
 Certains langages ont plusieurs implémentations. Pour préciser l'implémentation
@@ -434,12 +529,12 @@ require 'rdiscount' # ou require 'bluecloth'
 get('/') { markdown :index }
 ```
 
-### Templates Haml
+#### Templates Haml
 
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://haml.info/">haml</a></td>
+    <td><a href="http://haml.info/" title="haml">haml</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -451,12 +546,15 @@ get('/') { markdown :index }
   </tr>
 </table>
 
-### Templates Erb
+#### Templates Erb
 
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://www.kuwata-lab.com/erubis/">erubis</a> ou erb (inclus avec Ruby)</td>
+    <td>
+      <a href="http://www.kuwata-lab.com/erubis/" title="erubis">erubis</a>
+      ou erb (inclus avec Ruby)
+    </td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -468,12 +566,14 @@ get('/') { markdown :index }
   </tr>
 </table>
 
-### Templates Builder
+#### Templates Builder
 
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://builder.rubyforge.org/">builder</a></td>
+    <td>
+      <a href="http://builder.rubyforge.org/" title="builder">builder</a>
+    </td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -488,12 +588,12 @@ get('/') { markdown :index }
 Ce moteur accepte également un bloc pour des templates en ligne (voir
 exemple).
 
-### Templates Nokogiri
+#### Templates Nokogiri
 
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://nokogiri.org/">nokogiri</a></td>
+    <td><a href="http://nokogiri.org/" title="nokogiri">nokogiri</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -509,12 +609,12 @@ exemple).
 Ce moteur accepte également un bloc pour des templates en ligne (voir
 exemple).
 
-### Templates Sass
+#### Templates Sass
 
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://sass-lang.com/">sass</a></td>
+    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -526,12 +626,12 @@ exemple).
   </tr>
 </table>
 
-### Templates SCSS
+#### Templates SCSS
 
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://sass-lang.com/">sass</a></td>
+    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -544,12 +644,12 @@ exemple).
   </tr>
 </table>
 
-### Templates Less
+#### Templates Less
 
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://www.lesscss.org/">less</a></td>
+    <td><a href="http://www.lesscss.org/" title="less">less</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -562,12 +662,12 @@ exemple).
   </tr>
 </table>
 
-### Templates Liquid
+#### Templates Liquid
 
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://www.liquidmarkup.org/">liquid</a></td>
+    <td><a href="http://www.liquidmarkup.org/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -583,12 +683,19 @@ Comme vous ne pouvez appeler de méthodes Ruby (autres que `yield`)
 dans un template Liquid, vous aurez sûrement à lui passer des variables
 locales.
 
-### Templates Markdown
+#### Templates Markdown
 
 <table>
   <tr>
     <td><p>Dépendances</p></td>
-    <td><a href="https://github.com/rtomayko/rdiscount">rdiscount</a>, <a href="https://github.com/vmg/redcarpet">redcarpet</a>, <a href="http://deveiate.org/projects/BlueCloth">bluecloth</a>, <a href="http://kramdown.rubyforge.org/">kramdown</a> *ou* <a href="http://maruku.rubyforge.org/">maruku</a></td>
+    <td>
+      Au choix :
+      <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
+      <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
+      <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
+      <a href="http://kramdown.rubyforge.org/" title="kramdown">kramdown</a>,
+      <a href="http://maruku.rubyforge.org/" title="maruku">maruku</a>
+    </td>
   </tr>
 
   <tr>
@@ -622,12 +729,12 @@ pouvez pas utiliser de layouts écrits en Markdown. Toutefois, il
 est possible d’utiliser un moteur de rendu différent pour le template et
 pour le layout en utilisant l’option `:layout_engine`.
 
-### Templates Textile
+#### Templates Textile
 
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://redcloth.org/">RedCloth</a></td>
+    <td><a href="http://redcloth.org/" title="RedCloth">RedCloth</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -660,12 +767,12 @@ pas utiliser de layouts écrits en Textile. Toutefois, il est
 possible d’utiliser un moteur de rendu différent pour le template et
 pour le layout en utilisant l’option `:layout_engine`.
 
-### Templates RDoc
+#### Templates RDoc
 
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://rdoc.rubyforge.org/">rdoc</a></td>
+    <td><a href="http://rdoc.rubyforge.org/" title="RDoc">RDoc</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -698,11 +805,11 @@ pas utiliser de layouts écrits en RDoc. Toutefois, il est
 possible d’utiliser un moteur de rendu différent pour le template et
 pour le layout en utilisant l’option `:layout_engine`.
 
-### Templates Radius
+#### Templates Radius
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://radius.rubyforge.org/">radius</a></td>
+    <td><a href="http://radius.rubyforge.org/" title="Radius">Radius</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -717,12 +824,12 @@ pour le layout en utilisant l’option `:layout_engine`.
 Comme vous ne pouvez pas appeler de méthodes Ruby depuis un template
 Radius, vous aurez sûrement à lui passer des variables locales.
 
-### Templates Markaby
+#### Templates Markaby
 
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://markaby.github.com/">markaby</a></td>
+    <td><a href="http://markaby.github.com/" title="Markaby">Markaby</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -737,12 +844,12 @@ Radius, vous aurez sûrement à lui passer des variables locales.
 Ce moteur accepte également un bloc pour des templates en ligne (voir
 exemple).
 
-### Templates RABL
+#### Templates RABL
 
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="https://github.com/nesquena/rabl">rabl</a></td>
+    <td><a href="https://github.com/nesquena/rabl" title="Rabl">Rabl</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -754,12 +861,12 @@ exemple).
   </tr>
 </table>
 
-### Templates Slim
+#### Templates Slim
 
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://slim-lang.com/">slim</a></td>
+    <td><a href="http://slim-lang.com/" title="Slim Lang">Slim Lang</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -771,12 +878,12 @@ exemple).
   </tr>
 </table>
 
-### Templates Creole
+#### Templates Creole
 
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="https://github.com/minad/creole">creole</a></td>
+    <td><a href="https://github.com/minad/creole" title="Creole">Creole</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -809,12 +916,19 @@ pas utiliser de layouts écrits en Creole. Toutefois, il est possible
 d'utiliser un moteur de rendu différent pour le template et pour le layout
 en utilisant l'option `:layout_engine`.
 
-### Templates CoffeeScript
+#### Templates CoffeeScript
 
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="https://github.com/josh/ruby-coffee-script">coffee-script</a> et un [moyen d'exécuter javascript](https://github.com/sstephenson/execjs/blob/master/README.md#readme)</td>
+      <a href="https://github.com/josh/ruby-coffee-script" title="Ruby CoffeeScript">
+        CoffeeScript
+      </a>
+      et un
+      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
+        moyen d'exécuter javascript
+      </a>
+    </td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -826,12 +940,52 @@ en utilisant l'option `:layout_engine`.
   </tr>
 </table>
 
-### Templates Yajl
+#### Templates Stylus
 
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="https://github.com/brianmario/yajl-ruby">yajl-ruby</a></td>
+    <td>
+      <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
+        Stylus
+      </a>
+      et un
+      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
+        moyen d'exécuter javascript
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>Extensions de fichier</td>
+    <td><tt>.styl</tt></td>
+  </tr>
+  <tr>
+    <td>Exemple</td>
+    <td><tt>stylus :index</tt></td>
+  </tr>
+</table>
+
+Avant de pouvoir utiliser des templates Stylus, vous devez auparavant charger
+`stylus` et `stylus/tilt` :
+
+``` ruby
+require 'sinatra'
+require 'stylus'
+require 'stylus/tilt'
+
+get '/' do
+  stylus :exemple
+end
+```
+
+#### Templates Yajl
+
+<table>
+  <tr>
+    <td>Dépendances</td>
+    <td>
+      <a href="https://github.com/brianmario/yajl-ruby" title="yajl-ruby">yajl-ruby</a>
+    </td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -852,40 +1006,34 @@ json = { :foo => 'bar' }
 json[:baz] = key
 ```
 
-Les options `:callback` et `:variable` peuvent être utilisées pour décorer l’objet retourné.
+Les options `:callback` et `:variable` peuvent être utilisées pour décorer
+l’objet retourné.
 
 ```
 var resource = {"foo":"bar","baz":"qux"}; present(resource);</pre>
 ```
 
-### Templates WLang
+#### Templates WLang
 
 <table>
   <tr>
-    <td>Dependency</td>
-    <td><a href="https://github.com/blambeau/wlang/">wlang</a></td>
+    <td>Dépendances</td>
+    <td><a href="https://github.com/blambeau/wlang/" title="wlang">wlang</a></td>
   </tr>
   <tr>
-    <td>File Extensions</td>
+    <td>Extensions de fichier</td>
     <td><tt>.wlang</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Exemple</td>
     <td><tt>wlang :index, :locals => { :key => 'value' }</tt></td>
   </tr>
 </table>
 
-L’appel de code ruby au sein des templates n’est pas idiomatique en wlang. L’écriture de templates sans logique est encouragé, via le passage de variables locales. Il est néanmoins possible d’écrire un layout en wlang et d’y utiliser `yield`.
-
-### Templates embarqués
-
-``` ruby
-get '/' do
-  haml '%div.title Bonjour le monde'
-end
-```
-
-Générera le code du template spécifié dans la chaîne de caractères.
+L’appel de code ruby au sein des templates n’est pas idiomatique en wlang.
+L’écriture de templates sans logique est encouragé, via le passage de variables
+locales. Il est néanmoins possible d’écrire un layout en wlang et d’y utiliser
+`yield`.
 
 ### Accéder aux variables dans un Template
 
@@ -913,6 +1061,44 @@ Ceci est généralement utilisé lorsque l'on veut utiliser un template comme
 partiel (depuis un autre template) et qu'il est donc nécessaire d'adapter les
 noms de variables.
 
+
+### Templates avec `yield` et layouts imbriqués
+
+A layout is usually just a template that calls `yield`.
+Such a template can be used either through the `:template` option as
+described above, or it can be rendered with a block as follows:
+
+``` ruby
+erb :post, :layout => false do
+  erb :index
+end
+```
+
+This code is mostly equivalent to `erb :index, :layout => :post`.
+
+Passing blocks to rendering methods is most useful for creating nested
+layouts:
+
+``` ruby
+erb :main_layout, :layout => false do
+  erb :admin_layout do
+    erb :user
+  end
+end
+```
+
+This can also be done in fewer lines of code with:
+
+``` ruby
+erb :admin_layout, :layout => :main_layout do
+  erb :user
+end
+```
+
+Currently the following rendering method accept a block: `erb`, `haml`,
+`liquid`, `slim `, `wlang`.
+Also the general `render` method accepts a block.
+
 ### Templates dans le fichier source
 
 Des templates peuvent être définis dans le fichier source comme ceci :
@@ -938,6 +1124,7 @@ NOTE : Les templates du fichier source qui contient `require 'sinatra'`
 sont automatiquement chargés. Si vous avez des templates dans d'autres
 fichiers source, il faut explicitement les déclarer avec
 `enable :inline_templates`.
+
 
 ### Templates nommés
 
@@ -1309,6 +1496,8 @@ evented (ie non threadés) tels que Thin et Rainbows. Les autres serveurs
 fermeront malgré tout le flux :
 
 ``` ruby
+# interrogation prolongée
+
 set :server, :thin
 connections = []
 
@@ -2641,7 +2830,7 @@ sudo rake install
 
 ## Versions
 
-Sinatra se conforme aux (versions sémantiques)[http://semver.org/], aussi bien
+Sinatra se conforme aux [versions sémantiques](http://semver.org/), aussi bien
 SemVer que SemVerTag.
 
 ## Mais encore
@@ -2652,9 +2841,8 @@ SemVer que SemVerTag.
   bug ? Besoin d'aide ? Vous avez un patch ?
 * [Suivi des problèmes](http://github.com/sinatra/sinatra/issues)
 * [Twitter](http://twitter.com/sinatra)
-* [Mailing List])(http://groups.google.com/group/sinatrarb/topics)
+* [Mailing List](http://groups.google.com/group/sinatrarb/topics)
 * [IRC : #sinatra](irc://chat.freenode.net/#sinatra) sur http://freenode.net
-* [IRC : #sinatra](irc://chat.freenode.net/#sinatra) on http://freenode.net
 * [Sinatra Book](http://sinatra-book.gittr.com) Tutoriels et recettes
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) trucs et astuces rédigés par
   la communauté
