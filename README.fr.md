@@ -99,8 +99,8 @@ Sinatra utilise le server Thin quand il est disponible.
         * [Utiliser Sinatra comme Middleware](#utiliser-sinatra-comme-middleware)
         * [Création dynamique d'applications](#création-dynamique-dapplications)
     * [Contextes et Binding](#contextes-et-binding)
-        * [Contexte de l'application/classe](#contexte-de-lapplication-classe)
-        * [Contexte de la requête/instance](#contexte-de-la-requête-instance)
+        * [Contexte de l'application/classe](#contexte-de-lapplicationclasse)
+        * [Contexte de la requête/instance](#contexte-de-la-requêteinstance)
         * [Le contexte de délégation](#le-contexte-de-délégation)
     * [Ligne de commande](#ligne-de-commande)
     * [Configuration nécessaire](#configuration-nécessaire)
@@ -921,6 +921,7 @@ en utilisant l'option `:layout_engine`.
 <table>
   <tr>
     <td>Dépendances</td>
+    <td>
       <a href="https://github.com/josh/ruby-coffee-script" title="Ruby CoffeeScript">
         CoffeeScript
       </a>
@@ -1064,9 +1065,9 @@ noms de variables.
 
 ### Templates avec `yield` et layouts imbriqués
 
-A layout is usually just a template that calls `yield`.
-Such a template can be used either through the `:template` option as
-described above, or it can be rendered with a block as follows:
+En général, un layout est un simple template qui appelle `yield`. Ce genre de
+template peut s'utiliser via l'option `:template`  comme décrit précédemment ou
+peut être rendu depuis un bloc :
 
 ``` ruby
 erb :post, :layout => false do
@@ -1074,10 +1075,10 @@ erb :post, :layout => false do
 end
 ```
 
-This code is mostly equivalent to `erb :index, :layout => :post`.
+Ce code est à globalement équivalent à `erb :index, :layout => :post`.
 
-Passing blocks to rendering methods is most useful for creating nested
-layouts:
+Le fait de passer des blocs aux méthodes de rendu est particulièrement utile
+pour gérer des templates imbriqués :
 
 ``` ruby
 erb :main_layout, :layout => false do
@@ -1087,7 +1088,7 @@ erb :main_layout, :layout => false do
 end
 ```
 
-This can also be done in fewer lines of code with:
+Ce qui peut aussi être fait avec un peu moins de code :
 
 ``` ruby
 erb :admin_layout, :layout => :main_layout do
@@ -1095,9 +1096,10 @@ erb :admin_layout, :layout => :main_layout do
 end
 ```
 
-Currently the following rendering method accept a block: `erb`, `haml`,
-`liquid`, `slim `, `wlang`.
-Also the general `render` method accepts a block.
+Actuellement, les méthodes de rendu qui acceptent un bloc sont : `erb`, `haml`,
+`liquid`, `slim ` et `wlang`. La méthode générale `render` accepte elle aussi
+un bloc.
+
 
 ### Templates dans le fichier source
 
@@ -2775,8 +2777,8 @@ gem install bundler
 Ensuite, dans le dossier de votre projet, créez un fichier `Gemfile` :
 
 ``` ruby
-source :rubygems
-gem 'sinatra', :git => "git://github.com/sinatra/sinatra.git"
+source 'https://rubygems.org'
+gem 'sinatra', :github => "sinatra/sinatra"
 
 # autres dépendances
 gem 'haml'                    # par exemple, si vous utilisez haml
@@ -2802,7 +2804,8 @@ Créez un clone local et démarrez votre application avec le dossier
 ``` shell
 cd myapp
 git clone git://github.com/sinatra/sinatra.git
-ruby -Isinatra/lib myapp.rb
+ruby -I sinatra/lib myapp.rb
+```
 
 A l'avenir, pour mettre à jour le code source de Sinatra :
 
