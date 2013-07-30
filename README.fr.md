@@ -5,7 +5,7 @@ il n'est peut être plus à jour.*
 Sinatra est un [DSL](http://fr.wikipedia.org/wiki/Langage_dédié) pour
 créer rapidement et facilement des applications web en Ruby :
 
-```ruby
+``` ruby
 # mon_application.rb
 require 'sinatra'
 
@@ -16,9 +16,9 @@ end
 
 Installez la gem et lancez avec :
 
-```bash
-$ gem install sinatra
-$ ruby mon_application.rb
+``` shell
+gem install sinatra
+ruby mon_application.rb
 ```
 
 Le résultat est visible sur : http://localhost:4567
@@ -31,7 +31,7 @@ Sinatra utilise le server Thin quand il est disponible.
 Dans Sinatra, une route est une méthode HTTP couplée à un masque (pattern)
 URL. Chaque route est associée à un bloc :
 
-```ruby
+``` ruby
 get '/' do
   .. montrer quelque chose ..
 end
@@ -63,7 +63,7 @@ route qui correspond à la requête est appelée.
 Les masques peuvent inclure des paramètres nommés, accessibles par
 l'intermédiaire du hash `params` :
 
-```ruby
+``` ruby
 get '/bonjour/:nom' do
   # répond aux requêtes "GET /bonjour/foo" et "GET /bonjour/bar"
   # params[:nom] est 'foo' ou 'bar'
@@ -74,7 +74,7 @@ end
 Vous pouvez aussi accéder aux paramètres nommés directement grâce aux
 paramètres du bloc comme ceci :
 
-```ruby
+``` ruby
 get '/bonjour/:nom' do |n|
   "Bonjour #{n} !"
 end
@@ -83,7 +83,7 @@ end
 Une route peut contenir un splat (caractère joker), accessible par
 l'intermédiaire du tableau `params[:splat]` :
 
-```ruby
+``` ruby
 get '/dire/*/a/*' do
   # répond à /dire/bonjour/a/monde
   params[:splat] # => ["bonjour", "monde"]
@@ -97,7 +97,7 @@ end
 
 Ou par l'intermédiaire des paramètres du bloc :
 
-```ruby
+``` ruby
 get '/telecharger/*.*' do |chemin, ext|
   [chemin, ext] # => ["path/to/file", "xml"]
 end
@@ -105,7 +105,7 @@ end
 
 Une route peut aussi être définie par une expression régulière :
 
-```ruby
+``` ruby
 get %r{/bonjour/([\w]+)} do
   "Bonjour, #{params[:captures].first} !"
 end
@@ -113,7 +113,7 @@ end
 
 Là encore on peut utiliser les paramètres de bloc :
 
-```ruby
+``` ruby
 get %r{/bonjour/([\w]+)} do |c|
   "Bonjour, #{c} !"
 end
@@ -121,7 +121,7 @@ end
 
 Les routes peuvent aussi comporter des paramètres optionnels :
 
-```ruby
+``` ruby
 get '/posts.?:format?' do
   # répond à "GET /posts" et aussi à "GET /posts.json", "GET /posts.xml" etc...
 end
@@ -136,7 +136,7 @@ avant d'être comparée à vos routes.
 Les routes peuvent définir toutes sortes de conditions, comme par exemple le
 "user agent" :
 
-```ruby
+``` ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
   "Vous utilisez Songbird version #{params[:agent][0]}"
 end
@@ -148,7 +148,7 @@ end
 
 Les autres conditions disponibles sont `host_name` et `provides` :
 
-```ruby
+``` ruby
 get '/', :host_name => /^admin\./ do
   "Zone Administrateur, Accès refusé !"
 end
@@ -164,7 +164,7 @@ end
 
 Vous pouvez facilement définir vos propres conditions :
 
-```ruby
+``` ruby
 set(:probability) { |value| condition { rand <= value } }
 
 get '/gagner_une_voiture', :probability => 0.1 do
@@ -179,7 +179,7 @@ end
 Utilisez un splat (caractère joker) dans le cas d'une condition qui prend
 plusieurs valeurs :
 
-```ruby
+``` ruby
 set(:auth) do |*roles|   # <- ici on utilise un splat
   condition do
     unless logged_in? && roles.any? {|role| current_user.in_role? role }
@@ -218,7 +218,7 @@ valide, d'un corps de réponse Rack ou d'un code statut HTTP :
 
 Avec cela, on peut facilement implémenter un streaming par exemple :
 
-```ruby
+``` ruby
 class Stream
   def each
     100.times { |i| yield "#{i}\n" }
@@ -239,7 +239,7 @@ masques sous forme de chaines de caractères ou des expressions régulières
 pour définir les routes. Mais il est possible de faire bien plus. Vous pouvez
 facilement définir vos propres masques :
 
-```ruby
+``` ruby
 class MasqueToutSauf
   Masque = Struct.new(:captures)
 
@@ -265,7 +265,7 @@ end
 Notez que l'exemple ci-dessus est bien trop compliqué et que le même résultat
 peut être obtenu avec :
 
-```ruby
+``` ruby
 get // do
   pass if request.path_info == "/index"
   # ...
@@ -274,7 +274,7 @@ end
 
 Ou bien en utilisant la forme négative :
 
-```ruby
+``` ruby
 get %r{^(?!/index$)} do
   # ...
 end
@@ -286,7 +286,7 @@ Les fichiers du dossier `./public` sont servis de façon statique. Vous
 avez la possibilité d'utiliser un autre répertoire en définissant le paramètre
 `:public_folder` :
 
-```ruby
+``` ruby
 set :public_folder, File.dirname(__FILE__) + '/statique'
 ```
 
@@ -302,7 +302,7 @@ d'en-tête <tt>Cache-Control</tt> (voir plus loin).
 Chaqie langage de template est disponible via sa propre méthode de rendu,
 lesquelles renvoient tout simplement une chaîne de caractères.
 
-```ruby
+``` ruby
 get '/' do
   erb :index
 end
@@ -313,7 +313,7 @@ Ceci effectue le rendu de la vue `views/index.erb`.
 Plutôt que d'utiliser le nom d'un template, vous pouvez directement passer
 le contenu du template :
 
-```ruby
+``` ruby
 get '/' do
   code = "<%= Time.now %>"
   erb code
@@ -322,7 +322,7 @@ end
 
 Les méthodes de templates acceptent un second paramètre, un hash d'options :
 
-```ruby
+``` ruby
 get '/' do
   erb :index, :layout => :post
 end
@@ -334,7 +334,7 @@ au *layout* `views/layout.erb` quand ce fichier existe).
 
 Toute option que Sinatra ne comprend pas sera passée au moteur de rendu :
 
-```ruby
+``` ruby
 get '/' do
   haml :index, :format => :html5
 end
@@ -343,7 +343,7 @@ end
 Vous pouvez également définir des options par langage de template de façon
 générale :
 
-```ruby
+``` ruby
 set :haml, :format => html5
 
 get '/' do
@@ -391,7 +391,7 @@ Options disponibles :
 Les templates sont supposés se trouver directement dans le dossier
 `./views`. Pour utiliser un dossier de vues différent :
 
-```ruby
+``` ruby
 set :views, settings.root + '/templates'
 ```
 
@@ -407,7 +407,7 @@ Certains langages ont plusieurs implémentations. Pour préciser l'implémentati
 à utiliser (et garantir l'aspect thread-safe), vous devez simplement l'avoir
 chargée au préalable :
 
-```ruby
+``` ruby
 require 'rdiscount' # ou require 'bluecloth'
 get('/') { markdown :index }
 ```
@@ -583,14 +583,14 @@ Il n’est pas possible d’appeler des méthodes depuis markdown, ni de
 lui passer des variables locales. Par conséquent, il sera souvent utilisé
 en combinaison avec un autre moteur de rendu :
 
-```ruby
+``` ruby
 erb :overview, :locals => { :text => markdown(:introduction) }
 ```
 
 Notez que vous pouvez également appeler la méthode `markdown` au
 sein d’autres templates :
 
-```ruby
+``` ruby
 %h1 Hello From Haml !
 %p= markdown(:greetings)
 ```
@@ -621,14 +621,14 @@ Il n’est pas possible d’appeler des méthodes depuis textile, ni de lui
 passer des variables locales. Par conséquent, il sera souvent utilisé en
 combinaison avec un autre moteur de rendu :
 
-```ruby
+``` ruby
 erb :overview, :locals => { :text => textile(:introduction) }
 ```
 
 Notez que vous pouvez également appeler la méthode `textile` au
 sein d’autres templates :
 
-```ruby
+``` ruby
 %h1 Hello From Haml !
 %p= textile(:greetings)
 ```
@@ -659,14 +659,14 @@ Il n’est pas possible d’appeler des méthodes depuis rdoc, ni de lui
 passer des variables locales. Par conséquent, il sera souvent utilisé en
 combinaison avec un autre moteur de rendu :
 
-```ruby
+``` ruby
 erb :overview, :locals => { :text => rdoc(:introduction) }
 ```
 
 Notez que vous pouvez également appeler la méthode `rdoc` au sein
 d’autres templates :
 
-```ruby
+``` ruby
 %h1 Hello From Haml !
 %p= rdoc(:greetings)
 ```
@@ -770,14 +770,14 @@ Il n'est pas possible d'appeler des méthodes depuis markdown, ni de lui
 passer des variables locales. Par conséquent, il sera souvent utilisé en
 combinaison avec un autre moteur de rendu :
 
-```ruby
+``` ruby
 erb :overview, :locals => { :text => markdown(:introduction) }
 ```
 
 Notez que vous pouvez également appeler la méthode +markdown+ au sein d'autres
 templates :
 
-```ruby
+``` ruby
 %h1 Hello From Haml !
 %p= markdown(:greetings)
 ```
@@ -825,7 +825,7 @@ en utilisant l'option `:layout_engine`.
 Le source du template est évalué en tant que chaine Ruby, puis la
 variable json obtenue est convertie avec #to_json.
 
-```ruby
+``` ruby
 json = { :foo => 'bar' }
 json[:baz] = key
 ```
@@ -857,7 +857,7 @@ L’appel de code ruby au sein des templates n’est pas idiomatique en wlang. L
 
 ### Templates embarqués
 
-```ruby
+``` ruby
 get '/' do
   haml '%div.title Bonjour le monde'
 end
@@ -871,7 +871,7 @@ Un template est évalué dans le même contexte que l'endroit d'où il a été
 appelé (gestionnaire de route). Les variables d'instance déclarées dans le
 gestionnaire de route sont directement accessibles dans le template :
 
-```ruby
+``` ruby
 get '/:id' do
   @foo = Foo.find(params[:id])
   haml '%h1= @foo.nom'
@@ -880,7 +880,7 @@ end
 
 Alternativement, on peut passer un hash contenant des variables locales :
 
-```ruby
+``` ruby
 get '/:id' do
   foo = Foo.find(params[:id])
   haml '%h1= foo.nom', :locals => { :foo => foo }
@@ -895,7 +895,7 @@ noms de variables.
 
 Des templates peuvent être définis dans le fichier source comme ceci :
 
-```ruby
+``` ruby
 require 'sinatra'
 
 get '/' do
@@ -921,7 +921,7 @@ fichiers source, il faut explicitement les déclarer avec
 
 Les templates peuvent aussi être définis grâce à la méthode de haut niveau `template` :
 
-```ruby
+``` ruby
 template :layout do
   "%html\n  =yield\n"
 end
@@ -940,7 +940,7 @@ template sera affiché. Vous pouvez désactivez les layouts au cas par cas en
 passant `:layout => false` ou bien les désactiver par défaut au moyen
 de `set :haml, :layout => false` :
 
-```ruby
+``` ruby
 get '/' do
   haml :index, :layout => !request.xhr?
 end
@@ -952,7 +952,7 @@ Pour associer une extension de fichier avec un moteur de rendu, utilisez
 `Tilt.register`. Par exemple, si vous désirez utiliser l'extension
 de fichier `tt` pour les templates Textile, vous pouvez faire comme suit :
 
-```ruby
+``` ruby
 Tilt.register :tt, Tilt[:textile]
 ```
 
@@ -961,7 +961,7 @@ Tilt.register :tt, Tilt[:textile]
 En premier lieu, déclarez votre moteur de rendu avec Tilt, ensuite créez
 votre méthode de rendu :
 
-```ruby
+``` ruby
 Tilt.register :monmoteur, MonMerveilleurMoteurDeRendu
 
 helpers do
@@ -982,7 +982,7 @@ que les routes, et permettent de modifier la requête et sa réponse. Les
 variables d'instance déclarées dans les filtres sont accessibles au niveau
 des routes et des templates :
 
-```ruby
+``` ruby
 before do
   @note = 'Coucou !'
   request.path_info = '/foo/bar/baz'
@@ -999,7 +999,7 @@ contexte et permettent de modifier la requête et sa réponse. Les variables
 d'instance déclarées dans les filtres before ou les routes sont accessibles
 au niveau des filtres after :
 
-```ruby
+``` ruby
 after do
   puts response.status
 end
@@ -1012,7 +1012,7 @@ méthode +body+ au lieu de simplement renvoyer une chaine depuis vos routes).
 Les filtres peuvent être associés à un masque, ce qui permet de limiter leur
 exécution aux cas où la requête correspond à ce masque :
 
-```ruby
+``` ruby
 before '/secret/*' do
   authentification!
 end
@@ -1024,7 +1024,7 @@ end
 
 Tout comme les routes, les filtres acceptent également des conditions :
 
-```ruby
+``` ruby
 before :agent => /Songbird/ do
   # ...
 end
@@ -1039,7 +1039,7 @@ end
 Utilisez la méthode de haut niveau `helpers` pour définir des routines
 qui seront accessibles dans vos gestionnaires de route et dans vos templates :
 
-```ruby
+``` ruby
 helpers do
   def bar(nom)
     "#{nom}bar"
@@ -1053,7 +1053,7 @@ end
 
 Vous pouvez aussi définir les méthodes helper dans un module séparé :
 
-```ruby
+``` ruby
 module FooUtils
   def foo(nom) "#{nom}foo" end
 end
@@ -1073,7 +1073,7 @@ l'application.
 Une session est utilisée pour conserver un état entre les requêtes. Une fois
 activées, vous avez un +hash+ de session par session utilisateur :
 
-```ruby
+``` ruby
 enable :sessions
 
 get '/' do
@@ -1092,7 +1092,7 @@ quel +middleware+ Rack de session afin d'éviter cela. N'utiliser *pas*
 <tt>enable :sessions</tt> dans ce cas mais charger le +middleware+ de votre
 choix comme vous le feriez pour n'importe quel autre +middleware+ :
 
-```ruby
+``` ruby
 use Rack::Session::Pool, :expire_after => 2592000
 
 get '/' do
@@ -1110,14 +1110,14 @@ hasard par Sinatra. Toutefois, comme cette clé change à chaque démarrage de
 votre application, vous pouvez définir cette clé vous-même afin que toutes
 les instances de votre application la partage :
 
-```ruby
+``` ruby
 set :session_secret, 'super secret'
 ```
 
 Si vous souhaitez avoir plus de contrôle, vous pouvez également enregistrer un
 +hash+ avec des options lors de la configuration de `sessions` :
 
-```ruby
+``` ruby
 set :sessions, :domain => 'foo.com'
 ```
 
@@ -1126,37 +1126,37 @@ set :sessions, :domain => 'foo.com'
 Pour arrêter immédiatement la requête dans un filtre ou un gestionnaire de
 route :
 
-```ruby
+``` ruby
 halt
 ```
 
 Vous pouvez aussi passer le code retour ...
 
-```ruby
+``` ruby
 halt 410
 ```
 
 Ou le texte ...
 
-```ruby
+``` ruby
 halt 'Ceci est le texte'
 ```
 
 Ou les deux ...
 
-```ruby
+``` ruby
 halt 401, 'Partez !'
 ```
 
 Ainsi que les entêtes ...
 
-```ruby
+``` ruby
 halt 402, {'Content-Type' => 'text/plain'}, 'revanche'
 ```
 
 Bien sûr il est possible de combiner un template avec `halt` :
 
-```ruby
+``` ruby
 halt erb(:erreur)
 ```
 
@@ -1165,7 +1165,7 @@ halt erb(:erreur)
 Une route peut passer le relais aux autres routes qui correspondent également
 avec `pass` :
 
-```ruby
+``` ruby
 get '/devine/:qui' do
   pass unless params[:qui] == 'Frank'
   "Tu m'as eu !"
@@ -1186,7 +1186,7 @@ Parfois, +pass+ n'est pas ce que vous recherchez, au lieu de cela vous
 souhaitez obtenir le résultat d'une autre route. Pour cela, utilisez
 simplement call :
 
-```ruby
+``` ruby
 get '/foo' do
   status, headers, body = call env.merge("PATH_INFO" => '/bar')
   [status, headers, body.map(&:upcase)]
@@ -1217,7 +1217,7 @@ le coprs de la réponse à un moment arbitraire de l'exécution. Vous pouvez le
 faire au moyen de la méthode +body+. Si vous faites ainsi, vous pouvez alors
 utiliser cette même méthode pour accéder au corps de la réponse :
 
-```ruby
+``` ruby
 get '/foo' do
   body "bar"
 end
@@ -1234,7 +1234,7 @@ voir "Valeurs de retour").
 Pareillement au corps de la réponse, vous pouvez également définir le code
 retour et les entêtes :
 
-```ruby
+``` ruby
 get '/foo' do
   status 418
   headers \
@@ -1255,7 +1255,7 @@ extrèmes, vous souhaitez continuer à envoyer des données tant que le client
 n'abandonne pas la connection. Vous pouvez alors utiliser le helper `stream`
 pour éviter de créer votre propre système :
 
-```ruby
+``` ruby
 get '/' do
   stream do |out|
     out << "Ca va être hallu -\n"
@@ -1286,7 +1286,7 @@ tout moment au cours de l'exécution. Ceci ne fonctionne qu'avec les serveurs
 evented (ie non threadés) tels que Thin et Rainbows. Les autres serveurs
 fermeront malgré tout le flux :
 
-```ruby
+``` ruby
 set :server, :thin
 connections = []
 
@@ -1307,7 +1307,7 @@ end
 Dans le contexte de la requête, la méthode utilitaire +logger+ expose une
 instance de +logger+ :
 
-```ruby
+``` ruby
 get '/' do
   logger.info "chargement des données"
   # ...
@@ -1323,7 +1323,7 @@ Notez que la journalisation est seulement activée par défaut pour
 `Sinatra::Application`, donc si vous héritez de `>Sinatra::Base`,
 vous aurez à l'activer vous-même :
 
-```ruby
+``` ruby
 class MonApp < Sinatra::Base
   configure :production, :development do
     enable :logging
@@ -1342,7 +1342,7 @@ Quand vous utilisez `send_file` ou des fichiers statiques, vous
 pouvez rencontrer des types mime que Sinatra ne connaît pas. Utilisez
 `mime_type` pour les déclarer par extension de fichier :
 
-```ruby
+``` ruby
 configure do
   mime_type :foo, 'text/foo'
 end
@@ -1350,7 +1350,7 @@ end
 
 Vous pouvez également les utiliser avec la méthode `content_type` :
 
-```ruby
+``` ruby
 get '/' do
   content_type :foo
   "foo foo foo"
@@ -1362,7 +1362,7 @@ end
 Pour former des URLs, vous devriez utiliser la méthode +url+, par exemple en
 Haml :
 
-```ruby
+``` ruby
 %a{:href => url('/foo')} foo
 ```
 
@@ -1376,7 +1376,7 @@ pour un exemple).
 Vous pouvez déclencher une redirection du navigateur avec la méthode
 `redirect` :
 
-```ruby
+``` ruby
 get '/foo' do
   redirect to('/bar')
 end
@@ -1385,7 +1385,7 @@ end
 Tout paramètre additionnel est géré comme des arguments pour la méthode
 `halt` :
 
-```ruby
+``` ruby
 redirect to('/bar'), 303
 redirect 'http://google.com', 'mauvais endroit mon pote'
 ```
@@ -1393,7 +1393,7 @@ redirect 'http://google.com', 'mauvais endroit mon pote'
 Vous pouvez aussi rediriger vers la page dont l'utilisateur venait au moyen de
 `redirect back` :
 
-```ruby
+``` ruby
 get '/foo' do
   "<a href='/bar'>faire quelque chose</a>"
 end
@@ -1406,13 +1406,13 @@ end
 
 Pour passer des arguments à une redirection, ajoutez-les soit à la requête :
 
-```ruby
+``` ruby
 redirect to('/bar?sum=42')
 ```
 
 Ou bien utilisez une session :
 
-```ruby
+``` ruby
 enable :sessions
 
 get '/foo' do
@@ -1431,7 +1431,7 @@ Définir correctement vos entêtes à la base pour un bon cache HTTP.
 
 Vous pouvez facilement définir l'entête Cache-Control de la manière suivante :
 
-```ruby
+``` ruby
 get '/' do
   cache_control :public
   "met le en cache !"
@@ -1440,7 +1440,7 @@ end
 
 Conseil de pro : définir le cache dans un filtre +before+ :
 
-```ruby
+``` ruby
 before do
   cache_control :public, :must_revalidate, :max_age => 60
 end
@@ -1449,7 +1449,7 @@ end
 Si vous utilisez la méthode +expires+ pour définir l'entête correspondant,
 `Cache-Control` sera alors défini automatiquement :
 
-```ruby
+``` ruby
 before do
   expires 500, :public, :must_revalidate
 end
@@ -1460,7 +1460,7 @@ Pour utiliser correctement les caches, vous devriez utiliser +etag+ ou
 d'importantes modifications, car elles vont immédiatement déclencher la réponse
 si le client a déjà la version courante dans son cache :
 
-```ruby
+``` ruby
 get '/article/:id' do
   @article = Article.find params[:id]
   last_modified @article.updated_at
@@ -1472,7 +1472,7 @@ end
 Il est également possible d'utiliser un
 [weak ETag](http://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation) :
 
-```ruby
+``` ruby
 etag @article.sha1, :weak
 ```
 
@@ -1481,7 +1481,7 @@ fournissent les informations nécessaires pour votre cache. Si vous êtes à la
 recherche de solutions rapides pour un reverse-proxy de cache, essayez
 [rack-cache](https://github.com/rtomayko/rack-cache) :
 
-```ruby
+``` ruby
 require "rack/cache"
 require "sinatra"
 
@@ -1505,7 +1505,7 @@ put) existent déjà et pour les autres resources (par exemple dans le cas
 de requêtes post) qu'il s'agit de nouvelles resources. Vous pouvez modifier ce
 comportement en passant une option `:new_resource` :
 
-```ruby
+``` ruby
 get '/create' do
   etag '', :new_resource => true
   Article.create
@@ -1524,7 +1524,7 @@ etag '', :new_resource => true, :kind => :weak
 Pour envoyer des fichiers, vous pouvez utiliser la méthode
 `send_file` :
 
-```ruby
+``` ruby
 get '/' do
   send_file 'foo.png'
 end
@@ -1532,7 +1532,7 @@ end
 
 Quelques options sont également acceptées :
 
-```ruby
+``` ruby
 send_file 'foo.png', :type => :jpg
 ```
 
@@ -1574,7 +1574,7 @@ L'objet correspondant à la requête envoyée peut être récupéré dans le con
 de la requête (filtres, routes, gestionnaires d'erreur) au moyen de la méthode
 +request+ :
 
-```ruby
+``` ruby
 # application tournant à l'adresse http://exemple.com/exemple
 get '/foo' do
   t = %w[text/css text/html application/javascript]
@@ -1613,7 +1613,7 @@ end
 Certaines options, telles que `script_name` ou `path_info`
 peuvent également être modifiées :
 
-```ruby
+``` ruby
 before { request.path_info = "/" }
 
 get "/" do
@@ -1623,7 +1623,7 @@ end
 
 `request.body` est un objet IO ou StringIO :
 
-```ruby
+``` ruby
 post "/api" do
   request.body.rewind  # au cas où il a déjà été lu
   donnees = JSON.parse request.body.read
@@ -1637,7 +1637,7 @@ Vous pouvez utiliser la méthode +attachment+ pour indiquer au navigateur que
 la réponse devrait être stockée sur le disque plutôt qu'affichée :
 
 
-```ruby
+``` ruby
 get '/' do
   attachment
   "enregistre-le !"
@@ -1646,7 +1646,7 @@ end
 
 Vous pouvez également lui passer un nom de fichier :
 
-```ruby
+``` ruby
 get '/' do
   attachment "info.txt"
   "enregistre-le !"
@@ -1659,7 +1659,7 @@ Sinatra fourni un helper +time_for+ pour convertir une valeur donnée en
 objet `Time`. Il peut aussi faire la conversion à partir d'objets +DateTime+,
 `Date` ou de classes similaires :
 
-```ruby
+``` ruby
 get '/' do
   pass if Time.now > time_for('Dec 23, 2012')
   "encore temps"
@@ -1671,7 +1671,7 @@ consorts. Par conséquent, vous pouvez très facilement étendre le
 fonctionnement de ces méthodes en surchargeant le helper +time_for+ dans
 votre application :
 
-```ruby
+``` ruby
 helpers do
   def time_for(value)
     case value
@@ -1694,7 +1694,7 @@ end
 La méthode `find_template` est utilisée pour trouver les fichiers de
 templates à générer :
 
-```ruby
+``` ruby
 find_template settings.views, 'foo', Tilt[:haml] do |file|
   puts "pourrait être #{file}"
 end
@@ -1704,7 +1704,7 @@ Ce n'est pas très utilise. En revanche, il est utile de pouvoir surcharger
 cette méthode afin de définir son propre mécanisme de recherche. Par exemple,
 vous pouvez utiliser plus d'un répertoire de vues :
 
-```ruby
+``` ruby
 set :views, ['views', 'templates']
 
 helpers do
@@ -1717,7 +1717,7 @@ end
 Un autre exemple est d'utiliser des répertoires différents pour des moteurs
 de rendu différents :
 
-```ruby
+``` ruby
 set :views, :sass => 'views/sass', :haml => 'templates', :default => 'views'
 
 helpers do
@@ -1743,7 +1743,7 @@ devriez garder cela en tête si vous écrivez une méthode vraiment dingue.
 
 Lancé une seule fois au démarrage de tous les environnements :
 
-```ruby
+``` ruby
 configure do
   # définir un paramètre
   set :option, 'value'
@@ -1797,21 +1797,21 @@ pour protéger votre application contre les principales attaques opportunistes.
 Vous pouvez très simplement désactiver cette fonctionnalité (ce qui exposera
 votre application à beaucoup de vulnerabilités courantes) :
 
-```ruby
+``` ruby
 disable :protection
 ```
 
 Pour désactiver seulement un type de protection, vous pouvez définir `protection`
 avec un hash d'options :
 
-```ruby
+``` ruby
 set :protection, :except => :path_traversal
 ```
 
 Vous pouvez également lui passer un tableau pour désactiver plusieurs types de
 protection :
 
-```ruby
+``` ruby
 set :protection, :except => [:path_traversal, :session_hijacking]
 ```
 
@@ -1967,8 +1967,8 @@ templates sont mis en cache par défaut.
 Pour exécuter votre application dans un environnement différent, utilisez
 l'option `-e` de Ruby :
 
-```bash
-$ ruby mon_application.rb -e [ENVIRONMENT]
+``` shell
+ruby mon_application.rb -e [ENVIRONMENT]
 ```
 
 Vous pouvez utiliser une des méthodes +development?+, +test?+ et +production?+
@@ -1985,7 +1985,7 @@ vieux `haml`, `erb`, `halt`, etc.
 Quand une exception <tt>Sinatra::NotFound</tt> est soulevée, ou que le code
 retour est 404, le gestionnaire <tt>not_found</tt> est invoqué :
 
-```ruby
+``` ruby
 not_found do
   'Pas moyen de trouver ce que vous cherchez'
 end
@@ -1997,7 +1997,7 @@ Le gestionnaire +error+ est invoqué à chaque fois qu'une exception est
 soulevée dans une route ou un filtre. L'objet exception est accessible via la
 variable Rack `sinatra.error` :
 
-```ruby
+``` ruby
 error do
   'Désolé mais une méchante erreur est survenue - ' + env['sinatra.error'].name
 end
@@ -2005,7 +2005,7 @@ end
 
 Erreur sur mesure :
 
-```ruby
+``` ruby
 error MonErreurSurMesure do
   'Donc il est arrivé ceci...' + env['sinatra.error'].message
 end
@@ -2013,7 +2013,7 @@ end
 
 Donc si ceci arrive :
 
-```ruby
+``` ruby
 get '/' do
   raise MonErreurSurMesure, 'quelque chose de mal'
 end
@@ -2026,7 +2026,7 @@ Vous obtenez ça :
 Alternativement, vous pouvez avoir un gestionnaire d'erreur associé à un code
 particulier :
 
-```ruby
+``` ruby
 error 403 do
   'Accès interdit'
 end
@@ -2038,7 +2038,7 @@ end
 
 Ou un intervalle :
 
-```ruby
+``` ruby
 error 400..510 do
   'Boom'
 end
@@ -2060,7 +2060,7 @@ fonctionnalités classiques.
 Sinatra permet de construire facilement des middlewares Rack via la méthode de
 haut niveau +use+ :
 
-```ruby
+``` ruby
 require 'sinatra'
 require 'mon_middleware_perso'
 
@@ -2094,7 +2094,7 @@ Les tests pour Sinatra peuvent être écrit avec n'importe quelle bibliothèque
 basée sur Rack. [Rack::Test](http://gitrdoc.com/brynary/rack-test) est
 recommandé :
 
-```ruby
+``` ruby
 require 'mon_application_sinatra'
 require 'test/unit'
 require 'rack/test'
@@ -2134,7 +2134,7 @@ niveau supérieur suppose une configuration dans le style des micro-applications
 `./views`, des logs, une page d'erreur, etc...). C'est là que
 `Sinatra::Base` prend tout son intérêt :
 
-```ruby
+``` ruby
 require 'sinatra/base'
 
 class MonApplication < Sinatra::Base
@@ -2190,7 +2190,7 @@ mineures en ce qui concerne les paramètres par défaut :
 Il y a deux façons de faire pour démarrer une application modulaire, démarrez
 avec `run!` :
 
-```ruby
+``` ruby
 # my_app.rb
 require 'sinatra/base'
 
@@ -2204,14 +2204,14 @@ end
 
 Démarrez ensuite avec :
 
-```bash
-$ ruby my_app.rb
+``` shell
+ruby my_app.rb
 ```
 
 Ou alors avec un fichier `config.ru`, qui permet d'utiliser n'importe
 quel gestionnaire Rack :
 
-```ruby
+``` ruby
 # config.ru
 require './my_app'
 run MyApp
@@ -2219,15 +2219,15 @@ run MyApp
 
 Exécutez :
 
-```bash
-$ rackup -p 4567
+``` shell
+rackup -p 4567
 ```
 
 ### Utiliser une application de style classique avec un fichier config.ru
 
 Ecrivez votre application :
 
-```ruby
+``` ruby
 # app.rb
 require 'sinatra'
 
@@ -2238,7 +2238,7 @@ end
 
 Et un fichier `config.ru` correspondant :
 
-```ruby
+``` ruby
 require './app'
 run Sinatra::Application
 ```
@@ -2265,7 +2265,7 @@ en tant que middleware. Ce endpoint peut très bien être une autre
 application Sinatra, ou n'importe quelle application basée sur Rack
 (Rails/Ramaze/Camping/...) :
 
-```ruby
+``` ruby
 require 'sinatra/base'
 
 class EcranDeConnexion < Sinatra::Base
@@ -2302,7 +2302,7 @@ Il se peut que vous ayez besoin de créer une nouvelle application à l'exécuti
 sans avoir à les assigner à une constante, vous pouvez le faire grâce à
 `Sinatra.new` :
 
-```ruby
+``` ruby
 require 'sinatra/base'
 mon_app = Sinatra.new { get('/') { "salut" } }
 mon_app.run!
@@ -2310,7 +2310,7 @@ mon_app.run!
 
 L'application dont elle hérite peut être passé en argument optionnel :
 
-```ruby
+``` ruby
 # config.ru
 require 'sinatra/base'
 
@@ -2333,7 +2333,7 @@ utiliser Sinatra dans votre propre bibliothèque.
 
 Cela permet également d'utiliser très facilement Sinatra comme middleware :
 
-```ruby
+``` ruby
 require 'sinatra/base'
 
 use Sinatra do
@@ -2360,7 +2360,7 @@ requêtes.
 
 Les options définies au moyen de +set+ deviennent des méthodes de classe :
 
-```ruby
+``` ruby
 class MonApp < Sinatra::Base
   # Eh, je suis dans le contexte de l'application !
   set :foo, 42
@@ -2394,7 +2394,7 @@ contexte. Dans ce dernier, vous pouvez accéder aux objets `request` et
 Vous pouvez accéder au contexte de l'application depuis le contexte de la
 requête au moyen de `settings` :
 
-```ruby
+``` ruby
 class MonApp < Sinatra::Base
   # Eh, je suis dans le contexte de l'application !
   get '/ajouter_route/:nom' do
@@ -2441,8 +2441,8 @@ qui [étend l'objet principal](https://github.com/sinatra/sinatra/blob/ca06364/l
 
 Les applications Sinatra peuvent être lancées directement :
 
-```ruby
-$ ruby mon_application.rb [-h] [-x] [-e ENVIRONNEMENT] [-p PORT] [-o HOTE] [-s SERVEUR]
+``` ruby
+ruby mon_application.rb [-h] [-x] [-e ENVIRONNEMENT] [-p PORT] [-o HOTE] [-s SERVEUR]
 ```
 
 Les options sont :
@@ -2532,8 +2532,8 @@ stable.
 Nous publions également une gem de +prerelease+ de temps en temps que vous
 pouvez installer comme suit :
 
-```ruby
-$ gem install sinatra --pre
+``` ruby
+gem install sinatra --pre
 ```
 
 afin d'avoir les toutes dernières fonctionnalités.
@@ -2545,13 +2545,13 @@ Sinatra, [Bundler](http://gembundler.com/) est recommandé.
 
 Tout d'abord, installer bundler si vous ne l'avez pas :
 
-```bash
-$ gem install bundler
+``` shell
+gem install bundler
 ```
 
 Ensuite, dans le dossier de votre projet, créez un fichier +Gemfile+ :
 
-```ruby
+``` ruby
 source :rubygems
 gem 'sinatra', :git => "git://github.com/sinatra/sinatra.git"
 
@@ -2567,8 +2567,8 @@ automatiquement téléchargées et ajoutées par Bundler.
 
 Maintenant, vous pouvez faire tourner votre application de la façon suivante :
 
-```bash
-$ bundle exec ruby myapp.rb
+``` shell
+bundle exec ruby myapp.rb
 ```
 
 ### Faites le vous-même
@@ -2576,33 +2576,33 @@ $ bundle exec ruby myapp.rb
 Créez un clone local et démarrez votre application avec le dossier
 `sinatra/lib` dans le `$LOAD_PATH` :
 
-```bash
-$ cd myapp
-$ git clone git://github.com/sinatra/sinatra.git
-$ ruby -Isinatra/lib myapp.rb
+``` shell
+cd myapp
+git clone git://github.com/sinatra/sinatra.git
+ruby -Isinatra/lib myapp.rb
 
 A l'avenir, pour mettre à jour le code source de Sinatra :
 
-```bash
-$ cd myapp/sinatra
-$ git pull
+``` shell
+cd myapp/sinatra
+git pull
 ```
 
 ### Installez globalement
 
 Vous pouvez construire la gem vous-même :
 
-```bash
-$ git clone git://github.com/sinatra/sinatra.git
-$ cd sinatra
-$ rake sinatra.gemspec
-$ rake install
+``` shell
+git clone git://github.com/sinatra/sinatra.git
+cd sinatra
+rake sinatra.gemspec
+rake install
 ```
 
 Si vous installez les gems en tant que +root+, la dernière étape sera :
 
-```bash
-$ sudo rake install
+``` shell
+sudo rake install
 ```
 
 ## Versions
@@ -2622,7 +2622,7 @@ SemVer que SemVerTag.
 * [IRC : #sinatra](irc://chat.freenode.net/#sinatra) sur http://freenode.net
 * [IRC : #sinatra](irc://chat.freenode.net/#sinatra) on http://freenode.net
 * [Sinatra Book](http://sinatra-book.gittr.com) Tutoriels et recettes
-* [Sinatra Recipes](http://recipes.sinatrarb.com/) trucs et astuces rédigés par 
+* [Sinatra Recipes](http://recipes.sinatrarb.com/) trucs et astuces rédigés par
   la communauté
 * Documentation API de la [dernière version](http://rubydoc.info/gems/sinatra)
   ou du [HEAD courant](http://rubydoc.info/github/sinatra/sinatra) sur
