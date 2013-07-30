@@ -356,37 +356,59 @@ définies au moyen de `set`.
 
 Options disponibles :
 
-**locals**
-  Liste de variables locales passées au document. Pratique pour les vues
-  partielles.
-  Exemple : `erb "<%= foo %>", :locals => {:foo => "bar"}`.
+<dl>
+  <dt>locals</dt>
+  <dd>
+    Liste de variables locales passées au document. Pratique pour les vues
+    partielles.
+    Exemple : <tt>erb "<%= foo %>", :locals => {:foo => "bar"}</tt>.
+  </dd>
 
-**default_encoding**
-  Encodage de caractères à utiliser en cas d'incertitude. Par défaut, c'est
-  `settings.default_encoding`.
+  <dt>default_encoding</dt>
+  <dd>
+    Encodage de caractères à utiliser en cas d'incertitude. Par défaut, c'est
+    <tt>settings.default_encoding</tt>.
+  </dd>
 
-**views**
-  Dossier de vues dans lequel chercher les templates. Par défaut
-  `settings.views`.
+  <dt>views</dt>
+  <dd>
+    Dossier de vues dans lequel chercher les templates. Par défaut
+    <tt>settings.views</tt>.
+  </dd>
 
-**layout**
-  S'il faut ou non utiliser un +layout+ (+true+ or +false+). Indique le
-  template à utiliser lorsque c'est un symbole. Exemple : `erb :index,
-  :layout => !request.xhr?`.
+  <dt>layout</dt>
+  <dd>
+    S'il faut ou non utiliser un +layout+ (+true+ or +false+). Indique le
+    template à utiliser lorsque c'est un symbole. Exemple : <tt>erb :index,
+    :layout => !request.xhr?</tt>.
+  </dd>
 
-**content_type**
-  Content-Type que le template produit, dépend par défaut du langage de
-  template.
+  <dt>content_type</dt>
+  <dd>
+    Content-Type que le template produit, dépend par défaut du langage de
+    template.
+  </dd>
 
-**scope**
-  Contexte sous lequel effectuer le rendu du template. Par défaut il s'agit
-  de l'instance de l'application. Si vous changez cela, les variables
-  d'instance et les méthodes utilitaires ne seront pas disponibles.
+  <dt>scope</dt>
+  <dd>
+    Contexte sous lequel effectuer le rendu du template. Par défaut il s'agit
+    de l'instance de l'application. Si vous changez cela, les variables
+    d'instance et les méthodes utilitaires ne seront pas disponibles.
+  </dd>
 
-**layout_engine**
-  Moteur de rendu à utiliser pour le +layout+. Utile pour les langages ne
-  supportant pas les +layouts+. Il s'agit par défaut du moteur utilisé pour
-  le rendu du template. Exemple : `set :rdoc, :layout_engine => :erb`
+  <dt>layout_engine</dt>
+  <dd>
+    Moteur de rendu à utiliser pour le +layout+. Utile pour les langages ne
+    supportant pas les +layouts+. Il s'agit par défaut du moteur utilisé pour
+    le rendu du template. Exemple : <tt>set :rdoc, :layout_engine => :erb</tt>
+  </dd>
+
+  <dt>layout_options</dt>
+  <dd>
+    Options spécifiques destinées au moteur de rendu. Exemple : <tt>set :rdoc,
+    :layout_options => { :views => 'views/layouts' }</tt>
+  </dd>
+</dl>
 
 Les templates sont supposés se trouver directement dans le dossier
 `./views`. Pour utiliser un dossier de vues différent :
@@ -1951,6 +1973,12 @@ set :protection, :except => [:path_traversal, :session_hijacking]
   <dt>views</dt>
   <dd>chemin pour le dossier des vues. Si non défini, il découle du paramètre
   <tt>app_file</tt>.</dd>
+
+  <dt>x_cascade</dt>
+  <dd>
+    Indique s'il faut ou non définir le header X-Cascade lorsqu'aucune route
+    ne correspond. Défini à <tt>true</tt> par défaut.
+  </dd>
 </dl>
 
 ## Environements
