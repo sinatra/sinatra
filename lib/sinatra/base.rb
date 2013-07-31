@@ -1015,14 +1015,14 @@ module Sinatra
 
     # Attempt to serve static files from public directory. Throws :halt when
     # a matching file is found, returns nil otherwise.
-    def static!
+    def static!(options = {})
       return if (public_dir = settings.public_folder).nil?
       path = File.expand_path("#{public_dir}#{unescape(request.path_info)}" )
       return unless File.file?(path)
 
       env['sinatra.static_file'] = path
       cache_control(*settings.static_cache_control) if settings.static_cache_control?
-      send_file path, :disposition => nil
+      send_file path, options.merge(:disposition => nil)
     end
 
     # Enable string or symbol key access to the nested params hash.
