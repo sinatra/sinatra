@@ -2575,13 +2575,12 @@ disponibles.
 
 ### Contexte de l'application/classe
 
-Toute application Sinatra correspond à une sous-classe de `Sinatra::Base`.
-Si vous utilisez le DSL haut niveau (`require 'sinatra'`), alors cette
-classe est `Sinatra::Application`, sinon il s'agit de la sous-classe que
-vous avez définie. Dans le contexte de la classe, vous avez accès aux méthodes
-telles que `get` ou `before`, mais vous n'avez pas accès aux objets `request`
-ou `session` car c'est la même classe d'application qui traitera toutes les
-requêtes.
+Une application Sinatra correspond à une sous-classe de `Sinatra::Base`. Il
+s'agit de `Sinatra::Application` si vous utilisez le DSL de haut niveau
+(`require 'sinatra'`). Sinon c'est la sous-classe que vous avez définie. Dans
+le contexte de cette classe, vous avez accès aux méthodes telles que `get` ou
+`before`, mais pas aux objets `request` ou `session` étant donné que toutes
+les requêtes sont traitées par une seule classe d'application.
 
 Les options définies au moyen de `set` deviennent des méthodes de classe :
 
@@ -2612,10 +2611,10 @@ Vous pouvez atteindre ce contexte (donc la classe) de la façon suivante :
 
 ### Contexte de la requête/instance
 
-Pour tout traitement d'une requête, une nouvelle instance de votre classe
+Pour chaque requête traitée, une nouvelle instance de votre classe
 d'application est créée et tous vos gestionnaires sont exécutés dans ce
-contexte. Dans ce dernier, vous pouvez accéder aux objets `request` et
-`session` et faire appel aux fonctions de rendu telles que `erb` ou `haml`.
+contexte. Depuis celui-ci, vous pouvez accéder aux objets `request` et
+`session` ou faire appel aux fonctions de rendu telles que `erb` ou `haml`.
 Vous pouvez accéder au contexte de l'application depuis le contexte de la
 requête au moyen de `settings` :
 
@@ -2638,10 +2637,10 @@ end
 
 Vous avez le binding du contexte de la requête dans :
 
-* les blocs get/head/post/put/delete/options
-* les filtres before/after
+* les blocs get, head, post, put, delete, options, patch, link et unlink
+* les filtres before et after
 * les méthodes utilitaires (définies au moyen de `helpers`)
-* les vues/templates
+* les vues et templates
 
 ### Le contexte de délégation
 
@@ -2658,7 +2657,7 @@ Vous avez le binding du contexte de délégation dans :
 * Le binding de haut niveau, si vous avez utilisé `require "sinatra"`
 * Un objet qui inclut le module `Sinatra::Delegator`
 
-Jetez un oeil pour vous faire une idée : voici le
+Pour vous faire une idée, vous pouvez jeter un coup d'oeil au
 [mixin Sinatra::Delegator](https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/base.rb#L1609-1633)
 qui [étend l'objet principal](https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/main.rb#L28-30).
 
