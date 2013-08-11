@@ -134,3 +134,8 @@ class MyApp < Sinatra::Base
   register Sinatra::Contrib
 end
 ```
+
+## Documentation
+
+For more info check the [official docs](http://www.sinatrarb.com/contrib/) and
+[api docs](http://rubydoc.info/gems/sinatra-contrib/1.4.0/frames).
