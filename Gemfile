@@ -61,7 +61,7 @@ if RUBY_ENGINE == 'jruby'
   gem 'trinidad'
 else
   gem 'yajl-ruby'
-  gem 'nokogiri'
+  gem 'nokogiri' if RUBY_VERSION >= '1.9.2'
   gem 'thin'
 end
 
