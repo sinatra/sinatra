@@ -41,10 +41,13 @@ gem 'maruku'
 gem 'creole'
 gem 'markaby'
 gem 'radius'
-gem 'rabl'              unless RUBY_ENGINE =~ /jruby|maglev/
+unless RUBY_ENGINE =~ /jruby|maglev/
+  gem 'rabl'
+  gem 'activesupport', '< 4.0.0' if RUBY_VERSION < '1.9.3'
+end
 gem 'wlang', '>= 2.0.1' unless RUBY_ENGINE =~ /jruby|rbx/
 gem 'therubyracer'      unless RUBY_ENGINE =~ /jruby|rbx/
-gem 'redcarpet'         unless RUBY_ENGINE == 'jruby'
+gem 'redcarpet'         unless RUBY_ENGINE == 'jruby' || RUBY_VERSION == '1.8.7'
 gem 'bluecloth'         unless RUBY_ENGINE == 'jruby'
 
 if RUBY_ENGINE != 'rbx' or RUBY_VERSION < '1.9'
@@ -58,7 +61,7 @@ if RUBY_ENGINE == 'jruby'
   gem 'trinidad'
 else
   gem 'yajl-ruby'
-  gem 'nokogiri'
+  gem 'nokogiri' if RUBY_VERSION >= '1.9.2'
   gem 'thin'
 end
 
@@ -70,7 +73,7 @@ if RUBY_ENGINE != 'jruby' or not ENV['TRAVIS']
   # C extensions
   gem 'rdiscount' if RUBY_VERSION != '1.9.2'
   platforms(:ruby_18) do
-    gem 'redcarpet'
+    #gem 'redcarpet'
     gem 'mongrel'
   end
   gem 'RedCloth' unless RUBY_ENGINE == "macruby"

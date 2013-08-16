@@ -20,3 +20,4 @@ matrix:
   allow_failures:
     - env: tilt=master
     - rvm: rbx-19mode
+    - rvm: ruby-head
