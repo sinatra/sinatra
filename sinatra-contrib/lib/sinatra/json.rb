@@ -1,5 +1,5 @@
 require 'sinatra/base'
-
+require 'multi_json'
 module Sinatra
 
   # = Sinatra::JSON
@@ -32,7 +32,6 @@ module Sinatra
   #     require "sinatra/json"
   #
   #     class MyApp < Sinatra::Base
-  #       helpers Sinatra::JSON
   #
   #       # define a route that uses the helper
   #       get '/' do
@@ -126,5 +125,7 @@ module Sinatra
   end
 
   Base.set :json_content_type, :json
-  helpers JSON
+
+  # Load the JSON helpers in modular style automatically
+  Base.helpers JSON
 end
