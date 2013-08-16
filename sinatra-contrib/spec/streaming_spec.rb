@@ -62,27 +62,6 @@ describe Sinatra::Streaming do
     end
   end
 
-  context EventMachine::Deferrable do
-    it 'allows attaching more than one callback' do
-      a = b = false
-      stream do |out|
-        out.callback { a = true }
-        out.callback { b = true }
-      end
-      a.should be_true
-      b.should be_true
-    end
-
-    it 'triggers callbacks after streaming' do
-      triggered = false
-      stream do |out|
-        out.callback { triggered = true }
-        triggered.should be_false
-      end
-      triggered.should be_true
-    end
-  end
-
   context 'app' do
     it 'is the app instance the stream was created from' do
       out = stream { }

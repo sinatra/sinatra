@@ -1,5 +1,4 @@
 require 'sinatra/base'
-require 'eventmachine'
 require 'backports'
 
 module Sinatra
@@ -22,23 +21,6 @@ module Sinatra
   #       out.write "Written #{out.pos} bytes so far!\n"
   #       out.putc(65) unless out.closed?
   #       out.flush
-  #     end
-  #   end
-  #
-  # == Proper Deferrable
-  #
-  # Handy when using EventMachine.
-  #
-  #   list = []
-  #
-  #   get '/' do
-  #     stream(:keep_open) do |out|
-  #       list << out
-  #       out.callback { list.delete out }
-  #       out.errback do
-  #         logger.warn "lost connection"
-  #         list.delete out
-  #       end
   #     end
   #   end
   #
@@ -103,7 +85,6 @@ module Sinatra
     end
 
     module Stream
-      include EventMachine::Deferrable
 
       attr_accessor :app, :lineno, :pos, :transformer, :closed
       alias tell pos
@@ -166,11 +147,6 @@ module Sinatra
 
       def puts(*args)
         args.each { |arg| self << "#{arg}\n" }
-        nil
-      end
-
-      def close
-        @scheduler.schedule { succeed }
         nil
       end
 

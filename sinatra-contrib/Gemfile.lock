@@ -12,6 +12,7 @@ PATH
   specs:
     sinatra-contrib (1.4.0)
       backports (>= 2.0)
+      multi_json
       rack-protection
       rack-test
       sinatra (~> 1.4.0)
@@ -23,7 +24,6 @@ GEM
     backports (3.3.3)
     diff-lcs (1.2.2)
     erubis (2.7.0)
-    eventmachine (1.0.3)
     haml (4.0.1)
       tilt
     json (1.7.7)
@@ -54,7 +54,6 @@ PLATFORMS
 
 DEPENDENCIES
   erubis
-  eventmachine
   haml
   json
   multi_json
