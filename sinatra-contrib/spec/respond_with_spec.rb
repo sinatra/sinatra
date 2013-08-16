@@ -257,6 +257,21 @@ describe Sinatra::RespondWith do
         body.should == "generic!"
       end
     end
+
+    describe "inherited" do
+      it "registers RespondWith in an inherited app" do
+        app = respond_app do
+          register Sinatra::RespondWith
+
+          get '/a' do
+            respond_with :json
+          end
+        end
+
+        self.app = Sinatra::Base.new(app)
+        req('/a', :json).should_not be_ok
+      end
+    end
   end
 
   describe :respond_to do

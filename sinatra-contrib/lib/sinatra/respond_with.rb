@@ -184,8 +184,6 @@ module Sinatra
       end
     end
 
-    attr_accessor :ext_map
-
     def remap_extensions
       ext_map.clear
       Rack::Mime::MIME_TYPES.each { |e,t| ext_map[t] << e[1..-1].to_sym }
@@ -237,7 +235,7 @@ module Sinatra
     ENGINES.default = []
 
     def self.registered(base)
-      base.ext_map = Hash.new { |h,k| h[k] = [] }
+      base.set :ext_map, Hash.new { |h,k| h[k] = [] }
       base.set :template_engines, ENGINES.dup
       base.remap_extensions
       base.helpers Helpers
