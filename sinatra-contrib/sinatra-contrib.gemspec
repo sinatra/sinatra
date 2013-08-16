@@ -11,22 +11,20 @@ Gem::Specification.new do |s|
   s.authors = [
     "Konstantin Haase",
     "Gabriel Andretta",
+    "Trevor Bramble",
+    "Katrina Owen",
     "Nicolas Sanguinetti",
-    "Eliot Shepard",
-    "Andrew Crump",
-    "Matt Lyon",
-    "undr"
+    "Zachary Scott"
   ]
 
   # generated from git shortlog -sne
   s.email = [
     "konstantin.mailinglists@googlemail.com",
     "ohhgabriel@gmail.com",
+    "inbox@trevorbramble.com",
+    "katrina.owen@gmail.com",
     "contacto@nicolassanguinetti.info",
-    "eshepard@slower.net",
-    "andrew.crump@ieee.org",
-    "matt@flowerpowered.com",
-    "undr@yandex.ru"
+    "zachary@zacharyscott.net"
   ]
 
   # generated from git ls-files
