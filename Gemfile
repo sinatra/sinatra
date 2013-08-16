@@ -41,7 +41,10 @@ gem 'maruku'
 gem 'creole'
 gem 'markaby'
 gem 'radius'
-gem 'rabl'              unless RUBY_ENGINE =~ /jruby|maglev/
+unless RUBY_ENGINE =~ /jruby|maglev/
+  gem 'rabl'
+  gem 'activesupport', '< 4.0.0' if RUBY_VERSION < '1.9.3'
+end
 gem 'wlang', '>= 2.0.1' unless RUBY_ENGINE =~ /jruby|rbx/
 gem 'therubyracer'      unless RUBY_ENGINE =~ /jruby|rbx/
 gem 'redcarpet'         unless RUBY_ENGINE == 'jruby'
