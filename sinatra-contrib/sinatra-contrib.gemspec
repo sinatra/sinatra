@@ -1,7 +1,8 @@
 # Run `rake sinatra-contrib.gemspec` to update the gemspec.
+require File.expand_path('../lib/sinatra/contrib/version', __FILE__)
 Gem::Specification.new do |s|
   s.name        = "sinatra-contrib"
-  s.version     = "1.4.0"
+  s.version     = Sinatra::Contrib::VERSION
   s.description = "Collection of useful Sinatra extensions"
   s.homepage    = "http://github.com/sinatra/sinatra-contrib"
   s.summary     = s.description
@@ -122,8 +123,8 @@ Gem::Specification.new do |s|
   s.add_dependency "tilt",      "~> 1.3"
   s.add_dependency "rack-test"
   s.add_dependency "rack-protection"
-  s.add_dependency "eventmachine"
 
+  s.add_development_dependency "eventmachine"
   s.add_development_dependency "rspec", "~> 2.3"
   s.add_development_dependency "haml"
   s.add_development_dependency "erubis"

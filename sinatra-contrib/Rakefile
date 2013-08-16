@@ -44,7 +44,6 @@ task 'sinatra-contrib.gemspec' do
     content.sub!(/  s\.#{field} = \[\n(    .*\n)*  \]/, updated)
   end
 
-  content.sub! /(s\.version.*=\s+).*/, "\\1\"#{Sinatra::Contrib::VERSION}\""
   File.open('sinatra-contrib.gemspec', 'w') { |f| f << content }
 end
 
