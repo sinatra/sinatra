@@ -260,7 +260,9 @@ describe Sinatra::RespondWith do
 
     describe "inherited" do
       it "registers RespondWith in an inherited app" do
-        app = respond_app do
+        app = Sinatra.new do
+          set :app_file, __FILE__
+          set :views, root + '/respond_with'
           register Sinatra::RespondWith
 
           get '/a' do
@@ -268,7 +270,7 @@ describe Sinatra::RespondWith do
           end
         end
 
-        self.app = Sinatra::Base.new(app)
+        self.app = Sinatra.new(app)
         req('/a', :json).should_not be_ok
       end
     end
