@@ -672,4 +672,37 @@ describe Sinatra::Namespace do
       end
     end
   end
+
+  describe 'settings' do
+    it 'provides access to top-level settings' do
+      mock_app do
+        set :foo, 'ok'
+
+        namespace '/foo' do
+          get '/bar' do
+            settings.foo
+          end
+        end
+      end
+
+      get('/foo/bar').status.should == 200
+      last_response.body.should == 'ok'
+    end
+
+    it 'uses some repro' do
+      mock_app do
+        set :foo, 42
+
+        namespace '/foo' do
+          get '/bar' do
+            #settings.respond_to?(:foo).to_s
+            settings.foo.to_s
+          end
+        end
+      end
+
+      get('/foo/bar').status.should == 200
+      last_response.body.should == '42'
+    end
+  end
 end
