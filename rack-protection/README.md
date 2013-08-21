@@ -80,3 +80,11 @@ Prevented by:
 
     gem install rack-protection
 
+# Instrumentation
+
+Instrumentation is enabled by passing in an instrumenter as an option.
+```
+use Rack::Protection, instrumenter: ActiveSupport::Notifications
+```
+
+The instrumenter is passed a namespace (String) and environment (Hash). The namespace is 'rack.protection' and the attack type can be obtained from the environment key 'rack.protection.attack'.

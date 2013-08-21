@@ -44,6 +44,7 @@ module Rack
       def call(env)
         unless accepts? env
           warn env, "attack prevented by #{self.class}"
+          instrument env
           result = react env
         end
         result or app.call(env)
@@ -58,6 +59,12 @@ module Rack
         return unless options[:logging]
         l = options[:logger] || env['rack.logger'] || ::Logger.new(env['rack.errors'])
         l.warn(message)
+      end
+
+      def instrument(env)
+        return unless i = options[:instrumenter]
+        env['rack.protection.attack'] = self.class.name.split('::').last.downcase
+        i.instrument('rack.protection', env)
       end
 
       def deny(env)
