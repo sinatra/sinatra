@@ -1956,7 +1956,7 @@ module Sinatra
 
   # Create a new Sinatra application. The block is evaluated in the new app's
   # class scope.
-  def self.new(base = Base, options = {}, &block)
+  def self.new(base = Base, &block)
     base = Class.new(base)
     base.class_eval(&block) if block_given?
     base
