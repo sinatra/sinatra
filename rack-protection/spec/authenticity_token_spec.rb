@@ -30,4 +30,14 @@ describe Rack::Protection::AuthenticityToken do
   it "prevents ajax requests without a valid token" do
     post('/', {}, "HTTP_X_REQUESTED_WITH" => "XMLHttpRequest").should_not be_ok
   end
+
+  it "allows for a custom authenticity token param" do
+    mock_app do
+      use Rack::Protection::AuthenticityToken, :authenticity_param => 'csrf_param'
+      run proc { |e| [200, {'Content-Type' => 'text/plain'}, ['hi']] }
+    end
+
+    post('/', {"csrf_param" => "a"}, 'rack.session' => {:csrf => "a"})
+    last_response.should be_ok
+  end
 end
