@@ -46,4 +46,25 @@ describe Rack::Protection do
       it { should be_false }
     end
   end
+
+  describe "#instrument" do
+    let(:env) { { 'rack.protection.attack' => 'base' } }
+    let(:instrumenter) { double('Instrumenter') }
+
+    after do
+      app.instrument(env)
+    end
+
+    context 'with an instrumenter specified' do
+      let(:app) { Rack::Protection::Base.new(nil, :instrumenter => instrumenter) }
+
+      it { instrumenter.should_receive(:instrument).with('rack.protection', env) }
+    end
+
+    context 'with no instrumenter specified' do
+      let(:app) { Rack::Protection::Base.new(nil) }
+
+      it { instrumenter.should_not_receive(:instrument) }
+    end
+  end
 end
