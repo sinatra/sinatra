@@ -43,6 +43,6 @@ describe Rack::Protection::AuthenticityToken do
 
   it "sets a new csrf token for the session in env, even after a 'safe' request" do
     get('/', {}, {})
-    env['rack.session'][:csrf].length.should == 32
+    env['rack.session'][:csrf].should_not be_nil
   end
 end
