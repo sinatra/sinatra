@@ -945,10 +945,13 @@ module Sinatra
     def route!(base = settings, pass_block = nil)
       if routes = base.routes[@request.request_method]
         routes.each do |pattern, keys, conditions, block|
-          pass_block = process_route(pattern, keys, conditions) do |*args|
+          returned_pass_block = process_route(pattern, keys, conditions) do |*args|
             env['sinatra.route'] = block.instance_variable_get(:@route_name)
             route_eval { block[*args] }
           end
+
+          # don't wipe out pass_block in superclass
+          pass_block = returned_pass_block if returned_pass_block
         end
       end
 
