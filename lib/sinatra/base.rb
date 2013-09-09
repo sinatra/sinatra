@@ -22,8 +22,8 @@ module Sinatra
     # Returns an array of acceptable media types for the response
     def accept
       @env['sinatra.accept'] ||= begin
-        entries = @env['HTTP_ACCEPT'].to_s.scan(HEADER_VALUE_WITH_PARAMS)
-        entries.map { |e| AcceptEntry.new(e) }.sort
+        @env['HTTP_ACCEPT'].to_s.scan(HEADER_VALUE_WITH_PARAMS).
+          map! { |e| AcceptEntry.new(e) }.sort
       end
     end
 
@@ -70,7 +70,7 @@ module Sinatra
       attr_accessor :params
 
       def initialize(entry)
-        params = entry.scan(HEADER_PARAM).map do |s|
+        params = entry.scan(HEADER_PARAM).map! do |s|
           key, value = s.strip.split('=', 2)
           value = value[1..-2].gsub(/\\(.)/, '\1') if value.start_with?('"')
           [key, value]
@@ -79,7 +79,7 @@ module Sinatra
         @entry  = entry
         @type   = entry[/[^;]+/].delete(' ')
         @params = Hash[params]
-        @q      = @params.delete('q') { "1.0" }.to_f
+        @q      = @params.delete('q') { 1.0 }.to_f
       end
 
       def <=>(other)
@@ -114,6 +114,7 @@ module Sinatra
   # http://rack.rubyforge.org/doc/classes/Rack/Response.html
   # http://rack.rubyforge.org/doc/classes/Rack/Response/Helpers.html
   class Response < Rack::Response
+    DROP_BODY_RESPONSES = [204, 205, 304]
     def initialize(*)
       super
       headers['Content-Type'] ||= 'text/html'
@@ -161,7 +162,7 @@ module Sinatra
     end
 
     def drop_body?
-      [204, 205, 304].include?(status.to_i)
+      DROP_BODY_RESPONSES.include?(status.to_i)
     end
   end
 
@@ -453,7 +454,7 @@ module Sinatra
       hash.each do |key, value|
         key = key.to_s.tr('_', '-')
         value = value.to_i if key == "max-age"
-        values << [key, value].join('=')
+        values << "#{key}=#{value}"
       end
 
       response['Cache-Control'] = values.join(', ') if values.any?
@@ -512,6 +513,7 @@ module Sinatra
     rescue ArgumentError
     end
 
+    ETAG_KINDS = [:strong, :weak]
     # Set the response entity tag (HTTP 'ETag' header) and halt if conditional
     # GET matches. The +value+ argument is an identifier that uniquely
     # identifies the current version of the resource. The +kind+ argument
@@ -527,12 +529,12 @@ module Sinatra
       kind         = options[:kind] || :strong
       new_resource = options.fetch(:new_resource) { request.post? }
 
-      unless [:strong, :weak].include?(kind)
+      unless ETAG_KINDS.include?(kind)
         raise ArgumentError, ":strong or :weak expected"
       end
 
       value = '"%s"' % value
-      value = 'W/' + value if kind == :weak
+      value = "W/#{value}" if kind == :weak
       response['ETag'] = value
 
       if success? or status == 304
@@ -770,7 +772,7 @@ module Sinatra
     def render(engine, data, options = {}, locals = {}, &block)
       # merge app-level options
       engine_options  = settings.respond_to?(engine) ? settings.send(engine) : {}
-      options         = engine_options.merge(options)
+      options.merge!(engine_options) { |key, v1, v2| v1 }
 
       # extract generic options
       locals          = options.delete(:locals) || locals         || {}
@@ -802,8 +804,8 @@ module Sinatra
 
       # render layout
       if layout
-        options = options.merge(:views => views, :layout => false, :eat_errors => eat_errors, :scope => scope)
-        options.merge! layout_options
+        options.merge!(:views => views, :layout => false, :eat_errors => eat_errors, :scope => scope).
+                merge!(layout_options)
         catch(:layout_missing) { return render(layout_engine, layout, options, locals) { output } }
       end
 
