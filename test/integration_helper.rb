@@ -221,7 +221,7 @@ module IntegrationHelper
 
     base_port = 5000 + Process.pid % 100
     Sinatra::Base.server.each_with_index do |server, index|
-      Server.run(server, 5000+index)
+      Server.run(server, base_port+index)
     end
   end
 end
