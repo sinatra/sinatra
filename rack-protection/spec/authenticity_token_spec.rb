@@ -40,4 +40,9 @@ describe Rack::Protection::AuthenticityToken do
     post('/', {"csrf_param" => "a"}, 'rack.session' => {:csrf => "a"})
     last_response.should be_ok
   end
+
+  it "sets a new csrf token for the session in env, even after a 'safe' request" do
+    get('/', {}, {})
+    env['rack.session'][:csrf].should_not be_nil
+  end
 end
