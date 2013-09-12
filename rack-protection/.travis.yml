@@ -14,3 +14,5 @@ matrix:
     - { rvm: jruby-20mode,  env: rack=stable }
     - { rvm: jruby-head,    env: rack=stable }
     - { rvm: ruby-head,     env: rack=master }
+  allow_failures:
+    - rvm: ruby-head
