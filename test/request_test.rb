@@ -75,4 +75,18 @@ class RequestTest < Test::Unit::TestCase
     expected = { 'unquoted' => '0.25', 'quoted' => '0.25', 'chartest' => '";,x' }
     assert_equal(expected, request.preferred_type.params)
   end
+
+  it 'accepts */* when HTTP_ACCEPT is not present in the request' do
+    request = Sinatra::Request.new Hash.new
+    assert_equal 1, request.accept.size
+    assert request.accept?('text/html')
+    assert_equal '*/*', request.preferred_type.to_s
+  end
+
+  it 'accepts */* when HTTP_ACCEPT is blank in the request' do
+    request = Sinatra::Request.new 'HTTP_ACCEPT' => ''
+    assert_equal 1, request.accept.size
+    assert request.accept?('text/html')
+    assert_equal '*/*', request.preferred_type.to_s
+  end
 end
