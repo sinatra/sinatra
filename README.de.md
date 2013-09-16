@@ -456,38 +456,38 @@ Einstellungen:
     Praktisch für Partials:
 
     <tt>erb "<%= foo %>", :locals => {:foo => "bar"}</tt></dd>
-      
+
   <dt>default_encoding</dt>
   <dd>Gibt die Stringkodierung an, die verwendet werden soll. Voreingestellt
     auf <tt>settings.default_encoding</tt>.</dd>
-      
+
   <dt>views</dt>
   <dd>Ordner, aus dem die Templates geladen werden. Voreingestellt auf
     <tt>settings.views</tt>.</dd>
-      
+
   <dt>layout</dt>
   <dd>Legt fest, ob ein Layouttemplate verwendet werden soll oder nicht
     (<tt>true</tt> oder<tt>false</tt>). Ist es ein Symbol, dann legt es fest,
     welches Template als Layout verwendet wird:
 
     <tt>erb :index, :layout => !request.xhr?</tt></dd>
-      
+
   <dt>content_type</dt>
   <dd>Content-Typ den das Template ausgibt. Voreinstellung hängt von der
     Templatesprache ab.</dd>
-      
+
   <dt>scope</dt>
   <dd>Scope, in dem das Template gerendert wird. Liegt standardmäßig innerhalb
     der App-Instanz. Wird Scope geändert, sind Instanzvariablen und
     Helfermethoden nicht verfügbar.</dd>
-      
+
   <dt>layout_engine</dt>
   <dd>Legt fest, welcher Renderer für das Layout verantwortlich ist. Hilfreich
     für Sprachen, die sonst keine Templates unterstützen. Voreingestellt auf
     den Renderer, der für das Template verwendet wird:
 
     <tt>set :rdoc, :layout_engine => :erb</tt></dd>
-    
+
   <dt>layout_options</dt>
   <dd>Besondere Einstellungen, die nur für das Rendering verwendet werden:
 
@@ -554,7 +554,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>Abhängigkeit</td>
-    <td><a href="http://www.kuwata-lab.com/erubis/">erubis</a> oder erb 
+    <td><a href="http://www.kuwata-lab.com/erubis/">erubis</a> oder erb
     (Standardbibliothek von Ruby)</td>
   </tr>
   <tr>
@@ -686,7 +686,7 @@ denen man Variablen weitergibt.
 <table>
   <tr>
     <td>Abhängigkeit</td>
-    <td>Eine der folgenden Bibliotheken: 
+    <td>Eine der folgenden Bibliotheken:
         <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
         <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
@@ -917,7 +917,7 @@ verwendet wird.
 <table>
   <tr>
     <td>Abhängigkeit</td>
-    <td><a href="https://github.com/josh/ruby-coffee-script">coffee-script</a> 
+    <td><a href="https://github.com/josh/ruby-coffee-script">coffee-script</a>
         und eine <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme">Möglichkeit JavaScript auszuführen</a>.
     </td>
   </tr>
@@ -938,7 +938,7 @@ verwendet wird.
     <td>
       <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
         Stylus
-      </a> und eine Möglichkeit 
+      </a> und eine Möglichkeit
       <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
         JavaScript auszuführen
       </a>.
@@ -1439,7 +1439,7 @@ get '/' do
 end
 ```
 
-Damit lassen sich Streaming-APIs realisieren, sog. 
+Damit lassen sich Streaming-APIs realisieren, sog.
 [Server Sent Events](http://dev.w3.org/html5/eventsource/), die als Basis für
 [WebSockets](http://en.wikipedia.org/wiki/WebSocket) dienen. Ebenso können sie
 verwendet werden, um den Durchsatz zu erhöhen, wenn ein Teil der Daten von
@@ -1469,7 +1469,7 @@ get '/subscribe' do
   # Client-Registrierung beim Server, damit Events mitgeteilt werden können
   stream(:keep_open) { |out| connections << out }
 
-  # tote Verbindungen entfernen 
+  # tote Verbindungen entfernen
   connections.reject!(&:closed?)
 
   # Rückmeldung
@@ -1503,7 +1503,7 @@ get '/' do
 end
 ```
 
-Der Logger übernimmt dabei automatisch alle im Rack-Handler eingestellten 
+Der Logger übernimmt dabei automatisch alle im Rack-Handler eingestellten
 Log-Vorgaben. Ist Loggen ausgeschaltet, gibt die Methode ein Leerobjekt zurück.
 In den Routen und Filtern muss man sich also nicht weiter darum kümmern.
 
@@ -1522,7 +1522,7 @@ end
 Damit auch keine Middleware das Logging aktivieren kann, muss die `logging`
 Einstellung auf `nil` gesetzt werden. Das heißt aber auch, dass `logger` in
 diesem Fall `nil` zurückgeben wird. Üblicherweise wird das eingesetzt, wenn ein
-eigener Logger eingerichtet werden soll. Sinatra wird dann verwenden, was in 
+eigener Logger eingerichtet werden soll. Sinatra wird dann verwenden, was in
 `env['rack.logger']` eingetragen ist.
 
 ### Mime-Types
@@ -1658,7 +1658,7 @@ get '/article/:id' do
 end
 ```
 
-ebenso ist es möglich einen 
+ebenso ist es möglich einen
 [schwachen ETag](http://de.wikipedia.org/wiki/HTTP_ETag) zu verwenden:
 
 ```ruby
@@ -1732,15 +1732,15 @@ send_file 'foo.png', :type => :jpg
   <dt>last_modified</dt>
   <dd>Wert für den Last-Modified-Header, Standardwert ist <tt>mtime</tt> der
     Datei.</dd>
-  
+
   <dt>type</dt>
   <dd>Content-Type, der verwendet werden soll. Wird, wenn nicht angegeben, von
     der Dateiendung abgeleitet.</dd>
-  
+
   <dt>disposition</dt>
   <dd>Verwendet für Content-Disposition. Mögliche Werte sind: <tt>nil</tt>
     (Standard), <tt>:attachment</tt> und <tt>:inline</tt>.</dd>
-  
+
   <dt>length</dt>
   <dd>Content-Length-Header. Standardwert ist die Dateigröße.</dd>
 </dl>
@@ -1845,7 +1845,7 @@ end
 
 Diese Methode wird intern für +expires, `last_modiefied` und ihresgleichen
 verwendet. Mit ein paar Handgriffen lässt sich diese Methode also in ihrem
-Verhalten erweitern, indem man `time_for` in der eigenen Applikation 
+Verhalten erweitern, indem man `time_for` in der eigenen Applikation
 überschreibt:
 
 ```ruby
@@ -1911,7 +1911,7 @@ werden!
 
 Beachte, dass `find_template` nicht prüft, ob eine Datei tatsächlich existiert.
 Es wird lediglich der angegebene Block aufgerufen und nach allen möglichen
-Pfaden gesucht. Das ergibt kein Performance-Problem, da `render` `block` 
+Pfaden gesucht. Das ergibt kein Performance-Problem, da `render` `block`
 verwendet, sobald eine Datei gefunden wurde. Ebenso werden Template-Pfade samt
 Inhalt gecached, solange nicht im Entwicklungsmodus gearbeitet wird. Das sollte
 im Hinterkopf behalten werden, wenn irgendwelche verrückten Methoden
@@ -2092,7 +2092,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
 
   <dt>server</dt>
   <dd>Server oder Liste von Servern, die als eingebaute Server zur Verfügung
-  stehen. Die Reihenfolge gibt die Priorität vor, die Voreinstellung hängt von 
+  stehen. Die Reihenfolge gibt die Priorität vor, die Voreinstellung hängt von
   der verwendenten Ruby Implementierung ab.</dd>
 
   <dt>sessions</dt>
@@ -2124,7 +2124,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
   <dt>threaded</dt>
   <dd>Wird es auf <tt>true</tt> gesetzt, wird Thin aufgefordert
   <tt>EventMachine.defer</tt> zur Verarbeitung des Requests einzusetzen.</dd>
-  
+
   <dt>views</dt>
   <dd>Verzeichnis der Views. Leitet sich von der <tt>app_file</tt> Einstellung
   ab, wenn nicht gesetzt.</dd>
@@ -2722,7 +2722,7 @@ ungültig. Ruby 1.9.3 wird bis Sinatra 2.0 unterstützt werden.</dd>
 
 <dt>JRuby</dt>
 <dd>Aktuelle JRuby Versionen werden offiziell unterstützt. Es wird empfohlen,
-keine C-Erweiterungen zu verwenden und als Server Trinidad zu verwenden 
+keine C-Erweiterungen zu verwenden und als Server Trinidad zu verwenden
 (<tt>gem install trinidad</tt>).</dd>
 </dl>
 
@@ -2854,7 +2854,7 @@ SemVer und SemVerTag.
 *   [Issue-Tracker](http://github.com/sinatra/sinatra/issues)
 *   [Twitter](http://twitter.com/sinatra)
 *   [Mailing-Liste](http://groups.google.com/group/sinatrarb)
-*   [#sinatra](irc://chat.freenode.net/#sinatra) auf http://freenode.net Es 
+*   [#sinatra](irc://chat.freenode.net/#sinatra) auf http://freenode.net Es
     gibt dort auch immer wieder deutschsprachige Entwickler, die gerne weiterhelfen.
 *   [Sinatra Book](http://sinatra-book.gittr.com) Kochbuch Tutorial
 *   [Sinatra Recipes](http://recipes.sinatrarb.com/) Sinatra-Rezepte aus der

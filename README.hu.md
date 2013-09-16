@@ -70,7 +70,7 @@ is el tudod érni:
   end
 ```
 
-Az útvonalmintákban szerepelhetnek joker paraméterek is, melyeket a 
+Az útvonalmintákban szerepelhetnek joker paraméterek is, melyeket a
 `params[:splat]` tömbön keresztül tudunk elérni.
 
 ```ruby
@@ -134,7 +134,7 @@ itt is lehetőség nyílik egyéb könyvtár használatára:
   set :views, File.dirname(__FILE__) + '/templates'
 
 Nagyon fontos észben tartani, hogy a sablononkra mindig szimbólumokkal
-hivatkozunk, még akkor is, ha egyéb (ebben az esetben a 
+hivatkozunk, még akkor is, ha egyéb (ebben az esetben a
 :'subdir/template') könyvtárban tároljuk őket. A renderelő
 metódusok minden, nekik közvetlenül átadott karakterláncot megjelenítenek.
 
@@ -286,13 +286,13 @@ végére begépeljük őket:
 
 Megjegyzés: azok a fájlon belüli sablonok, amelyek az alkalmazás fájl végére
 kerülnek és függnek a sinatra könyvtártól, automatikusan betöltődnek.
-Ha ugyanezt más alkalmazásfájlban is szeretnéd megtenni, hívd meg 
+Ha ugyanezt más alkalmazásfájlban is szeretnéd megtenni, hívd meg
 a <tt>use_in_file_templates!</tt> metódust az adott fájlban.
 
 ### Kulcsszavas sablonok
 
-Sablonokat végül a felsőszintű <tt>template</tt> metódussal is 
-definiálhatunk: 
+Sablonokat végül a felsőszintű <tt>template</tt> metódussal is
+definiálhatunk:
 
 ```ruby
   template :layout do
@@ -383,7 +383,7 @@ Vagy állítsd be a HTTP státuszt és a törzset is egyszerre ...
 
 ## Passzolás
 
-Az útvonalak továbbadhatják a végrehajtást egy másik útvonalnak 
+Az útvonalak továbbadhatják a végrehajtást egy másik útvonalnak
 a `pass` függvényhívással:
 
 ```ruby
@@ -432,7 +432,7 @@ Csak akkor fusson le, ha a környezet <tt>:production</tt> vagy <tt>:test</tt>:
 
 A hibakezelők ugyanabban a kontextusban futnak le, mint az útvonalak és
 előszűrők, ezért számukra is elérhetőek mindazok a könyvtárak, amelyek
-az utóbbiak rendelkezésére is állnak; így például a `haml`, 
+az utóbbiak rendelkezésére is állnak; így például a `haml`,
 az `erb`, a `halt` stb.
 
 ### Nem található
@@ -495,10 +495,10 @@ bevezetéséhez:
 ## Rack Middleware
 
 A Sinatra egy Ruby keretrendszerek számára kifejlesztett egyszerű és szabványos
-interfészre, a [Rack](http://rack.rubyforge.org/) -re épül. A Rack fejlesztői 
+interfészre, a [Rack](http://rack.rubyforge.org/) -re épül. A Rack fejlesztői
 szempontból egyik legérdekesebb jellemzője, hogy támogatja az úgynevezett
 "middleware" elnevezésű komponenseket, amelyek beékelődnek a szerver és az
-alkalmazás közé, így képesek megfigyelni és/vagy módosítani a HTTP 
+alkalmazás közé, így képesek megfigyelni és/vagy módosítani a HTTP
 kéréseket és válaszokat. Segítségükkel különféle, egységesen működő
 funkciókat építhetünk be rendszerünkbe.
 
@@ -517,10 +517,10 @@ A Sinatra keretrendszerben gyerekjáték a Rack middleware-ek behúzása a
   end
 ```
 
-A `use` metódus szemantikája megegyezik a 
+A `use` metódus szemantikája megegyezik a
 [Rack::Builder](http://rack.rubyforge.org/doc/classes/Rack/Builder.html) DSL-ben
 használt +use+ metóduséval (az említett DSL-t leginkább rackup állományokban
-használják). Hogy egy példát említsünk, a `use` metódus elfogad 
+használják). Hogy egy példát említsünk, a `use` metódus elfogad
 változókat és blokkokat egyaránt, akár kombinálva is ezeket:
 
 ```ruby
@@ -530,7 +530,7 @@ változókat és blokkokat egyaránt, akár kombinálva is ezeket:
 ```
 
 A Rack terjesztéssel egy csomó alap middleware komponens is érkezik,
-amelyekkel a naplózás, URL útvonalak megadása, autentikáció és 
+amelyekkel a naplózás, URL útvonalak megadása, autentikáció és
 munkamenet-kezelés könnyen megvalósítható. A Sinatra ezek közül elég
 sokat automatikusan felhasznál a beállításoktól függően, így ezek
 explicit betöltésével (+use+) nem kell bajlódnod.
@@ -619,7 +619,7 @@ alkalmazás átalakítható Sinatra::Base alapú komponensekké két lépésben:
   a Sinatra::Base osztály gyermekosztályaiban kell megadni.
 
 A `Sinatra::Base` osztály igazából egy üres lap: a legtöbb funkció
-alapból ki van kapcsolva, beleértve a beépített szervert is. A 
+alapból ki van kapcsolva, beleértve a beépített szervert is. A
 beállításokkal és az egyes kapcsolók hatásával az
 [Options and Configuration](http://sinatra.github.com/configuration.html) lap
 foglalkozik.
@@ -653,7 +653,7 @@ Az alábbi kapcsolókat ismeri fel a rendszer:
 
 Ha a Sinatra legfrissebb, fejlesztői változatát szeretnéd használni,
 készíts egy helyi másolatot és indítsd az alkalmazásodat úgy,
-hogy a `sinatra/lib` könyvtár elérhető legyen a 
+hogy a `sinatra/lib` könyvtár elérhető legyen a
 `LOAD_PATH`-on:
 
 ```

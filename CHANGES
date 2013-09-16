@@ -118,7 +118,7 @@
  * Add `x_cascade` option to disable `X-Cascade` header on missing route.
    (Konstantin Haase)
 
- * Improve documentation. (Kashyap, Stanislav Chistenko, Zachary Scott, 
+ * Improve documentation. (Kashyap, Stanislav Chistenko, Zachary Scott,
    Anthony Accomazzo, Peter Suschlik, Rachel Mehl, ymmtmsys, Anurag Priyam,
    burningTyger, Tony Miller, akicho8, Vasily Polovnyov, Markus Prinz,
    Alexey Muranov, Erik Johnson, Vipul A M, Konstantin Haase)

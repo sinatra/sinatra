@@ -493,12 +493,12 @@ Available Options:
     <tt>set :rdoc, :layout_options => { :views => 'views/layouts' }</tt>
   </dd>
 </dl>
-    
-Templates are assumed to be located directly under the `./views` directory. To 
-use a different views directory: 
+
+Templates are assumed to be located directly under the `./views` directory. To
+use a different views directory:
 `set :views, settings.root + '/templates'`
 
-One important thing to remember is that you always have to reference templates 
+One important thing to remember is that you always have to reference templates
 with symbols, even if they're in a subdirectory (in this case, use:
 `:'subdir/template'` or `'subdir/template'.to_sym`). You must use a symbol
 because otherwise rendering methods will render any strings passed to them
