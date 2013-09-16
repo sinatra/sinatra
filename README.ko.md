@@ -121,7 +121,7 @@ get '/posts.?:format?' do
 end
 ```
 
-한편, 경로 탐색 공격 방지(path traversal attack protection, 아래 참조)를 비활성화시키지 않았다면, 
+한편, 경로 탐색 공격 방지(path traversal attack protection, 아래 참조)를 비활성화시키지 않았다면,
 요청 경로는 라우터와 매칭되기 이전에 수정될 수 있다.
 
 ### 조건(Conditions)
@@ -222,17 +222,17 @@ get('/') { Stream.new }
 ```ruby
 class AllButPattern
   Match = Struct.new(:captures)
-  
+
   def initialize(except)
     @except   = except
     @captures = Match.new([])
   end
-  
+
   def match(str)
     @captures unless @except === str
   end
 end
-  
+
 def all_but(pattern)
   AllButPattern.new(pattern)
 end
@@ -341,7 +341,7 @@ render 메서드에서 전달된 옵션값들은 `set`을 통해 설정한 옵�
   <dd>템플릿을 로드할 뷰 폴더. 기본값은 <tt>settings.views</tt>.</dd>
 
   <dt>layout</dt>
-  <dd>레이아웃을 사용할지 여부 (<tt>true</tt> 또는 <tt>false</tt>), 만약 이 값이 심볼일 경우, 
+  <dd>레이아웃을 사용할지 여부 (<tt>true</tt> 또는 <tt>false</tt>), 만약 이 값이 심볼일 경우,
 사용할 템플릿을 지정. 예제: <tt>erb :index, :layout => !request.xhr?</tt>
   </dd>
 
@@ -367,7 +367,7 @@ set :views, settings.root + '/templates'
 ```
 
 꼭 알아야 할 중요한 점 한 가지는 템플릿은 언제나 심볼로 참조된다는 것이며,
-템플릿이 하위 디렉터리에 위치한 경우라도 마찬가지임(그럴 경우에는 `:'subdir/template'`을 사용). 
+템플릿이 하위 디렉터리에 위치한 경우라도 마찬가지임(그럴 경우에는 `:'subdir/template'`을 사용).
 반드시 심볼이어야 하는 이유는, 만약 그렇게 하지 않으면 렌더링 메서드가 전달된 문자열을 직접 렌더하려 할 것이기 때문임.
 
 ### 가능한 템플릿 언어들(Available Template Languages)
@@ -545,7 +545,7 @@ Liquid 템플릿에서는 루비 메서드(`yield` 제외)를 호출할 수 없�
   </tr>
 </table>
 
-마크다운에서는 메서드 호출 뿐 아니라 locals 전달도 안됨. 
+마크다운에서는 메서드 호출 뿐 아니라 locals 전달도 안됨.
 따라서 일반적으로는 다른 렌더링 엔진과 함께 사용하게 될 것임:
 
 ```ruby
@@ -801,7 +801,7 @@ end
 Templates are evaluated within the same context as route handlers. Instance
 variables set in route handlers are directly accessible by templates:
 템플릿은 라우터 핸들러와 같은 맥락(context)에서 평가된다.
-라우터 핸들러에서 설정한 인스턴스 변수들은 템플릿에서 접근 가능하다: 
+라우터 핸들러에서 설정한 인스턴스 변수들은 템플릿에서 접근 가능하다:
 
 ```ruby
 get '/:id' do
@@ -810,7 +810,7 @@ get '/:id' do
 end
 ```
 
-또는, 명시적으로 로컬 변수의 해시를 지정: 
+또는, 명시적으로 로컬 변수의 해시를 지정:
 
 ```ruby
 get '/:id' do
@@ -900,7 +900,7 @@ get '/' do
 end
 ```
 
-`./views/index.myat` 를 렌더함. 
+`./views/index.myat` 를 렌더함.
 Tilt에 대한 더 자세한 내용은 https://github.com/rtomayko/tilt 참조.
 
 ## 필터(Filters)
@@ -989,7 +989,7 @@ helpers FooUtils, BarUtils
 
 ### 세션(Sessions) 사용하기
 
-세션은 요청 동안에 상태를 유지하기 위해 사용한다. 
+세션은 요청 동안에 상태를 유지하기 위해 사용한다.
 세션이 활성화되면, 사용자 세션 당 session 해시 하나씩을 갖게 된다:
 
 ```ruby
@@ -1007,7 +1007,7 @@ end
 `enable :sessions`은 실은 모든 데이터를 쿠키 속에 저장함에 유의하자.
 항상 이렇게 하고 싶지 않을 수도 있을 것이다(예를 들어, 많은 양의 데이터를 저장하게 되면 트래픽이 높아진다).
 이 때는 여러 가지 랙 세션 미들웨어(Rack session middleware)를 사용할 수 있을 것이다:
-이렇게 할 경우라면, `enable :sessions`을 호출하지 *말고*, 
+이렇게 할 경우라면, `enable :sessions`을 호출하지 *말고*,
 대신 여러분이 선택한 미들웨어를 다른 모든 미들웨어들처럼 포함시키면 된다:
 
 ```ruby
@@ -1022,7 +1022,7 @@ get '/:value' do
 end
 ```
 
-보안을 위해서, 쿠키 속의 세션 데이터는 세션 시크릿(secret)으로 사인(sign)된다. 
+보안을 위해서, 쿠키 속의 세션 데이터는 세션 시크릿(secret)으로 사인(sign)된다.
 Sinatra는 여러분을 위해 무작위 시크릿을 생성한다.
 그렇지만, 이 시크릿은 여러분 애플리케이션 시작 시마다 변경될 수 있기 때문에,
 여러분은 여러분 애플리케이션의 모든 인스턴스들이 공유할 시크릿을 직접 만들고 싶을 수도 있다:
@@ -1112,7 +1112,7 @@ end
 위 예제의 경우, `"bar"`를 헬퍼로 옮겨 `/foo`와 `/bar` 모두에서 사용하도록 함으로써
 테스팅을 쉽게 하고 성능을 높일 수 있을 것이다.
 
-만약 그 요청이 사본이 아닌 바로 그 동일 인스턴스로 보내지도록 하고 싶다면, 
+만약 그 요청이 사본이 아닌 바로 그 동일 인스턴스로 보내지도록 하고 싶다면,
 `call` 대신 `call!`을 사용하면 된다.
 
 `call`에 대한 더 자세한 내용은 Rack 명세를 참고하면 된다.
@@ -1168,16 +1168,16 @@ out << "- dary!\n"
 end
 ```
 
-이렇게 하면 스트리밍 API나 
+이렇게 하면 스트리밍 API나
 [서버 발송 이벤트Server Sent Events](http://dev.w3.org/html5/eventsource/)를 구현할 수 있게 해 주며,
 [WebSockets](http://en.wikipedia.org/wiki/WebSocket)을 위한 기반으로 사용될 수 있다.
-또한 이 방법은 일부 콘텐츠가 느린 자원에 의존하는 경우에 
+또한 이 방법은 일부 콘텐츠가 느린 자원에 의존하는 경우에
 스로풋(throughtput)을 높이기 위해 사용될 수도 있다.
 
 스트리밍 동작, 특히 동시 요청의 수는 애플리케이션을 서빙하는 웹서버에 크게 의존적이다.
 어떤 서버, 예컨대 WEBRick 같은 경우는 아예 스트리밍을 지원조차 하지 못할 것이다.
 만약 서버가 스트리밍을 지원하지 않는다면, 본문은 `stream` 으로 전달된 블록이 수행을 마친 후에 한꺼번에 반환될 것이다.
-스트리밍은 Shotgun에서는 작동하지 않는다. 
+스트리밍은 Shotgun에서는 작동하지 않는다.
 
 만약 선택적 매개변수 `keep_open`이 설정되어 있다면, 스트림 객체에서 `close`를 호출하지 않을 것이고,
 따라서 여러분은 나중에 실행 흐름 상의 어느 시점에서 스트림을 닫을 수 있다.
@@ -1203,7 +1203,7 @@ end
 ### 로깅(Logging)
 
 In the request scope, the `logger` helper exposes a `Logger` instance:
-요청 스코프(request scope) 내에서, `Logger`의 인스턴스인 `logger` 헬퍼를 사용할 수 있다: 
+요청 스코프(request scope) 내에서, `Logger`의 인스턴스인 `logger` 헬퍼를 사용할 수 있다:
 
 ```ruby
 get '/' do
@@ -1318,7 +1318,7 @@ end
 
 ### 캐시 컨트롤(Cache Control)
 
-헤더를 정확하게 설정하는 것은 적절한 HTTP 캐싱의 기본이다. 
+헤더를 정확하게 설정하는 것은 적절한 HTTP 캐싱의 기본이다.
 
 Cache-Control 헤더를 다음과 같이 간단하게 설정할 수 있다:
 
@@ -1385,7 +1385,7 @@ end
 정적 파일에 `Cache-Control` 헤더 정보를 추가하려면 `:static_cache_control` 설정(아래 참조)을 사용하라:
 
 RFC 2616에 따르면 If-Match 또는 If-None-Match 헤더가 `*`로 설정된 경우 요청한 리소스(resource)가 이미 존재하느냐 여부에 따라 다르게 취급해야 한다고 되어 있다.
-Sinatra는 (get 처럼) 안전하거나 (put 처럼) 멱등인 요청에 대한 리소스는 이미 존재한다고 가정하며, 
+Sinatra는 (get 처럼) 안전하거나 (put 처럼) 멱등인 요청에 대한 리소스는 이미 존재한다고 가정하며,
 반면 다른 리소스(예를 들면 post 요청 같은)의 경우는 새 리소스로 취급한다.
 이런 설정은 `:new_resource` 옵션으로 전달하여 변경할 수 있다:
 
@@ -1447,7 +1447,7 @@ Rack 핸들러가 지원할 경우, Ruby 프로세스로부터의 스트리밍�
 
 ### 요청 객체에 접근하기(Accessing the Request Object)
 
-인입되는 요청 객에는 요청 레벨(필터, 라우터, 오류 핸들러)에서 `request` 메서드를 통해 접근 가능하다: 
+인입되는 요청 객에는 요청 레벨(필터, 라우터, 오류 핸들러)에서 `request` 메서드를 통해 접근 가능하다:
 
 ```ruby
 # http://example.com/example 상에서 실행 중인 앱
@@ -1504,7 +1504,7 @@ end
 
 ### 첨부(Attachments)
 
-`attachment` 헬퍼를 사용하여 브라우저에게 응답이 브라우저에 표시되는 게 아니라 
+`attachment` 헬퍼를 사용하여 브라우저에게 응답이 브라우저에 표시되는 게 아니라
 디스크에 저장되어야 함을 알릴 수 있다:
 
 ```ruby
@@ -1536,7 +1536,7 @@ end
 ```
 
 이 메서드는 내부적으로 `expires` 나 `last_modified` 같은 곳에서 사용된다.
-따라서 여러분은 애플리케이션에서 `time_for`를 오버라이딩하여 
+따라서 여러분은 애플리케이션에서 `time_for`를 오버라이딩하여
 이들 메서드의 동작을 쉽게 확장할 수 있다:
 
 ```ruby
@@ -1613,16 +1613,16 @@ end
 configure do
   # 옵션 하나 설정
   set :option, 'value'
-  
+
   # 여러 옵션 설정
   set :a => 1, :b => 2
-  
+
   # `set :option, true`와 동일
   enable :option
-  
+
   # `set :option, false`와 동일
   disable :option
-  
+
   # 블록으로 동적인 설정을 할 수도 있음
   set(:css_dir) { File.join(views, 'css') }
 end
@@ -1660,8 +1660,8 @@ end
 
 ### 공격 방어 설정하기(Configuring attack protection)
 
-Sinatra는 [Rack::Protection](https://github.com/rkh/rack-protection#readme)을 사용하여 
-일반적인, 일어날 수 있는 공격에 대비한다. 
+Sinatra는 [Rack::Protection](https://github.com/rkh/rack-protection#readme)을 사용하여
+일반적인, 일어날 수 있는 공격에 대비한다.
 이 부분은 간단하게 비활성시킬 수 있다(성능 향상 효과를 가져올 것이다):
 
 ```ruby
@@ -1762,7 +1762,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
    개발 모드에서는 활성됨.</dd>
 
   <dt>root</dt>
-  <dd>프로젝트 루트 디렉터리 경로. 
+  <dd>프로젝트 루트 디렉터리 경로.
    설정이 없으면 <tt>app_file</tt> 설정으로부터 유추됨.</dd>
 
   <dt>raise_errors</dt>
@@ -1832,7 +1832,7 @@ ruby my_app.rb -e [ENVIRONMENT]
 
 ## 예외 처리(Error Handling)
 
-예외 핸들러는 라우터 및 사전 필터와 동일한 맥락에서 실행된다. 
+예외 핸들러는 라우터 및 사전 필터와 동일한 맥락에서 실행된다.
 이 말인즉, 이들이 제공하는 모든 것들을 사용할 수 있다는 말이다. 예를 들면 `haml`,
 `erb`, `halt`, 등등.
 
@@ -1900,7 +1900,7 @@ error 400..510 do
 end
 ```
 
-Sinatra는 개발 환경에서 동작할 경우에 
+Sinatra는 개발 환경에서 동작할 경우에
 특별한 `not_found` 와 `error` 핸들러를 설치한다.
 
 ## Rack 미들웨어(Rack Middleware)
@@ -1940,7 +1940,7 @@ Rack은 로깅, 디버깅, URL 라우팅, 인증, 그리고 세센 핸들링을 
 Sinatra는 설정에 기반하여 이들 컴포넌트들 중 많은 것들을 자동으로 사용하며,
 따라서 여러분은 일반적으로는 `use`를 명시적으로 사용할 필요가 없을 것이다.
 
-유용한 미들웨어들은 
+유용한 미들웨어들은
 [rack](https://github.com/rack/rack/tree/master/lib/rack),
 [rack-contrib](https://github.com/rack/rack-contrib#readme),
 [CodeRack](http://coderack.org/) 또는
@@ -1959,21 +1959,21 @@ require 'rack/test'
 
 class MyAppTest < Test::Unit::TestCase
   include Rack::Test::Methods
-  
+
   def app
     Sinatra::Application
   end
-  
+
   def test_my_default
     get '/'
     assert_equal 'Hello World!', last_response.body
   end
-  
+
   def test_with_params
     get '/meet', :name => 'Frank'
     assert_equal 'Hello Frank!', last_response.body
   end
-  
+
   def test_with_rack_env
     get '/', {}, 'HTTP_USER_AGENT' => 'Songbird'
     assert_equal "You're using Songbird!", last_response.body
@@ -1986,7 +1986,7 @@ end
 톱레벨에서 앱을 정의하는 것은 마이크로 앱(micro-app) 수준에서는 잘 동작하지만,
 Rack 미들웨어나, Rails 메탈(metal) 또는 서버 컴포넌트를 갖는 간단한 라이브러리, 또는 더 나아가
 Sinatra 익스텐션(extension) 같은 재사용 가능한 컴포넌트들을 구축할 경우에는 심각한 약점을 가진다.
-톱레벨은 마이크로 앱 스타일의 설정을 가정한다(즉, 하나의 단일 애플리케이션 파일과 
+톱레벨은 마이크로 앱 스타일의 설정을 가정한다(즉, 하나의 단일 애플리케이션 파일과
 `./public` 및 `./views` 디렉터리, 로깅, 예외 상세 페이지 등등).
 이게 바로 `Sinatra::Base`가 필요한 부분이다:
 
@@ -1996,7 +1996,7 @@ require 'sinatra/base'
 class MyApp < Sinatra::Base
   set :sessions, true
   set :foo, 'bar'
-  
+
   get '/' do
     'Hello world!'
   end
@@ -2068,7 +2068,7 @@ end
 
 ### 모듈 애플리케이션(Modular Application) 제공하기
 
-모듈 앱을 시작하는 두 가지 일반적인 옵션이 있는데, 
+모듈 앱을 시작하는 두 가지 일반적인 옵션이 있는데,
 공격적으로 `run!`으로 시작하거나:
 
 ```ruby
@@ -2139,7 +2139,7 @@ Good signs you probably want to use a `config.ru`:
 
 Sinatra에서 다른 Rack 미들웨어를 사용할 수 있을 뿐 아니라,
 모든 Sinatra 애플리케이션은 순차로 어떠한 Rack 종착점 앞에 미들웨어로 추가될 수 있다.
-이 종착점은 다른 Sinatra 애플리케이션이 될 수도 있고, 
+이 종착점은 다른 Sinatra 애플리케이션이 될 수도 있고,
 또는 Rack 기반의 어떠한 애플리케이션(Rails/Ramaze/Camping/...)이라도 가능하다:
 
 ```ruby
@@ -2147,9 +2147,9 @@ require 'sinatra/base'
 
 class LoginScreen < Sinatra::Base
   enable :sessions
-  
+
   get('/login') { haml :login }
-  
+
   post('/login') do
 if params[:name] == 'admin' && params[:password] == 'admin'
   session['user_name'] = params[:name]
@@ -2162,13 +2162,13 @@ end
 class MyApp < Sinatra::Base
   # 미들웨어는 사전 필터보다 앞서 실행됨
   use LoginScreen
-  
+
   before do
 unless session['user_name']
   halt "접근 거부됨, <a href='/login'>로그인</a> 하세요."
 end
   end
-  
+
   get('/') { "Hello #{session['user_name']}." }
 end
 ```
@@ -2226,7 +2226,7 @@ run RailsProject::Application
 
 모든 Sinatra 애플리케이션은 `Sinatra::Base`의 서브클래스에 대응된다.
 만약 톱레벨 DSL (`require 'sinatra'`)을 사용한다면,
-이 클래스는 `Sinatra::Application`이며, 그렇지 않을 경우라면 여러분이 명시적으로 생성한 
+이 클래스는 `Sinatra::Application`이며, 그렇지 않을 경우라면 여러분이 명시적으로 생성한
 그 서브클래스가 된다. 클래스 레벨에서는 `get` 이나 `before` 같은 메서드들을 가지나,
 `request` 객체나 `session` 에는 접근할 수 없다. 왜냐면 모든 요청에 대해
 애플리케이션 클래스는 오직 하나이기 때문이다.
@@ -2261,7 +2261,7 @@ end
 ### 요청/인스턴스 범위
 
 매 요청마다, 애플리케이션 클래스의 새 인스턴스가 생성되고 모든 핸들러 블록은 그 범위 내에서 실행된다.
-이 범위 내에서 여러분은 `request` 와 `session` 객체에 접근하거나 
+이 범위 내에서 여러분은 `request` 와 `session` 객체에 접근하거나
 `erb` 나 `haml` 같은 렌더링 메서드를 호출할 수 있다.
 요청 범위 내에서 애플리케이션 범위는 `settings` 헬퍼를 통해 접근 가능하다:
 
@@ -2271,12 +2271,12 @@ class MyApp < Sinatra::Base
   get '/define_route/:name' do
 # '/define_route/:name'의 요청 범위
 @value = 42
-  
+
 settings.get("/#{params[:name]}") do
   # "/#{params[:name]}"의 요청 범위
   @value # => nil (동일한 요청이 아님)
 end
-  
+
 "라우터가 정의됨!"
   end
 end
@@ -2293,7 +2293,7 @@ end
 
 위임 범위(delegation scope)는 메서드를 단순히 클래스 범위로 보낸다(forward).
 그렇지만, 100% 클래스 범위처럼 움직이진 않는데, 왜냐면 클래스 바인딩을 갖지 않기 때문이다.
-오직 명시적으로 위임(delegation) 표시된 메서드들만 사용 가능하며 
+오직 명시적으로 위임(delegation) 표시된 메서드들만 사용 가능하며
 또한 클래스 범위와 변수/상태를 공유하지 않는다 (유의: `self`가 다르다).
 `Sinatra::Delegator.delegate :method_name`을 호출하여 메서드 위임을 명시적으로 추가할 수 있다.
 
@@ -2302,7 +2302,7 @@ end
 * 톱레벨 바인딩, `require "sinatra"`를 한 경우
 * `Sinatra::Delegator` 믹스인으로 확장된 객체
 
-직접 코드를 살펴보길 바란다: 
+직접 코드를 살펴보길 바란다:
 [Sinatra::Delegator 믹스인](https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/base.rb#L1609-1633)
 코드는 [메인 객체를 확장한 것](https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/main.rb#L28-30)이다.
 
@@ -2331,7 +2331,7 @@ ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
 
 <dl>
   <dt> Ruby 1.8.7 </dt>
-  <dd>1.8.7은 완전하게 지원되지만, 꼭 그래야할 특별한 이유가 없다면, 
+  <dd>1.8.7은 완전하게 지원되지만, 꼭 그래야할 특별한 이유가 없다면,
 1.9.2로 업그레이드하거나 또는 JRuby나 Rubinius로 전환할 것을 권장한다.
 1.8.7에 대한 지원은 Sinatra 2.0과 Ruby 2.0 이전에는 중단되지 않을 것이다.
 또한 그때도, 우리는 계속 지원할 것이다.
@@ -2349,7 +2349,7 @@ Ruby 1.9.4/2.0 릴리스까지는 적어도 지원을 계속할 것이며,
 </dd>
   <dt> Ruby 1.9.3 </dt>
   <dd>1.9.3은 완전하게 지원된다. 그렇지만 프로덕션에서의 사용은
-보다 상위의 패치 레벨이 릴리스될 때까지 기다리길 권장한다(현재는 p0). 
+보다 상위의 패치 레벨이 릴리스될 때까지 기다리길 권장한다(현재는 p0).
 이전 버전에서 1.9.3으로 전환할 경우 모든 세션이 무효화된다는 점을 유의하라.
 
 </dd>
@@ -2369,7 +2369,7 @@ JRuby의 C 확장 지원은 아직 실험 단계이며, RDiscount, Redcarpet 및
 
 또한 우리는 새로 나오는 루비 버전을 주시한다.
 
-다음 루비 구현체들은 공식적으로 지원하지 않지만 
+다음 루비 구현체들은 공식적으로 지원하지 않지만
 여전히 Sinatra를 실행할 수 있는 것으로 알려져 있다:
 
 * JRuby와 Rubinius 예전 버전
@@ -2381,17 +2381,17 @@ JRuby의 C 확장 지원은 아직 실험 단계이며, RDiscount, Redcarpet 및
 지원되는 플랫폼에서는 그러지 않을 경우, 우리의 문제가 아니라 그쪽의 문제로 간주한다는 뜻이다.
 
 또한 우리는 CI를 ruby-head (곧 나올 2.0.0) 과 1.9.4 브랜치에 맞춰 실행하지만,
-계속해서 변하고 있기 때문에 아무 것도 보장할 수는 없다. 
+계속해서 변하고 있기 때문에 아무 것도 보장할 수는 없다.
 1.9.4p0와 2.0.0p0가 지원되길 기대한다.
 
 Sinatra는 선택한 루비 구현체가 지원하는 어떠한 운영체제에서도 작동해야 한다.
 
-현재 Cardinal, SmallRuby, BlueRuby 또는 1.8.7 이전의 루비 버전에서는 
+현재 Cardinal, SmallRuby, BlueRuby 또는 1.8.7 이전의 루비 버전에서는
 Sinatra를 실행할 수 없을 것이다.
 
 ## 최신(The Bleeding Edge)
 
-Sinatra의 가장 최근 코드를 사용하고자 한다면, 
+Sinatra의 가장 최근 코드를 사용하고자 한다면,
 여러분 애플리케이션을 마스터 브랜치에 맞춰 실행하면 되지만, 덜 안정적일 것임에 분명하다.
 
 또한 우리는 가끔 사전배포(prerelease) 젬을 푸시하기 때문에, 다음과 같이 할 수 있다
@@ -2404,7 +2404,7 @@ gem install sinatra --pre
 
 ### Bundler를 사용하여
 
-여러분 애플리케이션을 최신 Sinatra로 실행하고자 한다면, 
+여러분 애플리케이션을 최신 Sinatra로 실행하고자 한다면,
 [Bundler](http://gembundler.com/)를 사용할 것을 권장한다.
 
 우선, 아직 설치하지 않았다면 bundler를 설치한다:
@@ -2425,7 +2425,7 @@ gem 'activerecord', '~> 3.0'  # 아마도 ActiveRecord 3.x도 필요할 것
 ```
 
 이 속에 애플리케이션의 모든 의존관계를 나열해야 함에 유의하자.
-그렇지만, Sinatra가 직접적인 의존관계에 있는 것들 (Rack과 Tilt)은 
+그렇지만, Sinatra가 직접적인 의존관계에 있는 것들 (Rack과 Tilt)은
 Bundler가 자동으로 추출하여 추가할 것이다.
 
 이제 여러분은 다음과 같이 앱을 실행할 수 있다:
@@ -2481,7 +2481,7 @@ SemVer 및 SemVerTag 둘 다 해당된.
 * [이슈 트래커](http://github.com/sinatra/sinatra/issues)
 * [트위터](http://twitter.com/sinatra)
 * [Mailing List](http://groups.google.com/group/sinatrarb/topics)
-* [IRC: #sinatra](irc://chat.freenode.net/#sinatra) http://freenode.net 
+* [IRC: #sinatra](irc://chat.freenode.net/#sinatra) http://freenode.net
 * [Sinatra Book](http://sinatra-book.gittr.com) Cookbook 튜토리얼
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) 커뮤니티가 만드는 레시피
 * http://rubydoc.info에 있는 [최종 릴리스](http://rubydoc.info/gems/sinatra)
