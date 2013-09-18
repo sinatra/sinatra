@@ -44,6 +44,11 @@ get '/send' do
   "ok"
 end
 
+get '/send_file' do
+  file = File.expand_path '../../views/a/in_a.str', __FILE__
+  send_file file
+end
+
 class Subclass < Sinatra::Base
   set :out, nil
   get '/subclass/async' do

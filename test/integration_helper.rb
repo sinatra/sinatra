@@ -73,6 +73,15 @@ module IntegrationHelper
       end
     end
 
+    def get_response(url)
+      Net::HTTP.start '127.0.0.1', port do |http|
+        request = Net::HTTP::Get.new url
+        http.request request do |response|
+          response
+        end
+      end
+    end
+
     def get(url)
       Timeout.timeout(1) { open("http://127.0.0.1:#{port}#{url}").read }
     end

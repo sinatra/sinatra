@@ -91,4 +91,9 @@ class IntegrationTest < Test::Unit::TestCase
     server.get '/app_file'
     assert_equal [], server.warnings
   end
+
+  it 'sets the Content-Length response header when sending files' do
+    response = server.get_response '/send_file'
+    assert response['Content-Length']
+  end
 end
