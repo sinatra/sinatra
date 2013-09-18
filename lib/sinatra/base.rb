@@ -1859,11 +1859,12 @@ module Sinatra
     if ruby_engine == 'macruby'
       server.unshift 'control_tower'
     else
+      server.unshift 'reel'
       server.unshift 'mongrel'  if ruby_engine.nil?
       server.unshift 'puma'     if ruby_engine != 'rbx'
       server.unshift 'thin'     if ruby_engine != 'jruby'
       server.unshift 'puma'     if ruby_engine == 'rbx'
-      server.unshift 'trinidad' if ruby_engine =='jruby'
+      server.unshift 'trinidad' if ruby_engine == 'jruby'
     end
 
     set :absolute_redirects, true
