@@ -63,6 +63,7 @@ else
   gem 'yajl-ruby'
   gem 'nokogiri' if RUBY_VERSION >= '1.9.2'
   gem 'thin'
+  gem 'reel-rack', '>= 0.0.2'
 end
 
 if RUBY_ENGINE == "ruby" and RUBY_VERSION > '1.9'
