@@ -859,7 +859,7 @@ module Sinatra
     include Helpers
     include Templates
 
-    URI = ::URI.const_defined?(:Parser) ? ::URI::Parser.new : ::URI
+    URI_INSTANCE = URI.const_defined?(:Parser) ? URI::Parser.new : URI
 
     attr_accessor :app, :env, :request, :response, :params
     attr_reader   :template_cache
@@ -984,7 +984,7 @@ module Sinatra
       route = @request.path_info
       route = '/' if route.empty? and not settings.empty_path_info?
       return unless match = pattern.match(route)
-      values += match.captures.to_a.map { |v| force_encoding URI.unescape(v) if v }
+      values += match.captures.to_a.map { |v| force_encoding URI_INSTANCE.unescape(v) if v }
 
       if values.any?
         original, @params = params, params.merge('splat' => [], 'captures' => values)
@@ -1664,14 +1664,14 @@ module Sinatra
       end
 
       def encoded(char)
-        enc = URI.escape(char)
+        enc = URI_INSTANCE.escape(char)
         enc = "(?:#{escaped(char, enc).join('|')})" if enc == char
         enc = "(?:#{enc}|#{encoded('+')})" if char == " "
         enc
       end
 
-      def escaped(char, enc = URI.escape(char))
-        [Regexp.escape(enc), URI.escape(char, /./)]
+      def escaped(char, enc = URI_INSTANCE.escape(char))
+        [Regexp.escape(enc), URI_INSTANCE.escape(char, /./)]
       end
 
       def safe_ignore(ignore)
