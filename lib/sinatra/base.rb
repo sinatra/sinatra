@@ -984,7 +984,7 @@ module Sinatra
       route = @request.path_info
       route = '/' if route.empty? and not settings.empty_path_info?
       return unless match = pattern.match(route)
-      values += match.captures.to_a.map { |v| force_encoding URI_INSTANCE.unescape(v) if v }
+      values += match.captures.map! { |v| force_encoding URI_INSTANCE.unescape(v) if v }
 
       if values.any?
         original, @params = params, params.merge('splat' => [], 'captures' => values)
@@ -1617,7 +1617,7 @@ module Sinatra
               ignore << escaped(c).join if c.match(/[\.@]/)
               patt = encoded(c)
               patt.gsub(/%[\da-fA-F]{2}/) do |match|
-                match.split(//).map {|char| char =~ /[A-Z]/ ? "[#{char}#{char.tr('A-Z', 'a-z')}]" : char}.join
+                match.split(//).map! {|char| char =~ /[A-Z]/ ? "[#{char}#{char.tr('A-Z', 'a-z')}]" : char}.join
               end
             end
 
@@ -1678,8 +1678,8 @@ module Sinatra
           unsafe_ignore << hex[1..2]
           ''
         end
-        unsafe_patterns = unsafe_ignore.map do |unsafe|
-          chars = unsafe.split(//).map do |char|
+        unsafe_patterns = unsafe_ignore.map! do |unsafe|
+          chars = unsafe.split(//).map! do |char|
             if char =~ /[A-Z]/
               char <<= char.tr('A-Z', 'a-z')
             end
@@ -1786,7 +1786,7 @@ module Sinatra
       # Like Kernel#caller but excluding certain magic entries
       def cleaned_caller(keep = 3)
         caller(1).
-          map    { |line| line.split(/:(?=\d|in )/, 3)[0,keep] }.
+          map!    { |line| line.split(/:(?=\d|in )/, 3)[0,keep] }.
           reject { |file, *_| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
       end
     end
