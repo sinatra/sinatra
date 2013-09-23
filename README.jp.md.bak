@@ -23,7 +23,7 @@ gemをインストールして動かしてみる。
 Sinatraでは、ルートはHTTPメソッドとURLマッチングパターンがペアになっています。
 ルートはブロックに結び付けられています。
 
-``` ruby
+```ruby
 get '/' do
   .. 何か見せる ..
 end
@@ -63,10 +63,10 @@ end
 ルートのパターンは名前付きパラメータを含むことができ、
 `params`ハッシュで取得できます。
 
-``` ruby
+```ruby
 get '/hello/:name' do
-  # "GET /hello/foo" と "GET /hello/bar" にマッチ
-  # params[:name] は 'foo' か 'bar'
+  # matches "GET /hello/foo" and "GET /hello/bar"
+  # params[:name] is 'foo' or 'bar'
   "Hello #{params[:name]}!"
 end
 ```
@@ -75,9 +75,9 @@ end
 
 ``` ruby
 get '/hello/:name' do |n|
-  # "GET /hello/foo" と "GET /hello/bar" にマッチ
-  # params[:name] は 'foo' か 'bar'
-  # n が params[:name] を保持
+  # matches "GET /hello/foo" and "GET /hello/bar"
+  # params[:name] is 'foo' or 'bar'
+  # n stores params[:name]
   "Hello #{n}!"
 end
 ```
@@ -87,19 +87,19 @@ end
 
 ``` ruby
 get '/say/*/to/*' do
-  # /say/hello/to/world にマッチ
+  # matches /say/hello/to/world
   params[:splat] # => ["hello", "world"]
 end
 
 get '/download/*.*' do
-  # /download/path/to/file.xml にマッチ
+  # matches /download/path/to/file.xml
   params[:splat] # => ["path/to/file", "xml"]
 end
 ```
 
 ブロックパラーメータを使用した場合:
 
-``` ruby
+```ruby
 get '/download/*.*' do |path, ext|
   [path, ext] # => ["path/to/file", "xml"]
 end
@@ -107,7 +107,7 @@ end
 
 正規表現を使用した場合:
 
-``` ruby
+```ruby
 get %r{/hello/([\w]+)} do
   "Hello, #{params[:captures].first}!"
 end
@@ -115,7 +115,7 @@ end
 
 ブロックパラーメータを使用した場合:
 
-``` ruby
+```ruby
 get %r{/hello/([\w]+)} do |c|
   "Hello, #{c}!"
 end
@@ -125,7 +125,7 @@ end
 
 ``` ruby
 get '/posts.?:format?' do
-  # "GET /posts" と "GET /posts.json", "GET /posts.xml" の拡張子などにマッチ
+  # matches "GET /posts" and any extension "GET /posts.json", "GET /posts.xml" etc.
 end
 ```
 
