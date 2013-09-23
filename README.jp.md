@@ -23,21 +23,39 @@ gemをインストールして動かしてみる。
 Sinatraでは、ルートはHTTPメソッドとURLマッチングパターンがペアになっています。
 ルートはブロックに結び付けられています。
 
-    get '/' do
-      .. 何か見せる ..
-    end
+``` ruby
+get '/' do
+  .. 何か見せる ..
+end
 
-    post '/' do
-      .. 何か生成する ..
-    end
+post '/' do
+  .. 何か生成する ..
+end
 
-    put '/' do
-      .. 何か更新する ..
-    end
+put '/' do
+  .. 何か更新する ..
+end
 
-    delete '/' do
-      .. 何か削除する ..
-    end
+patch '/' do
+  .. 何か修正する ..
+end
+
+delete '/' do
+  .. 何か削除する ..
+end
+
+options '/' do
+  .. 何か満たす ..
+end
+
+link '/' do
+  .. 何かリンクを張る ..
+end
+
+unlink '/' do
+  .. 何かアンリンクする ..
+end
+```
 
 ルートは定義された順番にマッチします。
 リクエストに最初にマッチしたルートが呼び出されます。
@@ -45,48 +63,74 @@ Sinatraでは、ルートはHTTPメソッドとURLマッチングパターンが
 ルートのパターンは名前付きパラメータを含むことができ、
 `params`ハッシュで取得できます。
 
-    get '/hello/:name' do
-      # matches "GET /hello/foo" and "GET /hello/bar"
-      # params[:name] is 'foo' or 'bar'
-      "Hello #{params[:name]}!"
-    end
+``` ruby
+get '/hello/:name' do
+  # "GET /hello/foo" と "GET /hello/bar" にマッチ
+  # params[:name] は 'foo' か 'bar'
+  "Hello #{params[:name]}!"
+end
+```
 
 また、ブロックパラメータで名前付きパラメータにアクセスすることもできます。
 
-    get '/hello/:name' do |n|
-      "Hello #{n}!"
-    end
+``` ruby
+get '/hello/:name' do |n|
+  # "GET /hello/foo" と "GET /hello/bar" にマッチ
+  # params[:name] は 'foo' か 'bar'
+  # n が params[:name] を保持
+  "Hello #{n}!"
+end
+```
 
 ルートパターンはsplat(またはワイルドカード)を含むこともでき、
 `params[:splat]` で取得できます。
 
-    get '/say/*/to/*' do
-      # matches /say/hello/to/world
-      params[:splat] # => ["hello", "world"]
-    end
+``` ruby
+get '/say/*/to/*' do
+  # /say/hello/to/world にマッチ
+  params[:splat] # => ["hello", "world"]
+end
 
-    get '/download/*.*' do
-      # matches /download/path/to/file.xml
-      params[:splat] # => ["path/to/file", "xml"]
-    end
-
-ブロックパラーメータを使用した場合:
-
-    get '/download/*.*' do |path, ext|
-      [path, ext] # => ["path/to/file", "xml"]
-    end
-
-正規表現を使ったルート:
-
-    get %r{/hello/([\w]+)} do
-      "Hello, #{params[:captures].first}!"
-    end
+get '/download/*.*' do
+  # /download/path/to/file.xml にマッチ
+  params[:splat] # => ["path/to/file", "xml"]
+end
+```
 
 ブロックパラーメータを使用した場合:
 
-    get %r{/hello/([\w]+)} do |c|
-      "Hello, #{c}!"
-    end
+``` ruby
+get '/download/*.*' do |path, ext|
+  [path, ext] # => ["path/to/file", "xml"]
+end
+```
+
+正規表現を使用した場合:
+
+``` ruby
+get %r{/hello/([\w]+)} do
+  "Hello, #{params[:captures].first}!"
+end
+```
+
+ブロックパラーメータを使用した場合:
+
+``` ruby
+get %r{/hello/([\w]+)} do |c|
+  "Hello, #{c}!"
+end
+```
+
+オプショナルパラメーターを使用した場合:
+
+``` ruby
+get '/posts.?:format?' do
+  # "GET /posts" と "GET /posts.json", "GET /posts.xml" の拡張子などにマッチ
+end
+```
+
+ところで、ディレクトリトラバーサル保護機能を無効にしないと（下記参照）、
+ルートにマッチする前にリクエストパスが修正される可能性があります。
 
 ### 条件
 
