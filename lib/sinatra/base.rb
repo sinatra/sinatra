@@ -1500,7 +1500,7 @@ module Sinatra
       end
 
       def setup_traps
-        unless traps_setup?
+        if traps?
           at_exit { quit! }
 
           [:INT, :TERM].each do |signal|
@@ -1510,7 +1510,7 @@ module Sinatra
             end
           end
 
-          set :traps_setup, true
+          set :traps, false
         end
       end
 
@@ -1847,7 +1847,7 @@ module Sinatra
     set :run, false                       # start server via at-exit hook?
     set :running_server, nil
     set :handler_name, nil
-    set :traps_setup, false
+    set :traps, true
     set :server, %w[HTTP webrick]
     set :bind, Proc.new { development? ? 'localhost' : '0.0.0.0' }
     set :port, Integer(ENV['PORT'] && !ENV['PORT'].empty? ? ENV['PORT'] : 4567)
