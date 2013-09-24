@@ -15,14 +15,14 @@ get '/' do
 end
 ```
 
-Instalá el gem y corré la aplicación con:
+Instalar la gema y correr la aplicación con:
 
 ```  shell
 gem install sinatra
 ruby miapp.rb
 ```
 
-Podés verla en: http://localhost:4567
+Ver en <http://localhost:4567>.
 
 Es recomendable además ejecutar `gem install thin`, ya que Sinatra lo va
 a utilizar cuando esté disponible.
