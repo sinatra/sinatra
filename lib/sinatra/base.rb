@@ -1388,7 +1388,7 @@ module Sinatra
 
       # Set configuration options for Sinatra and/or the app.
       # Allows scoping of settings for certain environments.
-      def configure(*envs, &block)
+      def configure(*envs)
         yield self if envs.empty? || envs.include?(environment.to_sym)
       end
 
@@ -1483,7 +1483,7 @@ module Sinatra
       private
 
       # Starts the server by running the Rack Handler.
-      def start_server(handler, server_settings, handler_name, &block)
+      def start_server(handler, server_settings, handler_name)
         handler.run(self, server_settings) do |server|
           unless handler_name =~ /cgi/i
             $stderr.puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
