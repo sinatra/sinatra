@@ -238,7 +238,7 @@ module Sinatra
         def block.each; yield(call) end
         response.body = block
       elsif value
-        headers.delete 'Content-Length' unless request.head? || value.is_a?(Rack::File)
+        headers.delete 'Content-Length' unless request.head? || value.is_a?(Rack::File) || value.is_a?(Stream)
         response.body = value
       else
         response.body
