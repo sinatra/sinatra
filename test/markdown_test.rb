@@ -69,14 +69,32 @@ MarkdownTest = proc do
 end
 
 # Will generate RDiscountTest, KramdownTest, etc.
-Tilt.mappings['md'].each do |t|
-  begin
-    t.new { "" }
-    klass = Class.new(Test::Unit::TestCase) { define_method(:engine) { t }}
-    klass.class_eval(&MarkdownTest)
-    name = t.name[/[^:]+$/].sub(/Template$/, '') << "Test"
-    Object.const_set name, klass
-  rescue LoadError, NameError
-    warn "#{$!}: skipping markdown tests with #{t}"
-  end
+if Tilt.respond_to?(:mappings)
+  engines = Tilt.mappings['md'].select do |t|
+    begin
+      t.new { "" }
+    rescue LoadError, NameError
+      warn "#{$!}: skipping markdown tests with #{t}"
+      false
+    end
+  end.compact
+else
+  # NOTE: This is a private API, but it should be stable enough to use in tests.
+  engines = Tilt.default_mapping.lazy_map['md'].map do |klass_name, file|
+    begin
+      require file
+      eval(klass_name)
+    rescue LoadError, NameError
+      warn "#{$!}: skipping markdown tests with #{t}"
+      false
+    end
+  end.compact
 end
+
+engines.each do |t|
+  klass = Class.new(Test::Unit::TestCase) { define_method(:engine) { t }}
+  klass.class_eval(&MarkdownTest)
+  name = t.name[/[^:]+$/].sub(/Template$/, '') << "Test"
+  Object.const_set name, klass
+end
+
