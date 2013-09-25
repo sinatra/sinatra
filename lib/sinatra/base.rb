@@ -366,6 +366,7 @@ module Sinatra
       result    = file.serving env
       result[1].each { |k,v| headers[k] ||= v }
       headers['Content-Length'] = result[1]['Content-Length']
+      opts[:status] &&= Integer(opts[:status])
       halt opts[:status] || result[0], result[2]
     rescue Errno::ENOENT
       not_found
