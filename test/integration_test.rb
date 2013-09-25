@@ -99,6 +99,6 @@ class IntegrationTest < Test::Unit::TestCase
 
   it "doesn't ignore Content-Length header when streaming" do
     response = server.get_response '/streaming'
-    assert response['Content-Length'], '46'
+    assert_equal response['Content-Length'], '46'
   end
 end
