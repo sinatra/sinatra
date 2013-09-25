@@ -905,6 +905,17 @@ class HelpersTest < Test::Unit::TestCase
       get '/'
       assert_equal 'image/gif', response['Content-Type']
     end
+
+    it 'can have :status option as a string' do
+      path = @file
+      mock_app do
+        post '/' do
+          send_file path, :status => '422'
+        end
+      end
+      post '/'
+      assert_equal response.status, 422
+    end
   end
 
   describe 'cache_control' do
