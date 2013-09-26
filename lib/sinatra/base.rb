@@ -1334,7 +1334,7 @@ module Sinatra
       end
 
       def public=(value)
-        warn ":public is no longer used to avoid overloading Module#public, use :public_dir instead"
+        warn ":public is no longer used to avoid overloading Module#public, use :public_folder or :public_dir instead"
         set(:public_folder, value)
       end
 
