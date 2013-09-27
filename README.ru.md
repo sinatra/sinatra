@@ -2051,6 +2051,9 @@ set :protection, :except => [:path_traversal, :session_hijacking]
     обработки запросов.
   </dd>
 
+  <dt>traps</dt>
+  <dd>должна ли Синатра обрабатывать системные сигналы или нет.</tt></dd>
+
   <dt>views</dt>
   <dd>путь к директории с шаблонами.</dd>
 </dl>
