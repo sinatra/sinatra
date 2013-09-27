@@ -41,6 +41,7 @@ gem 'maruku'
 gem 'creole'
 gem 'markaby'
 gem 'radius'
+gem 'asciidoctor'
 unless RUBY_ENGINE =~ /jruby|maglev/
   gem 'rabl'
   gem 'activesupport', '< 4.0.0' if RUBY_VERSION < '1.9.3'
