@@ -91,3 +91,5 @@ platforms :mri_18 do
   next if RUBY_ENGINE != 'ruby' or RUBY_VERSION > "1.8"
   gem 'rcov'
 end
+
+gem 'reel-rack' unless RUBY_VERSION == '1.8.7'
