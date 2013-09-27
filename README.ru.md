@@ -702,6 +702,26 @@ erb :overview, :locals => { :text => rdoc(:introduction) }
 для отображения шаблона, а другой для лэйаута с помощью опции
 `:layout_engine`.
 
+#### AsciiDoc шаблоны
+
+<table>
+  <tr>
+    <td>Зависимости</td>
+    <td><a href="http://asciidoctor.org/" title="Asciidoctor">Asciidoctor</a></td>
+  </tr>
+  <tr>
+    <td>Расширения файлов</td>
+    <td><tt>.asciidoc</tt>, <tt>.adoc</tt> и <tt>.ad</tt></td>
+  </tr>
+  <tr>
+    <td>Пример</td>
+    <td><tt>asciidoc :README, :layout_engine => :erb</tt></td>
+  </tr>
+</table>
+
+Так как в AsciiDoc шаблонах невозможно вызывать методы из Ruby напрямую, то вы
+почти всегда будете передавать в шаблон локальные переменные.
+
 #### Radius шаблоны
 
 <table>
