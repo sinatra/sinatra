@@ -39,6 +39,7 @@ gem 'rdoc', RUBY_VERSION < '1.9' ? '~> 3.12' : '>= 4.0'
 gem 'kramdown'
 gem 'maruku'
 gem 'creole'
+gem 'wikicloth'
 gem 'markaby'
 gem 'radius'
 unless RUBY_ENGINE =~ /jruby|maglev/
