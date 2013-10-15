@@ -21,3 +21,4 @@ matrix:
     - env: tilt=master
     - rvm: rbx-19mode
     - rvm: ruby-head
+    - rvm: jruby-head
