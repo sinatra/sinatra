@@ -9,7 +9,7 @@ require 'time'
 require 'uri'
 
 # other files we need
-require 'sinatra/showexceptions'
+require 'sinatra/show_exceptions'
 require 'sinatra/version'
 
 module Sinatra
