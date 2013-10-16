@@ -1411,7 +1411,7 @@ module Sinatra
             "on #{port} for #{environment} with backup from #{handler_name}"
           end
           [:INT, :TERM].each { |sig| trap(sig) { quit!(server, handler_name) } }
-          server.threaded = settings.threaded if server.respond_to? :threaded=
+          server.threaded = settings.threaded if server.respond_to? :threaded
           set :running, true
           yield server if block_given?
         end
