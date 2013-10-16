@@ -14,10 +14,15 @@ get '/' do
 end
 ```
 
-Installez la gem et lancez avec :
+Installez la gem Sinatra :
 
 ``` shell
 gem install sinatra
+```
+
+Puis lancez votre programme :
+
+``` shell
 ruby mon_application.rb
 ```
 
@@ -138,7 +143,15 @@ delete '/' do
 end
 
 options '/' do
-  .. apaiser quelquechose ..
+  .. paramétrer quelque chose ..
+end
+
+link '/' do
+  .. relier quelque chose ..
+end
+
+unlink '/' do
+  .. séparer quelque chose ..
 end
 ```
 
@@ -161,6 +174,9 @@ paramètres du bloc comme ceci :
 
 ``` ruby
 get '/bonjour/:nom' do |n|
+  # répond aux requêtes "GET /bonjour/foo" et "GET /bonjour/bar"
+  # params[:nom] est 'foo' ou 'bar'
+  # n contient params[:nom]
   "Bonjour #{n} !"
 end
 ```
@@ -1010,7 +1026,7 @@ json[:baz] = key
 Les options `:callback` et `:variable` peuvent être utilisées pour décorer
 l’objet retourné.
 
-```
+``` ruby
 var resource = {"foo":"bar","baz":"qux"}; present(resource);</pre>
 ```
 
@@ -1332,6 +1348,14 @@ hash avec des options lors de la configuration de `sessions` :
 set :sessions, :domain => 'foo.com'
 ```
 
+Pour que les différents sous-domaines de foo.com puisse partager une session,
+vous devez préfixer le domaine par *.* :
+
+``` ruby
+set :sessions, :domain => '.foo.com'
+```
+
+
 ### Halt
 
 Pour arrêter immédiatement la requête dans un filtre ou un gestionnaire de
@@ -1501,17 +1525,30 @@ fermeront malgré tout le flux :
 # interrogation prolongée
 
 set :server, :thin
-connections = []
+connexions = []
 
-get '/' do
-  # conserve le flux ouvert
-  stream(:keep_open) { |out| connections << out }
+get '/souscrire' do
+  # abonne un client aux évènements du serveur
+  stream(:keep_open) { |out| connexions << out }
+
+  # purge les connexions abandonnées
+  connexions.reject!(&:closed?)
+
+  # compte-rendu
+  "abonné"
 end
 
-post '/' do
-  # écrit dans tous les flux ouverts
-  connections.each { |out| out << params[:message] << "\n" }
-  "message sent"
+post '/message' do
+  connexions.each do |out|
+    # prévient le client qu'un nouveau message est arrivé
+    out << params[:message] << "\n"
+
+    # indique au client de se connecter à nouveau
+    out.close
+  end
+
+  # compte-rendu
+  "message reçu"
 end
 ```
 
@@ -1728,7 +1765,7 @@ end
 
 Si vous souhaitez utilisez un ETag faible, utilisez l'option <tt>:kind</tt> :
 
-```
+``` ruby
 etag '', :new_resource => true, :kind => :weak
 ```
 
@@ -1815,7 +1852,7 @@ get '/foo' do
                               # verbes HTTP)
   request.form_data?          # false
   request["UN_ENTETE"]        # valeur de l'entête UN_ENTETE
-  request.referer             # référant du client ou '/'
+  request.referrer            # référant du client ou '/'
   request.user_agent          # user agent (utilisé par la condition :agent)
   request.cookies             # tableau contenant les cookies du navigateur
   request.xhr?                # requête AJAX ?
@@ -1824,8 +1861,7 @@ get '/foo' do
   request.ip                  # adresse IP du client
   request.secure?             # false
   request.forwarded?          # vrai (si on est derrière un proxy inverse)
-  request.env                 # tableau brut de l'environnement fourni par
-                              # Rack
+  request.env                 # tableau brut de l'environnement fourni par Rack
 end
 ```
 
@@ -1984,20 +2020,23 @@ end
 Lancé si l'environnement (variable d'environnement RACK_ENV) est défini comme
 `:production` :
 
+``` ruby
   configure :production do
     ...
   end
+```
 
-Lancé si l'environnement est `:production` ou
-`:test` :
+Lancé si l'environnement est `:production` ou `:test` :
 
+``` ruby
   configure :production, :test do
     ...
   end
+```
 
 Vous pouvez accéder à ces paramètres via `settings` :
 
-```
+``` ruby
 configure do
   set :foo, 'bar'
 end
@@ -2032,6 +2071,16 @@ protection :
 
 ``` ruby
 set :protection, :except => [:path_traversal, :session_hijacking]
+```
+
+Par défaut, il faut que `:sessions` soit activé pour que Sinatra mette en place
+un système de protection au niveau de la session. Dans le cas où vous gérez
+vous même les sessions, vous devez utiliser l'option `:session` pour que cela
+soit le cas :
+
+``` ruby
+use Rack::Session::Pool
+set :protection, :session => true
 ```
 
 ### Paramètres disponibles
@@ -2197,7 +2246,17 @@ RACK_ENV=production ruby my_app.rb
 ```
 
 Vous pouvez utiliser une des méthodes `development?`, `test?` et `production?`
-pour déterminer quel est l'environnement en cours.
+pour déterminer quel est l'environnement en cours :
+
+``` ruby
+get '/' do
+  if settings.development?
+    "développement !"
+  else
+    "pas en développement !"
+  end
+end
+```
 
 ## Gérer les erreurs
 
@@ -2302,16 +2361,22 @@ La sémantique de `use` est identique à celle définie dans le DSL de
 (le plus souvent utilisé dans un fichier rackup). Par exemple, la méthode
 `use` accepte divers arguments ainsi que des blocs :
 
-```
+``` ruby
 use Rack::Auth::Basic do |login, password|
   login == 'admin' && password == 'secret'
 end
 ```
 
-Rack est distribué avec une bonne variété de middlewares standards pour les
-logs, débuguer, faire du routage URL, de l'authentification, gérer des
-sessions. Sinatra utilise beaucoup de ces composants automatiquement via la
-configuration, donc pour ceux-ci vous n'aurez pas à utiliser la méthode `use`.
+Rack est distribué avec de nombreux middlewares standards pour loguer, débuguer,
+faire du routage URL, de l'authentification ou gérer des sessions. Sinatra gère
+plusieurs de ces composants automatiquement via son système de configuration, ce
+qui vous dispense de faire un `use` en ce qui les concerne.
+
+Vous trouverez d'autres middlewares intéressants sur
+[rack](https://github.com/rack/rack/tree/master/lib/rack),
+[rack-contrib](https://github.com/rack/rack-contrib#readm),
+[CodeRack](http://coderack.org/) ou en consultant le
+[wiki de Rack](https://github.com/rack/rack/wiki/List-of-Middleware).
 
 ## Tester
 
@@ -2665,7 +2730,7 @@ qui [étend l'objet principal](https://github.com/sinatra/sinatra/blob/ca06364/l
 
 Les applications Sinatra peuvent être lancées directement :
 
-``` ruby
+``` shell
 ruby mon_application.rb [-h] [-x] [-e ENVIRONNEMENT] [-p PORT] [-o HOTE] [-s SERVEUR]
 ```
 
@@ -2762,7 +2827,7 @@ stable.
 Pour cela, la méthode la plus simple est d'installer une gem de prerelease que
 nous publions de temps en temps :
 
-``` ruby
+``` shell
 gem install sinatra --pre
 ```
 Ce qui permet de bénéficier des toutes dernières fonctionnalités.
