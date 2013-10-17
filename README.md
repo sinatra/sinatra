@@ -496,7 +496,11 @@ Available Options:
 
 Templates are assumed to be located directly under the `./views` directory. To
 use a different views directory:
-`set :views, settings.root + '/templates'`
+
+``` ruby
+set :views, settings.root + '/templates'
+```
+
 
 One important thing to remember is that you always have to reference templates
 with symbols, even if they're in a subdirectory (in this case, use:
@@ -1547,7 +1551,7 @@ end
 For generating URLs you should use the `url` helper method, for instance, in
 Haml:
 
-``` haml
+``` ruby
 %a{:href => url('/foo')} foo
 ```
 
@@ -1940,8 +1944,7 @@ configure :production do
 end
 ```
 
-Run when the environment is set to either `:production` or
-`:test`:
+Run when the environment is set to either `:production` or `:test`:
 
 ```ruby
 configure :production, :test do
@@ -1988,7 +1991,8 @@ set :protection, :except => [:path_traversal, :session_hijacking]
 
 By default, Sinatra will only set up session based protection if `:sessions`
 has been enabled. Sometimes you want to set up sessions on your own, though. In
-that case you can get it to set up session based protections by passing the `:session` option:
+that case you can get it to set up session based protections by passing the
+`:session` option:
 
 ``` ruby
 use Rack::Session::Pool
@@ -2466,7 +2470,7 @@ end
 
 Start with:
 
-``` ruby
+``` shell
 ruby my_app.rb
 ```
 
@@ -2480,7 +2484,7 @@ run MyApp
 
 Run:
 
-``` ruby
+``` shell
 rackup -p 4567
 ```
 
@@ -2696,7 +2700,7 @@ being [extending the main object](https://github.com/sinatra/sinatra/blob/ca0636
 
 Sinatra applications can be run directly:
 
-``` ruby
+``` shell
 ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
 ```
 
