@@ -3,12 +3,17 @@
 *Atenção: Este documento é apenas uma tradução da versão em inglês e
 pode estar desatualizado.*
 
-Sinatra é uma
-[DSL](http://pt.wikipedia.org/wiki/Linguagem_de_domínio_específico) para
+Alguns dos trechos de códigos a seguir utilizam caracteres UTF-8, então caso esteja utilizando uma versão de ruby inferior a `2.0.0` adicione o enconding no início de seus arquivos:
+
+```ruby
+# encoding: utf-8
+```
+
+Sinatra é uma [DSL](http://pt.wikipedia.org/wiki/Linguagem_de_domínio_específico) para
 criar aplicações web em Ruby com o mínimo de esforço e rapidez:
 
 ``` ruby
-# minhaapp.rb
+# minha_app.rb
 require 'sinatra'
 
 get '/' do
@@ -16,17 +21,23 @@ get '/' do
 end
 ```
 
-Instale a gem e execute o arquivo criado acima:
+Instale a gem:
 
 ``` shell
 gem install sinatra
-ruby minhaapp.rb
 ```
 
-Acesse em: [localhost:4567](http://localhost:4567)
+Em seguida execute:
 
-Recomendamos a execução de `gem install thin`. Caso esta gem esteja disponível, o
+``` shell
+ruby minha_app.rb
+```
+
+Acesse: [localhost:4567](http://localhost:4567)
+
+É recomendado também executar `gem install thin`. Caso esta gem esteja disponível, o
 Sinatra irá utilizá-la.
+
 
 ## Rotas
 
