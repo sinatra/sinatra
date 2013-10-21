@@ -1,3 +1,38 @@
+= 1.4.4 / 2013-10-21
+
+ * Allow setting layout to false in specifically for a singe rendering engine.
+   (Matt Wildig)
+
+ * Allow using wildcard in argument passed to `request.accept?`. (wilkie)
+
+ * Treat missing Accept header like wild card. (Patricio Mac Adden)
+
+ * Improve tests and documentation. (Darío Javier Cravero, Armen P., michelc,
+   Patricio Mac Adden, Matt Wildig, Vipul A M, utenmiki, George Timoschenko,
+   Diogo Scudelletti)
+
+ * Fix Ruby warnings. (Vipul A M, Patricio Mac Adden)
+
+ * Improve self-hosted server started by `run!` method or in classic mode.
+   (Tobias Bühlmann)
+
+ * Reduce objects allocated per request. (Vipul A M)
+
+ * Drop unused, undocumented options hash from Sinatra.new. (George Timoschenko)
+
+ * Keep Content-Length header when response is a `Rack::File` or when streaming.
+   (Patricio Mac Adden, George Timoschenko)
+
+ * Use reel if it's the only server available besides webrick. (Tobias Bühlmann)
+
+ * Add `disable :traps` so setting up signal traps for self hosted server can be
+   skipped. (George Timoschenko)
+
+ * The `status` option passed to `send_file` may now be a string. (George
+   Timoschenko)
+
+ * Reduce file size of dev mode images for 404 and 500 pages. (Francis Go)
+
 = 1.4.3 / 2013-06-07
 
  * Running a Sinatra file directly or via `run!` it will now ignore an
