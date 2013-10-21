@@ -535,6 +535,14 @@ end
 ```
 
 Renders the template string.
+You can optionally specify `:path` and `:line` for a clearer backtrace if there is
+a filesystem path or line associated with that string:
+
+```ruby
+get '/' do
+  haml '%div.title Hello World', :path => 'examples/file.haml', :line => 3
+end
+```
 
 ### Available Template Languages
 
