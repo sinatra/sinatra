@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   # general infos
   s.name        = "rack-protection"
-  s.version     = "1.5.0"
+  s.version     = "1.5.1"
   s.description = "You should use protection!"
   s.homepage    = "http://github.com/rkh/rack-protection"
   s.summary     = s.description
@@ -12,9 +12,10 @@ Gem::Specification.new do |s|
   s.authors = [
     "Konstantin Haase",
     "Alex Rodionov",
-    "Chris Heald",
-    "Chris Mytton",
-    "Corey Ward",
+    "Patrick Ellis",
+    "Jeff Welling",
+    "ITO Nobuaki",
+    "Matteo Centenaro",
     "David Kellum",
     "Egor Homakov",
     "Florian Gilcher",
@@ -24,18 +25,24 @@ Gem::Specification.new do |s|
     "SAKAI, Kazuaki",
     "Stanislav Savulchik",
     "Steve Agalloco",
-    "Akzhan Abdulin",
     "TOBY",
-    "Bj\u00F8rge N\u00E6ss"
+    "Akzhan Abdulin",
+    "brookemckim",
+    "Bj\u00F8rge N\u00E6ss",
+    "Chris Heald",
+    "Chris Mytton",
+    "Corey Ward",
+    "Dario Cravero"
   ]
 
   # generated from git shortlog -sne
   s.email = [
     "konstantin.mailinglists@googlemail.com",
     "p0deje@gmail.com",
-    "self@hecticjeff.net",
-    "coreyward@me.com",
-    "dek-oss@gravitext.com",
+    "patrick@soundcloud.com",
+    "jeff.welling@gmail.com",
+    "bugant@gmail.com",
+    "daydream.trippers@gmail.com",
     "homakov@gmail.com",
     "florian.gilcher@asquera.de",
     "developer@fojasaur.us",
@@ -44,10 +51,15 @@ Gem::Specification.new do |s|
     "kaz.july.7@gmail.com",
     "s.savulchik@gmail.com",
     "steve.agalloco@gmail.com",
-    "akzhan.abdulin@gmail.com",
     "toby.net.info.mail+git@gmail.com",
+    "akzhan.abdulin@gmail.com",
+    "brooke@digitalocean.com",
     "bjoerge@bengler.no",
-    "cheald@gmail.com"
+    "cheald@gmail.com",
+    "self@hecticjeff.net",
+    "coreyward@me.com",
+    "dario@uxtemple.com",
+    "dek-oss@gravitext.com"
   ]
 
   # generated from git ls-files
@@ -73,6 +85,7 @@ Gem::Specification.new do |s|
     "lib/rack/protection/xss_header.rb",
     "rack-protection.gemspec",
     "spec/authenticity_token_spec.rb",
+    "spec/base_spec.rb",
     "spec/escaped_params_spec.rb",
     "spec/form_token_spec.rb",
     "spec/frame_options_spec.rb",

@@ -4,7 +4,7 @@ module Rack
       VERSION
     end
 
-    SIGNATURE = [1, 5, 0]
+    SIGNATURE = [1, 5, 1]
     VERSION   = SIGNATURE.join('.')
 
     VERSION.extend Comparable
