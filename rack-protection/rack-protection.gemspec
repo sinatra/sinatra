@@ -6,6 +6,7 @@ Gem::Specification.new do |s|
   s.description = "You should use protection!"
   s.homepage    = "http://github.com/rkh/rack-protection"
   s.summary     = s.description
+  s.license     = 'MIT'
 
   # generated from git shortlog -sn
   s.authors = [
