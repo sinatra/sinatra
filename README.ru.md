@@ -812,6 +812,43 @@ erb :overview, :locals => { :text => creole(:introduction) }
 один шаблонизатор для отображения шаблона, а другой для лэйаута с помощью
 опции `:layout_engine`.
 
+#### MediaWiki шаблоны
+
+<table>
+  <tr>
+    <td>Зависимости</td>
+    <td><a href="https://github.com/nricciar/wikicloth" title="WikiCloth">WikiCloth</a></td>
+  </tr>
+  <tr>
+    <td>Расширения файлов</td>
+    <td><tt>.mediawiki</tt> и <tt>.mw</tt></td>
+  </tr>
+  <tr>
+    <td>Пример</td>
+    <td><tt>mediawiki :wiki, :layout_engine => :erb</tt></td>
+  </tr>
+</table>
+
+В разметке MediaWiki невозможно вызывать методы или передавать локальные переменные.
+Следовательно, вам, скорее всего, придется использовать этот шаблон совместно
+с другим шаблонизатором:
+
+```ruby
+erb :overview, :locals => { :text => mediawiki(:introduction) }
+```
+
+Заметьте, что вы можете вызывать метод `mediawiki` из других шаблонов:
+
+```ruby
+%h1 Hello From Haml!
+%p= mediawiki(:greetings)
+```
+
+Вы не можете вызывать Ruby из MediaWiki, соответственно, вы не можете
+использовать лэйауты на MediaWiki. Тем не менее, есть возможность использовать
+один шаблонизатор для отображения шаблона, а другой для лэйаута с помощью
+опции `:layout_engine`.
+
 #### CoffeeScript шаблоны
 
 <table>
