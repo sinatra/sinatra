@@ -1,6 +1,6 @@
 = 1.4.4 / 2013-10-21
 
- * Allow setting layout to false specifically for a singe rendering engine.
+ * Allow setting layout to false specifically for a single rendering engine.
    (Matt Wildig)
 
  * Allow using wildcard in argument passed to `request.accept?`. (wilkie)
