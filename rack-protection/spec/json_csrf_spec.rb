@@ -44,7 +44,7 @@ describe Rack::Protection::JsonCsrf do
   end
 
   describe 'with drop_session as default reaction' do
-    it 'reset the session' do
+    it 'still denies' do
       mock_app do
         use Rack::Protection, :reaction => :drop_session
         run proc { |e| [200, {'Content-Type' => 'application/json'}, []]}
@@ -52,8 +52,7 @@ describe Rack::Protection::JsonCsrf do
 
       session = {:foo => :bar}
       get('/', {}, 'HTTP_REFERER' => 'http://evil.com', 'rack.session' => session)
-      last_response.should be_ok
-      session.should be_empty
+      last_response.should_not be_ok
     end
   end
 end

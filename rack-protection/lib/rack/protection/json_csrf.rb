@@ -11,7 +11,7 @@ module Rack
     # Array prototype has been patched to track data. Checks the referrer
     # even on GET requests if the content type is JSON.
     class JsonCsrf < Base
-      default_reaction :deny
+      alias react deny
 
       def call(env)
         request               = Request.new(env)
