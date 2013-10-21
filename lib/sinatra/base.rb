@@ -845,7 +845,9 @@ module Sinatra
           end
         when Proc, String
           body = data.is_a?(String) ? Proc.new { data } : data
-          path, line = settings.caller_locations.first
+          caller = settings.caller_locations.first
+          path = options[:path] || caller[0]
+          line = options[:line] || caller[1]
           template.new(path, line.to_i, options, &body)
         else
           raise ArgumentError, "Sorry, don't know how to render #{data.inspect}."
