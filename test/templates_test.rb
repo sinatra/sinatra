@@ -100,6 +100,28 @@ class TemplatesTest < Test::Unit::TestCase
     assert_equal 'Hello World', body
   end
 
+  it 'allows to specify path/line when rendering with String' do
+    path = 'example.txt'
+    line = 228
+    begin render_app {
+      render :erb, '<%= doesnotexist %>', {:path => path, :line => line}
+    }
+    rescue NameError => e
+      assert_match(/#{path}:#{line}/, e.backtrace.first)
+    end
+  end
+
+  it 'allows to specify path/line when rendering with Proc' do
+    path = 'example.txt'
+    line = 900
+    begin render_app {
+      render :erb, Proc.new { '<%= doesnotexist %>' }, {:path => path, :line => line}
+    }
+    rescue NameError => e
+      assert_match(/#{path}:#{line}/, e.backtrace.first)
+    end
+  end
+
   it 'renders Proc templates using the call result' do
     render_app { render(:test, Proc.new {'Hello World'}) }
     assert ok?
