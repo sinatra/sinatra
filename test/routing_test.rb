@@ -90,7 +90,10 @@ class RoutingTest < Test::Unit::TestCase
   end
 
   it "it handles encoded slashes correctly" do
-    mock_app { get("/:a") { |a| a } }
+    mock_app {
+      set :protection, :except => :path_traversal
+      get("/:a") { |a| a }
+    }
     get '/foo%2Fbar'
     assert_equal 200, status
     assert_body "foo/bar"
