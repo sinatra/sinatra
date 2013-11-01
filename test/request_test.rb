@@ -90,7 +90,7 @@ class RequestTest < Test::Unit::TestCase
     assert_equal '*/*', request.preferred_type.to_s
   end
 
-  it 'does not accept when type parameter does not match HTTP_ACCEPT' do
+  it 'will not accept types not specified in HTTP_ACCEPT when HTTP_ACCEPT is provided' do
     request = Sinatra::Request.new 'HTTP_ACCEPT' => 'application/json'
     assert !request.accept?('text/html')
   end
