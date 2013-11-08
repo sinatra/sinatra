@@ -239,7 +239,7 @@ regulares para definir las rutas. Sin embargo, la cosa no termina ahí. Podés
 definir tus propios comparadores muy fácilmente:
 
 ``` ruby
-class PattronCualquieraMenos
+class PatronCualquieraMenos
   Match = Struct.new(:captures)
 
   def initialize(excepto)
