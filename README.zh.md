@@ -1,10 +1,10 @@
 # Sinatra
 
-*注：本文档仅仅是英文版的翻译，会出现内容没有及时更新的情况发生。
+*注：本文档是英文版的翻译，内容更新有可能不及时。
 如有不一致的地方，请以英文版为准。*
 
-Sinatra是一个基于Ruby语言，以最小精力为代价快速创建web应用为目的的[DSL](http://en.wikipedia.org/wiki/Domain-specific_language)（
-领域专属语言）：
+Sinatra是一个基于Ruby语言的[DSL](http://en.wikipedia.org/wiki/Domain-specific_language)（
+领域专属语言），可以轻松、快速的创建web应用。
 
 ~~~~ ruby
 # myapp.rb
@@ -15,7 +15,7 @@ get '/' do
 end
 ~~~~
 
-安装gem然后运行：
+安装gem，然后运行：
 
 ~~~~ shell
 gem install sinatra
@@ -24,33 +24,43 @@ ruby myapp.rb
 
 在该地址查看： [localhost:4567](http://localhost:4567)
 
-推荐同时运行`gem install thin`，Sinatra会优先选择thin作为服务器。
+安装Sintra后，最好再运行`gem install thin`安装Thin。这样，Sinatra会优先选择Thin作为服务器。
 
-## 路由
+## 路由(route)
 
-在Sinatra中，一个路由是一个HTTP方法与URL匹配范式的配对。
-每个路由都与一个代码块关联：
+在Sinatra中，一个路由分为两部分：HTTP方法(GET, POST等)和URL匹配范式。
+每个路由都有一个要执行的代码块：
 
 ~~~~ ruby
 get '/' do
-  .. 显示一些事物 ..
+  .. 显示内容 ..
 end
 
 post '/' do
-  .. 创建一些事物 ..
+  .. 创建内容 ..
 end
 
 put '/' do
-  .. 更新一些事物 ..
+  .. 更新内容 ..
 end
 
 delete '/' do
-  .. 消灭一些事物 ..
+  .. 删除内容 ..
 end
 
 options '/' do
-  .. 满足一些事物 ..
+  .. 显示命令列表 ..
 end
+
+link '/' do
+  .. 建立某种联系 ..
+end
+
+unlink '/' do
+  .. 解除某种联系 ..
+end
+
+
 ~~~~
 
 路由按照它们被定义的顺序进行匹配。 第一个与请求匹配的路由会被调用。
@@ -133,7 +143,7 @@ get '/', :provides => ['rss', 'atom', 'xml'] do
 end
 ~~~~
 
-你也可以很轻松地定义自己的条件：
+你也可以自定义条件：
 
 ~~~~ ruby
 set(:probability) { |value| condition { rand <= value } }
@@ -206,7 +216,7 @@ get all_but("/index") do
 end
 ~~~~
 
-请注意上面的例子可能超工程了， 因为它也可以用更简单的方式表述:
+上面的例子可能太繁琐了， 因为它也可以用更简单的方式表述:
 
 ~~~~ ruby
 get // do
@@ -287,7 +297,7 @@ get '/' do
 end
 ~~~~
 
-渲染 `./views/index.erb`
+这里调用的是 `./views/index.erb`
 
 ### Erubis
 
@@ -302,7 +312,7 @@ get '/' do
 end
 ~~~~
 
-渲染 `./views/index.erubis`
+这里调用的是 `./views/index.erubis`
 
 使用Erubis代替Erb也是可能的:
 
@@ -330,7 +340,7 @@ get '/' do
 end
 ~~~~
 
-渲染 `./views/index.builder`。
+这里调用的是 `./views/index.builder`。
 
 ### Nokogiri 模板
 
@@ -345,7 +355,7 @@ get '/' do
 end
 ~~~~
 
-渲染 `./views/index.nokogiri`。
+这里调用的是 `./views/index.nokogiri`。
 
 ### Sass 模板
 
@@ -360,7 +370,7 @@ get '/stylesheet.css' do
 end
 ~~~~
 
-渲染 `./views/stylesheet.sass`。
+这里调用的是 `./views/stylesheet.sass`。
 
 [Sass
 的选项](http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options)
@@ -389,7 +399,7 @@ get '/stylesheet.css' do
 end
 ~~~~
 
-渲染 `./views/stylesheet.scss`。
+这里调用的是 `./views/stylesheet.scss`。
 
 [Scss的选项](http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options)
 可以通过Sinatra选项全局设定， 参考
@@ -417,7 +427,7 @@ get '/stylesheet.css' do
 end
 ~~~~
 
-渲染 `./views/stylesheet.less`。
+这里调用的是 `./views/stylesheet.less`。
 
 ### Liquid 模板
 
@@ -432,7 +442,7 @@ get '/' do
 end
 ~~~~
 
-渲染 `./views/index.liquid`。
+这里调用的是 `./views/index.liquid`。
 
 因为你不能在Liquid 模板中调用 Ruby 方法 (除了 `yield`) ，
 你几乎总是需要传递locals给它：
@@ -454,7 +464,7 @@ get '/' do
 end
 ~~~~
 
-渲染 `./views/index.markdown` (`md` 和 `mkd` 也是合理的文件扩展名)。
+这里调用的是 `./views/index.markdown` (`md` 和 `mkd` 也是合理的文件扩展名)。
 
 在markdown中是不可以调用方法的，也不可以传递 locals给它。
 你因此一般会结合其他的渲染引擎来使用它：
@@ -480,7 +490,7 @@ get '/' do
 end
 ~~~~
 
-这将会渲染 `./views/index.md` 并使用 `./views/layout.erb` 作为布局。
+这将会调用 `./views/index.md` 并使用 `./views/layout.erb` 作为布局。
 
 请记住你可以全局设定这个选项:
 
@@ -492,7 +502,7 @@ get '/' do
 end
 ~~~~
 
-这将会渲染 `./views/index.markdown` (和任何其他的 Markdown 模版) 并使用
+这将会调用 `./views/index.markdown` (和任何其他的 Markdown 模版) 并使用
 `./views/post.haml` 作为布局.
 
 也可能使用BlueCloth而不是RDiscount来解析Markdown文件:
@@ -524,7 +534,7 @@ get '/' do
 end
 ~~~~
 
-渲染 `./views/index.textile`。
+这里调用的是 `./views/index.textile`。
 
 在textile中是不可以调用方法的，也不可以传递 locals给它。
 你因此一般会结合其他的渲染引擎来使用它：
@@ -563,7 +573,7 @@ get '/' do
 end
 ~~~~
 
-这将会渲染 `./views/index.textile` (和任何其他的 Textile 模版) 并使用
+这将会调用 `./views/index.textile` (和任何其他的 Textile 模版) 并使用
 `./views/post.haml` 作为布局.
 
 ### RDoc 模板
@@ -580,7 +590,7 @@ get '/' do
 end
 ~~~~
 
-渲染 `./views/index.rdoc`。
+这里调用的是 `./views/index.rdoc`。
 
 在rdoc中是不可以调用方法的，也不可以传递locals给它。
 你因此一般会结合其他的渲染引擎来使用它：
@@ -606,7 +616,7 @@ get '/' do
 end
 ~~~~
 
-这将会渲染 `./views/index.rdoc` 并使用 `./views/layout.erb` 作为布局。
+这将会调用 `./views/index.rdoc` 并使用 `./views/layout.erb` 作为布局。
 
 请记住你可以全局设定这个选项:
 
@@ -618,7 +628,7 @@ get '/' do
 end
 ~~~~
 
-这将会渲染 `./views/index.rdoc` (和任何其他的 RDoc 模版) 并使用
+这将会调用 `./views/index.rdoc` (和任何其他的 RDoc 模版) 并使用
 `./views/post.haml` 作为布局.
 
 ### Radius 模板
@@ -634,7 +644,7 @@ get '/' do
 end
 ~~~~
 
-渲染 `./views/index.radius`。
+这里调用的是 `./views/index.radius`。
 
 因为你不能在Radius 模板中调用 Ruby 方法 (除了 `yield`) ，
 你几乎总是需要传递locals给它：
@@ -656,7 +666,7 @@ get '/' do
 end
 ~~~~
 
-渲染 `./views/index.mab`。
+这里调用的是 `./views/index.mab`。
 
 你也可以使用嵌入的 Markaby:
 
@@ -679,7 +689,7 @@ get '/' do
 end
 ~~~~
 
-渲染 `./views/index.slim`。
+这里调用的是 `./views/index.slim`。
 
 ### Creole 模板
 
@@ -694,7 +704,7 @@ get '/' do
 end
 ~~~~
 
-渲染 `./views/index.creole`。
+这里调用的是 `./views/index.creole`。
 
 ### CoffeeScript 模板
 
@@ -711,7 +721,7 @@ end
 [github.com/josh/ruby-coffee-script](http://github.com/josh/ruby-coffee-script)
 获取更新的选项。
 
-现在你可以渲染 CoffeeScript 模版了:
+现在你可以调用 CoffeeScript 模版了:
 
 ~~~~ ruby
 # 需要在你的应用中引入coffee-script
@@ -722,7 +732,7 @@ get '/application.js' do
 end
 ~~~~
 
-渲染 `./views/application.coffee`。
+这里调用的是 `./views/application.coffee`。
 
 ### 嵌入模板字符串
 
@@ -732,7 +742,7 @@ get '/' do
 end
 ~~~~
 
-渲染嵌入模板字符串。
+调用嵌入模板字符串。
 
 ### 在模板中访问变量
 
@@ -836,7 +846,7 @@ get '/' do
 end
 ~~~~
 
-渲染 `./views/index.myat`。察看
+这里调用的是 `./views/index.myat`。察看
 [github.com/rtomayko/tilt](https://github.com/rtomayko/tilt)
 来更多了解Tilt.
 
@@ -1019,7 +1029,7 @@ end
 如果你希望请求被发送到同一个应用，而不是副本， 使用 `call!` 而不是
 `call`.
 
-察看 Rack specification 如果你想更多了解 `call`.
+如果想更多了解 `call`，请察看 Rack specification。
 
 ### 设定 消息体，状态码和消息头
 
@@ -1056,16 +1066,16 @@ end
 如同 `body`, 不带参数的 `headers` 和 `status` 可以用来访问
 他们你的当前值.
 
-### 媒体类型
+### 媒体(MIME)类型
 
-当使用 `send_file` 或者静态文件的场合，你的媒体类型可能
-Sinatra并不理解。使用 `mime_type` 通过文件扩展名来注册它们：
+使用 `send_file` 或者静态文件的时候，Sinatra可能不能识别你的媒体类型。
+使用 `mime_type` 通过文件扩展名来注册它们：
 
 ~~~~ ruby
 mime_type :foo, 'text/foo'
 ~~~~
 
-你也可以通过 `content_type` 辅助方法使用：
+你也可以使用 `content_type` 辅助方法：
 
 ~~~~ ruby
 get '/' do
@@ -1082,7 +1092,7 @@ end
 %a{:href => url('/foo')} foo
 ~~~~
 
-它会根据反向代理和Rack路由，如果有的话，来计算生成的URL。
+如果使用反向代理和Rack路由，生成URL的时候会考虑这些因素。
 
 这个方法还有一个别名 `to` (见下面的例子).
 
@@ -1096,14 +1106,14 @@ get '/foo' do
 end
 ~~~~
 
-任何额外的参数都会被以 `halt`相同的方式来处理:
+其他参数的用法，与 `halt`相同:
 
 ~~~~ ruby
 redirect to('/bar'), 303
 redirect 'http://google.com', 'wrong place, buddy'
 ~~~~
 
-你可以方便的通过 `redirect back`把用户重定向到来自的页面:
+用 `redirect back`可以把用户重定向到原始页面:
 
 ~~~~ ruby
 get '/foo' do
@@ -1116,13 +1126,13 @@ get '/bar' do
 end
 ~~~~
 
-为了传递参数给redirect，或者加入query:
+如果想传递参数给redirect，可以用query string:
 
 ~~~~ ruby
 redirect to('/bar?sum=42')
 ~~~~
 
-或者使用session:
+或者用session:
 
 ~~~~ ruby
 enable :sessions
@@ -1139,9 +1149,9 @@ end
 
 ### 缓存控制
 
-正确地设定消息头是恰当的HTTP缓存的基础。
+要使用HTTP缓存，必须正确地设定消息头。
 
-你可以方便的设定 Cache-Control 消息头，像这样:
+你可以这样设定 Cache-Control 消息头:
 
 ~~~~ ruby
 get '/' do
@@ -1167,9 +1177,10 @@ before do
 end
 ~~~~
 
-为了合适地使用缓存，你应该考虑使用 `etag` 和 `last_modified`方法。.
-推荐在执行繁重任务\*之前\*使用这些helpers，
-他们会立刻发送响应，如果客户端在缓存中已经有了当前版本。
+为了合适地使用缓存，你应该考虑使用 `etag` 和 `last_modified`方法。
+推荐在执行繁重任务\*之前\*使用这些helpers，这样一来，
+如果客户端在缓存中已经有相关内容，就会立即得到显示。
+
 
 ~~~~ ruby
 get '/article/:id' do
@@ -1243,7 +1254,7 @@ send_file 'foo.png', :type => :jpg
     <dd>Content-Length 的值，默认是文件的大小。</dd>
 </dl>
 
-如果Rack处理器支持，Ruby进程除streaming以外的方式会被使用。
+如果Rack处理器支持的话，Ruby进程也能使用除streaming以外的方法。
 如果你使用这个辅助方法， Sinatra会自动处理range请求。
 
 ### 访问请求对象
