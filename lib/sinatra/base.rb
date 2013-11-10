@@ -1828,7 +1828,7 @@ module Sinatra
     set :use_code, false
     set :default_encoding, "utf-8"
     set :x_cascade, true
-    set :add_charset, %w[javascript xml xhtml+xml json].map { |t| "application/#{t}" }
+    set :add_charset, %w[javascript xml xhtml+xml].map { |t| "application/#{t}" }
     settings.add_charset << /^text\//
 
     # explicitly generating a session secret eagerly to play nice with preforking
