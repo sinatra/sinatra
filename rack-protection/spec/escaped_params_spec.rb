@@ -33,7 +33,6 @@ describe Rack::Protection::EscapedParams do
 
     it 'leaves cache-breaker params untouched' do
       mock_app do |env|
-        request = Rack::Request.new(env)
         [200, {'Content-Type' => 'text/plain'}, ['hi']]
       end
 
