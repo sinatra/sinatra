@@ -465,13 +465,13 @@ Available Options:
 
   <dt>layout</dt>
   <dd>
-    Whether to use a layout (<tt>true</tt> or <tt>false</tt>), if it's a Symbol, specifies
+    Whether to use a layout (<tt>true</tt> or <tt>false</tt>). If it's a Symbol, specifies
     what template to use. Example: <tt>erb :index, :layout => !request.xhr?</tt>
   </dd>
 
   <dt>content_type</dt>
   <dd>
-    Content-Type the template produces, default depends on template language.
+    Content-Type the template produces. Default depends on template language.
   </dd>
 
   <dt>scope</dt>
@@ -1075,7 +1075,7 @@ erb :admin_layout, :layout => :main_layout do
 end
 ```
 
-Currently the following rendering method accept a block: `erb`, `haml`,
+Currently, the following rendering methods accept a block: `erb`, `haml`,
 `liquid`, `slim `, `wlang`.
 Also the general `render` method accepts a block.
 
@@ -1447,7 +1447,7 @@ end
 ```
 
 This allows you to implement streaming APIs,
-[Server Sent Events](http://dev.w3.org/html5/eventsource/) and can be used as
+[Server Sent Events](http://dev.w3.org/html5/eventsource/), and can be used as
 the basis for [WebSockets](http://en.wikipedia.org/wiki/WebSocket). It can also be
 used to increase throughput if some but not all content depends on a slow
 resource.
@@ -1507,7 +1507,7 @@ end
 
 This logger will automatically take your Rack handler's logging settings into
 account. If logging is disabled, this method will return a dummy object, so
-you do not have to worry in your routes and filters about it.
+you do not have to worry about it in your routes and filters.
 
 Note that logging is only enabled for `Sinatra::Application` by
 default, so if you inherit from `Sinatra::Base`, you probably want to
@@ -1682,11 +1682,11 @@ end
 Use the `:static_cache_control` setting (see below) to add
 `Cache-Control` header info to static files.
 
-According to RFC 2616 your application should behave differently if the If-Match
-or If-None-Match header is set to `*` depending on whether the resource
+According to RFC 2616, your application should behave differently if the If-Match
+or If-None-Match header is set to `*`, depending on whether the resource
 requested is already in existence. Sinatra assumes resources for safe (like get)
 and idempotent (like put) requests are already in existence, whereas other
-resources (for instance for post requests), are treated as new resources. You
+resources (for instance post requests) are treated as new resources. You
 can change this behavior by passing in a `:new_resource` option:
 
 ``` ruby
@@ -2016,7 +2016,7 @@ set :protection, :session => true
 
   <dt>add_charsets</dt>
   <dd>
-    mime types the <tt>content_type</tt> helper will automatically add the charset info to.
+    Mime types the <tt>content_type</tt> helper will automatically add the charset info to.
     You should add to it rather than overriding this option:
     <tt>settings.add_charsets << "application/foobar"</tt>
   </dd>
@@ -2031,19 +2031,19 @@ set :protection, :session => true
   <dd>IP address to bind to (default: <tt>0.0.0.0</tt> <em>or</em> <tt>localhost</tt> if your `environment` is set to development.). Only used for built-in server.</dd>
 
   <dt>default_encoding</dt>
-  <dd>encoding to assume if unknown (defaults to <tt>"utf-8"</tt>).</dd>
+  <dd>Encoding to assume if unknown (defaults to <tt>"utf-8"</tt>).</dd>
 
   <dt>dump_errors</dt>
-  <dd>display errors in the log.</dd>
+  <dd>Display errors in the log.</dd>
 
   <dt>environment</dt>
   <dd>
-    current environment, defaults to <tt>ENV['RACK_ENV']</tt>, or <tt>"development"</tt> if
+    Current environment. Defaults to <tt>ENV['RACK_ENV']</tt>, or <tt>"development"</tt> if
     not available.
   </dd>
 
   <dt>logging</dt>
-  <dd>use the logger.</dd>
+  <dd>Use the logger.</dd>
 
   <dt>lock</dt>
   <dd>
@@ -2054,7 +2054,7 @@ set :protection, :session => true
 
   <dt>method_override</dt>
   <dd>
-    use <tt>_method</tt> magic to allow put/delete forms in browsers that
+    Use <tt>_method</tt> magic to allow put/delete forms in browsers that
     don't support it.
   </dd>
 
@@ -2093,18 +2093,18 @@ set :protection, :session => true
 
   <dt>raise_errors</dt>
   <dd>
-    raise exceptions (will stop application). Enabled by default when
+    Raise exceptions (will stop application). Enabled by default when
     <tt>environment</tt> is set to <tt>"test"</tt>, disabled otherwise.
   </dd>
 
   <dt>run</dt>
   <dd>
-    if enabled, Sinatra will handle starting the web server, do not
+    If enabled, Sinatra will handle starting the web server. Do not
     enable if using rackup or other means.
   </dd>
 
   <dt>running</dt>
-  <dd>is the built-in server running now? Do not change this setting!</dd>
+  <dd>Is the built-in server running now? Do not change this setting!</dd>
 
   <dt>server</dt>
   <dd>
@@ -2562,7 +2562,7 @@ end
 ### Dynamic Application Creation
 
 Sometimes you want to create new applications at runtime without having to
-assign them to a constant, you can do this with `Sinatra.new`:
+assign them to a constant. You can do this with `Sinatra.new`:
 
 ``` ruby
 require 'sinatra/base'
@@ -2649,7 +2649,7 @@ You can reach the scope object (the class) like this:
 ### Request/Instance Scope
 
 For every incoming request, a new instance of your application class is
-created and all handler blocks run in that scope. From within this scope you
+created, and all handler blocks run in that scope. From within this scope you
 can access the `request` and `session` objects or call rendering methods like
 `erb` or `haml`. You can access the application scope from within the request
 scope via the `settings` helper:
@@ -2796,7 +2796,7 @@ We also push out prerelease gems from time to time, so you can do a
 gem install sinatra --pre
 ```
 
-To get some of the latest features.
+to get some of the latest features.
 
 ### With Bundler
 
@@ -2859,7 +2859,7 @@ rake sinatra.gemspec
 rake install
 ```
 
-If you install gems as root, the last step should be
+If you install gems as root, the last step should be:
 
 ``` shell
 sudo rake install
