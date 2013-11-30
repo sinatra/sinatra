@@ -37,6 +37,20 @@ module Sinatra
   #       # Your modular application code goes here...
   #     end
   #
+  # == Using the Reloader in Other Environments
+  #
+  # By default, the reloader is only enabled for the development
+  # environment. Similar to registering the reloader in a modular
+  # application, a classic application requires manually enabling the
+  # extension for it to be available in a non-development environment.
+  #
+  #      require "sinatra"
+  #      require "sinatra/reloader"
+  #
+  #      configure :production do
+  #        enable :reloader
+  #      end
+  #
   # == Changing the Reloading Policy
   #
   # You can refine the reloading policy with +also_reload+ and
