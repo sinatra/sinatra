@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 # Run `rake sinatra-contrib.gemspec` to update the gemspec.
 require File.expand_path('../lib/sinatra/contrib/version', __FILE__)
 Gem::Specification.new do |s|
