@@ -4,7 +4,7 @@ module Sinatra
       VERSION
     end
 
-    SIGNATURE = [1, 4, 1]
+    SIGNATURE = [1, 4, 2]
     VERSION   = SIGNATURE.join('.')
 
     VERSION.extend Comparable
