@@ -17,11 +17,12 @@ describe Rack::Protection::SessionHijacking do
     session.should be_empty
   end
 
-  it "denies requests with a changing Accept-Encoding header" do
+  it "accepts requests with a changing Accept-Encoding header" do
+    # this is tested because previously it led to clearing the session
     session = {:foo => :bar}
     get '/', {}, 'rack.session' => session, 'HTTP_ACCEPT_ENCODING' => 'a'
     get '/', {}, 'rack.session' => session, 'HTTP_ACCEPT_ENCODING' => 'b'
-    session.should be_empty
+    session.should_not be_empty
   end
 
   it "denies requests with a changing Accept-Language header" do

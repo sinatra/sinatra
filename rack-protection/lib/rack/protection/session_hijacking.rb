@@ -9,12 +9,12 @@ module Rack
     #
     # Tracks request properties like the user agent in the session and empties
     # the session if those properties change. This essentially prevents attacks
-    # from Firesheep. Since all headers taken into consideration might be
-    # spoofed, too, this will not prevent all hijacking attempts.
+    # from Firesheep. Since all headers taken into consideration can be
+    # spoofed, too, this will not prevent determined hijacking attempts.
     class SessionHijacking < Base
       default_reaction :drop_session
       default_options :tracking_key => :tracking, :encrypt_tracking => true,
-        :track => %w[HTTP_USER_AGENT HTTP_ACCEPT_ENCODING HTTP_ACCEPT_LANGUAGE]
+        :track => %w[HTTP_USER_AGENT HTTP_ACCEPT_LANGUAGE]
 
       def accepts?(env)
         session = session env
