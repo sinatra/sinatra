@@ -99,7 +99,7 @@ get '/download/*.*' do
 end
 ```
 
-ブロックパラーメータを使用した場合:
+ブロックパラメータを使用した場合:
 
 ``` ruby
 get '/download/*.*' do |path, ext|
@@ -115,7 +115,7 @@ get %r{/hello/([\w]+)} do
 end
 ```
 
-ブロックパラーメータを使用した場合:
+ブロックパラメータを使用した場合:
 
 ``` ruby
 get %r{/hello/([\w]+)} do |c|
@@ -123,7 +123,7 @@ get %r{/hello/([\w]+)} do |c|
 end
 ```
 
-オプショナルパラメーターを使用した場合:
+オプショナルパラメータを使用した場合:
 
 ``` ruby
 get '/posts.?:format?' do
@@ -304,12 +304,12 @@ builderを使うにはbuilderライブラリが必要です:
 
 `./views/index.builder`を表示します。
 
-### 鋸 テンプレート
+### Nokogiri テンプレート
 
-鋸を使うには鋸ライブラリが必要です:
+Nokogiriを使うにはNokogiriライブラリが必要です:
 
 ```
-# 鋸を読み込みます
+# Nokogiriを読み込みます
 require 'nokogiri'
 
 get '/' do
