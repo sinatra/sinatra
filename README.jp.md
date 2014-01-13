@@ -1275,7 +1275,7 @@ git pull
 日本語サイト
 
 -   [Greenbear Laboratory
-    Rack日本語マニュアル](http://mono.kmc.gr.jp/~yhara/w/?RackReferenceJa)
+    Rack日本語マニュアル](http://route477.net/w/RackReferenceJa.html)
     - Rackの日本語マニュアル
 
 英語サイト
