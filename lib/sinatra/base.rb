@@ -672,7 +672,7 @@ module Sinatra
       end
     end
 
-    [:less, :sass, :scss, :stylus].each do |type|
+    [:less, :sass, :scss].each do |type|
       define_method(type) do |template, options = {}, locals = {}|
         options.merge! :layout => false, :default_content_type => :css
         render type, template, options, locals
@@ -688,6 +688,11 @@ module Sinatra
 
     def markaby(template = nil, options = {}, locals = {}, &block)
       render_ruby(:mab, template, options, locals, &block)
+    end
+
+    def stylus(template, options={}, locals={})
+      options.merge! :layout => false, :default_content_type => :css
+      render :styl, template, options, locals
     end
 
     def erubis(template, options = {}, locals = {})
