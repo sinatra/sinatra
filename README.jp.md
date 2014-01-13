@@ -5,11 +5,13 @@
 
 [DSL](http://ja.wikipedia.org/wiki/ドメイン固有言語)です。
 
-    # myapp.rb
-    require 'sinatra'
-    get '/' do
-      'Hello world!'
-    end
+``` ruby
+# myapp.rb
+require 'sinatra'
+get '/' do
+  'Hello world!'
+end
+```
 
 gemをインストールして動かしてみる。
 
@@ -97,7 +99,7 @@ get '/download/*.*' do
 end
 ```
 
-ブロックパラーメータを使用した場合:
+ブロックパラメータを使用した場合:
 
 ``` ruby
 get '/download/*.*' do |path, ext|
@@ -113,7 +115,7 @@ get %r{/hello/([\w]+)} do
 end
 ```
 
-ブロックパラーメータを使用した場合:
+ブロックパラメータを使用した場合:
 
 ``` ruby
 get %r{/hello/([\w]+)} do |c|
@@ -121,7 +123,7 @@ get %r{/hello/([\w]+)} do |c|
 end
 ```
 
-オプショナルパラメーターを使用した場合:
+オプショナルパラメータを使用した場合:
 
 ``` ruby
 get '/posts.?:format?' do
@@ -136,39 +138,45 @@ end
 
 ルートにはユーザエージェントのようなさまざまな条件を含めることができます。
 
-    get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
-      "You're using Songbird version #{params[:agent][0]}"
-    end
+``` ruby
+get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
+  "You're using Songbird version #{params[:agent][0]}"
+end
 
-    get '/foo' do
-      # Matches non-songbird browsers
-    end
+get '/foo' do
+  # Matches non-songbird browsers
+end
+```
 
 ほかに`host_name`と`provides`条件が利用可能です:
 
-    get '/', :host_name => /^admin\./ do
-      "Admin Area, Access denied!"
-    end
+``` ruby
+get '/', :host_name => /^admin\./ do
+  "Admin Area, Access denied!"
+end
 
-    get '/', :provides => 'html' do
-      haml :index
-    end
+get '/', :provides => 'html' do
+  haml :index
+end
 
-    get '/', :provides => ['rss', 'atom', 'xml'] do
-      builder :feed
-    end
+get '/', :provides => ['rss', 'atom', 'xml'] do
+  builder :feed
+end
+```
 
 独自の条件を定義することも簡単にできます:
 
-    set(:probability) { |value| condition { rand <= value } }
+``` ruby
+set(:probability) { |value| condition { rand <= value } }
 
-    get '/win_a_car', :probability => 0.1 do
-      "You won!"
-    end
+get '/win_a_car', :probability => 0.1 do
+  "You won!"
+end
 
-    get '/win_a_car' do
-      "Sorry, you lost."
-    end
+get '/win_a_car' do
+  "Sorry, you lost."
+end
+```
 
 ### 戻り値
 
@@ -191,20 +199,24 @@ Rackレスポンス、Rackボディオブジェクト、HTTPステータスコ�
 
 そのように、例えばストリーミングの例を簡単に実装することができます:
 
-    class Stream
-      def each
-        100.times { |i| yield "#{i}\n" }
-      end
-    end
+``` ruby
+class Stream
+  def each
+    100.times { |i| yield "#{i}\n" }
+  end
+end
 
-    get('/') { Stream.new }
+get('/') { Stream.new }
+```
 
 ## 静的ファイル
 
 静的ファイルは`./public`ディレクトリから配信されます。
 `:public_folder`オプションを指定することで別の場所を指定することができます。
 
-    set :public_folder, File.dirname(__FILE__) + '/static'
+``` ruby
+set :public_folder, File.dirname(__FILE__) + '/static'
+```
 
 注意: この静的ファイル用のディレクトリ名はURL中に含まれません。
 例えば、`./public/css/style.css`は`http://example.com/css/style.css`でアクセスできます。
@@ -214,7 +226,9 @@ Rackレスポンス、Rackボディオブジェクト、HTTPステータスコ�
 テンプレートは`./views`ディレクトリ下に配置されています。
 他のディレクトリを使用する場合の例:
 
-    set :views, File.dirname(__FILE__) + '/templates'
+``` ruby
+set :views, File.dirname(__FILE__) + '/templates'
+```
 
 テンプレートはシンボルを使用して参照させることを覚えておいて下さい。
 サブデレクトリでもこの場合は`:'subdir/template'`のようにします。
@@ -224,12 +238,14 @@ Rackレスポンス、Rackボディオブジェクト、HTTPステータスコ�
 
 hamlを使うにはhamlライブラリが必要です:
 
-    # hamlを読み込みます
-    require 'haml'
+``` ruby
+# hamlを読み込みます
+require 'haml'
 
-    get '/' do
-      haml :index
-    end
+get '/' do
+  haml :index
+end
+```
 
 `./views/index.haml`を表示します。
 
@@ -239,20 +255,24 @@ options](http://haml.info/docs/yardoc/file.HAML_REFERENCE.html#options)
 Configurations](http://www.sinatrarb.com/configuration.html),
 を参照してそれぞれ設定を上書きして下さい。
 
-    set :haml, {:format => :html5 } # デフォルトのフォーマットは:xhtml
+``` ruby
+set :haml, {:format => :html5 } # デフォルトのフォーマットは:xhtml
 
-    get '/' do
-      haml :index, :haml_options => {:format => :html4 } # 上書き
-    end
+get '/' do
+  haml :index, :haml_options => {:format => :html4 } # 上書き
+end
+```
 
 ### Erb テンプレート
 
-    # erbを読み込みます
-    require 'erb'
+``` ruby
+# erbを読み込みます
+require 'erb'
 
-    get '/' do
-      erb :index
-    end
+get '/' do
+  erb :index
+end
+```
 
 `./views/index.erb`を表示します。
 
@@ -260,12 +280,14 @@ Configurations](http://www.sinatrarb.com/configuration.html),
 
 erubisテンプレートを表示するには、erubisライブラリが必要です:
 
-    # erubisを読み込みます
-    require 'erubis'
+``` ruby
+# erubisを読み込みます
+require 'erubis'
 
-    get '/' do
-      erubis :index
-    end
+get '/' do
+  erubis :index
+end
+```
 
 `./views/index.erubis`を表示します。
 
@@ -282,16 +304,18 @@ builderを使うにはbuilderライブラリが必要です:
 
 `./views/index.builder`を表示します。
 
-### 鋸 テンプレート
+### Nokogiri テンプレート
 
-鋸を使うには鋸ライブラリが必要です:
+Nokogiriを使うにはNokogiriライブラリが必要です:
 
-    # 鋸を読み込みます
-    require 'nokogiri'
+```
+# Nokogiriを読み込みます
+require 'nokogiri'
 
-    get '/' do
-      nokogiri :index
-    end
+get '/' do
+  nokogiri :index
+end
+```
 
 `./views/index.nokogiri`を表示します。
 
@@ -299,12 +323,14 @@ builderを使うにはbuilderライブラリが必要です:
 
 Sassテンプレートを使うにはsassライブラリが必要です:
 
-    # hamlかsassを読み込みます
-    require 'sass'
+``` ruby
+# hamlかsassを読み込みます
+require 'sass'
 
-    get '/stylesheet.css' do
-      sass :stylesheet
-    end
+get '/stylesheet.css' do
+  sass :stylesheet
+end
+```
 
 `./views/stylesheet.sass`を表示します。
 
@@ -314,22 +340,26 @@ options](http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options)
 Configurations](http://www.sinatrarb.com/configuration.html),
 を参照してそれぞれ設定を上書きして下さい。
 
-    set :sass, {:style => :compact } # デフォルトのSass styleは :nested
+``` ruby
+set :sass, {:style => :compact } # デフォルトのSass styleは :nested
 
-    get '/stylesheet.css' do
-      sass :stylesheet, :sass_options => {:style => :expanded } # 上書き
-    end
+get '/stylesheet.css' do
+  sass :stylesheet, :sass_options => {:style => :expanded } # 上書き
+end
+```
 
 ### Scss テンプレート
 
 Scssテンプレートを使うにはsassライブラリが必要です:
 
-    # hamlかsassを読み込みます
-    require 'sass'
+``` ruby
+# hamlかsassを読み込みます
+require 'sass'
 
-    get '/stylesheet.css' do
-      scss :stylesheet
-    end
+get '/stylesheet.css' do
+  scss :stylesheet
+end
+```
 
 `./views/stylesheet.scss`を表示します。
 
@@ -339,22 +369,26 @@ options](http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options)
 Configurations](http://www.sinatrarb.com/configuration.html),
 を参照してそれぞれ設定を上書きして下さい。
 
-    set :scss, :style => :compact # デフォルトのScss styleは:nested
+``` ruby
+set :scss, :style => :compact # デフォルトのScss styleは:nested
 
-    get '/stylesheet.css' do
-      scss :stylesheet, :style => :expanded # 上書き
-    end
+get '/stylesheet.css' do
+  scss :stylesheet, :style => :expanded # 上書き
+end
+```
 
 ### Less テンプレート
 
 Lessテンプレートを使うにはlessライブラリが必要です:
 
-    # lessを読み込みます
-    require 'less'
+``` ruby
+# lessを読み込みます
+require 'less'
 
-    get '/stylesheet.css' do
-      less :stylesheet
-    end
+get '/stylesheet.css' do
+  less :stylesheet
+end
+```
 
 `./views/stylesheet.less`を表示します。
 
@@ -362,118 +396,146 @@ Lessテンプレートを使うにはlessライブラリが必要です:
 
 Liquidテンプレートを使うにはliquidライブラリが必要です:
 
-    # liquidを読み込みます
-    require 'liquid'
+``` ruby
+# liquidを読み込みます
+require 'liquid'
 
-    get '/' do
-      liquid :index
-    end
+get '/' do
+  liquid :index
+end
+```
 
 `./views/index.liquid`を表示します。
 
 LiquidテンプレートからRubyのメソッド(`yield`を除く)を呼び出すことができないため、
 ほぼ全ての場合にlocalsを指定する必要があるでしょう:
 
-    liquid :index, :locals => { :key => 'value' }
+``` ruby
+liquid :index, :locals => { :key => 'value' }
+```
 
 ### Markdown テンプレート
 
 Markdownテンプレートを使うにはrdiscountライブラリが必要です:
 
-    # rdiscountを読み込みます
-    require "rdiscount"
+``` ruby
+# rdiscountを読み込みます
+require "rdiscount"
 
-    get '/' do
-      markdown :index
-    end
+get '/' do
+  markdown :index
+end
+```
 
 `./views/index.markdown`を表示します。(`md`と`mkd`も妥当な拡張子です)
 
 markdownからメソッドを呼び出すことも、localsに変数を渡すこともできません。
 それゆえ、他のレンダリングエンジンとの組み合わせで使うのが普通です:
 
-    erb :overview, :locals => { :text => markdown(:introduction) }
+``` ruby
+erb :overview, :locals => { :text => markdown(:introduction) }
+```
 
 他のテンプレートからmarkdownメソッドを呼び出してもよいことに注意してください:
 
-    %h1 Hello From Haml!
-    %p= markdown(:greetings)
+``` haml
+%h1 Hello From Haml!
+%p= markdown(:greetings)
+```
 
 ### Textile テンプレート
 
 Textileテンプレートを使うにはRedClothライブラリが必要です:
 
-    # redclothを読み込みます
-    require "redcloth"
+``` ruby
+# redclothを読み込みます
+require "redcloth"
 
-    get '/' do
-      textile :index
-    end
+get '/' do
+  textile :index
+end
+```
 
 `./views/index.textile`を表示します。
 
 textileからメソッドを呼び出すことも、localsに変数を渡すこともできません。
 それゆえ、他のレンダリングエンジンとの組み合わせで使うのが普通です:
 
-    erb :overview, :locals => { :text => textile(:introduction) }
+``` ruby
+erb :overview, :locals => { :text => textile(:introduction) }
+```
 
 他のテンプレートからtextileメソッドを呼び出してもよいことに注意してください:
 
-    %h1 Hello From Haml!
-    %p= textile(:greetings)
+``` haml
+%h1 Hello From Haml!
+%p= textile(:greetings)
+```
 
 ### RDoc テンプレート
 
 RDocテンプレートを使うにはRDocライブラリが必要です:
 
-    # rdoc/markup/to_htmlを読み込みます
-    require "rdoc"
-    require "rdoc/markup/to_html"
+``` ruby
+# rdoc/markup/to_htmlを読み込みます
+require "rdoc"
+require "rdoc/markup/to_html"
 
-    get '/' do
-      rdoc :index
-    end
+get '/' do
+  rdoc :index
+end
+```
 
 `./views/index.rdoc`を表示します。
 
 rdocからメソッドを呼び出すことも、localsに変数を渡すこともできません。
 それゆえ、他のレンダリングエンジンとの組み合わせで使うのが普通です:
 
-    erb :overview, :locals => { :text => rdoc(:introduction) }
+``` ruby
+erb :overview, :locals => { :text => rdoc(:introduction) }
+```
 
 他のテンプレートからrdocメソッドを呼び出してもよいことに注意してください:
 
-    %h1 Hello From Haml!
-    %p= rdoc(:greetings)
+``` haml
+%h1 Hello From Haml!
+%p= rdoc(:greetings)
+```
 
 ### Radius テンプレート
 
 Radiusテンプレートを使うにはradiusライブラリが必要です:
 
-    # radiusを読み込みます
-    require 'radius'
+``` ruby
+# radiusを読み込みます
+require 'radius'
 
-    get '/' do
-      radius :index
-    end
+get '/' do
+  radius :index
+end
+```
 
 `./views/index.radius`を表示します。
 
 RadiusテンプレートからRubyのメソッド(`yield`を除く)を呼び出すことができないため、
 ほぼ全ての場合にlocalsを指定する必要があるでしょう:
 
-    radius :index, :locals => { :key => 'value' }
+``` ruby
+radius :index, :locals => { :key => 'value' }
+```
 
 ### Markaby テンプレート
 
 Markabyテンプレートを使うにはmarkabyライブラリが必要です:
 
-    # markabyを読み込みます
-    require 'markaby'
+``` ruby
+# markabyを読み込みます
+require 'markaby'
 
-    get '/' do
-      markaby :index
-    end
+get '/' do
+  markaby :index
+end
+```
 
 `./views/index.mab`を表示します。
 
@@ -481,12 +543,14 @@ Markabyテンプレートを使うにはmarkabyライブラリが必要です:
 
 RABLテンプレートを使うにはrablライブラリが必要です:
 
-    # rablを読み込みます
-    require 'rabl'
+``` ruby
+# rablを読み込みます
+require 'rabl'
 
-    get '/' do
-      rabl :index
-    end
+get '/' do
+  rabl :index
+end
+```
 
 `./views/index.rabl`を表示します。
 
@@ -494,12 +558,14 @@ RABLテンプレートを使うにはrablライブラリが必要です:
 
 Slimテンプレートを使うにはslimライブラリが必要です:
 
-    # slimを読み込みます
-    require 'slim'
+``` ruby
+# slimを読み込みます
+require 'slim'
 
-    get '/' do
-      slim :index
-    end
+get '/' do
+  slim :index
+end
+```
 
 `./views/index.slim`を表示します。
 
@@ -507,12 +573,14 @@ Slimテンプレートを使うにはslimライブラリが必要です:
 
 Creoleテンプレートを使うにはcreoleライブラリが必要です:
 
-    # creoleを読み込みます
-    require 'creole'
+``` ruby
+# creoleを読み込みます
+require 'creole'
 
-    get '/' do
-      creole :index
-    end
+get '/' do
+  creole :index
+end
+```
 
 `./views/index.creole`を表示します。
 
@@ -520,20 +588,24 @@ Creoleテンプレートを使うにはcreoleライブラリが必要です:
 
 CoffeeScriptテンプレートを表示するにはcoffee-scriptライブラリと\`coffee\`バイナリが必要です:
 
-    # coffee-scriptを読み込みます
-    require 'coffee-script'
+``` ruby
+# coffee-scriptを読み込みます
+require 'coffee-script'
 
-    get '/application.js' do
-      coffee :application
-    end
+get '/application.js' do
+  coffee :application
+end
+```
 
 `./views/application.coffee`を表示します。
 
 ### インラインテンプレート
 
-    get '/' do
-      haml '%div.title Hello World'
-    end
+``` ruby
+get '/' do
+  haml '%div.title Hello World'
+end
+```
 
 文字列をテンプレートとして表示します。
 
@@ -543,17 +615,21 @@ CoffeeScriptテンプレートを表示するにはcoffee-scriptライブラリ�
 ルートハンドラでセットされたインスタンス変数は
 テンプレート内で直接使うことができます。
 
-    get '/:id' do
-      @foo = Foo.find(params[:id])
-      haml '%h1= @foo.name'
-    end
+``` ruby
+get '/:id' do
+  @foo = Foo.find(params[:id])
+  haml '%h1= @foo.name'
+end
+```
 
 ローカル変数を明示的に定義することもできます。
 
-    get '/:id' do
-      foo = Foo.find(params[:id])
-      haml '%h1= foo.name', :locals => { :foo => foo }
-    end
+``` ruby
+get '/:id' do
+  foo = Foo.find(params[:id])
+  haml '%h1= foo.name', :locals => { :foo => foo }
+end
+```
 
 このやり方は他のテンプレート内で部分テンプレートとして表示する時に典型的に使用されます。
 
@@ -561,21 +637,23 @@ CoffeeScriptテンプレートを表示するにはcoffee-scriptライブラリ�
 
 テンプレートはソースファイルの最後で定義することもできます。
 
-    require 'rubygems'
-    require 'sinatra'
+``` ruby
+require 'rubygems'
+require 'sinatra'
 
-    get '/' do
-      haml :index
-    end
+get '/' do
+  haml :index
+end
 
-    __END__
+__END__
 
-    @@ layout
-    %html
-      = yield
+@@ layout
+%html
+  = yield
 
-    @@ index
-    %div.title Hello world!!!!!
+@@ index
+%div.title Hello world!!!!!
+```
 
 注意:
 sinatraをrequireするファイル内で定義されたファイル内テンプレートは自動的に読み込まれます。
@@ -586,39 +664,45 @@ sinatraをrequireするファイル内で定義されたファイル内テンプ
 
 テンプレートはトップレベルの`template`メソッドで定義することができます。
 
-    template :layout do
-      "%html\n  =yield\n"
-    end
+``` ruby
+template :layout do
+  "%html\n  =yield\n"
+end
 
-    template :index do
-      '%div.title Hello World!'
-    end
+template :index do
+  '%div.title Hello World!'
+end
 
-    get '/' do
-      haml :index
-    end
+get '/' do
+  haml :index
+end
+```
 
 「layout」というテンプレートが存在する場合、そのテンプレートファイルは他のテンプレートが
 表示される度に使用されます。`:layout => false`することでlayoutsを無効にできます。
 
-    get '/' do
-      haml :index, :layout => !request.xhr?
-    end
+``` ruby
+get '/' do
+  haml :index, :layout => !request.xhr?
+end
+```
 
 ## ヘルパー
 
 トップレベルの`helpers`を使用してルートハンドラやテンプレートで使うヘルパメソッドを
 定義できます。
 
-    helpers do
-      def bar(name)
-        "#{name}bar"
-      end
-    end
+``` ruby
+helpers do
+  def bar(name)
+    "#{name}bar"
+  end
+end
 
-    get '/:name' do
-      bar(params[:name])
-    end
+get '/:name' do
+  bar(params[:name])
+end
+```
 
 ## フィルタ
 
@@ -626,70 +710,88 @@ beforeフィルタはリクエストされたコンテキストを実行する�
 リクエストとレスポンスを変更することができます。フィルタ内でセットされた
 インスタンス変数はルーティングとテンプレートで使用できます。
 
-    before do
-      @note = 'Hi!'
-      request.path_info = '/foo/bar/baz'
-    end
+``` ruby
+before do
+  @note = 'Hi!'
+  request.path_info = '/foo/bar/baz'
+end
 
-    get '/foo/*' do
-      @note #=> 'Hi!'
-      params[:splat] #=> 'bar/baz'
-    end
+get '/foo/*' do
+  @note #=> 'Hi!'
+  params[:splat] #=> 'bar/baz'
+end
+```
 
 afterフィルタは同じコンテキストにあるリクエストの後に評価され、
 同じくリクエストとレスポンスを変更することができます。
 beforeフィルタとルートで設定されたインスタンス変数は、
 afterフィルタからアクセスすることができます:
 
-    after do
-      puts response.status
-    end
+``` ruby
+after do
+  puts response.status
+end
+```
 
 フィルタにはオプションとしてパターンを渡すことができ、
 この場合はリクエストのパスがパターンにマッチした場合のみフィルタが評価されます:
 
-    before '/protected/*' do
-      authenticate!
-    end
+``` ruby
+before '/protected/*' do
+  authenticate!
+end
 
-    after '/create/:slug' do |slug|
-      session[:last_slug] = slug
-    end
+after '/create/:slug' do |slug|
+  session[:last_slug] = slug
+end
+```
 
 ## 強制終了
 
 ルートかbeforeフィルタ内で直ちに実行を終了する方法:
 
-    halt
+``` ruby
+halt
+```
 
 ステータスを指定することができます:
 
-    halt 410
+``` ruby
+halt 410
+```
 
 body部を指定することもできます …
 
-    halt 'ここにbodyを書く'
+``` ruby
+halt 'ここにbodyを書く'
+```
 
 ステータスとbody部を指定する …
 
-    halt 401, '立ち去れ!'
+``` ruby
+halt 401, '立ち去れ!'
+```
 
 ヘッダを指定:
 
-    halt 402, {'Content-Type' => 'text/plain'}, 'リベンジ'
+``` ruby
+halt 402, {'Content-Type' => 'text/plain'}, 'リベンジ'
+```
 
 ## パッシング(Passing)
 
 ルートは`pass`を使って次のルートに飛ばすことができます:
 
-    get '/guess/:who' do
-      pass unless params[:who] == 'Frank'
-      "見つかっちゃった!"
-    end
+``` ruby
+get '/guess/:who' do
+  pass unless params[:who] == 'Frank'
+  "見つかっちゃった!"
+end
 
-    get '/guess/*' do
-      "はずれです!"
-    end
+get '/guess/*' do
+  "はずれです!"
+end
+```
 
 ルートブロックからすぐに抜け出し、次にマッチするルートを実行します。
 マッチするルートが見当たらない場合は404が返されます。
@@ -698,67 +800,79 @@ body部を指定することもできます …
 
 受信するリクエストオブジェクトは、\`request\`メソッドを通じてリクエストレベル(フィルタ、ルート、エラーハンドラ)からアクセスすることができます:
 
-    # アプリケーションが http://example.com/example で動作している場合
-    get '/foo' do
-      request.body              # クライアントによって送信されたリクエストボディ(下記参照)
-      request.scheme            # "http"
-      request.script_name       # "/example"
-      request.path_info         # "/foo"
-      request.port              # 80
-      request.request_method    # "GET"
-      request.query_string      # ""
-      request.content_length    # request.bodyの長さ
-      request.media_type        # request.bodyのメディアタイプ
-      request.host              # "example.com"
-      request.get?              # true (他の動詞についても同様のメソッドあり)
-      request.form_data?        # false
-      request["SOME_HEADER"]    # SOME_HEADERヘッダの値
-      request.referer           # クライアントのリファラまたは'/'
-      request.user_agent        # ユーザエージェント (:agent 条件によって使用される)
-      request.cookies           # ブラウザクッキーのハッシュ
-      request.xhr?              # Ajaxリクエストかどうか
-      request.url               # "http://example.com/example/foo"
-      request.path              # "/example/foo"
-      request.ip                # クライアントのIPアドレス
-      request.secure?           # false
-      request.env               # Rackによって渡された生のenvハッシュ
-    end
+``` ruby
+# アプリケーションが http://example.com/example で動作している場合
+get '/foo' do
+  request.body              # クライアントによって送信されたリクエストボディ(下記参照)
+  request.scheme            # "http"
+  request.script_name       # "/example"
+  request.path_info         # "/foo"
+  request.port              # 80
+  request.request_method    # "GET"
+  request.query_string      # ""
+  request.content_length    # request.bodyの長さ
+  request.media_type        # request.bodyのメディアタイプ
+  request.host              # "example.com"
+  request.get?              # true (他の動詞についても同様のメソッドあり)
+  request.form_data?        # false
+  request["SOME_HEADER"]    # SOME_HEADERヘッダの値
+  request.referer           # クライアントのリファラまたは'/'
+  request.user_agent        # ユーザエージェント (:agent 条件によって使用される)
+  request.cookies           # ブラウザクッキーのハッシュ
+  request.xhr?              # Ajaxリクエストかどうか
+  request.url               # "http://example.com/example/foo"
+  request.path              # "/example/foo"
+  request.ip                # クライアントのIPアドレス
+  request.secure?           # false
+  request.env               # Rackによって渡された生のenvハッシュ
+end
+```
 
 `script_name`や`path_info`などのオプションは次のように利用することもできます:
 
-    before { request.path_info = "/" }
+``` ruby
+before { request.path_info = "/" }
 
-    get "/" do
-      "全てのリクエストはここに来る"
-    end
+get "/" do
+  "全てのリクエストはここに来る"
+end
+```
 
 `request.body`はIOまたはStringIOのオブジェクトです:
 
-    post "/api" do
-      request.body.rewind  # 既に読まれているときのため
-      data = JSON.parse request.body.read
-      "Hello #{data['name']}!"
-    end
+``` ruby
+post "/api" do
+  request.body.rewind  # 既に読まれているときのため
+  data = JSON.parse request.body.read
+  "Hello #{data['name']}!"
+end
+```
 
 ## 設定
 
 どの環境でも起動時に１回だけ実行されます。
 
-    configure do
-      ...
-    end
+``` ruby
+configure do
+  ...
+end
+```
 
 環境(RACK\_ENV環境変数)が`:production`に設定されている時だけ実行する方法:
 
-    configure :production do
-      ...
-    end
+``` ruby
+configure :production do
+  ...
+end
+```
 
 環境が`:production`か`:test`の場合に設定する方法:
 
-    configure :production, :test do
-      ...
-    end
+``` ruby
+configure :production, :test do
+  ...
+end
+```
 
 ## エラーハンドリング
 
@@ -770,9 +884,11 @@ body部を指定することもできます …
 `Sinatra::NotFound`が起きた時か レスポンスのステータスコードが
 404の時に`not_found`ハンドラーが発動します。
 
-    not_found do
-      'ファイルが存在しません'
-    end
+``` ruby
+not_found do
+  'ファイルが存在しません'
+end
+```
 
 ### エラー
 
@@ -780,41 +896,53 @@ body部を指定することもできます …
 ハンドラーはルートブロックかbeforeフィルタ内で例外が発生した時はいつでも発動します。
 例外オブジェクトはRack変数`sinatra.error`から取得できます。
 
-    error do
-      'エラーが発生しました。 - ' + env['sinatra.error'].name
-    end
+``` ruby
+error do
+  'エラーが発生しました。 - ' + env['sinatra.error'].name
+end
+```
 
 エラーをカスタマイズする場合は、
 
-    error MyCustomError do
-      'エラーメッセージ...' + env['sinatra.error'].message
-    end
+``` ruby
+error MyCustomError do
+  'エラーメッセージ...' + env['sinatra.error'].message
+end
+```
 
 と書いておいて,下記のように呼び出します。
 
-    get '/' do
-      raise MyCustomError, '何かがまずかったようです'
-    end
+``` ruby
+get '/' do
+  raise MyCustomError, '何かがまずかったようです'
+end
+```
 
 そうするとこうなります:
 
-    エラーメッセージ... 何かがまずかったようです
+```
+エラーメッセージ... 何かがまずかったようです
+```
 
 あるいは、ステータスコードに対応するエラーハンドラを設定することもできます:
 
-    error 403 do
-      'Access forbidden'
-    end
+``` ruby
+error 403 do
+  'Access forbidden'
+end
 
-    get '/secret' do
-      403
-    end
+get '/secret' do
+  403
+end
+```
 
 範囲指定もできます:
 
-    error 400..510 do
-      'Boom'
-    end
+``` ruby
+error 400..510 do
+  'Boom'
+end
+```
 
 開発環境として実行している場合、Sinatraは特別な`not_found`と`error`ハンドラーを
 インストールしています。
@@ -824,11 +952,15 @@ body部を指定することもできます …
 `send_file`か静的ファイルを使う時、Sinatraが理解でいないMIMEタイプがある場合があります。
 その時は `mime_type` を使ってファイル拡張子毎に登録して下さい。
 
-    mime_type :foo, 'text/foo'
+``` ruby
+mime_type :foo, 'text/foo'
+```
 
 これはcontent\_typeヘルパで利用することができます:
 
-    content_type :foo
+``` ruby
+content_type :foo
+```
 
 ## Rackミドルウェア
 
@@ -841,24 +973,28 @@ body部を指定することもできます …
 Sinatraではトップレベルの`use`
 メソッドを使ってRackにパイプラインを構築します。
 
-    require 'sinatra'
-    require 'my_custom_middleware'
+``` ruby
+require 'sinatra'
+require 'my_custom_middleware'
 
-    use Rack::Lint
-    use MyCustomMiddleware
+use Rack::Lint
+use MyCustomMiddleware
 
-    get '/hello' do
-      'Hello World'
-    end
+get '/hello' do
+  'Hello World'
+end
+```
 
 `use`
 [Rack::Builder](http://rack.rubyforge.org/doc/classes/Rack/Builder.html)
 DSLで定義されていることと全て一致します。 例えば `use`
 メソッドはブロック構文のように複数の引数を受け取ることができます。
 
-    use Rack::Auth::Basic do |username, password|
-      username == 'admin' && password == 'secret'
-    end
+``` ruby
+use Rack::Auth::Basic do |username, password|
+  username == 'admin' && password == 'secret'
+end
+```
 
 Rackはログ、デバッギング、URLルーティング、認証、セッションなどいろいろな機能を備えた標準的ミドルウェアです。
 Sinatraはその多くのコンポーネントを自動で使うよう基本設定されているため、`use`で明示的に指定する必要はありません。
@@ -869,31 +1005,33 @@ SinatraでのテストはRack-basedのテストライブラリかフレームワ
 [Rack::Test](http://gitrdoc.com/brynary/rack-test)
 をおすすめします。やり方:
 
-    require 'my_sinatra_app'
-    require 'rack/test'
+``` ruby
+require 'my_sinatra_app'
+require 'rack/test'
 
-    class MyAppTest < Test::Unit::TestCase
-      include Rack::Test::Methods
+class MyAppTest < Test::Unit::TestCase
+  include Rack::Test::Methods
 
-      def app
-        Sinatra::Application
-      end
+  def app
+    Sinatra::Application
+  end
 
-      def test_my_default
-        get '/'
-        assert_equal 'Hello World!', last_response.body
-      end
+  def test_my_default
+    get '/'
+    assert_equal 'Hello World!', last_response.body
+  end
 
-      def test_with_params
-        get '/meet', :name => 'Frank'
-        assert_equal 'Hello Frank!', last_response.body
-      end
+  def test_with_params
+    get '/meet', :name => 'Frank'
+    assert_equal 'Hello Frank!', last_response.body
+  end
 
-      def test_with_rack_env
-        get '/', {}, 'HTTP_USER_AGENT' => 'Songbird'
-        assert_equal "あなたはSongbirdを使ってますね!", last_response.body
-      end
-    end
+  def test_with_rack_env
+    get '/', {}, 'HTTP_USER_AGENT' => 'Songbird'
+    assert_equal "あなたはSongbirdを使ってますね!", last_response.body
+  end
+end
+```
 
 注意: ビルトインのSinatra::TestモジュールとSinatra::TestHarnessクラスは
 0.9.2リリース以降、廃止予定になっています。
@@ -906,23 +1044,27 @@ RackミドルウェアやRails metal、サーバのコンポーネントを含�
 トップレベルのDSLがネームスペースを汚染したり、設定を変えてしまうこと(例:./publicや./view)がありえます。
 そこでSinatra::Baseの出番です。
 
-    require 'sinatra/base'
+``` ruby
+require 'sinatra/base'
 
-    class MyApp < Sinatra::Base
-      set :sessions, true
-      set :foo, 'bar'
+class MyApp < Sinatra::Base
+  set :sessions, true
+  set :foo, 'bar'
 
-      get '/' do
-        'Hello world!'
-      end
-    end
+  get '/' do
+    'Hello world!'
+  end
+end
+```
 
 このMyAppは独立したRackコンポーネントで、RackミドルウェアやRackアプリケーション
 Rails metalとして使用することができます。`config.ru`ファイル内で `use`
 か、または `run`
 でこのクラスを指定するか、ライブラリとしてサーバコンポーネントをコントロールします。
 
-    MyApp.run! :host => 'localhost', :port => 9090
+``` ruby
+MyApp.run! :host => 'localhost', :port => 9090
+```
 
 Sinatra::Baseのサブクラスで使えるメソッドはトップレベルのDSLを経由して確実に使うことができます。
 ほとんどのトップレベルで記述されたアプリは、以下の２点を修正することでSinatra::Baseコンポーネントに変えることができます。
@@ -956,34 +1098,36 @@ Sinatraは他のRackミドルウェアを利用することができるだけで
 
 このエンドポイントには、別のSinatraアプリケーションまたは他のRackベースのアプリケーション(Rails/Ramaze/Camping/…)が用いられるでしょう。
 
-    require 'sinatra/base'
+``` ruby
+require 'sinatra/base'
 
-    class LoginScreen < Sinatra::Base
-      enable :sessions
+class LoginScreen < Sinatra::Base
+  enable :sessions
 
-      get('/login') { haml :login }
+  get('/login') { haml :login }
 
-      post('/login') do
-        if params[:name] = 'admin' and params[:password] = 'admin'
-          session['user_name'] = params[:name]
-        else
-          redirect '/login'
-        end
-      end
+  post('/login') do
+    if params[:name] = 'admin' and params[:password] = 'admin'
+      session['user_name'] = params[:name]
+    else
+      redirect '/login'
     end
+  end
+end
 
-    class MyApp < Sinatra::Base
-      # middleware will run before filters
-      use LoginScreen
+class MyApp < Sinatra::Base
+  # middleware will run before filters
+  use LoginScreen
 
-      before do
-        unless session['user_name']
-          halt "Access denied, please <a href='/login'>login</a>."
-        end
-      end
-
-      get('/') { "Hello #{session['user_name']}." }
+  before do
+    unless session['user_name']
+      halt "Access denied, please <a href='/login'>login</a>."
     end
+  end
+
+  get('/') { "Hello #{session['user_name']}." }
+end
+```
 
 ## スコープとバインディング
 
@@ -999,15 +1143,17 @@ Sinatraは他のRackミドルウェアを利用することができるだけで
 
 \`set\`によって作られたオプションはクラスレベルのメソッドです:
 
-    class MyApp < Sinatra::Base
-      # Hey, I'm in the application scope!
-      set :foo, 42
-      foo # => 42
+``` ruby
+class MyApp < Sinatra::Base
+  # Hey, I'm in the application scope!
+  set :foo, 42
+  foo # => 42
 
-      get '/foo' do
-        # Hey, I'm no longer in the application scope!
-      end
-    end
+  get '/foo' do
+    # Hey, I'm no longer in the application scope!
+  end
+end
+```
 
 次の場所ではアプリケーションスコープバインディングを持ちます:
 
@@ -1031,20 +1177,22 @@ Sinatraは他のRackミドルウェアを利用することができるだけで
 このスコープの内側からは\`request\`や\`session\`オブジェクトにアクセスすることができ、\`erb\`や\`haml\`のような表示メソッドを呼び出すことができます。
 リクエストスコープの内側からは、\`settings\`ヘルパによってアプリケーションスコープにアクセスすることができます。
 
-    class MyApp < Sinatra::Base
-      # Hey, I'm in the application scope!
-      get '/define_route/:name' do
-        # Request scope for '/define_route/:name'
-        @value = 42
+``` ruby
+class MyApp < Sinatra::Base
+  # Hey, I'm in the application scope!
+  get '/define_route/:name' do
+    # Request scope for '/define_route/:name'
+    @value = 42
 
-        settings.get("/#{params[:name]}") do
-          # Request scope for "/#{params[:name]}"
-          @value # => nil (not the same request)
-        end
-
-        "Route defined!"
-      end
+    settings.get("/#{params[:name]}") do
+      # Request scope for "/#{params[:name]}"
+      @value # => nil (not the same request)
     end
+
+    "Route defined!"
+  end
+end
+```
 
 次の場所ではリクエストスコープバインディングを持ちます:
 
@@ -1079,7 +1227,9 @@ mixin](http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854f606
 
 Sinatraアプリケーションは直接実行できます。
 
-    ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
+``` shell
+ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
+```
 
 オプション:
 
@@ -1095,31 +1245,37 @@ Sinatraアプリケーションは直接実行できます。
 Sinatraの開発版を使いたい場合は、ローカルに開発版を落として、
 `LOAD_PATH`の`sinatra/lib`ディレクトリを指定して実行して下さい。
 
-    cd myapp
-    git clone git://github.com/sinatra/sinatra.git
-    ruby -Isinatra/lib myapp.rb
+``` shell
+cd myapp
+git clone git://github.com/sinatra/sinatra.git
+ruby -Isinatra/lib myapp.rb
+```
 
 `sinatra/lib`ディレクトリをアプリケーションの`LOAD_PATH`に追加する方法もあります。
 
-    $LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
-    require 'rubygems'
-    require 'sinatra'
+``` ruby
+$LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
+require 'rubygems'
+require 'sinatra'
 
-    get '/about' do
-      "今使ってるバージョンは" + Sinatra::VERSION
-    end
+get '/about' do
+  "今使ってるバージョンは" + Sinatra::VERSION
+end
+```
 
 Sinatraのソースを更新する方法:
 
-    cd myproject/sinatra
-    git pull
+``` shell
+cd myproject/sinatra
+git pull
+```
 
 ## その他
 
 日本語サイト
 
 -   [Greenbear Laboratory
-    Rack日本語マニュアル](http://mono.kmc.gr.jp/~yhara/w/?RackReferenceJa)
+    Rack日本語マニュアル](http://route477.net/w/RackReferenceJa.html)
     - Rackの日本語マニュアル
 
 英語サイト
