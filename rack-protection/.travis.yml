@@ -13,3 +13,4 @@ matrix:
     - { rvm: ruby-head,     env: rack=master }
   allow_failures:
     - rvm: ruby-head
+    - rvm: rbx
