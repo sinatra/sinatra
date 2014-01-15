@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   # general infos
   s.name        = "rack-protection"
-  s.version     = "1.5.1"
+  s.version     = "1.5.2"
   s.description = "You should use protection!"
   s.homepage    = "http://github.com/rkh/rack-protection"
   s.summary     = s.description
@@ -13,19 +13,21 @@ Gem::Specification.new do |s|
     "Konstantin Haase",
     "Alex Rodionov",
     "Patrick Ellis",
-    "Jeff Welling",
     "ITO Nobuaki",
     "Matteo Centenaro",
+    "Jeff Welling",
     "David Kellum",
     "Egor Homakov",
     "Florian Gilcher",
     "Fojas",
     "Mael Clerambault",
     "Martin Mauch",
+    "Renne Nissinen",
     "SAKAI, Kazuaki",
     "Stanislav Savulchik",
     "Steve Agalloco",
     "TOBY",
+    "Vipul A M",
     "Akzhan Abdulin",
     "brookemckim",
     "Bj\u00F8rge N\u00E6ss",
@@ -41,17 +43,19 @@ Gem::Specification.new do |s|
     "p0deje@gmail.com",
     "patrick@soundcloud.com",
     "jeff.welling@gmail.com",
-    "bugant@gmail.com",
     "daydream.trippers@gmail.com",
+    "bugant@gmail.com",
     "homakov@gmail.com",
     "florian.gilcher@asquera.de",
     "developer@fojasaur.us",
     "mael@clerambault.fr",
     "martin.mauch@gmail.com",
+    "rennex@iki.fi",
     "kaz.july.7@gmail.com",
     "s.savulchik@gmail.com",
     "steve.agalloco@gmail.com",
     "toby.net.info.mail+git@gmail.com",
+    "vipulnsward@gmail.com",
     "akzhan.abdulin@gmail.com",
     "brooke@digitalocean.com",
     "bjoerge@bengler.no",
