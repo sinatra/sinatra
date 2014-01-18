@@ -111,7 +111,7 @@ end
 desc "list of authors"
 task :authors, [:commit_range, :format, :sep] do |t, a|
   a.with_defaults :format => "%s (%d)", :sep => ", ", :commit_range => '--all'
-  authors = Hash.new { |h,k| h[k] = 0 }
+  authors = Hash.new(0)
   blake   = "Blake Mizerany"
   overall = 0
   mapping = {
