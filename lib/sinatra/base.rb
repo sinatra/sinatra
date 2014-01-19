@@ -835,7 +835,7 @@ module Sinatra
             @preferred_extension = engine.to_s
             find_template(views, data, template) do |file|
               path ||= file # keep the initial path rather than the last one
-              if found = File.exists?(file)
+              if found = File.exist?(file)
                 path = file
                 break
               end
