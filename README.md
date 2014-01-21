@@ -1004,7 +1004,7 @@ present(resource);
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="https://github.com/blambeau/wlang/" title="wlang">wlang</a></td>
+    <td><a href="https://github.com/blambeau/wlang/" title="WLang">WLang</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
@@ -1016,8 +1016,8 @@ present(resource);
   </tr>
 </table>
 
-Since calling ruby methods is not idiomatic in wlang, you almost always want to pass locals
-to it. Layouts written in wlang and `yield` are supported, though.
+Since calling ruby methods is not idiomatic in WLang, you almost always want to pass locals
+to it. Layouts written in WLang and `yield` are supported, though.
 
 ### Accessing Variables in Templates
 
