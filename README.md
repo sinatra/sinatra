@@ -994,8 +994,9 @@ json[:baz] = key
 The `:callback` and `:variable` options can be used to decorate the rendered
 object:
 
-``` ruby
-var resource = {"foo":"bar","baz":"qux"}; present(resource);
+``` javascript
+var resource = {"foo":"bar","baz":"qux"};
+present(resource);
 ```
 
 #### WLang Templates
