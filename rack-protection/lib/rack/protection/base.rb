@@ -92,6 +92,7 @@ module Rack
         ref = env['HTTP_REFERER'].to_s
         return if !options[:allow_empty_referrer] and ref.empty?
         URI.parse(ref).host || Request.new(env).host
+      rescue URI::InvalidURIError
       end
 
       def origin(env)
