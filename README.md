@@ -2390,7 +2390,7 @@ available via the top-level DSL. Most top-level apps can be converted to
 
 `Sinatra::Base` is a blank slate. Most options are disabled by default,
 including the built-in server. See
-[Options and Configuration](http://sinatra.github.com/configuration.html)
+[Configuring Settings](http://sinatra.github.com/configuration.html)
 for details on available options and their behavior.
 
 ### Modular vs. Classic Style
