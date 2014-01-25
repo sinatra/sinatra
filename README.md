@@ -1180,9 +1180,9 @@ get '/foo/*' do
 end
 ```
 
-After filters are evaluated after each request within the same context and can
-also modify the request and response. Instance variables set in before filters
-and routes are accessible by after filters:
+After filters are evaluated after each request within the same
+context as the routes will be and can also modify the request and response. Instance
+variables set in before filters and routes are accessible by after filters:
 
 ``` ruby
 after do
