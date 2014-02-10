@@ -94,7 +94,7 @@ Si raccomanda di eseguire `gem install thin`, Sinatra utilizzera thin quando dis
     * [Testare](#testare)
     * [Sinatra::Base - Middleware, Librerie, e Applicazioni Modulari](#sinatrabase---middleware-librerie-and-applicazioni-modulari)
         * [Modulare vs. Classic Style](#modular-vs-classic-style)
-        * [Fornire un applicazione modulare](#fornire-un-applicazione-modulare)
+        * [Esporre un applicazione modulare](#esporre-un-applicazione-modulare)
         * [Usare una Classic Style Application con config.ru](#usare-una-classic-style-application-con-configru)
         * [Quando utilizzare config.ru?](#quando-utilizzare-configru)
         * [Utilizzare Sinatra come Middleware](#utilizzare-sinatra-come-middleware)
@@ -364,21 +364,17 @@ get %r{^(?!/index$)} do
 end
 ```
 
-## Static Files
+## Files statici
 
-Static files are served from the `./public` directory. You can specify
-a different location by setting the `:public_folder` option:
+I files statici vengono esposti tramite la directory `./public`. Puoi specificare una posizione differente impostando l'opzione `:public_folder`.
 
 ``` ruby
 set :public_folder, File.dirname(__FILE__) + '/static'
 ```
 
-Note that the public directory name is not included in the URL. A file
-`./public/css/style.css` is made available as
-`http://example.com/css/style.css`.
+Nota che il nome della directory public non é presente nel'URL. Il file `./public/css/style.css` per esempio sarebbe reso disponibile come: `http://example.com/css/style.css`.
 
-Use the `:static_cache_control` setting (see below) to add
-`Cache-Control` header info.
+Usa l'opzione `:static_cache_control` (vedi stto) per aggiungere `Cache-Control` alle informazioni dell'header.
 
 ## Views / Templates
 
