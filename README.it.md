@@ -30,10 +30,10 @@ Si raccomanda di eseguire `gem install thin`, Sinatra utilizzera thin quando dis
 ## Indice
 
 * [Sinatra](#sinatra)
-    * [Indice](#table-of-contents)
-    * [Routes(instradamento)](#routes)
-    * [Condizioni](#conditions)
-    * [Valori di return](#return-values)
+    * [Indice](#indice)
+    * [Routes(instradamento)](#routes(instradamento))
+    * [Condizioni](#condizioni)
+    * [Valori ritornati](#valori-ritornati)
     * [Routes personalizzate(Custom Matchers)](#custom-route-matchers)
     * [Files statici](#static-files)
     * [Views / Templates](#views--templates)
