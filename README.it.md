@@ -175,8 +175,8 @@ get '/hello/:name' do |n|
 end
 ```
 
-Route patterns may also include splat (or wildcard) parameters, accessible
-via the `params[:splat]` array:
+I pattern delle routes possono anche includere dei parametri splat (o wildcard), accessibili
+tramite l'array `params[:splat]`:
 
 ``` ruby
 get '/say/*/to/*' do
@@ -190,7 +190,7 @@ get '/download/*.*' do
 end
 ```
 
-Or with block parameters:
+O con dei parametri di blocco:
 
 ``` ruby
 get '/download/*.*' do |path, ext|
@@ -198,7 +198,7 @@ get '/download/*.*' do |path, ext|
 end
 ```
 
-Route matching with Regular Expressions:
+Le routes possono anche essere definite con una regular expression:
 
 ``` ruby
 get %r{/hello/([\w]+)} do
@@ -206,7 +206,7 @@ get %r{/hello/([\w]+)} do
 end
 ```
 
-Or with a block parameter:
+O con il parametro di un blocco:
 
 ``` ruby
 get %r{/hello/([\w]+)} do |c|
@@ -214,7 +214,7 @@ get %r{/hello/([\w]+)} do |c|
 end
 ```
 
-Route patterns may have optional parameters:
+Le Routes possono anche prevedere dei parametri opzionali:
 
 ``` ruby
 get '/posts.?:format?' do
@@ -222,10 +222,11 @@ get '/posts.?:format?' do
 end
 ```
 
-By the way, unless you disable the path traversal attack protection (see below),
-the request path might be modified before matching against your routes.
+Comunque, a meno di disabilitare la Trasversal Attack protection (vedi sotto),
+l'URL della richiesta potrebbe essere stato modificato prima di essere stato comparato a una delle tue routes.
 
-## Conditions
+
+## Condizioni
 
 Routes may include a variety of matching conditions, such as the user agent:
 
