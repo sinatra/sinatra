@@ -293,23 +293,19 @@ end
 
 ## Valori ritornati
 
-The return value of a route block determines at least the response body passed
-on to the HTTP client, or at least the next middleware in the Rack stack.
-Most commonly, this is a string, as in the above examples. But other values are
-also accepted.
+I valori ritornati da un blocco route determinano il response body passato al client HTTP, o al prossimo middleware dello stack Rack.
+Spesso é una stringa, come nel ultimo esempio del capitolo Routes, ma sono accettati anche altri valori.
 
-You can return any object that would either be a valid Rack response, Rack
-body object or HTTP status code:
+Puoi restituire qualsiasi oggetto che potrebbe essere una risposta valida Rack, un oggetto Rack body o lo status code HTTP:
 
-* An Array with three elements: `[status (Fixnum), headers (Hash), response
+* Un Array con tré elementi: `[status (Fixnum), headers (Hash), response
   body (responds to #each)]`
-* An Array with two elements: `[status (Fixnum), response body (responds to
+* Un Array con due elementi: `[status (Fixnum), response body (responds to
   #each)]`
-* An object that responds to `#each` and passes nothing but strings to
-  the given block
-* A Fixnum representing the status code
+* Un oggetto che risponde a `#each` e che passa delle stringhe al blocco.
+* Un Fixnum che rappresenta lo status code HTTP.
 
-That way we can, for instance, easily implement a streaming example:
+Per esempio per implementare un semplice stream:
 
 ``` ruby
 class Stream
@@ -321,10 +317,10 @@ end
 get('/') { Stream.new }
 ```
 
-You can also use the `stream` helper method (described below) to reduce boiler
-plate and embed the streaming logic in the route.
+Puoi anche usare l'helper `stream` (descritto sotto) 
+You can also use the `stream` helper method (described below) per essere più chiari e includere la logica di streaming nella route.
 
-## Custom Route Matchers
+## Routes personalizzate
 
 As shown above, Sinatra ships with built-in support for using String patterns
 and regular expressions as route matches. However, it does not stop there. You
