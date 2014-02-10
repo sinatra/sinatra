@@ -34,7 +34,7 @@ Si raccomanda di eseguire `gem install thin`, Sinatra utilizzera thin quando dis
     * [Routes](#routes)
     * [Condizioni](#condizioni)
     * [Valori ritornati](#valori-ritornati)
-    * [Routes personalizzate](#routes-personalizzate)
+    * [Routes personalizzate](#routes-con-pattern-personalizzati)
     * [Files statici](#files-statici)
     * [Views / Templates](#views--templates)
         * [Literal Templates](#literal-templates)
@@ -320,11 +320,9 @@ get('/') { Stream.new }
 Puoi anche usare l'helper `stream` (descritto sotto) 
 You can also use the `stream` helper method (described below) per essere più chiari e includere la logica di streaming nella route.
 
-## Routes personalizzate
+## Routes con pattern personalizzati
 
-As shown above, Sinatra ships with built-in support for using String patterns
-and regular expressions as route matches. However, it does not stop there. You
-can easily define your own matchers:
+Come mostrato sopra, Sinatra fornisce un supporto integrto per utilizzare dei pattern di stringe e le regular expression per instradare le chiamate. Tuttavia non si ferma qui. Puoi facilmente definire dei pattern personalizzati:
 
 ``` ruby
 class AllButPattern
@@ -349,8 +347,7 @@ get all_but("/index") do
 end
 ```
 
-Note that the above example might be over-engineered, as it can also be
-expressed as:
+L'esempio qui sopra può essere visto come un over-engineer, dato che si può anche definire come:
 
 ``` ruby
 get // do
@@ -359,7 +356,7 @@ get // do
 end
 ```
 
-Or, using negative look ahead:
+O, utilizzando una forma negativa:
 
 ``` ruby
 get %r{^(?!/index$)} do
