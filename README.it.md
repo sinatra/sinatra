@@ -228,7 +228,8 @@ l'URL della richiesta potrebbe essere stato modificato prima di essere stato com
 
 ## Condizioni
 
-Routes may include a variety of matching conditions, such as the user agent:
+Le Routes possono includere una gran varietà di condizioni, tra le quali gli 'user agent':
+
 
 ``` ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
@@ -240,7 +241,7 @@ get '/foo' do
 end
 ```
 
-Other available conditions are `host_name` and `provides`:
+Altre condizioni disponibili sono `host_name` e `provides`:
 
 ``` ruby
 get '/', :host_name => /^admin\./ do
@@ -256,7 +257,7 @@ get '/', :provides => ['rss', 'atom', 'xml'] do
 end
 ```
 
-You can easily define your own conditions:
+Puoi facilmente definire le tue condizioni:
 
 ``` ruby
 set(:probability) { |value| condition { rand <= value } }
@@ -270,7 +271,7 @@ get '/win_a_car' do
 end
 ```
 
-For a condition that takes multiple values use a splat:
+Per una condizione che utilizza valori multipli utilizza l'operatore splat(*):
 
 ``` ruby
 set(:auth) do |*roles|   # <- notice the splat here
