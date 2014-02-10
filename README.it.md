@@ -378,8 +378,7 @@ Usa l'opzione `:static_cache_control` (vedi stto) per aggiungere `Cache-Control`
 
 ## Views / Templates
 
-Each template language is exposed via its own rendering method. These
-methods simply return a string:
+Ogni linguaggio di template é esposto tramite il suo metodo di rendering, il quale ritorna semplicemente una stringa:
 
 ``` ruby
 get '/' do
@@ -387,10 +386,10 @@ get '/' do
 end
 ```
 
-This renders `views/index.erb`.
+Questo renderizza: `views/index.erb`.
 
-Instead of a template name, you can also just pass in the template content
-directly:
+Invece del nome del template, puoi anche passare direttamente nel contenuto del template:
+
 
 ``` ruby
 get '/' do
@@ -398,8 +397,7 @@ get '/' do
   erb code
 end
 ```
-
-Templates take a second argument, the options hash:
+I metodi per i template accettano un secondo parametro, la hash options:
 
 ``` ruby
 get '/' do
@@ -407,11 +405,10 @@ get '/' do
 end
 ```
 
-This will render `views/index.erb` embedded in the
-`views/post.erb` (default is `views/layout.erb`, if it exists).
+Questo renderizza `views/index.erb` integrato in
+`views/post.erb` (il valore di default é `views/layout.erb`, se questo esiste).
 
-Any options not understood by Sinatra will be passed on to the template
-engine:
+Ogni ppzione non contemplata da Sinatra sarà passata direttamente al template:
 
 ``` ruby
 get '/' do
