@@ -386,7 +386,7 @@ get '/' do
 end
 ```
 
-Questo renderizza: `views/index.erb`.
+Renderizza: `views/index.erb`.
 
 Invece del nome del template, puoi anche passare direttamente nel contenuto del template:
 
@@ -416,7 +416,7 @@ get '/' do
 end
 ```
 
-You can also set options per template language in general:
+Puoi anche impostare le opzioni relativa al linguaggio di ogni template:
 
 ``` ruby
 set :haml, :format => :html5
@@ -426,72 +426,64 @@ get '/' do
 end
 ```
 
-Options passed to the render method override options set via `set`.
+Le opzioni passate al metodo render sovrascrivono quelle passate tramite il metodo `set`. 
 
-Available Options:
+Opzioni disponibili:
 
 <dl>
   <dt>locals</dt>
   <dd>
-    List of locals passed to the document. Handy with partials.
-    Example: <tt>erb "<%= foo %>", :locals => {:foo => "bar"}</tt>
+    Lista di variabili locali passate al documento. Molto utili con i partials.
+    Esempio: <tt>erb "<%= foo %>", :locals => {:foo => "bar"}</tt>
   </dd>
 
   <dt>default_encoding</dt>
   <dd>
-    String encoding to use if uncertain. Defaults to
+    Encoding delle stringhe da utilizzare in caso di indecisione. Di default
     <tt>settings.default_encoding</tt>.
   </dd>
 
   <dt>views</dt>
   <dd>
-    Views folder to load templates from. Defaults to <tt>settings.views</tt>.
+    Directory da cui caricare le Views. Di default <tt>settings.views</tt>.
   </dd>
 
   <dt>layout</dt>
   <dd>
-    Whether to use a layout (<tt>true</tt> or <tt>false</tt>). If it's a Symbol, specifies
-    what template to use. Example: <tt>erb :index, :layout => !request.xhr?</tt>
+    Se utilizzare o meno un layout (<tt>true</tt> o <tt>false</tt>). Se é un Symbol, specifica quale template utilizzare. Esempio: <tt>erb :index, :layout => !request.xhr?</tt>
   </dd>
 
   <dt>content_type</dt>
   <dd>
-    Content-Type the template produces. Default depends on template language.
+    Il Content-Type prodotto dal template. Di default dipende dal linguaggio del template.
   </dd>
 
   <dt>scope</dt>
   <dd>
-    Scope to render template under. Defaults to the application instance. If you
-    change this, instance variables and helper methods will not be available.
+    Lo Scope(contesto) con il quale renderizzare il template. Di defaults utilizza l'istanza dell'applicazione. Se cambiato, le variabili di istanza e gli helper methods non saranno disponibili.
   </dd>
 
   <dt>layout_engine</dt>
   <dd>
-    Template engine to use for rendering the layout. Useful for languages that
-    do not support layouts otherwise. Defaults to the engine used for the
-    template. Example: <tt>set :rdoc, :layout_engine => :erb</tt>
+    Template engine utilizzato per renderizzare il layout. Utile per i linguaggi che altrimenti non supportano i layout. Di default l'engine utilizzato per il template. Esempio: <tt>set :rdoc, :layout_engine => :erb</tt>
   </dd>
 
   <dt>layout_options</dt>
   <dd>
-    Special options only used for rendering the layout. Example:
+    Opzioni speciali utilizzate unicamente per renderizzare il layout. Esempio:
     <tt>set :rdoc, :layout_options => { :views => 'views/layouts' }</tt>
   </dd>
 </dl>
 
-Templates are assumed to be located directly under the `./views` directory. To
-use a different views directory:
+Si suppone che i templates siajno locati nella directory `./views`.
+Per utilizzare un altra directory:
 
 ``` ruby
 set :views, settings.root + '/templates'
 ```
 
+È importante ricordare di referenziare sempre i templates con dei symbols, anche se questi sono in una subdirectory (per esempio: `:'subdir/template'` o `'subdir/template'.to_sym`). Bisogna utilizzare un symbol dato che i metodi di rendering a cui viene passata una stringa, renderizzano la stessa invece del layout.
 
-One important thing to remember is that you always have to reference templates
-with symbols, even if they're in a subdirectory (in this case, use:
-`:'subdir/template'` or `'subdir/template'.to_sym`). You must use a symbol
-because otherwise rendering methods will render any strings passed to them
-directly.
 
 ### Literal Templates
 
