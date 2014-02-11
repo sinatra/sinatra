@@ -5,39 +5,39 @@ require 'open-uri'
 #
 # The backend server could look like the following (in test/server.rb).
 #
-# 	require "sinatra"
+#   require "sinatra"
 #
-#		get "/" do
-#  		"Cheers from test server"
-# 	end
+#   get "/" do
+#     "Cheers from test server"
+#   end
 #
-#		get "/ping" do
-#  		1
-# 	end
+#   get "/ping" do
+#     1
+#   end
 #
 # Note that you need to implement a ping action for internal use.
 #
 # Next, you need to write your runner.
 #
-# 	require 'sinatra/runner'
+#   require 'sinatra/runner'
 #
 #   class Runner < Sinatra::Runner
 #     def app_file
 #       File.expand_path("../server.rb", __FILE__)
 #     end
-# 	end
+#   end
 #
 # Override Runner#app_file, #command, #port and #ping_path for customization.
 #
 # Whereever you need this test backend, here's how you manage it. The following example assumes you
 # have a test in your app that needs to be run against your test backend.
 #
-# 	runner = ServerRunner.new
+#   runner = ServerRunner.new
 #   runner.run
 #
-#  	# ..tests against localhost:4567 here..
+#   # ..tests against localhost:4567 here..
 #
-# 	runner.kill
+#   runner.kill
 #
 # For an example, check https://github.com/apotonick/roar/blob/master/test/test_helper.rb
 module Sinatra
