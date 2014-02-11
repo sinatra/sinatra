@@ -27,6 +27,15 @@ module Sinatra
   #     # layout.erb
   #     <%= yield_content :some_key %>
   #
+  # If you have provided +yield_content+ with a block and no content for the
+  # specified key is found, it will render the results of the block provided
+  # to yield_content.
+  #
+  #     # layout.erb
+  #     <%= yield_content :some_key_with_no_content do %>
+  #       <chunk of="default html">...</chunk>
+  #     <% end %>
+  #
   # === Classic Application
   #
   # To use the helpers in a classic application all you need to do is require
