@@ -111,6 +111,7 @@ module Sinatra
     # Would pass <tt>1</tt> and <tt>2</tt> to all the blocks registered
     # for <tt>:head</tt>.
     def yield_content(key, *args)
+      return yield(*args) if block_given? && content_blocks[key.to_sym].empty?
       content_blocks[key.to_sym].map { |b| capture(*args, &b) }.join
     end
 

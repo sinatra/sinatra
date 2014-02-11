@@ -33,6 +33,11 @@ describe Sinatra::ContentFor do
       yield_content(:foo).should be_empty
     end
 
+    it 'renders default content if no block matches the key and a default block is specified' do
+      content_for(:bar) { "bar" }
+      yield_content(:foo) { "foo" }.should == "foo"
+    end
+
     it 'renders multiple blocks with the same key' do
       content_for(:foo) { "foo" }
       content_for(:foo) { "bar" }
@@ -83,6 +88,11 @@ describe Sinatra::ContentFor do
         it 'does not render a block with a different key' do
           render inner, :different_key
           yield_content(:foo).should be_empty
+        end
+
+        it 'renders default content if no block matches the key and a default block is specified' do
+          render inner, :different_key
+          yield_content(:foo) { "foo" }.should == "foo"
         end
 
         it 'renders multiple blocks with the same key' do
