@@ -493,12 +493,11 @@ get '/' do
 end
 ```
 
-Renders the template string.
+Renderizza il codice del template descritto nella stringa.
 
-### Available Template Languages
+### Linguaggi disponibili per i templates
 
-Some languages have multiple implementations. To specify what implementation
-to use (and to be thread-safe), you should simply require it first:
+Alcuni linguaggi hanno implementazioni multiple. Per specificare quale implementazione utilizzare (e per essere thread-safe), bisogna semplicemente fare il require:
 
 ``` ruby
 require 'rdiscount' # or require 'bluecloth'
@@ -509,15 +508,15 @@ get('/') { markdown :index }
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td><a href="http://haml.info/" title="haml">haml</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>Estensione del file</td>
     <td><tt>.haml</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>haml :index, :format => :html5</tt></td>
   </tr>
 </table>
@@ -526,7 +525,7 @@ get('/') { markdown :index }
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td>
       <a href="http://www.kuwata-lab.com/erubis/" title="erubis">erubis</a>
       or erb (included in Ruby)
@@ -537,7 +536,7 @@ get('/') { markdown :index }
     <td><tt>.erb</tt>, <tt>.rhtml</tt> or <tt>.erubis</tt> (Erubis only)</td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>erb :index</tt></td>
   </tr>
 </table>
@@ -546,17 +545,17 @@ get('/') { markdown :index }
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td>
       <a href="http://builder.rubyforge.org/" title="builder">builder</a>
     </td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>Estensione del file</td>
     <td><tt>.builder</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>builder { |xml| xml.em "hi" }</tt></td>
   </tr>
 </table>
@@ -567,15 +566,15 @@ It also takes a block for inline templates (see example).
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td><a href="http://nokogiri.org/" title="nokogiri">nokogiri</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>Estensione del file</td>
     <td><tt>.nokogiri</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>nokogiri { |xml| xml.em "hi" }</tt></td>
   </tr>
 </table>
@@ -586,15 +585,15 @@ It also takes a block for inline templates (see example).
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>Estensione del file</td>
     <td><tt>.sass</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>sass :stylesheet, :style => :expanded</tt></td>
   </tr>
 </table>
@@ -603,15 +602,15 @@ It also takes a block for inline templates (see example).
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>Estensione del file</td>
     <td><tt>.scss</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>scss :stylesheet, :style => :expanded</tt></td>
   </tr>
 </table>
@@ -620,15 +619,15 @@ It also takes a block for inline templates (see example).
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td><a href="http://www.lesscss.org/" title="less">less</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>Estensione del file</td>
     <td><tt>.less</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>less :stylesheet</tt></td>
   </tr>
 </table>
@@ -637,15 +636,15 @@ It also takes a block for inline templates (see example).
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td><a href="http://www.liquidmarkup.org/" title="liquid">liquid</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>Estensione del file</td>
     <td><tt>.liquid</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>liquid :index, :locals => { :key => 'value' }</tt></td>
   </tr>
 </table>
@@ -657,7 +656,7 @@ template, you almost always want to pass locals to it.
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td>
       Anyone of:
         <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
@@ -672,7 +671,7 @@ template, you almost always want to pass locals to it.
     <td><tt>.markdown</tt>, <tt>.mkd</tt> and <tt>.md</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>markdown :index, :layout_engine => :erb</tt></td>
   </tr>
 </table>
@@ -700,15 +699,15 @@ template than for the layout by passing the `:layout_engine` option.
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td><a href="http://redcloth.org/" title="RedCloth">RedCloth</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>Estensione del file</td>
     <td><tt>.textile</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>textile :index, :layout_engine => :erb</tt></td>
   </tr>
 </table>
@@ -735,15 +734,15 @@ template than for the layout by passing the `:layout_engine` option.
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td><a href="http://rdoc.rubyforge.org/" title="RDoc">RDoc</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>Estensione del file</td>
     <td><tt>.rdoc</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>rdoc :README, :layout_engine => :erb</tt></td>
   </tr>
 </table>
@@ -770,15 +769,15 @@ template than for the layout by passing the `:layout_engine` option.
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td><a href="http://radius.rubyforge.org/" title="Radius">Radius</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>Estensione del file</td>
     <td><tt>.radius</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>radius :index, :locals => { :key => 'value' }</tt></td>
   </tr>
 </table>
@@ -790,15 +789,15 @@ always want to pass locals to it.
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td><a href="http://markaby.github.com/" title="Markaby">Markaby</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>Estensione del file</td>
     <td><tt>.mab</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>markaby { h1 "Welcome!" }</tt></td>
   </tr>
 </table>
@@ -809,15 +808,15 @@ It also takes a block for inline templates (see example).
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td><a href="https://github.com/nesquena/rabl" title="Rabl">Rabl</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>Estensione del file</td>
     <td><tt>.rabl</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>rabl :index</tt></td>
   </tr>
 </table>
@@ -826,15 +825,15 @@ It also takes a block for inline templates (see example).
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td><a href="http://slim-lang.com/" title="Slim Lang">Slim Lang</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>Estensione del file</td>
     <td><tt>.slim</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>slim :index</tt></td>
   </tr>
 </table>
@@ -843,15 +842,15 @@ It also takes a block for inline templates (see example).
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td><a href="https://github.com/minad/creole" title="Creole">Creole</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>Estensione del file</td>
     <td><tt>.creole</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>creole :wiki, :layout_engine => :erb</tt></td>
   </tr>
 </table>
@@ -878,7 +877,7 @@ template than for the layout by passing the `:layout_engine` option.
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td>
       <a href="https://github.com/josh/ruby-coffee-script" title="Ruby CoffeeScript">
         CoffeeScript
@@ -889,11 +888,11 @@ template than for the layout by passing the `:layout_engine` option.
     </td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>Estensione del file</td>
     <td><tt>.coffee</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>coffee :index</tt></td>
   </tr>
 </table>
@@ -902,7 +901,7 @@ template than for the layout by passing the `:layout_engine` option.
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td>
       <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
         Stylus
@@ -913,11 +912,11 @@ template than for the layout by passing the `:layout_engine` option.
     </td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>Estensione del file</td>
     <td><tt>.styl</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>stylus :index</tt></td>
   </tr>
 </table>
@@ -939,15 +938,15 @@ end
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td><a href="https://github.com/brianmario/yajl-ruby" title="yajl-ruby">yajl-ruby</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>Estensione del file</td>
     <td><tt>.yajl</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td>
       <tt>
         yajl :index,
@@ -979,15 +978,15 @@ var resource = {"foo":"bar","baz":"qux"}; present(resource);
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>Dipendenza</td>
     <td><a href="https://github.com/blambeau/wlang/" title="wlang">wlang</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>Estensione del file</td>
     <td><tt>.wlang</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>Esempio</td>
     <td><tt>wlang :index, :locals => { :key => 'value' }</tt></td>
   </tr>
 </table>
