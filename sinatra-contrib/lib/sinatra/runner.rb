@@ -64,7 +64,7 @@ module Sinatra
     end
 
     def get(url)
-      Timeout.timeout(1) { URI.parse("#{protocol}://127.0.0.1:#{port}#{url}").read }
+      Timeout.timeout(1) { get_url("#{protocol}://127.0.0.1:#{port}#{url}") }
     end
 
     def log
@@ -114,6 +114,21 @@ module Sinatra
 
     def protocol
       "http"
+    end
+
+    def get_url(url)
+      uri = URI.parse(url)
+
+      return uri.read unless protocol == "https"
+      get_https_url(uri)
+    end
+
+    def get_https_url(uri)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl      = true
+      http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
+      request = Net::HTTP::Get.new(uri.request_uri)
+      http.request(request).body
     end
   end
 end
