@@ -1118,9 +1118,7 @@ Renderizza `./views/index.myat`. Vedi https://github.com/rtomayko/tilt per saper
 
 ## Filtri
 
-Before filters are evaluated before each request within the same
-context as the routes will be and can modify the request and response. Instance
-variables set in filters are accessible by routes and templates:
+I metodi Before filters vengono eseguiti prima di ogni richiesta all'interno del contesto della route e può modificare la richiesta e la risposta. Le variabili d'istanza definite e impostate nei filtri sono accessibili dalle route e dai templates.
 
 ``` ruby
 before do
@@ -1134,22 +1132,17 @@ get '/foo/*' do
 end
 ```
 
-After filters are evaluated after each request within the same context and can
-also modify the request and response. Instance variables set in before filters
-and routes are accessible by after filters:
+I metodi After filters vengono eseguiti dopo di ogni richiesta all'interno del contesto della route e può modificare la richiesta e la risposta.
+Le variabili d'istanza definite e impostate nei before filters e nelle routes sono accessibili dagli after filters.
 
 ``` ruby
 after do
   puts response.status
 end
 ```
+Nota: A meno di utlizzare il metodo `body` invece di ritornare una stringa all'interno delle routes il body non sarà disponibile per il metodo after filter. Questo perché il body vien elaborato più avanti.
 
-Note: Unless you use the `body` method rather than just returning a String from
-the routes, the body will not yet be available in the after filter, since it is
-generated later on.
-
-Filters optionally take a pattern, causing them to be evaluated only if the
-request path matches that pattern:
+I filtri possono accettare un pattern, questo comporta che il filtro in questione venga elaborato solo ala corripondenza con il pattern impostato:
 
 ``` ruby
 before '/protected/*' do
@@ -1161,7 +1154,7 @@ after '/create/:slug' do |slug|
 end
 ```
 
-Like routes, filters also take conditions:
+COme le routes anche i filtri accettano delle condiozioni:
 
 ``` ruby
 before :agent => /Songbird/ do
