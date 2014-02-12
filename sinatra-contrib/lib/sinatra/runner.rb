@@ -29,7 +29,7 @@ require 'timeout'
 #     end
 #   end
 #
-# Override Runner#app_file, #command, #port and #ping_path for customization.
+# Override Runner#app_file, #command, #port, #protocol and #ping_path for customization.
 #
 # Whereever you need this test backend, here's how you manage it. The following example assumes you
 # have a test in your app that needs to be run against your test backend.
