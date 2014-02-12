@@ -64,7 +64,7 @@ module Sinatra
     end
 
     def get(url)
-      Timeout.timeout(1) { open("#{protocol}://127.0.0.1:#{port}#{url}").read }
+      Timeout.timeout(1) { URI.parse("#{protocol}://127.0.0.1:#{port}#{url}").read }
     end
 
     def log
