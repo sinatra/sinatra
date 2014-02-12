@@ -14,7 +14,7 @@ require 'timeout'
 #   end
 #
 #   get "/ping" do
-#     1
+#     "1"
 #   end
 #
 # Note that you need to implement a ping action for internal use.
@@ -64,7 +64,7 @@ module Sinatra
     end
 
     def get(url)
-      Timeout.timeout(1) { open("http://127.0.0.1:#{port}#{url}").read }
+      Timeout.timeout(1) { open("#{protocol}://127.0.0.1:#{port}#{url}").read }
     end
 
     def log
@@ -110,6 +110,10 @@ module Sinatra
 
     def port # to be overwritten
       4567
+    end
+
+    def protocol
+      "http"
     end
   end
 end
