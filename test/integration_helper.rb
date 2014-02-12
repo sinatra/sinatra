@@ -1,13 +1,12 @@
 require 'sinatra/base'
 require 'rbconfig'
 require 'open-uri'
-require 'net/http'
-require 'timeout'
+require 'sinatra/runner'
 
 module IntegrationHelper
-  class BaseServer
+  class BaseServer < Sinatra::Runner
     extend Enumerable
-    attr_accessor :server, :port, :pipe
+    attr_accessor :server, :port
     alias name server
 
     def self.all
@@ -39,29 +38,8 @@ module IntegrationHelper
       return unless installed?
       kill
       @log     = ""
-      @pipe    = IO.popen(command)
-      @started = Time.now
-      warn "#{server} up and running on port #{port}" if ping
+      super
       at_exit { kill }
-    end
-
-    def ping(timeout = 30)
-      loop do
-        return if alive?
-        if Time.now - @started > timeout
-          $stderr.puts command, log
-          fail "timeout"
-        else
-          sleep 0.1
-        end
-      end
-    end
-
-    def alive?
-      3.times { get('/ping') }
-      true
-    rescue Errno::ECONNREFUSED, Errno::ECONNRESET, EOFError, SystemCallError, OpenURI::HTTPError, Timeout::Error
-      false
     end
 
     def get_stream(url = "/stream", &block)
@@ -71,17 +49,6 @@ module IntegrationHelper
           response.read_body(&block)
         end
       end
-    end
-
-    def get(url)
-      Timeout.timeout(1) { open("http://127.0.0.1:#{port}#{url}").read }
-    end
-
-    def log
-      @log ||= ""
-      loop { @log <<  @pipe.read_nonblock(1) }
-    rescue Exception
-      @log
     end
 
     def installed?
@@ -109,14 +76,6 @@ module IntegrationHelper
         cmd << "-e" << environment.to_s << '2>&1'
         cmd.join " "
       end
-    end
-
-    def kill
-      return unless pipe
-      Process.kill("KILL", pipe.pid)
-    rescue NotImplementedError
-      system "kill -9 #{pipe.pid}"
-    rescue Errno::ESRCH
     end
 
     def webrick?
