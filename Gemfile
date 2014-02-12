@@ -88,3 +88,5 @@ platforms :mri_18 do
   next if RUBY_ENGINE != 'ruby' or RUBY_VERSION > "1.8"
   gem 'rcov'
 end
+
+gem "sinatra-contrib", :path => "../sinatra-contrib"#:git => "git@github.com:apotonick/sinatra-contrib.git", :branch => "runner"
