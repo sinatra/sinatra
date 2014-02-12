@@ -1,4 +1,6 @@
 require 'open-uri'
+require 'net/http'
+require 'timeout'
 
 # Helps you spinning up and shutting down your own sinatra app. This is especially helpful for running
 # real network tests against a sinatra backend.
@@ -61,6 +63,17 @@ module Sinatra
 	  rescue Errno::ESRCH
 	  end
 
+	  def get(url)
+	    Timeout.timeout(1) { open("http://127.0.0.1:#{port}#{url}").read }
+	  end
+
+	  def log
+	    @log ||= ""
+	    loop { @log <<  pipe.read_nonblock(1) }
+	  rescue Exception
+	    @log
+	  end
+
 	private
 	  attr_accessor :pipe
 
@@ -89,17 +102,6 @@ module Sinatra
 	    true
 	  rescue Errno::ECONNREFUSED, Errno::ECONNRESET, EOFError, SystemCallError, OpenURI::HTTPError, Timeout::Error
 	    false
-	  end
-
-	  def get(url)
-	    Timeout.timeout(1) { open("http://127.0.0.1:#{port}#{url}").read }
-	  end
-
-	  def log
-	    @log ||= ""
-	    loop { @log <<  pipe.read_nonblock(1) }
-	  rescue Exception
-	    @log
 	  end
 
 	  def ping_path # to be overwritten
