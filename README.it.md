@@ -560,7 +560,7 @@ get('/') { markdown :index }
   </tr>
 </table>
 
-It also takes a block for inline templates (see example).
+Accetta anche blocchi come inline template (vedi esempio).
 
 #### Nokogiri Templates
 
@@ -579,7 +579,7 @@ It also takes a block for inline templates (see example).
   </tr>
 </table>
 
-It also takes a block for inline templates (see example).
+Accetta anche blocchi come inline template (vedi esempio).
 
 #### Sass Templates
 
@@ -649,8 +649,7 @@ It also takes a block for inline templates (see example).
   </tr>
 </table>
 
-Since you cannot call Ruby methods (except for `yield`) from a Liquid
-template, you almost always want to pass locals to it.
+Siccome non si può chiamare metodi Ruby (tranne `yield`) da un Liquid Template, si utilizza quasi sempre una variabile `locale`.
 
 #### Markdown Templates
 
@@ -676,24 +675,23 @@ template, you almost always want to pass locals to it.
   </tr>
 </table>
 
-It is not possible to call methods from markdown, nor to pass locals to it.
-You therefore will usually use it in combination with another rendering
-engine:
+Non é possibile chiamare metodi da markdown ne passare viaribili `locale`.
+Questo porta normalemente ad utilizzare markdown inseme ad un altro motore di rendering:
+
 
 ``` ruby
 erb :overview, :locals => { :text => markdown(:introduction) }
 ```
 
-Note that you may also call the `markdown` method from within other templates:
+Nota che si puù sempre chiamare il metodo `markdown` dall'interno di un altro template:
 
 ``` ruby
 %h1 Hello From Haml!
 %p= markdown(:greetings)
 ```
 
-Since you cannot call Ruby from Markdown, you cannot use layouts written in
-Markdown. However, it is possible to use another rendering engine for the
-template than for the layout by passing the `:layout_engine` option.
+Dato che non puoi chiamare Ruby da Markdown, non puoi usare dei layout scritti in Markdown.
+Invece si può utilizzare un altro motore di rendering appositamente per il layout passando l'opzione `:layout_engine`.
 
 #### Textile Templates
 
@@ -712,23 +710,22 @@ template than for the layout by passing the `:layout_engine` option.
   </tr>
 </table>
 
-It is not possible to call methods from textile, nor to pass locals to it. You
-therefore will usually use it in combination with another rendering engine:
+Non é possibile chiamare metodi da markdown ne passare viaribili `locale`.
+Questo porta normalemente ad utilizzare textile inseme ad un altro motore di rendering:
 
 ``` ruby
 erb :overview, :locals => { :text => textile(:introduction) }
 ```
 
-Note that you may also call the `textile` method from within other templates:
+Nota che si puù sempre chiamare il metodo `textile` dall'interno di un altro template:
 
 ``` ruby
 %h1 Hello From Haml!
 %p= textile(:greetings)
 ```
 
-Since you cannot call Ruby from Textile, you cannot use layouts written in
-Textile. However, it is possible to use another rendering engine for the
-template than for the layout by passing the `:layout_engine` option.
+Dato che non puoi chiamare Ruby da Textile, non puoi usare dei layout scritti in Textile.
+Invece si può utilizzare un altro motore di rendering appositamente per il layout passando l'opzione `:layout_engine`.
 
 #### RDoc Templates
 
@@ -747,23 +744,22 @@ template than for the layout by passing the `:layout_engine` option.
   </tr>
 </table>
 
-It is not possible to call methods from rdoc, nor to pass locals to it. You
-therefore will usually use it in combination with another rendering engine:
+Non é possibile chiamare metodi da rdoc ne passare viaribili `locale`.
+Questo porta normalemente ad utilizzare rdoc inseme ad un altro motore di rendering:
 
 ``` ruby
 erb :overview, :locals => { :text => rdoc(:introduction) }
 ```
 
-Note that you may also call the `rdoc` method from within other templates:
+Nota che si puù sempre chiamare il metodo `rdoc` dall'interno di un altro template:
 
 ``` ruby
 %h1 Hello From Haml!
 %p= rdoc(:greetings)
 ```
 
-Since you cannot call Ruby from RDoc, you cannot use layouts written in
-RDoc. However, it is possible to use another rendering engine for the
-template than for the layout by passing the `:layout_engine` option.
+Dato che non puoi chiamare Ruby da rdoc, non puoi usare dei layout scritti in rdoc.
+Invece si può utilizzare un altro motore di rendering appositamente per il layout passando l'opzione `:layout_engine`.
 
 #### Radius Templates
 
@@ -782,8 +778,7 @@ template than for the layout by passing the `:layout_engine` option.
   </tr>
 </table>
 
-Since you cannot call Ruby methods directly from a Radius template, you almost
-always want to pass locals to it.
+Siccome non si può chiamare metodi Ruby da un template Radius, si utilizza quasi sempre una variabile `locale`.
 
 #### Markaby Templates
 
@@ -802,7 +797,7 @@ always want to pass locals to it.
   </tr>
 </table>
 
-It also takes a block for inline templates (see example).
+Accetta anche blocchi come inline template (vedi esempio).
 
 #### RABL Templates
 
@@ -855,23 +850,22 @@ It also takes a block for inline templates (see example).
   </tr>
 </table>
 
-It is not possible to call methods from creole, nor to pass locals to it. You
-therefore will usually use it in combination with another rendering engine:
+Non é possibile chiamare metodi da creole ne passare viaribili `locale`.
+Questo porta normalemente ad utilizzare creole inseme ad un altro motore di rendering:
 
 ``` ruby
 erb :overview, :locals => { :text => creole(:introduction) }
 ```
 
-Note that you may also call the `creole` method from within other templates:
+Nota che si puù sempre chiamare il metodo `creole` dall'interno di un altro template:
 
 ``` ruby
 %h1 Hello From Haml!
 %p= creole(:greetings)
 ```
 
-Since you cannot call Ruby from Creole, you cannot use layouts written in
-Creole. However, it is possible to use another rendering engine for the
-template than for the layout by passing the `:layout_engine` option.
+Dato che non puoi chiamare Ruby da Creole, non puoi usare dei layout scritti in Creole.
+Invece si può utilizzare un altro motore di rendering appositamente per il layout passando l'opzione `:layout_engine`.
 
 #### CoffeeScript Templates
 
@@ -921,8 +915,7 @@ template than for the layout by passing the `:layout_engine` option.
   </tr>
 </table>
 
-Before being able to use Stylus templates, you need to load `stylus` and
-`stylus/tilt` first:
+Prima di poter utilizzare i templates Stylus, bisogna caricare `stylus` e `stylus/tilt`:
 
 ``` ruby
 require 'sinatra'
@@ -959,16 +952,15 @@ end
 </table>
 
 
-The template source is evaluated as a Ruby string, and the
-resulting json variable is converted using `#to_json`:
+Il codice del template viene trattato come una stringa Ruby, e la variabile json che ne risulta viene convertita utilizzando `#to_json`:
 
 ``` ruby
 json = { :foo => 'bar' }
 json[:baz] = key
 ```
 
-The `:callback` and `:variable` options can be used to decorate the rendered
-object:
+Le opzioni `:callback` e `:variable` sono utilizzate per "decorare" l'oggetto renderizzato:
+
 
 ``` ruby
 var resource = {"foo":"bar","baz":"qux"}; present(resource);
@@ -991,8 +983,7 @@ var resource = {"foo":"bar","baz":"qux"}; present(resource);
   </tr>
 </table>
 
-Since calling ruby methods is not idiomatic in wlang, you almost always want to pass locals
-to it. Layouts written in wlang and `yield` are supported, though.
+Dal momento che chiamare metodi Ruby in Wlang non é idiomatico, normalemente si utilizza una variabile di tipo `locale`. Sono supportati i layouts scritti in Wlang e l'utilizzo di `yield`.
 
 ### Accessing Variables in Templates
 
