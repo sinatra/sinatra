@@ -1168,8 +1168,7 @@ end
 
 ## Helpers
 
-Use the top-level `helpers` method to define helper methods for use in
-route handlers and templates:
+Utilizza il metodo top-level `helpers` per definire dei nuovi helper methods da utilizzare nelle routes e nei templates:
 
 ``` ruby
 helpers do
@@ -1183,7 +1182,7 @@ get '/:name' do
 end
 ```
 
-Alternatively, helper methods can be separately defined in a module:
+Alternativamente gli helper si possono definire in un modulo:
 
 ``` ruby
 module FooUtils
@@ -1197,12 +1196,11 @@ end
 helpers FooUtils, BarUtils
 ```
 
-The effect is the same as including the modules in the application class.
+L'effetto é il medesimo che aggiungere i moduli alla classe principale dell'applicazione.
 
-### Using Sessions
+### Usare le sessioni
 
-A session is used to keep state during requests. If activated, you have one
-session hash per user session:
+Una sessione viene utilizzatea per mantenere lo stato durante richieste differenti. Se attivate, avrai una hash sessione per ogni sessione utente:
 
 ``` ruby
 enable :sessions
