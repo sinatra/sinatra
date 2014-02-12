@@ -64,7 +64,7 @@ Si raccomanda di eseguire `gem install thin`, Sinatra utilizzera thin quando dis
         * [Inline Templates](#inline-templates)
         * [Named Templates](#named-templates)
         * [Associare le estensioni dei files](#associare-le-estensioni-dei-files)
-        * [Aggiungi il tuo personale Template Engine](#aggiungi-il-tuo-personlae-template-engine)
+        * [Aggiungi il tuo Template Engine personale](#aggiungi-il-tuo-template-engine-personale)
     * [Filtri](#filteri)
     * [Helpers](#helpers)
         * [Usare le sessioni](#usare-le-sessioni)
@@ -985,10 +985,9 @@ var resource = {"foo":"bar","baz":"qux"}; present(resource);
 
 Dal momento che chiamare metodi Ruby in Wlang non é idiomatico, normalemente si utilizza una variabile di tipo `locale`. Sono supportati i layouts scritti in Wlang e l'utilizzo di `yield`.
 
-### Accessing Variables in Templates
+### Accedere alle variabili nel template
 
-Templates are evaluated within the same context as route handlers. Instance
-variables set in route handlers are directly accessible by templates:
+I template sono trattati all'interno del medesimo contesto che gestisce le routes. Le variabili di istanza impostate nella route, sono quindi accessibili direttamente dai template:
 
 ``` ruby
 get '/:id' do
@@ -997,7 +996,7 @@ get '/:id' do
 end
 ```
 
-Or, specify an explicit Hash of local variables:
+O specificando una hash di variabili locali:
 
 ``` ruby
 get '/:id' do
@@ -1006,14 +1005,12 @@ get '/:id' do
 end
 ```
 
-This is typically used when rendering templates as partials from within
-other templates.
+Questa funzionalità é utilizzata tipicamente quando si rtenderizzano dei partials all'interno di altri templates.
 
-### Templates with `yield` and nested layouts
+### Templates con yield e layouts annidati
 
-A layout is usually just a template that calls `yield`.
-Such a template can be used either through the `:template` option as
-described above, or it can be rendered with a block as follows:
+Un layout solitamente non é niente di più di un template che chiama `yield`. 
+Questo template può essere utilizzato, sia tramite l'opzione template come descritto sopra, o può essere renderizzato con un blocco come nell'esempio seguente:
 
 ``` ruby
 erb :post, :layout => false do
@@ -1021,10 +1018,9 @@ erb :post, :layout => false do
 end
 ```
 
-This code is mostly equivalent to `erb :index, :layout => :post`.
+Questo codice é equivalente a `erb :index, :layout => :post`.
 
-Passing blocks to rendering methods is most useful for creating nested
-layouts:
+Passare dei blocchi ai metodi di rendering é motlo utilie per creare dei layouts annidati:
 
 ``` ruby
 erb :main_layout, :layout => false do
@@ -1034,7 +1030,7 @@ erb :main_layout, :layout => false do
 end
 ```
 
-This can also be done in fewer lines of code with:
+Questo può anche essere eseguito in meno linee con:
 
 ``` ruby
 erb :admin_layout, :layout => :main_layout do
@@ -1042,13 +1038,12 @@ erb :admin_layout, :layout => :main_layout do
 end
 ```
 
-Currently, the following rendering methods accept a block: `erb`, `haml`,
-`liquid`, `slim `, `wlang`.
-Also the general `render` method accepts a block.
+Attualmente sono i seguenti metodi di rendering che accettano un blocco come parametro: `erb`, `haml`,`liquid`, `slim `, `wlang`.
+Anche il metodo generico `render` accetta un blocco.
 
 ### Inline Templates
 
-Templates may be defined at the end of the source file:
+I templates possono essere definiti alla fine del file contenente il codice sorgente:
 
 ``` ruby
 require 'sinatra'
@@ -1066,14 +1061,12 @@ __END__
 @@ index
 %div.title Hello world.
 ```
+NOTA: I template inline definiti all'interno del codice sorgente che utilizza(require) **sinatra** sono caricati automaticamente. Utilizza `enable :inline_templates` esplicitamente se hai dei template inline definiti in altri sorgenti.
 
-NOTE: Inline templates defined in the source file that requires sinatra are
-automatically loaded. Call `enable :inline_templates` explicitly if you
-have inline templates in other source files.
 
 ### Named Templates
 
-Templates may also be defined using the top-level `template` method:
+I template possono anche essere definiti utilizzando il metodo top-level `template` :
 
 ``` ruby
 template :layout do
@@ -1089,10 +1082,7 @@ get '/' do
 end
 ```
 
-If a template named "layout" exists, it will be used each time a template
-is rendered. You can individually disable layouts by passing
-`:layout => false` or disable them by default via
-`set :haml, :layout => false`:
+Se un template denominato "layout" esiste, questo verrà utilizzato ogni volta che viene renderizzato un template. Puoi disabilitare puntualmente il layout passandi `:layout => false` o disabilitandolo di default via `set :haml, :layout => false` :
 
 ``` ruby
 get '/' do
@@ -1100,19 +1090,17 @@ get '/' do
 end
 ```
 
-### Associating File Extensions
+### Associare le estensioni dei files
 
-To associate a file extension with a template engine, use
-`Tilt.register`. For instance, if you like to use the file extension
-`tt` for Textile templates, you can do the following:
+Per assiociare l'estensione dei file al template engine, usa `Tilt.register`, Per esempio, se vuoi utilizzare l'estensione `tt` per i templates Textile puoi fare come segue:
 
 ``` ruby
 Tilt.register :tt, Tilt[:textile]
 ```
 
-### Adding Your Own Template Engine
+### Aggiungi il tuo Template Engine personale
 
-First, register your engine with Tilt, then create a rendering method:
+Primo, registra il tuo engine con Tilt, poi crea un metodo di rendering:
 
 ``` ruby
 Tilt.register :myat, MyAwesomeTemplateEngine
@@ -1126,10 +1114,9 @@ get '/' do
 end
 ```
 
-Renders `./views/index.myat`. See https://github.com/rtomayko/tilt to
-learn more about Tilt.
+Renderizza `./views/index.myat`. Vedi https://github.com/rtomayko/tilt per saperne di più sull'argomento.
 
-## Filters
+## Filtri
 
 Before filters are evaluated before each request within the same
 context as the routes will be and can modify the request and response. Instance
