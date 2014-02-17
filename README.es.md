@@ -24,13 +24,12 @@ ruby miapp.rb
 
 Ver en <http://localhost:4567>.
 
-Es recomendable además ejecutar `gem install thin`, ya que Sinatra lo va
-a utilizar cuando esté disponible.
+Se recomienda ejecutar `gem install thin`, porque Sinatra lo utilizará si está disponible.
 
 ## Rutas
 
-En Sinatra, una ruta está compuesta por un método HTTP y un patrón de una URL.
-Cada ruta se asocia con un bloque:
+En Sinatra, una ruta es un método HTTP junto a un patrón de un URL.
+Cada ruta está asociada a un bloque:
 
 ``` ruby
 get '/' do
@@ -56,10 +55,19 @@ end
 options '/' do
   .. informar algo ..
 end
+
+link '/' do
+  .. afiliar a algo ..
+end
+
+unlink '/' do
+  .. separar algo ..
+end
+
 ```
 
 Las rutas son comparadas en el orden en el que son definidas. La primera ruta
-que coincide con la petición es invocada.
+que coincide con la petición es escogida.
 
 Los patrones de las rutas pueden incluir parámetros nombrados, accesibles a
 través del hash `params`:
@@ -72,7 +80,7 @@ get '/hola/:nombre' do
 end
 ```
 
-También podés acceder a los parámetros nombrados usando parámetros de bloque:
+También puede acceder a los parámetros nombrados usando parámetros de bloque:
 
 ``` ruby
 get '/hola/:nombre' do |n|
@@ -166,7 +174,7 @@ get '/', :provides => ['rss', 'atom', 'xml'] do
 end
 ```
 
-Podés definir tus propias condiciones fácilmente:
+Puede definir sus propias condiciones fácilmente:
 
 ``` ruby
 set(:probabilidad) { |valor| condition { rand <= valor } }
@@ -180,8 +188,8 @@ get '/gana_un_auto' do
 end
 ```
 
-Si tu condición acepta más de un argumento, podés pasarle un arreglo. Al
-definir la condición puede resultarte conveniente utilizar el operador splat en
+Si su condición acepta más de un argumento, puede pasarle un arreglo. Al
+definir la condición, se puede utilizar el operador splat en
 la lista de parámetros:
 
 ``` ruby
@@ -209,7 +217,7 @@ respuesta que se le pasa al cliente HTTP o al siguiente middleware en la pila
 de Rack. Lo más común es que sea un string, como en los ejemplos anteriores.
 Sin embargo, otros valores también son aceptados.
 
-Podés devolver cualquier objeto que sea una respuesta Rack válida, un objeto
+Puede devolver cualquier objeto que sea una respuesta Rack válida, un objeto
 que represente el cuerpo de una respuesta Rack o un código de estado HTTP:
 
 * Un arreglo con tres elementos: `[estado (Fixnum), cabeceras (Hash), cuerpo de
@@ -220,7 +228,7 @@ que represente el cuerpo de una respuesta Rack o un código de estado HTTP:
   dado
 * Un Fixnum representando el código de estado
 
-De esa manera podemos, por ejemplo, implementar fácilmente un streaming:
+De esa manera, podemos fácilmente implementar un ejemplo de streaming:
 
 ``` ruby
 class Stream
@@ -234,7 +242,7 @@ get('/') { Stream.new }
 
 ### Comparadores de Rutas Personalizados
 
-Como se mostró anteriormente, Sinatra permite utilizar Strings y expresiones
+Como se mostró anteriormente, Sinatra permite utilizar strings y expresiones
 regulares para definir las rutas. Sin embargo, la cosa no termina ahí. Podés
 definir tus propios comparadores muy fácilmente:
 
@@ -261,7 +269,7 @@ get cualquiera_menos("/index") do
 end
 ```
 
-Tené en cuenta que el ejemplo anterior es un poco rebuscado. Un resultado
+Tenga en cuenta que el ejemplo anterior es un poco rebuscado. Un resultado
 similar puede conseguirse más sencillamente:
 
 ``` ruby
@@ -282,18 +290,18 @@ end
 ### Archivos Estáticos
 
 Los archivos estáticos son servidos desde el directorio público
-`./public`. Podés especificar una ubicación diferente ajustando la
+`./public`. Puede especificar una ubicación diferente ajustando la
 opción `:public_folder`:
 
 ``` ruby
 set :public_folder, File.dirname(__FILE__) + '/estaticos'
 ```
 
-Notá que el nombre del directorio público no está incluido en la URL. Por
+Note que el nombre del directorio público no está incluido en la URL. Por
 ejemplo, el archivo `./public/css/style.css` se accede a través de
 `http://ejemplo.com/css/style.css`.
 
-Usá la configuración `:static_cache_control` para agregar el encabezado
+Use la configuración `:static_cache_control` para agregar el encabezado
 `Cache-Control` (ver la sección de configuración para más detalles).
 
 ### Vistas / Plantillas
@@ -341,7 +349,7 @@ get '/' do
 end
 ```
 
-Además podés definir las opciones para un lenguaje de plantillas de forma
+Además, puede definir las opciones para un lenguaje de plantillas de forma
 general:
 
 ``` ruby
@@ -577,8 +585,8 @@ Además, acepta un bloque con la definición de la plantilla (ver el ejemplo).
   </tr>
 </table>
 
-Como no vas a poder llamar a métodos de Ruby (excepto por `yield`) desde una
-plantilla Liquid, casi siempre vas a querer pasarle locales.
+Como no va a poder llamar a métodos de Ruby (excepto por `yield`) desde una
+plantilla Liquid, casi siempre va a querer pasarle locales.
 
 ### Plantillas Markdown
 
@@ -604,13 +612,13 @@ plantilla Liquid, casi siempre vas a querer pasarle locales.
 </table>
 
 No es posible llamar métodos desde markdown, ni pasarle locales. Por lo tanto,
-generalmente vas a usarlo en combinación con otro motor de renderizado:
+generalmente va a usarlo en combinación con otro motor de renderizado:
 
 ``` ruby
 erb :resumen, :locals => { :texto => markdown(:introduccion) }
 ```
 
-Tené en cuenta que también podés llamar al método `markdown` desde otras
+Tenga en cuenta que también podés llamar al método `markdown` desde otras
 plantillas:
 
 ``` ruby
@@ -618,7 +626,7 @@ plantillas:
 %p= markdown(:saludos)
 ```
 
-Como no podés utilizar Ruby desde Markdown, no podés usar layouts escritos en
+Como no puede utilizar Ruby desde Markdown, no puede usar layouts escritos en
 Markdown. De todos modos, es posible usar un motor de renderizado para el
 layout distinto al de la plantilla pasando la opción `:layout_engine`.
 
@@ -711,8 +719,8 @@ al de la plantilla pasando la opción `:layout_engine`.
   </tr>
 </table>
 
-Como no vas a poder llamar a métodos de Ruby (excepto por `yield`) desde una
-plantilla Radius, casi siempre vas a querer pasarle locales.
+Desde que no se puede utilisar métodos de Ruby (excepto por `yield`) de una
+plantilla Radius, casi siempre se necesita pasar locales.
 
 ### Plantillas Markaby
 
@@ -785,13 +793,13 @@ Además, acepta un bloque con la definición de la plantilla (ver el ejemplo).
 </table>
 
 No es posible llamar métodos desde creole, ni pasarle locales. Por lo tanto,
-generalmente vas a usarlo en combinación con otro motor de renderizado:
+generalmente va a usarlo en combinación con otro motor de renderizado:
 
 ``` ruby
 erb :resumen, :locals => { :texto => cerole(:introduccion) }
 ```
 
-Tené en cuenta que también podés llamar al método `creole` desde otras
+Debe tomar en cuenta que también puede llamar al método `creole` desde otras
 plantillas:
 
 ``` ruby
