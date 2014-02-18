@@ -728,7 +728,7 @@ Like 1.1.1, but with proper CHANGES file.
  * Better handling of encodings in 1.9, defaults params encoding to UTF-8.
    (Konstantin Haase)
 
- * `show_exeptions` handling is now triggered after custom error handlers, if
+ * `show_exceptions` handling is now triggered after custom error handlers, if
    it is set to `:after_handlers`, thus not disabling those handler in
    development mode. (pangel, Konstantin Haase)
 

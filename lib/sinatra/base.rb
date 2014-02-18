@@ -835,7 +835,7 @@ module Sinatra
             @preferred_extension = engine.to_s
             find_template(views, data, template) do |file|
               path ||= file # keep the initial path rather than the last one
-              if found = File.exists?(file)
+              if found = File.exist?(file)
                 path = file
                 break
               end
@@ -1129,7 +1129,7 @@ module Sinatra
 
     class << self
       CALLERS_TO_IGNORE = [ # :nodoc:
-        /\/sinatra(\/(base|main|showexceptions))?\.rb$/,    # all sinatra code
+        /\/sinatra(\/(base|main|show_exceptions))?\.rb$/,    # all sinatra code
         /lib\/tilt.*\.rb$/,                                 # all tilt code
         /^\(.*\)$/,                                         # generated code
         /rubygems\/(custom|core_ext\/kernel)_require\.rb$/, # rubygems require hacks
@@ -1575,6 +1575,7 @@ module Sinatra
       end
 
       def generate_method(method_name, &block)
+        method_name = method_name.to_sym
         define_method(method_name, &block)
         method = instance_method method_name
         remove_method method_name
