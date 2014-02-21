@@ -994,8 +994,9 @@ json[:baz] = key
 The `:callback` and `:variable` options can be used to decorate the rendered
 object:
 
-``` ruby
-var resource = {"foo":"bar","baz":"qux"}; present(resource);
+``` javascript
+var resource = {"foo":"bar","baz":"qux"};
+present(resource);
 ```
 
 #### WLang Templates
@@ -1003,7 +1004,7 @@ var resource = {"foo":"bar","baz":"qux"}; present(resource);
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="https://github.com/blambeau/wlang/" title="wlang">wlang</a></td>
+    <td><a href="https://github.com/blambeau/wlang/" title="WLang">WLang</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
@@ -1015,8 +1016,8 @@ var resource = {"foo":"bar","baz":"qux"}; present(resource);
   </tr>
 </table>
 
-Since calling ruby methods is not idiomatic in wlang, you almost always want to pass locals
-to it. Layouts written in wlang and `yield` are supported, though.
+Since calling ruby methods is not idiomatic in WLang, you almost always want to pass locals
+to it. Layouts written in WLang and `yield` are supported, though.
 
 ### Accessing Variables in Templates
 
