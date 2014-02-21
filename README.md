@@ -1180,9 +1180,9 @@ get '/foo/*' do
 end
 ```
 
-After filters are evaluated after each request within the same context and can
-also modify the request and response. Instance variables set in before filters
-and routes are accessible by after filters:
+After filters are evaluated after each request within the same
+context as the routes will be and can also modify the request and response. Instance
+variables set in before filters and routes are accessible by after filters:
 
 ``` ruby
 after do
@@ -2315,8 +2315,7 @@ typically don't have to `use` them explicitly.
 You can find useful middleware in
 [rack](https://github.com/rack/rack/tree/master/lib/rack),
 [rack-contrib](https://github.com/rack/rack-contrib#readm),
-with [CodeRack](http://coderack.org/) or in the
-[Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
+or in the [Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
 
 ## Testing
 
@@ -2391,7 +2390,7 @@ available via the top-level DSL. Most top-level apps can be converted to
 
 `Sinatra::Base` is a blank slate. Most options are disabled by default,
 including the built-in server. See
-[Options and Configuration](http://sinatra.github.com/configuration.html)
+[Configuring Settings](http://sinatra.github.com/configuration.html)
 for details on available options and their behavior.
 
 ### Modular vs. Classic Style
