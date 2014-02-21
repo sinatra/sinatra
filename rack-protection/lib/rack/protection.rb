@@ -26,7 +26,7 @@ module Rack
         use ::Rack::Protection::RemoteReferrer,        options if use_these.include? :remote_referrer
         use ::Rack::Protection::AuthenticityToken,     options if use_these.include? :authenticity_token
         use ::Rack::Protection::FormToken,             options if use_these.include? :form_token
-        use ::Rack::Protection::ContentSecurityPolicy, options unless except.include? :frame_options
+        use ::Rack::Protection::ContentSecurityPolicy, options unless except.include? :content_security_policy
         use ::Rack::Protection::FrameOptions,          options unless except.include? :frame_options
         use ::Rack::Protection::HttpOrigin,            options unless except.include? :http_origin
         use ::Rack::Protection::IPSpoofing,            options unless except.include? :ip_spoofing
