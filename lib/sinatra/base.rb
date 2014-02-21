@@ -809,7 +809,7 @@ module Sinatra
 
       # render layout
       if layout
-        options.merge!(:views => views, :layout => false, :eat_errors => eat_errors, :scope => scope).
+        options = options.merge(:views => views, :layout => false, :eat_errors => eat_errors, :scope => scope).
                 merge!(layout_options)
         catch(:layout_missing) { return render(layout_engine, layout, options, locals) { output } }
       end
