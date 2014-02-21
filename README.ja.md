@@ -229,7 +229,7 @@ end
 ところで、ディレクトリトラバーサル攻撃防御設定を無効にしないと（下記参照）、
 ルーティングにマッチする前にリクエストパスが修正される可能性があります。
 
-### 条件(Conditions)
+## 条件(Conditions)
 
 ルーティングにはユーザエージェントのようなさまざまな条件を含めることができます。
 
@@ -273,7 +273,27 @@ get '/win_a_car' do
 end
 ```
 
-### 戻り値(Return Values)
+複数の値を取る条件には、アスタリスクを使います。
+
+``` ruby
+set(:auth) do |*roles|   # <- ここでアスタリスクを使う
+  condition do
+    unless logged_in? && roles.any? {|role| current_user.in_role? role }
+      redirect "/login/", 303
+    end
+  end
+end
+
+get "/my/account/", :auth => [:user, :admin] do
+  "アカウントの詳細"
+end
+
+get "/only/admin/", :auth => :admin do
+  "ここは管理者だけ!"
+end
+```
+
+## 戻り値(Return Values)
 
 ルーティングブロックの戻り値は、HTTPクライアントまたはRackスタックでの次のミドルウェアに渡されるレスポンスボディを決定します。
 
