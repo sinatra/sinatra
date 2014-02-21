@@ -2214,6 +2214,9 @@ set :protection, :session => true
     for processing the request.
   </dd>
 
+  <dt>traps</dt>
+  <dd>Whether Sinatra should handle system signals.</dd>
+
   <dt>views</dt>
   <dd>
     Path to the views folder. Inferred from <tt>app_file</tt> setting if
