@@ -1,7 +1,6 @@
 require File.expand_path('../helper', __FILE__)
 
 begin
-raise LoadError, 'sass not supported on Ruby 2.0' if RUBY_VERSION >= '2.0'
 require 'sass'
 
 class SassTest < Test::Unit::TestCase
