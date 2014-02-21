@@ -715,6 +715,10 @@ module Sinatra
       render :rdoc, template, options, locals
     end
 
+    def asciidoc(template, options = {}, locals = {})
+      render :asciidoc, template, options, locals
+    end
+
     def radius(template, options = {}, locals = {})
       render :radius, template, options, locals
     end

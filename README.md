@@ -52,6 +52,7 @@ pick up if available.
             * [Markdown Templates](#markdown-templates)
             * [Textile Templates](#textile-templates)
             * [RDoc Templates](#rdoc-templates)
+            * [AsciiDoc Templates](#asciidoc-templates)
             * [Radius Templates](#radius-templates)
             * [Markaby Templates](#markaby-templates)
             * [RABL Templates](#rabl-templates)
@@ -789,6 +790,26 @@ Note that you may also call the `rdoc` method from within other templates:
 Since you cannot call Ruby from RDoc, you cannot use layouts written in
 RDoc. However, it is possible to use another rendering engine for the
 template than for the layout by passing the `:layout_engine` option.
+
+#### AsciiDoc Templates
+
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="http://asciidoctor.org/" title="Asciidoctor">Asciidoctor</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><tt>.asciidoc</tt>, <tt>.adoc</tt> and <tt>.ad</tt></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><tt>asciidoc :README, :layout_engine => :erb</tt></td>
+  </tr>
+</table>
+
+Since you cannot call Ruby methods directly from an AsciiDoc template, you almost
+always want to pass locals to it.
 
 #### Radius Templates
 
