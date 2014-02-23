@@ -53,7 +53,7 @@ ThinがあればSinatraはこれを利用するので、`gem install thin`する
             * [Markdown テンプレート](#markdown-テンプレート)
             * [Textile テンプレート](#textile-テンプレート)
             * [RDoc テンプレート](#rdoc-テンプレート)
-            * [AsciiDoc Templates](#asciidoc-テンプレート)
+            * [AsciiDoc テンプレート](#asciidoc-テンプレート)
             * [Radius テンプレート](#radius-テンプレート)
             * [Markaby テンプレート](#markaby-テンプレート)
             * [RABL テンプレート](#rabl-テンプレート)
