@@ -53,6 +53,7 @@ ThinがあればSinatraはこれを利用するので、`gem install thin`する
             * [Markdown テンプレート](#markdown-テンプレート)
             * [Textile テンプレート](#textile-テンプレート)
             * [RDoc テンプレート](#rdoc-テンプレート)
+            * [AsciiDoc テンプレート](#asciidoc-テンプレート)
             * [Radius テンプレート](#radius-テンプレート)
             * [Markaby テンプレート](#markaby-テンプレート)
             * [RABL テンプレート](#rabl-テンプレート)
@@ -773,6 +774,25 @@ erb :overview, :locals => { :text => rdoc(:introduction) }
 
 RDocからはRubyを呼ぶことができないので、RDocで書かれたレイアウトを使うことはできません。しかしながら、`:layout_engine`オプションを渡すことでテンプレートのものとは異なるレンダリングエンジンをレイアウトのために使うことができます。
 
+#### AsciiDoc テンプレート
+
+<table>
+ <tr>
+   <td>依存</td>
+   <td><a href="http://asciidoctor.org/" title="Asciidoctor">Asciidoctor</a></td>
+ </tr>
+ <tr>
+   <td>ファイル拡張子</td>
+   <td><tt>.asciidoc</tt>, <tt>.adoc</tt> and <tt>.ad</tt></td>
+ </tr>
+ <tr>
+   <td>例</td>
+   <td><tt>asciidoc :README, :layout_engine => :erb</tt></td>
+ </tr>
+</table>
+
+AsciiDocテンプレートからRubyのメソッドを直接呼び出すことができないため、ほぼ全ての場合にlocalsを指定する必要があるでしょう。
+
 #### Radius テンプレート
 
 <table>
@@ -887,7 +907,7 @@ CreoleからはRubyを呼ぶことができないので、Creoleで書かれた�
     <td>
       <a href="https://github.com/josh/ruby-coffee-script" title="Ruby CoffeeScript">
         CoffeeScript
-      </a> および 
+      </a> および
       <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
         JavaScriptの起動方法
       </a>
@@ -911,7 +931,7 @@ CreoleからはRubyを呼ぶことができないので、Creoleで書かれた�
     <td>
       <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
         Stylus
-      </a> および 
+      </a> および
       <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
         JavaScriptの起動方法
       </a>
@@ -1650,7 +1670,7 @@ send_file 'foo.png', :type => :jpg
   <dt>status</dt>
     <dd>
       送られるステータスコード。静的ファイルをエラーページとして送るときに便利。
-      
+
       Rackハンドラでサポートされている場合は、Rubyプロセスからのストリーミング以外の手段が使われる。このヘルパーメソッドを使うと、Sinatraは自動で範囲リクエスト(range requests)を扱う。
     </dd>
 </dl>
@@ -2691,7 +2711,7 @@ Sinatraは、[Semantic Versioning](http://semver.org/)におけるSemVerおよ�
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) コミュニティによるレシピ集
 
 * http://rubydoc.info上のAPIドキュメント: [最新版(latest release)用](http://rubydoc.info/gems/sinatra)または[現在のHEAD用](http://rubydoc.info/github/sinatra/sinatra)
-  
+
 * [CIサーバ](http://travis-ci.org/sinatra/sinatra)
 
 * [Greenbear Laboratory Rack日本語マニュアル](http://route477.net/w/RackReferenceJa.html)
