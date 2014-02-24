@@ -2268,9 +2268,8 @@ muss `use` häufig nicht explizit verwendet werden.
 
 Hilfreiche Middleware gibt es z.B. hier:
 [rack](https://github.com/rack/rack/tree/master/lib/rack),
-[rack-contrib](https://github.com/rack/rack-contrib#readme), mit
-[CodeRack](http://coderack.org/) oder im [Rack
-wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
+[rack-contrib](https://github.com/rack/rack-contrib#readme), 
+oder im [Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
 
 ## Testen
 

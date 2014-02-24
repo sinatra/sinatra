@@ -2375,8 +2375,7 @@ qui vous dispense de faire un `use` en ce qui les concerne.
 Vous trouverez d'autres middlewares intéressants sur
 [rack](https://github.com/rack/rack/tree/master/lib/rack),
 [rack-contrib](https://github.com/rack/rack-contrib#readm),
-[CodeRack](http://coderack.org/) ou en consultant le
-[wiki de Rack](https://github.com/rack/rack/wiki/List-of-Middleware).
+ou en consultant le [wiki de Rack](https://github.com/rack/rack/wiki/List-of-Middleware).
 
 ## Tester
 

@@ -2257,7 +2257,7 @@ Rack распространяется с различными стандартн
 Вы можете найти полезные прослойки в
 [rack](https://github.com/rack/rack/tree/master/lib/rack),
 [rack-contrib](https://github.com/rack/rack-contrib#readme),
-[CodeRack](http://coderack.org/) или в
+или в
 [Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
 
 ## Тестирование

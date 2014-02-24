@@ -2205,8 +2205,7 @@ para que típicamente no tengas que usarlas (con `use`) explícitamente.
 Podés encontrar middleware útil en
 [rack](https://github.com/rack/rack/tree/master/lib/rack),
 [rack-contrib](https://github.com/rack/rack-contrib#readme),
-con [CodeRack](http://coderack.org/) o en la
-[Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
+o en la [Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
 
 ## Pruebas
 
