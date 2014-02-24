@@ -2272,7 +2272,6 @@ Rack은 로깅, 디버깅, URL 라우팅, 인증, 그리고 세센 핸들링을 
 
 [rack](https://github.com/rack/rack/tree/master/lib/rack),
 [rack-contrib](https://github.com/rack/rack-contrib#readme),
-[CodeRack](http://coderack.org/),
 [Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware)
 에서 유용한 미들웨어들을 찾을 수 있습니다.
 
