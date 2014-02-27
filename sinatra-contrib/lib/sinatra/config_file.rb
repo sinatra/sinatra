@@ -70,7 +70,7 @@ module Sinatra
   #
   # But it also can provide specific environment configuration.  There are two
   # ways to do that: at the file level and at the setting level.  They are
-  # illustrated, repsectively, as follows:
+  # illustrated, respectively, as follows:
   #
   #     development:
   #       foo: development

@@ -6,7 +6,7 @@ module Sinatra
   # = Sinatra::Streaming
   #
   # Sinatra 1.3 introduced the +stream+ helper. This addon improves the
-  # streaming API by making the stream object immitate an IO object, turning
+  # streaming API by making the stream object imitate an IO object, turning
   # it into a real Deferrable and making the body play nicer with middleware
   # unaware of streaming.
   #
