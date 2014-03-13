@@ -75,7 +75,7 @@ if Tilt.respond_to?(:mappings)
       t.new { "" }
     rescue LoadError, NameError
       warn "#{$!}: skipping markdown tests with #{t}"
-      false
+      nil
     end
   end.compact
 else
@@ -85,16 +85,15 @@ else
       require file
       eval(klass_name)
     rescue LoadError, NameError
-      warn "#{$!}: skipping markdown tests with #{t}"
-      false
+      warn "#{$!}: skipping markdown tests with #{klass_name}, #{file}"
+      nil
     end
   end.compact
 end
 
 engines.each do |t|
-  klass = Class.new(Test::Unit::TestCase) { define_method(:engine) { t }}
+  klass = Class.new(Test::Unit::TestCase) { define_method(:engine) { t } }
   klass.class_eval(&MarkdownTest)
   name = t.name[/[^:]+$/].sub(/Template$/, '') << "Test"
   Object.const_set name, klass
 end
-
