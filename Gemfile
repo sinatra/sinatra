@@ -32,7 +32,7 @@ gem 'haml', '>= 3.0'
 gem 'sass' if RUBY_VERSION < "2.0"
 gem 'builder'
 gem 'erubis'
-gem 'slim', :git => 'git://github.com/slim-template/slim.git'
+gem 'slim'
 gem 'temple', '!= 0.3.3'
 gem 'coffee-script', '>= 2.0'
 gem 'rdoc', RUBY_VERSION < '1.9' ? '~> 3.12' : '>= 4.0'
