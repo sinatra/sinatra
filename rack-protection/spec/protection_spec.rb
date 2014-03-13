@@ -30,6 +30,41 @@ describe Rack::Protection do
     body.should == "true"
   end
 
+  describe "#react" do
+    it 'prevents attacks and warns about it' do
+      io = StringIO.new
+      mock_app do
+        use Rack::Protection, :logger => Logger.new(io)
+        run DummyApp
+      end
+      post('/', {}, 'rack.session' => {}, 'HTTP_ORIGIN' => 'http://malicious.com')
+      io.string.should match /prevented.*Origin/
+    end
+
+    it 'reports attacks if reaction is to report' do
+      io = StringIO.new
+      mock_app do
+        use Rack::Protection, :reaction => :report, :logger => Logger.new(io)
+        run DummyApp
+      end
+      post('/', {}, 'rack.session' => {}, 'HTTP_ORIGIN' => 'http://malicious.com')
+      io.string.should match /reported.*Origin/
+      io.string.should_not match /prevented.*Origin/
+    end
+
+    it 'passes errors to reaction method if specified' do
+      io = StringIO.new
+      Rack::Protection::Base.send(:define_method, :special) { |*args| io << args.inspect }
+      mock_app do
+        use Rack::Protection, :reaction => :special, :logger => Logger.new(io)
+        run DummyApp
+      end
+      post('/', {}, 'rack.session' => {}, 'HTTP_ORIGIN' => 'http://malicious.com')
+      io.string.should match /HTTP_ORIGIN.*malicious.com/
+      io.string.should_not match /reported|prevented/
+    end
+  end
+
   describe "#html?" do
     context "given an appropriate content-type header" do
       subject { Rack::Protection::Base.new(nil).html? 'content-type' => "text/html" }

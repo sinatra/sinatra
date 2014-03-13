@@ -43,7 +43,6 @@ module Rack
 
       def call(env)
         unless accepts? env
-          warn env, "attack prevented by #{self.class}"
           instrument env
           result = react env
         end
@@ -68,10 +67,12 @@ module Rack
       end
 
       def deny(env)
+        warn env, "attack prevented by #{self.class}"
         [options[:status], {'Content-Type' => 'text/plain'}, [options[:message]]]
       end
 
       def report(env)
+        warn env, "attack reported by #{self.class}"
         env[options[:report_key]] = true
       end
 
