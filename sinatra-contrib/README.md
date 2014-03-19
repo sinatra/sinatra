@@ -45,6 +45,9 @@ Currently included:
   depending on the incoming request. Adds helpers `respond_to` and
   `respond_with`.
 
+* `sinatra/custom_logger`: This extension allows you to define your own
+  logger instance using +logger+ setting. That logger then will
+  be available as #logger helper method in your routes and views.
 
 ## Custom Extensions
 
