@@ -658,6 +658,7 @@ module Sinatra
     def initialize
       super
       @default_layout = :layout
+      @preferred_extension = nil
     end
 
     def erb(template, options = {}, locals = {}, &block)
