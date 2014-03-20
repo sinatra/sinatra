@@ -227,6 +227,17 @@ get '/posts.?:format?' do
 end
 ```
 
+Routes may also utilize query parameters:
+
+``` ruby
+get '/posts' do
+  # matches "GET /posts?title=foo&author=bar"
+  title = params[:title]
+  author = params[:author]
+  # uses title and author variables; query is optional to the /posts route
+end
+```
+
 By the way, unless you disable the path traversal attack protection (see below),
 the request path might be modified before matching against your routes.
 
