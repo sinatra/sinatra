@@ -59,6 +59,7 @@ ThinがあればSinatraはこれを利用するので、`gem install thin`する
             * [RABL テンプレート](#rabl-テンプレート)
             * [Slim テンプレート](#slim-テンプレート)
             * [Creole テンプレート](#creole-テンプレート)
+            * [MediaWiki テンプレート](#mediawiki-テンプレート)
             * [CoffeeScript テンプレート](#coffeescript-テンプレート)
             * [Stylus テンプレート](#stylus-テンプレート)
             * [Yajl テンプレート](#yajl-テンプレート)
@@ -302,17 +303,15 @@ end
 
 Rackレスポンス、Rackボディオブジェクト、HTTPステータスコードのいずれかとして妥当なオブジェクトであればどのようなオブジェクトでも返すことができます。
 
--   3要素の配列:
-    `[ステータス(Fixnum), ヘッダ(Hash), レスポンスボディ(#eachに応答する)]`
+* 3つの要素を含む配列:
+  `[ステータス(Fixnum), ヘッダ(Hash), レスポンスボディ(#eachに応答する)]`
+* 2つの要素を含む配列:
+  `[ステータス(Fixnum), レスポンスボディ(#eachに応答する)]`
+* `#each`に応答するオブジェクト。通常はそのまま何も返さないが、
+与えられたブロックに文字列を渡す。
+* ステータスコードを表現する整数(Fixnum)
 
--   2要素の配列:
-    `[ステータス(Fixnum), レスポンスボディ(#eachに応答する)]`
-
--   `#each`に応答し、与えられたブロックに文字列を渡すオブジェクト
-
--   ステータスコードを表現するFixnum
-
-これにより、例えばストリーミングの例を簡単に実装することができます。
+これにより、例えばストリーミングを簡単に実装することができます。
 
 ``` ruby
 class Stream
@@ -383,6 +382,8 @@ set :public_folder, File.dirname(__FILE__) + '/static'
 ノート: この静的ファイル用のディレクトリ名はURL中に含まれません。
 例えば、`./public/css/style.css`は`http://example.com/css/style.css`でアクセスできます。
 
+`Cache-Control`の設定をヘッダーへ追加するには`:static_cache_control`の設定(下記参照)を加えてください。
+
 ## ビュー / テンプレート(Views / Templates)
 
 各テンプレート言語はそれ自身のレンダリングメソッドを通して展開されます。それらのメソッドは単に文字列を返します。
@@ -404,7 +405,7 @@ get '/' do
 end
 ```
 
-テンプレートはハッシュオプションの第２引数を取ります。
+テンプレートのレイアウトは第２引数のハッシュ形式のオプションをもとに表示されます。
 
 ``` ruby
 get '/' do
@@ -412,7 +413,7 @@ get '/' do
 end
 ```
 
-これは、`views/post.erb`内に埋め込んだ`views/index.erb`をレンダリングします（デフォルトは`views/layout.erb`があればそれになります）。
+これは、`views/post.erb`内に埋め込まれた`views/index.erb`をレンダリングします（デフォルトは`views/layout.erb`があればそれになります）。
 
 Sinatraが理解できないオプションは、テンプレートエンジンに渡されることになります。
 
@@ -485,7 +486,7 @@ end
 他のディレクトリを使用する場合の例:
 
 ``` ruby
-set :views, File.dirname(__FILE__) + '/templates'
+set :views, settings.root + '/templates'
 ```
 
 テンプレートはシンボルを使用して参照させることを覚えておいて下さい。
@@ -736,10 +737,6 @@ erb :overview, :locals => { :text => textile(:introduction) }
 
 TexttileからはRubyを呼ぶことができないので、Textileで書かれたレイアウトを使うことはできません。しかしながら、`:layout_engine`オプションを渡すことでテンプレートのものとは異なるレンダリングエンジンをレイアウトのために使うことができます。
 
-``` ruby
-erb :overview, :locals => { :text => textile(:introduction) }
-```
-
 #### RDoc テンプレート
 
 <table>
@@ -898,6 +895,31 @@ erb :overview, :locals => { :text => creole(:introduction) }
 ```
 
 CreoleからはRubyを呼ぶことができないので、Creoleで書かれたレイアウトを使うことはできません。しかしながら、`:layout_engine`オプションを渡すことでテンプレートのものとは異なるレンダリングエンジンをレイアウトのために使うことができます。
+
+#### MediaWiki テンプレート
+
+<table>
+  <tr>
+    <td>依存</td>
+    <td><a href="https://github.com/nricciar/wikicloth" title="WikiCloth">WikiCloth</a></td>
+  </tr>
+  <tr>
+    <td>ファイル拡張子</td>
+    <td><tt>.mediawiki</tt> および <tt>.mw</tt></td>
+  </tr>
+  <tr>
+    <td>例</td>
+    <td><tt>mediawiki :wiki, :layout_engine => :erb</tt></td>
+  </tr>
+</table>
+
+MediaWikiのテンプレートは直接メソッドから呼び出したり、ローカル変数を通すことはできません。それゆえに、通常は別のレンダリングエンジンと組み合わせて利用します。
+
+```ruby
+erb :overview, :locals => { :text => mediawiki(:introduction) }
+```
+
+ノート: 他のテンプレートから部分的に`mediawiki`メソッドを呼び出すことも可能です。
 
 #### CoffeeScript テンプレート
 
@@ -1079,7 +1101,6 @@ end
 テンプレートはソースファイルの最後で定義することもできます。
 
 ``` ruby
-require 'rubygems'
 require 'sinatra'
 
 get '/' do
@@ -1283,13 +1304,11 @@ set :sessions, :domain => '.foo.com'
 
 ### 停止(Halting)
 
-フィルタまたはルーティング内で直ちにリクエストを止める場合は、
+フィルタまたはルーティング内で直ちにリクエストを止める場合
 
 ``` ruby
 halt
 ```
-
-を使います。
 
 この際、ステータスを指定することもできます。
 
@@ -1474,7 +1493,9 @@ end
 `send_file`か静的ファイルを使う時、SinatraがMIMEタイプを理解できない場合があります。その時は `mime_type` を使ってファイル拡張子毎に登録して下さい。
 
 ``` ruby
-mime_type :foo, 'text/foo'
+configure do
+  mime_type :foo, 'text/foo'
+end
 ```
 
 これは`content_type`ヘルパーで利用することができます:
@@ -1590,7 +1611,7 @@ get '/article/:id' do
 end
 ```
 
-また、[weak ETag](http://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation)を使うこともできます。
+また、[weak ETag](http://ja.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation)を使うこともできます。
 
 ``` ruby
 etag @article.sha1, :weak
@@ -1723,7 +1744,7 @@ get "/" do
 end
 ```
 
-`request.body`はIOまたはStringIOのオブジェクトです。
+`request.body`は入出力またはStringIOのオブジェクトです。
 
 ``` ruby
 post "/api" do
@@ -1825,7 +1846,6 @@ end
 
 ノート: `find_template`はファイルが実際に存在するかのチェックをしませんが、与えられたブロックをすべての可能なパスに対し呼び出します。これがパフォーマンス上の問題にはならないのは、`render`はファイルを見つけると直ちに`break`を使うからです。また、テンプレートの場所（および内容）は、developmentモードでの起動でない限りはキャッシュされます。このことは、複雑なメソッド(a really crazy method)を書いた場合は記憶しておく必要があります。
 
-
 ## コンフィギュレーション(Configuration)
 
 どの環境でも起動時に１回だけ実行されます。
@@ -1848,7 +1868,6 @@ configure do
   set(:css_dir) { File.join(views, 'css') }
 end
 ```
-
 
 環境設定(`RACK_ENV`環境変数)が`:production`に設定されている時だけ実行する方法:
 
@@ -2062,7 +2081,6 @@ RACK_ENV=production ruby my_app.rb
 
 既定メソッド、`development?`、`test?`および`production?`を、現在の環境設定を確認するために使えます。
 
-
 ``` ruby
 get '/' do
   if settings.development?
@@ -2077,7 +2095,7 @@ end
 
 エラーハンドラはルーティングおよびbeforeフィルタと同じコンテキストで実行されます。すなわちこれは、`haml`、`erb`、`halt`といった便利なものが全て使えることを意味します。
 
-### Not Found
+### 未検出(Not Found)
 
 `Sinatra::NotFound`例外が発生したとき、またはレスポンスのステータスコードが404のときに、`not_found`ハンドラが発動します。
 
@@ -2231,11 +2249,8 @@ end
 `Sinatra::Base`のサブクラスで利用できるメソッドは、トップレベルDSLで利用できるものと全く同じです。ほとんどのトップレベルで記述されたアプリは、以下の２点を修正することで`Sinatra::Base`コンポーネントに変えることができます。
 
 * `sinatra`の代わりに`sinatra/base`を読み込む
-
-(そうしない場合、SinatraのDSLメソッドの全てがmainの名前空間にインポートされます)
-
+  (そうしない場合、SinatraのDSLメソッドの全てがmainの名前空間にインポートされます)
 * ルーティング、エラーハンドラ、フィルタ、オプションを`Sinatra::Base`のサブクラスに書く
-
 
 `Sinatra::Base`はまっさらです。ビルトインサーバを含む、ほとんどのオプションがデフォルトで無効になっています。利用可能なオプションとその挙動の詳細については[Configuring Settings](http://sinatra.github.com/configuration.html)(英語)をご覧下さい。
 
@@ -2291,11 +2306,9 @@ end
   </tr>
 </table>
 
-
 ### モジュラーアプリケーションの提供
 
 モジュラーアプリケーションを開始、つまり`run!`を使って開始させる二種類のやり方があります。
-
 
 ``` ruby
 # my_app.rb
@@ -2469,21 +2482,16 @@ end
 
 次の場所ではアプリケーションスコープバインディングを持ちます。
 
--   アプリケーションクラス本体
-
--   拡張によって定義されたメソッド
-
--   `helpers`に渡されたブロック
-
--   `set`の値として使われるProcまたはブロック
-
--   `Sinatra.new`に渡されたブロック
+* アプリケーションクラス本体
+* 拡張によって定義されたメソッド
+* `helpers`に渡されたブロック
+* `set`の値として使われるProcまたはブロック
+* `Sinatra.new`に渡されたブロック
 
 このスコープオブジェクト(クラス)は次のように利用できます。
 
--   configureブロックに渡されたオブジェクト経由(`configure { |c| ... }`)
-
--   リクエストスコープの中での`settings`
+* configureブロックに渡されたオブジェクト経由(`configure { |c| ... }`)
+* リクエストスコープの中での`settings`
 
 ### リクエスト/インスタンスのスコープ
 
@@ -2510,13 +2518,10 @@ end
 
 次の場所ではリクエストスコープバインディングを持ちます。
 
--   get/head/post/put/delete/options/patch/link/unlink ブロック
-
--   before/after フィルタ
-
--   helper メソッド
-
--   テンプレート/ビュー
+* get/head/post/put/delete/options/patch/link/unlink ブロック
+* before/after フィルタ
+* helper メソッド
+* テンプレート/ビュー
 
 ### デリゲートスコープ
 
@@ -2528,9 +2533,8 @@ end
 
 次の場所ではデリゲートスコープを持ちます。
 
--   もし`require "sinatra"`しているならば、トップレベルバインディング
-
--   `Sinatra::Delegator` mixinでextendされたオブジェクト
+* もし`require "sinatra"`しているならば、トップレベルバインディング
+* `Sinatra::Delegator` mixinでextendされたオブジェクト
 
 コードをご覧ください: ここでは [Sinatra::Delegator
 mixin](https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/base.rb#L1609-1633)は[mainオブジェクトにextendされています](https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/main.rb#L28-30)。
@@ -2545,12 +2549,14 @@ ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
 
 オプション:
 
-    -h # ヘルプ
-    -p # ポート指定(デフォルトは4567)
-    -o # ホスト指定(デフォルトは0.0.0.0)
-    -e # 環境を指定 (デフォルトはdevelopment)
-    -s # rackserver/handlerを指定 (デフォルトはthin)
-    -x # mutex lockを付ける (デフォルトはoff)
+```
+-h # ヘルプ
+-p # ポート指定(デフォルトは4567)
+-o # ホスト指定(デフォルトは0.0.0.0)
+-e # 環境を指定 (デフォルトはdevelopment)
+-s # rackserver/handlerを指定 (デフォルトはthin)
+-x # mutex lockを付ける (デフォルトはoff)
+```
 
 ## 必要環境
 
@@ -2601,9 +2607,7 @@ ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
 
 公式サポートをしないという意味は、問題がそこだけで起こり、サポートされているプラットフォーム上では起きない場合に、開発チームはそれはこちら側の問題ではないとみなすということです。
 
-
 開発チームはまた、ruby-head(最新となる2.1.0)に対しCIを実行していますが、それが一貫して動くようになるまで何も保証しません。2.1.0が完全にサポートされればその限りではありません。
-
 
 Sinatraは、利用するRuby実装がサポートしているオペレーティングシステム上なら動作するはずです。
 
@@ -2650,11 +2654,9 @@ gem 'activerecord', '~> 3.0'  # ActiveRecord 3.xが必要かもしれません
 bundle exec ruby myapp.rb
 ```
 
-
 ### 直接組み込む場合
 
 ローカルにクローンを作って、`sinatra/lib`ディレクトリを`$LOAD_PATH`に追加してアプリケーションを起動します。
-
 
 ``` shell
 cd myapp
@@ -2692,27 +2694,14 @@ Sinatraは、[Semantic Versioning](http://semver.org/)におけるSemVerおよ�
 
 ## 参考文献
 
-* [プロジェクトサイト](http://sinatra.github.com/) - ドキュメント、
-    ニュース、他のリソースへのリンクがあります。
-
-* [プロジェクトに参加(貢献)する](http://sinatra.github.com/contributing.html)
-  - バグレポート パッチの送信、サポートなど
-
+* [プロジェクトサイト](http://sinatra.github.com/) - ドキュメント、ニュース、他のリソースへのリンクがあります。
+* [プロジェクトに参加(貢献)する](http://sinatra.github.com/contributing.html) - バグレポート パッチの送信、サポートなど
 * [Issue tracker](http://github.com/sinatra/sinatra/issues)
-
 * [Twitter](http://twitter.com/sinatra)
-
 * [メーリングリスト](http://groups.google.com/group/sinatrarb/topics)
-
 * http://freenode.net上のIRC: [#sinatra](irc://chat.freenode.net/#sinatra)
-
 * [Sinatra Book](http://sinatra-book.gittr.com) クックブック、チュートリアル
-
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) コミュニティによるレシピ集
-
 * http://rubydoc.info上のAPIドキュメント: [最新版(latest release)用](http://rubydoc.info/gems/sinatra)または[現在のHEAD用](http://rubydoc.info/github/sinatra/sinatra)
-
 * [CIサーバ](http://travis-ci.org/sinatra/sinatra)
-
 * [Greenbear Laboratory Rack日本語マニュアル](http://route477.net/w/RackReferenceJa.html)
-
