@@ -202,7 +202,7 @@ module Sinatra
       end
     end
 
-    # When the extension is registed it extends the Sinatra application
+    # When the extension is registered it extends the Sinatra application
     # +klass+ with the modules +BaseMethods+ and +ExtensionMethods+ and
     # defines a before filter to +perform+ the reload of the modified files.
     def self.registered(klass)
@@ -244,7 +244,7 @@ module Sinatra
       Thread and Thread.list.size > 1 and Thread.respond_to?(:exclusive)
     end
 
-    # Contains the methods defined in Sinatra::Base that are overriden.
+    # Contains the methods defined in Sinatra::Base that are overridden.
     module BaseMethods
       # Protects Sinatra::Base.run! from being called more than once.
       def run!(*args)
@@ -391,7 +391,7 @@ module Sinatra
       # in the file located at +path+.
       #
       # If an extension is being registered, it also tells the list to
-      # watch it in the file where the extesion has been registered.
+      # watch it in the file where the extension has been registered.
       # This prevents the duplication of the elements added by the
       # extension in its +registered+ method with every reload.
       def watch_element(path, type, representation=nil)
