@@ -1744,7 +1744,7 @@ get "/" do
 end
 ```
 
-`request.body`は入出力またはStringIOのオブジェクトです。
+`request.body`はIOまたはStringIOのオブジェクトです。
 
 ``` ruby
 post "/api" do
