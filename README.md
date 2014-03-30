@@ -2452,7 +2452,8 @@ available via the top-level DSL. Most top-level apps can be converted to
 `Sinatra::Base` is a blank slate. Most options are disabled by default,
 including the built-in server. See
 [Configuring Settings](http://sinatra.github.com/configuration.html)
-for details on available options and their behavior.
+for details on available options and their behavior. Inheriting from <code>Sinatra::Application</code>
+allows modular applications to have the same settings enabled as in a classic application.</p>
 
 ### Modular vs. Classic Style
 
@@ -2477,7 +2478,7 @@ different default settings:
   <tr>
     <td>app_file</td>
     <td>file loading sinatra</td>
-    <td>file subclassing Sinatra::Base</td>
+    <td>file subclassing Sinatra::Base or Sinatra::Application</td>
   </tr>
 
   <tr>
