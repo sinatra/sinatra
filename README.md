@@ -2452,7 +2452,20 @@ available via the top-level DSL. Most top-level apps can be converted to
 `Sinatra::Base` is a blank slate. Most options are disabled by default,
 including the built-in server. See
 [Configuring Settings](http://sinatra.github.com/configuration.html)
-for details on available options and their behavior.
+for details on available options and their behavior. If you want
+behavior more similar to when you define your app at the top level (also
+know as Classic style), you
+can subclass `Sinatra::Application`.
+
+``` ruby
+require 'sinatra/base'
+
+class MyApp < Sinatra::Application
+  get '/' do
+    'Hello world!'
+  end
+end
+```
 
 ### Modular vs. Classic Style
 
@@ -2472,17 +2485,20 @@ different default settings:
     <th>Setting</th>
     <th>Classic</th>
     <th>Modular</th>
+    <th>Modular</th>
   </tr>
 
   <tr>
     <td>app_file</td>
     <td>file loading sinatra</td>
     <td>file subclassing Sinatra::Base</td>
+    <td>file subclassing Sinatra::Application</td>
   </tr>
 
   <tr>
     <td>run</td>
     <td>$0 == app_file</td>
+    <td>false</td>
     <td>false</td>
   </tr>
 
@@ -2490,24 +2506,28 @@ different default settings:
     <td>logging</td>
     <td>true</td>
     <td>false</td>
+    <td>true</td>
   </tr>
 
   <tr>
     <td>method_override</td>
     <td>true</td>
     <td>false</td>
+    <td>true</td>
   </tr>
 
   <tr>
     <td>inline_templates</td>
     <td>true</td>
     <td>false</td>
+    <td>true</td>
   </tr>
 
   <tr>
     <td>static</td>
     <td>true</td>
     <td>false</td>
+    <td>true</td>
   </tr>
 </table>
 
