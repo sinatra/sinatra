@@ -47,7 +47,8 @@ Gem::Specification.new do |s|
     "Thibaut Sacreste",
     "Uchio KONDO",
     "Will Bailey",
-    "undr"
+    "undr",
+    "Alexey Chernenkov"
   ]
 
   # generated from git shortlog -sne
@@ -90,7 +91,8 @@ Gem::Specification.new do |s|
     "thibaut.sacreste@gmail.com",
     "udzura@udzura.jp",
     "will.bailey@gmail.com",
-    "undr@yandex.ru"
+    "undr@yandex.ru",
+    "laise@pisem.net"
   ]
 
   # generated from git ls-files
@@ -107,6 +109,7 @@ Gem::Specification.new do |s|
     "lib/sinatra/contrib/setup.rb",
     "lib/sinatra/contrib/version.rb",
     "lib/sinatra/cookies.rb",
+    "lib/sinatra/custom_logger.rb",
     "lib/sinatra/decompile.rb",
     "lib/sinatra/engine_tracking.rb",
     "lib/sinatra/extension.rb",
@@ -161,6 +164,7 @@ Gem::Specification.new do |s|
     "spec/content_for/takes_values.slim",
     "spec/content_for_spec.rb",
     "spec/cookies_spec.rb",
+    "spec/custom_logger_spec.rb",
     "spec/decompile_spec.rb",
     "spec/extension_spec.rb",
     "spec/json_spec.rb",

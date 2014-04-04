@@ -15,6 +15,7 @@ module Sinatra
       helpers :Capture
       helpers :ContentFor
       helpers :Cookies
+      helpers :CustomLogger
       helpers :EngineTracking
       helpers :JSON
       helpers :LinkHeader
