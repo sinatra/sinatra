@@ -110,11 +110,17 @@ module Sinatra
 
     def encoded(char)
       return super if defined? super
-      enc = URI.escape(char)
+      enc = uri_parser.escape(char)
       enc = "(?:#{escaped(char, enc).join('|')})" if enc == char
       enc = "(?:#{enc}|#{encoded('+')})" if char == " "
       enc
     end
+
+    def uri_parser
+      #TODO: Remove check after dropping support for 1.8.7
+      @_uri_parser ||= defined?(URI::Parser) ? URI::Parser.new : URI
+    end
+
   end
 
   register Decompile
