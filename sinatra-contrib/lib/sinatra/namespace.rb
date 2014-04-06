@@ -116,6 +116,8 @@ module Sinatra
   module Namespace
     def self.new(base, pattern, conditions = {}, &block)
       Module.new do
+        #quelch uninitialized variable warnings, since these get used by compile method.
+        @pattern, @conditions = nil, nil
         extend NamespacedMethods
         include InstanceMethods
         @base, @extensions, @errors = base, [], {}
