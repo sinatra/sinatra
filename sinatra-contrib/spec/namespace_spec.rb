@@ -44,7 +44,7 @@ describe Sinatra::Namespace do
         it 'accepts the path as a regular expression' do
           namespace('/foo') { send(verb, /\/\d\d/) { 'bar' }}
           send(verb, '/foo/12').should be_ok
-          body.should == 'bar' unless verb == :head
+          body.should eq 'bar' unless verb == :head
           send(verb, '/foo/123').should_not be_ok
         end
       end
@@ -479,24 +479,24 @@ describe Sinatra::Namespace do
           namespace('/de') do
             not_found { 'nicht gefunden' }
           end
-          send(verb, '/foo').status.should == 404
-          last_response.body.should_not    == 'nicht gefunden' unless verb == :head
-          get('/en/foo').status.should     == 404
-          last_response.body.should_not    == 'nicht gefunden' unless verb == :head
-          get('/de/foo').status.should     == 404
-          last_response.body.should        == 'nicht gefunden' unless verb == :head
+          send(verb, '/foo').status.should eq 404
+          last_response.body.should_not    eq 'nicht gefunden' unless verb == :head
+          get('/en/foo').status.should     eq 404
+          last_response.body.should_not    eq 'nicht gefunden' unless verb == :head
+          get('/de/foo').status.should     eq 404
+          last_response.body.should        eq 'nicht gefunden' unless verb == :head
         end
 
         it 'can be customized for specific error codes' do
           namespace('/de') do
             error(404) { 'nicht gefunden' }
           end
-          send(verb, '/foo').status.should == 404
-          last_response.body.should_not    == 'nicht gefunden' unless verb == :head
-          get('/en/foo').status.should     == 404
-          last_response.body.should_not    == 'nicht gefunden' unless verb == :head
-          get('/de/foo').status.should     == 404
-          last_response.body.should        == 'nicht gefunden' unless verb == :head
+          send(verb, '/foo').status.should eq 404
+          last_response.body.should_not    eq 'nicht gefunden' unless verb == :head
+          get('/en/foo').status.should     eq 404
+          last_response.body.should_not    eq 'nicht gefunden' unless verb == :head
+          get('/de/foo').status.should     eq 404
+          last_response.body.should        eq 'nicht gefunden' unless verb == :head
         end
 
         it 'falls back to the handler defined in the base app' do
@@ -508,12 +508,12 @@ describe Sinatra::Namespace do
               error(404) { 'nicht gefunden' }
             end
           end
-          send(verb, '/foo').status.should == 404
-          last_response.body.should        == 'not found...' unless verb == :head
-          get('/en/foo').status.should     == 404
-          last_response.body.should        == 'not found...' unless verb == :head
-          get('/de/foo').status.should     == 404
-          last_response.body.should        == 'nicht gefunden' unless verb == :head
+          send(verb, '/foo').status.should eq 404
+          last_response.body.should        eq 'not found...' unless verb == :head
+          get('/en/foo').status.should     eq 404
+          last_response.body.should        eq 'not found...' unless verb == :head
+          get('/de/foo').status.should     eq 404
+          last_response.body.should        eq 'nicht gefunden' unless verb == :head
         end
 
         it 'can be customized for specific Exception classes' do
@@ -543,10 +543,10 @@ describe Sinatra::Namespace do
               end
             end
           end
-          get('/en/foo').status.should     == 401
-          last_response.body.should        == 'auth failed' unless verb == :head
-          get('/de/foo').status.should     == 406
-          last_response.body.should        == 'methode nicht erlaubt' unless verb == :head
+          get('/en/foo').status.should     eq 401
+          last_response.body.should        eq 'auth failed' unless verb == :head
+          get('/de/foo').status.should     eq 406
+          last_response.body.should        eq 'methode nicht erlaubt' unless verb == :head
         end
       end
 
@@ -561,8 +561,8 @@ describe Sinatra::Namespace do
               end
             end
 
-            send(verb, '/').body.should == 'hi'
-            send(verb, '/foo').body.should == 'hi'
+            send(verb, '/').body.should eq 'hi'
+            send(verb, '/foo').body.should eq 'hi'
           end
 
           specify 'can be nested' do
@@ -575,8 +575,8 @@ describe Sinatra::Namespace do
               end
             end
 
-            send(verb, '/').body.should == 'hi'
-            send(verb, '/foo').body.should == 'ho'
+            send(verb, '/').body.should eq 'hi'
+            send(verb, '/foo').body.should eq 'ho'
           end
 
           specify 'can use a custom views directory' do
@@ -589,8 +589,8 @@ describe Sinatra::Namespace do
               end
             end
 
-            send(verb, '/').body.should == "hi\n"
-            send(verb, '/foo').body.should == "ho\n"
+            send(verb, '/').body.should eq "hi\n"
+            send(verb, '/foo').body.should eq "ho\n"
           end
 
           specify 'default to the base app\'s layout' do
@@ -604,8 +604,8 @@ describe Sinatra::Namespace do
               end
             end
 
-            send(verb, '/').body.should == 'he said: hi'
-            send(verb, '/foo').body.should == 'he said: ho'
+            send(verb, '/').body.should eq 'he said: hi'
+            send(verb, '/foo').body.should eq 'he said: ho'
           end
 
           specify 'can define nested layouts' do
@@ -619,8 +619,8 @@ describe Sinatra::Namespace do
               end
             end
 
-            send(verb, '/').body.should == 'Hello World!'
-            send(verb, '/foo').body.should == 'Hi World!'
+            send(verb, '/').body.should eq 'Hello World!'
+            send(verb, '/foo').body.should eq 'Hi World!'
           end
         end
       end
@@ -634,7 +634,7 @@ describe Sinatra::Namespace do
               value = foo
             end
           end
-          value.should == 42
+          value.should eq 42
         end
 
         specify 'can be registered within a namespace' do
@@ -647,8 +647,8 @@ describe Sinatra::Namespace do
             end
             b = views
           end
-          a.should == 'CUSTOM!!!'
-          b.should_not == 'CUSTOM!!!'
+          a.should eq 'CUSTOM!!!'
+          b.should_not eq 'CUSTOM!!!'
         end
 
         specify 'trigger the route_added hook' do
@@ -664,7 +664,7 @@ describe Sinatra::Namespace do
             end
             get('/bar') { }
           end
-          route[1].should == '/foo'
+          route[1].should eq '/foo'
         end
 
         specify 'prevent app-global settings from being changed' do
