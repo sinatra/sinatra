@@ -1,3 +1,20 @@
+= 1.4.5 / 2014-04-08
+
+ * Improve tests and documentation. (Seiichi Yonezawa, Mike Gehard, Andrew
+   Deitrick, Matthew Nicholas Bradley, GoGo tanaka, Carlos Lazo, Shim Tw,
+   kyoendo, Roman Kuznietsov, Stanislav Chistenko, Ryunosuke SATO, Ben Lewis,
+   wuleicanada, Patricio Mac Adden, Thais Camilo)
+
+ * Fix Ruby warnings. (Vipul A M, Piotr Szotkowski)
+
+ * Fix template cache memory leak. (Scott Holden)
+
+ * Work around UTF-8 bug in JRuby. (namusyaka)
+
+ * Don't set charset for JSON mime-type (Sebastian Borrazas)
+
+ * Fix bug in request.accept? that might trigger a NoMethodError. (sbonami)
+
 = 1.4.4 / 2013-10-21
 
  * Allow setting layout to false specifically for a single rendering engine.
