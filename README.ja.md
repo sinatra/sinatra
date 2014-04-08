@@ -2254,6 +2254,18 @@ end
 
 `Sinatra::Base`はまっさらです。ビルトインサーバを含む、ほとんどのオプションがデフォルトで無効になっています。利用可能なオプションとその挙動の詳細については[Configuring Settings](http://sinatra.github.com/configuration.html)(英語)をご覧下さい。
 
+もしもクラシックスタイルと同じような挙動のアプリケーションをトップレベルで定義させる必要があれば、`Sinatra::Application`をサブクラス化させてください。
+
+```ruby
+require "sinatra/base"
+
+class MyApp < Sinatra::Application
+  get "/" do
+    'Hello world!'
+  end
+end
+```
+
 ### モジュラースタイル vs クラッシックスタイル
 
 一般的認識と違って、クラッシックスタイルを使うことに問題はなにもありません。それがそのアプリケーションに合っているのであれば、モジュラーアプリケーションに移行する必要はありません。
@@ -2267,17 +2279,20 @@ end
     <th>設定</th>
     <th>クラッシック</th>
     <th>モジュラー</th>
+    <th>モジュラー</th>
   </tr>
 
   <tr>
     <td>app_file</td>
     <td>sinatraを読み込むファイル</td>
     <td>Sinatra::Baseをサブクラス化したファイル</td>
+    <td>Sinatra::Applicationをサブクラス化したファイル</td>
   </tr>
 
   <tr>
     <td>run</td>
     <td>$0 == app_file</td>
+    <td>false</td>
     <td>false</td>
   </tr>
 
@@ -2285,24 +2300,28 @@ end
     <td>logging</td>
     <td>true</td>
     <td>false</td>
+    <td>true</td>
   </tr>
 
   <tr>
     <td>method_override</td>
     <td>true</td>
     <td>false</td>
+    <td>true</td>
   </tr>
 
   <tr>
     <td>inline_templates</td>
     <td>true</td>
     <td>false</td>
+    <td>true</td>
   </tr>
 
   <tr>
     <td>static</td>
     <td>true</td>
     <td>false</td>
+    <td>true</td>
   </tr>
 </table>
 
