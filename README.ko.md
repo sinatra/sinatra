@@ -952,6 +952,7 @@ end
       </tt>
     </td>
   </tr>
+</table>
 
 템플릿 소스는 루비 문자열로 평가(evaluate)되고, 결과인 json 변수는 `#to_json`으로 변환됩니다.
 
