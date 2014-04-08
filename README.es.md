@@ -154,7 +154,7 @@ get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
 end
 
 get '/foo' do
-  # Coincide con browsers que no sean songbird
+  # Coincide con navegadores que no sean songbird
 end
 ```
 
@@ -336,8 +336,8 @@ get '/' do
 end
 ```
 
-Renderiza `views/index.erb` embebido en `views/post.erb` (por
-defecto, la plantilla `:index` es embebida en `views/layout.erb` siempre y
+Renderiza `views/index.erb` incrustado en `views/post.erb` (por
+defecto, la plantilla `:index` es incrustada en `views/layout.erb` siempre y
 cuando este último archivo exista).
 
 Cualquier opción que Sinatra no entienda le será pasada al motor de renderizado
@@ -496,7 +496,7 @@ get('/') { markdown :index }
   </tr>
 </table>
 
-Además, acepta un bloque con la definición de la plantilla (ver el ejemplo).
+Además, acepta un bloque con la definición de la plantilla (ver ejemplo).
 
 ### Plantillas Nokogiri
 
@@ -515,7 +515,7 @@ Además, acepta un bloque con la definición de la plantilla (ver el ejemplo).
   </tr>
 </table>
 
-Además, acepta un bloque con la definición de la plantilla (ver el ejemplo).
+Además, acepta un bloque con la definición de la plantilla (ver ejemplo).
 
 ### Plantillas Sass
 
@@ -719,7 +719,7 @@ al de la plantilla pasando la opción `:layout_engine`.
   </tr>
 </table>
 
-Desde que no se puede utilisar métodos de Ruby (excepto por `yield`) de una
+Desde que no se puede utilizar métodos de Ruby (excepto por `yield`) de una
 plantilla Radius, casi siempre se necesita pasar locales.
 
 ### Plantillas Markaby
@@ -739,7 +739,7 @@ plantilla Radius, casi siempre se necesita pasar locales.
   </tr>
 </table>
 
-Además, acepta un bloque con la definición de la plantilla (ver el ejemplo).
+Además, acepta un bloque con la definición de la plantilla (ver ejemplo).
 
 ### Plantillas RABL
 
@@ -808,7 +808,7 @@ plantillas:
 ```
 
 Como no podés utilizar Ruby desde Creole, no podés usar layouts escritos en
-Creloe. De todos modos, es posible usar un motor de renderizado para el layout
+Creole. De todos modos, es posible usar un motor de renderizado para el layout
 distinto al de la plantilla pasando la opción `:layout_engine`.
 
 ### Plantillas CoffeeScript
@@ -974,7 +974,7 @@ __END__
 ```
 
 NOTA: únicamente las plantillas inline definidas en el archivo fuente que
-requiere sinatra son cargadas automáticamente. Llamá `enable
+requiere Sinatra son cargadas automáticamente. Llamá `enable
 :inline_templates` explícitamente si tenés plantillas inline en otros
 archivos fuente.
 
@@ -1263,7 +1263,7 @@ helper, y llamarlo desde `/foo` y `/bar`. Así, vas a simplificar
 las pruebas y a mejorar el rendimiento.
 
 Si querés que la petición se envíe a la misma instancia de la aplicación en
-lugar de a otra, usá `call!` en lugar de `call`.
+lugar de otra, usá `call!` en lugar de `call`.
 
 En la especificación de Rack podés encontrar más información sobre
 `call`.
@@ -1309,7 +1309,7 @@ para obtener sus valores cuando no se les pasa argumentos.
 A veces vas a querer empezar a enviar la respuesta a pesar de que todavía no
 terminaste de generar su cuerpo. También es posible que, en algunos casos,
 quieras seguir enviando información hasta que el cliente cierre la conexión.
-Cuando esto ocurra, el `stream` helper te va a ser de gran ayuda:
+Cuando esto ocurra, el helper `stream` te va a ser de gran ayuda:
 
 ``` ruby
 get '/' do
@@ -1331,7 +1331,7 @@ depende de un recurso lento.
 
 Hay que tener en cuenta que el comportamiento del streaming, especialmente el
 número de peticiones concurrentes, depende del servidor web utilizado para
-servir la aplicación. Puede que algunos servidores, como es el caso de
+alojar la aplicación. Puede que algunos servidores, como es el caso de
 WEBRick, no soporten streaming directamente, así el cuerpo de la respuesta será
 enviado completamente de una vez cuando el bloque pasado a `stream` finalice su
 ejecución. Si estás usando Shotgun, el streaming no va a funcionar.
@@ -1512,7 +1512,7 @@ end
 ```
 
 Para usar cachés adecuadamente, deberías considerar usar `etag` o
-`last_modified`. Es recomendable que llames a estos helpers *antes* de hacer
+`last_modified`. Es recomendable que llames a estos asistentes *antes* de hacer
 cualquier trabajo pesado, ya que van a enviar la respuesta inmediatamente si
 el cliente ya tiene la versión actual en su caché:
 
@@ -1557,8 +1557,8 @@ para más detalles).
 De acuerdo con la RFC 2616 tu aplicación debería comportarse diferente si a las
 cabeceras If-Match o If-None-Match se le asigna el valor `*` cuando el
 recurso solicitado ya existe. Sinatra asume para peticiones seguras (como get)
-e idempotentes (como put) que el recurso existe, mientras que para el resto
-(como post) asume que no. Podes cambiar este comportamiento con la opción
+y potentes (como put) que el recurso existe, mientras que para el resto
+(como post) asume que no. Podés cambiar este comportamiento con la opción
 `:new_resource`:
 
 ``` ruby
@@ -1616,7 +1616,7 @@ Estas opciones son:
   página de error.
 
 Si el Rack handler lo soporta, se intentará no transmitir directamente desde el
-proceso de Ruby. Si usás este método, Sinatra se va a encargar automáticamente
+proceso de Ruby. Si usás este método, Sinatra se va a encargar automáticamente de las 
 peticiones de rango.
 
 ### Accediendo al objeto de la petición
@@ -1647,7 +1647,7 @@ get '/foo' do
   request["UNA_CABECERA"]     # valor de la cabecera UNA_CABECERA
   request.referrer            # la referencia del cliente o '/'
   request.user_agent          # user agent (usado por la condición :agent)
-  request.cookies             # hash de las cookies del browser
+  request.cookies             # hash de las cookies del navegador
   request.xhr?                # es una petición ajax?
   request.url                 # "http://ejemplo.com/ejemplo/foo"
   request.path                # "/ejemplo/foo"
@@ -1681,7 +1681,7 @@ end
 
 ### Archivos Adjuntos
 
-Podés usar el método helper `attachment` para indicarle al navegador que
+Podés usar el helper `attachment` para indicarle al navegador que
 almacene la respuesta en el disco en lugar de mostrarla en pantalla:
 
 ``` ruby
@@ -1783,7 +1783,7 @@ que llama al bloque que recibe para cada path posible. Esto no representa un
 problema de rendimiento debido a que `render` va a usar `break` ni bien
 encuentre un archivo que exista. Además, las ubicaciones de las plantillas (y
 su contenido) se cachean cuando no estás en el modo de desarrollo. Es bueno
-tener en cuenta lo anteiror si escribís un método medio loco.
+tener en cuenta lo anterior si escribís un método extraño.
 
 ## Configuración
 
@@ -1844,7 +1844,7 @@ end
 Sinatra usa [Rack::Protection](https://github.com/rkh/rack-protection#readme)
 para defender a tu aplicación de los ataques más comunes. Si por algún motivo,
 querés desactivar esta funcionalidad, podés hacerlo como se indica a
-continuación (tené en cuenta que tu aplicación va a quedar expuesta a un
+continuación (ten en cuenta que tu aplicación va a quedar expuesta a un
 montón de vulnerabilidades bien conocidas):
 
 ``` ruby
@@ -1974,7 +1974,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
 
   <dt>public_folder</dt>
   <dd>
-    Path del directorio desde donde se sirven los archivos
+    Lugar del directorio desde donde se sirven los archivos
     públicos. Solo se utiliza cuando se sirven archivos
     estáticos (ver la opción <tt>static</tt>). Si no
     está presente, se infiere del valor de la opción
@@ -1990,7 +1990,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
 
   <dt>root</dt>
   <dd>
-    Path del directorio raíz del proyecto. Si no está
+    Lugar del directorio raíz del proyecto. Si no está
     presente, se infiere del valor de la opción
     <tt>app_file</tt>.
   </dd>
@@ -2012,7 +2012,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
 
   <dt>running</dt>
   <dd>
-    Indica si el servidor integrado está ejecutandose, ¡no
+    Indica si el servidor integrado está ejecutándose, ¡no
     cambiés esta configuración!.
   </dd>
 
@@ -2053,7 +2053,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
   <dt>static_cache_control</dt>
   <dd>
     Cuando Sinatra está sirviendo archivos estáticos, y
-    está opción está habilitada, les va a agregar encabezados
+    esta opción está habilitada, les va a agregar encabezados
     <tt>Cache-Control</tt> a las respuestas. Para esto
     utiliza el helper <tt>cache_control</tt>. Se encuentra
     deshabilitada por defecto. Notar que es necesario
@@ -2198,9 +2198,9 @@ end
 ```
 
 Rack es distribuido con una variedad de middleware estándar para logging,
-debugging, enrutamiento URL, autenticación, y manejo de sesiones. Sinatra
+debugging, enrutamiento URL, autenticación y manejo de sesiones. Sinatra
 usa muchos de estos componentes automáticamente de acuerdo a su configuración
-para que típicamente no tengas que usarlas (con `use`) explícitamente.
+para que usualmente no tengas que usarlas (con `use`) explícitamente.
 
 Podés encontrar middleware útil en
 [rack](https://github.com/rack/rack/tree/master/lib/rack),
@@ -2244,10 +2244,10 @@ end
 
 ## Sinatra::Base - Middleware, Librerías, y Aplicaciones Modulares
 
-Definir tu aplicación en el top-level funciona bien para micro-aplicaciones
+Definir tu aplicación en el nivel superior funciona bien para micro-aplicaciones
 pero trae inconvenientes considerables a la hora de construir componentes
 reutilizables como Rack middleware, Rails metal, librerías simples con un
-componente de servidor, o incluso extensiones de Sinatra. El DSL de top-level
+componente de servidor o incluso extensiones de Sinatra. El DSL de alto nivel
 asume una configuración apropiada para micro-aplicaciones (por ejemplo, un
 único archivo de aplicación, los directorios `./public` y
 `./views`, logging, página con detalles de excepción, etc.). Ahí es
@@ -2287,13 +2287,13 @@ para detalles sobre las opciones disponibles y su comportamiento.
 Contrariamente a la creencia popular, no hay nada de malo con el estilo clásico.
 Si se ajusta a tu aplicación, no es necesario que la cambies a una modular.
 
-Las desventaja de usar el estilo clásico en lugar del modular consiste en que
+La desventaja de usar el estilo clásico en lugar del modular consiste en que
 solamente podés tener una aplicación Sinatra por proceso Ruby. Si tenés
-planificado usar más, cambiá al estilo modular. Al mismo tiempo, tené en
+planificado usar más, cambiá al estilo modular. Al mismo tiempo, ten en
 cuenta que no hay ninguna razón por la cuál no puedas mezclar los estilos
 clásico y modular.
 
-A continuación se detallan las diferencias (sutiles) entre las configuraciones
+A continuación se detallan las diferencias (sútiles) entre las configuraciones
 de ambos estilos:
 
 <table>
@@ -2397,11 +2397,11 @@ require './app'
 run Sinatra::Application
 ```
 
-### ¿Cuándo Usar config.ru?
+### ¿Cuándo usar config.ru?
 
 Indicadores de que probablemente querés usar `config.ru`:
 
-* Querés realizar el deploy con un hanlder Rack distinto (Passenger, Unicorn,
+* Querés realizar el deploy con un handler Rack distinto (Passenger, Unicorn,
   Heroku, ...).
 * Querés usar más de una subclase de `Sinatra::Base`.
 * Querés usar Sinatra únicamente para middleware, pero no como un endpoint.
@@ -2620,7 +2620,7 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
     embargo, que eso ocurra es muy poco probable, e incluso el caso de que lo
     haga, puede que se siga dando soporte a 1.8.7. <b>Hemos dejado de soportar
     Ruby 1.8.6.</b> Si querés ejecutar Sinatra sobre 1.8.6, podés utilizar la
-    versión 1.2, pero tené en cuenta que una vez que Sinatra 1.4.0 sea liberado,
+    versión 1.2, pero ten en cuenta que una vez que Sinatra 1.4.0 sea liberado,
     ya no se corregirán errores por más que se reciban reportes de los mismos.
   </dd>
 
@@ -2629,12 +2629,12 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
     1.9.2 es soportado y recomendado. No uses 1.9.2p0, porque se producen fallos
     de segmentación cuando se ejecuta Sinatra. El soporte se mantendrá al menos
     hasta que se libere la versión 1.9.4/2.0 de Ruby. El soporte para la última
-    versión de la serie 1.9 se mantendrá mientras lo haga el core team de Ruby.
+    versión de la serie 1.9 se mantendrá mientras lo haga el equipo principal de Ruby.
   </dd>
 
   <dt>Ruby 1.9.3</dt>
   <dd>
-    1.9.3 es soportado y recomendado. Tené en cuenta que el cambio a 1.9.3 desde
+    1.9.3 es soportado y recomendado. Ten en cuenta que el cambio a 1.9.3 desde
     una versión anterior va a invalidar todas las sesiones.
   </dd>
 
@@ -2651,7 +2651,7 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
     con librerías de plantillas de terceras partes. Sin embargo, si elegís usar
     JRuby, deberías examinar sus Rack handlers porque el servidor web Thin no es
     soportado completamente. El soporte de JRuby para extensiones C se encuentra
-    en una etapa experimental, sin embargo, de momento solamente RDiscount,
+    en una etapa experimental, sin embargo, de momento, solamente RDiscount,
     Redcarpet, RedCloth y Yajl, así como Thin y Mongrel se ven afectadas.
   </dd>
 </dl>
@@ -2666,7 +2666,7 @@ oficialmente. De cualquier manera, pueden ejecutar Sinatra:
 * MacRuby, Maglev e IronRuby
 * Ruby 1.9.0 y 1.9.1 (pero no te recomendamos que los uses)
 
-No estar soportada oficialmente, significa que si las cosas solamente se rompen
+No ser soportada oficialmente, significa que si las cosas se rompen
 ahí y no en una plataforma soportada, asumimos que no es nuestro problema sino
 el suyo.
 
@@ -2699,7 +2699,7 @@ Para obtener algunas de las últimas características.
 Esta es la manera recomendada para ejecutar tu aplicación sobre la última
 versión de Sinatra usando [Bundler](http://gembundler.com/).
 
-Primero, instalá bundler si no lo hiciste todavía:
+Primero, instalá Bundler si no lo hiciste todavía:
 
 ``` shell
 gem install bundler
