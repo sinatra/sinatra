@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   # general infos
   s.name        = "rack-protection"
-  s.version     = "1.5.2"
+  s.version     = "1.5.3"
   s.description = "You should use protection!"
   s.homepage    = "http://github.com/rkh/rack-protection"
   s.summary     = s.description
@@ -13,13 +13,14 @@ Gem::Specification.new do |s|
     "Konstantin Haase",
     "Alex Rodionov",
     "Patrick Ellis",
+    "Jason Staten",
     "ITO Nobuaki",
-    "Matteo Centenaro",
     "Jeff Welling",
-    "David Kellum",
+    "Matteo Centenaro",
     "Egor Homakov",
     "Florian Gilcher",
     "Fojas",
+    "Igor Bochkariov",
     "Mael Clerambault",
     "Martin Mauch",
     "Renne Nissinen",
@@ -27,27 +28,30 @@ Gem::Specification.new do |s|
     "Stanislav Savulchik",
     "Steve Agalloco",
     "TOBY",
+    "Thais Camilo and Konstantin Haase",
     "Vipul A M",
     "Akzhan Abdulin",
     "brookemckim",
-    "Bj\u00F8rge N\u00E6ss",
+    "Bj\u{f8}rge N\u{e6}ss",
     "Chris Heald",
     "Chris Mytton",
     "Corey Ward",
-    "Dario Cravero"
+    "Dario Cravero",
+    "David Kellum"
   ]
 
   # generated from git shortlog -sne
   s.email = [
     "konstantin.mailinglists@googlemail.com",
     "p0deje@gmail.com",
+    "jstaten07@gmail.com",
     "patrick@soundcloud.com",
     "jeff.welling@gmail.com",
-    "daydream.trippers@gmail.com",
     "bugant@gmail.com",
-    "homakov@gmail.com",
+    "daydream.trippers@gmail.com",
     "florian.gilcher@asquera.de",
     "developer@fojasaur.us",
+    "ujifgc@gmail.com",
     "mael@clerambault.fr",
     "martin.mauch@gmail.com",
     "rennex@iki.fi",
@@ -55,6 +59,7 @@ Gem::Specification.new do |s|
     "s.savulchik@gmail.com",
     "steve.agalloco@gmail.com",
     "toby.net.info.mail+git@gmail.com",
+    "dev+narwen+rkh@rkh.im",
     "vipulnsward@gmail.com",
     "akzhan.abdulin@gmail.com",
     "brooke@digitalocean.com",
@@ -63,7 +68,8 @@ Gem::Specification.new do |s|
     "self@hecticjeff.net",
     "coreyward@me.com",
     "dario@uxtemple.com",
-    "dek-oss@gravitext.com"
+    "dek-oss@gravitext.com",
+    "homakov@gmail.com"
   ]
 
   # generated from git ls-files
