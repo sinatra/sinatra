@@ -1679,7 +1679,7 @@ send_file 'foo.png', :type => :jpg
   <dt>type</dt>
     <dd>コンテンツの種類。設定がない場合、ファイル拡張子から類推される。</dd>
 
-  </dt>disposition</dt>
+  <dt>disposition</dt>
     <dd>
       Content-Dispositionに使われる。許容値: <tt>nil</tt> (デフォルト)、
       <tt>:attachment</tt> および <tt>:inline</tt>
@@ -1949,7 +1949,7 @@ set :protection, :session => true
   </dd>
 
   <dt>bind</dt>
-  <dd>バインドするIPアドレス(デフォルト: `environment`がdevelopmentにセットされているときは、<tt>0.0.0.0</tt> <em>または</em> <tt>localhost</tt>)。ビルトインサーバでのみ使われる。
+  <dd>バインドするIPアドレス(デフォルト: `environment`がdevelopmentにセットされているときは、<tt>0.0.0.0</tt> <em>または</em> <tt>localhost</tt>)。ビルトインサーバでのみ使われる。</dd>
 
   <dt>default_encoding</dt>
   <dd>不明なときに仮定されるエンコーディング(デフォルトは<tt>"utf-8"</tt>)。</dd>

@@ -1800,7 +1800,7 @@ The options are:
   <dt>type</dt>
     <dd>content type to use, guessed from the file extension if missing.</dd>
 
-  </dt>disposition</dt>
+  <dt>disposition</dt>
     <dd>
       used for Content-Disposition, possible value: <tt>nil</tt> (default),
       <tt>:attachment</tt> and <tt>:inline</tt>
