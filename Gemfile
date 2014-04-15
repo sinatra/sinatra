@@ -12,6 +12,7 @@ gemspec
 
 gem 'rake'
 gem 'rack-test', '>= 0.5.6'
+gem 'minitest', '~> 4.7.5'
 
 # Allows stuff like `tilt=1.2.2 bundle install` or `tilt=master ...`.
 # Used by the CI.
