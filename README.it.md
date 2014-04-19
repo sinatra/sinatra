@@ -1337,11 +1337,11 @@ Leggi la specifica Rack se vuoi saperne di più riguardo `call`.
 
 ### Definire il Body, lo Status Code e gli Headers
 
-It is possible and recommended to set the status code and response body with the
-return value of the route block. However, in some scenarios you might want to
-set the body at an arbitrary point in the execution flow. You can do so with the
-`body` helper method. If you do so, you can use that method from there on to
-access the body:
+È possibile e raccomandato impostare lo status code e il body di una risposta
+con il valore di ritorno del blocco di una route. Tuttavia, in alcuni scenari
+potresti avere la necessità di impostare il body arbitrariamente in un qualsiasi punto
+del flusso di esecuzione. Puoi farlo con l'helper `body`. Dopo l'utilizzo di questo helper
+puoi accedere al body utilizzando lo stesso metodo:
 
 ``` ruby
 get '/foo' do
@@ -1352,11 +1352,11 @@ after do
   puts body
 end
 ```
+È anche possibile passare un blocco al metodo `body`, qusto verrà eseguito
+dal Rack handler (questo metodo può essere utilizzato per implementare uno
+streaming, vedi "Valori di ritorno").
 
-It is also possible to pass a block to `body`, which will be executed by the
-Rack handler (this can be used to implement streaming, see "Return Values").
-
-Similar to the body, you can also set the status code and headers:
+In modo simile al body puoi anche impostare lo status code e gli headers:
 
 ``` ruby
 get '/foo' do
@@ -1367,16 +1367,15 @@ get '/foo' do
   body "I'm a tea pot!"
 end
 ```
-
-Like `body`, `headers` and `status` with no arguments can be used to access
-their current values.
+Come per `body`, anche `headers` e `status` se chiamati senza argomenti sono utilizzabili
+per accedere al loro valore attuale.
 
 ### Streaming Responses
 
-Sometimes you want to start sending out data while still generating parts of
-the response body. In extreme examples, you want to keep sending data until
-the client closes the connection. You can use the `stream` helper to avoid
-creating your own wrapper:
+A volte vuoi iniziare ad inviare i dati mentre stai ancora generando delle parti
+del respons body. In casi estremi potresti voler continuare ad inviare dati fino a
+quando il client chiude la connessione. Puoi usare l'helper `stream` per evitare
+di creare un tuo wrapper:
 
 ``` ruby
 get '/' do
@@ -1389,23 +1388,22 @@ get '/' do
   end
 end
 ```
+Questo ti permette di implemteare l'API streaming, [Server Sent Events](http://dev.w3.org/html5/eventsource/),
+e può essere utilizzato come base per un [WebSockets](http://en.wikipedia.org/wiki/WebSocket).
+Può venire utilizzato per incrementare il throughput se alcuni contenut (non tutti) dipendono
+da una risorsa lenta.
 
-This allows you to implement streaming APIs,
-[Server Sent Events](http://dev.w3.org/html5/eventsource/), and can be used as
-the basis for [WebSockets](http://en.wikipedia.org/wiki/WebSocket). It can also be
-used to increase throughput if some but not all content depends on a slow
-resource.
+Nota che il funzionamento di streaming, specialmente il numero di richieste concorrenti,
+dipende direttamente dal web server utilizzato per l'applicazione.
+Alcuni server , come WEBRick, possono non supportara lo streaming. Se il server
+non supporta lo streaming, il body sarà inviato tutti in una volta al momento che l'esecuzione
+del blocco passato a `stream` sarà terminata. Lo streaming non funziona con Shotgun.
 
-Note that the streaming behavior, especially the number of concurrent requests,
-highly depends on the web server used to serve the application. Some servers,
-like WEBRick, might not even support streaming at all. If the server does not
-support streaming, the body will be sent all at once after the block passed to
-`stream` finishes executing. Streaming does not work at all with Shotgun.
-
-If the optional parameter is set to `keep_open`, it will not call `close` on
-the stream object, allowing you to close it at any later point in the
-execution flow. This only works on evented servers, like Thin and Rainbows.
-Other servers will still close the stream:
+Se il parametro opzionale e impostato a `keep_open`, non verrà chiamato il metodo
+`close` sul oggetto stream, lasciandoti libero di chiudere lo strem in qualsiasi punto
+più avanti nel flusso d'esecuzione. Questa funzionalità é disponibile unicamente
+con i server "evented" come Thin e Rainbows.
+Gli altri servers chiuderanno comunque lo stream:
 
 ``` ruby
 # long polling
