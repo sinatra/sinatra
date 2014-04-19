@@ -19,6 +19,7 @@ module Sinatra
       helpers :JSON
       helpers :LinkHeader
       helpers :Streaming
+      helpers :Params
     end
 
     ##
