@@ -70,7 +70,7 @@ Si raccomanda di eseguire `gem install thin`, Sinatra utilizzera thin quando dis
         * [Usare le sessioni](#usare-le-sessioni)
         * [Halting](#halting)
         * [Passing](#passing)
-        * [Innescara una altra route](#innescare-un-altra-route)
+        * [Innescare una altra route](#innescare-un-altra-route)
         * [Definire il Body, lo Status Code e gli Headers](#defnire-il-body-lo-status-code-e-gli-headers)
         * [Streaming Responses](#streaming-responses)
         * [Logging](#logging)
@@ -317,7 +317,7 @@ end
 get('/') { Stream.new }
 ```
 
-Puoi anche usare l'helper `stream` (descritto sotto) 
+Puoi anche usare l'helper `stream` (descritto sotto)
 You can also use the `stream` helper method (described below) per essere più chiari e includere la logica di streaming nella route.
 
 ## Routes con pattern personalizzati
@@ -426,7 +426,7 @@ get '/' do
 end
 ```
 
-Le opzioni passate al metodo render sovrascrivono quelle passate tramite il metodo `set`. 
+Le opzioni passate al metodo render sovrascrivono quelle passate tramite il metodo `set`.
 
 Opzioni disponibili:
 
@@ -1009,7 +1009,7 @@ Questa funzionalità é utilizzata tipicamente quando si rtenderizzano dei parti
 
 ### Templates con yield e layouts annidati
 
-Un layout solitamente non é niente di più di un template che chiama `yield`. 
+Un layout solitamente non é niente di più di un template che chiama `yield`.
 Questo template può essere utilizzato, sia tramite l'opzione template come descritto sopra, o può essere renderizzato con un blocco come nell'esempio seguente:
 
 ``` ruby
@@ -1154,7 +1154,7 @@ after '/create/:slug' do |slug|
 end
 ```
 
-COme le routes anche i filtri accettano delle condiozioni:
+Come le routes anche i filtri accettano delle condiozioni:
 
 ``` ruby
 before :agent => /Songbird/ do
@@ -1200,7 +1200,7 @@ L'effetto é il medesimo che aggiungere i moduli alla classe principale dell'app
 
 ### Usare le sessioni
 
-Una sessione viene utilizzatea per mantenere lo stato durante richieste differenti. Se attivate, avrai una hash sessione per ogni sessione utente:
+Una sessione viene utilizzata per mantenere lo stato durante richieste differenti. Se attivate, avrai una hash sessione per ogni sessione utente:
 
 ``` ruby
 enable :sessions
@@ -1214,11 +1214,10 @@ get '/:value' do
 end
 ```
 
-Note that `enable :sessions` actually stores all data in a cookie. This
-might not always be what you want (storing lots of data will increase your
-traffic, for instance). You can use any Rack session middleware: in order to
-do so, do **not** call `enable :sessions`, but instead pull in your
-middleware of choice as you would any other middleware:
+Nota che `enable :sessions` salva i dati in un cookie. Questo
+potrebbe non essere quello che vuoi (salvare molti dati aumenterà il traffico per istanza).
+Puoi usare qualsiasi Rack middleware che tratta le sessioni in modo di poter fare così:
+**non** chiamare `enable :sessions`, ma invece utilizzare un middleware di tua scelta:
 
 ``` ruby
 use Rack::Session::Pool, :expire_after => 2592000
@@ -1231,25 +1230,25 @@ get '/:value' do
   session[:value] = params[:value]
 end
 ```
-
-To improve security, the session data in the cookie is signed with a session
-secret. A random secret is generated for you by Sinatra. However, since this
-secret will change with every start of your application, you might want to
-set the secret yourself, so all your application instances share it:
+Per migliorare la sicurezza i  dati della sessione all'interno del cookie sono
+signed (firmati/autnticati) con una hash segreta (secret).
+Un secret random viene genrato per te da Sinatra. Comunque, dato che quetso secret
+viene generato automaticamente ad ogni riavvio della tua applicazione potresti voler
+impostare un secret manualmente in modo che tutte le istance della tua applicazione lo
+utilizzino:
 
 ``` ruby
 set :session_secret, 'super secret'
 ```
 
-If you want to configure it further, you may also store a hash with options in
-the `sessions` setting:
+Se vuoi configurarlo ulteriormente, puoi anche una hash con le opzioni nei
+`sessions` setting:
 
 ``` ruby
 set :sessions, :domain => 'foo.com'
 ```
-
-To share your session across other apps on subdomains of foo.com, prefix the
-domain with a *.* like this instead:
+Per condividere la tua sessione con altre applicazioni sul dominio foo.com,
+aggiungi il prefisso *.* in questo modo:
 
 ``` ruby
 set :sessions, :domain => '.foo.com'
@@ -1257,37 +1256,37 @@ set :sessions, :domain => '.foo.com'
 
 ### Halting
 
-To immediately stop a request within a filter or route use:
+Per fermare immediatamente una richiesta all'interno di un filtro o una route usa:
 
 ``` ruby
 halt
 ```
 
-You can also specify the status when halting:
+Puoi anche specificare lo status quando chiami halt:
 
 ``` ruby
 halt 410
 ```
 
-Or the body:
+O il body:
 
 ``` ruby
 halt 'this will be the body'
 ```
 
-Or both:
+Or entrambi:
 
 ``` ruby
 halt 401, 'go away!'
 ```
 
-With headers:
+Aggiungere degli headers:
 
 ``` ruby
 halt 402, {'Content-Type' => 'text/plain'}, 'revenge'
 ```
 
-It is of course possible to combine a template with `halt`:
+È anche possibile combinare un template con `halt`:
 
 ``` ruby
 halt erb(:error)
@@ -1295,7 +1294,7 @@ halt erb(:error)
 
 ### Passing
 
-A route can punt processing to the next matching route using `pass`:
+Una route puo diroztare un processo alla prossima route corrispondente utilizzando `pass`:
 
 ``` ruby
 get '/guess/:who' do
@@ -1307,14 +1306,15 @@ get '/guess/*' do
   'You missed!'
 end
 ```
+Il blocco della route viene abbandonato immediatamente e il processo continua con la prossima
+route che combacia. Se non viene trovata nessuna route adatta viene ritornato un 404.
 
-The route block is immediately exited and control continues with the next
-matching route. If no matching route is found, a 404 is returned.
 
-### Triggering Another Route
+### Innescare una altra route
 
-Sometimes `pass` is not what you want, instead you would like to get the result
-of calling another route. Simply use `call` to achieve this:
+A volte `pass` non fa esattamente quello che vuoi, invece potresti voler ricevere
+il risultato della chiamata di un altra route. Puoi utilizzare `call` per
+raggiungere questo risultato:
 
 ``` ruby
 get '/foo' do
@@ -1326,17 +1326,16 @@ get '/bar' do
   "bar"
 end
 ```
+Nota che nell'esempio qui sopra, potresti semplificare i test e migliorare le
+performance semplicemente spostando `"bar"` in un helper utilizzato da entrambe
+`/foo` e `/bar`.
 
-Note that in the example above, you would ease testing and increase performance
-by simply moving `"bar"` into a helper used by both `/foo`
-and `/bar`.
+Se vuoi inviare la richiesta alla medesima istanza dell'applicazione piuttosto che
+a un duplicato, usa `call!` invece di `call`.
 
-If you want the request to be sent to the same application instance rather than
-a duplicate, use `call!` instead of `call`.
+Leggi la specifica Rack se vuoi saperne di più riguardo `call`.
 
-Check out the Rack specification if you want to learn more about `call`.
-
-### Setting Body, Status Code and Headers
+### Definire il Body, lo Status Code e gli Headers
 
 It is possible and recommended to set the status code and response body with the
 return value of the route block. However, in some scenarios you might want to
