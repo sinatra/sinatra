@@ -1470,16 +1470,16 @@ logger personale. Sinatra utilizza qualsiasi cosa che trova in `env['rack.logger
 
 ### Mime Types
 
-When using `send_file` or static files you may have mime types Sinatra
-doesn't understand. Use `mime_type` to register them by file extension:
+Quando utilizzi `send_file` o dei files statici potresti avere dei mime types
+che Sinatra non può capire. Usa `mime_type` per registrarli secondo la loro estensione:
 
 ``` ruby
 configure do
   mime_type :foo, 'text/foo'
 end
 ```
+Puoi anche utilizzare il `content_type` helper:
 
-You can also use it with the `content_type` helper:
 
 ``` ruby
 get '/' do
@@ -1488,22 +1488,23 @@ get '/' do
 end
 ```
 
-### Generating URLs
+### Generare URLs
 
-For generating URLs you should use the `url` helper method, for instance, in
-Haml:
+Per genrare gli URLs dovresti utilizzare l'helper `url`, per esempio,
+in Haml:
 
 ``` ruby
 %a{:href => url('/foo')} foo
 ```
 
-It takes reverse proxies and Rack routers into account, if present.
+In questo modo vengono presi in considerazione i reverse proxy e
+le Rack routes se presenti.
 
-This method is also aliased to `to` (see below for an example).
+Questo helper viene anche utilizzate con l'alias `to`.
 
 ### Browser Redirect
 
-You can trigger a browser redirect with the `redirect` helper method:
+Puoi innescare un browser redirect con l'helper `redirect`:er method:
 
 ``` ruby
 get '/foo' do
@@ -1511,15 +1512,14 @@ get '/foo' do
 end
 ```
 
-Any additional parameters are handled like arguments passed to `halt`:
+Ogni parametro addizionale verrà trattato come un argomento passato ad `halt`:
 
 ``` ruby
 redirect to('/bar'), 303
 redirect 'http://google.com', 'wrong place, buddy'
 ```
 
-You can also easily redirect back to the page the user came from with
-`redirect back`:
+Puoi anche redirectare l'utente alla pagina da cui proviene con `redirect back`:
 
 ``` ruby
 get '/foo' do
@@ -1531,14 +1531,12 @@ get '/bar' do
   redirect back
 end
 ```
-
-To pass arguments with a redirect, either add them to the query:
+Per passare degli argomenti con un redirect, aggiungili come query:
 
 ``` ruby
 redirect to('/bar?sum=42')
 ```
-
-Or use a session:
+O usa una sessione:
 
 ``` ruby
 enable :sessions
@@ -1553,11 +1551,11 @@ get '/bar' do
 end
 ```
 
-### Cache Control
+### Gestire la Cache
 
-Setting your headers correctly is the foundation for proper HTTP caching.
+Impostare correttamente i tuoi headers é fondamentale per un corretto HTTP caching.
 
-You can easily set the Cache-Control header like this:
+Puoi impostare facilmetne il Cache-Control header così:
 
 ``` ruby
 get '/' do
@@ -1566,7 +1564,7 @@ get '/' do
 end
 ```
 
-Pro tip: Set up caching in a before filter:
+Pro tip: imposta il caching in un before filter:
 
 ``` ruby
 before do
@@ -1574,8 +1572,8 @@ before do
 end
 ```
 
-If you are using the `expires` helper to set the corresponding header,
-`Cache-Control` will be set automatically for you:
+Se utlizzi l'helper `expires` per impostare l'header expires, il
+`Cache-Control` verrà impostato automaticmante:
 
 ``` ruby
 before do
@@ -1583,10 +1581,10 @@ before do
 end
 ```
 
-To properly use caches, you should consider using `etag` or `last_modified`.
-It is recommended to call those helpers *before* doing any heavy lifting, as they
-will immediately flush a response if the client already has the current
-version in its cache:
+Per utilizzare corretamente le caches, dovresti considerare di utilizzare `etag` o `last_modified`.
+Si raccomnda di chiamare questi helper *prima* di effettuare operazioni pesanti,
+in modo che queste inviino direttamente una response se il client possiede già l'ultima
+versione della cache:
 
 ``` ruby
 get '/article/:id' do
@@ -1597,22 +1595,21 @@ get '/article/:id' do
 end
 ```
 
-It is also possible to use a
+Si può anche utilizzare:
 [weak ETag](http://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation):
 
 ``` ruby
 etag @article.sha1, :weak
 ```
-
-These helpers will not do any caching for you, but rather feed the necessary
-information to your cache. If you are looking for a quick reverse-proxy caching
-solution, try [rack-cache](https://github.com/rtomayko/rack-cache):
+QUesti helper non eseguiranno il caching per te, ma ti aiuteranno ad inserire i
+dati necessari alla tua cache. Se stai cercando una soluzione veloce per il
+reverse-proxy cachins, prova [rack-cache](https://github.com/rtomayko/rack-cache):
 
 ``` ruby
 require "rack/cache"
 require "sinatra"
 
-use Rack::Cache
+usa Rack::Cache
 
 get '/' do
   cache_control :public, :max_age => 36000
