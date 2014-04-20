@@ -1438,7 +1438,7 @@ end
 
 ### Logging
 
-In the request scope, the `logger` helper exposes a `Logger` instance:
+Nell'ambito della richiesta, il `logger` helper espone un istanza di `Logger`:
 
 ``` ruby
 get '/' do
@@ -1447,13 +1447,13 @@ get '/' do
 end
 ```
 
-This logger will automatically take your Rack handler's logging settings into
-account. If logging is disabled, this method will return a dummy object, so
-you do not have to worry about it in your routes and filters.
+Questo logger prendera automaticamente in considerazione i settings del tuo
+Rack handler. Se il logging é disabilitato, questo metodo ritornerà un oggetto
+fittizio, così non dovrai preocupartene nelle tue routes e nei filtri.
 
-Note that logging is only enabled for `Sinatra::Application` by
-default, so if you inherit from `Sinatra::Base`, you probably want to
-enable it yourself:
+Nota che il logging é abilitato di default solamente per `Sinatra::Application`,
+Quindi se i tuoi oggetti ereditano da `Sinatra::Base` probabilmente vorrai abilitarlo
+manualmente:
 
 ``` ruby
 class MyApp < Sinatra::Base
@@ -1463,10 +1463,10 @@ class MyApp < Sinatra::Base
 end
 ```
 
-To avoid any logging middleware to be set up, set the `logging` setting to
-`nil`. However, keep in mind that `logger` will in that case return `nil`. A
-common use case is when you want to set your own logger. Sinatra will use
-whatever it will find in `env['rack.logger']`.
+Per evitare che qualsiasi middleware di loggin venga settato, imposta il
+`logging` setting a nil. Un caso comune é quando vuoi utilizzare il tuo
+logger personale. Sinatra utilizza qualsiasi cosa che trova in `env['rack.logger']`.
+
 
 ### Mime Types
 
