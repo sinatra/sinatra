@@ -1618,15 +1618,16 @@ get '/' do
 end
 ```
 
-Use the `:static_cache_control` setting (see below) to add
-`Cache-Control` header info to static files.
+Puoi configurare `:static_cache_control`(vedi sotto) per
+aggiungere l'attributo dell'header `Cache-Control` ad
+un file statico.
 
-According to RFC 2616, your application should behave differently if the If-Match
-or If-None-Match header is set to `*`, depending on whether the resource
-requested is already in existence. Sinatra assumes resources for safe (like get)
-and idempotent (like put) requests are already in existence, whereas other
-resources (for instance post requests) are treated as new resources. You
-can change this behavior by passing in a `:new_resource` option:
+Secondo la specifica RFC 2616, la tua applicazine dovrebbe avere un
+comportamento differente se If-Match o If-None-Match sono impostati a
+`*` nell'header, a dipendenza se la risorsa richiesta esiste già o meno.
+Sinatra assume che le risorse per richieste sicure(come get) e idempotenti(come put)
+esistano già, mentre altre risorse(per esempio post) sono trattate come nuove risorse.
+Puoi modificare questo comportamento passando l'opzione `:new_resource`:
 
 ``` ruby
 get '/create' do
@@ -1636,13 +1637,13 @@ get '/create' do
 end
 ```
 
-If you still want to use a weak ETag, pass in a `:kind` option:
+Se vuoi ancora utiizzare un ETag debole, passa l'opzione `:kind`:
 
 ``` ruby
 etag '', :new_resource => true, :kind => :weak
 ```
 
-### Sending Files
+### Inviare Files
 
 For sending files, you can use the `send_file` helper method:
 
