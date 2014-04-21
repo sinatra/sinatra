@@ -1645,7 +1645,7 @@ etag '', :new_resource => true, :kind => :weak
 
 ### Inviare Files
 
-For sending files, you can use the `send_file` helper method:
+Per inviare dei files, puoi utilizzare l'helper `send_file`:
 
 ``` ruby
 get '/' do
@@ -1653,40 +1653,39 @@ get '/' do
 end
 ```
 
-It also takes options:
+Accetta anche delle opzioni:
 
 ``` ruby
 send_file 'foo.png', :type => :jpg
 ```
-
-The options are:
+Le opzioni sono:
 
 <dl>
   <dt>filename</dt>
-    <dd>file name, in response, defaults to the real file name.</dd>
+    <dd>il nome del file nella risposta, di defaults il nome del file inviato.</dd>
 
   <dt>last_modified</dt>
-    <dd>value for Last-Modified header, defaults to the file's mtime.</dd>
+    <dd>valore per l'header Last-Modified header, di defaults la data di modifica del file.</dd>
 
   <dt>type</dt>
-    <dd>content type to use, guessed from the file extension if missing.</dd>
+    <dd>il content type da utilizzare, viene indovinato dall'estensione del file se non specificato.</dd>
 
   </dt>disposition</dt>
     <dd>
-      used for Content-Disposition, possible value: <tt>nil</tt> (default),
-      <tt>:attachment</tt> and <tt>:inline</tt>
+      utilizzato per Content-Disposition, possibili valori: <tt>nil</tt> (default),
+      <tt>:attachment</tt> e <tt>:inline</tt>
     </dd>
 
   <dt>length</dt>
-    <dd>Content-Length header, defaults to file size.</dd>
+    <dd>l'header Content-Length, di defaults la dimensione del file.</dd>
 
   <dt>status</dt>
     <dd>
-      Status code to be send. Useful when sending a static file as an error page.
+      Status code da inviare. Utile quando si invia un file statico come error page.
 
-      If supported by the Rack handler, other means than streaming from the Ruby
-      process will be used. If you use this helper method, Sinatra will automatically
-      handle range requests.
+      Se il Rack andler lo supporta, verrano utilizzati sistemi che non sono lo
+      streaming del processo Ruby. Se utilizzi questo helper, Sinatra si occuperà
+      di gestire le richieste automaticamente.
     </dd>
 </dl>
 
