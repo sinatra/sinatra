@@ -164,6 +164,7 @@ module Sinatra
 
       # Creates a new +Watcher+ instance for the file located at +path+.
       def initialize(path)
+        @ignore = nil
         @path, @elements = path, []
         update
       end
@@ -369,7 +370,8 @@ module Sinatra
 
     private
 
-      attr_reader :register_path
+      # attr_reader :register_path warn on -w (private attribute)
+      def register_path; @register_path ||= nil; end
 
       # Indicates an extesion is being registered.
       def start_registering_extension
