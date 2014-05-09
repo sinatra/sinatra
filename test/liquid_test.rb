@@ -53,7 +53,7 @@ class LiquidTest < Test::Unit::TestCase
     assert_equal 'foo', body
   end
 
-  it "can rendere truly nested layouts by accepting a layout and a block with the contents" do
+  it "can render truly nested layouts by accepting a layout and a block with the contents" do
     mock_app do
       template(:main_outer_layout) { "<h1>Title</h1>\n{{ yield }}" }
       template(:an_inner_layout) { "<h2>Subtitle</h2>\n{{ yield }}" }
