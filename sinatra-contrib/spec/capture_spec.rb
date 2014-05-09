@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-require 'backports'
 require 'slim'
-require_relative 'spec_helper'
+require 'spec_helper'
 
 describe Sinatra::Capture do
   subject do

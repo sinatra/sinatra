@@ -1,8 +1,7 @@
-require 'backports'
 require 'multi_json'
 
-require_relative 'spec_helper'
-require_relative 'okjson'
+require 'spec_helper'
+require 'okjson'
 
 shared_examples_for "a json encoder" do |lib, const|
   before do
