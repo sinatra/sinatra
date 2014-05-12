@@ -122,7 +122,7 @@ mégpedig a :public_folder kapcsoló beállításával:
 
   set :public_folder, File.dirname(__FILE__) + '/static'
 
-Fontos mgejegyezni, hogy a nyilvános könyvtár neve nem szerepel az URL-ben.
+Fontos megjegyezni, hogy a nyilvános könyvtár neve nem szerepel az URL-ben.
 A ./public/css/style.css fájl az
 `http://example.com/css/style.css` URL-en lesz elérhető.
 
