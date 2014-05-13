@@ -1,5 +1,4 @@
-require 'backports'
-require_relative 'spec_helper'
+require 'spec_helper'
 
 describe Sinatra::Namespace do
   verbs = [:get, :head, :post, :put, :delete, :options]

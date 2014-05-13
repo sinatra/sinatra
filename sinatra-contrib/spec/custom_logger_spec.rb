@@ -1,5 +1,4 @@
-require 'backports'
-require_relative 'spec_helper'
+require 'spec_helper'
 require 'sinatra/custom_logger'
 
 describe Sinatra::CustomLogger do
