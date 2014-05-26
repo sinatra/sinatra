@@ -228,6 +228,17 @@ get '/posts.?:format?' do
 end
 ```
 
+Ainsi que des paramètres d'URL :
+
+``` ruby
+get '/posts' do
+  # répond à "GET /posts?titre=foo&auteur=bar"
+  titre = params[:titre]
+  auteur = params[:auteur]
+  # utilise les variables titre et auteur, ces paramètres d'URL sont optionnels pour la route /posts
+end
+```
+
 A ce propos, à moins d'avoir désactivé la protection contre les attaques par
 "path transversal" (voir plus loin), l'URL demandée peut avoir été modifiée
 avant d'être comparée à vos routes.
@@ -2449,7 +2460,20 @@ pour transformer la plupart des applications de haut niveau en un composant
 `Sinatra::Base` est une page blanche. La plupart des options sont
 désactivées par défaut, y compris le serveur intégré. Reportez-vous à
 [Options et Configuration](http://sinatra.github.com/configuration.html)
-pour plus d'informations sur les options et leur fonctionnement.
+pour plus d'informations sur les options et leur fonctionnement. Si vous
+souhaitez un comportement plus proche de celui obtenu lorsque vous définissez
+votre application au niveau supérieur (aussi connu sous le nom de style
+Classique), vous pouvez créer une classe héritant de `Sinatra::Application`.
+
+``` ruby
+require 'sinatra/base'
+
+class MyApp < Sinatra::Application
+  get '/' do
+    'Bonjour le monde !'
+  end
+end
+```
 
 ### Style modulaire vs. style classique
 
@@ -2465,14 +2489,56 @@ classique et style modulaire.
 Si vous passez d'un style à l'autre, souvenez-vous des quelques différences
 mineures en ce qui concerne les paramètres par défaut :
 
-  Paramètre         Classique                   Modulaire
+<table>
+  <tr>
+    <th>Paramètre</th>
+    <th>Classique</th>
+    <th>Modulaire</th>
+    <th>Modulaire</th>
+  </tr>
 
-  app_file          fichier chargeant sinatra   fichier héritant de Sinatra::Base
-  run               $0 == app_file              false
-  logging           true                        false
-  method_override   true                        false
-  inline_templates  true                        false
-  static            true                        false
+  <tr>
+    <td>app_file</td>
+    <td>fichier chargeant sinatra</td>
+    <td>fichier héritant de Sinatra::Base</td>
+    <td>fichier héritant de Sinatra::Application</td>
+  </tr>
+
+  <tr>
+    <td>run</td>
+    <td>$0 == app_file</td>
+    <td>false</td>
+    <td>false</td>
+  </tr>
+
+  <tr>
+    <td>logging</td>
+    <td>true</td>
+    <td>false</td>
+    <td>true</td>
+  </tr>
+
+  <tr>
+    <td>method_override</td>
+    <td>true</td>
+    <td>false</td>
+    <td>true</td>
+  </tr>
+
+  <tr>
+    <td>inline_templates</td>
+    <td>true</td>
+    <td>false</td>
+    <td>true</td>
+  </tr>
+
+  <tr>
+    <td>static</td>
+    <td>true</td>
+    <td>false</td>
+    <td>true</td>
+  </tr>
+</table>
 
 ### Servir une application modulaire
 
