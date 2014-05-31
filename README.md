@@ -1231,6 +1231,23 @@ end
 Renders `./views/index.myat`. See https://github.com/rtomayko/tilt to
 learn more about Tilt.
 
+### Using Custom Logic for Template Lookup
+
+To implement your own template lookup mechanism you can write your
+own `#find_template` method:
+
+``` ruby
+configure do
+  set :views [ './views/a', './views/b' ]
+end
+
+def find_template(views, name, engine, &block)
+  Array(views).each do |v|
+    super(v, name, engine, &block)
+  end
+end
+```
+
 ## Filters
 
 Before filters are evaluated before each request within the same
