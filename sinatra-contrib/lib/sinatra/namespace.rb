@@ -268,6 +268,10 @@ module Sinatra
       def method_missing(method, *args, &block)
         base.send(method, *args, &block)
       end
+
+      def respond_to?(method, include_private = false)
+        super || base.respond_to?(method, include_private)
+      end
     end
 
     module BaseMethods

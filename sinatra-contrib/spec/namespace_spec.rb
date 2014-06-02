@@ -704,5 +704,20 @@ describe Sinatra::Namespace do
       get('/foo/bar').status.should == 200
       last_response.body.should == '42'
     end
+
+    it 'allows checking setting existance with respond_to?' do
+      mock_app do
+        set :foo, 42
+
+        namespace '/foo' do
+          get '/bar' do
+            settings.respond_to?(:foo).to_s
+          end
+        end
+      end
+
+      get('/foo/bar').status.should == 200
+      last_response.body.should == 'true'
+    end
   end
 end
