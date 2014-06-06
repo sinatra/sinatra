@@ -34,6 +34,7 @@ if RUBY_ENGINE == 'jruby'
 end
 
 if RUBY_ENGINE == "ruby" and RUBY_VERSION > '1.9.2'
+  gem "minitest", "~> 4.0"
   gem 'less', '~> 2.0'
   gem 'therubyracer'
   gem 'redcarpet'
