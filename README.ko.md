@@ -54,11 +54,13 @@ thin이 설치되어 있을 경우 Sinatra는 thin을 통해 실행합니다.
             * [Markdown 템플릿](#markdown-템플릿)
             * [Textile 템플릿](#textile-템플릿)
             * [RDoc 템플릿](#rdoc-템플릿)
+            * [AsciiDoc 템플릿](#asciidoc-템플릿)
             * [Radius 템플릿](#radius-템플릿)
             * [Markaby 템플릿](#markaby-템플릿)
             * [RABL 템플릿](#rabl-템플릿)
             * [Slim 템플릿](#slim-템플릿)
             * [Creole 템플릿](#creole-템플릿)
+            * [MediaWiki 템플릿](#mediawiki-템플릿)
             * [CoffeeScript 템플릿](#coffeescript-템플릿)
             * [Stylus 템플릿](#stylus-템플릿)
             * [Yajl 템플릿](#yajl-템플릿)
@@ -220,6 +222,17 @@ end
 ``` ruby
 get '/posts.?:format?' do
   # "GET /posts" 는 물론 "GET /posts.json", "GET /posts.xml" 와 같은 어떤 확장자와도 매칭
+end
+```
+
+쿼리 파라메터로도 이용가능 합니다.
+
+``` ruby
+get '/posts' do
+  # matches "GET /posts?title=foo&author=bar"
+  title = params[:title]
+  author = params[:author]
+  # uses title and author variables; query is optional to the /posts route
 end
 ```
 
@@ -761,6 +774,26 @@ RDoc에서 루비를 호출할 수 없기 때문에, RDoc으로 작성된 레이
 사용할 수 없습니다. 하지만, `:layout_engine` 옵션으로 레이아웃의 템플릿을
 다른 렌더링 엔진으로 렌더링 할 수는 있습니다.
 
+#### AsciiDoc 템플릿
+
+<table>
+  <tr>
+    <td>의존성</td>
+    <td><a href="http://asciidoctor.org/" title="Asciidoctor">Asciidoctor</a></td>
+  </tr>
+  <tr>
+    <td>파일 확장자</td>
+    <td><tt>.asciidoc</tt>, <tt>.adoc</tt> and <tt>.ad</tt></td>
+  </tr>
+  <tr>
+    <td>예제</td>
+    <td><tt>asciidoc :README, :layout_engine => :erb</tt></td>
+  </tr>
+</table>
+
+AsciiDoc 템플릿에서는 루비 메서드를 호출할 수 없기
+때문에, 거의 대부분의 경우 locals를 전달해야 합니다.
+
 #### Radius 템플릿
 
 <table>
@@ -866,6 +899,41 @@ erb :overview, :locals => { :text => creole(:introduction) }
 ```
 
 Creole에서 루비를 호출할 수 없기 때문에, Creole으로 작성된 레이아웃은
+사용할 수 없습니다. 하지만, `:layout_engine` 옵션으로 레이아웃의 템플릿을
+다른 렌더링 엔진으로 렌더링 할 수는 있습니다.
+
+#### MediaWiki 템플릿
+
+<table>
+  <tr>
+    <td>의존성</td>
+    <td><a href="https://github.com/nricciar/wikicloth" title="WikiCloth">WikiCloth</a></td>
+  </tr>
+  <tr>
+    <td>파일 확장자</td>
+    <td><tt>.mediawiki</tt> and <tt>.mw</tt></td>
+  </tr>
+  <tr>
+    <td>예제</td>
+    <td><tt>mediawiki :wiki, :layout_engine => :erb</tt></td>
+  </tr>
+</table>
+
+MediaWiki 마크업에서는 메서드 호출 뿐 아니라 locals 전달도 안됩니다
+따라서 일반적으로는 다른 렌더링 엔진과 함께 사용하게 됩니다.
+
+``` ruby
+erb :overview, :locals => { :text => mediawiki(:introduction) }
+```
+
+다른 템플릿 속에서 `mediawiki` 메서드를 호출할 수도 있습니다.
+
+``` ruby
+%h1 Hello From Haml!
+%p= mediawiki(:greetings)
+```
+
+MediaWiki에서 루비를 호출할 수 없기 때문에, MediaWiki으로 작성된 레이아웃은
 사용할 수 없습니다. 하지만, `:layout_engine` 옵션으로 레이아웃의 템플릿을
 다른 렌더링 엔진으로 렌더링 할 수는 있습니다.
 
@@ -1130,6 +1198,22 @@ end
 
 위 코드는 `./views/index.myat` 를 렌더합니다.
 Tilt에 대한 더 자세한 내용은 https://github.com/rtomayko/tilt 참조하세요.
+
+### 템플릿 검사를 위한 커스텀 로직 사용하기
+
+고유한 템플릿 룩업을 구현하기 위해서는 `#find_template` 메서드를 만드셔야 합니다.
+
+``` ruby
+configure do
+  set :views [ './views/a', './views/b' ]
+end
+
+def find_template(views, name, engine, &block)
+  Array(views).each do |v|
+    super(v, name, engine, &block)
+  end
+end
+```
 
 ## 필터(Filters)
 
