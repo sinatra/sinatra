@@ -69,6 +69,7 @@ pick up if available.
         * [Named Templates](#named-templates)
         * [Associating File Extensions](#associating-file-extensions)
         * [Adding Your Own Template Engine](#adding-your-own-template-engine)
+        * [Using Custom Logic for Template Lookup](#using-custom-logic-for-template-lookup)
     * [Filters](#filters)
     * [Helpers](#helpers)
         * [Using Sessions](#using-sessions)
