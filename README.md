@@ -2211,11 +2211,6 @@ set :protection, :session => true
     happens. Enabled by default when <tt>environment</tt>
     is set to <tt>"development"</tt>, disabled otherwise.
   </dd>
-  <dd>
-    Can also be set to <tt>:after_handler</tt> to trigger
-    app-specified error handling before showing a stack
-    trace in the browser.
-  </dd>
 
   <dt>static</dt>
   <dd>Whether Sinatra should handle serving static files.</dd>

@@ -1099,9 +1099,11 @@ module Sinatra
 
       status(500) unless status.between? 400, 599
 
+      res = error_block!(boom.class, boom) || error_block!(status, boom)
+
       if server_error?
         dump_errors! boom if settings.dump_errors?
-        raise boom if settings.show_exceptions? and settings.show_exceptions != :after_handler
+        raise boom if settings.show_exceptions?
       end
 
       if not_found?
@@ -1109,9 +1111,9 @@ module Sinatra
         body '<h1>Not Found</h1>'
       end
 
-      res = error_block!(boom.class, boom) || error_block!(status, boom)
       return res if res or not server_error?
       raise boom if settings.raise_errors? or settings.show_exceptions?
+
       error_block! Exception, boom
     end
 

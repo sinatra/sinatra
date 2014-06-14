@@ -247,10 +247,9 @@ class SettingsTest < Test::Unit::TestCase
       assert body.include?("<code>show_exceptions</code> setting")
     end
 
-    it 'does not override app-specified error handling when set to :after_handler' do
+    it 'does not override app-specified error handling' do
       ran = false
       mock_app do
-        set :show_exceptions, :after_handler
         error(RuntimeError) { ran = true }
         get('/') { raise RuntimeError }
       end
@@ -260,17 +259,16 @@ class SettingsTest < Test::Unit::TestCase
       assert ran
     end
 
-    it 'does catch any other exceptions when set to :after_handler' do
+    it 'does not a different exceptions' do
       ran = false
       mock_app do
-        set :show_exceptions, :after_handler
         error(RuntimeError) { ran = true }
         get('/') { raise ArgumentError }
       end
 
-      get '/'
-      assert_equal 500, status
-      assert !ran
+      assert_raises ArgumentError do
+        get '/'
+      end
     end
   end
 
