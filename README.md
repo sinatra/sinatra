@@ -2308,8 +2308,14 @@ end
 ### Error
 
 The `error` handler is invoked any time an exception is raised from a route
-block or a filter. The exception object can be obtained from the
-`sinatra.error` Rack variable:
+block or a filter. But note in development it will only run if you set the
+show exceptions option to `:after_handler`.
+
+```ruby
+set :show_exceptions, :after_handler
+```
+
+The exception object can be obtained from the `sinatra.error` Rack variable.
 
 ``` ruby
 error do
