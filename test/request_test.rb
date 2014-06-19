@@ -54,6 +54,7 @@ class RequestTest < Test::Unit::TestCase
     request = Sinatra::Request.new('HTTP_ACCEPT' => 'image/jpeg; compress=0.25')
     assert                     request.accept?('image/jpeg')
     assert_equal 'image/jpeg', request.preferred_type.to_s
+    assert_equal 'image/jpeg; compress=0.25', request.preferred_type.to_s(true)
     assert_equal 'image/jpeg', request.preferred_type.to_str
     assert_equal 'image',      request.preferred_type.split('/').first
 
@@ -81,6 +82,7 @@ class RequestTest < Test::Unit::TestCase
     assert_equal 1, request.accept.size
     assert request.accept?('text/html')
     assert_equal '*/*', request.preferred_type.to_s
+    assert_equal '*/*', request.preferred_type.to_s(true)
   end
 
   it 'accepts */* when HTTP_ACCEPT is blank in the request' do
@@ -88,6 +90,7 @@ class RequestTest < Test::Unit::TestCase
     assert_equal 1, request.accept.size
     assert request.accept?('text/html')
     assert_equal '*/*', request.preferred_type.to_s
+    assert_equal '*/*', request.preferred_type.to_s(true)
   end
 
   it 'will not accept types not specified in HTTP_ACCEPT when HTTP_ACCEPT is provided' do
