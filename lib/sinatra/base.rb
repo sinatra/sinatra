@@ -72,6 +72,7 @@ module Sinatra
 
     class AcceptEntry
       attr_accessor :params
+      attr_reader :entry
 
       def initialize(entry)
         params = entry.scan(HEADER_PARAM).map! do |s|
