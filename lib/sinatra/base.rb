@@ -391,7 +391,7 @@ module Sinatra
       end
 
       def close
-        return if @closed
+        return if closed?
         @closed = true
         @scheduler.schedule { @callbacks.each { |c| c.call }}
       end
@@ -414,7 +414,7 @@ module Sinatra
       end
 
       def callback(&block)
-        return yield if @closed
+        return yield if closed?
         @callbacks << block
       end
 
