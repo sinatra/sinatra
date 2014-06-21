@@ -11,18 +11,17 @@ source 'https://rubygems.org' unless ENV['QUICK']
 gemspec
 
 gem 'rake'
-gem 'rack-test', '>= 0.5.6'
+gem 'rack-test', '>= 0.6.2'
 
 # Allows stuff like `tilt=1.2.2 bundle install` or `tilt=master ...`.
 # Used by the CI.
-github = "git://github.com/%s.git"
-repos  = {'tilt' => github % "rtomayko/tilt", 'rack' => github % "rack/rack"}
+repos  = {'tilt' => "rtomayko/tilt", 'rack' => "rack/rack"}
 
 %w[tilt rack].each do |lib|
   dep = case ENV[lib]
         when 'stable', nil then nil
         when /(\d+\.)+\d+/ then "~> " + ENV[lib].sub("#{lib}-", '')
-        else {:git => repos[lib], :branch => dep}
+        else {:github => repos[lib], :branch => dep}
         end
   gem lib, dep
 end
@@ -47,7 +46,7 @@ if RUBY_ENGINE == "ruby" and RUBY_VERSION > '1.9.2'
   gem 'yajl-ruby'
   gem 'nokogiri'
   gem 'thin'
-  gem 'slim', '~> 1.0'
+  gem 'slim', '~> 2.0'
   gem 'coffee-script', '>= 2.0'
   gem 'rdoc'
   gem 'kramdown'
