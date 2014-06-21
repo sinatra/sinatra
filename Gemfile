@@ -11,7 +11,7 @@ source 'https://rubygems.org' unless ENV['QUICK']
 gemspec
 
 gem 'rake'
-gem 'rack-test', '>= 0.5.6'
+gem 'rack-test', '>= 0.6.2'
 
 # Allows stuff like `tilt=1.2.2 bundle install` or `tilt=master ...`.
 # Used by the CI.
