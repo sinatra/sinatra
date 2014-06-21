@@ -15,14 +15,13 @@ gem 'rack-test', '>= 0.6.2'
 
 # Allows stuff like `tilt=1.2.2 bundle install` or `tilt=master ...`.
 # Used by the CI.
-github = "git://github.com/%s.git"
-repos  = {'tilt' => github % "rtomayko/tilt", 'rack' => github % "rack/rack"}
+repos  = {'tilt' => "rtomayko/tilt", 'rack' => "rack/rack"}
 
 %w[tilt rack].each do |lib|
   dep = case ENV[lib]
         when 'stable', nil then nil
         when /(\d+\.)+\d+/ then "~> " + ENV[lib].sub("#{lib}-", '')
-        else {:git => repos[lib], :branch => dep}
+        else {:github => repos[lib], :branch => dep}
         end
   gem lib, dep
 end
