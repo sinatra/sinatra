@@ -1006,6 +1006,9 @@ module Sinatra
         conditions.each { |c| throw :pass if c.bind(self).call == false }
         block ? block[self, values] : yield(self, values)
       end
+    rescue
+      @env['sinatra.error.params'] = @params
+      raise
     ensure
       @params = original if original
     end
@@ -1088,6 +1091,9 @@ module Sinatra
 
     # Error handling during requests.
     def handle_exception!(boom)
+      if error_params = @env['sinatra.error.params']
+        @params = @params.merge(error_params)
+      end
       @env['sinatra.error'] = boom
 
       if boom.respond_to? :http_status
