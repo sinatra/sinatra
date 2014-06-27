@@ -1247,13 +1247,13 @@ module Sinatra
         args  = compile! "ERROR", //, block
         codes = codes.map { |c| Array(c) }.flatten
         codes << Exception if codes.empty?
+        codes << Sinatra::NotFound if codes.include?(404)
         codes.each { |c| (@errors[c] ||= []) << args }
       end
 
       # Sugar for `error(404) { ... }`
       def not_found(&block)
         error(404, &block)
-        error(Sinatra::NotFound, &block)
       end
 
       # Define a named template. The block must return the template source.
