@@ -87,4 +87,10 @@ end
 
 rescue LoadError
   warn "#{$!.to_s}: skipping coffee tests"
+rescue
+  if $!.class.name == 'ExecJS::RuntimeUnavailable'
+    warn "#{$!.to_s}: skipping coffee tests"
+  else
+    raise
+  end
 end
