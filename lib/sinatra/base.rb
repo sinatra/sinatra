@@ -1631,7 +1631,7 @@ module Sinatra
 
             # Special character handling.
             #
-            pattern = segment.to_str.gsub(/[^\?\%\\\/\:\*\w]/) do |c|
+            pattern = segment.to_str.gsub(/[^\?\%\\\/\:\*\w]|:(?!\w)/) do |c|
               ignore << escaped(c).join if c.match(/[\.@]/)
               patt = encoded(c)
               patt.gsub(/%[\da-fA-F]{2}/) do |match|

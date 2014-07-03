@@ -99,6 +99,50 @@ class RoutingTest < Minitest::Test
     assert_body "foo/bar"
   end
 
+  it "it handles encoded colons correctly" do
+    mock_app {
+      get("/:") { 'a' }
+      get("/a/:") { 'b' }
+      get("/a/:/b") { 'c' }
+      get("/a/b:") { 'd' }
+      get("/a/b: ") { 'e' }
+    }
+    get '/:'
+    assert_equal 200, status
+    assert_body "a"
+    get '/%3a'
+    assert_equal 200, status
+    assert_body "a"
+
+    get '/a/:'
+    assert_equal 200, status
+    assert_body "b"
+    get '/a/%3a'
+    assert_equal 200, status
+    assert_body "b"
+
+    get '/a/:/b'
+    assert_equal 200, status
+    assert_body "c"
+    get '/a/%3A/b'
+    assert_equal 200, status
+    assert_body "c"
+
+    get '/a/b:'
+    assert_equal 200, status
+    assert_body "d"
+    get '/a/b%3a'
+    assert_equal 200, status
+    assert_body "d"
+
+    get '/a/b%3a%20'
+    assert_equal 200, status
+    assert_body "e"
+    get '/a/b%3a+'
+    assert_equal 200, status
+    assert_body "e"
+  end
+
   it "overrides the content-type in error handlers" do
     mock_app {
       before { content_type 'text/plain' }
