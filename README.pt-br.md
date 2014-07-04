@@ -3,7 +3,7 @@
 *Atenção: Este documento é apenas uma tradução da versão em inglês e
 pode estar desatualizado.*
 
-Alguns dos trechos de códigos a seguir utilizam caracteres UTF-8, então caso esteja utilizando uma versão de ruby inferior a `2.0.0` adicione o enconding no início de seus arquivos:
+Alguns dos trechos de código a seguir utilizam caracteres UTF-8. Então, caso esteja utilizando uma versão de ruby inferior à `2.0.0`, adicione o encoding no início de seus arquivos:
 
 ```ruby
 # encoding: utf-8
@@ -66,14 +66,14 @@ delete '/' do
 end
 
 options '/' do
-  .. estabelecendo alguma coisa ..
+  .. estabelecendo alguma coisa ..pe
 end
 ```
 
 As rotas são interpretadas na ordem em que são definidas. A primeira
-rota encontrada responde ao pedido.
+rota encontrada responde a requisição.
 
-Padrões de rota podem conter parâmetros nomeados, acessível através do
+Padrões de rota podem conter parâmetros nomeados, acessíveis por meio do
 hash `params`:
 
 ``` ruby
@@ -84,7 +84,7 @@ get '/ola/:nome' do
 end
 ```
 
-Você também pode acessar parâmetros nomeados através dos parâmetros de
+Você também pode acessar parâmetros nomeados por meio dos parâmetros de
 um bloco:
 
 ``` ruby
@@ -93,8 +93,8 @@ get '/ola/:nome' do |n|
 end
 ```
 
-Padrões de rota também podem conter parâmetros splat (wildcard),
-acessível através do array `params[: splat]`:
+Padrões de rota também podem conter parâmetros splat (curinga),
+acessível por meio do array `params[:splat]`:
 
 ``` ruby
 get '/diga/*/para/*' do
@@ -103,20 +103,20 @@ get '/diga/*/para/*' do
 end
 
 get '/download/*.*' do
-  # corresponde a /download/pasta/do/arquivo.xml
-  params[:splat] # => ["pasta/do/arquivo", "xml"]
+  # corresponde a /download/caminho/do/arquivo.xml
+  params[:splat] # => ["caminho/do/arquivo", "xml"]
 end
 ```
 
 Ou com parâmetros de um bloco:
 
 ``` ruby
-get '/download/*.*' do |pasta, ext|
-  [pasta, ext] # => ["pasta/do/arquivo", "xml"]
+get '/download/*.*' do |caminho, ext|
+  [caminho, ext] # => ["caminho/do/arquivo", "xml"]
 end
 ```
 
-Rotas podem corresponder com expressões regulares:
+Rotas podem casar com expressões regulares:
 
 ``` ruby
 get %r{/ola/([\w]+)} do
@@ -188,7 +188,7 @@ get '/ganha_um_carro' do
 end
 ```
 
-Use splat, para uma condição que levam vários valores:
+Use splat, para uma condição que leva vários valores:
 
 ``` ruby
 set(:auth) do |*roles|   # <- observe o splat aqui
@@ -213,10 +213,10 @@ end
 O valor de retorno do bloco de uma rota determina pelo menos o corpo da
 resposta passado para o cliente HTTP, ou pelo menos o próximo middleware
 na pilha Rack. Frequentemente, isto é uma `string`, tal como nos
-exemplos acima. Mas, outros valores também são aceitos.
+exemplos acima. Entretanto, outros valores também são aceitos.
 
 Você pode retornar uma resposta válida ou um objeto para o Rack, sendo
-eles de qualquer tipo de objeto que queira. Além disto, é possível
+eles de qualquer tipo de objeto que queira. Além disso, é possível
 retornar um código de status HTTP.
 
 -   Um array com três elementros: `[status (Fixnum), cabecalho (Hash),
@@ -245,7 +245,7 @@ get('/') { Stream.new }
 Você também pode usar o método auxiliar `stream` (descrito abaixo) para
 incorporar a lógica de streaming na rota.
 
-### Custom Route Matchers
+### Validadores de Rota Personalizados
 
 Como apresentado acima, a estrutura do Sinatra conta com suporte
 embutido para uso de padrões de String e expressões regulares como
@@ -551,7 +551,7 @@ end
 ## Filtros
 
 Filtros Before são avaliados antes de cada requisição dentro do contexto
-da requisição e pode modificar a requisição e a reposta. Variáveis de
+da requisição e podem modificar a requisição e a reposta. Variáveis de
 instância setadas nos filtros são acessadas através de rotas e
 templates:
 
@@ -568,8 +568,8 @@ end
 ```
 
 Filtros After são avaliados após cada requisição dentro do contexto da
-requisição e também podem modificar o pedido e a resposta. Variáveis de
-instância definidas nos filtros before e rotas são acessadas através dos
+requisição e também podem modificar a requisição e a resposta. Variáveis de
+instância e rotas definidas nos filtros before são acessadas através dos
 filtros after:
 
 ``` ruby
@@ -578,7 +578,7 @@ after do
 end
 ```
 
-Filtros opcionalmente tem um padrão, fazendo com que sejam avaliados
+Filtros opcionalmente têm um padrão, fazendo com que sejam avaliados
 somente se o caminho do pedido coincidir com esse padrão:
 
 ``` ruby
@@ -679,7 +679,7 @@ oferecer, como `haml`, `erb`, `halt`, etc.
 ### Não Encontrado
 
 Quando um `Sinatra::NotFound` exception é levantado, ou o código de
-status da reposta é 404, o `not_found` manipulador é invocado:
+status da reposta é 404, o manipulador `not_found` é invocado:
 
 ``` ruby
 not_found do
