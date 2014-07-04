@@ -2265,6 +2265,13 @@ end
 ### 에러
 
 `error` 핸들러는 라우터 또는 필터에서 뭐든 오류가 발생할 경우에 호출됩니다.
+하지만 개발 환경에서는 예외 확인 옵션을 `:after_handler`로 설정되어 있을 경우에만
+실행됨을 주의하세요.
+
+``` ruby
+set :show_exceptions, :after_handler
+```
+
 예외 객체는 Rack 변수 `sinatra.error`로부터 얻을 수 있습니다.
 
 ``` ruby
@@ -2273,7 +2280,7 @@ error do
 end
 ```
 
-사용자 정의 오류는 이렇게 정의한다.
+사용자 정의 오류는 이렇게 정의합니다.
 
 ``` ruby
 error MyCustomError do
@@ -2281,7 +2288,7 @@ error MyCustomError do
 end
 ```
 
-그런 다음, 이 오류가 발생하면 이렇게 처리한다.
+그런 다음, 이 오류가 발생하면 이렇게 처리합니다.
 
 ``` ruby
 get '/' do
