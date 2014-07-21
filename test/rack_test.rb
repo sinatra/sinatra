@@ -1,7 +1,7 @@
 require File.expand_path('../helper', __FILE__)
 require 'rack'
 
-class RackTest < Test::Unit::TestCase
+class RackTest < Minitest::Test
   setup do
     @foo = Sinatra.new { get('/foo') { 'foo' }}
     @bar = Sinatra.new { get('/bar') { 'bar' }}

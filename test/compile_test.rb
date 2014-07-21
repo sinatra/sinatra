@@ -1,7 +1,7 @@
 # I like coding: UTF-8
 require File.expand_path('../helper', __FILE__)
 
-class CompileTest < Test::Unit::TestCase
+class CompileTest < Minitest::Test
 
   def self.converts pattern, expected_regexp
     it "generates #{expected_regexp.source} from #{pattern}" do

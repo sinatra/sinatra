@@ -1,6 +1,6 @@
 require File.expand_path('../helper', __FILE__)
 
-class SettingsTest < Test::Unit::TestCase
+class SettingsTest < Minitest::Test
   setup do
     @base = Sinatra.new(Sinatra::Base)
     @base.set :environment => :foo, :app_file => nil
@@ -28,14 +28,14 @@ class SettingsTest < Test::Unit::TestCase
   end
 
   it 'raises an error with a value and a block' do
-    assert_raise ArgumentError do
+    assert_raises ArgumentError do
       @base.set(:fiz, 'boom!'){ 'baz' }
     end
     assert !@base.respond_to?(:fiz)
   end
 
   it 'raises an error without value and block' do
-    assert_raise(ArgumentError) { @base.set(:fiz) }
+    assert_raises(ArgumentError) { @base.set(:fiz) }
     assert !@base.respond_to?(:fiz)
   end
 
@@ -46,7 +46,7 @@ class SettingsTest < Test::Unit::TestCase
   end
 
   it 'raises an error with the app class as value and a block' do
-    assert_raise ArgumentError do
+    assert_raises ArgumentError do
       @base.set(:fiz, @base) { 'baz' }
     end
     assert !@base.respond_to?(:fiz)

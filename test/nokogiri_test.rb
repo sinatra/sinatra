@@ -3,7 +3,7 @@ require File.expand_path('../helper', __FILE__)
 begin
 require 'nokogiri'
 
-class NokogiriTest < Test::Unit::TestCase
+class NokogiriTest < Minitest::Test
   def nokogiri_app(&block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
@@ -58,7 +58,7 @@ class NokogiriTest < Test::Unit::TestCase
 
   it "raises error if template not found" do
     mock_app { get('/') { nokogiri :no_such_template } }
-    assert_raise(Errno::ENOENT) { get('/') }
+    assert_raises(Errno::ENOENT) { get('/') }
   end
 end
 

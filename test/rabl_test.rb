@@ -6,7 +6,7 @@ require 'ostruct'
 require 'json'
 require 'active_support/core_ext/hash/conversions'
 
-class RablTest < Test::Unit::TestCase
+class RablTest < Minitest::Test
   def rabl_app(&block)
     mock_app {
       set :views, File.dirname(__FILE__) + '/views'
@@ -48,7 +48,7 @@ class RablTest < Test::Unit::TestCase
     mock_app {
       get('/') { rabl :no_such_template }
     }
-    assert_raise(Errno::ENOENT) { get('/') }
+    assert_raises(Errno::ENOENT) { get('/') }
   end
 
   it "passes rabl options to the rabl engine" do

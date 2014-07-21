@@ -22,7 +22,12 @@ require 'sinatra/base'
 
 class Sinatra::Base
   # Allow assertions in request context
-  include Test::Unit::Assertions
+  def assertions
+    @assertions ||= 0
+  end
+  attr_writer :assertions
+
+  include Minitest::Assertions
 end
 
 class Rack::Builder
@@ -33,7 +38,7 @@ end
 
 Sinatra::Base.set :environment, :test
 
-class Test::Unit::TestCase
+class Minitest::Test
   include Rack::Test::Methods
 
   class << self

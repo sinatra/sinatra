@@ -3,7 +3,7 @@ require File.expand_path('../helper', __FILE__)
 begin
 require 'radius'
 
-class RadiusTest < Test::Unit::TestCase
+class RadiusTest < Minitest::Test
   def radius_app(&block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
@@ -42,7 +42,7 @@ class RadiusTest < Test::Unit::TestCase
 
   it "raises error if template not found" do
     mock_app { get('/') { radius :no_such_template } }
-    assert_raise(Errno::ENOENT) { get('/') }
+    assert_raises(Errno::ENOENT) { get('/') }
   end
 
   it "allows passing locals" do

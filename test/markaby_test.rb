@@ -3,7 +3,7 @@ require File.expand_path('../helper', __FILE__)
 begin
 require 'markaby'
 
-class MarkabyTest < Test::Unit::TestCase
+class MarkabyTest < Minitest::Test
   def markaby_app(&block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
@@ -63,7 +63,7 @@ class MarkabyTest < Test::Unit::TestCase
 
   it "raises error if template not found" do
     mock_app { get('/') { markaby :no_such_template } }
-    assert_raise(Errno::ENOENT) { get('/') }
+    assert_raises(Errno::ENOENT) { get('/') }
   end
 
   it "allows passing locals" do

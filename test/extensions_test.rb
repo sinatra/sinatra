@@ -1,6 +1,6 @@
 require File.expand_path('../helper', __FILE__)
 
-class ExtensionsTest < Test::Unit::TestCase
+class ExtensionsTest < Minitest::Test
   module FooExtensions
     def foo
     end

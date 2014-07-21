@@ -1,6 +1,6 @@
 require File.expand_path('../helper', __FILE__)
 
-class ERBTest < Test::Unit::TestCase
+class ERBTest < Minitest::Test
   def engine
     Tilt::ERBTemplate
   end

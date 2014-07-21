@@ -635,7 +635,7 @@ framework de teste baseados no Rack.
 require 'minha_aplicacao_sinatra'
 require 'rack/test'
 
-class MinhaAplicacaoTeste < Test::Unit::TestCase
+class MinhaAplicacaoTeste < Minitest::Test
   include Rack::Test::Methods
 
   def app

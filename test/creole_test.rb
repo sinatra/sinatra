@@ -3,7 +3,7 @@ require File.expand_path('../helper', __FILE__)
 begin
 require 'creole'
 
-class CreoleTest < Test::Unit::TestCase
+class CreoleTest < Minitest::Test
   def creole_app(&block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
@@ -26,7 +26,7 @@ class CreoleTest < Test::Unit::TestCase
 
   it "raises error if template not found" do
     mock_app { get('/') { creole :no_such_template } }
-    assert_raise(Errno::ENOENT) { get('/') }
+    assert_raises(Errno::ENOENT) { get('/') }
   end
 
   it "renders with inline layouts" do

@@ -4,7 +4,7 @@ begin
 require 'rdoc'
 require 'rdoc/markup/to_html'
 
-class RdocTest < Test::Unit::TestCase
+class RdocTest < Minitest::Test
   def rdoc_app(&block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
@@ -27,7 +27,7 @@ class RdocTest < Test::Unit::TestCase
 
   it "raises error if template not found" do
     mock_app { get('/') { rdoc :no_such_template } }
-    assert_raise(Errno::ENOENT) { get('/') }
+    assert_raises(Errno::ENOENT) { get('/') }
   end
 
   it "renders with inline layouts" do

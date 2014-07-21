@@ -2375,10 +2375,10 @@ Sinatra 테스트는 많은 Rack 기반 테스팅 라이브러리, 프레임워�
 
 ``` ruby
 require 'my_sinatra_app'
-require 'test/unit'
+require 'minitest/autorun'
 require 'rack/test'
 
-class MyAppTest < Test::Unit::TestCase
+class MyAppTest < Minitest::Test
   include Rack::Test::Methods
 
   def app

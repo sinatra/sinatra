@@ -1,6 +1,6 @@
 require File.expand_path('../helper', __FILE__)
 
-class ResultTest < Test::Unit::TestCase
+class ResultTest < Minitest::Test
   it "sets response.body when result is a String" do
     mock_app { get('/') { 'Hello World' } }
 
@@ -63,7 +63,7 @@ class ResultTest < Test::Unit::TestCase
       get('/') { [409, 'formula of', 'something else', 'even more'] }
     }
 
-    assert_raise(ArgumentError) { get '/' }
+    assert_raises(ArgumentError) { get '/' }
   end
 
   it "sets status when result is a Fixnum status code" do

@@ -3,7 +3,7 @@ require File.expand_path('../helper', __FILE__)
 begin
 require 'haml'
 
-class HAMLTest < Test::Unit::TestCase
+class HAMLTest < Minitest::Test
   def haml_app(&block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
@@ -42,7 +42,7 @@ class HAMLTest < Test::Unit::TestCase
 
   it "raises error if template not found" do
     mock_app { get('/') { haml :no_such_template } }
-    assert_raise(Errno::ENOENT) { get('/') }
+    assert_raises(Errno::ENOENT) { get('/') }
   end
 
   it "passes HAML options to the Haml engine" do

@@ -3,7 +3,7 @@ require File.expand_path('../helper', __FILE__)
 begin
 require 'yajl'
 
-class YajlTest < Test::Unit::TestCase
+class YajlTest < Minitest::Test
   def yajl_app(&block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
@@ -26,7 +26,7 @@ class YajlTest < Test::Unit::TestCase
 
   it 'raises error if template not found' do
     mock_app { get('/') { yajl(:no_such_template) } }
-    assert_raise(Errno::ENOENT) { get('/') }
+    assert_raises(Errno::ENOENT) { get('/') }
   end
 
   it 'accepts a :locals option' do
