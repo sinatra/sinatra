@@ -165,8 +165,8 @@ Route patterns may include named parameters, accessible via the
 ``` ruby
 get '/hello/:name' do
   # matches "GET /hello/foo" and "GET /hello/bar"
-  # params[:name] is 'foo' or 'bar'
-  "Hello #{params[:name]}!"
+  # params['name'] is 'foo' or 'bar'
+  "Hello #{params['name']}!"
 end
 ```
 
@@ -175,24 +175,24 @@ You can also access named parameters via block parameters:
 ``` ruby
 get '/hello/:name' do |n|
   # matches "GET /hello/foo" and "GET /hello/bar"
-  # params[:name] is 'foo' or 'bar'
-  # n stores params[:name]
+  # params['name'] is 'foo' or 'bar'
+  # n stores params['name']
   "Hello #{n}!"
 end
 ```
 
 Route patterns may also include splat (or wildcard) parameters, accessible
-via the `params[:splat]` array:
+via the `params['splat']` array:
 
 ``` ruby
 get '/say/*/to/*' do
   # matches /say/hello/to/world
-  params[:splat] # => ["hello", "world"]
+  params['splat'] # => ["hello", "world"]
 end
 
 get '/download/*.*' do
   # matches /download/path/to/file.xml
-  params[:splat] # => ["path/to/file", "xml"]
+  params['splat'] # => ["path/to/file", "xml"]
 end
 ```
 
@@ -208,7 +208,7 @@ Route matching with Regular Expressions:
 
 ``` ruby
 get %r{/hello/([\w]+)} do
-  "Hello, #{params[:captures].first}!"
+  "Hello, #{params['captures'].first}!"
 end
 ```
 
@@ -233,8 +233,8 @@ Routes may also utilize query parameters:
 ``` ruby
 get '/posts' do
   # matches "GET /posts?title=foo&author=bar"
-  title = params[:title]
-  author = params[:author]
+  title = params['title']
+  author = params['author']
   # uses title and author variables; query is optional to the /posts route
 end
 ```
@@ -248,7 +248,7 @@ Routes may include a variety of matching conditions, such as the user agent:
 
 ``` ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
-  "You're using Songbird version #{params[:agent][0]}"
+  "You're using Songbird version #{params['agent'][0]}"
 end
 
 get '/foo' do
@@ -1095,7 +1095,7 @@ variables set in route handlers are directly accessible by templates:
 
 ``` ruby
 get '/:id' do
-  @foo = Foo.find(params[:id])
+  @foo = Foo.find(params['id'])
   haml '%h1= @foo.name'
 end
 ```
@@ -1104,7 +1104,7 @@ Or, specify an explicit Hash of local variables:
 
 ``` ruby
 get '/:id' do
-  foo = Foo.find(params[:id])
+  foo = Foo.find(params['id'])
   haml '%h1= bar.name', :locals => { :bar => foo }
 end
 ```
@@ -1263,7 +1263,7 @@ end
 
 get '/foo/*' do
   @note #=> 'Hi!'
-  params[:splat] #=> 'bar/baz'
+  params['splat'] #=> 'bar/baz'
 end
 ```
 
@@ -1319,7 +1319,7 @@ helpers do
 end
 
 get '/:name' do
-  bar(params[:name])
+  bar(params['name'])
 end
 ```
 
@@ -1352,7 +1352,7 @@ get '/' do
 end
 
 get '/:value' do
-  session[:value] = params[:value]
+  session['value'] = params['value']
 end
 ```
 
@@ -1370,7 +1370,7 @@ get '/' do
 end
 
 get '/:value' do
-  session[:value] = params[:value]
+  session['value'] = params['value']
 end
 ```
 
@@ -1441,7 +1441,7 @@ A route can punt processing to the next matching route using `pass`:
 
 ``` ruby
 get '/guess/:who' do
-  pass unless params[:who] == 'Frank'
+  pass unless params['who'] == 'Frank'
   'You got me!'
 end
 
@@ -1567,10 +1567,10 @@ get '/subscribe' do
   "subscribed"
 end
 
-post '/message' do
+post '/:message' do
   connections.each do |out|
     # notify client that a new message has arrived
-    out << params[:message] << "\n"
+    out << params['message'] << "\n"
 
     # indicate client to connect again
     out.close
@@ -1734,8 +1734,8 @@ will immediately flush a response if the client already has the current
 version in its cache:
 
 ``` ruby
-get '/article/:id' do
-  @article = Article.find params[:id]
+get "/article/:id" do
+  @article = Article.find params['id']
   last_modified @article.updated_at
   etag @article.sha1
   erb :article
@@ -2652,8 +2652,8 @@ class LoginScreen < Sinatra::Base
   get('/login') { haml :login }
 
   post('/login') do
-    if params[:name] == 'admin' && params[:password] == 'admin'
-      session['user_name'] = params[:name]
+    if params['name'] == 'admin' && params['password'] == 'admin'
+      session['user_name'] = params['name']
     else
       redirect '/login'
     end
@@ -2776,8 +2776,8 @@ class MyApp < Sinatra::Base
     # Request scope for '/define_route/:name'
     @value = 42
 
-    settings.get("/#{params[:name]}") do
-      # Request scope for "/#{params[:name]}"
+    settings.get("/#{params['name']}") do
+      # Request scope for "/#{params['name']}"
       @value # => nil (not the same request)
     end
 
