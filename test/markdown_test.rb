@@ -69,8 +69,11 @@ MarkdownTest = proc do
 end
 
 # Will generate RDiscountTest, KramdownTest, etc.
-Tilt.mappings['md'].each do |t|
+map = Tilt.respond_to?(:lazy_map) ? Tilt.lazy_map['md'].map(&:first) : Tilt.mappings['md']
+
+map.each do |t|
   begin
+    t = eval(t) if t.is_a? String
     t.new { "" }
     klass = Class.new(Test::Unit::TestCase) { define_method(:engine) { t }}
     klass.class_eval(&MarkdownTest)

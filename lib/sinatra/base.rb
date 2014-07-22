@@ -769,9 +769,16 @@ module Sinatra
     # named name.ext, where ext is registered on engine.
     def find_template(views, name, engine)
       yield ::File.join(views, "#{name}.#{@preferred_extension}")
-      Tilt.mappings.each do |ext, engines|
-        next unless ext != @preferred_extension and engines.include? engine
-        yield ::File.join(views, "#{name}.#{ext}")
+
+      if Tilt.respond_to?(:mappings)
+        Tilt.mappings.each do |ext, engines|
+          next unless ext != @preferred_extension and engines.include? engine
+          yield ::File.join(views, "#{name}.#{ext}")
+        end
+      else
+        Tilt.default_mapping.extensions_for(engine).each do |ext|
+          yield ::File.join(views, "#{name}.#{ext}") unless ext == @preferred_extension
+        end
       end
     end
 
