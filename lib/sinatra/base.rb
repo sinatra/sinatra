@@ -1051,7 +1051,13 @@ module Sinatra
 
     # Creates a Hash with indifferent access.
     def indifferent_hash
-      Hash.new {|hash,key| hash[key.to_s] if Symbol === key }
+      new_hash = Hash.new {|hash,key| hash[key.to_s] if Symbol === key }
+      class << new_hash
+        def fetch(key, *extras)
+          super((key.kind_of?(Symbol) ? key.to_s : key), *extras)
+        end
+      end
+      new_hash
     end
 
     # Run the block with 'throw :halt' support and apply result to the response.
