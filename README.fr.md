@@ -164,8 +164,8 @@ l'intermédiaire du hash `params` :
 ``` ruby
 get '/bonjour/:nom' do
   # répond aux requêtes "GET /bonjour/foo" et "GET /bonjour/bar"
-  # params[:nom] est 'foo' ou 'bar'
-  "Bonjour #{params[:nom]} !"
+  # params['nom'] est 'foo' ou 'bar'
+  "Bonjour #{params['nom']} !"
 end
 ```
 
@@ -175,24 +175,24 @@ paramètres du bloc comme ceci :
 ``` ruby
 get '/bonjour/:nom' do |n|
   # répond aux requêtes "GET /bonjour/foo" et "GET /bonjour/bar"
-  # params[:nom] est 'foo' ou 'bar'
-  # n contient params[:nom]
+  # params['nom'] est 'foo' ou 'bar'
+  # n contient params['nom']
   "Bonjour #{n} !"
 end
 ```
 
 Une route peut contenir un splat (caractère joker), accessible par
-l'intermédiaire du tableau `params[:splat]` :
+l'intermédiaire du tableau `params['splat']` :
 
 ``` ruby
 get '/dire/*/a/*' do
   # répond à /dire/bonjour/a/monde
-  params[:splat] # => ["bonjour", "monde"]
+  params['splat'] # => ["bonjour", "monde"]
 end
 
 get '/telecharger/*.*' do
   # répond à /telecharger/chemin/vers/fichier.xml
-  params[:splat] # => ["chemin/vers/fichier", "xml"]
+  params['splat'] # => ["chemin/vers/fichier", "xml"]
 end
 ```
 
@@ -208,7 +208,7 @@ Une route peut aussi être définie par une expression régulière :
 
 ``` ruby
 get %r{/bonjour/([\w]+)} do
-  "Bonjour, #{params[:captures].first} !"
+  "Bonjour, #{params['captures'].first} !"
 end
 ```
 
@@ -233,8 +233,8 @@ Ainsi que des paramètres d'URL :
 ``` ruby
 get '/posts' do
   # répond à "GET /posts?titre=foo&auteur=bar"
-  titre = params[:titre]
-  auteur = params[:auteur]
+  titre = params['titre']
+  auteur = params['auteur']
   # utilise les variables titre et auteur, ces paramètres d'URL sont optionnels pour la route /posts
 end
 ```
@@ -250,7 +250,7 @@ Les routes peuvent définir toutes sortes de conditions, comme par exemple le
 
 ``` ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
-  "Vous utilisez Songbird version #{params[:agent][0]}"
+  "Vous utilisez Songbird version #{params['agent'][0]}"
 end
 
 get '/foo' do
@@ -1071,7 +1071,7 @@ gestionnaire de route sont directement accessibles dans le template :
 
 ``` ruby
 get '/:id' do
-  @foo = Foo.find(params[:id])
+  @foo = Foo.find(params['id'])
   haml '%h1= @foo.nom'
 end
 ```
@@ -1080,7 +1080,7 @@ Alternativement, on peut passer un hash contenant des variables locales :
 
 ``` ruby
 get '/:id' do
-  foo = Foo.find(params[:id])
+  foo = Foo.find(params['id'])
   haml '%h1= foo.nom', :locals => { :foo => foo }
 end
 ```
@@ -1228,7 +1228,7 @@ end
 
 get '/foo/*' do
   @note #=> 'Coucou !'
-  params[:splat] #=> 'bar/baz'
+  params['splat'] #=> 'bar/baz'
 end
 ```
 
@@ -1256,7 +1256,7 @@ before '/secret/*' do
 end
 
 after '/faire/:travail' do |travail|
-  session[:dernier_travail] = travail
+  session['dernier_travail'] = travail
 end
 ```
 
@@ -1285,7 +1285,7 @@ helpers do
 end
 
 get '/:nom' do
-  bar(params[:nom])
+  bar(params['nom'])
 end
 ```
 
@@ -1315,11 +1315,11 @@ activées, vous avez un hash de session par session utilisateur :
 enable :sessions
 
 get '/' do
-  "valeur = " << session[:valeur].inspect
+  "valeur = " << session['valeur'].inspect
 end
 
 get '/:value' do
-  session[:valeur] = params[:valeur]
+  session['valeur'] = params['valeur']
 end
 ```
 
@@ -1334,11 +1334,11 @@ choix comme vous le feriez pour n'importe quel autre middleware :
 use Rack::Session::Pool, :expire_after => 2592000
 
 get '/' do
-  "valeur = " << session[:valeur].inspect
+  "valeur = " << session['valeur'].inspect
 end
 
 get '/:value' do
-  session[:valeur] = params[:valeur]
+  session['valeur'] = params['valeur']
 end
 ```
 
@@ -1413,7 +1413,7 @@ avec `pass` :
 
 ``` ruby
 get '/devine/:qui' do
-  pass unless params[:qui] == 'Frank'
+  pass unless params['qui'] == 'Frank'
   "Tu m'as eu !"
 end
 
@@ -1552,7 +1552,7 @@ end
 post '/message' do
   connexions.each do |out|
     # prévient le client qu'un nouveau message est arrivé
-    out << params[:message] << "\n"
+    out << params['message'] << "\n"
 
     # indique au client de se connecter à nouveau
     out.close
@@ -1677,12 +1677,12 @@ Ou bien utilisez une session :
 enable :sessions
 
 get '/foo' do
-  session[:secret] = 'foo'
+  session['secret'] = 'foo'
   redirect to('/bar')
 end
 
 get '/bar' do
-  session[:secret]
+  session['secret']
 end
 ```
 
@@ -1723,7 +1723,7 @@ si le client a déjà la version courante dans son cache :
 
 ``` ruby
 get '/article/:id' do
-  @article = Article.find params[:id]
+  @article = Article.find params['id']
   last_modified @article.updated_at
   etag @article.sha1
   erb :article
@@ -2629,8 +2629,8 @@ class EcranDeConnexion < Sinatra::Base
   get('/connexion') { haml :connexion }
 
   post('/connexion') do
-    if params[:nom] = 'admin' && params[:motdepasse] = 'admin'
-      session['nom_utilisateur'] = params[:nom]
+    if params['nom'] = 'admin' && params['motdepasse'] = 'admin'
+      session['nom_utilisateur'] = params['nom']
     else
       redirect '/connexion'
     end
@@ -2755,8 +2755,8 @@ class MonApp < Sinatra::Base
     # Contexte de la requête pour '/ajouter_route/:nom'
     @value = 42
 
-    settings.get("/#{params[:nom]}") do
-      # Contexte de la requête pour "/#{params[:nom]}"
+    settings.get("/#{params['nom']}") do
+      # Contexte de la requête pour "/#{params['nom']}"
       @value # => nil (on est pas au sein de la même requête)
     end
 
