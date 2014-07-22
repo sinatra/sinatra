@@ -69,8 +69,7 @@ MarkdownTest = proc do
 end
 
 # Will generate RDiscountTest, KramdownTest, etc.
-map = Tilt.respond_to?(:lazy_map) ? Tilt.lazy_map['md'].map(&:first)
-                                  : Tilt.mappings['md']
+map = Tilt.respond_to?(:lazy_map) ? Tilt.lazy_map['md'].map(&:first) : Tilt.mappings['md']
 
 map.each do |t|
   begin
