@@ -24,6 +24,14 @@ ruby myapp.rb
 
 在该地址查看： [localhost:4567](http://localhost:4567)
 
+这个时候访问地址将绑定到 127.0.0.1 和 localhost ，如果使用 vagrant 进行开发，访问会失败，此时就需要进行 ip 绑定了：
+
+~~~~ shell
+ruby myapp.rb -o 0.0.0.0
+~~~~
+
+```-o``` 这个参数就是进行 Listening 时候监听的绑定，能从通过 IP、127.0.0.1、localhost + 端口号进行访问。
+
 安装Sintra后，最好再运行`gem install thin`安装Thin。这样，Sinatra会优先选择Thin作为服务器。
 
 ## 路由(route)
