@@ -1140,7 +1140,7 @@ module Sinatra
     end
 
     def dump_errors!(boom)
-      msg = ["#{boom.class} - #{boom.message}:", *boom.backtrace].join("\n\t")
+      msg = ["#{Time.now.httpdate} - #{boom.class} - #{boom.message}:", *boom.backtrace].join("\n\t")
       @env['rack.errors'].puts(msg)
     end
 
