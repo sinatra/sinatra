@@ -75,8 +75,8 @@ través del hash `params`:
 ``` ruby
 get '/hola/:nombre' do
   # coincide con "GET /hola/foo" y "GET /hola/bar"
-  # params[:nombre] es 'foo' o 'bar'
-  "Hola #{params[:nombre]}!"
+  # params['nombre'] es 'foo' o 'bar'
+  "Hola #{params['nombre']}!"
 end
 ```
 
@@ -85,24 +85,24 @@ También puede acceder a los parámetros nombrados usando parámetros de bloque:
 ``` ruby
 get '/hola/:nombre' do |n|
   # coincide con "GET /hola/foo" y "GET /hola/bar"
-  # params[:nombre] es 'foo' o 'bar'
-  # n almacena params[:nombre]
+  # params['nombre'] es 'foo' o 'bar'
+  # n almacena params['nombre']
   "Hola #{n}!"
 end
 ```
 
 Los patrones de ruta también pueden incluir parámetros splat (o wildcard),
-accesibles a través del arreglo `params[:splat]`:
+accesibles a través del arreglo `params['splat']`:
 
 ``` ruby
 get '/decir/*/al/*' do
   # coincide con /decir/hola/al/mundo
-  params[:splat] # => ["hola", "mundo"]
+  params['splat'] # => ["hola", "mundo"]
 end
 
 get '/descargar/*.*' do
   # coincide con /descargar/path/al/archivo.xml
-  params[:splat] # => ["path/al/archivo", "xml"]
+  params['splat'] # => ["path/al/archivo", "xml"]
 end
 ```
 
@@ -118,7 +118,7 @@ Rutas con Expresiones Regulares:
 
 ``` ruby
 get %r{/hola/([\w]+)} do
-  "Hola, #{params[:captures].first}!"
+  "Hola, #{params['captures'].first}!"
 end
 ```
 
@@ -150,7 +150,7 @@ ejemplo el user agent:
 
 ``` ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
-  "Estás usando la versión de Songbird #{params[:agent][0]}"
+  "Estás usando la versión de Songbird #{params['agent'][0]}"
 end
 
 get '/foo' do
@@ -934,7 +934,7 @@ accesibles directamente por las plantillas:
 
 ``` ruby
 get '/:id' do
-  @foo = Foo.find(params[:id])
+  @foo = Foo.find(params['id'])
   haml '%h1= @foo.nombre'
 end
 ```
@@ -943,7 +943,7 @@ O es posible especificar un Hash de variables locales explícitamente:
 
 ``` ruby
 get '/:id' do
-  foo = Foo.find(params[:id])
+  foo = Foo.find(params['id'])
   haml '%h1= bar.nombre', :locals => { :bar => foo }
 end
 ```
@@ -1052,7 +1052,7 @@ end
 
 get '/foo/*' do
   @nota #=> 'Hey!'
-  params[:splat] #=> 'bar/baz'
+  params['splat'] #=> 'bar/baz'
 end
 ```
 
@@ -1110,7 +1110,7 @@ helpers do
 end
 
 get '/:nombre' do
-  bar(params[:nombre])
+  bar(params['nombre'])
 end
 ```
 
@@ -1145,7 +1145,7 @@ get '/' do
 end
 
 get '/:valor' do
-  session[:valor] = params[:valor]
+  session[:valor] = params['valor']
 end
 ```
 
@@ -1163,7 +1163,7 @@ get '/' do
 end
 
 get '/:valor' do
-  session[:valor] = params[:valor]
+  session[:valor] = params['valor']
 end
 ```
 
@@ -1230,7 +1230,7 @@ la petición usando `pass`:
 
 ``` ruby
 get '/adivina/:quien' do
-  pass unless params[:quien] == 'Franco'
+  pass unless params['quien'] == 'Franco'
   'Adivinaste!'
 end
 
@@ -1353,7 +1353,7 @@ end
 
 post '/' do
   # escribimos a todos los streams abiertos
-  conexiones.each { |salida| salida << params[:mensaje] << "\n" }
+  conexiones.each { |salida| salida << params['mensaje'] << "\n" }
   "mensaje enviado"
 end
 ```
@@ -1518,7 +1518,7 @@ el cliente ya tiene la versión actual en su caché:
 
 ``` ruby
 get '/articulo/:id' do
-  @articulo = Articulo.find params[:id]
+  @articulo = Articulo.find params['id']
   last_modified @articulo.updated_at
   etag @articulo.sha1
   erb :articulo
@@ -2426,8 +2426,8 @@ class PantallaDeLogin < Sinatra::Base
   get('/login') { haml :login }
 
   post('/login') do
-    if params[:nombre] == 'admin' && params[:password] == 'admin'
-      session['nombre_de_usuario'] = params[:nombre]
+    if params['nombre'] == 'admin' && params['password'] == 'admin'
+      session['nombre_de_usuario'] = params['nombre']
     else
       redirect '/login'
     end
@@ -2552,8 +2552,8 @@ class MiApp < Sinatra::Base
     # Ámbito de petición para '/definir_ruta/:nombre'
     @valor = 42
 
-    settings.get("/#{params[:nombre]}") do
-      # Ámbito de petición para "/#{params[:nombre]}"
+    settings.get("/#{params['nombre']}") do
+      # Ámbito de petición para "/#{params['nombre']}"
       @valor # => nil (no es la misma petición)
     end
 

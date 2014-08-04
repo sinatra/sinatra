@@ -79,8 +79,8 @@ hash `params`:
 ``` ruby
 get '/ola/:nome' do
   # corresponde a "GET /ola/foo" e "GET /ola/bar"
-  # params[:nome] é 'foo' ou 'bar'
-  "Olá #{params[:nome]}!"
+  # params['nome'] é 'foo' ou 'bar'
+  "Olá #{params['nome']}!"
 end
 ```
 
@@ -94,17 +94,17 @@ end
 ```
 
 Padrões de rota também podem conter parâmetros splat (curinga),
-acessível por meio do array `params[:splat]`:
+acessível por meio do array `params['splat']`:
 
 ``` ruby
 get '/diga/*/para/*' do
   # corresponde a /diga/ola/para/mundo
-  params[:splat] # => ["ola", "mundo"]
+  params['splat'] # => ["ola", "mundo"]
 end
 
 get '/download/*.*' do
   # corresponde a /download/caminho/do/arquivo.xml
-  params[:splat] # => ["caminho/do/arquivo", "xml"]
+  params['splat'] # => ["caminho/do/arquivo", "xml"]
 end
 ```
 
@@ -120,7 +120,7 @@ Rotas podem casar com expressões regulares:
 
 ``` ruby
 get %r{/ola/([\w]+)} do
-  "Olá, #{params[:captures].first}!"
+  "Olá, #{params['captures'].first}!"
 end
 ```
 
@@ -150,7 +150,7 @@ Rotas podem incluir uma variedade de condições, tal como o `user agent`:
 
 ``` ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
-  "Você está usando o Songbird versão #{params[:agent][0]}"
+  "Você está usando o Songbird versão #{params['agent'][0]}"
 end
 
 get '/foo' do
@@ -459,7 +459,7 @@ diretamente acessadas por templates:
 
 ``` ruby
 get '/:id' do
-  @foo = Foo.find(params[:id])
+  @foo = Foo.find(params['id'])
   haml '%h1= @foo.nome'
 end
 ```
@@ -468,7 +468,7 @@ Ou, especifique um hash explícito para variáveis locais:
 
 ``` ruby
 get '/:id' do
-  foo = Foo.find(params[:id])
+  foo = Foo.find(params['id'])
   haml '%h1= foo.nome', :locals => { :foo => foo }
 end
 ```
@@ -544,7 +544,7 @@ helpers do
 end
 
 get '/:nome' do
-  bar(params[:nome])
+  bar(params['nome'])
 end
 ```
 
@@ -563,7 +563,7 @@ end
 
 get '/foo/*' do
   @nota #=> 'Oi!'
-  params[:splat] #=> 'bar/baz'
+  params['splat'] #=> 'bar/baz'
 end
 ```
 
@@ -630,7 +630,7 @@ Uma rota pode processar aposta para a próxima rota correspondente usando
 
 ``` ruby
 get '/adivinhar/:quem' do
-  pass unless params[:quem] == 'Frank'
+  pass unless params['quem'] == 'Frank'
   'Você me pegou!'
 end
 

@@ -57,8 +57,8 @@ hash `params`:
 ``` ruby
 get '/ola/:nome' do
   # corresponde a "GET /ola/foo" e "GET /ola/bar"
-  # params[:nome] é 'foo' ou 'bar'
-  "Olá #{params[:nome]}!"
+  # params['nome'] é 'foo' ou 'bar'
+  "Olá #{params['nome']}!"
 end
 ```
 
@@ -71,17 +71,17 @@ end
 ```
 
 Padrões de rota podem também incluir parâmetros splat (asteriscos),
-acessíveis através do array `params[:splat]`.
+acessíveis através do array `params['splat']`.
 
 ``` ruby
 get '/diga/*/ao/*' do
   # corresponde a /diga/ola/ao/mundo
-  params[:splat] # => ["ola", "mundo"]
+  params['splat'] # => ["ola", "mundo"]
 end
 
 get '/download/*.*' do
   # corresponde a /download/pasta/do/arquivo.xml
-  params[:splat] # => ["pasta/do/arquivo", "xml"]
+  params['splat'] # => ["pasta/do/arquivo", "xml"]
 end
 ```
 
@@ -89,7 +89,7 @@ Rotas correspondem-se com expressões regulares:
 
 ``` ruby
 get %r{/ola/([\w]+)} do
-  "Olá, #{params[:captures].first}!"
+  "Olá, #{params['captures'].first}!"
 end
 ```
 
@@ -106,7 +106,7 @@ exemplo, o agente usuário:
 
 ``` ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
-  "Você está a utilizar a versão #{params[:agent][0]} do Songbird."
+  "Você está a utilizar a versão #{params['agent'][0]} do Songbird."
 end
 
 get '/foo' do
@@ -282,7 +282,7 @@ directamente acedidas por templates:
 
 ``` ruby
 get '/:id' do
-  @foo = Foo.find(params[:id])
+  @foo = Foo.find(params['id'])
   haml '%h1= @foo.nome'
 end
 ```
@@ -291,7 +291,7 @@ Ou, especifique um hash explícito para variáveis locais:
 
 ``` ruby
 get '/:id' do
-  foo = Foo.find(params[:id])
+  foo = Foo.find(params['id'])
   haml '%h1= foo.nome', :locals => { :foo => foo }
 end
 ```
@@ -367,7 +367,7 @@ helpers do
 end
 
 get '/:nome' do
-  bar(params[:nome])
+  bar(params['nome'])
 end
 ```
 
@@ -386,7 +386,7 @@ end
 
 get '/foo/*' do
   @nota #=> 'Olá!'
-  params[:splat] #=> 'bar/baz'
+  params['splat'] #=> 'bar/baz'
 end
 ```
 
@@ -454,7 +454,7 @@ usando `pass`:
 
 ``` ruby
 get '/adivinhar/:quem' do
-  pass unless params[:quem] == 'Frank'
+  pass unless params['quem'] == 'Frank'
   'Apanhaste-me!'
 end
 
