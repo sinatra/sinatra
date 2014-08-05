@@ -160,8 +160,8 @@ Die Muster der Routen können benannte Parameter beinhalten, die über den
 ```ruby
 get '/hallo/:name' do
   # passt auf "GET /hallo/foo" und "GET /hallo/bar"
-  # params[:name] ist dann 'foo' oder 'bar'
-  "Hallo #{params[:name]}!"
+  # params['name'] ist dann 'foo' oder 'bar'
+  "Hallo #{params['name']}!"
 end
 ```
 
@@ -169,23 +169,23 @@ Man kann auf diese auch mit Block-Parametern zugreifen:
 
 ```ruby
 get '/hallo/:name' do |n|
-  # n entspricht hier params[:name]
+  # n entspricht hier params['name']
   "Hallo #{n}!"
 end
 ```
 
 Routen-Muster können auch mit sog. Splat- oder Wildcard-Parametern über das
-`params[:splat]`-Array angesprochen werden:
+`params['splat']`-Array angesprochen werden:
 
 ```ruby
 get '/sag/*/zu/*' do
   # passt z.B. auf /sag/hallo/zu/welt
-  params[:splat] # => ["hallo", "welt"]
+  params['splat'] # => ["hallo", "welt"]
 end
 
 get '/download/*.*' do
   # passt auf /download/pfad/zu/datei.xml
-  params[:splat] # => ["pfad/zu/datei", "xml"]
+  params['splat'] # => ["pfad/zu/datei", "xml"]
 end
 ```
 
@@ -201,7 +201,7 @@ Routen mit regulären Ausdrücken sind auch möglich:
 
 ```ruby
 get %r{/hallo/([\w]+)} do
-  "Hallo, #{params[:captures].first}!"
+  "Hallo, #{params['captures'].first}!"
 end
 ```
 
@@ -234,7 +234,7 @@ Einschränkung des User-Agents über die interne Bedingung `:agent`:
 
 ```ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
-  "Du verwendest Songbird Version #{params[:agent][0]}"
+  "Du verwendest Songbird Version #{params['agent'][0]}"
 end
 ```
 
@@ -1036,7 +1036,7 @@ in Routen sind auch direkt im Template verfügbar:
 
 ```ruby
 get '/:id' do
-  @foo = Foo.find(params[:id])
+  @foo = Foo.find(params['id'])
   haml '%h1= @foo.name'
 end
 ```
@@ -1045,7 +1045,7 @@ Oder durch einen expliziten Hash von lokalen Variablen:
 
 ```ruby
 get '/:id' do
-  foo = Foo.find(params[:id])
+  foo = Foo.find(params['id'])
   haml '%h1= bar.name', :locals => { :bar => foo }
 end
 ```
@@ -1192,7 +1192,7 @@ end
 
 get '/foo/*' do
   @note #=> 'Hi!'
-  params[:splat] #=> 'bar/baz'
+  params['splat'] #=> 'bar/baz'
 end
 ```
 
@@ -1245,7 +1245,7 @@ helpers do
 end
 
 get '/:name' do
-  bar(params[:name])
+  bar(params['name'])
 end
 ```
 
@@ -1261,7 +1261,7 @@ get '/' do
 end
 
 get '/:value' do
-  session[:value] = params[:value]
+  session[:value] = params['value']
 end
 ```
 
@@ -1279,7 +1279,7 @@ get '/' do
 end
 
 get '/:value' do
-  session[:value] = params[:value]
+  session[:value] = params['value']
 end
 ```
 
@@ -1344,7 +1344,7 @@ Eine Route kann mittels `pass` zu der nächsten passenden Route springen:
 
 ```ruby
 get '/raten/:wer' do
-  pass unless params[:wer] == 'Frank'
+  pass unless params['wer'] == 'Frank'
   'Du hast mich!'
 end
 
@@ -1480,7 +1480,7 @@ post '/message' do
   connections.each do |out|
     # Den Client über eine neue Nachricht in Kenntnis setzen
     # notify client that a new message has arrived
-    out << params[:message] << "\n"
+    out << params['message'] << "\n"
 
     # Den Client zur erneuten Verbindung auffordern
     out.close
@@ -1651,7 +1651,7 @@ eine aktuelle Version im Cache vorhält:
 
 ```ruby
 get '/article/:id' do
-  @article = Article.find params[:id]
+  @article = Article.find params['id']
   last_modified @article.updated_at
   etag @article.sha1
   erb :article
@@ -2507,8 +2507,8 @@ class LoginScreen < Sinatra::Base
   get('/login') { haml :login }
 
   post('/login') do
-    if params[:name] == 'admin' && params[:password] == 'admin'
-      session['user_name'] = params[:name]
+    if params['name'] == 'admin' && params['password'] == 'admin'
+      session['user_name'] = params['name']
     else
       redirect '/login'
     end
@@ -2636,8 +2636,8 @@ class MyApp < Sinatra::Base
     # Anfrage-Scope für '/neue_route/:name'
     @value = 42
 
-    settings.get "/#{params[:name]}" do
-      # Anfrage-Scope für "/#{params[:name]}"
+    settings.get "/#{params['name']}" do
+      # Anfrage-Scope für "/#{params['name']}"
       @value # => nil (nicht dieselbe Anfrage)
     end
 
