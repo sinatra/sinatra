@@ -165,8 +165,8 @@ end
 ``` ruby
 get '/hello/:name' do
   # "GET /hello/foo" と "GET /hello/bar" にマッチ
-  # params[:name] は 'foo' か 'bar'
-  "Hello #{params[:name]}!"
+  # params['name'] は 'foo' か 'bar'
+  "Hello #{params['name']}!"
 end
 ```
 
@@ -175,24 +175,24 @@ end
 ``` ruby
 get '/hello/:name' do |n|
   # "GET /hello/foo" と "GET /hello/bar" にマッチ
-  # params[:name] は 'foo' か 'bar'
-  # n が params[:name] を保持
+  # params['name'] は 'foo' か 'bar'
+  # n が params['name'] を保持
   "Hello #{n}!"
 end
 ```
 
 ルーティングパターンはアスタリスク(すなわちワイルドカード)を含むこともでき、
-`params[:splat]` で取得できます。
+`params['splat']` で取得できます。
 
 ``` ruby
 get '/say/*/to/*' do
   # /say/hello/to/world にマッチ
-  params[:splat] # => ["hello", "world"]
+  params['splat'] # => ["hello", "world"]
 end
 
 get '/download/*.*' do
   # /download/path/to/file.xml にマッチ
-  params[:splat] # => ["path/to/file", "xml"]
+  params['splat'] # => ["path/to/file", "xml"]
 end
 ```
 
@@ -208,7 +208,7 @@ end
 
 ``` ruby
 get %r{/hello/([\w]+)} do
-  "Hello, #{params[:captures].first}!"
+  "Hello, #{params['captures'].first}!"
 end
 ```
 
@@ -237,7 +237,7 @@ end
 
 ``` ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
-  "Songbirdのバージョン #{params[:agent][0]}を使ってます。"
+  "Songbirdのバージョン #{params['agent'][0]}を使ってます。"
 end
 
 get '/foo' do
@@ -1044,7 +1044,7 @@ WLang内でのRubyメソッドの呼び出しは一般的ではないので、�
 
 ``` ruby
 get '/:id' do
-  @foo = Foo.find(params[:id])
+  @foo = Foo.find(params['id'])
   haml '%h1= @foo.name'
 end
 ```
@@ -1053,7 +1053,7 @@ end
 
 ``` ruby
 get '/:id' do
-  foo = Foo.find(params[:id])
+  foo = Foo.find(params['id'])
   haml '%h1= bar.name', :locals => { :bar => foo }
 end
 ```
@@ -1183,7 +1183,7 @@ end
 
 get '/foo/*' do
   @note #=> 'Hi!'
-  params[:splat] #=> 'bar/baz'
+  params['splat'] #=> 'bar/baz'
 end
 ```
 
@@ -1233,7 +1233,7 @@ helpers do
 end
 
 get '/:name' do
-  bar(params[:name])
+  bar(params['name'])
 end
 ```
 
@@ -1266,7 +1266,7 @@ get '/' do
 end
 
 get '/:value' do
-  session[:value] = params[:value]
+  session[:value] = params['value']
 end
 ```
 
@@ -1280,7 +1280,7 @@ get '/' do
 end
 
 get '/:value' do
-  session[:value] = params[:value]
+  session[:value] = params['value']
 end
 ```
 
@@ -1346,7 +1346,7 @@ halt erb(:error)
 
 ``` ruby
 get '/guess/:who' do
-  pass unless params[:who] == 'Frank'
+  pass unless params['who'] == 'Frank'
   "見つかっちゃった!"
 end
 
@@ -1451,7 +1451,7 @@ end
 post '/message' do
   connections.each do |out|
     # クライアントへ新規メッセージ到着の通知
-    out << params[:message] << "\n"
+    out << params['message'] << "\n"
 
     # クライアントへの再接続の指示
     out.close
@@ -1604,7 +1604,7 @@ end
 
 ``` ruby
 get '/article/:id' do
-  @article = Article.find params[:id]
+  @article = Article.find params['id']
   last_modified @article.updated_at
   etag @article.sha1
   erb :article
@@ -2407,8 +2407,8 @@ class LoginScreen < Sinatra::Base
   get('/login') { haml :login }
 
   post('/login') do
-    if params[:name] = 'admin' and params[:password] = 'admin'
-      session['user_name'] = params[:name]
+    if params['name'] = 'admin' and params['password'] = 'admin'
+      session['user_name'] = params['name']
     else
       redirect '/login'
     end
@@ -2525,8 +2525,8 @@ class MyApp < Sinatra::Base
     # '/define_route/:name'のためのリクエストスコープ
     @value = 42
 
-    settings.get("/#{params[:name]}") do
-      # "/#{params[:name]}"のためのリクエストスコープ
+    settings.get("/#{params['name']}") do
+      # "/#{params['name']}"のためのリクエストスコープ
       @value # => nil (not the same request)
     end
 
