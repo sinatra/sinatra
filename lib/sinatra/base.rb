@@ -53,7 +53,7 @@ module Sinatra
     end
 
     def safe?
-      get? or head? or options? or trace? or propfind?
+      get? or head? or options? or trace?
     end
 
     def idempotent?
@@ -66,10 +66,6 @@ module Sinatra
 
     def unlink?
       request_method == "UNLINK"
-    end
-
-    def propfind?
-      request_method == "PROPFIND"
     end
 
     private
@@ -1377,15 +1373,14 @@ module Sinatra
         route('HEAD', path, opts, &block)
       end
 
-      def put(path, opts = {}, &bk)       route 'PUT',      path, opts, &bk end
-      def post(path, opts = {}, &bk)      route 'POST',     path, opts, &bk end
-      def delete(path, opts = {}, &bk)    route 'DELETE',   path, opts, &bk end
-      def head(path, opts = {}, &bk)      route 'HEAD',     path, opts, &bk end
-      def options(path, opts = {}, &bk)   route 'OPTIONS',  path, opts, &bk end
-      def patch(path, opts = {}, &bk)     route 'PATCH',    path, opts, &bk end
-      def link(path, opts = {}, &bk)      route 'LINK',     path, opts, &bk end
-      def unlink(path, opts = {}, &bk)    route 'UNLINK',   path, opts, &bk end
-      def propfind(path, opts = {}, &bk)  route 'PROPFIND', path, opts, &bk end
+      def put(path, opts = {}, &bk)     route 'PUT',     path, opts, &bk end
+      def post(path, opts = {}, &bk)    route 'POST',    path, opts, &bk end
+      def delete(path, opts = {}, &bk)  route 'DELETE',  path, opts, &bk end
+      def head(path, opts = {}, &bk)    route 'HEAD',    path, opts, &bk end
+      def options(path, opts = {}, &bk) route 'OPTIONS', path, opts, &bk end
+      def patch(path, opts = {}, &bk)   route 'PATCH',   path, opts, &bk end
+      def link(path, opts = {}, &bk)    route 'LINK',    path, opts, &bk end
+      def unlink(path, opts = {}, &bk)  route 'UNLINK',  path, opts, &bk end
 
       # Makes the methods defined in the block and in the Modules given
       # in `extensions` available to the handlers and templates
@@ -1998,7 +1993,7 @@ module Sinatra
       end
     end
 
-    delegate :get, :patch, :put, :post, :delete, :head, :options, :link, :unlink, :propfind,
+    delegate :get, :patch, :put, :post, :delete, :head, :options, :link, :unlink,
              :template, :layout, :before, :after, :error, :not_found, :configure,
              :set, :mime_type, :enable, :disable, :use, :development?, :test?,
              :production?, :helpers, :settings, :register
