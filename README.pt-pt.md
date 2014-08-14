@@ -518,7 +518,7 @@ obtido a partir da variável Rack `sinatra.error`:
 
 ``` ruby
 error do
-  'Peço desculpa, houve um erro desagradável - ' + env['sinatra.error'].name
+  'Peço desculpa, houve um erro desagradável - ' + env['sinatra.error'].message
 end
 ```
 

@@ -2177,7 +2177,7 @@ Routen-Block oder in einem Filter geworfen wurde. Die Exception kann über die
 
 ```ruby
 error do
-  'Entschuldige, es gab einen hässlichen Fehler - ' + env['sinatra.error'].name
+  'Entschuldige, es gab einen hässlichen Fehler - ' + env['sinatra.error'].message
 end
 ```
 

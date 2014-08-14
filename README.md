@@ -2319,7 +2319,7 @@ The exception object can be obtained from the `sinatra.error` Rack variable.
 
 ``` ruby
 error do
-  'Sorry there was a nasty error - ' + env['sinatra.error'].name
+  'Sorry there was a nasty error - ' + env['sinatra.error'].message
 end
 ```
 

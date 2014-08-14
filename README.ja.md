@@ -2111,7 +2111,7 @@ end
 
 ``` ruby
 error do
-  'エラーが発生しました。 - ' + env['sinatra.error'].name
+  'エラーが発生しました。 - ' + env['sinatra.error'].message
 end
 ```
 
