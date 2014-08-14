@@ -2115,7 +2115,7 @@ obtener de la variable Rack `sinatra.error`:
 
 ``` ruby
 error do
-  'Disculpá, ocurrió un error horrible - ' + env['sinatra.error'].name
+  'Disculpá, ocurrió un error horrible - ' + env['sinatra.error'].message
 end
 ```
 

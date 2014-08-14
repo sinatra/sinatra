@@ -454,7 +454,7 @@ előszűrő kivételt vált ki. A kivétel objektum lehívható a
 
 ```ruby
   error do
-    'Elnézést, de valami szörnyű hiba lépett fel - ' + env['sinatra.error'].name
+    'Elnézést, de valami szörnyű hiba lépett fel - ' + env['sinatra.error'].message
   end
 ```
 

@@ -2294,7 +2294,7 @@ variable Rack `sinatra.error` :
 
 ``` ruby
 error do
-  'Désolé mais une méchante erreur est survenue - ' + env['sinatra.error'].name
+  'Désolé mais une méchante erreur est survenue - ' + env['sinatra.error'].message
 end
 ```
 

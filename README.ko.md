@@ -2276,7 +2276,7 @@ set :show_exceptions, :after_handler
 
 ``` ruby
 error do
-  '고약한 오류가 발생했군요 - ' + env['sinatra.error'].name
+  '고약한 오류가 발생했군요 - ' + env['sinatra.error'].message
 end
 ```
 
