@@ -271,6 +271,7 @@ get '/', :provides => ['rss', 'atom', 'xml'] do
   builder :feed
 end
 ```
+`provides` searches the request's Accept header.
 
 You can easily define your own conditions:
 
@@ -1792,7 +1793,7 @@ etag '', :new_resource => true, :kind => :weak
 
 ### Sending Files
 
-For sending files, you can use the `send_file` helper method:
+To return the contents of a file as the response, you can use the `send_file` helper method:
 
 ``` ruby
 get '/' do
@@ -1810,22 +1811,22 @@ The options are:
 
 <dl>
   <dt>filename</dt>
-    <dd>file name, in response, defaults to the real file name.</dd>
+    <dd>File name to be used in the response, defaults to the real file name.</dd>
 
   <dt>last_modified</dt>
-    <dd>value for Last-Modified header, defaults to the file's mtime.</dd>
+    <dd>Value for Last-Modified header, defaults to the file's mtime.</dd>
 
   <dt>type</dt>
-    <dd>content type to use, guessed from the file extension if missing.</dd>
+    <dd>Value for Content-Type header, guessed from the file extension if missing.</dd>
 
   <dt>disposition</dt>
     <dd>
-      used for Content-Disposition, possible value: <tt>nil</tt> (default),
+      Value for Content-Disposition header, possible values: <tt>nil</tt> (default),
       <tt>:attachment</tt> and <tt>:inline</tt>
     </dd>
 
   <dt>length</dt>
-    <dd>Content-Length header, defaults to file size.</dd>
+    <dd>Value for Content-Length header, defaults to file size.</dd>
 
   <dt>status</dt>
     <dd>
@@ -2995,7 +2996,7 @@ SemVerTag.
 * [Twitter](http://twitter.com/sinatra)
 * [Mailing List](http://groups.google.com/group/sinatrarb/topics)
 * IRC: [#sinatra](irc://chat.freenode.net/#sinatra) on http://freenode.net
-* [Sinatra Book](http://sinatra-book.gittr.com) Cookbook Tutorial
+* [Sinatra Book](https://github.com/sinatra/sinatra-book/) Cookbook Tutorial
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) Community
   contributed recipes
 * API documentation for the [latest release](http://rubydoc.info/gems/sinatra)
