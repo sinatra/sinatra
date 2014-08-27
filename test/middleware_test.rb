@@ -1,6 +1,6 @@
 require File.expand_path('../helper', __FILE__)
 
-class MiddlewareTest < Test::Unit::TestCase
+class MiddlewareTest < Minitest::Test
   setup do
     @app = mock_app(Sinatra::Application) do
       get('/*')do

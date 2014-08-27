@@ -10,7 +10,7 @@ begin
     raise LoadError, 'unable to find Stylus compiler'
   end
 
-  class StylusTest < Test::Unit::TestCase
+  class StylusTest < Minitest::Test
     def stylus_app(options = {}, &block)
       mock_app do
         set :views, File.dirname(__FILE__) + '/views'
@@ -65,7 +65,7 @@ begin
       mock_app {
         get('/') { stylus :no_such_template }
       }
-      assert_raise(Errno::ENOENT) { get('/') }
+      assert_raises(Errno::ENOENT) { get('/') }
     end
 
     it "passes stylus options to the stylus engine" do

@@ -3,7 +3,7 @@ require File.expand_path('../helper', __FILE__)
 begin
 require 'slim'
 
-class SlimTest < Test::Unit::TestCase
+class SlimTest < Minitest::Test
   def slim_app(&block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
@@ -42,7 +42,7 @@ class SlimTest < Test::Unit::TestCase
 
   it "raises error if template not found" do
     mock_app { get('/') { slim(:no_such_template) } }
-    assert_raise(Errno::ENOENT) { get('/') }
+    assert_raises(Errno::ENOENT) { get('/') }
   end
 
   HTML4_DOCTYPE = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"

@@ -1,7 +1,7 @@
 # Tests to check if all the README examples work.
 require File.expand_path('../helper', __FILE__)
 
-class ReadmeTest < Test::Unit::TestCase
+class ReadmeTest < Minitest::Test
   example do
     mock_app { get('/') { 'Hello world!' } }
     get '/'

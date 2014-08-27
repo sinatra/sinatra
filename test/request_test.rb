@@ -1,7 +1,7 @@
 require File.expand_path('../helper', __FILE__)
 require 'stringio'
 
-class RequestTest < Test::Unit::TestCase
+class RequestTest < Minitest::Test
   it 'responds to #user_agent' do
     request = Sinatra::Request.new({'HTTP_USER_AGENT' => 'Test'})
     assert request.respond_to?(:user_agent)

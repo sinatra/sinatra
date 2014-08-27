@@ -2,7 +2,7 @@ require File.expand_path('../helper', __FILE__)
 require 'date'
 require 'json'
 
-class HelpersTest < Test::Unit::TestCase
+class HelpersTest < Minitest::Test
   def test_default
     assert true
   end
@@ -647,7 +647,7 @@ class HelpersTest < Test::Unit::TestCase
         end
       end
 
-      assert_raise(RuntimeError) { get '/foo.xml' }
+      assert_raises(RuntimeError) { get '/foo.xml' }
     end
 
     it 'only sets default charset for specific mime types' do
@@ -975,12 +975,12 @@ class HelpersTest < Test::Unit::TestCase
 
     it 'sets the Expires header' do
       get '/foo'
-      assert_not_nil response['Expires']
+      refute_nil response['Expires']
     end
 
     it 'allows passing Time.now objects' do
       get '/bar'
-      assert_not_nil response['Expires']
+      refute_nil response['Expires']
     end
 
     it 'allows passing Time.at objects' do
@@ -994,7 +994,7 @@ class HelpersTest < Test::Unit::TestCase
     end
 
     it 'fails when Time.parse raises an ArgumentError' do
-      assert_raise(ArgumentError) { get '/boom' }
+      assert_raises(ArgumentError) { get '/boom' }
     end
   end
 
@@ -1763,7 +1763,7 @@ class HelpersTest < Test::Unit::TestCase
           "that's weak, dude."
         end
       end
-      assert_raise(ArgumentError) { get('/') }
+      assert_raises(ArgumentError) { get('/') }
     end
   end
 

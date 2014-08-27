@@ -14,7 +14,7 @@ class TestTemplate < Tilt::Template
   Tilt.register 'test', self
 end
 
-class TemplatesTest < Test::Unit::TestCase
+class TemplatesTest < Minitest::Test
   def render_app(base=Sinatra::Base, options = {}, &block)
     base, options = Sinatra::Base, base if base.is_a? Hash
     mock_app(base) do
@@ -197,7 +197,7 @@ class TemplatesTest < Test::Unit::TestCase
   end
 
   test 'inline_templates ignores IO errors' do
-    assert_nothing_raised { mock_app { set(:inline_templates, '/foo/bar') } }
+    mock_app { set(:inline_templates, '/foo/bar') }
 
     assert @app.templates.empty?
   end

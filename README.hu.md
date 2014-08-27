@@ -545,7 +545,7 @@ könyvtárat ajánljuk:
   require 'my_sinatra_app'
   require 'rack/test'
 
-  class MyAppTest < Test::Unit::TestCase
+  class MyAppTest < Minitest::Test
     include Rack::Test::Methods
 
     def app

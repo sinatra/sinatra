@@ -21,7 +21,7 @@ end
 class FirstError < RuntimeError; end
 class SecondError < RuntimeError; end
 
-class MappedErrorTest < Test::Unit::TestCase
+class MappedErrorTest < Minitest::Test
   def test_default
     assert true
   end
@@ -104,7 +104,7 @@ class MappedErrorTest < Test::Unit::TestCase
         set :raise_errors, true
         get('/') { raise FooError }
       end
-      assert_raise(FooError) { get '/' }
+      assert_raises(FooError) { get '/' }
     end
 
     it "calls error handlers before raising errors even when raise_errors is set" do
@@ -113,7 +113,7 @@ class MappedErrorTest < Test::Unit::TestCase
         error(FooError) { "she's there." }
         get('/') { raise FooError }
       end
-      assert_nothing_raised { get '/' }
+      get '/'
       assert_equal 500, status
     end
 
@@ -121,7 +121,7 @@ class MappedErrorTest < Test::Unit::TestCase
       mock_app(Sinatra::Application) do
         get('/') { raise Sinatra::NotFound }
       end
-      assert_nothing_raised { get '/' }
+      get '/'
       assert_equal 404, status
     end
 
@@ -131,7 +131,7 @@ class MappedErrorTest < Test::Unit::TestCase
         error(FooNotFound) { "foo! not found." }
         get('/') { raise FooNotFound }
       end
-      assert_nothing_raised { get '/' }
+      get '/'
       assert_equal 404, status
       assert_equal 'foo! not found.', body
     end
