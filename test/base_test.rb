@@ -1,10 +1,6 @@
 require File.expand_path('../helper', __FILE__)
 
 class BaseTest < Test::Unit::TestCase
-  def test_default
-    assert true
-  end
-
   describe 'Sinatra::Base subclasses' do
     class TestApp < Sinatra::Base
       get('/') { 'Hello World' }
