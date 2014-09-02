@@ -93,19 +93,21 @@ module NotImplementedAsPending
 end
 
 RSpec.configure do |config|
-  config.expect_with :rspec, :stdlib
+  config.expect_with :rspec do |c|
+    c.syntax = :expect
+  end
   config.include Rack::Test::Methods
   config.include TestHelpers
 end
 
 shared_examples_for 'any rack application' do
   it "should not interfere with normal get requests" do
-    get('/').should be_ok
-    body.should == 'ok'
+    expect(get('/')).to be_ok
+    expect(body).to eq('ok')
   end
 
   it "should not interfere with normal head requests" do
-    head('/').should be_ok
+    expect(head('/')).to be_ok
   end
 
   it 'should not leak changes to env' do
@@ -130,7 +132,7 @@ shared_examples_for 'any rack application' do
       run DummyApp
     end
 
-    get('/..', :foo => '<bar>').should be_ok
+    expect(get('/..', :foo => '<bar>')).to be_ok
   end
 
   it 'allows passing on values in env' do
@@ -139,10 +141,13 @@ shared_examples_for 'any rack application' do
     changer  = Struct.new(:app)
 
     detector.send(:define_method, :call) do |env|
-      res = app.call(env)
-      env['foo.bar'].should == 42
-      res
+      app.call(env)
     end
+
+    expect_any_instance_of(detector).to receive(:call) { |env|
+      expect(env['foo.bar']).to eq 42
+    }.and_call_original
+
 
     changer.send(:define_method, :call) do |env|
       env['foo.bar'] = 42
@@ -158,6 +163,6 @@ shared_examples_for 'any rack application' do
       run DummyApp
     end
 
-    get('/').should be_ok
+    expect(get('/')).to be_ok
   end
 end
