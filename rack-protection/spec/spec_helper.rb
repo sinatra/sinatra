@@ -2,7 +2,6 @@ require 'rack/protection'
 require 'rack/test'
 require 'rack'
 require 'forwardable'
-require 'stringio'
 
 if defined? Gem.loaded_specs and Gem.loaded_specs.include? 'rack'
   version = Gem.loaded_specs['rack'].version.to_s
