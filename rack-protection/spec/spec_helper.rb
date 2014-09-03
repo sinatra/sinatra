@@ -112,16 +112,16 @@ shared_examples_for 'any rack application' do
 
   it 'should not leak changes to env' do
     klass    = described_class
-    detector = Struct.new(:app)
-
-    detector.send(:define_method, :call) do |env|
-      was = env.dup
-      res = app.call(env)
-      was.each do |k,v|
-        next if env[k] == v
-        fail "env[#{k.inspect}] changed from #{v.inspect} to #{env[k].inspect}"
+    detector = Struct.new(:app) do
+      def call(env)
+        was = env.dup
+        res = app.call(env)
+        was.each do |k,v|
+          next if env[k] == v
+          fail "env[#{k.inspect}] changed from #{v.inspect} to #{env[k].inspect}"
+        end
+        res
       end
-      res
     end
 
     mock_app do
@@ -137,22 +137,21 @@ shared_examples_for 'any rack application' do
 
   it 'allows passing on values in env' do
     klass    = described_class
-    detector = Struct.new(:app)
-    changer  = Struct.new(:app)
-
-    detector.send(:define_method, :call) do |env|
-      app.call(env)
+    detector = Struct.new(:app) do
+      def call(env)
+        app.call(env)
+      end
+    end
+    changer  = Struct.new(:app) do
+      def call(env)
+        env['foo.bar'] = 42
+        app.call(env)
+      end
     end
 
     expect_any_instance_of(detector).to receive(:call) { |env|
       expect(env['foo.bar']).to eq 42
     }.and_call_original
-
-
-    changer.send(:define_method, :call) do |env|
-      env['foo.bar'] = 42
-      app.call(env)
-    end
 
     mock_app do
       use Rack::Head
