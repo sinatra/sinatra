@@ -138,28 +138,28 @@ shared_examples_for 'any rack application' do
 
   it 'allows passing on values in env' do
     klass    = described_class
-    detector = Struct.new(:app) do
-      def call(env)
-        app.call(env)
-      end
-    end
     changer  = Struct.new(:app) do
       def call(env)
         env['foo.bar'] = 42
         app.call(env)
       end
     end
+    detector = Struct.new(:app) do
+      def call(env)
+        app.call(env)
+      end
+    end
 
-    expect_any_instance_of(detector).to receive(:call) { |env|
-      expect(env['foo.bar']).to eq 42
-    }.and_call_original
+    expect_any_instance_of(detector).to receive(:call).with(
+      hash_including('foo.bar' => 42)
+    ).and_call_original
 
     mock_app do
       use Rack::Head
       use(Rack::Config) { |e| e['rack.session'] ||= {}}
-      use detector
-      use klass
       use changer
+      use klass
+      use detector
       run DummyApp
     end
 
