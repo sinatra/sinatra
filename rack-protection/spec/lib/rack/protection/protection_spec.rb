@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Rack::Protection do
   it_behaves_like "any rack application"
 
@@ -38,7 +36,7 @@ describe Rack::Protection do
         run DummyApp
       end
       post('/', {}, 'rack.session' => {}, 'HTTP_ORIGIN' => 'http://malicious.com')
-      expect(io.string).to match /prevented.*Origin/
+      expect(io.string).to match(/prevented.*Origin/)
     end
 
     it 'reports attacks if reaction is to report' do
@@ -48,8 +46,8 @@ describe Rack::Protection do
         run DummyApp
       end
       post('/', {}, 'rack.session' => {}, 'HTTP_ORIGIN' => 'http://malicious.com')
-      expect(io.string).to match /reported.*Origin/
-      expect(io.string).not_to match /prevented.*Origin/
+      expect(io.string).to match(/reported.*Origin/)
+      expect(io.string).not_to match(/prevented.*Origin/)
     end
 
     it 'passes errors to reaction method if specified' do
@@ -60,8 +58,8 @@ describe Rack::Protection do
         run DummyApp
       end
       post('/', {}, 'rack.session' => {}, 'HTTP_ORIGIN' => 'http://malicious.com')
-      expect(io.string).to match /HTTP_ORIGIN.*malicious.com/
-      expect(io.string).not_to match /reported|prevented/
+      expect(io.string).to match(/HTTP_ORIGIN.*malicious.com/)
+      expect(io.string).not_to match(/reported|prevented/)
     end
   end
 

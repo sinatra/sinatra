@@ -41,6 +41,7 @@ module TestHelpers
   attr_writer :app
 
   def app
+    @app ||= nil
     @app || mock_app(DummyApp)
   end
 
