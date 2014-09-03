@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Rack::Protection::FormToken do
   it_behaves_like "any rack application"
 

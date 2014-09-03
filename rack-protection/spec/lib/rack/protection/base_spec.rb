@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Rack::Protection::Base do
 
   subject { described_class.new(lambda {}) }
