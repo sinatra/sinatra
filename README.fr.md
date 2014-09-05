@@ -2109,13 +2109,13 @@ set :protection, :session => true
 
   <p>Désactivé par défaut.</p></dd>
 
-  <dt>add_charsets</dt>
+  <dt>add_charset</dt>
   <dd><p>types mime pour lesquels la méthode <tt>content_type</tt> va
   automatiquement ajouter l’information du <tt>charset</tt>.</p>
 
   <p>Vous devriez lui ajouter des valeurs plutôt que de l’écraser :</p>
 
-  <pre>settings.add_charsets >> "application/foobar"</pre></dd>
+  <pre>settings.add_charset >> "application/foobar"</pre></dd>
 
   <dt>app_file</dt>
   <dd><p>chemin pour le fichier de l’application principale, utilisé pour

@@ -2102,11 +2102,11 @@ set :protection, :session => true
   </dd>
   <dd>Disabled by default.</dd>
 
-  <dt>add_charsets</dt>
+  <dt>add_charset</dt>
   <dd>
     Mime types the <tt>content_type</tt> helper will automatically add the charset info to.
     You should add to it rather than overriding this option:
-    <tt>settings.add_charsets << "application/foobar"</tt>
+    <tt>settings.add_charset << "application/foobar"</tt>
   </dd>
 
   <dt>app_file</dt>

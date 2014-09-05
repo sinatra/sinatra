@@ -2010,10 +2010,10 @@ set :protection, :except => [:path_traversal, :session_hijacking]
   wird, es sei denn, es wird als zweiter Parameter <tt>false</tt> angegeben.
   Standardmäßig nicht aktiviert.</dd>
 
-  <dt>add_charsets</dt>
+  <dt>add_charset</dt>
   <dd>Mime-Types werden hier automatisch der Helfer-Methode
   <tt>content_type</tt> zugeordnet. Es empfielt sich, Werte hinzuzufügen statt
-  sie zu überschreiben: <tt>settings.add_charsets << "application/foobar"</tt>
+  sie zu überschreiben: <tt>settings.add_charset << "application/foobar"</tt>
   </dd>
 
   <dt>app_file</dt>

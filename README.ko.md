@@ -2065,11 +2065,11 @@ set :protection, :session => true
   </dd>
   <dd>기본값은 비활성.</dd>
 
-  <dt>add_charsets</dt>
+  <dt>add_charset</dt>
   <dd>
     <tt>content_type</tt>가 문자셋 정보에 자동으로 추가하게 될 마임(mime) 타입.
      이 옵션은 오버라이딩하지 말고 추가해야 함.
-    <tt>settings.add_charsets << "application/foobar"</tt>
+    <tt>settings.add_charset << "application/foobar"</tt>
   </dd>
 
   <dt>app_file</dt>
@@ -2529,7 +2529,7 @@ run MyApp
 rackup -p 4567
 ```
 
-### config.ru로 전통적 방식의 애플리케이션 사용하기
+### config.ru로 전통적 방식의 애플리케이션 사용하���
 
 앱 파일을 다음과 같이 작성합니다.
 
@@ -2845,7 +2845,7 @@ gem install sinatra --pre
 gem install bundler
 ```
 
-그런 다음, 프로젝트 디렉터리에서, `Gemfile`을 만듭니다.
+그런 다음, 프로젝트 디렉터리에서, `Gemfile`을 ���듭니다.
 
 ``` ruby
 source 'https://rubygems.org'

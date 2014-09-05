@@ -1617,7 +1617,7 @@ end
 etag @article.sha1, :weak
 ```
 
-これらのヘルパーは、キャッシングをしてくれませんが、必要な情報をキャッシュに与えてくれます。もし手早いリバースプロキシキャッシングの解決策をお探しなら、 [rack-cache](https://github.com/rtomayko/rack-cache)を試してください。
+これらのヘルパーは、キャッシングをしてくれま���んが、必要な情報をキャッシュに与えてくれます。もし手早いリバースプロキシキャッシングの解決策をお探しなら、 [rack-cache](https://github.com/rtomayko/rack-cache)を試してください。
 
 
 ``` ruby
@@ -1937,10 +1937,10 @@ set :protection, :session => true
   </dd>
   <dd>デフォルトは無効。</dd>
 
-  <dt>add_charsets</dt>
+  <dt>add_charset</dt>
   <dd>
     Mimeタイプ <tt>content_type</tt>ヘルパーが自動的にキャラクタセット情報をここに追加する。このオプションは書き換えるのではなく、値を追加するようにすること。
-    <tt>settings.add_charsets << "application/foobar"</tt>
+    <tt>settings.add_charset << "application/foobar"</tt>
   </dd>
 
   <dt>app_file</dt>
@@ -2162,7 +2162,7 @@ Sinatraを開発環境の下で実行している場合は、特別な`not_found
 
 ## Rackミドルウェア(Rack Middleware)
 
-SinatraはRuby製Webフレームワークのミニマルな標準的インタフェースである[Rack](http://rack.rubyforge.org/)上に構築されています。アプリケーションデベロッパーにとってRackにおける最も興味深い機能は、「ミドルウェア(middleware)」をサポートしていることであり、これは、サーバとアプリケーションとの間に置かれ、HTTPリクエスト/レスポンスを監視および/または操作することで、各種の汎用的機能を提供するコンポーネントです。
+SinatraはRuby製Webフレームワークのミニマルな標準的インタフェースである[Rack](http://rack.rubyforge.org/)上に構築されています。アプリケーションデベロッパーにとってRackにおける最も興味深い機能は、「ミドルウェア(middleware)」をサポートしていることであり、これは、サーバとアプリケーションとの間に置かれ、HTTPリクエスト/レスポンスを監視および/または操作することで、各種の汎用的機能を提供するコ���ポーネントです。
 
 Sinatraはトップレベルの`use`メソッドを通して、Rackミドルウェアパイプラインの構築を楽にします。
 

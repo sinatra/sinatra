@@ -498,7 +498,7 @@ get '/' do
 end
 ~~~~
 
-这将会调用 `./views/index.md` 并使用 `./views/layout.erb` 作为布局。
+这将会调��� `./views/index.md` 并使用 `./views/layout.erb` 作为布局。
 
 请记住你可以全局设定这个选项:
 
@@ -1458,15 +1458,15 @@ end
         </p>
     </dd>
 
-    <dt>add_charsets</dt>
+    <dt>add_charset</dt>
     <dd>
         <p>
             设定 <tt>content_type</tt> 辅助方法会 自动加上字符集信息的多媒体类型。
         </p>
 
         <p>
-            你应该添加而不是覆盖这个选项:
-            <tt>settings.add_charsets << "application/foobar"</tt>
+            你应该添加���不是覆盖这个选项:
+            <tt>settings.add_charset << "application/foobar"</tt>
         </p>
     </dd>
 
@@ -1883,7 +1883,7 @@ class LoginScreen < Sinatra::Base
 end
 
 class MyApp < Sinatra::Base
-  # 在前置过滤器前运行中间件
+  # 在前置过滤器前运行中���件
   use LoginScreen
 
   before do

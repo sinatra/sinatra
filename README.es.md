@@ -1881,14 +1881,14 @@ set :protection, :except => [:path_traversal, :session_hijacking]
     Deshabilitada por defecto.
   </dd>
 
-  <dt>add_charsets</dt>
+  <dt>add_charset</dt>
   <dd>
     Tipos mime a los que el helper <tt>content_type</tt> les
     añade automáticamente el charset.
 
     En general, no deberías asignar directamente esta opción,
     sino añadirle los charsets que quieras:
-    <tt>settings.add_charsets &lt;&lt; "application/foobar"</tt>
+    <tt>settings.add_charset &lt;&lt; "application/foobar"</tt>
   </dd>
 
   <dt>app_file</dt>
