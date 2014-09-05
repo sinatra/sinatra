@@ -498,7 +498,7 @@ get '/' do
 end
 ~~~~
 
-这将会调��� `./views/index.md` 并使用 `./views/layout.erb` 作为布局。
+这将会调用 `./views/index.md` 并使用 `./views/layout.erb` 作为布局。
 
 请记住你可以全局设定这个选项:
 
@@ -1465,7 +1465,7 @@ end
         </p>
 
         <p>
-            你应该添加���不是覆盖这个选项:
+            你应该添加而不是覆盖这个选项:
             <tt>settings.add_charset << "application/foobar"</tt>
         </p>
     </dd>
@@ -1883,7 +1883,7 @@ class LoginScreen < Sinatra::Base
 end
 
 class MyApp < Sinatra::Base
-  # 在前置过滤器前运行中���件
+  # 在前置过滤器前运行中间件
   use LoginScreen
 
   before do

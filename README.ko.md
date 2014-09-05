@@ -2529,7 +2529,7 @@ run MyApp
 rackup -p 4567
 ```
 
-### config.ru로 전통적 방식의 애플리케이션 사용하���
+### config.ru로 전통적 방식의 애플리케이션 사용하기
 
 앱 파일을 다음과 같이 작성합니다.
 
@@ -2845,7 +2845,7 @@ gem install sinatra --pre
 gem install bundler
 ```
 
-그런 다음, 프로젝트 디렉터리에서, `Gemfile`을 ���듭니다.
+그런 다음, 프로젝트 디렉터리에서, `Gemfile`을 만듭니다.
 
 ``` ruby
 source 'https://rubygems.org'
