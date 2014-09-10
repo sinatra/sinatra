@@ -1504,8 +1504,7 @@ module Sinatra
       def start_server(handler, server_settings, handler_name)
         handler.run(self, server_settings) do |server|
           unless handler_name =~ /cgi/i
-            $stderr.puts "== Sinatra/#{Sinatra::VERSION} has taken the stage " +
-            "on #{port} for #{environment} with backup from #{handler_name}"
+            $stderr.puts "== Sinatra (v#{Sinatra::VERSION}) has taken the stage on #{port} for #{environment} with backup from #{handler_name}"
           end
 
           setup_traps
@@ -2027,8 +2026,7 @@ module Sinatra
     end
   end
 
-  # Create a new Sinatra application. The block is evaluated in the new app's
-  # class scope.
+  # Create a new Sinatra application; the block is evaluated in the class scope.
   def self.new(base = Base, &block)
     base = Class.new(base)
     base.class_eval(&block) if block_given?
