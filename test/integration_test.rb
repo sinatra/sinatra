@@ -77,7 +77,7 @@ class IntegrationTest < Test::Unit::TestCase
 
   it 'starts the correct server' do
     exp = %r{
-      ==\sSinatra/#{Sinatra::VERSION}\s
+      ==\sSinatra\s\(v#{Sinatra::VERSION}\)\s
       has\staken\sthe\sstage\son\s\d+\sfor\sdevelopment\s
       with\sbackup\sfrom\s#{server}
     }ix
