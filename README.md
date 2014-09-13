@@ -2490,7 +2490,7 @@ including the built-in server. See
 [Configuring Settings](http://sinatra.github.com/configuration.html)
 for details on available options and their behavior. If you want
 behavior more similar to when you define your app at the top level (also
-know as Classic style), you
+known as Classic style), you
 can subclass `Sinatra::Application`.
 
 ``` ruby
