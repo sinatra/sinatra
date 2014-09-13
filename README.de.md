@@ -1,7 +1,7 @@
 # Sinatra
 
 *Wichtig: Dieses Dokument ist eine Übersetzung aus dem Englischen und unter
-Umständen nicht auf dem aktuellen Stand (aktuell Sinatra 1.4.2).*
+Umständen nicht auf dem aktuellen Stand (aktuell Sinatra 1.4.5).*
 
 Sinatra ist eine
 [DSL](http://de.wikipedia.org/wiki/Domänenspezifische_Sprache), die das
@@ -222,6 +222,17 @@ get '/posts.?:format?' do
 end
 ```
 
+Routen können auch den query-Parameter verwenden:
+
+``` ruby
+get '/posts' do
+  # matches "GET /posts?title=foo&author=bar"
+  title = params['title']
+  author = params['author']
+  # uses title and author variables; query is optional to the /posts route
+end
+```
+
 Anmerkung: Solange man den sog. Path Traversal Attack-Schutz nicht deaktiviert
 (siehe weiter unten), kann es sein, dass der Request-Pfad noch vor dem
 Abgleich mit den Routen modifiziert wird.
@@ -261,6 +272,7 @@ get '/', :provides => ['rss', 'atom', 'xml'] do
   builder :feed
 end
 ```
+`provides` durchsucht den Accept-Header der Anfrage
 
 Eigene Bedingungen können relativ einfach hinzugefügt werden:
 
@@ -801,6 +813,27 @@ RDoc geschrieben werden. Es ist aber möglich, einen Renderer für die Templates
 zu verwenden und einen anderen für das Layout, indem die
 `:layout_engine`-Option verwendet wird.
 
+#### AsciiDoc Templates
+
+<table>
+  <tr>
+    <td>Abhängigkeit</td>
+    <td><a href="http://asciidoctor.org/" title="Asciidoctor">Asciidoctor</a></td>
+  </tr>
+  <tr>
+    <td>Dateierweiterungen</td>
+    <td><tt>.asciidoc</tt>, <tt>.adoc</tt> und <tt>.ad</tt></td>
+  </tr>
+  <tr>
+    <td>Beispiel</td>
+    <td><tt>asciidoc :README, :layout_engine => :erb</tt></td>
+  </tr>
+</table>
+
+Da man aus dem AsciiDoc-Template heraus keine Ruby-Methoden aufrufen kann
+(ausgenommen `yield`), wird man üblicherweise locals verwenden wollen, mit
+denen man Variablen weitergibt.
+
 #### Radius Templates
 
 <table>
@@ -912,6 +945,44 @@ Creole geschrieben werden. Es ist aber möglich, einen Renderer für die Templat
 zu verwenden und einen anderen für das Layout, indem die `:layout_engine`-Option
 verwendet wird.
 
+#### MediaWiki Templates
+
+<table>
+  <tr>
+    <td>Abhängigkeit</td>
+    <td><a href="https://github.com/nricciar/wikicloth" title="WikiCloth">WikiCloth</a></td>
+  </tr>
+  <tr>
+    <td>Dateierweiterungen</td>
+    <td><tt>.mediawiki</tt> und <tt>.mw</tt></td>
+  </tr>
+  <tr>
+    <td>Beispiel</td>
+    <td><tt>mediawiki :wiki, :layout_engine => :erb</tt></td>
+  </tr>
+</table>
+
+Da man aus dem Mediawiki-Template heraus keine Ruby-Methoden aufrufen und auch
+keine locals verwenden kann, wird man Mediawiki üblicherweise in Kombination mit
+anderen Renderern verwenden wollen:
+
+``` ruby
+erb :overview, :locals => { :text => mediawiki(:introduction) }
+```
+
+Beachte: Man kann die `mediawiki`-Methode auch aus anderen Templates
+heraus aufrufen:
+
+``` ruby
+%h1 Grüße von Haml!
+%p= mediawiki(:greetings)
+```
+
+Da man Ruby nicht von MediaWiki heraus aufrufen kann, können auch Layouts nicht
+in MediaWiki geschrieben werden. Es ist aber möglich, einen Renderer für die
+Templates zu verwenden und einen anderen für das Layout, indem die
+`:layout_engine`-Option verwendet wird.
+
 #### CoffeeScript Templates
 
 <table>
@@ -1002,8 +1073,9 @@ json[:baz] = key
 Die `:callback` und `:variable` Optionen können mit dem gerenderten Objekt
 verwendet werden:
 
-``` ruby
-var resource = {"foo":"bar","baz":"qux"}; present(resource);
+``` javascript
+var resource = {"foo":"bar","baz":"qux"};
+present(resource);
 ```
 
 #### WLang Templates
@@ -1023,9 +1095,9 @@ var resource = {"foo":"bar","baz":"qux"}; present(resource);
   </tr>
 </table>
 
-Ruby-Methoden in wlang aufzurufen entspricht nicht den idiomatischen Vorgaben
-von wlang, es bietet sich deshalb an, `:locals` zu verwenden. Layouts, die
-wlang und `yield` verwenden, werden aber trotzdem unterstützt.
+Ruby-Methoden in Wlang aufzurufen entspricht nicht den idiomatischen Vorgaben
+von Wlang, es bietet sich deshalb an, `:locals` zu verwenden. Layouts, die
+Wlang und `yield` verwenden, werden aber trotzdem unterstützt.
 
 Rendert den eingebetteten Template-String.
 
@@ -1177,6 +1249,23 @@ Dieser Code rendert `./views/application.mtt`. Siehe
 [github.com/rtomayko/tilt](https://github.com/rtomayko/tilt), um mehr über
 Tilt zu erfahren.
 
+### Eigene Methoden zum Aufsuchen von Templates verwenden
+
+Um einen eigenen Mechanismus zum Aufsuchen von Templates zu
+implementieren, muss `#find_template` definiert werden:
+
+``` ruby
+configure do
+  set :views [ './views/a', './views/b' ]
+end
+
+def find_template(views, name, engine, &block)
+  Array(views).each do |v|
+    super(v, name, engine, &block)
+  end
+end
+```
+
 ## Filter
 
 Before-Filter werden vor jedem Request in demselben Kontext, wie danach die
@@ -1298,6 +1387,13 @@ Einstellungen ablegen.
 
 ```ruby
 set :sessions, :domain => 'foo.com'
+```
+
+Um eine Session mit anderen Apps und zwischen verschiedenen Subdomains
+von foo.com zu teilen, wird ein *.* der Domain vorangestellt:
+
+``` ruby
+set :sessions, :domain => '.foo,com'
 ```
 
 ### Anhalten
@@ -1476,7 +1572,7 @@ get '/subscribe' do
   "Angemeldet"
 end
 
-post '/message' do
+post '/:message' do
   connections.each do |out|
     # Den Client über eine neue Nachricht in Kenntnis setzen
     # notify client that a new message has arrived
@@ -1711,7 +1807,8 @@ etag '', :new_resource => true, :kind => :weak
 
 ### Dateien versenden
 
-Zum Versenden von Dateien kann die `send_file`-Helfer-Methode verwendet werden:
+Um den Inhalt einer Datei als Response zurückzugeben, kann die
+`send_file`-Helfer-Methode verwendet werden:
 
 ```ruby
 get '/' do
@@ -2125,6 +2222,9 @@ set :protection, :except => [:path_traversal, :session_hijacking]
   <dd>Wird es auf <tt>true</tt> gesetzt, wird Thin aufgefordert
   <tt>EventMachine.defer</tt> zur Verarbeitung des Requests einzusetzen.</dd>
 
+  <dt>traps</dt>
+  <dd>Einstellung, Sinatra System signalen umgehen soll.</dd>
+
   <dt>views</dt>
   <dd>Verzeichnis der Views. Leitet sich von der <tt>app_file</tt> Einstellung
   ab, wenn nicht gesetzt.</dd>
@@ -2172,8 +2272,15 @@ end
 ### Fehler
 
 Der `error`-Handler wird immer ausgeführt, wenn eine Exception in einem
-Routen-Block oder in einem Filter geworfen wurde. Die Exception kann über die
-`sinatra.error`-Rack-Variable angesprochen werden:
+Routen-Block oder in einem Filter geworfen wurde. In der
+`development`-Umgebung wird es nur dann funktionieren, wenn die
+`:show_exceptions`-Option auf `:after_handler` eingestellt wurde:
+
+```ruby
+set :show_exceptions, :after_handler
+```
+
+Die Exception kann über die `sinatra.error`-Rack-Variable angesprochen werden:
 
 ```ruby
 error do
@@ -2353,11 +2460,23 @@ Veränderungen zu `Sinatra::Base` konvertiert werden:
 *   Alle Routen, Error-Handler, Filter und Optionen der Applikation müssen in
     einer Subklasse von `Sinatra::Base` definiert werden.
 
-
 `Sinatra::Base` ist ein unbeschriebenes Blatt. Die meisten Optionen sind per
 Standard deaktiviert. Das betrifft auch den eingebauten Server. Siehe
 [Optionen und Konfiguration](http://sinatra.github.com/configuration.html) für
 Details über mögliche Optionen.
+
+Damit eine App sich ähnlich wie eine klassische App verhält, kann man
+auch eine Subclass von `Sinatra::Application` erstellen:
+
+``` ruby
+require 'sinatra/base'
+
+class MyApp < Sinatra::Application
+  get '/' do
+    'Hello world!'
+  end
+end
+```
 
 ### Modularer vs. klassischer Stil
 
@@ -2379,17 +2498,20 @@ werden:
     <th>Szenario</th>
     <th>Classic</th>
     <th>Modular</th>
+    <th>Modular</th>
   </tr>
 
   <tr>
     <td>app_file</td>
     <td>Sinatra ladende Datei</td>
     <td>Sinatra::Base subklassierende Datei</td>
+    <td>Sinatra::Application subklassierende Datei</td>
   </tr>
 
   <tr>
     <td>run</td>
     <td>$0 == app_file</td>
+    <td>false</td>
     <td>false</td>
   </tr>
 
@@ -2397,24 +2519,28 @@ werden:
     <td>logging</td>
     <td>true</td>
     <td>false</td>
+    <td>true</td>
   </tr>
 
   <tr>
     <td>method_override</td>
     <td>true</td>
     <td>false</td>
+    <td>true</td>
   </tr>
 
   <tr>
     <td>inline_templates</td>
     <td>true</td>
     <td>false</td>
+    <td>true</td>
   </tr>
 
   <tr>
     <td>static</td>
     <td>true</td>
     <td>false</td>
+    <td>true</td>
   </tr>
 </table>
 
@@ -2714,6 +2840,9 @@ auftreten.</dd>
 Upgrade von einer früheren Version von Ruby zu Ruby 1.9.3 werden alle Sessions
 ungültig. Ruby 1.9.3 wird bis Sinatra 2.0 unterstützt werden.</dd>
 
+<dt>Ruby 2.x</dt>
+<dd>2.x wird vollständig unterstützt.</dd>
+
 <dt>Rubinius</dt>
 <dd>Rubinius (Version >= 2.x) wird offiziell unterstützt. Es wird empfohlen, den
 <a href="http://puma.io">Puma Server</a> zu installieren (<tt>gem install puma
@@ -2738,8 +2867,8 @@ wir davon ausgehen, dass es nicht an Sinatra sondern an der jeweiligen
 Implementierung liegt.
 
 Im Rahmen unserer CI (Kontinuierlichen Integration) wird bereits ruby-head
-(das kommende Ruby 2.1.0) mit eingebunden. Es kann davon ausgegangen
-werden, dass Sinatra Ruby 2.1.0 vollständig unterstützen wird.
+(zukünftige Versionen von MRI) mit eingebunden. Es kann davon ausgegangen
+werden, dass Sinatra MRI auch weiterhin vollständig unterstützen wird.
 
 Sinatra sollte auf jedem Betriebssystem laufen, dass einen funktionierenden
 Ruby-Interpreter aufweist.
