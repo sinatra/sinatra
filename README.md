@@ -2856,9 +2856,9 @@ The following Ruby versions are officially supported:
     until the release of Sinatra 2.0.
   </dd>
 
-  <dt>Ruby 2.0.0</dt>
+  <dt>Ruby 2.x</dt>
   <dd>
-    2.0.0 is fully supported and recommended. There are currently no plans to drop
+    2.x is fully supported and recommended. There are currently no plans to drop
     official support for it.
   </dd>
 
@@ -2889,9 +2889,9 @@ known to run Sinatra:
 Not being officially supported means if things only break there and not on a
 supported platform, we assume it's not our issue but theirs.
 
-We also run our CI against ruby-head (the upcoming 2.1.0), but we can't
-guarantee anything, since it is constantly moving. Expect 2.1.0 to be fully
-supported.
+We also run our CI against ruby-head (future releases of MRI), but we can't
+guarantee anything, since it is constantly moving. Expect upcoming 2.x releases
+to be fully supported.
 
 Sinatra should work on any operating system supported by the chosen Ruby
 implementation.
