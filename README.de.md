@@ -2855,7 +2855,7 @@ SemVer und SemVerTag.
 *   [Mailing-Liste](http://groups.google.com/group/sinatrarb)
 *   [#sinatra](irc://chat.freenode.net/#sinatra) auf http://freenode.net Es
     gibt dort auch immer wieder deutschsprachige Entwickler, die gerne weiterhelfen.
-*   [Sinatra Book](http://sinatra-book.gittr.com) Kochbuch Tutorial
+*   [Sinatra Book](https://github.com/sinatra/sinatra-book/) Kochbuch Tutorial
 *   [Sinatra Recipes](http://recipes.sinatrarb.com/) Sinatra-Rezepte aus der
     Community
 *   API Dokumentation für die [aktuelle

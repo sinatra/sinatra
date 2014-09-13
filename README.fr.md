@@ -2981,7 +2981,7 @@ SemVer que SemVerTag.
 * [Twitter](http://twitter.com/sinatra)
 * [Mailing List](http://groups.google.com/group/sinatrarb/topics)
 * IRC : [#sinatra](irc://chat.freenode.net/#sinatra) sur http://freenode.net
-* [Sinatra Book](http://sinatra-book.gittr.com) Tutoriels et recettes
+* [Sinatra Book](https://github.com/sinatra/sinatra-book/) Tutoriels et recettes
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) trucs et astuces rédigés par
   la communauté
 * Documentation API de la [dernière version](http://rubydoc.info/gems/sinatra)

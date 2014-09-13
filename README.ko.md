@@ -2917,7 +2917,7 @@ SemVerTag를 준수합니다.
 * [트위터](http://twitter.com/sinatra)
 * [메일링 리스트](http://groups.google.com/group/sinatrarb/topics)
 * IRC: [#sinatra](irc://chat.freenode.net/#sinatra) http://freenode.net
-* [Sinatra Book](http://sinatra-book.gittr.com) Cookbook 튜토리얼
+* [Sinatra Book](https://github.com/sinatra/sinatra-book/) Cookbook 튜토리얼
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) 커뮤니티가 만드는 레시피
 * http://rubydoc.info에 있는 [최종 릴리스](http://rubydoc.info/gems/sinatra)
   또는 [current HEAD](http://rubydoc.info/github/sinatra/sinatra)에 대한 API 문서

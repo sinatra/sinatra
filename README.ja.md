@@ -2719,7 +2719,7 @@ Sinatraは、[Semantic Versioning](http://semver.org/)におけるSemVerおよ�
 * [Twitter](http://twitter.com/sinatra)
 * [メーリングリスト](http://groups.google.com/group/sinatrarb/topics)
 * http://freenode.net上のIRC: [#sinatra](irc://chat.freenode.net/#sinatra)
-* [Sinatra Book](http://sinatra-book.gittr.com) クックブック、チュートリアル
+* [Sinatra Book](https://github.com/sinatra/sinatra-book/) クックブック、チュートリアル
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) コミュニティによるレシピ集
 * http://rubydoc.info上のAPIドキュメント: [最新版(latest release)用](http://rubydoc.info/gems/sinatra)または[現在のHEAD用](http://rubydoc.info/github/sinatra/sinatra)
 * [CIサーバ](http://travis-ci.org/sinatra/sinatra)
