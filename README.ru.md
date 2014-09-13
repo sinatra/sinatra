@@ -2791,7 +2791,7 @@ SemVerTag.
 * [Twitter](http://twitter.com/sinatra)
 * [Группы рассылки](http://groups.google.com/group/sinatrarb/topics)
 * [#sinatra](irc://chat.freenode.net/#sinatra) на http://freenode.net
-* [Sinatra Book](http://sinatra-book.gittr.com) учебник и сборник рецептов
+* [Sinatra Book](https://github.com/sinatra/sinatra-book/) учебник и сборник рецептов
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) сборник рецептов
 * API документация к [последнему релизу](http://rubydoc.info/gems/sinatra)
   или [текущему HEAD](http://rubydoc.info/github/sinatra/sinatra) на

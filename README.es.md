@@ -2776,7 +2776,7 @@ siguiendo las especificaciones SemVer y SemVerTag.
 * [Twitter](http://twitter.com/sinatra)
 * [Lista de Correo](http://groups.google.com/group/sinatrarb/topics)
 * [IRC: #sinatra](irc://chat.freenode.net/#sinatra) en http://freenode.net
-* [Sinatra Book](http://sinatra-book.gittr.com) Tutorial (en inglés).
+* [Sinatra Book](https://github.com/sinatra/sinatra-book/) Tutorial (en inglés).
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) Recetas contribuidas
   por la comunidad (en inglés).
 * Documentación de la API para la

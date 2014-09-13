@@ -2157,7 +2157,7 @@ gem 'activerecord', '~> 3.0'  # 也许你还需要 ActiveRecord 3.x
 -   [IRC: \#sinatra](irc://chat.freenode.net/#sinatra) on
     [freenode.net](http://freenode.net)
 
--   [Sinatra宝典](http://sinatra-book.gittr.com/) Cookbook教程
+-   [Sinatra宝典](https://github.com/sinatra/sinatra-book/) Cookbook教程
 
 -   [Sinatra使用技巧](http://recipes.sinatrarb.com/) 网友贡献的实用技巧
    
