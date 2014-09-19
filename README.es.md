@@ -483,7 +483,7 @@ get('/') { markdown :index }
   <tr>
     <td>Dependencias</td>
     <td>
-      <a href="http://builder.rubyforge.org/" title="builder">builder</a>
+      <a href="https://github.com/jimweirich/builder" title="builder">builder</a>
     </td>
   </tr>
   <tr>
@@ -597,8 +597,8 @@ plantilla Liquid, casi siempre va a querer pasarle locales.
       <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
       <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
       <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
-      <a href="http://kramdown.rubyforge.org/" title="kramdown">kramdown</a> o
-      <a href="http://maruku.rubyforge.org/" title="maruku">maruku</a>
+      <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a> o
+      <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
     </td>
   </tr>
   <tr>
@@ -671,7 +671,7 @@ layout distinto al de la plantilla pasando la opción `:layout_engine`.
 <table>
   <tr>
     <td>Dependencias</td>
-    <td><a href="http://rdoc.rubyforge.org/" title="RDoc">RDoc</a></td>
+    <td><a href="http://rdoc.sourceforge.net/" title="RDoc">RDoc</a></td>
   </tr>
   <tr>
     <td>Extensiones de Archivo</td>
@@ -707,7 +707,7 @@ al de la plantilla pasando la opción `:layout_engine`.
 <table>
   <tr>
     <td>Dependencias</td>
-    <td><a href="http://radius.rubyforge.org/" title="Radius">Radius</a></td>
+    <td><a href="https://github.com/jlong/radius" title="Radius">Radius</a></td>
   </tr>
   <tr>
     <td>Extensiones de Archivo</td>
@@ -1616,7 +1616,7 @@ Estas opciones son:
   página de error.
 
 Si el Rack handler lo soporta, se intentará no transmitir directamente desde el
-proceso de Ruby. Si usás este método, Sinatra se va a encargar automáticamente de las 
+proceso de Ruby. Si usás este método, Sinatra se va a encargar automáticamente de las
 peticiones de rango.
 
 ### Accediendo al objeto de la petición
@@ -2164,7 +2164,7 @@ cuando se ejecuta dentro del entorno de desarrollo "development".
 
 ## Rack Middleware
 
-Sinatra corre sobre Rack[http://rack.rubyforge.org/], una interfaz minimalista
+Sinatra corre sobre [Rack](http://rack.github.io/), una interfaz minimalista
 que es un estándar para frameworks webs escritos en Ruby. Una de las
 características más interesantes de Rack para los desarrolladores de aplicaciones
 es el soporte de "middleware" -- componentes que se ubican entre el servidor y
@@ -2187,7 +2187,7 @@ end
 ```
 
 La semántica de `use` es idéntica a la definida para el DSL
-Rack::Builder[http://rack.rubyforge.org/doc/classes/Rack/Builder.html] (más
+Rack::Builder[http://rubydoc.info/github/rack/rack/master/Rack/Builder] (más
 frecuentemente usado en archivos rackup). Por ejemplo, el método `use`
 acepta argumentos múltiples/variables así como bloques:
 

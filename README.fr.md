@@ -599,7 +599,7 @@ get('/') { markdown :index }
   <tr>
     <td>Dépendances</td>
     <td>
-      <a href="http://builder.rubyforge.org/" title="builder">builder</a>
+      <a href="https://github.com/jimweirich/builder" title="builder">builder</a>
     </td>
   </tr>
   <tr>
@@ -720,8 +720,8 @@ locales.
       <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
       <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
       <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
-      <a href="http://kramdown.rubyforge.org/" title="kramdown">kramdown</a>,
-      <a href="http://maruku.rubyforge.org/" title="maruku">maruku</a>
+      <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
+      <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
     </td>
   </tr>
 
@@ -799,7 +799,7 @@ pour le layout en utilisant l’option `:layout_engine`.
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://rdoc.rubyforge.org/" title="RDoc">RDoc</a></td>
+    <td><a href="http://rdoc.sourceforge.net/" title="RDoc">RDoc</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -836,7 +836,7 @@ pour le layout en utilisant l’option `:layout_engine`.
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://radius.rubyforge.org/" title="Radius">Radius</a></td>
+    <td><a href="https://github.com/jlong/radius" title="Radius">Radius</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -2345,7 +2345,7 @@ Sinatra installe pour vous quelques gestionnaires `not_found` et
 
 ## Les Middlewares Rack
 
-Sinatra tourne avec [Rack](http://rack.rubyforge.org/), une interface standard
+Sinatra tourne avec [Rack](http://rack.github.io/), une interface standard
 et minimale pour les web frameworks Ruby. Un des points forts de Rack est le
 support de ce que l'on appelle des "middlewares" -- composant qui vient se
 situer entre le serveur et votre application, et dont le but est de
@@ -2368,7 +2368,7 @@ end
 ```
 
 La sémantique de `use` est identique à celle définie dans le DSL de
-[Rack::Builder](http://rack.rubyforge.org/doc/classes/Rack/Builder.html)
+[Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder)
 (le plus souvent utilisé dans un fichier rackup). Par exemple, la méthode
 `use` accepte divers arguments ainsi que des blocs :
 

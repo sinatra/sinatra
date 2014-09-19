@@ -587,7 +587,7 @@ get('/') { markdown :index }
   <tr>
     <td>Dependency</td>
     <td>
-      <a href="http://builder.rubyforge.org/" title="builder">builder</a>
+      <a href="https://github.com/jimweirich/builder" title="builder">builder</a>
     </td>
   </tr>
   <tr>
@@ -702,8 +702,8 @@ template, you almost always want to pass locals to it.
         <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
         <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
-        <a href="http://kramdown.rubyforge.org/" title="kramdown">kramdown</a>,
-        <a href="http://maruku.rubyforge.org/" title="maruku">maruku</a>
+        <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
+        <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
     </td>
   </tr>
   <tr>
@@ -775,7 +775,7 @@ template than for the layout by passing the `:layout_engine` option.
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="http://rdoc.rubyforge.org/" title="RDoc">RDoc</a></td>
+    <td><a href="http://rdoc.sourceforge.net/" title="RDoc">RDoc</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
@@ -830,7 +830,7 @@ almost always want to pass locals to it.
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="http://radius.rubyforge.org/" title="Radius">Radius</a></td>
+    <td><a href="https://github.com/jlong/radius" title="Radius">Radius</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
@@ -2372,7 +2372,7 @@ and additional debugging information in your browser.
 
 ## Rack Middleware
 
-Sinatra rides on [Rack](http://rack.rubyforge.org/), a minimal standard
+Sinatra rides on [Rack](http://rack.github.io/), a minimal standard
 interface for Ruby web frameworks. One of Rack's most interesting capabilities
 for application developers is support for "middleware" -- components that sit
 between the server and your application monitoring and/or manipulating the
@@ -2394,7 +2394,7 @@ end
 ```
 
 The semantics of `use` are identical to those defined for the
-[Rack::Builder](http://rack.rubyforge.org/doc/classes/Rack/Builder.html) DSL
+[Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder) DSL
 (most frequently used from rackup files). For example, the `use` method
 accepts multiple/variable args as well as blocks:
 
