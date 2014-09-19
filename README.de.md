@@ -588,7 +588,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>Abhängigkeit</td>
-    <td><a href="http://builder.rubyforge.org/">builder</a></td>
+    <td><a href="https://github.com/jimweirich/builder">builder</a></td>
   </tr>
   <tr>
     <td>Dateierweiterung</td>
@@ -705,8 +705,8 @@ denen man Variablen weitergibt.
         <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
         <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
-        <a href="http://kramdown.rubyforge.org/" title="kramdown">kramdown</a> oder
-        <a href="http://maruku.rubyforge.org/" title="maruku">maruku</a>
+        <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a> oder
+        <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
     </td>
   </tr>
   <tr>
@@ -783,7 +783,7 @@ Templates zu verwenden und einen anderen für das Layout, indem die
 <table>
   <tr>
     <td>Abhängigkeit</td>
-    <td><a href="http://rdoc.rubyforge.org/">rdoc</a></td>
+    <td><a href="http://rdoc.sourceforge.net/">rdoc</a></td>
   </tr>
   <tr>
     <td>Dateierweiterung</td>
@@ -842,7 +842,7 @@ denen man Variablen weitergibt.
 <table>
   <tr>
     <td>Abhängigkeit</td>
-    <td><a href="http://radius.rubyforge.org/">radius</a></td>
+    <td><a href="https://github.com/jlong/radius">radius</a></td>
   </tr>
   <tr>
     <td>Dateierweiterung</td>
@@ -2339,7 +2339,7 @@ anzuzeigen.
 
 ## Rack-Middleware
 
-Sinatra baut auf [Rack](http://rack.rubyforge.org/), einem minimalistischen
+Sinatra baut auf [Rack](http://rack.github.io/), einem minimalistischen
 Standard-Interface für Ruby-Webframeworks. Eines der interessantesten Features
 für Entwickler ist der Support von Middlewares, die zwischen den Server und
 die Anwendung geschaltet werden und so HTTP-Request und/oder Antwort
@@ -2361,7 +2361,7 @@ end
 ```
 
 Die Semantik von `use` entspricht der gleichnamigen Methode der
-[Rack::Builder](http://rack.rubyforge.org/doc/classes/Rack/Builder.html)-DSL
+[Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder)-DSL
 (meist verwendet in Rackup-Dateien). Ein Beispiel dafür ist, dass die
 `use`-Methode mehrere/verschiedene Argumente und auch Blöcke entgegennimmt:
 
@@ -2378,7 +2378,7 @@ muss `use` häufig nicht explizit verwendet werden.
 
 Hilfreiche Middleware gibt es z.B. hier:
 [rack](https://github.com/rack/rack/tree/master/lib/rack),
-[rack-contrib](https://github.com/rack/rack-contrib#readme), 
+[rack-contrib](https://github.com/rack/rack-contrib#readme),
 oder im [Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
 
 ## Testen

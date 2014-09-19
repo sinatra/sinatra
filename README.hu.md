@@ -495,7 +495,7 @@ bevezetéséhez:
 ## Rack Middleware
 
 A Sinatra egy Ruby keretrendszerek számára kifejlesztett egyszerű és szabványos
-interfészre, a [Rack](http://rack.rubyforge.org/) -re épül. A Rack fejlesztői
+interfészre, a [Rack](http://rack.github.io/) -re épül. A Rack fejlesztői
 szempontból egyik legérdekesebb jellemzője, hogy támogatja az úgynevezett
 "middleware" elnevezésű komponenseket, amelyek beékelődnek a szerver és az
 alkalmazás közé, így képesek megfigyelni és/vagy módosítani a HTTP
@@ -518,7 +518,7 @@ A Sinatra keretrendszerben gyerekjáték a Rack middleware-ek behúzása a
 ```
 
 A `use` metódus szemantikája megegyezik a
-[Rack::Builder](http://rack.rubyforge.org/doc/classes/Rack/Builder.html) DSL-ben
+[Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder) DSL-ben
 használt +use+ metóduséval (az említett DSL-t leginkább rackup állományokban
 használják). Hogy egy példát említsünk, a `use` metódus elfogad
 változókat és blokkokat egyaránt, akár kombinálva is ezeket:

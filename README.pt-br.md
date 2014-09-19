@@ -761,7 +761,7 @@ content_type :foo
 
 ## Middleware Rack
 
-O Sinatra roda no [Rack](http://rack.rubyforge.org/), uma interface
+O Sinatra roda no [Rack](http://rack.github.io/), uma interface
 padrão mínima para frameworks web em Ruby. Um das capacidades mais
 interessantes do Rack para desenvolver aplicativos é suporte a
 “middleware” – componentes que ficam entre o servidor e sua aplicação
@@ -784,7 +784,7 @@ end
 ```
 
 A semântica de `use` é idêntica aquela definida para a DSL
-[Rack::Builder](http://rack.rubyforge.org/doc/classes/Rack/Builder.html)
+[Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder)
 (mais frequentemente utilizada para arquivos rackup). Por exemplo, o
 método `use` aceita múltiplos argumentos/variáveis bem como blocos:
 

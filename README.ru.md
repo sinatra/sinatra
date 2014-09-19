@@ -487,7 +487,7 @@ get('/') { markdown :index }
   <tr>
     <td>Зависимости</td>
     <td>
-      <a href="http://builder.rubyforge.org/" title="builder">builder</a>
+      <a href="https://github.com/jimweirich/builder" title="builder">builder</a>
     </td>
   </tr>
   <tr>
@@ -602,8 +602,8 @@ get('/') { markdown :index }
         <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
         <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
-        <a href="http://kramdown.rubyforge.org/" title="kramdown">kramdown</a>,
-        <a href="http://maruku.rubyforge.org/" title="maruku">maruku</a>
+        <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
+        <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
     </td>
   </tr>
   <tr>
@@ -678,7 +678,7 @@ erb :overview, :locals => { :text => textile(:introduction) }
 <table>
   <tr>
     <td>Зависимости</td>
-    <td><a href="http://rdoc.rubyforge.org/" title="RDoc">RDoc</a></td>
+    <td><a href="http://rdoc.sourceforge.net/" title="RDoc">RDoc</a></td>
   </tr>
   <tr>
     <td>Расширения файлов</td>
@@ -735,7 +735,7 @@ erb :overview, :locals => { :text => rdoc(:introduction) }
 <table>
   <tr>
     <td>Зависимости</td>
-    <td><a href="http://radius.rubyforge.org/" title="Radius">Radius</a></td>
+    <td><a href="https://github.com/jlong/radius" title="Radius">Radius</a></td>
   </tr>
   <tr>
     <td>Расширения файлов</td>
@@ -2217,7 +2217,7 @@ Sinatra устанавливает специальные `not_found` и `error`
 
 ## Rack "прослойки"
 
-Sinatra использует [Rack](http://rack.rubyforge.org/), минимальный стандартный
+Sinatra использует [Rack](http://rack.github.io/), минимальный стандартный
 интерфейс для веб-фреймворков на Ruby. Одной из самых интересных для
 разработчиков возможностей Rack является поддержка "прослоек" ("middleware") —
 компонентов, находящихся "между" сервером и вашим приложением, которые
@@ -2239,7 +2239,7 @@ end
 ```
 
 Семантика `use` идентична той, что определена для
-[Rack::Builder](http://rack.rubyforge.org/doc/classes/Rack/Builder.html) DSL
+[Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder) DSL
 (чаще всего используется в rackup файлах). Например, метод `use` принимает как
 множественные переменные, так и блоки:
 
