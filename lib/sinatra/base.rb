@@ -1948,7 +1948,7 @@ module Sinatra
             <img src='#{uri "/__sinatra__/404.png"}'>
             <div id="c">
               Try this:
-              <pre>#{code}</pre>
+              <pre>#{Rack::Utils.escape_html(code)}</pre>
             </div>
           </body>
           </html>
