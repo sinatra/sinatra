@@ -1039,7 +1039,7 @@ module Sinatra
 
       env['sinatra.static_file'] = path
       cache_control(*settings.static_cache_control) if settings.static_cache_control?
-      send_file path, options.merge(:disposition => nil)
+      send_file path, options
     end
 
     # Enable string or symbol key access to the nested params hash.
