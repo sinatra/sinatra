@@ -1426,13 +1426,11 @@ connections = []
 
 get '/subscribe' do
   # регистрация клиента
-  stream(:keep_open) { |out| connections << out }
-
-  # удаление "мертвых клиентов"
-  connections.reject!(&:closed?)
-
-  # допуск
-  "subscribed"
+  stream(:keep_open) do |out|
+    connections << out }
+    # удаление "мертвых клиентов"
+    connections.reject!(&:closed?)
+  end
 end
 
 post '/message' do

@@ -1566,13 +1566,11 @@ connections = []
 
 get '/subscribe' do
   # Client-Registrierung beim Server, damit Events mitgeteilt werden können
-  stream(:keep_open) { |out| connections << out }
-
-  # tote Verbindungen entfernen
-  connections.reject!(&:closed?)
-
-  # Rückmeldung
-  "Angemeldet"
+  stream(:keep_open) do |out|
+    connections << out
+    # tote Verbindungen entfernen
+    connections.reject!(&:closed?)
+  end
 end
 
 post '/:message' do

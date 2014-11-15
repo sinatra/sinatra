@@ -1540,13 +1540,11 @@ connexions = []
 
 get '/souscrire' do
   # abonne un client aux évènements du serveur
-  stream(:keep_open) { |out| connexions << out }
-
-  # purge les connexions abandonnées
-  connexions.reject!(&:closed?)
-
-  # compte-rendu
-  "abonné"
+  stream(:keep_open) do |out|
+    connexions << out
+    # purge les connexions abandonnées
+    connexions.reject!(&:closed?)
+  end
 end
 
 post '/message' do
