@@ -1525,13 +1525,11 @@ connections = []
 
 get '/subscribe' do
   # register a client's interest in server events
-  stream(:keep_open) { |out| connections << out }
-
-  # purge dead connections
-  connections.reject!(&:closed?)
-
-  # acknowledge
-  "subscribed"
+  stream(:keep_open) do |out|
+    connections << out
+    # purge dead connections
+    connections.reject!(&:closed?)
+  end
 end
 
 post '/message' do

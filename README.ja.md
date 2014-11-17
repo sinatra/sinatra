@@ -1439,13 +1439,11 @@ connections = []
 
 get '/subscribe' do
   # サーバイベントにおけるクライアントの関心を登録
-  stream(:keep_open) { |out| connections << out }
-
-  # 死んでいるコネクションを排除
-  connections.reject!(&:closed?)
-
-  # 肯定応答
-  "subscribed"
+  stream(:keep_open) do |out|
+    connections << out
+    # 死んでいるコネクションを排除
+    connections.reject!(&:closed?)
+  end
 end
 
 post '/message' do
