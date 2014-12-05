@@ -120,7 +120,7 @@ class TemplatesTest < Test::Unit::TestCase
     end
   end
 
-  it 'uses the default layout template if not really overriden' do
+  it 'uses the default layout template if not really overridden' do
     with_default_layout do
       render_app { render(:test, :hello, :layout => true) }
       assert ok?

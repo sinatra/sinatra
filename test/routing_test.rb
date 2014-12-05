@@ -307,7 +307,7 @@ class RoutingTest < Test::Unit::TestCase
     assert_equal "format=", body
   end
 
-  it 'does not concatinate params with the same name' do
+  it 'does not concatenate params with the same name' do
     mock_app { get('/:foo') { params[:foo] } }
     get '/a?foo=b'
     assert_body 'a'
