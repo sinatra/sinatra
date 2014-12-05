@@ -1917,7 +1917,7 @@ end
 
 ### Dealing with Date and Time
 
-Sinatra offers a `time_for` helper method that generates a Time objectfrom the
+Sinatra offers a `time_for` helper method that generates a Time object from the
 given value. It is also able to convert `DateTime`, `Date` and similar classes:
 
 ``` ruby
