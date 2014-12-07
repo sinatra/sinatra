@@ -117,7 +117,7 @@ end
 Rutas con Expresiones Regulares:
 
 ``` ruby
-get %r{/hola/([\w]+)} do
+get /^\/hola\/([\w]+)$/ do
   "Hola, #{params['captures'].first}!"
 end
 ```
