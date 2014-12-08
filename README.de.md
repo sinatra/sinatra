@@ -203,7 +203,7 @@ end
 Routen mit regulären Ausdrücken sind auch möglich:
 
 ```ruby
-get %r{/hallo/([\w]+)} do
+get /^\/hallo\/([\w]+)$/ do
   "Hallo, #{params['captures'].first}!"
 end
 ```

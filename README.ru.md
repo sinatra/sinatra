@@ -121,7 +121,7 @@ end
 Регулярные выражения в качестве шаблонов маршрутов:
 
 ```ruby
-get %r{/hello/([\w]+)} do
+get /^\/hello\/([\w]+)$/ do
   "Hello, #{params[:captures].first}!"
 end
 ```

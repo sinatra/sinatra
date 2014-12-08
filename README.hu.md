@@ -88,7 +88,7 @@ Az útvonalmintákban szerepelhetnek joker paraméterek is, melyeket a
 Reguláris kifejezéseket is felvehetünk az útvonalba:
 
 ```ruby
-  get %r{/hello/([\w]+)} do
+  get /^\/hello\/([\w]+)$/ do
     "Helló, #{params[:captures].first}!"
   end
 ```

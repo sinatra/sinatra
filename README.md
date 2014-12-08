@@ -207,7 +207,7 @@ end
 Route matching with Regular Expressions:
 
 ``` ruby
-get %r{/hello/([\w]+)} do
+get /^\/hello\/([\w]+)$/ do
   "Hello, #{params['captures'].first}!"
 end
 ```
@@ -216,6 +216,7 @@ Or with a block parameter:
 
 ``` ruby
 get %r{/hello/([\w]+)} do |c|
+  # Matches "GET /meta/hello/world", "GET /hello/world/1234" etc.
   "Hello, #{c}!"
 end
 ```

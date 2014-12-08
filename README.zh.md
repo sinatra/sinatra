@@ -108,7 +108,7 @@ end
 通过正则表达式匹配的路由：
 
 ~~~~ ruby
-get %r{/hello/([\w]+)} do
+get /^\/hello\/([\w]+)$/ do
   "Hello, #{params[:captures].first}!"
 end
 ~~~~

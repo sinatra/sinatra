@@ -119,7 +119,7 @@ end
 Rotas podem casar com expressões regulares:
 
 ``` ruby
-get %r{/ola/([\w]+)} do
+get /^\/ola\/([\w]+)$/ do
   "Olá, #{params['captures'].first}!"
 end
 ```
