@@ -883,7 +883,7 @@ distinto al de la plantilla pasando la opción `:layout_engine`.
   </tr>
 </table>
 
-El contenido de La plantilla se evalúa como código Ruby, y la variable `json` es convertida a JSON mediante `#to_json`.
+El contenido de la plantilla se evalúa como código Ruby, y la variable `json` es convertida a JSON mediante `#to_json`.
 
 ``` ruby
 json = { :foo => 'bar' }
