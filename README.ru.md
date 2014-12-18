@@ -18,13 +18,13 @@ end
 
 Установите gem:
 
-```
+``` shell
 gem install sinatra
 ```
 
 и запустите приложение с помощью:
 
-```
+``` shell
 ruby myapp.rb
 ```
 
@@ -885,9 +885,9 @@ erb :overview, :locals => { :text => mediawiki(:introduction) }
     <td>
       <a href="https://github.com/josh/ruby-coffee-script" title="Ruby CoffeeScript">
         CoffeeScript
-      </a> и способ
+      </a> и
       <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
-        запускать JavaScript
+        способ запускать JavaScript
       </a>
     </td>
   </tr>
@@ -900,6 +900,43 @@ erb :overview, :locals => { :text => mediawiki(:introduction) }
     <td><tt>coffee :index</tt></td>
   </tr>
 </table>
+
+#### Stylus шаблоны
+
+<table>
+  <tr>
+    <td>Зависимости</td>
+    <td>
+      <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
+        Stylus
+      </a> и
+      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
+        способ запускать JavaScript
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>Расширение файла</td>
+    <td><tt>.styl</tt></td>
+  </tr>
+  <tr>
+    <td>Пример</td>
+    <td><tt>stylus :index</tt></td>
+  </tr>
+</table>
+
+Перед тем, как использовать шаблоны стилус, загрузите `stylus` и
+`stylus/tilt`:
+
+``` ruby
+require 'sinatra'
+require 'stylus'
+require 'stylus/tilt'
+
+get '/' do
+  stylus :example
+end
+```
 
 #### Yajl шаблоны
 
@@ -2156,7 +2193,7 @@ not_found do
 end
 ```
 
-### Ошибки
+### Error
 
 Обработчик ошибок `error` будет вызван, когда исключение выброшено из блока
 маршрута, либо из фильтра. Объект-исключение доступен как переменная
