@@ -1906,7 +1906,7 @@ module Sinatra
 
     configure :development do
       get '/__sinatra__/:image.png' do
-        filename = File.dirname(__FILE__) + "/images/#{params[:image]}.png"
+        filename = File.dirname(__FILE__) + "/images/#{params[:image].to_i}.png"
         content_type :png
         send_file filename
       end
