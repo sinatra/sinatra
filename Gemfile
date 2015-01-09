@@ -65,6 +65,10 @@ if RUBY_ENGINE == "ruby" and RUBY_VERSION > '1.9.2'
   gem 'sass'
 end
 
+if RUBY_ENGINE == "ruby" and RUBY_VERSION > '2.1'
+  gem 'test-unit',  '~> 3.0'
+end
+
 if RUBY_ENGINE == "rbx"
   gem 'json'
   gem 'rubysl'
