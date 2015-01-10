@@ -2387,10 +2387,10 @@ wird empfohlen:
 
 ```ruby
 require 'my_sinatra_app'
-require 'test/unit'
+require 'minitest/autorun'
 require 'rack/test'
 
-class MyAppTest < Test::Unit::TestCase
+class MyAppTest < Minitest::Test
   include Rack::Test::Methods
 
   def app

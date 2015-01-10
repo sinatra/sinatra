@@ -10,7 +10,7 @@ rescue Exception
   raise LoadError, 'unable to execute JavaScript'
 end
 
-class CoffeeTest < Test::Unit::TestCase
+class CoffeeTest < Minitest::Test
   def coffee_app(options = {}, &block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
@@ -65,7 +65,7 @@ class CoffeeTest < Test::Unit::TestCase
     mock_app {
       get('/') { coffee :no_such_template }
     }
-    assert_raise(Errno::ENOENT) { get('/') }
+    assert_raises(Errno::ENOENT) { get('/') }
   end
 
   it "passes coffee options to the coffee engine" do

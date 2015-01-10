@@ -17,24 +17,15 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-require "test/unit"
-
-# Test::Unit loads a default test if the suite is empty, whose purpose is to
-# fail. Since having empty contexts is a common practice, we decided to
-# overwrite TestSuite#empty? in order to allow them. Having a failure when no
-# tests have been defined seems counter-intuitive.
-class Test::Unit::TestSuite
-  def empty?
-    false
-  end
-end
+require "rubygems"
+require "minitest/autorun"
 
 # Contest adds +teardown+, +test+ and +context+ as class methods, and the
 # instance methods +setup+ and +teardown+ now iterate on the corresponding
 # blocks. Note that all setup and teardown blocks must be defined with the
 # block syntax. Adding setup or teardown instance methods defeats the purpose
 # of this library.
-class Test::Unit::TestCase
+class Minitest::Test
   def self.setup(&block)     setup_blocks    << block  end
   def self.teardown(&block)  teardown_blocks << block  end
   def self.setup_blocks()    @setup_blocks    ||= []   end

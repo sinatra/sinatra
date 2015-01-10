@@ -3,7 +3,7 @@ require File.expand_path('../helper', __FILE__)
 begin
 require 'builder'
 
-class BuilderTest < Test::Unit::TestCase
+class BuilderTest < Minitest::Test
   def builder_app(options = {}, &block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
@@ -82,7 +82,7 @@ class BuilderTest < Test::Unit::TestCase
     mock_app do
       get('/') { builder :no_such_template }
     end
-    assert_raise(Errno::ENOENT) { get('/') }
+    assert_raises(Errno::ENOENT) { get('/') }
   end
 end
 

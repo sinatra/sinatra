@@ -16,13 +16,19 @@ $LOAD_PATH.unshift testdir unless $LOAD_PATH.include?(testdir)
 libdir = File.dirname(File.dirname(__FILE__)) + '/lib'
 $LOAD_PATH.unshift libdir unless $LOAD_PATH.include?(libdir)
 
+require 'minitest'
 require 'contest'
 require 'rack/test'
 require 'sinatra/base'
 
 class Sinatra::Base
+  include Minitest::Assertions
   # Allow assertions in request context
-  include Test::Unit::Assertions
+  def assertions
+    @assertions ||= 0
+  end
+
+  attr_writer :assertions
 end
 
 class Rack::Builder
@@ -33,7 +39,7 @@ end
 
 Sinatra::Base.set :environment, :test
 
-class Test::Unit::TestCase
+class Minitest::Test
   include Rack::Test::Methods
 
   class << self

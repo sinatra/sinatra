@@ -22,7 +22,7 @@ class RegexpLookAlike
   end
 end
 
-class RoutingTest < Test::Unit::TestCase
+class RoutingTest < Minitest::Test
   %w[get put post delete options patch link unlink].each do |verb|
     it "defines #{verb.upcase} request handlers with #{verb}" do
       mock_app {
@@ -601,7 +601,7 @@ class RoutingTest < Test::Unit::TestCase
   end
 
   it 'raises a TypeError when pattern is not a String or Regexp' do
-    assert_raise(TypeError) {
+    assert_raises(TypeError) {
       mock_app { get(42){} }
     }
   end
@@ -1228,7 +1228,7 @@ class RoutingTest < Test::Unit::TestCase
       end
     end
 
-    assert_raise(ArgumentError) { get '/a/b/c' }
+    assert_raises(ArgumentError) { get '/a/b/c' }
   end
 
   it 'raises an ArgumentError with block param arity > 1 and too few values' do
@@ -1238,7 +1238,7 @@ class RoutingTest < Test::Unit::TestCase
       end
     }
 
-    assert_raise(ArgumentError) { get '/a/b' }
+    assert_raises(ArgumentError) { get '/a/b' }
   end
 
   it 'succeeds if no block parameters are specified' do
@@ -1313,7 +1313,7 @@ class RoutingTest < Test::Unit::TestCase
         end
       }
 
-      assert_raise(ArgumentError) { get '/foo' }
+      assert_raises(ArgumentError) { get '/foo' }
     end
 
     it 'raises an ArgumentError with block param arity 1 and too many values' do
@@ -1323,7 +1323,7 @@ class RoutingTest < Test::Unit::TestCase
         end
       }
 
-      assert_raise(ArgumentError) { get '/a/b/c' }
+      assert_raises(ArgumentError) { get '/a/b/c' }
     end
 
   else

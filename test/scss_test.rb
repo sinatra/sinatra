@@ -3,7 +3,7 @@ require File.expand_path('../helper', __FILE__)
 begin
 require 'sass'
 
-class ScssTest < Test::Unit::TestCase
+class ScssTest < Minitest::Test
   def scss_app(options = {}, &block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
@@ -56,7 +56,7 @@ class ScssTest < Test::Unit::TestCase
 
   it "raises error if template not found" do
     mock_app { get('/') { scss(:no_such_template) } }
-    assert_raise(Errno::ENOENT) { get('/') }
+    assert_raises(Errno::ENOENT) { get('/') }
   end
 
   it "passes scss options to the scss engine" do

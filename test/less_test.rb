@@ -3,7 +3,7 @@ require File.expand_path('../helper', __FILE__)
 begin
 require 'less'
 
-class LessTest < Test::Unit::TestCase
+class LessTest < Minitest::Test
   def less_app(options = {}, &block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
@@ -60,7 +60,7 @@ class LessTest < Test::Unit::TestCase
 
   it "raises error if template not found" do
     mock_app { get('/') { less :no_such_template } }
-    assert_raise(Errno::ENOENT) { get('/') }
+    assert_raises(Errno::ENOENT) { get('/') }
   end
 end
 

@@ -3,7 +3,7 @@ require File.expand_path('../helper', __FILE__)
 begin
 require 'sass'
 
-class SassTest < Test::Unit::TestCase
+class SassTest < Minitest::Test
   def sass_app(options = {}, &block)
     mock_app do
       set :views, File.dirname(__FILE__) + '/views'
@@ -56,7 +56,7 @@ class SassTest < Test::Unit::TestCase
 
   it "raises error if template not found" do
     mock_app { get('/') { sass :no_such_template } }
-    assert_raise(Errno::ENOENT) { get('/') }
+    assert_raises(Errno::ENOENT) { get('/') }
   end
 
   it "passes SASS options to the Sass engine" do
@@ -102,7 +102,7 @@ class SassTest < Test::Unit::TestCase
     get '/'
     assert ok?
     assert_equal "#sass { background-color: white; color: black; }\n", body
-    assert_raise(Sass::SyntaxError) { get('/raised') }
+    assert_raises(Sass::SyntaxError) { get('/raised') }
     get '/expanded_normal'
     assert ok?
     assert_equal "#sass {\n  background-color: white;\n  color: black;\n}\n",

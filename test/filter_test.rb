@@ -1,6 +1,6 @@
 require File.expand_path('../helper', __FILE__)
 
-class BeforeFilterTest < Test::Unit::TestCase
+class BeforeFilterTest < Minitest::Test
   it "executes filters in the order defined" do
     count = 0
     mock_app do
@@ -176,7 +176,7 @@ class BeforeFilterTest < Test::Unit::TestCase
   end
 end
 
-class AfterFilterTest < Test::Unit::TestCase
+class AfterFilterTest < Minitest::Test
   it "executes before and after filters in correct order" do
     invoked = 0
     mock_app do
