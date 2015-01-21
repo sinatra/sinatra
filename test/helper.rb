@@ -116,11 +116,6 @@ class Test::Unit::TestCase
     super
   end
 
-  # Also check response since we delegate there.
-  def respond_to?(symbol, include_private=false)
-    super || (response && response.respond_to?(symbol, include_private))
-  end
-
   # Do not output warnings for the duration of the block.
   def silence_warnings
     $VERBOSE, v = nil, $VERBOSE
