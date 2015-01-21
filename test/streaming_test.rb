@@ -1,6 +1,6 @@
 require File.expand_path('../helper', __FILE__)
 
-class StreamingTest < Test::Unit::TestCase
+class StreamingTest < Minitest::Test
   Stream = Sinatra::Helpers::Stream
 
   it 'returns the concatenated body' do
@@ -105,7 +105,7 @@ class StreamingTest < Test::Unit::TestCase
     scheduler = MockScheduler.new
     Stream.new(scheduler) { fail 'should be caught' }.each { }
     scheduler.defer!
-    assert_raise(RuntimeError) { scheduler.schedule! }
+    assert_raises(RuntimeError) { scheduler.schedule! }
   end
 
   it 'does not trigger an infinite loop if you call close in a callback' do

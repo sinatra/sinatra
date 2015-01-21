@@ -12,6 +12,7 @@ gemspec
 
 gem 'rake'
 gem 'rack-test', '>= 0.6.2'
+gem "minitest", "~> 5.0"
 
 # Allows stuff like `tilt=1.2.2 bundle install` or `tilt=master ...`.
 # Used by the CI.
@@ -33,7 +34,6 @@ if RUBY_ENGINE == 'jruby'
 end
 
 if RUBY_ENGINE == "ruby" and RUBY_VERSION > '1.9.2'
-  gem "minitest", "~> 4.0"
   gem 'less', '~> 2.0'
   gem 'therubyracer'
   gem 'redcarpet'
@@ -63,10 +63,6 @@ if RUBY_ENGINE == "ruby" and RUBY_VERSION > '1.9.2'
   gem 'erubis'
   gem 'haml', '>= 3.0'
   gem 'sass'
-end
-
-if RUBY_ENGINE == "ruby" and RUBY_VERSION > '2.1'
-  gem 'test-unit',  '~> 3.0'
 end
 
 if RUBY_ENGINE == "rbx"

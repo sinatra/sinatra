@@ -1,6 +1,6 @@
 require File.expand_path('../helper', __FILE__)
 
-class BaseTest < Test::Unit::TestCase
+class BaseTest < Minitest::Test
   describe 'Sinatra::Base subclasses' do
     class TestApp < Sinatra::Base
       get('/') { 'Hello World' }

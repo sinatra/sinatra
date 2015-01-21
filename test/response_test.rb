@@ -2,7 +2,7 @@
 
 require File.expand_path('../helper', __FILE__)
 
-class ResponseTest < Test::Unit::TestCase
+class ResponseTest < Minitest::Test
   setup { @response = Sinatra::Response.new }
 
   def assert_same_body(a, b)

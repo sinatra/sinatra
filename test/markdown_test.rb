@@ -34,7 +34,7 @@ MarkdownTest = proc do
 
   it "raises error if template not found" do
     mock_app { get('/') { markdown :no_such_template } }
-    assert_raise(Errno::ENOENT) { get('/') }
+    assert_raises(Errno::ENOENT) { get('/') }
   end
 
   it "renders with inline layouts" do
@@ -75,7 +75,7 @@ map.each do |t|
   begin
     t = eval(t) if t.is_a? String
     t.new { "" }
-    klass = Class.new(Test::Unit::TestCase) { define_method(:engine) { t }}
+    klass = Class.new(Minitest::Test) { define_method(:engine) { t }}
     klass.class_eval(&MarkdownTest)
     name = t.name[/[^:]+$/].sub(/Template$/, '') << "Test"
     Object.const_set name, klass

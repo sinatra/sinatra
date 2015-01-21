@@ -10,7 +10,7 @@ module RouteAddedTest
   end
 end
 
-class RouteAddedHookTest < Test::Unit::TestCase
+class RouteAddedHookTest < Minitest::Test
   setup do
     RouteAddedTest.routes.clear
     RouteAddedTest.procs.clear

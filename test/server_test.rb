@@ -3,7 +3,15 @@ require 'stringio'
 
 module Rack::Handler
   class Mock
-    extend Test::Unit::Assertions
+    extend Minitest::Assertions
+    # Allow assertions in request context
+    def self.assertions
+      @assertions ||= 0
+    end
+
+    def self.assertions= assertions
+      @assertions = assertions
+    end
 
     def self.run(app, options={})
       assert(app < Sinatra::Base)
@@ -19,7 +27,7 @@ module Rack::Handler
   register 'mock', 'Rack::Handler::Mock'
 end
 
-class ServerTest < Test::Unit::TestCase
+class ServerTest < Minitest::Test
   setup do
     mock_app do
       set :server, 'mock'

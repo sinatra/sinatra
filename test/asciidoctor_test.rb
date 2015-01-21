@@ -3,7 +3,7 @@ require File.expand_path('../helper', __FILE__)
 begin
   require 'asciidoctor'
 
-  class AsciidoctorTest < Test::Unit::TestCase
+  class AsciidoctorTest < Minitest::Test
     def asciidoc_app(&block)
       mock_app do
         set :views, File.dirname(__FILE__) + '/views'
@@ -33,7 +33,7 @@ begin
 
     it 'raises error if template not found' do
       mock_app { get('/') { asciidoc :no_such_template } }
-      assert_raise(Errno::ENOENT) { get('/') }
+      assert_raises(Errno::ENOENT) { get('/') }
     end
 
     it 'renders with inline layouts' do

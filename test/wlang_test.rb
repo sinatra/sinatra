@@ -3,7 +3,7 @@ require File.expand_path('../helper', __FILE__)
 begin
 require 'wlang'
 
-class WLangTest < Test::Unit::TestCase
+class WLangTest < Minitest::Test
   def engine
     Tilt::WLangTemplate
   end

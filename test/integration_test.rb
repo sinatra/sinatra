@@ -5,7 +5,7 @@ require File.expand_path('../integration_helper', __FILE__)
 # Every test runs with every detected server.
 #
 # See test/integration/app.rb for the code of the app we test against.
-class IntegrationTest < Test::Unit::TestCase
+class IntegrationTest < Minitest::Test
   extend IntegrationHelper
   attr_accessor :server
 
@@ -87,7 +87,7 @@ class IntegrationTest < Test::Unit::TestCase
   end
 
   it 'does not generate warnings' do
-    assert_raise(OpenURI::HTTPError) { server.get '/' }
+    assert_raises(OpenURI::HTTPError) { server.get '/' }
     server.get '/app_file'
     assert_equal [], server.warnings
   end

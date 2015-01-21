@@ -1,6 +1,6 @@
 require File.expand_path('../helper', __FILE__)
 
-class StaticTest < Test::Unit::TestCase
+class StaticTest < Minitest::Test
   setup do
     mock_app do
       set :static, true

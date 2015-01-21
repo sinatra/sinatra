@@ -2,7 +2,7 @@
 require File.expand_path('../helper', __FILE__)
 require 'erb'
 
-class BaseTest < Test::Unit::TestCase
+class BaseTest < Minitest::Test
   setup do
     @base = Sinatra.new(Sinatra::Base)
     @base.set :views, File.dirname(__FILE__) + "/views"

@@ -2215,10 +2215,10 @@ cualquier framework o librería de pruebas basada en Rack. Se recomienda usar
 
 ``` ruby
 require 'mi_app_sinatra'
-require 'test/unit'
+require 'minitest/autorun'
 require 'rack/test'
 
-class MiAppTest < Test::Unit::TestCase
+class MiAppTest < Minitest::Test
   include Rack::Test::Methods
 
   def app
