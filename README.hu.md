@@ -1,6 +1,6 @@
 # Sinatra
 *Fontos megjegyzés: Ez a dokumentum csak egy fordítása az angol nyelvű
-változat, és lehet, hogy nem naprakész.*
+változatnak, és lehet, hogy nem naprakész.*
 
 A Sinatra egy [DSL](http://en.wikipedia.org/wiki/Domain-specific_language)
 webalkalmazások Ruby nyelven történő fejlesztéséhez, minimális
