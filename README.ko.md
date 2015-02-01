@@ -165,8 +165,8 @@ end
 ``` ruby
 get '/hello/:name' do
   # "GET /hello/foo" 및 "GET /hello/bar"와 매치
-  # params[:name]은 'foo' 또는 'bar'
-  "Hello #{params[:name]}!"
+  # params['name']은 'foo' 또는 'bar'
+  "Hello #{params['name']}!"
 end
 ```
 
@@ -175,22 +175,23 @@ end
 ``` ruby
 get '/hello/:name' do |n|
   # "GET /hello/foo" 및 "GET /hello/bar"와 매치
-  # params[:name]은 'foo' 또는 'bar'
+  # params['name']은 'foo' 또는 'bar'
+  # n 에는 params['name']가 저장
   "Hello #{n}!"
 end
 ```
 
-라우터 패턴에는 스플랫(splat, 또는 와일드카드)도 매개변수도 포함될 수 있으며, 이럴 경우 `params[:splat]` 배열을 통해 접근할 수 있습니다.
+라우터 패턴에는 스플랫(splat, 또는 와일드카드)도 매개변수도 포함될 수 있으며, 이럴 경우 `params['splat']` 배열을 통해 접근할 수 있습니다.
 
 ``` ruby
 get '/say/*/to/*' do
   # /say/hello/to/world와 매치
-  params[:splat] # => ["hello", "world"]
+  params['splat'] # => ["hello", "world"]
 end
 
 get '/download/*.*' do
   # /download/path/to/file.xml과 매치
-  params[:splat] # => ["path/to/file", "xml"]
+  params['splat'] # => ["path/to/file", "xml"]
 end
 ```
 
@@ -206,7 +207,7 @@ end
 
 ``` ruby
 get /^\/hello\/([\w]+)$/ do
-  "Hello, #{params[:captures].first}!"
+  "Hello, #{params['captures'].first}!"
 end
 ```
 
@@ -214,6 +215,7 @@ end
 
 ``` ruby
 get %r{/hello/([\w]+)} do |c|
+  # "GET /meta/hello/world", "GET /hello/world/1234" 등과 매치
   "Hello, #{c}!"
 end
 ```
@@ -231,8 +233,8 @@ end
 ``` ruby
 get '/posts' do
   # matches "GET /posts?title=foo&author=bar"
-  title = params[:title]
-  author = params[:author]
+  title = params['title']
+  author = params['author']
   # uses title and author variables; query is optional to the /posts route
 end
 ```
@@ -246,7 +248,7 @@ end
 
 ``` ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
-  "Songbird 버전 #{params[:agent][0]}을 사용하는군요!"
+  "Songbird 버전 #{params['agent'][0]}을 사용하는군요!"
 end
 
 get '/foo' do
@@ -269,6 +271,7 @@ get '/', :provides => ['rss', 'atom', 'xml'] do
   builder :feed
 end
 ```
+`provides`는 request의 허용된 해더를 검색합니다.
 
 사용자 정의 조건도 쉽게 만들 수 있습니다.
 
@@ -465,8 +468,9 @@ render 메서드에서 전달된 옵션값들은 `set`을 통해 설정한 옵�
 
   <dt>layout</dt>
   <dd>
-    레이아웃을 사용할지 여부 (<tt>true</tt> 또는 <tt>false</tt>), 만약 이 값이 심볼일 경우,
-    사용할 템플릿을 지정. 예제: <tt>erb :index, :layout => !request.xhr?</tt>
+    레이아웃을 사용할지 여부 (<tt>true</tt> 또는 <tt>false</tt>), 만약
+    이 값이 심볼일 경우, 사용할 템플릿을 지정. 예제:
+    <tt>erb :index, :layout => !request.xhr?</tt>
   </dd>
 
   <dt>content_type</dt>
@@ -745,7 +749,7 @@ Textile에서 루비를 호출할 수 없기 때문에, Textile으로 작성된 
 <table>
   <tr>
     <td>의존성</td>
-    <td><a href="http://rdoc.sourceforge.net/">rdoc</a></td>
+    <td><a href="http://rdoc.sourceforge.net/" title="RDoc">rdoc</a></td>
   </tr>
   <tr>
     <td>파일 확장자</td>
@@ -800,7 +804,7 @@ AsciiDoc 템플릿에서는 루비 메서드를 호출할 수 없기
 <table>
   <tr>
     <td>의존성</td>
-    <td><a href="https://github.com/jlong/radius">radius</a></td>
+    <td><a href="https://github.com/jlong/radius" title="Radius">radius</a></td>
   </tr>
   <tr>
     <td>파일 확장자</td>
@@ -920,7 +924,7 @@ Creole에서 루비를 호출할 수 없기 때문에, Creole으로 작성된 �
   </tr>
 </table>
 
-MediaWiki 마크업에서는 메서드 호출 뿐 아니라 locals 전달도 안됩니다
+MediaWiki 마크업에서는 메서드 호출 뿐 아니라 locals 전달도 불가능합니다.
 따라서 일반적으로는 다른 렌더링 엔진과 함께 사용하게 됩니다.
 
 ``` ruby
@@ -1054,8 +1058,8 @@ present(resource);
   </tr>
 </table>
 
-WLang 템플릿에서는 루비 메서드(`yield` 제외)를 호출할 수 없기
-때문에, 거의 대부분의 경우 locals를 전달해야 합니다. 그래도
+WLang 템플릿에서는 루비 메서드를 사용하는게 일반적이지 않기
+때문에, 거의 대부분의 경우 locals를 전달합니다. 그래도
 WLang으로 쓰여진 레이아웃과 `yield`는 지원합니다.
 
 ### 템플릿에서 변수에 접근하기
@@ -1065,7 +1069,7 @@ WLang으로 쓰여진 레이아웃과 `yield`는 지원합니다.
 
 ``` ruby
 get '/:id' do
-  @foo = Foo.find(params[:id])
+  @foo = Foo.find(params['id'])
   haml '%h1= @foo.name'
 end
 ```
@@ -1074,7 +1078,7 @@ end
 
 ``` ruby
 get '/:id' do
-  foo = Foo.find(params[:id])
+  foo = Foo.find(params['id'])
   haml '%h1= bar.name', :locals => { :bar => foo }
 end
 ```
@@ -1230,7 +1234,7 @@ end
 
 get '/foo/*' do
   @note #=> 'Hi!'
-  params[:splat] #=> 'bar/baz'
+  params['splat'] #=> 'bar/baz'
 end
 ```
 
@@ -1286,7 +1290,7 @@ helpers do
 end
 
 get '/:name' do
-  bar(params[:name])
+  bar(params['name'])
 end
 ```
 
@@ -1319,7 +1323,7 @@ get '/' do
 end
 
 get '/:value' do
-  session[:value] = params[:value]
+  session['value'] = params['value']
 end
 ```
 
@@ -1338,7 +1342,7 @@ get '/' do
 end
 
 get '/:value' do
-  session[:value] = params[:value]
+  session['value'] = params['value']
 end
 ```
 
@@ -1409,7 +1413,7 @@ halt erb(:error)
 
 ``` ruby
 get '/guess/:who' do
-  pass unless params[:who] == 'Frank'
+  pass unless params['who'] == 'Frank'
   'You got me!'
 end
 
@@ -1532,10 +1536,10 @@ get '/subscribe' do
   end
 end
 
-post '/message' do
+post '/:message' do
   connections.each do |out|
     # notify client that a new message has arrived
-    out << params[:message] << "\n"
+    out << params['message'] << "\n"
 
     # indicate client to connect again
     out.close
@@ -1694,14 +1698,14 @@ before do
 end
 ```
 
-캐시를 잘 사용하려면, `etag` 또는 `last_modified`의 사용을 고려해야 할 것이다.
+캐시를 잘 사용하려면, `etag` 또는 `last_modified`을 사용해 보세요.
 무거운 작업을 하기 *전*에 이들 헬퍼를 호출하길 권장합니다. 이렇게 하면,
 클라이언트 캐시에 현재 버전이 이미 들어 있을 경우엔 즉각 응답을
 뿌릴(flush) 것입니다.
 
 ``` ruby
-get '/article/:id' do
-  @article = Article.find params[:id]
+get "/article/:id" do
+  @article = Article.find params['id']
   last_modified @article.updated_at
   etag @article.sha1
   erb :article
@@ -1757,7 +1761,7 @@ etag '', :new_resource => true, :kind => :weak
 
 ### 파일 전송하기(Sending Files)
 
-파일을 전송하려면, `send_file` 헬퍼 메서드를 사용하면 됩니다.
+응답(response)으로 파일의 컨탠츠를 리턴하려면, `send_file` 헬퍼 메서드를 사용하면 됩니다.
 
 ``` ruby
 get '/' do
@@ -1775,22 +1779,22 @@ send_file 'foo.png', :type => :jpg
 
 <dl>
   <dt>filename</dt>
-    <dd>응답에서의 파일명. 기본값은 실제 파일명.</dd>
+    <dd>응답에서 사용되는 파일명. 기본값은 실제 파일명.</dd>
 
   <dt>last_modified</dt>
     <dd>Last-Modified 헤더값. 기본값은 파일의 mtime.</dd>
 
   <dt>type</dt>
-    <dd>사용할 컨텐츠 유형. 없으면 파일 확장자로부터 유추.</dd>
+    <dd>Content-Type 헤더값. 없으면 파일 확장자로부터 유추.</dd>
 
   <dt>disposition</dt>
     <dd>
-      Content-Disposition에서 사용됨. 가능한 값들: <tt>nil</tt> (기본값),
+      Content-Disposition 헤더값. 가능한 값들: <tt>nil</tt> (기본값),
       <tt>:attachment</tt> 및 <tt>:inline</tt>
     </dd>
 
   <dt>length</dt>
-    <dd>Content-Length, 기본값은 파일 크기.</dd>
+    <dd>Content-Length 헤더값, 기본값은 파일 크기.</dd>
 
   <dt>status</dt>
     <dd>
@@ -2077,7 +2081,9 @@ set :protection, :session => true
   </dd>
 
   <dt>bind</dt>
-  <dd>바인드할 IP 주소(기본값: <tt>0.0.0.0</tt> <em>이나</em> `environment`가 개발로 설정 되어있으면 <tt>localhost</tt>). 오직 빌트인(built-in) 서버에서만 사용됨.</dd>
+  <dd>바인드할 IP 주소(기본값: <tt>0.0.0.0</tt> <em>이나</em>
+  `environment`가 개발로 설정 되어있으면 <tt>localhost</tt>). 오직
+  빌트인(built-in) 서버에서만 사용됨.</dd>
 
   <dt>default_encoding</dt>
   <dd>인코딩을 알 수 없을 때 인코딩(기본값은 <tt>"utf-8"</tt>).</dd>
@@ -2323,7 +2329,7 @@ end
 Sinatra는 개발 환경에서 동작할 때 브라우저에 괜찮은 스택 트레이스와 추가적인
 디버그 정보를 보여주기 위해 특별한 `not_found` 와 `error` 핸들러를 설치합니다.
 
-## Rack 미들웨어(Rack Middleware)
+## Rack 미들웨어(Middleware)
 
 Sinatra는 [Rack](http://rack.github.io/) 위에서 동작하며, Rack은 루비 웹
 프레임워크를 위한 최소한의 표준 인터페이스입니다. Rack이 애플리케이션 개발자들에게
@@ -2346,7 +2352,7 @@ get '/hello' do
 end
 ```
 
-`use`문법은 [Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder]) DSL
+`use`문법은 [Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder) DSL
 (rackup 파일에서 가장 많이 사용)에서 정의한 것과 동일합니다. 예를 들어, `use` 메서드는
 블록이나 여러 개의/가변적인 인자도 받을 수 있습니다.
 
@@ -2575,8 +2581,8 @@ class LoginScreen < Sinatra::Base
   get('/login') { haml :login }
 
   post('/login') do
-    if params[:name] == 'admin' && params[:password] == 'admin'
-      session['user_name'] = params[:name]
+    if params['name'] == 'admin' && params['password'] == 'admin'
+      session['user_name'] = params['name']
     else
       redirect '/login'
     end
@@ -2697,8 +2703,8 @@ class MyApp < Sinatra::Base
     # '/define_route/:name'의 요청 범위
     @value = 42
 
-    settings.get("/#{params[:name]}") do
-      # "/#{params[:name]}"의 요청 범위
+    settings.get("/#{params['name']}") do
+      # "/#{params['name']}"의 요청 범위
       @value # => nil (동일한 요청이 아님)
     end
 
@@ -2777,9 +2783,9 @@ ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
     중단되지 않을 것입니다.
   </dd>
 
-  <dt>Ruby 2.0.0</dt>
+  <dt>Ruby 2.x</dt>
   <dd>
-    2.0.0은 완전하게 지원되고 권장합니다. 현재 공식 지원 중지 계획은 없습니다.
+    2.x은 완전하게 지원되고 권장합니다. 현재 공식 지원 중지 계획은 없습니다.
   </dd>
 
   <dt>Rubinius</dt>
@@ -2810,9 +2816,9 @@ ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
 지원되는 플랫폼에서는 그러지 않을 경우, 우리의 문제가 아니라 그 플랫폼의 문제로
 간주한다는 뜻입니다.
 
-또한 우리는 CI를 ruby-head (곧 나올 2.1.0) 브랜치에 맞춰 실행하지만,
+또한 우리는 CI를 ruby-head (MRI의 이후 릴리즈) 브랜치에 맞춰 실행하지만,
 계속해서 변하고 있기 때문에 아무 것도 보장할 수는 없습니다.
-2.1.0가 완전히 지원되길 기대합시다.
+앞으로 나올 2.x가 완전히 지원되길 기대합시다.
 
 Sinatra는 선택한 루비 구현체가 지원하는 어떠한 운영체제에서도 작동해야
 합니다.
