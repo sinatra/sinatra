@@ -228,6 +228,7 @@ module Sinatra
   module Helpers
     # Set or retrieve the response status code.
     def status(value = nil)
+      value = Rack::Utils::SYMBOL_TO_STATUS_CODE[value] if value.is_a?(Symbol)
       response.status = value if value
       response.status
     end
