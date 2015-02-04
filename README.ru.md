@@ -82,8 +82,8 @@ end
 ```ruby
 get '/hello/:name' do
   # соответствует "GET /hello/foo" и "GET /hello/bar",
-  # где params[:name] 'foo' или 'bar'
-  "Hello #{params[:name]}!"
+  # где params['name'] 'foo' или 'bar'
+  "Hello #{params['name']}!"
 end
 ```
 
@@ -96,17 +96,17 @@ end
 ```
 
 Шаблоны маршрутов также могут включать в себя splat (или '*' маску,
-обозначающую любой символ) параметры, доступные в массиве `params[:splat]`:
+обозначающую любой символ) параметры, доступные в массиве `params['splat']`:
 
 ```ruby
 get '/say/*/to/*' do
   # соответствует /say/hello/to/world
-  params[:splat] # => ["hello", "world"]
+  params['splat'] # => ["hello", "world"]
 end
 
 get '/download/*.*' do
   # соответствует /download/path/to/file.xml
-  params[:splat] # => ["path/to/file", "xml"]
+  params['splat'] # => ["path/to/file", "xml"]
 end
 ```
 
@@ -122,7 +122,7 @@ end
 
 ```ruby
 get /^\/hello\/([\w]+)$/ do
-  "Hello, #{params[:captures].first}!"
+  "Hello, #{params['captures'].first}!"
 end
 ```
 
@@ -153,7 +153,7 @@ traversal, см. ниже), путь запроса может быть изме
 
 ```ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
-  "You're using Songbird version #{params[:agent][0]}"
+  "You're using Songbird version #{params['agent'][0]}"
 end
 
 get '/foo' do
@@ -1006,7 +1006,7 @@ var resource = {"foo":"bar","baz":"qux"}; present(resource);
 
 ```ruby
 get '/:id' do
-  @foo = Foo.find(params[:id])
+  @foo = Foo.find(params['id'])
   haml '%h1= @foo.name'
 end
 ```
@@ -1015,7 +1015,7 @@ end
 
 ```ruby
 get '/:id' do
-  foo = Foo.find(params[:id])
+  foo = Foo.find(params['id'])
   haml '%h1= bar.name', :locals => { :bar => foo }
 end
 ```
@@ -1159,7 +1159,7 @@ end
 
 get '/foo/*' do
   @note #=> 'Hi!'
-  params[:splat] #=> 'bar/baz'
+  params['splat'] #=> 'bar/baz'
 end
 ```
 
@@ -1187,7 +1187,7 @@ before '/protected/*' do
 end
 
 after '/create/:slug' do |slug|
-  session[:last_slug] = slug
+  session['last_slug'] = slug
 end
 ```
 
@@ -1216,7 +1216,7 @@ helpers do
 end
 
 get '/:name' do
-  bar(params[:name])
+  bar(params['name'])
 end
 ```
 
@@ -1245,11 +1245,11 @@ helpers FooUtils, BarUtils
 enable :sessions
 
 get '/' do
-  "value = " << session[:value].inspect
+  "value = " << session['value'].inspect
 end
 
 get '/:value' do
-  session[:value] = params[:value]
+  session['value'] = params['value']
 end
 ```
 
@@ -1264,11 +1264,11 @@ end
 use Rack::Session::Pool, :expire_after => 2592000
 
 get '/' do
-  "value = " << session[:value].inspect
+  "value = " << session['value'].inspect
 end
 
 get '/:value' do
-  session[:value] = params[:value]
+  session['value'] = params['value']
 end
 ```
 
@@ -1342,7 +1342,7 @@ halt erb(:error)
 
 ```ruby
 get '/guess/:who' do
-  pass unless params[:who] == 'Frank'
+  pass unless params['who'] == 'Frank'
   'You got me!'
 end
 
@@ -1473,7 +1473,7 @@ end
 post '/message' do
   connections.each do |out|
     # уведомить клиента о новом сообщении
-    out << params[:message] << "\n"
+    out << params['message'] << "\n"
 
     # указать клиенту на необходимость снова соединиться
     out.close
@@ -1596,12 +1596,12 @@ redirect to('/bar?sum=42')
 enable :sessions
 
 get '/foo' do
-  session[:secret] = 'foo'
+  session['secret'] = 'foo'
   redirect to('/bar')
 end
 
 get '/bar' do
-  session[:secret]
+  session['secret']
 end
 ```
 
@@ -1642,7 +1642,7 @@ end
 
 ```ruby
 get '/article/:id' do
-  @article = Article.find params[:id]
+  @article = Article.find params['id']
   last_modified @article.updated_at
   etag @article.sha1
   erb :article
@@ -2482,8 +2482,8 @@ class LoginScreen < Sinatra::Base
   get('/login') { haml :login }
 
   post('/login') do
-    if params[:name] == 'admin' && params[:password] == 'admin'
-      session['user_name'] = params[:name]
+    if params['name'] == 'admin' && params['password'] == 'admin'
+      session['user_name'] = params['name']
     else
       redirect '/login'
     end
@@ -2609,8 +2609,8 @@ class MyApp < Sinatra::Base
     # Область видимости запроса '/define_route/:name'
     @value = 42
 
-    settings.get("/#{params[:name]}") do
-      # Область видимости запроса "/#{params[:name]}"
+    settings.get("/#{params['name']}") do
+      # Область видимости запроса "/#{params['name']}"
       @value # => nil (другой запрос)
     end
 
