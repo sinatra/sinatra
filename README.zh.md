@@ -78,8 +78,8 @@ end
 ~~~~ ruby
 get '/hello/:name' do
   # 匹配 "GET /hello/foo" 和 "GET /hello/bar"
-  # params[:name] 的值是 'foo' 或者 'bar'
-  "Hello #{params[:name]}!"
+  # params['name'] 的值是 'foo' 或者 'bar'
+  "Hello #{params['name']}!"
 end
 ~~~~
 
@@ -91,17 +91,17 @@ get '/hello/:name' do |n|
 end
 ~~~~
 
-路由范式也可以包含通配符参数， 可以通过`params[:splat]`数组获得。
+路由范式也可以包含通配符参数， 可以通过`params['splat']`数组获得。
 
 ~~~~ ruby
 get '/say/*/to/*' do
   # 匹配 /say/hello/to/world
-  params[:splat] # => ["hello", "world"]
+  params['splat'] # => ["hello", "world"]
 end
 
 get '/download/*.*' do
   # 匹配 /download/path/to/file.xml
-  params[:splat] # => ["path/to/file", "xml"]
+  params['splat'] # => ["path/to/file", "xml"]
 end
 ~~~~
 
@@ -109,7 +109,7 @@ end
 
 ~~~~ ruby
 get /^\/hello\/([\w]+)$/ do
-  "Hello, #{params[:captures].first}!"
+  "Hello, #{params['captures'].first}!"
 end
 ~~~~
 
@@ -127,7 +127,7 @@ end
 
 ~~~~ ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
-  "你正在使用Songbird，版本是 #{params[:agent][0]}"
+  "你正在使用Songbird，版本是 #{params['agent'][0]}"
 end
 
 get '/foo' do
@@ -759,7 +759,7 @@ end
 
 ~~~~ ruby
 get '/:id' do
-  @foo = Foo.find(params[:id])
+  @foo = Foo.find(params['id'])
   haml '%h1= @foo.name'
 end
 ~~~~
@@ -768,7 +768,7 @@ end
 
 ~~~~ ruby
 get '/:id' do
-  foo = Foo.find(params[:id])
+  foo = Foo.find(params['id'])
   haml '%h1= foo.name', :locals => { :foo => foo }
 end
 ~~~~
@@ -871,7 +871,7 @@ end
 
 get '/foo/*' do
   @note #=> 'Hi!'
-  params[:splat] #=> 'bar/baz'
+  params['splat'] #=> 'bar/baz'
 end
 ~~~~
 
@@ -896,7 +896,7 @@ before '/protected/*' do
 end
 
 after '/create/:slug' do |slug|
-  session[:last_slug] = slug
+  session['last_slug'] = slug
 end
 ~~~~
 
@@ -924,7 +924,7 @@ helpers do
 end
 
 get '/:name' do
-  bar(params[:name])
+  bar(params['name'])
 end
 ~~~~
 
@@ -937,11 +937,11 @@ Session被用来在请求之间保持状态。如果被激活，每一个用户�
 enable :sessions
 
 get '/' do
-  "value = " << session[:value].inspect
+  "value = " << session['value'].inspect
 end
 
 get '/:value' do
-  session[:value] = params[:value]
+  session['value'] = params['value']
 end
 ~~~~
 
@@ -954,11 +954,11 @@ end
 use Rack::Session::Pool, :expire_after => 2592000
 
 get '/' do
-  "value = " << session[:value].inspect
+  "value = " << session['value'].inspect
 end
 
 get '/:value' do
-  session[:value] = params[:value]
+  session['value'] = params['value']
 end
 ~~~~
 
@@ -1000,7 +1000,7 @@ halt 402, {'Content-Type' => 'text/plain'}, 'revenge'
 
 ~~~~ ruby
 get '/guess/:who' do
-  pass unless params[:who] == 'Frank'
+  pass unless params['who'] == 'Frank'
   'You got me!'
 end
 
@@ -1146,12 +1146,12 @@ redirect to('/bar?sum=42')
 enable :sessions
 
 get '/foo' do
-  session[:secret] = 'foo'
+  session['secret'] = 'foo'
   redirect to('/bar')
 end
 
 get '/bar' do
-  session[:secret]
+  session['secret']
 end
 ~~~~
 
@@ -1192,7 +1192,7 @@ end
 
 ~~~~ ruby
 get '/article/:id' do
-  @article = Article.find params[:id]
+  @article = Article.find params['id']
   last_modified @article.updated_at
   etag @article.sha1
   erb :article
@@ -1874,8 +1874,8 @@ class LoginScreen < Sinatra::Base
   get('/login') { haml :login }
 
   post('/login') do
-    if params[:name] = 'admin' and params[:password] = 'admin'
-      session['user_name'] = params[:name]
+    if params['name'] = 'admin' and params['password'] = 'admin'
+      session['user_name'] = params['name']
     else
       redirect '/login'
     end
@@ -1954,8 +1954,8 @@ class MyApp < Sinatra::Base
     # 针对 '/define_route/:name' 的请求变量域
     @value = 42
 
-    settings.get("/#{params[:name]}") do
-      # 针对 "/#{params[:name]}" 的请求变量域
+    settings.get("/#{params['name']}") do
+      # 针对 "/#{params['name']}" 的请求变量域
       @value # => nil (并不是相同的请求)
     end
 

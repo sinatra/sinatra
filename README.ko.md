@@ -1261,7 +1261,7 @@ before '/protected/*' do
 end
 
 after '/create/:slug' do |slug|
-  session[:last_slug] = slug
+  session['last_slug'] = slug
 end
 ```
 
@@ -1319,7 +1319,7 @@ helpers FooUtils, BarUtils
 enable :sessions
 
 get '/' do
-  "value = " << session[:value].inspect
+  "value = " << session['value'].inspect
 end
 
 get '/:value' do
@@ -1338,7 +1338,7 @@ end
 use Rack::Session::Pool, :expire_after => 2592000
 
 get '/' do
-  "value = " << session[:value].inspect
+  "value = " << session['value'].inspect
 end
 
 get '/:value' do
@@ -1659,12 +1659,12 @@ redirect to('/bar?sum=42')
 enable :sessions
 
 get '/foo' do
-  session[:secret] = 'foo'
+  session['secret'] = 'foo'
   redirect to('/bar')
 end
 
 get '/bar' do
-  session[:secret]
+  session['secret']
 end
 ```
 

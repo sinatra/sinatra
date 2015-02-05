@@ -56,8 +56,8 @@ hash-ből érhetünk el:
 ```ruby
   get '/hello/:name' do
     # illeszkedik a "GET /hello/foo" és a "GET /hello/bar" útvonalakra
-    # ekkor params[:name] értéke 'foo' vagy 'bar' lesz
-    "Helló #{params[:name]}!"
+    # ekkor params['name'] értéke 'foo' vagy 'bar' lesz
+    "Helló #{params['name']}!"
   end
 ```
 
@@ -71,17 +71,17 @@ is el tudod érni:
 ```
 
 Az útvonalmintákban szerepelhetnek joker paraméterek is, melyeket a
-`params[:splat]` tömbön keresztül tudunk elérni.
+`params['splat']` tömbön keresztül tudunk elérni.
 
 ```ruby
   get '/say/*/to/*' do
     # illeszkedik a /say/hello/to/world mintára
-    params[:splat] # => ["hello", "world"]
+    params['splat'] # => ["hello", "world"]
   end
 
   get '/download/*.*' do
     # illeszkedik a /download/path/to/file.xml mintára
-    params[:splat] # => ["path/to/file", "xml"]
+    params['splat'] # => ["path/to/file", "xml"]
   end
 ```
 
@@ -89,7 +89,7 @@ Reguláris kifejezéseket is felvehetünk az útvonalba:
 
 ```ruby
   get /^\/hello\/([\w]+)$/ do
-    "Helló, #{params[:captures].first}!"
+    "Helló, #{params['captures'].first}!"
   end
 ```
 
@@ -106,7 +106,7 @@ tervezhetők, így például az user agent karakterláncot alapul véve:
 
 ```ruby
   get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
-    "A Songbird #{params[:agent][0]} verzióját használod"
+    "A Songbird #{params['agent'][0]} verzióját használod"
   end
 
   get '/foo' do
@@ -244,7 +244,7 @@ változók közvetlenül elérhetőek lesznek a sablonokban:
 
 ```ruby
   get '/:id' do
-    @foo = Foo.find(params[:id])
+    @foo = Foo.find(params['id'])
     haml '%h1= @foo.name'
   end
 ```
@@ -253,7 +253,7 @@ De megadhatod egy lokális változókat tartalmazó explicit hash-ben is:
 
 ```ruby
   get '/:id' do
-    foo = Foo.find(params[:id])
+    foo = Foo.find(params['id'])
     haml '%h1= foo.name', :locals => { :foo => foo }
   end
 ```
@@ -332,7 +332,7 @@ használni:
   end
 
   get '/:name' do
-    bar(params[:name])
+    bar(params['name'])
   end
 ```
 
@@ -351,7 +351,7 @@ az útvonalakban és a sablonokban is:
 
   get '/foo/*' do
     @note #=> 'Szeva!'
-    params[:splat] #=> 'bar/baz'
+    params['splat'] #=> 'bar/baz'
   end
 ```
 
@@ -388,7 +388,7 @@ a `pass` függvényhívással:
 
 ```ruby
   get '/guess/:who' do
-    pass unless params[:who] == 'Frici'
+    pass unless params['who'] == 'Frici'
     "Elkaptál!"
   end
 
