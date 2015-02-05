@@ -129,6 +129,7 @@ end
 Или с параметром блока:
 
 ```ruby
+# Находит "GET /meta/hello/world", "GET /hello/world/1234" и так далее
 get %r{/hello/([\w]+)} do |c|
   "Hello, #{c}!"
 end
