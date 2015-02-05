@@ -207,7 +207,7 @@ end
 Une route peut aussi être définie par une expression régulière :
 
 ``` ruby
-get /^\/bonjour\/([\w]+)$/ do
+get /\A\/bonjour\/([\w]+)\z/ do
   "Bonjour, #{params['captures'].first} !"
 end
 ```

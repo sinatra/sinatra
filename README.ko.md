@@ -206,7 +206,7 @@ end
 라우터는 정규표현식으로 매치할 수 있습니다.
 
 ``` ruby
-get /^\/hello\/([\w]+)$/ do
+get /\A\/hello\/([\w]+)\z/ do
   "Hello, #{params['captures'].first}!"
 end
 ```

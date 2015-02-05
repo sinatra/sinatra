@@ -207,7 +207,7 @@ end
 Route matching with Regular Expressions:
 
 ``` ruby
-get /^\/hello\/([\w]+)$/ do
+get /\A\/hello\/([\w]+)\z/ do
   "Hello, #{params['captures'].first}!"
 end
 ```
