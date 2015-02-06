@@ -826,7 +826,7 @@ module Sinatra
 
       # render layout
       if layout
-        options = options.merge(:views => views, :layout => false, :eat_errors => eat_errors, :scope => scope).
+        options.merge!(:views => views, :layout => false, :eat_errors => eat_errors, :scope => scope).
                 merge!(layout_options)
         catch(:layout_missing) { return render(layout_engine, layout, options, locals) { output } }
       end
@@ -1252,7 +1252,7 @@ module Sinatra
       # handled.
       def error(*codes, &block)
         args  = compile! "ERROR", //, block
-        codes = codes.map { |c| Array(c) }.flatten
+        codes = codes.flat_map { |c| Array(c) }
         codes << Exception if codes.empty?
         codes.each { |c| (@errors[c] ||= []) << args }
       end
@@ -1972,7 +1972,7 @@ module Sinatra
     set :app_file, nil
 
     def self.register(*extensions, &block) #:nodoc:
-      added_methods = extensions.map {|m| m.public_instance_methods }.flatten
+      added_methods = extensions.flat_map(&:public_instance_methods)
       Delegator.delegate(*added_methods)
       super(*extensions, &block)
     end
