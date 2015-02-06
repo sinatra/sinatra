@@ -207,7 +207,7 @@ end
 ルーティングを正規表現にマッチさせることもできます。
 
 ``` ruby
-get /^\/hello\/([\w]+)$/ do
+get /\A\/hello\/([\w]+)\z/ do
   "Hello, #{params['captures'].first}!"
 end
 ```

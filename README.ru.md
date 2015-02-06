@@ -121,7 +121,7 @@ end
 Регулярные выражения в качестве шаблонов маршрутов:
 
 ```ruby
-get /^\/hello\/([\w]+)$/ do
+get /\A\/hello\/([\w]+)\z/ do
   "Hello, #{params['captures'].first}!"
 end
 ```
@@ -129,6 +129,7 @@ end
 Или с параметром блока:
 
 ```ruby
+# Находит "GET /meta/hello/world", "GET /hello/world/1234" и так далее
 get %r{/hello/([\w]+)} do |c|
   "Hello, #{c}!"
 end
