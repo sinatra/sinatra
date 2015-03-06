@@ -93,6 +93,13 @@ module Sinatra
       content_blocks[key.to_sym].any?
     end
 
+    # Unset a named block of content. For example:
+    #
+    #    <% clear_content_for :head %>
+    def clear_content_for(key)
+      content_blocks.delete(key.to_sym) if content_blocks[key.to_sym].any?
+    end
+
     # Render the captured blocks for a given key. For example:
     #
     #     <head>

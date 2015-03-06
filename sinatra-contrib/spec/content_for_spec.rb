@@ -53,6 +53,13 @@ describe Sinatra::ContentFor do
       yield_content(:foo, 'a').should == "A"
       yield_content(:foo, 'b').should == "B"
     end
+
+    it 'clears named blocks with the specified key' do
+      content_for(:foo) { "foo" }
+      yield_content(:foo).should == "foo"
+      clear_content_for(:foo)
+      yield_content(:foo).should be_empty
+    end
   end
 
   # TODO: liquid radius markaby builder nokogiri
@@ -135,6 +142,13 @@ describe Sinatra::ContentFor do
         it 'passes values to the blocks' do
           content_for(:foo) { |a,b| "<i>#{a}</i>#{b}" }
           render(inner, :passes_values).should == "<i>1</i>2"
+        end
+
+        it 'clears named blocks with the specified key' do
+          content_for(:foo) { "foo" }
+          render(inner, :layout).should == "foo"
+          clear_content_for(:foo)
+          render(inner, :layout).should be_empty
         end
       end
 
