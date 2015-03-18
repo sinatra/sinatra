@@ -38,6 +38,63 @@ Acesse: [localhost:4567](http://localhost:4567)
 É recomendado também executar `gem install thin`. Caso esta gem esteja disponível, o
 Sinatra irá utilizá-la.
 
+## Conteúdo
+
+* [Sinatra](#sinatra)
+    * [Conteúdo](#conteúdo)
+    * [Rotas](#rotas)
+    * [Condições](#condições)
+    * [Retorno de valores](#retorno-de-valores)
+    * [Validadores de rota personalizados](#validadores-de-rota-personalizados)
+    * [Arquivos estáticos](#arquivos-estáticos)
+    * [Views / Templates](#views--templates)
+        * [Literal Templates](#literal-templates)
+        * [Linguagens de template disponíveis](#linguagens-de-template-disponíveis)
+            * [Haml Templates](#haml-templates)
+            * [Erb Templates](#erb-templates)
+            * [Builder Templates](#builder-templates)
+            * [Nokogiri Templates](#nokogiri-templates)
+            * [Sass Templates](#sass-templates)
+            * [SCSS Templates](#scss-templates)
+            * [Less Templates](#less-templates)
+            * [Liquid Templates](#liquid-templates)
+            * [Markdown Templates](#markdown-templates)
+            * [Textile Templates](#textile-templates)
+            * [RDoc Templates](#rdoc-templates)
+            * [AsciiDoc Templates](#asciidoc-templates)
+            * [Radius Templates](#radius-templates)
+            * [Markaby Templates](#markaby-templates)
+            * [RABL Templates](#rabl-templates)
+            * [Slim Templates](#slim-templates)
+            * [Creole Templates](#creole-templates)
+            * [MediaWiki Templates](#mediawiki-templates)
+            * [CoffeeScript Templates](#coffeescript-templates)
+            * [Stylus Templates](#stylus-templates)
+            * [Yajl Templates](#yajl-templates)
+            * [WLang Templates](#wlang-templates)
+        * [Acessando Variáveis nos Templates](#acessando-variáveis-nos-templates)
+        * [Templates com `yield` e layouts aninhados](#templates-com-yield-e-layouts-aninhados)
+        * [Templates Inline](#templates-inline)
+        * [Templates Nomeados](#templates-nomeados)
+        * [Associando extensões de arquivos](#associando-extensões-de-arquivos)
+        * [Adicionando seu Próprio Engine de Template](#adicionando-seu-próprio-engine-de-template)
+        * [Customizando lógica para encontrar templates](#customizando-lógica-para-encontrar-templates)
+    * [Filtros](#filtros)
+    * [Helpers](#helpers)
+        * [Utilizando Sessões](#utilizando-sessões)
+        * [Halting](#halting)
+        * [Passing](#passing)
+        * [Desencadeando Outra Rota](#desencadeando-outra-rota)
+    * [Configuração](#configuração)
+    * [Tratamento de Erros](#tratamento-de-erros)
+        * [Erro](#erro)
+    * [Mime Types](#mime-types)
+    * [Rack Middleware](#rack-middleware)
+    * [Testando](#testando)
+    * [Sinatra::Base - Middleware, Bibliotecas e aplicativos modulares](#sinatrabase---middleware-bibliotecas-e-aplicativos-modulares)
+    * [Linha de comando](#linha-de-comando)
+    * [A última versão](#a-última-versão)
+    * [Mais](#mais)
 
 ## Rotas
 
@@ -89,6 +146,9 @@ um bloco:
 
 ``` ruby
 get '/ola/:nome' do |n|
+  # corresponde a "GET /ola/foo" e "GET /ola/bar"
+  # params['nome'] é 'foo' ou 'bar'
+  # n guarda o valor de params['nome']
   "Olá #{n}!"
 end
 ```
@@ -128,6 +188,7 @@ Ou com parâmetros de um bloco:
 
 ``` ruby
 get %r{/ola/([\w]+)} do |c|
+  # corresponde a "GET /meta/ola/mundo", "GET /ola/mundo/1234" etc.
   "Olá, #{c}!"
 end
 ```
@@ -140,11 +201,22 @@ get '/posts.?:formato?' do
 end
 ```
 
+Rotas também podem utilizar query strings:
+
+``` ruby
+get '/posts' do
+  # corresponde a "GET /posts?titulo=foo&autor=bar"
+  titulo = params['titulo']
+  autor = params['autor']
+  # utiliza as variaveis titulo e autor; a query é opicional para a rota /posts
+end
+```
+
 A propósito, a menos que você desative a proteção contra ataques (veja
 abaixo), o caminho solicitado pode ser alterado antes de concluir a
 comparação com as suas rotas.
 
-### Condições
+## Condições
 
 Rotas podem incluir uma variedade de condições, tal como o `user agent`:
 
@@ -173,6 +245,7 @@ get '/', :provides => ['rss', 'atom', 'xml'] do
   builder :feed
 end
 ```
+`provides` procura pelos Accept header das requisições
 
 Você pode facilmente definir suas próprias condições:
 
@@ -208,7 +281,7 @@ get "/apenas/administrador/", :auth => :administrador do
 end
 ```
 
-### Retorno de valores
+## Retorno de valores
 
 O valor de retorno do bloco de uma rota determina pelo menos o corpo da
 resposta passado para o cliente HTTP, ou pelo menos o próximo middleware
@@ -219,16 +292,16 @@ Você pode retornar uma resposta válida ou um objeto para o Rack, sendo
 eles de qualquer tipo de objeto que queira. Além disso, é possível
 retornar um código de status HTTP.
 
--   Um array com três elementros: `[status (Fixnum), cabecalho (Hash),
+* Um array com três elementros: `[status (Fixnum), cabecalho (Hash),
     corpo da resposta (responde à #each)]`
 
--   Um array com dois elementros: `[status (Fixnum), corpo da resposta
+* Um array com dois elementros: `[status (Fixnum), corpo da resposta
     (responde à #each)]`
 
--   Um objeto que responda à `#each` sem passar nada, mas, sim, `strings`
+* Um objeto que responda à `#each` sem passar nada, mas, sim, `strings`
     para um dado bloco
 
--   Um objeto `Fixnum` representando o código de status
+* Um objeto `Fixnum` representando o código de status
 
 Dessa forma, podemos implementar facilmente um exemplo de streaming:
 
@@ -245,7 +318,7 @@ get('/') { Stream.new }
 Você também pode usar o método auxiliar `stream` (descrito abaixo) para
 incorporar a lógica de streaming na rota.
 
-### Validadores de Rota Personalizados
+## Validadores de Rota Personalizados
 
 Como apresentado acima, a estrutura do Sinatra conta com suporte
 embutido para uso de padrões de String e expressões regulares como
@@ -305,143 +378,131 @@ set :public_folder, File.dirname(__FILE__) + '/estatico'
 
 Note que o nome do diretório público não é incluido na URL. Um arquivo
 `./public/css/style.css` é disponibilizado como
-`http://example.com/css/style.css`.
+`http://exemplo.com/css/style.css`.
 
 ## Views / Templates
 
-Templates presumem-se estar localizados sob o diretório `./views`. Para
-utilizar um diretório view diferente:
+Cada linguagem de template é exposta através de seu próprio método de renderização. Estes metodos simplesmente retornam uma string:
 
 ``` ruby
-set :views, File.dirname(__FILE__) + '/modelo'
+get '/' do
+  erb :index
+end
 ```
 
-Uma coisa importante a ser lembrada é que você sempre tem as referências
-dos templates como símbolos, mesmo se eles estiverem em um sub-diretório
-(nesse caso utilize `:'subdir/template'`). Métodos de renderização irão
-processar qualquer string passada diretamente para elas.
+Isto renderiza `views/index.rb`
 
-### Haml Templates
+Ao invés do nome do template, você também pode passar direto o conteúdo do template:
 
-A gem/biblioteca haml é necessária para renderizar templates HAML:
+```ruby
+get '/' do
+  code = "<%= Time.now %>"
+  erb code
+end
+```
+
+Templates também aceitam um segundo argumento, um hash de opções:
 
 ``` ruby
-# Você precisa do 'require haml' em sua aplicação.
-require 'haml'
+get '/' do
+  erb :index, :layout => :post
+end
+```
+
+Isto irá renderizar a `views/index.erb` inclusa dentro da `views/post.erb` (o padrão é a `views/layout.erb`, se existir).
+
+Qualquer opção não reconhecida pelo Sinatra será passada adiante para o engine de template:
+
+``` ruby
+get '/' do
+  haml :index, :format => :html5
+end
+```
+
+Você também pode definir opções padrões para um tipo de template:
+
+``` ruby
+set :haml, :format => :html5
 
 get '/' do
   haml :index
 end
 ```
 
-Renderiza `./views/index.haml`.
+Opções passadas para o método de renderização sobrescreve as opções definitas através do método `set`.
 
-[Opções
-Haml](http://haml.info/docs/yardoc/file.HAML_REFERENCE.html#options)
-podem ser setadas globalmente através das configurações do sinatra, veja
-[Opções e Configurações](http://www.sinatrarb.com/configuration.html), e
-substitua em uma requisição individual.
+Opções disponíveis:
 
-``` ruby
-set :haml, {:format => :html5 } # o formato padrão do Haml é :xhtml
+<dl>
+  <dt>locals</dt>
+  <dd>
+    Lista de locais passado para o documento. Conveniente para *partials*
+    Exemplo: <tt>erb "<%= foo %>", :locals => {:foo => "bar"}</tt>
+  </dd>
 
-get '/' do
-  haml :index, :haml_options => {:format => :html4 } # substituido
-end
+  <dt>default_encoding</dt>
+  <dd>
+    String encoding para ser utilizada em caso de incerteza. o padrão é <tt>settings.default_encoding</tt>.
+  </dd>
+
+  <dt>views</dt>
+  <dd>
+    Diretório de onde os templates são carregados. O padrão é <tt>settings.views</tt>.
+  </dd>
+
+  <dt>layout</dt>
+  <dd>
+    Para definir quando utilizar ou não um
+    layout (<tt>true</tt> ou <tt>false</tt>). E se for um
+    Symbol, especifica qual template usar. Exemplo:
+    <tt>erb :index, :layout => !request.xhr?</tt>
+  </dd>
+
+  <dt>content_type</dt>
+  <dd>
+    O *Content-Type* que o template produz. O padrão depente
+    da linguagem de template utilizada.
+  </dd>
+
+  <dt>scope</dt>
+  <dd>
+    Escopo em que o template será renderizado. Padrão é a
+    instancia da aplicação. Se você mudar isto as variáveis
+    de instânciae metodos auxiliares não serão
+    disponibilizados.
+  </dd>
+
+  <dt>layout_engine</dt>
+  <dd>
+    A engine de template utilizada para renderizar seu layout.
+    Útil para linguagens que não suportam templates de outra
+    forma. O padrão é a engine do template utilizado. Exemplo: 
+    <tt>set :rdoc, :layout_engine => :erb</tt>
+  </dd>
+
+  <dt>layout_options</dt>
+  <dd>
+    Opções especiais utilizadas apenas para renderizar o
+    layout. Exemplo:
+    <tt>set :rdoc, :layout_options => { :views => 'views/layouts' }</tt>
+  </dd>
+</dl>
+
+É pressuposto que os templates estarão localizados direto sob o diretório `./views`. Para usar um diretório diferente:
+
+```ruby
+set :views, settings.root + '/templates'
 ```
 
-### Erb Templates
+Uma coisa importante para se lembrar é que você sempre deve
+referenciar os templates utilizando *symbols*, mesmo que
+eles estejam em um subdiretório (neste caso use:
+`:'subdir/template'` or `'subdir/template'.to_sym`). Você deve 
+utilizar um *symbol* porque senão o método de renderização irá
+renderizar qualquer outra string que você passe diretamente
+para ele
 
-``` ruby
-# Você precisa do 'require erb' em sua aplicação
-require 'erb'
-
-get '/' do
-  erb :index
-end
-```
-
-Renderiza `./views/index.erb`
-
-### Erubis
-
-A gem/biblioteca erubis é necessária para renderizar templates erubis:
-
-``` ruby
-# Você precisa do 'require erubis' em sua aplicação.
-require 'erubis'
-
-get '/' do
-  erubis :index
-end
-```
-
-Renderiza `./views/index.erubis`
-
-### Builder Templates
-
-A gem/biblioteca builder é necessária para renderizar templates builder:
-
-``` ruby
-# Você precisa do 'require builder' em sua aplicação.
-require 'builder'
-
-get '/' do
-  content_type 'application/xml', :charset => 'utf-8'
-  builder :index
-end
-```
-
-Renderiza `./views/index.builder`.
-
-### Sass Templates
-
-A gem/biblioteca sass é necessária para renderizar templates sass:
-
-``` ruby
-# Você precisa do 'require haml' ou 'require sass' em sua aplicação.
-require 'sass'
-
-get '/stylesheet.css' do
-  content_type 'text/css', :charset => 'utf-8'
-  sass :stylesheet
-end
-```
-
-Renderiza `./views/stylesheet.sass`.
-
-[Opções
-Sass](http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options)
-podem ser setadas globalmente através das configurações do sinatra, veja
-[Opções e Configurações](http://www.sinatrarb.com/configuration.html), e
-substitua em uma requisição individual.
-
-``` ruby
-set :sass, {:style => :compact } # o estilo padrão do Sass é :nested
-
-get '/stylesheet.css' do
-  content_type 'text/css', :charset => 'utf-8'
-  sass :stylesheet, :style => :expanded # substituido
-end
-```
-
-### Less Templates
-
-A gem/biblioteca less é necessária para renderizar templates Less:
-
-``` ruby
-# Você precisa do 'require less' em sua aplicação.
-require 'less'
-
-get '/stylesheet.css' do
-  content_type 'text/css', :charset => 'utf-8'
-  less :stylesheet
-end
-```
-
-Renderiza `./views/stylesheet.less`.
-
-### Inline Templates
+### Literal Templates
 
 ``` ruby
 get '/' do
@@ -449,9 +510,560 @@ get '/' do
 end
 ```
 
-Renderiza a string, em uma linha, no template.
+Renderiza um template string.
 
-### Acessando Variáveis nos Templates
+### Linguagens de template disponíveis
+
+Algumas linguagens possuem multiplas implementações. Para especificar qual implementação deverá ser utilizada (e para ser *thread-safe*), você deve simplesmente requere-la primeiro:
+
+``` ruby
+require 'rdiscount' # ou require 'bluecloth'
+get('/') { markdown :index }
+```
+
+#### Haml Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td><a href="http://haml.info/" title="haml">haml</a></td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.haml</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>haml :index, :format => :html5</tt></td>
+  </tr>
+</table>
+
+#### Erb Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td>
+      <a href="http://www.kuwata-lab.com/erubis/" title="erubis">erubis</a>
+      or erb (included in Ruby)
+    </td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivos</td>
+    <td><tt>.erb</tt>, <tt>.rhtml</tt> or <tt>.erubis</tt> (Erubis only)</td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>erb :index</tt></td>
+  </tr>
+</table>
+
+#### Builder Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td>
+      <a href="https://github.com/jimweirich/builder" title="builder">builder</a>
+    </td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.builder</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>builder { |xml| xml.em "hi" }</tt></td>
+  </tr>
+</table>
+
+It also takes a block for inline templates (see exemplo).
+
+#### Nokogiri Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td><a href="http://nokogiri.org/" title="nokogiri">nokogiri</a></td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.nokogiri</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>nokogiri { |xml| xml.em "hi" }</tt></td>
+  </tr>
+</table>
+
+It also takes a block for inline templates (see exemplo).
+
+#### Sass Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.sass</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>sass :stylesheet, :style => :expanded</tt></td>
+  </tr>
+</table>
+
+#### SCSS Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.scss</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>scss :stylesheet, :style => :expanded</tt></td>
+  </tr>
+</table>
+
+#### Less Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td><a href="http://www.lesscss.org/" title="less">less</a></td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.less</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>less :stylesheet</tt></td>
+  </tr>
+</table>
+
+#### Liquid Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td><a href="http://www.liquidmarkup.org/" title="liquid">liquid</a></td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.liquid</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>liquid :index, :locals => { :key => 'value' }</tt></td>
+  </tr>
+</table>
+
+Já que você não pode chamar o Ruby (exceto pelo método `yield`) pelo template Liquid,
+você quase sempre precisará passar o `locals` para ele.
+
+#### Markdown Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td>
+      Anyone of:
+        <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
+        <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
+        <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
+        <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
+        <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
+    </td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivos</td>
+    <td><tt>.markdown</tt>, <tt>.mkd</tt> and <tt>.md</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>markdown :index, :layout_engine => :erb</tt></td>
+  </tr>
+</table>
+
+Não é possível chamar métodos por este template, nem passar *locals* para o mesmo. Portanto normalmente é utilizado junto a outra engine de renderização:
+
+``` ruby
+erb :overview, :locals => { :text => markdown(:introducao) }
+```
+
+Note que vcoê também pode chamar o método `markdown` dentro de outros templates:
+
+``` ruby
+%h1 Olá do Haml!
+%p= markdown(:saudacoes)
+```
+
+Já que você não pode chamar o Ruby pelo Markdown, você não
+pode utilizar um layout escrito em Markdown. Contudo é
+possível utilizar outra engine de renderização como template, 
+deve-se passar a `:layout_engine` como opção.
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td><a href="http://redcloth.org/" title="RedCloth">RedCloth</a></td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.textile</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>textile :index, :layout_engine => :erb</tt></td>
+  </tr>
+</table>
+
+Não é possível chamar métodos por este template, nem passar *locals* para o mesmo. Portanto normalmente é utilizado junto a outra engine de renderização:
+
+``` ruby
+erb :overview, :locals => { :text => textile(:introducao) }
+```
+
+Note que vcoê também pode chamar o método `textile` dentro de outros templates:
+
+``` ruby
+%h1 Olá do Haml!
+%p= textile(:saudacoes)
+```
+
+Já que você não pode chamar o Ruby pelo Textile, você não
+pode utilizar um layout escrito em Textile. Contudo é
+possível utilizar outra engine de renderização como template, 
+deve-se passar a `:layout_engine` como opção.
+
+#### RDoc Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td><a href="http://rdoc.sourceforge.net/" title="RDoc">RDoc</a></td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.rdoc</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>rdoc :README, :layout_engine => :erb</tt></td>
+  </tr>
+</table>
+
+Não é possível chamar métodos por este template, nem passar *locals* para o mesmo. Portanto normalmente é utilizado junto a outra engine de renderização:
+
+``` ruby
+erb :overview, :locals => { :text => rdoc(:introducao) }
+```
+
+Note que vcoê também pode chamar o método `rdoc` dentro de outros templates:
+
+``` ruby
+%h1 Olá do Haml!
+%p= rdoc(:saudacoes)
+```
+
+Já que você não pode chamar o Ruby pelo RDoc, você não
+pode utilizar um layout escrito em RDoc. Contudo é
+possível utilizar outra engine de renderização como template, 
+deve-se passar a `:layout_engine` como opção.
+
+#### AsciiDoc Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td><a href="http://asciidoctor.org/" title="Asciidoctor">Asciidoctor</a></td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.asciidoc</tt>, <tt>.adoc</tt> and <tt>.ad</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>asciidoc :README, :layout_engine => :erb</tt></td>
+  </tr>
+</table>
+
+Já que você não pode chamar o Ruby pelo template AsciiDoc,
+você quase sempre precisará passar o `locals` para ele.
+
+#### Radius Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td><a href="https://github.com/jlong/radius" title="Radius">Radius</a></td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.radius</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>radius :index, :locals => { :key => 'value' }</tt></td>
+  </tr>
+</table>
+
+Já que você não pode chamar o Ruby pelo template Radius,
+você quase sempre precisará passar o `locals` para ele.
+
+#### Markaby Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td><a href="http://markaby.github.com/" title="Markaby">Markaby</a></td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.mab</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>markaby { h1 "Welcome!" }</tt></td>
+  </tr>
+</table>
+
+Este também recebe um bloco para templates (veja o exemplo).
+
+#### RABL Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td><a href="https://github.com/nesquena/rabl" title="Rabl">Rabl</a></td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.rabl</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>rabl :index</tt></td>
+  </tr>
+</table>
+
+#### Slim Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td><a href="http://slim-lang.com/" title="Slim Lang">Slim Lang</a></td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.slim</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>slim :index</tt></td>
+  </tr>
+</table>
+
+#### Creole Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td><a href="https://github.com/minad/creole" title="Creole">Creole</a></td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.creole</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>creole :wiki, :layout_engine => :erb</tt></td>
+  </tr>
+</table>
+
+Não é possível chamar métodos por este template, nem passar *locals* para o mesmo. Portanto normalmente é utilizado junto a outra engine de renderização:
+
+``` ruby
+erb :overview, :locals => { :text => creole(:introduction) }
+```
+
+Note que vcoê também pode chamar o método `creole` dentro de outros templates:
+
+``` ruby
+%h1 Olá do Haml!
+%p= creole(:saudacoes)
+```
+
+Já que você não pode chamar o Ruby pelo Creole, você não
+pode utilizar um layout escrito em Creole. Contudo é
+possível utilizar outra engine de renderização como template, 
+deve-se passar a `:layout_engine` como opção.
+
+#### MediaWiki Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td><a href="https://github.com/nricciar/wikicloth" title="WikiCloth">WikiCloth</a></td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.mediawiki</tt> and <tt>.mw</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>mediawiki :wiki, :layout_engine => :erb</tt></td>
+  </tr>
+</table>
+
+It is not possible to call methods from MediaWiki markup, nor to pass locals to
+it. You therefore will usually use it in combination with another rendering
+engine:
+
+``` ruby
+erb :overview, :locals => { :text => mediawiki(:introduction) }
+```
+
+Note that you may also call the `mediawiki` method from within other templates:
+
+``` ruby
+%h1 Hello From Haml!
+%p= mediawiki(:greetings)
+```
+
+Já que você não pode chamar o Ruby pelo MediaWiki, você não
+pode utilizar um layout escrito em MediaWiki. Contudo é
+possível utilizar outra engine de renderização como template, 
+deve-se passar a `:layout_engine` como opção.
+
+#### CoffeeScript Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td>
+      <a href="https://github.com/josh/ruby-coffee-script" title="Ruby CoffeeScript">
+        CoffeeScript
+      </a> and a
+      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
+        way to execute javascript
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.coffee</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>coffee :index</tt></td>
+  </tr>
+</table>
+
+#### Stylus Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td>
+      <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
+        Stylus
+      </a> and a
+      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
+        way to execute javascript
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.styl</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>stylus :index</tt></td>
+  </tr>
+</table>
+
+Antes que vcoê possa utilizar o template Stylus primeiro você deve carregar `stylus` e `stylus/tilt`:
+
+``` ruby
+require 'sinatra'
+require 'stylus'
+require 'stylus/tilt'
+
+get '/' do
+  stylus :exemplo
+end
+```
+
+#### Yajl Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td><a href="https://github.com/brianmario/yajl-ruby" title="yajl-ruby">yajl-ruby</a></td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.yajl</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td>
+      <tt>
+        yajl :index,
+             :locals => { :key => 'qux' },
+             :callback => 'present',
+             :variable => 'resource'
+      </tt>
+    </td>
+  </tr>
+</table>
+
+O código-fonte do template é executado como uma string Ruby e a variável resultante em json é convertida utilizando `#to_json`:
+
+``` ruby
+json = { :foo => 'bar' }
+json[:baz] = key
+```
+
+O `:callback` e `:variable` são opções que podem ser utilizadas para o objeto de renderização:
+
+``` javascript
+var resource = {"foo":"bar","baz":"qux"};
+present(resource);
+```
+
+#### WLang Templates
+
+<table>
+  <tr>
+    <td>Dependencia</td>
+    <td><a href="https://github.com/blambeau/wlang/" title="WLang">WLang</a></td>
+  </tr>
+  <tr>
+    <td>Extencao do Arquivo</td>
+    <td><tt>.wlang</tt></td>
+  </tr>
+  <tr>
+    <td>Exemplo</td>
+    <td><tt>wlang :index, :locals => { :key => 'value' }</tt></td>
+  </tr>
+</table>
+
+Já que você não pode chamar o Ruby (exceto pelo método
+`yield`) pelo template WLang,
+você quase sempre precisará passar o `locals` para ele.
+
+## Acessando Variáveis nos Templates
 
 Templates são avaliados dentro do mesmo contexto como manipuladores de
 rota. Variáveis de instância setadas em rotas manipuladas são
@@ -476,12 +1088,45 @@ end
 Isso é tipicamente utilizando quando renderizamos templates como
 partials dentro de outros templates.
 
+### Templates com `yield` e layouts aninhados
+
+O layout geralmente é apenas um template que executa `yield`. 
+Tal template pode ser utilizado pela opção `:template` descrita acima ou pode ser renderizado através de um bloco, como a seguir:
+
+``` ruby
+erb :post, :layout => false do
+  erb :index
+end
+```
+
+Este código é quase equivalente a `erb :index, :layout => :post`
+
+Passando blocos para os métodos de renderização é útil para criar layouts aninhados:
+
+``` ruby
+erb :main_layout, :layout => false do
+  erb :admin_layout do
+    erb :user
+  end
+end
+```
+
+Também pode ser feito com menos linhas de código:
+
+``` ruby
+erb :admin_layout, :layout => :main_layout do
+  erb :user
+end
+```
+
+Atualmente os métodos listados aceitam blocos: `erb`, `haml`,
+`liquid`, `slim `, `wlang`. E também o método `render`.
+
 ### Templates Inline
 
 Templates podem ser definidos no final do arquivo fonte(.rb):
 
 ``` ruby
-require 'rubygems'
 require 'sinatra'
 
 get '/' do
@@ -495,7 +1140,7 @@ __END__
   = yield
 
 @@ index
-%div.title Olá Mundo!!!!!
+%div.title Olá Mundo.
 ```
 
 NOTA: Templates inline definidos no arquivo fonte são automaticamente
@@ -531,20 +1176,46 @@ get '/' do
 end
 ```
 
-## Helpers
+### Associando extensões de arquivos
 
-Use o método de alto nível `helpers` para definir métodos auxiliares
-para utilizar em manipuladores de rotas e modelos:
+Para associar uma extensão de arquivo com um engine de template use o método `Tilt.register`. Por exemplo, se você quiser usar a extensão `tt` para os templates Textile você pode fazer o seguinte:
 
 ``` ruby
+Tilt.register :tt, Tilt[:textile]
+```
+
+### Adicionando seu Próprio Engine de Template
+
+Primeiro registre seu engine utilizando o Tilt, e então crie um método de renderização:
+
+``` ruby
+Tilt.register :myat, MyAwesomeTemplateEngine
+
 helpers do
-  def bar(nome)
-    "#{nome}bar"
-  end
+  def myat(*args) render(:myat, *args) end
 end
 
-get '/:nome' do
-  bar(params['nome'])
+get '/' do
+  myat :index
+end
+```
+
+Renderize `./views/index.myat`. Veja
+https://github.com/rtomayko/tilt para saber mais sobre Tilt.
+
+### Customizando lógica para encontrar templates
+
+Para implementar sua própria lógica para busca de templates você pode escrever seu próprio método `#find_template`
+
+``` ruby
+configure do
+  set :views [ './views/a', './views/b' ]
+end
+
+def find_template(views, name, engine, &block)
+  Array(views).each do |v|
+    super(v, name, engine, &block)
+  end
 end
 ```
 
@@ -591,7 +1262,72 @@ after '/create/:slug' do |slug|
 end
 ```
 
-## Halting
+## Helpers
+
+Use o método de alto nível `helpers` para definir métodos auxiliares
+para utilizar em manipuladores de rotas e modelos:
+
+``` ruby
+helpers do
+  def bar(nome)
+    "#{nome}bar"
+  end
+end
+
+get '/:nome' do
+  bar(params['nome'])
+end
+```
+
+### Utilizando Sessões
+
+Sessões são usadas para manter um estado durante uma requisição. Se ativa, você terá disponível um hash de sessão para cada sessão de usuário:
+
+``` ruby
+enable :sessions
+
+get '/' do
+  "value = " << session[:value].inspect
+end
+
+get '/:value' do
+  session['value'] = params['value']
+end
+```
+
+Note que `enable :sessions` utilizará um cookie para guardar todos os dados da sessão. Isso nem sempre pode ser o que você quer (guardar muitos dados irá aumentar o seu tráfego, por exemplo). Você pode utilizar qualquer Rack middleware de sessão: para fazer isso **não** utilize o método `enable :sessions`, ao invés disso utilize seu middleware de sessão como utilizaria qualquer outro:
+
+``` ruby
+use Rack::Session::Pool, :expire_after => 2592000
+
+get '/' do
+  "value = " << session[:value].inspect
+end
+
+get '/:value' do
+  session['value'] = params['value']
+end
+```
+
+Para melhorar a segurança, os dados da sessão guardados no cookie é assinado com uma chave secreta da sessão. Uma chave aleatória é gerada para você pelo Sinatra. Contudo, já que a chave mudará cada vez que você inicia sua aplicação, você talvez queira defini-la você mesmo para que todas as instâncias da aplicação compartilhe-a:
+
+``` ruby
+set :session_secret, 'super secret'
+```
+
+Se você quiser fazer outras configurações, você também pode guardar um hash com as opções nas configurações da `session`:
+
+``` ruby
+set :sessions, :domain => 'foo.com'
+```
+
+Para compartilhar sua sessão entre outros aplicativos em um subdomínio de foo.com, utilize o prefixo *.*:
+
+``` ruby
+set :sessions, :domain => '.foo.com'
+```
+
+### Halting
 
 Para parar imediatamente uma requisição com um filtro ou rota utilize:
 
@@ -623,7 +1359,13 @@ Com cabeçalhos…
 halt 402, {'Content-Type' => 'text/plain'}, 'revanche'
 ```
 
-## Passing
+É obviamente possivel combinar um template com o `halt`:
+
+``` ruby
+halt erb(:error)
+```
+
+### Passing
 
 Uma rota pode processar aposta para a próxima rota correspondente usando
 `pass`:
@@ -642,6 +1384,27 @@ end
 O bloqueio da rota é imediatamente encerrado e o controle continua com a
 próxima rota de parâmetro. Se o parâmetro da rota não for encontrado, um
 404 é retornado.
+
+### Desencadeando Outra Rota
+
+As vezes o `pass` não é o que você quer, ao invés dele talvez você queira obter o resultado chamando outra rota. Utilize o método `call` neste caso:
+
+``` ruby
+get '/foo' do
+  status, headers, body = call env.merge("PATH_INFO" => '/bar')
+  [status, headers, body.map(&:upcase)]
+end
+
+get '/bar' do
+  "bar"
+end
+```
+
+Note que no exemplo acima você ganharia performance ao simplemente mover o `"bar"` em um helper usado por ambos `/foo` e `/bar`.
+
+Se você quer que a requisição seja enviada para a mesma instancia da aplicação ao invês de uma duplicada, use `call!` no lugar de `call`.
+
+Veja a especificação do Rack se você quer aprender mais sobre o `call`.
 
 ## Configuração
 
@@ -759,7 +1522,7 @@ Você também pode utilizar isto com o helper `content_type`:
 content_type :foo
 ```
 
-## Middleware Rack
+## Rack Middleware
 
 O Sinatra roda no [Rack](http://rack.github.io/), uma interface
 padrão mínima para frameworks web em Ruby. Um das capacidades mais
@@ -949,17 +1712,15 @@ git pull
 
 ## Mais
 
--   [Website do Projeto](http://www.sinatrarb.com/) - Documentação
+* [Website do Projeto](http://www.sinatrarb.com/) - Documentação
     adicional, novidades e links para outros recursos.
-
--   [Contribuir](http://www.sinatrarb.com/contributing) - Encontrar um
+* [Contribuir](http://www.sinatrarb.com/contributing) - Encontrar um
     bug? Precisa de ajuda? Tem um patch?
-
--   [Acompanhar Questões](http://github.com/sinatra/sinatra/issues)
-
--   [Twitter](http://twitter.com/sinatra)
-
--   [Lista de Email](http://groups.google.com/group/sinatrarb/topics)
-
--   [IRC: \#sinatra](irc://chat.freenode.net/#sinatra) em
+* [Acompanhar Questões](http://github.com/sinatra/sinatra/issues)
+* [Twitter](http://twitter.com/sinatra)
+* [Lista de Email](http://groups.google.com/group/sinatrarb/topics)
+* [Sinatra Book](https://github.com/sinatra/sinatra-book/) Livro de Receitas
+* Documentação da API para a [última release](http://rubydoc.info/gems/sinatra)
+* [IRC: \#sinatra](irc://chat.freenode.net/#sinatra) em
     [freenode.net](http://freenode.net)
+* [Servidor de CI](http://travis-ci.org/sinatra/sinatra)
