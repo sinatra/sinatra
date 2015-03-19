@@ -1521,10 +1521,10 @@ provient d'une resource lente.
 
 Le fonctionnement du streaming, notamment le nombre de requêtes simultanées,
 dépend énormément du serveur web utilisé. Certains ne prennent pas du tout en
-charge le streaming (WEBRick par exemple). Lorsque le serveur ne gère pas le
-streaming, la partie body de la réponse sera envoyée au client en une seule
-fois, après que l'exécution du bloc passé au helper `stream` sera terminée. Le
-streaming ne fonctionne pas du tout avec Shotgun.
+charge le streaming. Lorsque le serveur ne gère pas le streaming, la partie
+body de la réponse sera envoyée au client en une seule fois, après que
+l'exécution du bloc passé au helper `stream` sera terminée. Le streaming ne
+fonctionne pas du tout avec Shotgun.
 
 En utilisant le helper stream avec le paramètre `keep_open`, il n'appelera
 pas la méthode `close` du flux, vous laissant la possibilité de le fermer à

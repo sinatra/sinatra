@@ -1546,7 +1546,7 @@ langsamen Ressourcen abhängig ist.
 
 Es ist zu beachten, dass das Verhalten beim Streaming, insbesondere die Anzahl
 nebenläufiger Anfragen, stark davon abhängt, welcher Webserver für die
-Applikation verwendet wird. Einige Server, z.B. WEBRick, unterstützen
+Applikation verwendet wird. Einige Server unterstützen
 Streaming nicht oder nur teilweise. Sollte der Server Streaming nicht
 unterstützen, wird ein vollständiger Response-Body zurückgeschickt, sobald der
 an `stream` weitergegebene Block abgearbeitet ist. Mit Shotgun funktioniert

@@ -1331,10 +1331,10 @@ depende de un recurso lento.
 
 Hay que tener en cuenta que el comportamiento del streaming, especialmente el
 número de peticiones concurrentes, depende del servidor web utilizado para
-alojar la aplicación. Puede que algunos servidores, como es el caso de
-WEBRick, no soporten streaming directamente, así el cuerpo de la respuesta será
-enviado completamente de una vez cuando el bloque pasado a `stream` finalice su
-ejecución. Si estás usando Shotgun, el streaming no va a funcionar.
+alojar la aplicación. Puede que algunos servidores no soporten streaming
+directamente, así el cuerpo de la respuesta será enviado completamente de una
+vez cuando el bloque pasado a `stream` finalice su ejecución. Si estás usando
+Shotgun, el streaming no va a funcionar.
 
 Cuando se pasa `keep_open` como parámetro, no se va a enviar el mensaje
 `close` al objeto de stream. Queda en vos cerrarlo en el punto de ejecución
