@@ -1,3 +1,8 @@
+= Upcoming Release
+
+ * Correctly handle encoded colons in routes. (Jeremy Evans)
+ * Your contribution here.
+
 = 1.4.6 / 2015-03-23
 
  * Improve tests and documentation. (Darío Hereñú, Seiichi Yonezawa, kyoendo,
