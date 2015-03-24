@@ -1,3 +1,32 @@
+= 1.4.6 / 2015-03-23
+
+ * Improve tests and documentation. (Darío Hereñú, Seiichi Yonezawa, kyoendo,
+   John Voloski, Ferenc-, Renaud Martinet, Christian Haase, marocchino,
+   huoxito, Damir Svrtan, Amaury Medeiros, Jeremy Evans, Kashyap, shenqihui,
+   Ausmarton Fernandes, kami, Vipul A M, Lei Wu, 7stud, Taylor Shuler,
+   namusyaka, burningTyger, Cornelius Bock, detomastah, hakeda, John Hope,
+   Ruben Gonzalez, Andrey Deryabin, attilaolah, Anton Davydov, Nikita Penzin,
+   Dyego Costa)
+
+ * Remove duplicate require of sinatra/base. (Alexey Muranov)
+
+ * Escape HTML in 404 error page. (Andy Brody)
+
+ * Refactor to method call in `Stream#close` and `#callback`. (Damir Svrtan)
+
+ * Depend on latest version of Slim. (Damir Svrtan)
+
+ * Fix compatibility with Tilt version 2. (Yegor Timoschenko)
+
+ * Fix compatibility issue with Rack `pretty` method from ShowExceptions.
+   (Kashyap)
+
+ * Show date in local time in exception messages. (tayler1)
+
+ * Fix logo on error pages when using Ruby 1.8. (Jeremy Evans)
+
+ * Upgrade test suite to Minitest version 5 and fix Ruby 2.2 compatibility.
+   (Vipul A M)
 = 1.4.5 / 2014-04-08
 
  * Improve tests and documentation. (Seiichi Yonezawa, Mike Gehard, Andrew
