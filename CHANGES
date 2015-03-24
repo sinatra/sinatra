@@ -16,8 +16,6 @@
 
  * Depend on latest version of Slim. (Damir Svrtan)
 
- * Fixed router handling of colons used as regular character. (Jeremy Evans)
-
  * Fix compatibility with Tilt version 2. (Yegor Timoschenko)
 
  * Fix compatibility issue with Rack `pretty` method from ShowExceptions.
