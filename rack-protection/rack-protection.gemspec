@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.name        = "rack-protection"
   s.version     = "1.5.3"
   s.description = "You should use protection!"
-  s.homepage    = "http://github.com/rkh/rack-protection"
+  s.homepage    = "http://github.com/sinatra/rack-protection"
   s.summary     = s.description
   s.license     = 'MIT'
 
