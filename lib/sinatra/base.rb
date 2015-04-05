@@ -1617,16 +1617,12 @@ module Sinatra
         if path.respond_to? :to_str
           keys = []
 
-          # We append a / at the end if there was one.
-          # Reason: Splitting does not split off an empty
-          # string at the end if the split separator
-          # is at the end.
-          #
-          postfix = '/' if path =~ /\/\z/
-
           # Split the path into pieces in between forward slashes.
+          # A negative number is given as the second argument of path.split
+          # because with this number, the method does not ignore / at the end
+          # and appends an empty string at the end of the return value.
           #
-          segments = path.split('/').map! do |segment|
+          segments = path.split('/', -1).map! do |segment|
             ignore = []
 
             # Special character handling.
@@ -1667,7 +1663,7 @@ module Sinatra
               segments << segment
             end
           end
-          [/\A#{segments.join('/')}#{postfix}\z/, keys]
+          [/\A#{segments.join('/')}\z/, keys]
         elsif path.respond_to?(:keys) && path.respond_to?(:match)
           [path, path.keys]
         elsif path.respond_to?(:names) && path.respond_to?(:match)
