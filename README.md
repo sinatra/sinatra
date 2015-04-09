@@ -109,6 +109,7 @@ pick up if available.
         * [Request/Instance Scope](#requestinstance-scope)
         * [Delegation Scope](#delegation-scope)
     * [Command Line](#command-line)
+        * [Multi-threading](#multi-threading)
     * [Requirement](#requirement)
     * [The Bleeding Edge](#the-bleeding-edge)
         * [With Bundler](#with-bundler)
