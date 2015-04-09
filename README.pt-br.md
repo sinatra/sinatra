@@ -93,7 +93,7 @@ Sinatra irá utilizá-la.
     * [Testando](#testando)
     * [Sinatra::Base - Middleware, Bibliotecas e aplicativos modulares](#sinatrabase---middleware-bibliotecas-e-aplicativos-modulares)
     * [Linha de comando](#linha-de-comando)
-    * [Multi-threading](#multi-threading)
+        * [Multi-threading](#multi-threading)
     * [A última versão](#a-última-versão)
     * [Mais](#mais)
 
@@ -1679,7 +1679,7 @@ As opções são:
 -x # ativa o bloqueio (padrão é desligado)
 ```
 
-## Multi-threading
+### Multi-threading
 
 _Parafraseando [esta resposta no StackOverflow](resposta-so) por Konstantin_
 
