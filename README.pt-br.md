@@ -93,6 +93,7 @@ Sinatra irá utilizá-la.
     * [Testando](#testando)
     * [Sinatra::Base - Middleware, Bibliotecas e aplicativos modulares](#sinatrabase---middleware-bibliotecas-e-aplicativos-modulares)
     * [Linha de comando](#linha-de-comando)
+    * [Multi-threading](#multi-threading)
     * [A última versão](#a-última-versão)
     * [Mais](#mais)
 
@@ -1677,6 +1678,39 @@ As opções são:
 -s # especifica o servidor/manipulador rack (padrão é thin)
 -x # ativa o bloqueio (padrão é desligado)
 ```
+
+## Multi-threading
+
+_Parafraseando [esta resposta no StackOverflow](resposta-so) por Konstantin_
+
+Sinatra não impõe nenhum modelo de concorrencia, mas deixa isso como responsabilidade
+do Rack (servidor) subjacente como o Thin, Puma ou WEBrick. Sinatra por si só é thread-safe,
+então não há nenhum problema se um Rack handler usar um modelo de thread de concorrência. Isso
+significaria que ao iniciar o servidor, você teria que espeficiar o método de invocação correto
+para o Rack handler específico. Os seguintes exemplos é uma demonstração de como iniciar um
+servidor Thin multi-thread:
+
+``` ruby
+# app.rb
+
+require 'sinatra/base'
+
+class App < Sinatra::Base
+  get '/' do
+    'Olá mundo'
+  end
+end
+
+App.run!
+```
+
+Para iniciar o servidor seria:
+
+``` shell
+thin --threaded start
+```
+
+[resposrta-so]: http://stackoverflow.com/questions/6278817/is-sinatra-multi-threaded/6282999#6282999)
 
 ## A última versão
 
