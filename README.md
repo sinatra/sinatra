@@ -109,6 +109,7 @@ pick up if available.
         * [Request/Instance Scope](#requestinstance-scope)
         * [Delegation Scope](#delegation-scope)
     * [Command Line](#command-line)
+        * [Multi-threading](#multi-threading)
     * [Requirement](#requirement)
     * [The Bleeding Edge](#the-bleeding-edge)
         * [With Bundler](#with-bundler)
@@ -2815,7 +2816,7 @@ being [extending the main object](https://github.com/sinatra/sinatra/blob/ca0636
 
 Sinatra applications can be run directly:
 
-``` shell
+```shell
 ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
 ```
 
@@ -2829,6 +2830,42 @@ Options are:
 -s # specify rack server/handler (default is thin)
 -x # turn on the mutex lock (default is off)
 ```
+
+### Multi-threading
+
+_Paraphrasing from [this StackOverflow answer][so-answer] by Konstantin_
+
+Sinatra doesn't impose any concurrency model, but leaves that to the
+underlying Rack handler (server) like Thin, Puma or WEBrick. Sinatra
+itself is thread-safe, so there won't be any problem if the Rack handler
+uses a threaded model of concurrency. This would mean that when starting
+the server, you'd have to specify the correct invocation method for the
+specific Rack handler. The following example is a demonstration of how
+to start a multi-threaded Thin server:
+
+``` ruby
+# app.rb
+
+require 'sinatra/base'
+
+class App < Sinatra::Base
+  get '/' do
+    "Hello, World"
+  end
+end
+
+App.run!
+
+```
+
+To start the server, the command would be:
+
+``` shell
+thin --threaded start
+```
+
+
+[so-answer]: http://stackoverflow.com/questions/6278817/is-sinatra-multi-threaded/6282999#6282999)
 
 ## Requirement
 
