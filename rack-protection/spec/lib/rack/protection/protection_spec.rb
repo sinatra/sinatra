@@ -1,5 +1,3 @@
-require File.expand_path('../spec_helper.rb', __FILE__)
-
 describe Rack::Protection do
   it_behaves_like "any rack application"
 
@@ -12,10 +10,10 @@ describe Rack::Protection do
     session = {:foo => :bar}
     get '/', {}, 'rack.session' => session, 'HTTP_ACCEPT_ENCODING' => 'a'
     get '/', {}, 'rack.session' => session, 'HTTP_ACCEPT_ENCODING' => 'b'
-    session[:foo].should be == :bar
+    expect(session[:foo]).to eq(:bar)
 
     get '/', {}, 'rack.session' => session, 'HTTP_FOO' => 'BAR'
-    session.should be_empty
+    expect(session).to be_empty
   end
 
   it 'passes errors through if :reaction => :report is used' do
@@ -26,8 +24,8 @@ describe Rack::Protection do
 
     session = {:foo => :bar}
     post('/', {}, 'rack.session' => session, 'HTTP_ORIGIN' => 'http://malicious.com')
-    last_response.should be_ok
-    body.should == "true"
+    expect(last_response).to be_ok
+    expect(body).to eq("true")
   end
 
   describe "#react" do
@@ -38,7 +36,7 @@ describe Rack::Protection do
         run DummyApp
       end
       post('/', {}, 'rack.session' => {}, 'HTTP_ORIGIN' => 'http://malicious.com')
-      io.string.should match /prevented.*Origin/
+      expect(io.string).to match(/prevented.*Origin/)
     end
 
     it 'reports attacks if reaction is to report' do
@@ -48,8 +46,8 @@ describe Rack::Protection do
         run DummyApp
       end
       post('/', {}, 'rack.session' => {}, 'HTTP_ORIGIN' => 'http://malicious.com')
-      io.string.should match /reported.*Origin/
-      io.string.should_not match /prevented.*Origin/
+      expect(io.string).to match(/reported.*Origin/)
+      expect(io.string).not_to match(/prevented.*Origin/)
     end
 
     it 'passes errors to reaction method if specified' do
@@ -60,25 +58,25 @@ describe Rack::Protection do
         run DummyApp
       end
       post('/', {}, 'rack.session' => {}, 'HTTP_ORIGIN' => 'http://malicious.com')
-      io.string.should match /HTTP_ORIGIN.*malicious.com/
-      io.string.should_not match /reported|prevented/
+      expect(io.string).to match(/HTTP_ORIGIN.*malicious.com/)
+      expect(io.string).not_to match(/reported|prevented/)
     end
   end
 
   describe "#html?" do
     context "given an appropriate content-type header" do
       subject { Rack::Protection::Base.new(nil).html? 'content-type' => "text/html" }
-      it { should be_true }
+      it { is_expected.to be_truthy }
     end
 
     context "given an inappropriate content-type header" do
       subject { Rack::Protection::Base.new(nil).html? 'content-type' => "image/gif" }
-      it { should be_false }
+      it { is_expected.to be_falsey }
     end
 
     context "given no content-type header" do
       subject { Rack::Protection::Base.new(nil).html?({}) }
-      it { should be_false }
+      it { is_expected.to be_falsey }
     end
   end
 
@@ -93,13 +91,13 @@ describe Rack::Protection do
     context 'with an instrumenter specified' do
       let(:app) { Rack::Protection::Base.new(nil, :instrumenter => instrumenter) }
 
-      it { instrumenter.should_receive(:instrument).with('rack.protection', env) }
+      it { expect(instrumenter).to receive(:instrument).with('rack.protection', env) }
     end
 
     context 'with no instrumenter specified' do
       let(:app) { Rack::Protection::Base.new(nil) }
 
-      it { instrumenter.should_not_receive(:instrument) }
+      it { expect(instrumenter).not_to receive(:instrument) }
     end
   end
 end

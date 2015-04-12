@@ -1,5 +1,3 @@
-require File.expand_path('../spec_helper.rb', __FILE__)
-
 describe Rack::Protection::PathTraversal do
   it_behaves_like "any rack application"
 
@@ -9,7 +7,7 @@ describe Rack::Protection::PathTraversal do
     end
 
     %w[/foo/bar /foo/bar/ / /.f /a.x].each do |path|
-      it("does not touch #{path.inspect}") { get(path).body.should == path }
+      it("does not touch #{path.inspect}") { expect(get(path).body).to eq(path) }
     end
 
     { # yes, this is ugly, feel free to change that
@@ -17,12 +15,12 @@ describe Rack::Protection::PathTraversal do
       '/%2e.' => '/', '/a/%2E%2e/b' => '/b', '/a%2f%2E%2e%2Fb/' => '/b/',
       '//' => '/', '/%2fetc%2Fpasswd' => '/etc/passwd'
     }.each do |a, b|
-      it("replaces #{a.inspect} with #{b.inspect}") { get(a).body.should == b }
+      it("replaces #{a.inspect} with #{b.inspect}") { expect(get(a).body).to eq(b) }
     end
 
     it 'should be able to deal with PATH_INFO = nil (fcgi?)' do
       app = Rack::Protection::PathTraversal.new(proc { 42 })
-      app.call({}).should be == 42
+      expect(app.call({})).to eq(42)
     end
   end
 
@@ -34,7 +32,7 @@ describe Rack::Protection::PathTraversal do
 
       it 'should remain unchanged as ASCII-8BIT' do
         body = @app.call({ 'PATH_INFO' => '/'.encode('ASCII-8BIT') })[2][0]
-        body.should == 'ASCII-8BIT'
+        expect(body).to eq('ASCII-8BIT')
       end
     end
   end

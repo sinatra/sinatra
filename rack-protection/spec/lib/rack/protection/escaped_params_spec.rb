@@ -1,5 +1,3 @@
-require File.expand_path('../spec_helper.rb', __FILE__)
-
 describe Rack::Protection::EscapedParams do
   it_behaves_like "any rack application"
 
@@ -10,7 +8,7 @@ describe Rack::Protection::EscapedParams do
         [200, {'Content-Type' => 'text/plain'}, [request.params['foo']]]
       end
       get '/', :foo => "<bar>"
-      body.should == '&lt;bar&gt;'
+      expect(body).to eq('&lt;bar&gt;')
     end
 
     it 'leaves normal params untouched' do
@@ -19,7 +17,7 @@ describe Rack::Protection::EscapedParams do
         [200, {'Content-Type' => 'text/plain'}, [request.params['foo']]]
       end
       get '/', :foo => "bar"
-      body.should == 'bar'
+      expect(body).to eq('bar')
     end
 
     it 'copes with nested arrays' do
@@ -28,7 +26,7 @@ describe Rack::Protection::EscapedParams do
         [200, {'Content-Type' => 'text/plain'}, [request.params['foo']['bar']]]
       end
       get '/', :foo => {:bar => "<bar>"}
-      body.should == '&lt;bar&gt;'
+      expect(body).to eq('&lt;bar&gt;')
     end
 
     it 'leaves cache-breaker params untouched' do
@@ -37,7 +35,7 @@ describe Rack::Protection::EscapedParams do
       end
 
       get '/?95df8d9bf5237ad08df3115ee74dcb10'
-      body.should == 'hi'
+      expect(body).to eq('hi')
     end
   end
 end
