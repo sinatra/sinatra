@@ -174,7 +174,11 @@ module Sinatra
         end
         possible.each do |engine, template|
           # not exactly like Tilt[engine], but does not trigger a require
-          klass = Tilt.mappings[Tilt.normalize(engine)].first
+          if Tilt.respond_to?(:mappings)
+            klass = Tilt.mappings[Tilt.normalize(engine)].first
+          else
+            klass = Tilt[engine]
+          end
           find_template(settings.views, template, klass) do |file|
             next unless File.exist? file
             return settings.rendering_method(engine) << template.to_sym
