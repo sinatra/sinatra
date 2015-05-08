@@ -1005,7 +1005,8 @@ module Sinatra
       values += match.captures.map! { |v| force_encoding URI_INSTANCE.unescape(v) if v }
 
       if values.any?
-        original, @params = params, params.merge('splat' => [], 'captures' => values)
+        original = @params
+        @params = @params.merge('splat' => [], 'captures' => values)
         keys.zip(values) { |k,v| Array === @params[k] ? @params[k] << v : @params[k] = v if v }
       end
 
