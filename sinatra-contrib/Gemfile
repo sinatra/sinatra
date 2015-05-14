@@ -2,14 +2,20 @@ source "https://rubygems.org" unless ENV['QUICK']
 gemspec
 
 gem 'sinatra', :github => 'sinatra/sinatra'
-gem 'temple', :github => 'zzak/temple', :branch => 'sinatra-contrib-bug'
+gem 'temple', :github => 'zzak/temple', :branch => '0-6-patched'
 
 group :development, :test do
   platform :ruby_18, :jruby do
     gem 'json'
+    gem 'rdoc'
   end
 
   platform :ruby do
+    gem 'execjs', '2.0.0'
+    gem 'nokogiri', '1.5.10'
+    gem 'redcarpet', '2.3.0'
+    gem 'slim', '2.1.0'
+    gem 'liquid', '2.6.1'
     gem 'yajl-ruby'
   end
 
