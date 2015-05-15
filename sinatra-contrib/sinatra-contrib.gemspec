@@ -200,7 +200,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "slim"
   s.add_development_dependency "less"
   s.add_development_dependency "sass"
-  s.add_development_dependency "therubyracer"
   s.add_development_dependency "builder"
   s.add_development_dependency "liquid"
   s.add_development_dependency "redcarpet"
