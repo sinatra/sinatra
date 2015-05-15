@@ -118,14 +118,14 @@ describe Sinatra::Namespace do
           ran = false
           namespace('/foo') { before { ran = true }}
           send(verb, '/foo')
-          ran.should be_true
+          ran.should be true
         end
 
         specify 'are not triggered for a different namespace' do
           ran = false
           namespace('/foo') { before { ran = true }}
           send(verb, '/fox')
-          ran.should be_false
+          ran.should be false
         end
       end
 
@@ -134,14 +134,14 @@ describe Sinatra::Namespace do
           ran = false
           namespace('/foo') { after { ran = true }}
           send(verb, '/foo')
-          ran.should be_true
+          ran.should be true
         end
 
         specify 'are not triggered for a different namespace' do
           ran = false
           namespace('/foo') { after { ran = true }}
           send(verb, '/fox')
-          ran.should be_false
+          ran.should be false
         end
       end
 
@@ -176,13 +176,13 @@ describe Sinatra::Namespace do
               send(verb, '/*') { 'ok' }
             end
             send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org', 'HTTP_ACCEPT' => 'text/plain')
-            ran.should be_false
+            ran.should be false
             send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/html')
-            ran.should be_false
+            ran.should be false
             send(verb, '/bar', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
-            ran.should be_false
+            ran.should be false
             send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
-            ran.should be_true
+            ran.should be true
           end
 
           specify 'are accepted in the after-filter' do
@@ -192,13 +192,13 @@ describe Sinatra::Namespace do
               send(verb, '/*') { 'ok' }
             end
             send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org', 'HTTP_ACCEPT' => 'text/plain')
-            ran.should be_false
+            ran.should be false
             send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/html')
-            ran.should be_false
+            ran.should be false
             send(verb, '/bar', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
-            ran.should be_false
+            ran.should be false
             send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
-            ran.should be_true
+            ran.should be true
           end
         end
 
@@ -231,9 +231,9 @@ describe Sinatra::Namespace do
               send(verb) { 'ok' }
             end
             send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org')
-            ran.should be_false
+            ran.should be false
             send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com')
-            ran.should be_true
+            ran.should be true
           end
 
           specify 'are accepted in the route definition' do
@@ -252,11 +252,11 @@ describe Sinatra::Namespace do
                 send(verb) { 'ok' }
               end
               send(verb, '/', {}, 'HTTP_HOST' => 'example.org', 'HTTP_ACCEPT' => 'text/plain')
-              ran.should be_false
+              ran.should be false
               send(verb, '/', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/html')
-              ran.should be_false
+              ran.should be false
               send(verb, '/', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
-              ran.should be_true
+              ran.should be true
             end
 
             specify 'are accepted in the filters' do
@@ -266,13 +266,13 @@ describe Sinatra::Namespace do
                 send(verb, '/*') { 'ok' }
               end
               send(verb, '/foo', {}, 'HTTP_HOST' => 'example.org', 'HTTP_ACCEPT' => 'text/plain')
-              ran.should be_false
+              ran.should be false
               send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/html')
-              ran.should be_false
+              ran.should be false
               send(verb, '/far', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
-              ran.should be_false
+              ran.should be false
               send(verb, '/foo', {}, 'HTTP_HOST' => 'example.com', 'HTTP_ACCEPT' => 'text/plain')
-              ran.should be_true
+              ran.should be true
             end
           end
         end

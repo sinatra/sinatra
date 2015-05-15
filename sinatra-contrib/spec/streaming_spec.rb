@@ -26,7 +26,7 @@ describe Sinatra::Streaming do
     it 'runs the given block' do
       ran = false
       stream { ran = true }
-      ran.should be_true
+      ran.should be true
     end
 
     it 'returns the stream object' do
@@ -334,7 +334,7 @@ describe Sinatra::Streaming do
         fired = false
         out.callback { fired = true }
         out.close
-        fired.should be_true
+        fired.should be true
       end
     end
 

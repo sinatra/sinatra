@@ -32,7 +32,7 @@ describe Sinatra::Cookies do
     it 'runs the block' do
       ran = false
       cookie_route { ran = true }
-      ran.should be_true
+      ran.should be true
     end
 
     it 'returns the block result' do
@@ -274,7 +274,7 @@ describe Sinatra::Cookies do
         cookies.each do |key, value|
           key.should   == 'foo'
           value.should == 'baz'
-          seen.should  == false
+          seen.should == false
           seen = true
         end
       end
@@ -434,7 +434,7 @@ describe Sinatra::Cookies do
       cookie_route do
         cookies['foo'] = 'bar'
         cookies.empty?
-      end.should be_false
+      end.should be false
     end
 
     it 'becomes true if response cookies are removed' do
@@ -442,14 +442,14 @@ describe Sinatra::Cookies do
         cookies['foo'] = 'bar'
         cookies.delete :foo
         cookies.empty?
-      end.should be_true
+      end.should be true
     end
 
     it 'becomes true if request cookies are removed' do
       cookie_route('foo=bar') do
         cookies.delete :foo
         cookies.empty?
-      end.should be_true
+      end.should be_truthy
     end
 
     it 'becomes true after clear' do
@@ -457,7 +457,7 @@ describe Sinatra::Cookies do
         cookies['foo'] = 'bar'
         cookies.clear
         cookies.empty?
-      end.should be_true
+      end.should be_truthy
     end
   end
 
@@ -594,19 +594,19 @@ describe Sinatra::Cookies do
 
   describe :key? do
     it 'checks request cookies' do
-      cookies('foo=bar').key?('foo').should be_true
+      cookies('foo=bar').key?('foo').should be true
     end
 
     it 'checks response cookies' do
       jar = cookies
       jar['foo'] = 'bar'
-      jar.key?(:foo).should be_true
+      jar.key?(:foo).should be true
     end
 
     it 'does not use deleted cookies' do
       jar = cookies('foo=bar')
       jar.delete :foo
-      jar.key?('foo').should be_false
+      jar.key?('foo').should be false
     end
   end
 
@@ -621,19 +621,19 @@ describe Sinatra::Cookies do
 
   describe :member? do
     it 'checks request cookies' do
-      cookies('foo=bar').member?('foo').should be_true
+      cookies('foo=bar').member?('foo').should be true
     end
 
     it 'checks response cookies' do
       jar = cookies
       jar['foo'] = 'bar'
-      jar.member?(:foo).should be_true
+      jar.member?(:foo).should be true
     end
 
     it 'does not use deleted cookies' do
       jar = cookies('foo=bar')
       jar.delete :foo
-      jar.member?('foo').should be_false
+      jar.member?('foo').should be false
     end
   end
 
@@ -775,19 +775,19 @@ describe Sinatra::Cookies do
 
   describe :value? do
     it 'checks request cookies' do
-      cookies('foo=bar').value?('bar').should be_true
+      cookies('foo=bar').value?('bar').should be true
     end
 
     it 'checks response cookies' do
       jar = cookies
       jar[:foo] = 'bar'
-      jar.value?('bar').should be_true
+      jar.value?('bar').should be true
     end
 
     it 'does not use deleted cookies' do
       jar = cookies('foo=bar')
       jar.delete :foo
-      jar.value?('bar').should_not be_true
+      jar.value?('bar').should be false
     end
   end
 
