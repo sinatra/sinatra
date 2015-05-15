@@ -23,7 +23,7 @@ describe Sinatra::Extension do
   before { mock_app { register ExampleExtension }}
 
   it('allows using set') { settings.foo.should == :bar }
-  it('implements configure') { settings.reload_stuff.should be_false }
+  it('implements configure') { settings.reload_stuff.should be false }
 
   it 'allows defing routes' do
     get('/').should be_ok
