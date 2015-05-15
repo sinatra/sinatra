@@ -198,7 +198,7 @@ describe Sinatra::RespondWith do
       it 'looks for templates with name.engine for specific engines' do
         respond_with :bar
         req(:html).should be_ok
-        body.should == "Girl! I wanna take you to a ... bar!"
+        body.should == "guten Tag!"
       end
 
       it 'does not use name.engine for engines producing other formats' do
