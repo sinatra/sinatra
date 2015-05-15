@@ -227,18 +227,42 @@ module Sinatra
       super
     end
 
+    def self.all
+      engines = Sinatra::Templates.instance_methods.map(&:to_sym) + [:mab] -
+        [:find_template, :markaby]
+      if defined? JRUBY_VERSION
+        jrubyify(engines)
+      end
+      engines
+    end
+
+    def self.html
+      engines = [:erb, :erubis, :haml, :slim, :liquid, :radius, :mab, :markdown,
+        :textile, :rdoc]
+      if defined? JRUBY_VERSION
+        jrubyify(engines)
+      end
+      engines
+    end
+
+    def self.jrubyify(engs)
+      not_supported = [:yajl, :markdown]
+      engs.delete_if { |eng| not_supported.include?(eng) }
+    end
+
     ENGINES = {
       :css  => [:less,  :sass, :scss],
       :xml  => [:builder, :nokogiri],
       :js   => [:coffee],
-      :json => [:yajl],
-      :html => [:erb, :erubis, :haml, :slim, :liquid, :radius, :mab, :markdown,
-        :textile, :rdoc],
-      :all  => Sinatra::Templates.instance_methods.map(&:to_sym) + [:mab] -
-        [:find_template, :markaby]
+      :html => html,
+      :all => all
     }
 
+    (defined? JRUBY_VERSION) ? (ENGINES[:json] = [:json_pure]) : (ENGINES[:json] = [:yajl])
+
     ENGINES.default = []
+
+    puts ENGINES.inspect
 
     def self.registered(base)
       base.set :ext_map, Hash.new { |h,k| h[k] = [] }
