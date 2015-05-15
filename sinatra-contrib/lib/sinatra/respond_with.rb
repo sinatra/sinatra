@@ -227,27 +227,27 @@ module Sinatra
       super
     end
 
+    def self.jrubyify(engs)
+      not_supported = [:markdown]
+      engs.collect! { |eng| (eng == :yajl) ? :json_pure : eng }
+      engs.delete_if { |eng| not_supported.include?(eng) }
+    end
+
     def self.all
       engines = Sinatra::Templates.instance_methods.map(&:to_sym) + [:mab] -
         [:find_template, :markaby]
-      if defined? JRUBY_VERSION
-        jrubyify(engines)
-      end
-      engines
+      (defined? JRUBY_VERSION) ? jrubyify(engines) : engines
     end
 
     def self.html
       engines = [:erb, :erubis, :haml, :slim, :liquid, :radius, :mab, :markdown,
         :textile, :rdoc]
-      if defined? JRUBY_VERSION
-        jrubyify(engines)
-      end
-      engines
+      (defined? JRUBY_VERSION) ? jrubyify(engines) : engines
     end
 
-    def self.jrubyify(engs)
-      not_supported = [:yajl, :markdown]
-      engs.delete_if { |eng| not_supported.include?(eng) }
+    def self.json
+      engines = [:yajl]
+      (defined? JRUBY_VERSION) ? jrubyify(engines) : engines
     end
 
     ENGINES = {
@@ -255,10 +255,9 @@ module Sinatra
       :xml  => [:builder, :nokogiri],
       :js   => [:coffee],
       :html => html,
-      :all => all
+      :all => all,
+      :json => json
     }
-
-    (defined? JRUBY_VERSION) ? (ENGINES[:json] = [:json_pure]) : (ENGINES[:json] = [:yajl])
 
     ENGINES.default = []
 
