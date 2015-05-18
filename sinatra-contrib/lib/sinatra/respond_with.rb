@@ -229,43 +229,31 @@ module Sinatra
 
     def self.jrubyify(engs)
       not_supported = [:markdown]
-      engs.collect! { |eng| (eng == :yajl) ? :json_pure : eng }
-      engs.delete_if { |eng| not_supported.include?(eng) }
+      engs.keys.each do |key|
+        engs[key].collect! { |eng| (eng == :yajl) ? :json_pure : eng }
+        engs[key].delete_if { |eng| not_supported.include?(eng) }
+      end
+      engs
     end
 
-    def self.all
-      engines = Sinatra::Templates.instance_methods.map(&:to_sym) + [:mab] -
-        [:find_template, :markaby]
+    def self.engines
+      engines = {
+        :css  => [:less,  :sass, :scss],
+        :xml  => [:builder, :nokogiri],
+        :js   => [:coffee],
+        :html => [:erb, :erubis, :haml, :slim, :liquid, :radius, :mab,
+          :markdown, :textile, :rdoc],
+        :all =>  (Sinatra::Templates.instance_methods.map(&:to_sym) +
+          [:mab] - [:find_template, :markaby]),
+        :json => [:yajl],
+      }
+      engines.default = []
       (defined? JRUBY_VERSION) ? jrubyify(engines) : engines
-    end
-
-    def self.html
-      engines = [:erb, :erubis, :haml, :slim, :liquid, :radius, :mab, :markdown,
-        :textile, :rdoc]
-      (defined? JRUBY_VERSION) ? jrubyify(engines) : engines
-    end
-
-    def self.json
-      engines = [:yajl]
-      (defined? JRUBY_VERSION) ? jrubyify(engines) : engines
-    end
-
-    ENGINES = {
-      :css  => [:less,  :sass, :scss],
-      :xml  => [:builder, :nokogiri],
-      :js   => [:coffee],
-      :html => html,
-      :all => all,
-      :json => json
-    }
-
-    ENGINES.default = []
-
-    puts ENGINES.inspect
+    end  
 
     def self.registered(base)
       base.set :ext_map, Hash.new { |h,k| h[k] = [] }
-      base.set :template_engines, ENGINES.dup
+      base.set :template_engines, engines
       base.remap_extensions
       base.helpers Helpers
     end
