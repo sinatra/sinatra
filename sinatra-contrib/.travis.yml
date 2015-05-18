@@ -28,4 +28,5 @@ notifications:
     - _@trevorbramble.com
     - katrina.owen@gmail.com
     - e@zzak.io
-
+notifications:
+  slack: sinatrarb:LQGhUfGYcqRgRzwKea0bqUhY
