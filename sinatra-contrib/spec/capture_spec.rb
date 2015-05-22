@@ -41,6 +41,10 @@ describe Sinatra::Capture do
     it "handles utf-8 encoding" do
       render(:erb, "utf_8").should == "UTF-8 –"
     end
+
+    it "handles ISO-8859-1 encoding" do
+      render(:erb, "iso_8859_1").should == "ISO-8859-1 -"
+    end
   end
 end
 
@@ -90,3 +94,7 @@ Hello #{a.strip}
 @@ utf_8
 <% a = capture do %>–<% end %>
 UTF-8 <%= a %>
+
+@@ iso_8859_1
+<% a = capture do %>-<% end %>
+ISO-8859-1 <%= a.force_encoding("iso-8859-1") %>
