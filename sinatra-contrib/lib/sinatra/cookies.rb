@@ -66,13 +66,11 @@ module Sinatra
         @deleted         = []
 
         @options = {
-          :path     => @request.script_name,
-          :domain   => @request.host,
+          :path => @request.script_name.to_s.empty? ? '/' : @request.script_name,
+          :domain => @request.host == 'localhost' ? nil : @request.host,
           :secure   => @request.secure?,
           :httponly => true
         }
-
-        @options[:path] = '/' if @options[:path].to_s.empty?
 
         if app.settings.respond_to? :cookie_options
           @options.merge! app.settings.cookie_options

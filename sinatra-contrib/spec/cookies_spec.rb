@@ -8,7 +8,7 @@ describe Sinatra::Cookies do
       result = instance_eval(&block)
       "ok"
     end
-    get '/'
+    get '/', {}, @headers || {}
     last_response.should be_ok
     body.should be == "ok"
     result
@@ -94,6 +94,14 @@ describe Sinatra::Cookies do
         cookies['foo'] = 'bar'
         response['Set-Cookie'].lines.detect { |l| l.start_with? 'foo=' }
       end.should include('HttpOnly')
+    end
+
+    it 'sets domain to nil if localhost' do
+      @headers = {'HTTP_HOST' => 'localhost'}
+      cookie_route do
+        cookies['foo'] = 'bar'
+        response['Set-Cookie']
+      end.should_not include("domain")
     end
 
     it 'sets the domain' do
