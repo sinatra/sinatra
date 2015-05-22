@@ -95,7 +95,7 @@ module Sinatra
       @capture = nil
       if current_engine == :ruby
         result = block[*args]
-      elsif current_engine == :erb
+      elsif current_engine == :erb || current_engine == :slim
         @_out_buf, _buf_was = '', @_out_buf
         block[*args]
         result = eval('@_out_buf', block.binding)

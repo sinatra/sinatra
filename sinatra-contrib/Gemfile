@@ -2,7 +2,6 @@ source "https://rubygems.org" unless ENV['QUICK']
 gemspec
 
 gem 'sinatra', :github => 'sinatra/sinatra'
-gem 'temple', :github => 'zzak/temple', :branch => '0-6-patched'
 
 group :development, :test do
   platform :ruby_18, :jruby do
