@@ -1542,10 +1542,10 @@ used to increase throughput if some but not all content depends on a slow
 resource.
 
 Note that the streaming behavior, especially the number of concurrent requests,
-highly depends on the web server used to serve the application. Some servers,
-like WEBRick, might not even support streaming at all. If the server does not
-support streaming, the body will be sent all at once after the block passed to
-`stream` finishes executing. Streaming does not work at all with Shotgun.
+highly depends on the web server used to serve the application. Some servers
+might not even support streaming at all. If the server does not support
+streaming, the body will be sent all at once after the block passed to `stream`
+finishes executing. Streaming does not work at all with Shotgun.
 
 If the optional parameter is set to `keep_open`, it will not call `close` on
 the stream object, allowing you to close it at any later point in the
