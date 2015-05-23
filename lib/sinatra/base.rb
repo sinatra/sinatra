@@ -1654,14 +1654,10 @@ module Sinatra
 
           # Special case handling.
           #
-          if segment = segments.pop
-            if segment.match(/\[\^\\\./)
-              parts = segment.rpartition(/\[\^\\\./)
-              parts[1] = '[^'
-              segments << parts.join
-            else
-              segments << segment
-            end
+          if last_segment = segments[-1] and last_segment.match(/\[\^\\\./)
+            parts = last_segment.rpartition(/\[\^\\\./)
+            parts[1] = '[^'
+            segments[-1] = parts.join
           end
           [/\A#{segments.join('/')}\z/, keys]
         elsif path.respond_to?(:keys) && path.respond_to?(:match)
