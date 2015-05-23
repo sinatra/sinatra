@@ -24,6 +24,7 @@ matrix:
     - { rvm: 2.2, env: rack=master }
     - { rvm: 2.2, env: tilt=master }
   allow_failures:
+    - env: rack=master
     - env: tilt=master
     - rvm: rbx-2
     - rvm: ruby-head
