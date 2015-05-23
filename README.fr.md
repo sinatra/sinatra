@@ -108,6 +108,7 @@ Sinatra utilise le server Thin quand il est disponible.
         * [Contexte de la requête/instance](#contexte-de-la-requêteinstance)
         * [Le contexte de délégation](#le-contexte-de-délégation)
     * [Ligne de commande](#ligne-de-commande)
+        * [Multi-threading](#multi-threading)
     * [Configuration nécessaire](#configuration-nécessaire)
     * [Essuyer les plâtres](#essuyer-les-plâtres)
         * [Installer avec Bundler](#installer-avec-bundler)
@@ -2807,6 +2808,41 @@ Avec les options :
 -s # déclare le serveur/gestionnaire à utiliser (thin par défaut)
 -x # active le mutex lock (off par défaut)
 ```
+
+### Multi-threading
+
+_Cette partie est basée sur [une réponse StackOverflow][so-answer] de Konstantin._
+
+Sinatra n'impose pas de modèle de concurrence. Sinatra est thread-safe, vous pouvez
+donc utiliser n'importe quel gestionnaire Rack, comme Thin, Puma ou WEBrick en mode
+multi-threaded.
+
+Cela signifie néanmoins qu'il vous faudra spécifier les paramètres correspondant au
+gestionnaire Rack utilisé lors du démarrage du serveur.
+
+L'exemple ci-dessous montre comment vous pouvez exécuter un serveur Thin de manière
+multi-threaded:
+
+```
+# app.rb
+require 'sinatra/base'
+
+classe App < Sinatra::Base
+  get '/' do
+    'Bonjour le monde !'
+  end
+end
+
+App.run!
+```
+
+Pour démarrer le serveur, exécuter la commande suivante:
+
+```
+thin --threaded start
+```
+
+[so-answer]: http://stackoverflow.com/questions/6278817/is-sinatra-multi-threaded/6282999#6282999)
 
 ## Configuration nécessaire
 
