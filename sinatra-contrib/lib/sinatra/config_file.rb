@@ -69,8 +69,9 @@ module Sinatra
   #       b: 2
   #
   # But it also can provide specific environment configuration.  There are two
-  # ways to do that: at the file level and at the setting level.  They are
-  # illustrated, respectively, as follows:
+  # ways to do that: at the file level and at the settings level.
+  #
+  # At the settings level (e.g. in 'path/to/config.yml'):
   #
   #     development:
   #       foo: development
@@ -82,7 +83,7 @@ module Sinatra
   #       foo: production
   #       bar: bar
   #
-  # and
+  # Or at the file level:
   #
   #     foo:
   #       development: development
