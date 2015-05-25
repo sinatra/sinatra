@@ -1,4 +1,5 @@
 require 'rack/protection'
+require 'rack/utils'
 require 'digest'
 require 'logger'
 require 'uri'
@@ -108,6 +109,10 @@ module Rack
 
       def encrypt(value)
         options[:encryptor].hexdigest value.to_s
+      end
+
+      def secure_compare(a, b)
+        Rack::Utils.secure_compare(a.to_s, b.to_s)
       end
 
       alias default_reaction deny

@@ -23,8 +23,8 @@ module Rack
         session = session env
         token   = session[:csrf] ||= session['_csrf_token'] || random_string
         safe?(env) ||
-          env['HTTP_X_CSRF_TOKEN'] == token ||
-          Request.new(env).params[options[:authenticity_param]] == token
+          secure_compare(env['HTTP_X_CSRF_TOKEN'], token) ||
+          secure_compare(Request.new(env).params[options[:authenticity_param]], token)
       end
     end
   end
