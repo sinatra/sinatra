@@ -547,6 +547,24 @@ describe Sinatra::Namespace do
           get('/de/foo').status.should     eq 406
           last_response.body.should        eq 'methode nicht erlaubt' unless verb == :head
         end
+
+        it "allows custom error handlers when namespace is declared as /en/:id. Issue #119" do
+          mock_app {
+            class CError < StandardError;
+            end
+
+            error { raise "should not come here" }
+
+            namespace('/en/:id') do
+              error(CError) { 201 }
+              get '/?' do
+                raise CError
+              end
+            end
+          }
+
+          get('/en/1').status.should == 201
+        end
       end
 
       unless verb == :head

@@ -175,7 +175,7 @@ module Sinatra
       end
 
       def not_found(&block)
-        error(404, &block)
+        error(Sinatra::NotFound, &block)
       end
 
       def errors
@@ -187,9 +187,10 @@ module Sinatra
       end
 
       def error(*codes, &block)
-        args  = Sinatra::Base.send(:compile!, "ERROR", /^#{@pattern}/, block)
+        args  = Sinatra::Base.send(:compile!, "ERROR", regexpify(@pattern), block)
         codes = codes.map { |c| Array(c) }.flatten
         codes << Exception if codes.empty?
+
         codes.each do |c|
           errors = @errors[c] ||= []
           errors << args
@@ -255,7 +256,7 @@ module Sinatra
 
       def regexpify(pattern)
         pattern = Sinatra::Base.send(:compile, pattern).first.inspect
-        pattern.gsub! /^\/(\^|\\A)?|(\$|\\Z)?\/$/, ''
+        pattern.gsub! /^\/(\^|\\A)?|(\$|\\z)?\/$/, ''
         Regexp.new pattern
       end
 
