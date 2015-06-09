@@ -1,7 +1,7 @@
 require 'sinatra/json'
 require 'sinatra/base'
 
-$KCODE = "UTF-8"
+$KCODE = "UTF-8" unless RUBY_VERSION > "1.9.0"
 
 module Sinatra
   #
