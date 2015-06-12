@@ -77,6 +77,10 @@ module Sinatra
     #       <script type="text/javascript" src="/foo.js"></script>
     #     <% end %>
     #
+    # You can also pass an immediate value instead of a block:
+    #
+    #     <% content_for :title, "foo" %>
+    #
     # You can call +content_for+ multiple times with the same key
     # (in the example +:head+), and when you render the blocks for
     # that key all of them will be rendered, in the same order you
@@ -84,7 +88,8 @@ module Sinatra
     #
     # Your blocks can also receive values, which are passed to them
     # by <tt>yield_content</tt>
-    def content_for(key, &block)
+    def content_for(key, value = nil, &block)
+      block ||= proc { |*| value }
       content_blocks[key.to_sym] << capture_later(&block)
     end
 
