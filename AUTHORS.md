@@ -5,6 +5,7 @@ Sinatra was designed and developed by Blake Mizerany in California.
 * **Konstantin Haase** (maintainer)
 * **Zachary Scott**
 * **Katrina Owen**
+* **Ashley Williams**
 
 ### Alumni
 
