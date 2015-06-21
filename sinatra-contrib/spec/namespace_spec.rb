@@ -723,7 +723,7 @@ describe Sinatra::Namespace do
       last_response.body.should == '42'
     end
 
-    it 'allows checking setting existance with respond_to?' do
+    it 'allows checking setting existence with respond_to?' do
       mock_app do
         set :foo, 42
 
