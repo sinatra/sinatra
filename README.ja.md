@@ -109,6 +109,7 @@ ThinがあればSinatraはこれを利用するので、`gem install thin`する
         * [リクエスト/インスタンスのスコープ](#リクエストインスタンスのスコープ)
         * [デリゲートスコープ](#デリゲートスコープ)
     * [コマンドライン](#コマンドライン)
+        * [マルチスレッド](#マルチスレッド)
     * [必要環境](#必要環境)
     * [最新開発版](#最新開発版)
         * [Bundlerを使う場合](#bundlerを使う場合)
@@ -2574,6 +2575,37 @@ ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
 -s # rackserver/handlerを指定 (デフォルトはthin)
 -x # mutex lockを付ける (デフォルトはoff)
 ```
+
+### マルチスレッド
+
+_この[StackOverflow][so-answer]でのKonstantinによる回答を言い換えています。_
+
+Sinatraでは同時実行モデルを負わせることはできませんが、根本的な部分であるThinやPuma、WebrickのようなRackハンドラ(サーバー)部分に委ねることができます。
+Sinatra自身はスレッドセーフであり、もしRackハンドラが同時実行モデルのスレッドを使用していても問題はありません。
+つまり、これはサーバーを起動させる時、特定のRackハンドラに対して正しい起動処理を特定することが出来ます。
+この例はThinサーバーをマルチスレッドで起動する方法のデモです。
+
+```ruby
+# app.rb
+
+require 'sinatra/base'
+
+class App < Sinatra::Base
+  get '/' do
+    "Hello, World"
+  end
+end
+
+App.run!
+```
+
+サーバーを開始するコマンドです。
+
+```
+thin --threaded start
+```
+
+[so-answer]: http://stackoverflow.com/questions/6278817/is-sinatra-multi-threaded/6282999#6282999)
 
 ## 必要環境
 
