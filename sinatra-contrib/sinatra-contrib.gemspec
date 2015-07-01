@@ -17,8 +17,8 @@ Gem::Specification.new do |s|
     "Zachary Scott",
     "Trevor Bramble",
     "Katrina Owen",
-    "Nicolas Sanguinetti",
     "Ashley Williams",
+    "Nicolas Sanguinetti",
     "Hrvoje Šimić",
     "Masahiro Fujiwara",
     "Rafael Magana",
@@ -28,11 +28,13 @@ Gem::Specification.new do |s|
     "Jake Worth",
     "Kashyap",
     "Sumeet Singh",
+    "ashley williams",
     "lest",
     "Adrian Pacała",
     "Aish",
     "Alexey Chernenkov",
     "Andrew Crump",
+    "Anton Davydov",
     "Bo Jeanes",
     "David Asabina",
     "Eliot Shepard",
@@ -57,7 +59,6 @@ Gem::Specification.new do |s|
     "Thibaut Sacreste",
     "Uchio KONDO",
     "Will Bailey",
-    "ashley williams",
     "undr"
   ]
 
@@ -69,8 +70,8 @@ Gem::Specification.new do |s|
     "e@zzak.io",
     "zachary@zacharyscott.net",
     "katrina.owen@gmail.com",
-    "contacto@nicolassanguinetti.info",
     "ashley@bocoup.com",
+    "contacto@nicolassanguinetti.info",
     "shime.ferovac@gmail.com",
     "m-fujiwara@axsh.net",
     "raf.magana@gmail.com",
@@ -82,11 +83,13 @@ Gem::Specification.new do |s|
     "kashyap.kmbc@gmail.com",
     "ortuna@gmail.com",
     "tbramble@chef.io",
+    "ashley666ashley@gmail.com",
     "just.lest@gmail.com",
     "altpacala@gmail.com",
     "aisha.fenton@visfleet.com",
     "laise@pisem.net",
     "andrew.crump@ieee.org",
+    "antondavydov.o@gmail.com",
     "me@bjeanes.com",
     "david@supr.nu",
     "eshepard@slower.net",
@@ -111,7 +114,6 @@ Gem::Specification.new do |s|
     "thibaut.sacreste@gmail.com",
     "udzura@udzura.jp",
     "will.bailey@gmail.com",
-    "ashley666ashley@gmail.com",
     "undr@yandex.ru"
   ]
 
