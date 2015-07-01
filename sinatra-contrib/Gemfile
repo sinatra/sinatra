@@ -4,6 +4,11 @@ gemspec
 gem 'sinatra', :github => 'sinatra/sinatra'
 
 group :development, :test do
+  
+  platform :ruby_18 do
+    gem 'libv8', '3.16.14.7'
+  end
+
   platform :ruby_18, :jruby do
     gem 'json'
     gem 'rdoc'
