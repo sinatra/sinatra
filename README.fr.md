@@ -1,6 +1,6 @@
 # Sinatra
 *Attention : Ce document correspond à la traduction de la version anglaise et
-il n'est peut être plus à jour.*
+il n'est peut-être plus à jour.*
 
 Sinatra est un [DSL](http://fr.wikipedia.org/wiki/Langage_dédié) pour
 créer rapidement et facilement des applications web en Ruby :
@@ -75,7 +75,7 @@ Sinatra utilise le server Thin quand il est disponible.
         * [Halt](#halt)
         * [Passer](#passer)
         * [Déclencher une autre route](#déclencher-une-autre-route)
-        * [Définir le corps, le code retour et les entêtes](#définir-le-corps-le-code-retour-et-les-entêtes)
+        * [Définir le corps, le code retour et les en-têtes](#définir-le-corps-le-code-retour-et-les-en-têtes)
         * [Faire du streaming](#faire-du-streaming)
         * [Journalisation (Logging)](#journalisation-logging)
         * [Types Mime](#types-mime)
@@ -182,7 +182,7 @@ get '/bonjour/:nom' do |n|
 end
 ```
 
-Une route peut contenir un splat (caractère joker), accessible par
+Une route peut contenir un `splat` (caractère joker), accessible par
 l'intermédiaire du tableau `params['splat']` :
 
 ``` ruby
@@ -217,6 +217,7 @@ Là encore on peut utiliser les paramètres de bloc :
 
 ``` ruby
 get %r{/bonjour/([\w]+)} do |c|
+  # répond à "GET /meta/bonjour/monde", "GET /bonjour/monde/1234" etc.
   "Bonjour, #{c} !"
 end
 ```
@@ -224,19 +225,19 @@ end
 Les routes peuvent aussi comporter des paramètres optionnels :
 
 ``` ruby
-get '/posts.?:format?' do
-  # répond à "GET /posts" et aussi à "GET /posts.json", "GET /posts.xml" etc...
+get '/articles.?:format?' do
+  # répond à "GET /articles" ou avec une extension "GET /articles.json", "GET /articles.xml" etc...
 end
 ```
 
 Ainsi que des paramètres d'URL :
 
 ``` ruby
-get '/posts' do
-  # répond à "GET /posts?titre=foo&auteur=bar"
+get '/articles' do
+  # répond à "GET /articles?titre=foo&auteur=bar"
   titre = params['titre']
   auteur = params['auteur']
-  # utilise les variables titre et auteur, ces paramètres d'URL sont optionnels pour la route /posts
+  # utilise les variables titre et auteur qui sont des paramètres d'URL optionnels pour la route /articles
 end
 ```
 
@@ -274,13 +275,14 @@ get '/', :provides => ['rss', 'atom', 'xml'] do
   builder :feed
 end
 ```
+`provides` se base sur l'en-tête `Accept` de la requête.
 
 Vous pouvez facilement définir vos propres conditions :
 
 ``` ruby
-set(:probability) { |value| condition { rand <= value } }
+set(:chance) { |valeur| condition { rand <= valeur } }
 
-get '/gagner_une_voiture', :probability => 0.1 do
+get '/gagner_une_voiture', :chance => 0.1 do
   "Vous avez gagné !"
 end
 
@@ -289,7 +291,7 @@ get '/gagner_une_voiture' do
 end
 ```
 
-Utilisez un splat (caractère joker) dans le cas d'une condition qui prend
+Utilisez un `splat` (caractère joker) dans le cas d'une condition qui prend
 plusieurs valeurs :
 
 ``` ruby
@@ -313,7 +315,7 @@ end
 ## Valeurs de retour
 
 La valeur renvoyée par le bloc correspondant à une route constitue le corps de
-la réponse qui sera transmise au client HTTP ou du moins au prochain middleware
+la réponse qui sera transmise au client HTTP ou du moins au prochain `middleware`
 dans la pile Rack. Le plus souvent, il s'agit d'une chaîne de caractères,
 comme dans les exemples précédents. Cependant, d'autres valeurs sont
 acceptées.
@@ -321,7 +323,7 @@ acceptées.
 Vous pouvez renvoyer n'importe quel objet qu'il s'agisse d'une réponse Rack
 valide, d'un corps de réponse Rack ou d'un code statut HTTP :
 
-* Un tableau de 3 éléments : `[code statut (Fixnum), entêtes (Hash), corps
+* Un tableau de 3 éléments : `[code statut (Fixnum), en-têtes (Hash), corps
   de la réponse (répondant à #each)]`
 * Un tableau de 2 élements : `[code statut (Fixnum), corps de la réponse
   (répondant à #each)]`
@@ -329,7 +331,7 @@ valide, d'un corps de réponse Rack ou d'un code statut HTTP :
   caractères au bloc fourni
 * Un Fixnum représentant le code statut
 
-Avec cela, on peut facilement implémenter un streaming par exemple :
+Ainsi, on peut facilement implémenter un exemple de streaming :
 
 ``` ruby
 class Stream
@@ -342,7 +344,7 @@ get('/') { Stream.new }
 ```
 
 Vous pouvez aussi utiliser le helper `stream` (présenté un peu plus loin) pour
-éviter la surcharge et intégrer le traitement relatif au streaming dans le bloc
+éviter les répétitions et intégrer le traitement relatif au streaming dans le bloc
 de code de la route.
 
 ## Masques de route spécifiques
@@ -375,8 +377,7 @@ get tout_sauf("/index") do
 end
 ```
 
-Notez que l'exemple ci-dessus est bien trop compliqué et que le même résultat
-peut être obtenu avec :
+Notez que l'exemple ci-dessus est plus compliqué qu'il ne devrait et peut être implémenté de la façon suivante :
 
 ``` ruby
 get // do
@@ -385,7 +386,7 @@ get // do
 end
 ```
 
-Ou bien en utilisant la forme négative :
+Ou bien en utilisant cette expression regulière :
 
 ``` ruby
 get %r{^(?!/index$)} do
@@ -395,24 +396,22 @@ end
 
 ## Fichiers statiques
 
-Les fichiers du dossier `./public` sont servis de façon statique. Vous
-avez la possibilité d'utiliser un autre répertoire en définissant le paramètre
-`:public_folder` :
+Les fichiers du dossier `./public` sont servis de façon statique. Vous pouvez spécifier un autre dossier avec le paramètre `:public_folder` :
 
 ``` ruby
 set :public_folder, File.dirname(__FILE__) + '/statique'
 ```
 
 Notez que le nom du dossier public n'apparait pas dans l'URL. Le fichier
-`./public/css/style.css` sera appelé via l'URL :
+`./public/css/style.css` sera accessible à l'URL :
 `http://exemple.com/css/style.css`.
 
 Utilisez le paramètre `:static_cache_control` pour ajouter l'information
-d'en-tête <tt>Cache-Control</tt> (voir plus loin).
+d'en-tête `Cache-Control` (voir plus bas).
 
 ## Vues / Templates
 
-Chaqie langage de template est disponible via sa propre méthode de rendu,
+Chaque langage de template est disponible via sa propre méthode de rendu,
 lesquelles renvoient tout simplement une chaîne de caractères.
 
 ``` ruby
@@ -421,7 +420,7 @@ get '/' do
 end
 ```
 
-Ceci effectue le rendu de la vue `views/index.erb`.
+Ceci génère la vue `views/index.erb`.
 
 Plutôt que d'utiliser le nom d'un template, vous pouvez directement passer
 le contenu du template :
@@ -433,7 +432,7 @@ get '/' do
 end
 ```
 
-Les méthodes de templates acceptent un second paramètre, un hash d'options :
+Les méthodes de templates acceptent un hash d'options comme second argument :
 
 ``` ruby
 get '/' do
@@ -441,9 +440,7 @@ get '/' do
 end
 ```
 
-Ceci effectuera le rendu de la vue `views/index.erb` en l'intégrant
-au *layout* `views/post.erb` (les vues Erb sont intégrées par défaut
-au *layout* `views/layout.erb` quand ce fichier existe).
+Ceci génèrera la vue `views/index.erb` en l'intégrant au *layout* `views/post.erb` (`views/layout.erb` est la valeur par défaut si ce fichier existe).
 
 Toute option que Sinatra ne comprend pas sera passée au moteur de rendu :
 
@@ -453,7 +450,7 @@ get '/' do
 end
 ```
 
-Vous pouvez également définir des options par langage de template de façon
+Vous pouvez également définir les options de chaque langage de template de façon
 générale :
 
 ``` ruby
@@ -464,8 +461,7 @@ get '/' do
 end
 ```
 
-Les options passées à la méthode de rendu prennent le pas sur les options
-définies au moyen de `set`.
+Les arguments passés à la méthode de rendu prennent le pas sur les options définies au moyen de `set`.
 
 Options disponibles :
 
@@ -479,7 +475,7 @@ Options disponibles :
 
   <dt>default_encoding</dt>
   <dd>
-    Encodage de caractères à utiliser en cas d'incertitude. Par défaut, c'est
+    Encodage de caractères à utiliser en cas d'incertitude. Par défaut 
     <tt>settings.default_encoding</tt>.
   </dd>
 
@@ -492,19 +488,18 @@ Options disponibles :
   <dt>layout</dt>
   <dd>
     S'il faut ou non utiliser un layout (<tt>true</tt> ou <tt>false</tt>).
-    Indique le template à utiliser lorsque c'est un symbole. Exemple :
+    Ou indique le template à utiliser lorsque c'est un symbole. Exemple :
     <tt>erb :index, :layout => !request.xhr?</tt>.
   </dd>
 
   <dt>content_type</dt>
   <dd>
-    Content-Type que le template produit, dépend par défaut du langage de
-    template.
+    Content-Type que le template génère. La valeur par défaut dépend du langage de template.
   </dd>
 
   <dt>scope</dt>
   <dd>
-    Contexte sous lequel effectuer le rendu du template. Par défaut il s'agit
+    Contexte dans lequel effectuer le rendu du template. Par défaut il s'agit
     de l'instance de l'application. Si vous changez cela, les variables
     d'instance et les méthodes utilitaires ne seront pas disponibles.
   </dd>
@@ -518,7 +513,7 @@ Options disponibles :
 
   <dt>layout_options</dt>
   <dd>
-    Options spécifiques destinées au moteur de rendu. Exemple : <tt>set :rdoc,
+    Options spécifiques à la génération du layout. Exemple : <tt>set :rdoc,
     :layout_options => { :views => 'views/layouts' }</tt>
   </dd>
 </dl>
@@ -544,7 +539,7 @@ get '/' do
 end
 ```
 
-Générera le code du template spécifié dans la chaîne de caractères.
+Utilisera la chaine de caractères comme template pour générer la réponse.
 
 ### Langages de template disponibles
 
@@ -737,22 +732,21 @@ locales.
 </table>
 
 Il n’est pas possible d’appeler des méthodes depuis markdown, ni de
-lui passer des variables locales. Par conséquent, il sera souvent utilisé
+lui passer de variables locales. Par conséquent, il sera souvent utilisé
 en combinaison avec un autre moteur de rendu :
 
 ``` ruby
-erb :overview, :locals => { :text => markdown(:introduction) }
+erb :accueil, :locals => { :text => markdown(:introduction) }
 ```
 
-Notez que vous pouvez également appeler la méthode `markdown` au
-sein d’autres templates :
+Notez que vous pouvez également appeler la méthode `markdown` depuis un autre template :
 
 ``` ruby
-%h1 Hello From Haml !
-%p= markdown(:greetings)
+%h1 Bonjour depuis Haml !
+%p= markdown(:bienvenue)
 ```
 
-Comme vous ne pouvez pas appeler de Ruby au sein de Markdown, vous ne
+Comme vous ne pouvez pas appeler de méthode Ruby depuis Markdown, vous ne
 pouvez pas utiliser de layouts écrits en Markdown. Toutefois, il
 est possible d’utiliser un moteur de rendu différent pour le template et
 pour le layout en utilisant l’option `:layout_engine`.
@@ -774,23 +768,22 @@ pour le layout en utilisant l’option `:layout_engine`.
   </tr>
 </table>
 
-Il n’est pas possible d’appeler des méthodes depuis textile, ni de lui
-passer des variables locales. Par conséquent, il sera souvent utilisé en
+Il n’est pas possible d’appeler de méthodes depuis textile, ni de lui
+passer de variables locales. Par conséquent, il sera souvent utilisé en
 combinaison avec un autre moteur de rendu :
 
 ``` ruby
-erb :overview, :locals => { :text => textile(:introduction) }
+erb :accueil, :locals => { :text => textile(:introduction) }
 ```
 
-Notez que vous pouvez également appeler la méthode `textile` au
-sein d’autres templates :
+Notez que vous pouvez également appeler la méthode `textile` depuis un autre template :
 
 ``` ruby
-%h1 Hello From Haml !
-%p= textile(:greetings)
+%h1 Bonjour depuis Haml !
+%p= textile(:bienvenue)
 ```
 
-Comme vous ne pouvez pas appeler de Ruby au sein de Textile, vous ne pouvez
+Comme vous ne pouvez pas appeler de méthode Ruby depuis Textile, vous ne pouvez
 pas utiliser de layouts écrits en Textile. Toutefois, il est
 possible d’utiliser un moteur de rendu différent pour le template et
 pour le layout en utilisant l’option `:layout_engine`.
@@ -812,23 +805,22 @@ pour le layout en utilisant l’option `:layout_engine`.
   </tr>
 </table>
 
-Il n’est pas possible d’appeler des méthodes depuis rdoc, ni de lui
-passer des variables locales. Par conséquent, il sera souvent utilisé en
+Il n’est pas possible d’appeler de méthodes Ruby depuis rdoc, ni de lui
+passer de variables locales. Par conséquent, il sera souvent utilisé en
 combinaison avec un autre moteur de rendu :
 
 ``` ruby
-erb :overview, :locals => { :text => rdoc(:introduction) }
+erb :accueil, :locals => { :text => rdoc(:introduction) }
 ```
 
-Notez que vous pouvez également appeler la méthode `rdoc` au sein
-d’autres templates :
+Notez que vous pouvez également appeler la méthode `rdoc` depuis un autre template :
 
 ``` ruby
-%h1 Hello From Haml !
-%p= rdoc(:greetings)
+%h1 Bonjour depuis Haml !
+%p= rdoc(:bienvenue)
 ```
 
-Comme vous ne pouvez pas appeler de Ruby au sein de RDoc, vous ne pouvez
+Comme vous ne pouvez pas appeler de méthodes Ruby depuis RDoc, vous ne pouvez
 pas utiliser de layouts écrits en RDoc. Toutefois, il est
 possible d’utiliser un moteur de rendu différent pour le template et
 pour le layout en utilisant l’option `:layout_engine`.
@@ -923,23 +915,22 @@ exemple).
   </tr>
 </table>
 
-Il n'est pas possible d'appeler des méthodes depuis creole, ni de lui
-passer des variables locales. Par conséquent, il sera souvent utilisé en
+Il n'est pas possible d'appeler de méthodes Ruby depuis creole, ni de lui
+passer de variables locales. Par conséquent, il sera souvent utilisé en
 combinaison avec un autre moteur de rendu :
 
 ``` ruby
-erb :overview, :locals => { :text => markdown(:introduction) }
+erb :accueil, :locals => { :text => markdown(:introduction) }
 ```
 
-Notez que vous pouvez également appeler la méthode `creole` au sein d'autres
-templates :
+Notez que vous pouvez également appeler la méthode `creole` depuis un autre template :
 
 ``` ruby
-%h1 Hello From Haml !
-%p= creole(:greetings)
+%h1 Bonjour depuis Haml !
+%p= creole(:bienvenue)
 ```
 
-Comme vous ne pouvez pas appeler de Ruby au sein de Creole, vous ne pouvez
+Comme vous ne pouvez pas appeler de méthodes Ruby depuis Creole, vous ne pouvez
 pas utiliser de layouts écrits en Creole. Toutefois, il est possible
 d'utiliser un moteur de rendu différent pour le template et pour le layout
 en utilisant l'option `:layout_engine`.
@@ -1022,12 +1013,12 @@ end
   </tr>
   <tr>
     <td>Exemple</td>
-    <td><tt>yajl :index, :locals => { :key => 'qux' }, :callback => 'present', :variable => 'resource'</tt></p>
+    <td><tt>yajl :index, :locals => { :key => 'qux' }, :callback => 'present', :variable => 'ressource'</tt></p>
     </td>
   </tr>
 </table>
 
-Le source du template est évalué en tant que chaine Ruby, puis la
+La source du template est évaluée en tant que chaine Ruby, puis la
 variable json obtenue est convertie avec #to_json.
 
 ``` ruby
@@ -1039,7 +1030,7 @@ Les options `:callback` et `:variable` peuvent être utilisées pour décorer
 l’objet retourné.
 
 ``` ruby
-var resource = {"foo":"bar","baz":"qux"}; present(resource);</pre>
+var ressource = {"foo":"bar","baz":"qux"}; present(ressource);</pre>
 ```
 
 #### Templates WLang
@@ -1060,7 +1051,7 @@ var resource = {"foo":"bar","baz":"qux"}; present(resource);</pre>
 </table>
 
 L’appel de code ruby au sein des templates n’est pas idiomatique en wlang.
-L’écriture de templates sans logique est encouragé, via le passage de variables
+L’écriture de templates sans logique est encouragée, via le passage de variables
 locales. Il est néanmoins possible d’écrire un layout en wlang et d’y utiliser
 `yield`.
 
@@ -1086,10 +1077,7 @@ get '/:id' do
 end
 ```
 
-Ceci est généralement utilisé lorsque l'on veut utiliser un template comme
-partiel (depuis un autre template) et qu'il est donc nécessaire d'adapter les
-noms de variables.
-
+Ceci est généralement nécessaire lorsque l'on veut utiliser un template depuis un autre template (partiel) et qu'il faut donc adapter le nom des variables.  
 
 ### Templates avec `yield` et layouts imbriqués
 
@@ -1103,24 +1091,24 @@ erb :post, :layout => false do
 end
 ```
 
-Ce code est à globalement équivalent à `erb :index, :layout => :post`.
+Ce code est plus ou moins équivalent à `erb :index, :layout => :post`.
 
 Le fait de passer des blocs aux méthodes de rendu est particulièrement utile
 pour gérer des templates imbriqués :
 
 ``` ruby
-erb :main_layout, :layout => false do
-  erb :admin_layout do
-    erb :user
+erb :layout_principal, :layout => false do
+  erb :layout_admin do
+    erb :utilisateur
   end
 end
 ```
 
-Ce qui peut aussi être fait avec un peu moins de code :
+Ou plus brièvement :
 
 ``` ruby
-erb :admin_layout, :layout => :main_layout do
-  erb :user
+erb :layout_admin, :layout => :layout_principal do
+  erb :utilisateur
 end
 ```
 
@@ -1201,7 +1189,7 @@ En premier lieu, déclarez votre moteur de rendu avec Tilt, ensuite créez
 votre méthode de rendu :
 
 ``` ruby
-Tilt.register :monmoteur, MonMerveilleurMoteurDeRendu
+Tilt.register :monmoteur, MonMerveilleuxMoteurDeRendu
 
 helpers do
   def monmoteur(*args) render(:monmoteur, *args) end
@@ -1212,11 +1200,11 @@ get '/' do
 end
 ```
 
-Utilisera `./views/index.monmoteur`. Voir [le dépôt Github](https://github.com/rtomayko/tilt) pour en savoir plus sur Tilt.
+Utilisera `./views/index.monmoteur`. Voir [le projet Github](https://github.com/rtomayko/tilt) pour en savoir plus sur Tilt.
 
 ## Filtres
 
-Les filtres before sont exécutés avant chaque requête, dans le même contexte
+Les filtres `before` sont exécutés avant chaque requête, dans le même contexte
 que les routes, et permettent de modifier la requête et sa réponse. Les
 variables d'instance déclarées dans les filtres sont accessibles au niveau
 des routes et des templates :
@@ -1233,10 +1221,10 @@ get '/foo/*' do
 end
 ```
 
-Les filtres after sont exécutés après chaque requête à l'intérieur du même
+Les filtres `after` sont exécutés après chaque requête à l'intérieur du même
 contexte et permettent de modifier la requête et sa réponse. Les variables
-d'instance déclarées dans les filtres before ou les routes sont accessibles
-au niveau des filtres after :
+d'instance déclarées dans les filtres `before` ou les routes sont accessibles
+au niveau des filtres `after` :
 
 ``` ruby
 after do
@@ -1244,7 +1232,7 @@ after do
 end
 ```
 
-Note : Le corps de la réponse n'est pas disponible au niveau du filtre after
+Note : Le corps de la réponse n'est pas disponible au niveau du filtre `after`
 car il ne sera généré que plus tard (sauf dans le cas où vous utilisez la
 méthode `body` au lieu de simplement renvoyer une chaine depuis vos routes).
 
@@ -1275,7 +1263,7 @@ end
 
 ## Helpers
 
-Utilisez la méthode de haut niveau `helpers` pour définir des routines
+Utilisez la méthode de haut niveau `helpers` pour définir des méthodes
 qui seront accessibles dans vos gestionnaires de route et dans vos templates :
 
 ``` ruby
@@ -1309,7 +1297,7 @@ l'application.
 
 ### Utiliser les sessions
 
-Une session est utilisée pour conserver un état entre les requêtes. Une fois
+Les sessions sont utilisées pour conserver un état entre les requêtes. Une fois
 activées, vous avez un hash de session par session utilisateur :
 
 ``` ruby
@@ -1319,7 +1307,7 @@ get '/' do
   "valeur = " << session['valeur'].inspect
 end
 
-get '/:value' do
+get '/:valeur' do
   session['valeur'] = params['valeur']
 end
 ```
@@ -1338,7 +1326,7 @@ get '/' do
   "valeur = " << session['valeur'].inspect
 end
 
-get '/:value' do
+get '/:valeur' do
   session['valeur'] = params['valeur']
 end
 ```
@@ -1360,8 +1348,8 @@ hash avec des options lors de la configuration de `sessions` :
 set :sessions, :domain => 'foo.com'
 ```
 
-Pour que les différents sous-domaines de foo.com puisse partager une session,
-vous devez préfixer le domaine par *.* :
+Pour que les différents sous-domaines de foo.com puissent partager une session,
+vous devez précéder le domaine d'un *.* (point) :
 
 ``` ruby
 set :sessions, :domain => '.foo.com'
@@ -1395,7 +1383,7 @@ Ou les deux ...
 halt 401, 'Partez !'
 ```
 
-Ainsi que les entêtes ...
+Ainsi que les en-têtes ...
 
 ``` ruby
 halt 402, {'Content-Type' => 'text/plain'}, 'revanche'
@@ -1448,14 +1436,14 @@ Notez que dans l'exemple ci-dessus, vous faciliterez les tests et améliorerez
 la performance en déplaçant simplement `"bar"` dans un helper
 utilisé à la fois par `/foo` et `/bar`.
 
-Si vous souhiatez que la requête soit envoyée à la même instance de
+Si vous souhaitez que la requête soit envoyée à la même instance de
 l'application plutôt qu'à une copie, utilisez `call!` au lieu de
 `call`.
 
 Lisez la spécification Rack si vous souhaitez en savoir plus sur
 `call`.
 
-### Définir le corps, le code retour et les entêtes
+### Définir le corps, le code retour et les en-têtes
 
 Il est possible et recommandé de définir le code retour et le corps de la
 réponse au moyen de la valeur de retour d'un bloc définissant une route.
@@ -1479,7 +1467,7 @@ gestionnaire Rack (ceci peut être utilisé pour implémenter un streaming,
 voir "Valeurs de retour").
 
 Pareillement au corps de la réponse, vous pouvez également définir le code
-retour et les entêtes :
+retour et les en-têtes :
 
 ``` ruby
 get '/foo' do
@@ -1491,7 +1479,7 @@ get '/foo' do
 end
 ```
 
-Comme `body` `headers` et `status` peuvent être utilisés sans arguments
+Comme pour `body`, `headers` et `status` peuvent être utilisés sans arguments
 pour accéder à leurs valeurs.
 
 ### Faire du streaming
@@ -1499,7 +1487,7 @@ pour accéder à leurs valeurs.
 Il y a des cas où vous voulez commencer à renvoyer des données pendant que
 vous êtes en train de générer le reste de la réponse. Dans les cas les plus
 extrèmes, vous souhaitez continuer à envoyer des données tant que le client
-n'abandonne pas la connection. Vous pouvez alors utiliser le helper `stream`
+n'abandonne pas la connexion. Vous pouvez alors utiliser le helper `stream`
 pour éviter de créer votre propre système :
 
 ``` ruby
@@ -1518,16 +1506,16 @@ Cela permet d'implémenter des API de streaming ou de
 [Server Sent Events](http://dev.w3.org/html5/eventsource/) et peut servir de
 base pour des [WebSockets](http://en.wikipedia.org/wiki/WebSocket). Vous
 pouvez aussi l'employer pour augmenter le débit quand une partie du contenu
-provient d'une resource lente.
+provient d'une ressource lente.
 
 Le fonctionnement du streaming, notamment le nombre de requêtes simultanées,
 dépend énormément du serveur web utilisé. Certains ne prennent pas du tout en
 charge le streaming. Lorsque le serveur ne gère pas le streaming, la partie
-body de la réponse sera envoyée au client en une seule fois, après que
-l'exécution du bloc passé au helper `stream` sera terminée. Le streaming ne
+body de la réponse sera envoyée au client en une seule fois, après 
+l'exécution du bloc passé au helper `stream`. Le streaming ne
 fonctionne pas du tout avec Shotgun.
 
-En utilisant le helper stream avec le paramètre `keep_open`, il n'appelera
+En utilisant le helper `stream` avec le paramètre `keep_open`, il n'appelera
 pas la méthode `close` du flux, vous laissant la possibilité de le fermer à
 tout moment au cours de l'exécution. Ceci ne fonctionne qu'avec les serveurs
 evented (ie non threadés) tels que Thin et Rainbows. Les autres serveurs
@@ -1642,7 +1630,7 @@ get '/foo' do
 end
 ```
 
-Tout paramètre additionnel est géré comme des arguments pour la méthode
+Tout paramètre additionnel sera utilisé comme argument pour la méthode
 `halt` :
 
 ``` ruby
@@ -1687,9 +1675,9 @@ end
 
 ### Contrôle du cache
 
-Définir correctement vos entêtes à la base pour un bon cache HTTP.
+Définissez correctement vos en-têtes à la base pour un bon cache HTTP.
 
-Vous pouvez facilement définir l'entête Cache-Control de la manière suivante :
+Vous pouvez facilement définir l'en-tête Cache-Control de la manière suivante :
 
 ``` ruby
 get '/' do
@@ -1706,7 +1694,7 @@ before do
 end
 ```
 
-Si vous utilisez la méthode `expires` pour définir l'entête correspondant,
+Si vous utilisez la méthode `expires` pour définir l'en-tête correspondant,
 `Cache-Control` sera alors défini automatiquement :
 
 ``` ruby
@@ -1715,7 +1703,7 @@ before do
 end
 ```
 
-Pour utiliser correctement les caches, vous devriez utiliser `etag` ou
+Pour utiliser correctement le cache, vous devriez utiliser `etag` ou
 `last_modified`. Il est recommandé d'utiliser ces méthodes *avant* de faire
 d'importantes modifications, car elles vont immédiatement déclencher la réponse
 si le client a déjà la version courante dans son cache :
@@ -1737,8 +1725,8 @@ etag @article.sha1, :weak
 ```
 
 Ces méthodes ne sont pas chargées de mettre des données en cache, mais elles
-fournissent les informations nécessaires pour votre cache. Si vous êtes à la
-recherche de solutions rapides pour un reverse-proxy de cache, essayez
+fournissent les informations nécessaires pour le cache de votre navigateur. Si vous êtes à la
+recherche d'une solution rapide pour un reverse-proxy de cache, essayez
 [rack-cache](https://github.com/rtomayko/rack-cache) :
 
 ``` ruby
@@ -1759,21 +1747,21 @@ d'en-tête `Cache-Control` (voir plus loin).
 
 D'après la RFC 2616, votre application devrait se comporter différement lorsque
 l'en-tête If-Match ou If-None-Match est défini à `*` en tenant compte du
-fait que la resource demandée existe déjà ou pas. Sinatra considère que les
-requêtes portant sur des resources sûres (tel que get) ou idempotentes (tel que
-put) existent déjà et pour les autres resources (par exemple dans le cas
-de requêtes post) qu'il s'agit de nouvelles resources. Vous pouvez modifier ce
+fait que la ressource demandée existe déjà ou pas. Sinatra considère que les
+requêtes portant sur des ressources sûres (tel que get) ou idempotentes (tel que
+put) existent déjà et pour les autres ressources (par exemple dans le cas
+de requêtes post) qu'il s'agit de nouvelles ressources. Vous pouvez modifier ce
 comportement en passant une option `:new_resource` :
 
 ``` ruby
 get '/create' do
   etag '', :new_resource => true
   Article.create
-  erb :new_article
+  erb :nouvel_article
 end
 ```
 
-Si vous souhaitez utilisez un ETag faible, utilisez l'option <tt>:kind</tt> :
+Si vous souhaitez avoir un ETag faible, utilisez l'option `:kind` :
 
 ``` ruby
 etag '', :new_resource => true, :kind => :weak
@@ -1805,8 +1793,8 @@ Les options sont :
 
   <dt>last_modified</dt>
   <dd>
-    valeur pour l’entête Last-Modified, par défaut la date de modification du
-    fichier
+    valeur pour l’en-tête Last-Modified, par défaut la date de modification du
+    fichier.
   </dd>
 
   <dt>type</dt>
@@ -1817,22 +1805,22 @@ Les options sont :
 
   <dt>disposition</dt>
   <dd>
-    utilisé pour Content-Disposition, les valuers possibles étant : <tt>nil</tt>
+    utilisé pour Content-Disposition, les valeurs possibles étant : <tt>nil</tt>
     (par défaut), <tt>:attachment</tt> et <tt>:inline</tt>
   </dd>
 
   <dt>length</dt>
-  <dd>entête Content-Length, par défaut la taille du fichier</dd>
+  <dd>en-tête Content-Length, par défaut la taille du fichier</dd>
 
   <dt>status</dt>
   <dd>
     code état à renvoyer. Utile quand un fichier statique sert de page d’erreur.
+
+    Si le gestionnaire Rack le supporte, d'autres moyens que le streaming via le
+    processus Ruby seront utilisés. Si vous utilisez cette méthode, Sinatra gérera
+    automatiquement les requêtes de type range.
   </dd>
 </dl>
-
-Si le gestionnaire Rack le supporte, d'autres moyens que le streaming via le
-processus Ruby seront utilisés. Si vous utilisez cette méthode, Sinatra gérera
-automatiquement les requêtes de type range.
 
 ### Accéder à l'objet requête
 
@@ -1845,7 +1833,7 @@ de la requête (filtres, routes, gestionnaires d'erreur) au moyen de la méthode
 get '/foo' do
   t = %w[text/css text/html application/javascript]
   request.accept              # ['text/html', '*/*']
-  request.accept? 'text/xml'  # true
+  request.accept? 'text/xml'  # vrai
   request.preferred_type(t)   # 'text/html'
   request.body                # corps de la requête envoyée par le client
                               # (voir ci-dessous)
@@ -1858,10 +1846,10 @@ get '/foo' do
   request.content_length      # taille de request.body
   request.media_type          # type de média pour request.body
   request.host                # "exemple.com"
-  request.get?                # true (méthodes similaires pour les autres
+  request.get?                # vrai (méthodes similaires pour les autres
                               # verbes HTTP)
-  request.form_data?          # false
-  request["UN_ENTETE"]        # valeur de l'entête UN_ENTETE
+  request.form_data?          # faux
+  request["UN_ENTETE"]        # valeur de l'en-tête UN_ENTETE
   request.referrer            # référant du client ou '/'
   request.user_agent          # user agent (utilisé par la condition :agent)
   request.cookies             # tableau contenant les cookies du navigateur
@@ -1869,7 +1857,7 @@ get '/foo' do
   request.url                 # "http://exemple.com/exemple/foo"
   request.path                # "/exemple/foo"
   request.ip                  # adresse IP du client
-  request.secure?             # false
+  request.secure?             # faux
   request.forwarded?          # vrai (si on est derrière un proxy inverse)
   request.env                 # tableau brut de l'environnement fourni par Rack
 end
@@ -1965,7 +1953,7 @@ find_template settings.views, 'foo', Tilt[:haml] do |file|
 end
 ```
 
-Ce n'est pas très utilise. En revanche, il est utile de pouvoir surcharger
+Ce n'est pas très utile. En revanche, il est utile de pouvoir surcharger
 cette méthode afin de définir son propre mécanisme de recherche. Par exemple,
 vous pouvez utiliser plus d'un répertoire de vues :
 
@@ -1986,10 +1974,10 @@ de rendu différents :
 set :views, :sass => 'views/sass', :haml => 'templates', :default => 'views'
 
 helpers do
-  def find_template(views, name, engine, &block)
-    _, folder = views.detect { |k,v| engine == Tilt[k] }
-    folder ||= views[:default]
-    super(folder, name, engine, &block)
+  def find_template(vues, nom, moteur, &bloc)
+    _, dossier = vues.detect { |k,v| moteur == Tilt[k] }
+    dossier ||= vues[:default]
+    super(dossier, nom, moteur, &bloc)
   end
 end
 ```
@@ -1999,10 +1987,10 @@ d'autres !
 
 Notez que `find_template` ne vérifie pas que le fichier existe mais
 va plutôt exécuter le bloc pour tous les chemins possibles. Cela n'induit pas
-un problème de performance dans le sens où `render` va utiliser `break` dès
-qu'un fichier est trouvé. De plus, l'emplacement des templates (et leur
+de problème de performance dans le sens où `render` va utiliser `break` dès
+qu'un fichier sera trouvé. De plus, l'emplacement des templates (et leur
 contenu) est mis en cache si vous n'êtes pas en mode développement. Vous
-devriez garder cela en tête si vous écrivez une méthode vraiment dingue.
+devez garder cela en tête si vous écrivez une méthode vraiment dingue.
 
 ## Configuration
 
@@ -2011,15 +1999,15 @@ Lancé une seule fois au démarrage de tous les environnements :
 ``` ruby
 configure do
   # définir un paramètre
-  set :option, 'value'
+  set :option, 'valeur'
 
-  # définir plusieurs paramètre
+  # définir plusieurs paramètres
   set :a => 1, :b => 2
 
-  # identique à "set :option, true"
+  # équivalent à "set :option, true"
   enable :option
 
-  # identique à "set :option, false""
+  # équivalent à "set :option, false""
   disable :option
 
   # vous pouvez également avoir des paramètres dynamiques avec des blocs
@@ -2027,8 +2015,7 @@ configure do
 end
 ```
 
-Lancé si l'environnement (variable d'environnement RACK_ENV) est défini comme
-`:production` :
+Lancé si l'environnement (variable d'environnement RACK_ENV) est `:production` :
 
 ``` ruby
   configure :production do
@@ -2301,11 +2288,11 @@ Erreur sur mesure :
 
 ``` ruby
 error MonErreurSurMesure do
-  'Donc il est arrivé ceci...' + env['sinatra.error'].message
+  'Oups ! Il est arrivé...' + env['sinatra.error'].message
 end
 ```
 
-Donc si ceci arrive :
+Donc si cette erreur est soulevée :
 
 ``` ruby
 get '/' do
@@ -2313,9 +2300,11 @@ get '/' do
 end
 ```
 
-Vous obtenez ça :
+La réponse sera :
 
-  Donc il est arrivé ceci... quelque chose de mal
+```
+Oups ! Il est arrivé... quelque chose de mal
+```
 
 Alternativement, vous pouvez avoir un gestionnaire d'erreur associé à un code
 particulier :
@@ -2339,19 +2328,19 @@ end
 ```
 
 Sinatra installe pour vous quelques gestionnaires `not_found` et
-`error` génériques lorsque vous êtes en environnement
+`error` génériques lorsque vous êtes en environnement de 
 `development`.
 
 ## Les Middlewares Rack
 
-Sinatra tourne avec [Rack](http://rack.github.io/), une interface standard
+Sinatra fonctionne avec [Rack](http://rack.github.io/), une interface standard
 et minimale pour les web frameworks Ruby. Un des points forts de Rack est le
-support de ce que l'on appelle des "middlewares" -- composant qui vient se
+support de ce que l'on appelle des "middlewares" -- composants qui viennent se
 situer entre le serveur et votre application, et dont le but est de
 visualiser/manipuler la requête/réponse HTTP, et d'offrir diverses
 fonctionnalités classiques.
 
-Sinatra permet de construire facilement des middlewares Rack via la méthode de
+Sinatra permet d'utiliser facilement des middlewares Rack via la méthode de
 haut niveau `use` :
 
 ``` ruby
@@ -2368,19 +2357,19 @@ end
 
 La sémantique de `use` est identique à celle définie dans le DSL de
 [Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder)
-(le plus souvent utilisé dans un fichier rackup). Par exemple, la méthode
+(le plus souvent utilisé dans un fichier `rackup`). Par exemple, la méthode
 `use` accepte divers arguments ainsi que des blocs :
 
 ``` ruby
-use Rack::Auth::Basic do |login, password|
-  login == 'admin' && password == 'secret'
+use Rack::Auth::Basic do |identifiant, mot_de_passe|
+  identifiant == 'admin' && mot_de_passe == 'secret'
 end
 ```
 
 Rack est distribué avec de nombreux middlewares standards pour loguer, débuguer,
 faire du routage URL, de l'authentification ou gérer des sessions. Sinatra gère
 plusieurs de ces composants automatiquement via son système de configuration, ce
-qui vous dispense de faire un `use` en ce qui les concerne.
+qui vous dispense de faire un `use` pour ces derniers.
 
 Vous trouverez d'autres middlewares intéressants sur
 [rack](https://github.com/rack/rack/tree/master/lib/rack),
@@ -2411,7 +2400,7 @@ class MonTest < Minitest::Test
   end
 
   def test_avec_des_parametres
-    get '/rencontrer', :name => 'Frank'
+    get '/rencontrer', :nom => 'Frank'
     assert_equal 'Salut Frank !', last_response.body
   end
 
@@ -2477,11 +2466,11 @@ end
 ### Style modulaire vs. style classique
 
 Contrairement aux idées reçues, il n'y a rien de mal à utiliser le style
-classique. Si c'est ce qui convient pour votre application, vous n'avez pas
+classique. Si c'est ce qui convient pour votre application, vous n'avez 
 aucune raison de passer à une application modulaire.
 
 Le principal inconvénient du style classique sur le style modulaire est que vous
-ne pouvez avoir qu'une application Ruby par processus Ruby. Si vous pensez en
+ne pouvez avoir qu'une application par processus Ruby. Si vous pensez en
 utiliser plus, passez au style modulaire. Et rien ne vous empêche de mixer style
 classique et style modulaire.
 
@@ -2615,7 +2604,7 @@ de passer au style modulaire pour utiliser un fichier `config.ru`.**
 
 Non seulement Sinatra peut utiliser d'autres middlewares Rack, il peut
 également être à son tour utilisé au-dessus de n'importe quel endpoint Rack
-en tant que middleware. Ce endpoint peut très bien être une autre
+en tant que middleware. Cet endpoint peut très bien être une autre
 application Sinatra, ou n'importe quelle application basée sur Rack
 (Rails/Ramaze/Camping/...) :
 
@@ -2682,7 +2671,7 @@ map('/b') do
 end
 ```
 
-C'est notamment utile pour tester des extensions à Sinatra ou bien pour
+C'est notamment utile pour tester des extensions pour Sinatra ou bien pour
 utiliser Sinatra dans votre propre bibliothèque.
 
 Cela permet également d'utiliser très facilement Sinatra comme middleware :
@@ -2777,9 +2766,9 @@ Le contexte de délégation se contente de transmettre les appels de méthodes a
 contexte de classe. Toutefois, il ne se comporte pas à 100% comme le contexte
 de classe car vous n'avez pas le binding de la classe : seules les méthodes
 spécifiquement déclarées pour délégation sont disponibles et il n'est pas
-possible de partager des variables/états avec le contexte de classe
-(comprenez : `self` n'est pas le même). Vous pouvez ajouter des délégation de
-méthodes en appelant `Sinatra::Delegator.delegate :method_name`.
+possible de partager de variables/états avec le contexte de classe
+(comprenez : `self` n'est pas le même). Vous pouvez ajouter des délégations de
+méthode en appelant `Sinatra::Delegator.delegate :method_name`.
 
 Vous avez le binding du contexte de délégation dans :
 
