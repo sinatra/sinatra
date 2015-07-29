@@ -3,10 +3,10 @@ language: ruby
 
 rvm:
   - 2.2
-  - rbx-2
-  - jruby-9.0.0.0.pre1
-  - jruby-head
+  - jruby-9.0.0.0
   - ruby-head
+  - jruby-head
+  - rbx-2
 
 sudo: false
 
@@ -17,6 +17,6 @@ matrix:
   allow_failures:
     - env: rack=master
     - env: tilt=master
-    - rvm: rbx-2
     - rvm: ruby-head
     - rvm: jruby-head
+    - rvm: rbx-2
