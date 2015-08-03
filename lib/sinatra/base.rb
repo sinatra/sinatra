@@ -805,7 +805,8 @@ module Sinatra
       layout          = engine_options[:layout] if layout.nil? or (layout == true && engine_options[:layout] != false)
       layout          = @default_layout         if layout.nil? or layout == true
       layout_options  = options.delete(:layout_options) || {}
-      content_type    = options.delete(:content_type)   || options.delete(:default_content_type)
+      content_type    = options.delete(:default_content_type)
+      content_type    = options.delete(:content_type)   || content_type
       layout_engine   = options.delete(:layout_engine)  || engine
       scope           = options.delete(:scope)          || self
       options.delete(:layout)
