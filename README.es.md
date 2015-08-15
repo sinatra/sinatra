@@ -2606,6 +2606,41 @@ Las opciones son:
 -x # activa el mutex lock (está desactivado por defecto)
 ```
 
+### Multi-threading
+
+_Basado en [esta respuesta en StackOverflow][so-answer] escrita por Konstantin_
+
+Sinatra no impone ningún modelo de concurrencia, sino que lo deja en manos del
+handler Rack que se esté usando (Thin, Puma, WEBrick). Sinatra en sí mismo es
+thread-safe, así que no hay problema en que el Rack handler use un modelo de
+concurrencia basado en hilos.
+
+Esto significa que, cuando estemos arrancando el servidor, tendríamos que
+especificar la opción adecuada para el handler Rack específico. En este ejemplo
+vemos cómo arrancar un servidor Thin multihilo:
+
+``` ruby
+# app.rb
+
+require 'sinatra/base'
+
+class App < Sinatra::Base
+  get '/' do
+    "¡Hola, Mundo!"
+  end
+end
+
+App.run!
+```
+
+Para arrancar el servidor, el comando sería:
+
+``` shell
+thin --threaded start
+```
+
+[so-answer]: http://stackoverflow.com/questions/6278817/is-sinatra-multi-threaded/6282999#6282999)
+
 ## Versiones de Ruby Soportadas
 
 Las siguientes versiones de Ruby son soportadas oficialmente:
