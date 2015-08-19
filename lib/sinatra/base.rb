@@ -1002,7 +1002,13 @@ module Sinatra
       route = @request.path_info
       route = '/' if route.empty? and not settings.empty_path_info?
       return unless match = pattern.match(route)
-      values += match.captures.map! { |v| force_encoding URI_INSTANCE.unescape(v) if v }
+      values += match.captures.map! do |v|
+        if v.kind_of?(String)
+          force_encoding URI_INSTANCE.unescape(v)
+        elsif v
+          v
+        end
+      end
 
       if values.any?
         original, @params = params, params.merge('splat' => [], 'captures' => values)
