@@ -111,6 +111,7 @@ thin이 설치되어 있을 경우 Sinatra는 thin을 통해 실행합니다.
         * [요청/인스턴스 범위](#요청인스턴스-범위)
         * [위임 범위(Delegation Scope)](#위임-범위delegation-scope)
     * [명령행(Command Line)](#명령행command-line)
+        * [다중 스레드(Multi-threading)](#다중-스레드multi-threading)
     * [요구사항(Requirement)](#요구사항requirement)
     * [최신(The Bleeding Edge)](#최신the-bleeding-edge)
         * [Bundler를 사용하여](#bundler를-사용하여)
@@ -388,7 +389,7 @@ set :public_folder, File.dirname(__FILE__) + '/static'
 ```
 
 public 디렉터리명은 URL에 포함되지 않는다는 점에 주의하세요.
-`./public/css/style.css` 파일은 아마 `http://example.com/css/style.css` 로 접근할 수 있을 것 입니다.
+`./public/css/style.css` 파일은 아마 `http://example.com/css/style.css` 로 접근할 수 있을 것입니다.
 
 `Cache-Control` 헤더 정보를 추가하려면 `:static_cache_control` 설정(아래 참조)을 사용하면 됩니다.
 
@@ -2736,13 +2737,13 @@ end
 
 직접 코드를 살펴보길 바랍니다.
 [Sinatra::Delegator 믹스인](https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/base.rb#L1609-1633)
-은 [메인 객체를 확장한 것](https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/main.rb#L28-30) 입니다.
+은 [메인 객체를 확장한 것](https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/main.rb#L28-30)입니다.
 
 ## 명령행(Command Line)
 
 Sinatra 애플리케이션은 직접 실행할 수 있습니다.
 
-``` shell
+```shell
 ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
 ```
 
@@ -2756,6 +2757,40 @@ ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
 -s # rack 서버/핸들러 지정 (기본값은 thin)
 -x # mutex 잠금 켜기 (기본값은 off)
 ```
+
+### 다중 스레드(Multi-threading)
+
+_Konstantin의 [StackOverflow의 답변][so-answer]에서 가져왔습니다_
+
+시나트라는 동시성 모델을 전혀 사용하지 않지만, Thin, Puma, WEBrick 같은
+기저의 Rack 핸들러(서버)는 사용합니다. 시나트라 자신은 스레드에 안전하므로
+랙 핸들러가 동시성 스레드 모델을 사용한다고해도 문제가 되지는 않습니다.
+이는 서버를 시작할 때, 서버에 따른 정확한 호출 방법을 사용했을 때의
+이야기입니다. 밑의 예제는 다중 스레드 Thin 서버를 시작하는 방법입니다.
+
+``` ruby
+# app.rb
+
+require 'sinatra/base'
+
+class App < Sinatra::Base
+  get '/' do
+    "Hello, World"
+  end
+end
+
+App.run!
+
+```
+
+서버를 시작하는 명령어는 다음과 같습니다.
+
+``` shell
+thin --threaded start
+```
+
+
+[so-answer]: http://stackoverflow.com/questions/6278817/is-sinatra-multi-threaded/6282999#6282999)
 
 ## 요구사항(Requirement)
 
@@ -2829,7 +2864,7 @@ Sinatra를 실행할 수 없을 것입니다.
 ## 최신(The Bleeding Edge)
 
 Sinatra의 가장 최근 코드를 사용하고자 한다면, 애플리케이션을 마스터 브랜치에 맞춰
-실행하면 되므로 부담가지지 마세요. 하지만 덜 안정적일 것 입니다.
+실행하면 되므로 부담가지지 마세요. 하지만 덜 안정적일 것입니다.
 
 주기적으로 사전배포(prerelease) 젬을 푸시하기 때문에, 최신 기능들을 얻기 위해
 다음과 같이 할 수도 있습니다.
@@ -2921,6 +2956,8 @@ SemVerTag를 준수합니다.
 * [트위터](http://twitter.com/sinatra)
 * [메일링 리스트](http://groups.google.com/group/sinatrarb/topics)
 * IRC: [#sinatra](irc://chat.freenode.net/#sinatra) http://freenode.net
+* 슬랙의 [Sinatra & Friends](https://sinatrarb.slack.com)입니다.
+  [여기](https://sinatra-slack.herokuapp.com/)에서 가입가능합니다.
 * [Sinatra Book](https://github.com/sinatra/sinatra-book/) Cookbook 튜토리얼
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) 커뮤니티가 만드는 레시피
 * http://rubydoc.info에 있는 [최종 릴리스](http://rubydoc.info/gems/sinatra)
