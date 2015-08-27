@@ -4,7 +4,7 @@ gemspec
 gem 'sinatra', :github => 'sinatra/sinatra'
 
 group :development, :test do
-  
+
   platform :ruby_18 do
     gem 'libv8', '3.16.14.7'
   end
@@ -28,6 +28,9 @@ group :development, :test do
     gem 'nokogiri', '1.5.10'
     gem 'redcarpet', '2.3.0'
     gem 'yajl-ruby'
+    # ref is a dependency of therubyracer
+    # version 2 drops support for Rubies earlier than 1.9.3
+    gem 'ref', '< 2.0'
     gem 'therubyracer'
   end
 
