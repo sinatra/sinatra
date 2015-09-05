@@ -2871,31 +2871,10 @@ thin --threaded start
 
 The following Ruby versions are officially supported:
 <dl>
-  <dt>Ruby 1.8.7</dt>
+  <dt>Ruby 2.2.2+</dt>
   <dd>
-    1.8.7 is fully supported, however, if nothing is keeping you from it, we
-    recommend upgrading or switching to JRuby or Rubinius. Support for 1.8.7
-    will not be dropped before Sinatra 2.0. Ruby 1.8.6 is no longer supported.
-  </dd>
-
-  <dt>Ruby 1.9.2</dt>
-  <dd>
-    1.9.2 is fully supported. Do not use 1.9.2p0, as it is known to cause
-    segmentation faults when running Sinatra. Official support will continue
-    at least until the release of Sinatra 1.5.
-  </dd>
-
-  <dt>Ruby 1.9.3</dt>
-  <dd>
-    1.9.3 is fully supported and recommended. Please note that switching to 1.9.3
-    from an earlier version will invalidate all sessions. 1.9.3 will be supported
-    until the release of Sinatra 2.0.
-  </dd>
-
-  <dt>Ruby 2.x</dt>
-  <dd>
-    2.x is fully supported and recommended. There are currently no plans to drop
-    official support for it.
+    2.2.2 is fully supported and recommended. There are currently no plans to
+    drop official support for it.
   </dd>
 
   <dt>Rubinius</dt>
@@ -2911,6 +2890,8 @@ The following Ruby versions are officially supported:
     <tt>gem install trinidad</tt>.
   </dd>
 </dl>
+
+Versions of Ruby prior to 2.2.2 are no longer supported as of Sinatra 2.0.
 
 We also keep an eye on upcoming Ruby versions.
 
