@@ -2871,9 +2871,9 @@ thin --threaded start
 
 The following Ruby versions are officially supported:
 <dl>
-  <dt>Ruby 2.2.2+</dt>
+  <dt>Ruby 2.2</dt>
   <dd>
-    2.2.2 is fully supported and recommended. There are currently no plans to
+    2.2 is fully supported and recommended. There are currently no plans to
     drop official support for it.
   </dd>
 
@@ -2916,7 +2916,7 @@ implementation.
 If you run MacRuby, you should `gem install control_tower`.
 
 Sinatra currently doesn't run on Cardinal, SmallRuby, BlueRuby or any
-Ruby version prior to 1.8.7.
+Ruby version prior to 2.2.
 
 ## The Bleeding Edge
 
@@ -2946,7 +2946,7 @@ Then, in your project directory, create a `Gemfile`:
 
 ```ruby
 source 'https://rubygems.org'
-gem 'sinatra', :github => "sinatra/sinatra"
+gem 'sinatra', :github => 'sinatra/sinatra'
 
 # other dependencies
 gem 'haml'                    # for instance, if you use haml
