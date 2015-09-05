@@ -275,8 +275,7 @@ class RoutingTest < Minitest::Test
     assert_equal "foo=;bar=", body
   end
 
-  it "supports named captures like %r{/hello/(?<person>[^/?#]+)} on Ruby >= 1.9" do
-    next if RUBY_VERSION < '1.9'
+  it "supports named captures like %r{/hello/(?<person>[^/?#]+)}" do
     mock_app {
       get Regexp.new('/hello/(?<person>[^/?#]+)') do
         "Hello #{params['person']}"
@@ -286,8 +285,7 @@ class RoutingTest < Minitest::Test
     assert_equal 'Hello Frank', body
   end
 
-  it "supports optional named captures like %r{/page(?<format>.[^/?#]+)?} on Ruby >= 1.9" do
-    next if RUBY_VERSION < '1.9'
+  it "supports optional named captures like %r{/page(?<format>.[^/?#]+)?}" do
     mock_app {
       get Regexp.new('/page(?<format>.[^/?#]+)?') do
         "format=#{params[:format]}"
@@ -1299,59 +1297,24 @@ class RoutingTest < Minitest::Test
     assert_equal "hey", body
   end
 
-  # NOTE Block params behaves differently under 1.8 and 1.9. Under 1.8, block
-  # param arity is lax: declaring a mismatched number of block params results
-  # in a warning. Under 1.9, block param arity is strict: mismatched block
-  # arity raises an ArgumentError.
+  it 'raises an ArgumentError with block param arity 1 and no values' do
+    mock_app {
+      get '/foo' do |foo|
+        'quux'
+      end
+    }
 
-  if RUBY_VERSION >= '1.9'
+    assert_raises(ArgumentError) { get '/foo' }
+  end
 
-    it 'raises an ArgumentError with block param arity 1 and no values' do
-      mock_app {
-        get '/foo' do |foo|
-          'quux'
-        end
-      }
+  it 'raises an ArgumentError with block param arity 1 and too many values' do
+    mock_app {
+      get '/:foo/:bar/:baz' do |foo|
+        'quux'
+      end
+    }
 
-      assert_raises(ArgumentError) { get '/foo' }
-    end
-
-    it 'raises an ArgumentError with block param arity 1 and too many values' do
-      mock_app {
-        get '/:foo/:bar/:baz' do |foo|
-          'quux'
-        end
-      }
-
-      assert_raises(ArgumentError) { get '/a/b/c' }
-    end
-
-  else
-
-    it 'does not raise an ArgumentError with block param arity 1 and no values' do
-      mock_app {
-        get '/foo' do |foo|
-          'quux'
-        end
-      }
-
-      silence_warnings { get '/foo' }
-      assert ok?
-      assert_equal 'quux', body
-    end
-
-    it 'does not raise an ArgumentError with block param arity 1 and too many values' do
-      mock_app {
-        get '/:foo/:bar/:baz' do |foo|
-          'quux'
-        end
-      }
-
-      silence_warnings { get '/a/b/c' }
-      assert ok?
-      assert_equal 'quux', body
-    end
-
+    assert_raises(ArgumentError) { get '/a/b/c' }
   end
 
   it "matches routes defined in superclasses" do
