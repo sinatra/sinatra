@@ -14,19 +14,19 @@ end
 
 Install the gem:
 
-    gem install sinatra
+    $ gem install sinatra
 
 
 And run with:
 
-    ruby myapp.rb
+    $ ruby myapp.rb
 
 
 View at: [http://localhost:4567](http://localhost:4567)
 
 It is recommended to also run
 
-    gem install thin
+    $ gem install thin
     
 which Sinatra will pick up if available.
 
