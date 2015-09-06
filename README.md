@@ -14,15 +14,13 @@ end
 
 Install the gem:
 
-``` shell
-gem install sinatra
-```
+    gem install sinatra
+
 
 And run with:
 
-``` shell
-ruby myapp.rb
-```
+    ruby myapp.rb
+
 
 View at: http://localhost:4567
 
