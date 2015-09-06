@@ -3,7 +3,7 @@
 Sinatra is a [DSL](http://en.wikipedia.org/wiki/Domain-specific_language) for
 quickly creating web applications in Ruby with minimal effort:
 
-``` ruby
+```ruby
 # myapp.rb
 require 'sinatra'
 
