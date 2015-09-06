@@ -13,7 +13,7 @@ Gem::Specification.new 'sinatra', Sinatra::VERSION do |s|
   s.extra_rdoc_files  = s.files.select { |p| p =~ /^README/ } << 'LICENSE'
   s.rdoc_options      = %w[--line-numbers --inline-source --title Sinatra --main README.rdoc --encoding=UTF-8]
 
-  s.add_dependency 'rack', '~> 1.5', '>= 1.5.4', '< 1.6'
-  s.add_dependency 'tilt', '>= 1.3', '< 3'
-  s.add_dependency 'rack-protection', '~> 1.4'
+  s.add_dependency 'rack', '>= 1.0'
+  s.add_dependency 'tilt'
+  s.add_dependency 'rack-protection'
 end
