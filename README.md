@@ -3,14 +3,14 @@
 Sinatra is a [DSL](http://en.wikipedia.org/wiki/Domain-specific_language) for
 quickly creating web applications in Ruby with minimal effort:
 
-```ruby
-# myapp.rb
-require 'sinatra'
-
-get '/' do
-  'Hello world!'
-end
-```
+    ```ruby
+    # myapp.rb
+    require 'sinatra'
+    
+    get '/' do
+      'Hello world!'
+    end
+    
 
 Install the gem:
 
@@ -124,7 +124,7 @@ which Sinatra will pick up if available.
 In Sinatra, a route is an HTTP method paired with a URL-matching pattern.
 Each route is associated with a block:
 
-``` ruby
+```ruby
 get '/' do
   .. show something ..
 end
@@ -164,7 +164,7 @@ matches the request is invoked.
 Route patterns may include named parameters, accessible via the
 `params` hash:
 
-``` ruby
+```ruby
 get '/hello/:name' do
   # matches "GET /hello/foo" and "GET /hello/bar"
   # params['name'] is 'foo' or 'bar'
@@ -174,7 +174,7 @@ end
 
 You can also access named parameters via block parameters:
 
-``` ruby
+```ruby
 get '/hello/:name' do |n|
   # matches "GET /hello/foo" and "GET /hello/bar"
   # params['name'] is 'foo' or 'bar'
@@ -186,7 +186,7 @@ end
 Route patterns may also include splat (or wildcard) parameters, accessible
 via the `params['splat']` array:
 
-``` ruby
+```ruby
 get '/say/*/to/*' do
   # matches /say/hello/to/world
   params['splat'] # => ["hello", "world"]
@@ -200,7 +200,7 @@ end
 
 Or with block parameters:
 
-``` ruby
+```ruby
 get '/download/*.*' do |path, ext|
   [path, ext] # => ["path/to/file", "xml"]
 end
@@ -208,7 +208,7 @@ end
 
 Route matching with Regular Expressions:
 
-``` ruby
+```ruby
 get /\A\/hello\/([\w]+)\z/ do
   "Hello, #{params['captures'].first}!"
 end
@@ -216,7 +216,7 @@ end
 
 Or with a block parameter:
 
-``` ruby
+```ruby
 get %r{/hello/([\w]+)} do |c|
   # Matches "GET /meta/hello/world", "GET /hello/world/1234" etc.
   "Hello, #{c}!"
@@ -225,7 +225,7 @@ end
 
 Route patterns may have optional parameters:
 
-``` ruby
+```ruby
 get '/posts.?:format?' do
   # matches "GET /posts" and any extension "GET /posts.json", "GET /posts.xml" etc.
 end
@@ -233,7 +233,7 @@ end
 
 Routes may also utilize query parameters:
 
-``` ruby
+```ruby
 get '/posts' do
   # matches "GET /posts?title=foo&author=bar"
   title = params['title']
@@ -249,7 +249,7 @@ the request path might be modified before matching against your routes.
 
 Routes may include a variety of matching conditions, such as the user agent:
 
-``` ruby
+```ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
   "You're using Songbird version #{params['agent'][0]}"
 end
@@ -261,7 +261,7 @@ end
 
 Other available conditions are `host_name` and `provides`:
 
-``` ruby
+```ruby
 get '/', :host_name => /^admin\./ do
   "Admin Area, Access denied!"
 end
@@ -278,7 +278,7 @@ end
 
 You can easily define your own conditions:
 
-``` ruby
+```ruby
 set(:probability) { |value| condition { rand <= value } }
 
 get '/win_a_car', :probability => 0.1 do
@@ -292,7 +292,7 @@ end
 
 For a condition that takes multiple values use a splat:
 
-``` ruby
+```ruby
 set(:auth) do |*roles|   # <- notice the splat here
   condition do
     unless logged_in? && roles.any? {|role| current_user.in_role? role }
@@ -330,7 +330,7 @@ body object or HTTP status code:
 
 That way we can, for instance, easily implement a streaming example:
 
-``` ruby
+```ruby
 class Stream
   def each
     100.times { |i| yield "#{i}\n" }
@@ -349,7 +349,7 @@ As shown above, Sinatra ships with built-in support for using String patterns
 and regular expressions as route matches. However, it does not stop there. You
 can easily define your own matchers:
 
-``` ruby
+```ruby
 class AllButPattern
   Match = Struct.new(:captures)
 
@@ -375,7 +375,7 @@ end
 Note that the above example might be over-engineered, as it can also be
 expressed as:
 
-``` ruby
+```ruby
 get // do
   pass if request.path_info == "/index"
   # ...
@@ -384,7 +384,7 @@ end
 
 Or, using negative look ahead:
 
-``` ruby
+```ruby
 get %r{^(?!/index$)} do
   # ...
 end
@@ -395,7 +395,7 @@ end
 Static files are served from the `./public` directory. You can specify
 a different location by setting the `:public_folder` option:
 
-``` ruby
+```ruby
 set :public_folder, File.dirname(__FILE__) + '/static'
 ```
 
@@ -411,7 +411,7 @@ Use the `:static_cache_control` setting (see below) to add
 Each template language is exposed via its own rendering method. These
 methods simply return a string:
 
-``` ruby
+```ruby
 get '/' do
   erb :index
 end
@@ -422,7 +422,7 @@ This renders `views/index.erb`.
 Instead of a template name, you can also just pass in the template content
 directly:
 
-``` ruby
+```ruby
 get '/' do
   code = "<%= Time.now %>"
   erb code
@@ -431,7 +431,7 @@ end
 
 Templates take a second argument, the options hash:
 
-``` ruby
+```ruby
 get '/' do
   erb :index, :layout => :post
 end
@@ -443,7 +443,7 @@ This will render `views/index.erb` embedded in the
 Any options not understood by Sinatra will be passed on to the template
 engine:
 
-``` ruby
+```ruby
 get '/' do
   haml :index, :format => :html5
 end
@@ -451,7 +451,7 @@ end
 
 You can also set options per template language in general:
 
-``` ruby
+```ruby
 set :haml, :format => :html5
 
 get '/' do
