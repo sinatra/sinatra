@@ -33,7 +33,7 @@ if RUBY_ENGINE == 'jruby'
   gem 'trinidad'
 end
 
-if RUBY_ENGINE == "ruby" and RUBY_VERSION > '1.9.2'
+if RUBY_ENGINE == "ruby"
   gem 'less', '~> 2.0'
   gem 'therubyracer'
   gem 'redcarpet'
@@ -71,6 +71,6 @@ if RUBY_ENGINE == "rbx"
   gem 'rubysl-test-unit'
 end
 
-platforms :ruby_18, :jruby do
-  gem 'json' unless RUBY_VERSION > '1.9' # is there a jruby but 1.8 only selector?
+platforms :jruby do
+  gem 'json'
 end
