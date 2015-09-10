@@ -1034,7 +1034,7 @@ module Sinatra
     # a matching file is found, returns nil otherwise.
     def static!(options = {})
       return if (public_dir = settings.public_folder).nil?
-      path = File.expand_path("#{public_dir}#{unescape(request.path_info)}" )
+      path = File.expand_path("#{public_dir}#{URI_INSTANCE.unescape(request.path_info)}" )
       return unless File.file?(path)
 
       env['sinatra.static_file'] = path
