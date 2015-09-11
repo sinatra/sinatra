@@ -1,4 +1,8 @@
-require 'rack/showexceptions'
+if Rack.release < '2.0.0.alpha'
+  require 'rack/showexceptions'
+else
+  require 'rack/show_exceptions'
+end
 
 module Sinatra
   # Sinatra::ShowExceptions catches all exceptions raised from the app it
