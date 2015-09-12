@@ -1523,8 +1523,7 @@ module Sinatra
 
       # Dynamically defines a method on settings.
       def define_singleton(name, content = Proc.new)
-        # replace with call to singleton_class once we're 1.9 only
-        (class << self; self; end).class_eval do
+        singleton_class.class_eval do
           undef_method(name) if method_defined? name
           String === content ? class_eval("def #{name}() #{content}; end") : define_method(name, &content)
         end
