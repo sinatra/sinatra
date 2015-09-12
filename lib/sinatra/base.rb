@@ -592,22 +592,12 @@ module Sinatra
     # Generates a Time object from the given value.
     # Used by #expires and #last_modified.
     def time_for(value)
-      if value.respond_to? :to_time
-        value.to_time
-      elsif value.is_a? Time
-        value
-      elsif value.respond_to? :new_offset
-        # DateTime#to_time does the same on 1.9
-        d = value.new_offset 0
-        t = Time.utc d.year, d.mon, d.mday, d.hour, d.min, d.sec + d.sec_fraction
-        t.getlocal
-      elsif value.respond_to? :mday
-        # Date#to_time does the same on 1.9
-        Time.local(value.year, value.mon, value.mday)
-      elsif value.is_a? Numeric
+      if value.is_a? Numeric
         Time.at value
-      else
+      elsif value.respond_to? :to_s
         Time.parse value.to_s
+      else
+        value.to_time
       end
     rescue ArgumentError => boom
       raise boom
