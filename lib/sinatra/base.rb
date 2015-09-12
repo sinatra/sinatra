@@ -867,7 +867,7 @@ module Sinatra
     include Helpers
     include Templates
 
-    URI_INSTANCE = URI.const_defined?(:Parser) ? URI::Parser.new : URI
+    URI_INSTANCE = URI::Parser.new
 
     attr_accessor :app, :env, :request, :response, :params
     attr_reader   :template_cache
