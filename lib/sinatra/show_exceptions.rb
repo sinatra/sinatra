@@ -1,4 +1,4 @@
-require 'rack/showexceptions'
+require 'rack/show_exceptions'
 
 module Sinatra
   # Sinatra::ShowExceptions catches all exceptions raised from the app it
@@ -40,7 +40,7 @@ module Sinatra
         500,
         {
           "Content-Type" => content_type,
-          "Content-Length" => Rack::Utils.bytesize(body.join).to_s
+          "Content-Length" => body.join.bytesize.to_s
         },
         body
       ]
