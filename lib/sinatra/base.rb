@@ -591,22 +591,12 @@ module Sinatra
     # Generates a Time object from the given value.
     # Used by #expires and #last_modified.
     def time_for(value)
-      if value.respond_to? :to_time
-        value.to_time
-      elsif value.is_a? Time
-        value
-      elsif value.respond_to? :new_offset
-        # DateTime#to_time does the same on 1.9
-        d = value.new_offset 0
-        t = Time.utc d.year, d.mon, d.mday, d.hour, d.min, d.sec + d.sec_fraction
-        t.getlocal
-      elsif value.respond_to? :mday
-        # Date#to_time does the same on 1.9
-        Time.local(value.year, value.mon, value.mday)
-      elsif value.is_a? Numeric
+      if value.is_a? Numeric
         Time.at value
-      else
+      elsif value.respond_to? :to_s
         Time.parse value.to_s
+      else
+        value.to_time
       end
     rescue ArgumentError => boom
       raise boom
@@ -876,7 +866,7 @@ module Sinatra
     include Helpers
     include Templates
 
-    URI_INSTANCE = URI.const_defined?(:Parser) ? URI::Parser.new : URI
+    URI_INSTANCE = URI::Parser.new
 
     attr_accessor :app, :env, :request, :response, :params
     attr_reader   :template_cache
@@ -1532,8 +1522,7 @@ module Sinatra
 
       # Dynamically defines a method on settings.
       def define_singleton(name, content = Proc.new)
-        # replace with call to singleton_class once we're 1.9 only
-        (class << self; self; end).class_eval do
+        singleton_class.class_eval do
           undef_method(name) if method_defined? name
           String === content ? class_eval("def #{name}() #{content}; end") : define_method(name, &content)
         end
@@ -1935,7 +1924,7 @@ module Sinatra
             </style>
           </head>
           <body>
-            <h2>Sinatra doesn&rsquo;t know this ditty.</h2>
+            <h2>Sinatra doesn’t know this ditty.</h2>
             <img src='#{uri "/__sinatra__/404.png"}'>
             <div id="c">
               Try this:
