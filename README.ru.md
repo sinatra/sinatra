@@ -105,13 +105,13 @@ end
 
 Установите gem:
 
-``` shell
+```shell
 gem install sinatra
 ```
 
 и запустите приложение с помощью:
 
-``` shell
+```shell
 ruby myapp.rb
 ```
 
@@ -1016,7 +1016,7 @@ erb :overview, :locals => { :text => mediawiki(:introduction) }
 Перед тем, как использовать шаблоны стилус, загрузите `stylus` и
 `stylus/tilt`:
 
-``` ruby
+```ruby
 require 'sinatra'
 require 'stylus'
 require 'stylus/tilt'
@@ -1380,7 +1380,7 @@ set :sessions, :domain => 'foo.com'
 Чтобы сделать сессию доступной другим приложениям, размещенным на поддоменах
 foo.com, добавьте *.* перед доменом:
 
-``` ruby
+```ruby
 set :sessions, :domain => '.foo.com'
 ```
 
