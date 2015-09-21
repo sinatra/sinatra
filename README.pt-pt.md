@@ -7,7 +7,7 @@ Sinatra é uma
 [DSL](http://pt.wikipedia.org/wiki/Linguagem_de_domínio_específico) para
 criar rapidamente aplicações web em Ruby com o mínimo de esforço:
 
-``` ruby
+```ruby
 # minhaapp.rb
 require 'rubygems'
 require 'sinatra'
@@ -18,7 +18,7 @@ end
 
 Instale a gem e execute com:
 
-``` shell
+```shell
 sudo gem install sinatra
 ruby minhaapp.rb
 ```
@@ -30,7 +30,7 @@ Aceda em: [localhost:4567](http://localhost:4567)
 No Sinatra, uma rota é um metodo HTTP associado a uma URL correspondente
 padrão. Cada rota é associada a um bloco:
 
-``` ruby
+```ruby
 get '/' do
   .. mostrar algo ..
 end
@@ -54,7 +54,7 @@ Rotas são encontradas na ordem em que são definidas. A primeira rota que
 Padrões de rota podem incluir parâmetros nomeados, acessíveis através da
 hash `params`:
 
-``` ruby
+```ruby
 get '/ola/:nome' do
   # corresponde a "GET /ola/foo" e "GET /ola/bar"
   # params['nome'] é 'foo' ou 'bar'
@@ -64,7 +64,7 @@ end
 
 Pode também aceder a parâmetros nomeados através do bloco de parâmetros:
 
-``` ruby
+```ruby
 get '/ola/:nome' do |n|
   "Olá #{n}!"
 end
@@ -73,7 +73,7 @@ end
 Padrões de rota podem também incluir parâmetros splat (asteriscos),
 acessíveis através do array `params['splat']`.
 
-``` ruby
+```ruby
 get '/diga/*/ao/*' do
   # corresponde a /diga/ola/ao/mundo
   params['splat'] # => ["ola", "mundo"]
@@ -87,7 +87,7 @@ end
 
 Rotas correspondem-se com expressões regulares:
 
-``` ruby
+```ruby
 get /\A\/ola\/([\w]+)\z/ do
   "Olá, #{params['captures'].first}!"
 end
@@ -95,7 +95,7 @@ end
 
 Ou com um bloco de parâmetro:
 
-``` ruby
+```ruby
 get %r{/ola/([\w]+)} do |c|
   "Olá, #{c}!"
 end
@@ -104,7 +104,7 @@ end
 Rotas podem incluir uma variedade de condições correspondentes, por
 exemplo, o agente usuário:
 
-``` ruby
+```ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
   "Você está a utilizar a versão #{params['agent'][0]} do Songbird."
 end
@@ -120,7 +120,7 @@ Arquivos estáticos são disponibilizados a partir do directório
 `./public`. Você pode especificar um local diferente através da opção
 `:public_folder`
 
-``` ruby
+```ruby
 set :public_folder, File.dirname(__FILE__) + '/estatico'
 ```
 
@@ -133,7 +133,7 @@ Note que o nome do directório público não é incluido no URL. Um arquivo
 Templates presumem-se estar localizados sob o directório `./views`. Para
 utilizar um directório de views diferente:
 
-``` ruby
+```ruby
 set :views, File.dirname(__FILE__) + '/modelo'
 ```
 
@@ -146,7 +146,7 @@ processar qualquer string passada directamente para elas.
 
 A gem/biblioteca haml é necessária para renderizar templates HAML:
 
-``` ruby
+```ruby
 # É necessário requerir 'haml' na aplicação.
 require 'haml'
 
@@ -164,7 +164,7 @@ veja [Opções e
 Configurações](http://www.sinatrarb.com/configuration.html), e substitua
 em uma requisição individual.
 
-``` ruby
+```ruby
 set :haml, {:format => :html5 } # o formato padrão do Haml é :xhtml
 
 get '/' do
@@ -174,7 +174,7 @@ end
 
 ### Erb Templates
 
-``` ruby
+```ruby
 # É necessário requerir 'erb' na aplicação.
 require 'erb'
 
@@ -189,7 +189,7 @@ Renderiza `./views/index.erb`
 
 A gem/biblioteca erubis é necessária para renderizar templates erubis:
 
-``` ruby
+```ruby
 # É necessário requerir 'erubis' na aplicação.
 require 'erubis'
 
@@ -204,7 +204,7 @@ Renderiza `./views/index.erubis`
 
 A gem/biblioteca builder é necessária para renderizar templates builder:
 
-``` ruby
+```ruby
 # É necessário requerir 'builder' na aplicação.
 require 'builder'
 
@@ -220,7 +220,7 @@ Renderiza `./views/index.builder`.
 
 A gem/biblioteca sass é necessária para renderizar templates sass:
 
-``` ruby
+```ruby
 # É necessário requerir 'haml' ou 'sass' na aplicação.
 require 'sass'
 
@@ -239,7 +239,7 @@ veja [Opções e
 Configurações](http://www.sinatrarb.com/configuration.html), e substitua
 em uma requisição individual.
 
-``` ruby
+```ruby
 set :sass, {:style => :compact } # o estilo padrão do Sass é :nested
 
 get '/stylesheet.css' do
@@ -252,7 +252,7 @@ end
 
 A gem/biblioteca less é necessária para renderizar templates Less:
 
-``` ruby
+```ruby
 # É necessário requerir 'less' na aplicação.
 require 'less'
 
@@ -266,7 +266,7 @@ Renderiza `./views/stylesheet.less`.
 
 ### Templates Inline
 
-``` ruby
+```ruby
 get '/' do
   haml '%div.title Olá Mundo'
 end
@@ -280,7 +280,7 @@ Templates são avaliados dentro do mesmo contexto que os manipuladores de
 rota. Variáveis de instância definidas em rotas manipuladas são
 directamente acedidas por templates:
 
-``` ruby
+```ruby
 get '/:id' do
   @foo = Foo.find(params['id'])
   haml '%h1= @foo.nome'
@@ -289,7 +289,7 @@ end
 
 Ou, especifique um hash explícito para variáveis locais:
 
-``` ruby
+```ruby
 get '/:id' do
   foo = Foo.find(params['id'])
   haml '%h1= foo.nome', :locals => { :foo => foo }
@@ -303,7 +303,7 @@ Isso é tipicamente utilizado quando renderizamos templates parciais
 
 Templates podem ser definidos no final do arquivo fonte(.rb):
 
-``` ruby
+```ruby
 require 'rubygems'
 require 'sinatra'
 
@@ -330,7 +330,7 @@ templates inline no outro arquivo fonte.
 Templates também podem ser definidos utilizando o método top-level
 `template`:
 
-``` ruby
+```ruby
 template :layout do
   "%html\n  =yield\n"
 end
@@ -348,7 +348,7 @@ Se existir um template com nome “layout”, ele será utilizado sempre que
 um template for renderizado. Pode desactivar layouts usando
 `:layout => false`.
 
-``` ruby
+```ruby
 get '/' do
   haml :index, :layout => !request.xhr?
 end
@@ -359,7 +359,7 @@ end
 Use o método de alto nível `helpers` para definir métodos auxiliares
 para utilizar em manipuladores de rotas e modelos:
 
-``` ruby
+```ruby
 helpers do
   def bar(nome)
     "#{nome}bar"
@@ -378,7 +378,7 @@ da requisição e podem modificar a requisição e a reposta. Variáveis de
 instância definidas nos filtros são acedidas através de rotas e
 templates:
 
-``` ruby
+```ruby
 before do
   @nota = 'Olá!'
   request.path_info = '/foo/bar/baz'
@@ -395,7 +395,7 @@ requisição e também podem modificar o pedido e a resposta. Variáveis de
 instância definidas nos filtros before e rotas são acedidas através dos
 filtros after:
 
-``` ruby
+```ruby
 after do
   puts response.status
 end
@@ -404,7 +404,7 @@ end
 Filtros opcionalmente têm um padrão, fazendo com que sejam avaliados
 somente se o caminho do pedido coincidir com esse padrão:
 
-``` ruby
+```ruby
 before '/protected/*' do
   autenticar!
 end
@@ -419,31 +419,31 @@ end
 Para parar imediatamente uma requisição dentro de um filtro ou rota
 utilize:
 
-``` ruby
+```ruby
 halt
 ```
 
 Pode também especificar o status ao parar…
 
-``` ruby
+```ruby
 halt 410
 ```
 
 Ou com um corpo de texto…
 
-``` ruby
+```ruby
 halt 'isto será o corpo de texto'
 ```
 
 Ou também…
 
-``` ruby
+```ruby
 halt 401, 'vamos embora!'
 ```
 
 Com cabeçalhos…
 
-``` ruby
+```ruby
 halt 402, {'Content-Type' => 'text/plain'}, 'revanche'
 ```
 
@@ -452,7 +452,7 @@ halt 402, {'Content-Type' => 'text/plain'}, 'revanche'
 Dentro de uma rota, pode passar para a próxima rota correspondente
 usando `pass`:
 
-``` ruby
+```ruby
 get '/adivinhar/:quem' do
   pass unless params['quem'] == 'Frank'
   'Apanhaste-me!'
@@ -471,7 +471,7 @@ próxima rota de parâmetro. Se o parâmetro da rota não for encontrado, um
 
 Correndo uma vez, na inicialização, em qualquer ambiente:
 
-``` ruby
+```ruby
 configure do
   ...
 end
@@ -480,7 +480,7 @@ end
 Correndo somente quando o ambiente (`RACK_ENV` environment variável) é
 definido para `:production`:
 
-``` ruby
+```ruby
 configure :production do
   ...
 end
@@ -488,7 +488,7 @@ end
 
 Correndo quando o ambiente é definido para `:production` ou `:test`:
 
-``` ruby
+```ruby
 configure :production, :test do
   ...
 end
@@ -504,7 +504,7 @@ signifca que `haml`, `erb`, etc, estão disponíveis.
 Quando um `Sinatra::NotFound` exception é levantado, ou o código de
 status da reposta é 404, o manipulador `not_found` é invocado:
 
-``` ruby
+```ruby
 not_found do
   'Isto está longe de ser encontrado'
 end
@@ -516,7 +516,7 @@ O manipulador `error` é invocado sempre que uma exceção é lançada a
 partir de um bloco de rota ou um filtro. O objecto da exceção pode ser
 obtido a partir da variável Rack `sinatra.error`:
 
-``` ruby
+```ruby
 error do
   'Peço desculpa, houve um erro desagradável - ' + env['sinatra.error'].message
 end
@@ -524,7 +524,7 @@ end
 
 Erros personalizados:
 
-``` ruby
+```ruby
 error MeuErroPersonalizado do
   'O que aconteceu foi...' + env['sinatra.error'].message
 end
@@ -532,7 +532,7 @@ end
 
 Então, se isso acontecer:
 
-``` ruby
+```ruby
 get '/' do
   raise MeuErroPersonalizado, 'alguma coisa desagradável'
 end
@@ -547,7 +547,7 @@ O que aconteceu foi...alguma coisa desagradável
 Alternativamente, pode definir um manipulador de erro para um código de
 status:
 
-``` ruby
+```ruby
 error 403 do
   'Accesso negado'
 end
@@ -559,7 +559,7 @@ end
 
 Ou um range (alcance):
 
-``` ruby
+```ruby
 error 400..510 do
   'Boom'
 end
@@ -574,13 +574,13 @@ Quando utilizamos `send_file` ou arquivos estáticos pode ter mime types
 Sinatra não entendidos. Use `mime_type` para os registar por extensão de
 arquivos:
 
-``` ruby
+```ruby
 mime_type :foo, 'text/foo'
 ```
 
 Pode também utilizar isto com o helper `content_type`:
 
-``` ruby
+```ruby
 content_type :foo
 ```
 
@@ -596,7 +596,7 @@ para providenciar varios tipos de funcionalidades comuns.
 O Sinatra torna a construção de pipelines do middleware Rack fácil a um
 nível superior utilizando o método `use`:
 
-``` ruby
+```ruby
 require 'sinatra'
 require 'meu_middleware_personalizado'
 
@@ -613,7 +613,7 @@ A semântica de `use` é idêntica aquela definida para a DSL
 (mais frequentemente utilizada para arquivos rackup). Por exemplo, o
 método `use` aceita múltiplos argumentos/variáveis, bem como blocos:
 
-``` ruby
+```ruby
 use Rack::Auth::Basic do |utilizador, senha|
   utilizador == 'admin' && senha == 'secreto'
 end
@@ -631,7 +631,7 @@ Testes no Sinatra podem ser escritos utilizando qualquer biblioteca ou
 framework de teste baseados no Rack.
 [Rack::Test](http://gitrdoc.com/brynary/rack-test) é recomendado:
 
-``` ruby
+```ruby
 require 'minha_aplicacao_sinatra'
 require 'rack/test'
 
@@ -673,7 +673,7 @@ estilo de configuração de micro aplicativos (exemplo: um simples arquivo
 de aplicação, directórios `./public` e `./views`, logs, página de detalhes
 de excepção, etc.). É onde o Sinatra::Base entra em jogo:
 
-``` ruby
+```ruby
 require 'sinatra/base'
 
 class MinhaApp < Sinatra::Base
@@ -691,7 +691,7 @@ como um middleware Rack, uma aplicação Rack, ou metal Rails. Pode
 utilizar ou executar esta classe com um arquivo rackup `config.ru`;
 ou, controlar um componente de servidor fornecendo como biblioteca:
 
-``` ruby
+```ruby
 MinhaApp.run! :host => 'localhost', :port => 9090
 ```
 
@@ -726,7 +726,7 @@ principal](http://github.com/sinatra/sinatra/blob/ceac46f0bc129a6e994a06100aa854
 
 As aplicações Sinatra podem ser executadas directamente:
 
-``` shell
+```shell
 ruby minhaapp.rb [-h] [-x] [-e AMBIENTE] [-p PORTA] [-o HOST] [-s SERVIDOR]
 ```
 
@@ -747,7 +747,7 @@ Se gostaria de utilizar o código da última versão do Sinatra, crie um
 clone local e execute sua aplicação com o directório `sinatra/lib` no
 `LOAD_PATH`:
 
-``` shell
+```shell
 cd minhaapp
 git clone git://github.com/sinatra/sinatra.git
 ruby -I sinatra/lib minhaapp.rb
@@ -756,7 +756,7 @@ ruby -I sinatra/lib minhaapp.rb
 Alternativamente, pode adicionar o directório do `sinatra/lib` no
 `LOAD_PATH` do seu aplicativo:
 
-``` ruby
+```ruby
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
 require 'rubygems'
 require 'sinatra'
@@ -768,7 +768,7 @@ end
 
 Para actualizar o código do Sinatra no futuro:
 
-``` shell
+```shell
 cd meuprojeto/sinatra
 git pull
 ```
