@@ -179,7 +179,11 @@ module Sinatra
           if Tilt.respond_to?(:mappings)
             klass = Tilt.mappings[Tilt.normalize(engine)].first
           else
-            klass = Tilt[engine]
+            begin
+              klass = Tilt[engine]
+            rescue LoadError
+              next
+            end
           end
           find_template(settings.views, template, klass) do |file|
             next unless File.exist? file
