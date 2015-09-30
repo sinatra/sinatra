@@ -1,5 +1,6 @@
 require 'rack/protection'
 require 'rack/utils'
+require 'tempfile'
 
 begin
   require 'escape_utils'
@@ -66,6 +67,7 @@ module Rack
         when Hash   then escape_hash(object)
         when Array  then object.map { |o| escape(o) }
         when String then escape_string(object)
+        when Tempfile then object
         else nil
         end
       end
