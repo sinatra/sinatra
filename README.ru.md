@@ -2944,7 +2944,7 @@ SemVerTag.
   документация, новости и ссылки на другие ресурсы.
 * [Участие в проекте](http://www.sinatrarb.com/contributing) — Обнаружили
   баг? Нужна помощь? Написали патч?
-* [Слежение за проблемами/ошибками](http://github.com/sinatra/sinatra/issues)
+* [Отслеживание проблем/ошибок](http://github.com/sinatra/sinatra/issues)
 * [Twitter](http://twitter.com/sinatra)
 * [Группы рассылки](http://groups.google.com/group/sinatrarb/topics)
 * IRC: [#sinatra](irc://chat.freenode.net/#sinatra) на http://freenode.net
