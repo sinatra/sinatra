@@ -1,6 +1,7 @@
 = Upcoming Release
 
  * Correctly handle encoded colons in routes. (Jeremy Evans)
+ * Calculate content-length for non-string response body. (Dmitrii Kharlamov)
  * Your contribution here.
 
 = 1.4.6 / 2015-03-23
