@@ -778,10 +778,9 @@ class HelpersTest < Minitest::Test
     end
 
     def send_file_app(opts={})
-      path = @file
       mock_app {
         get '/file.txt' do
-          send_file path, opts
+          send_file @file, opts
         end
       }
     end
@@ -883,11 +882,10 @@ class HelpersTest < Minitest::Test
     end
 
     it "does not override Content-Type if already set and no explicit type is given" do
-      path = @file
       mock_app do
         get('/') do
           content_type :png
-          send_file path
+          send_file @file
         end
       end
       get '/'
@@ -895,11 +893,10 @@ class HelpersTest < Minitest::Test
     end
 
     it "does override Content-Type even if already set, if explicit type is given" do
-      path = @file
       mock_app do
         get('/') do
           content_type :png
-          send_file path, :type => :gif
+          send_file @file, :type => :gif
         end
       end
       get '/'
@@ -907,10 +904,9 @@ class HelpersTest < Minitest::Test
     end
 
     it 'can have :status option as a string' do
-      path = @file
       mock_app do
         post '/' do
-          send_file path, :status => '422'
+          send_file @file, :status => '422'
         end
       end
       post '/'
