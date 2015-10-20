@@ -1,5 +1,3 @@
-You should use protection!
-
 This gem protects against typical web attacks.
 Should work for all Rack apps, including Rails.
 
