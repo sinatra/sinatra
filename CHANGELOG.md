@@ -1,6 +1,7 @@
 = Upcoming Release
 
  * Correctly handle encoded colons in routes. (Jeremy Evans)
+ * Rename CHANGE to Changelog.md and update Rakefile. (Eliza Sorensen)
  * Your contribution here.
 
 = 1.4.6 / 2015-03-23
