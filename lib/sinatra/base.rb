@@ -12,6 +12,13 @@ require 'uri'
 require 'sinatra/show_exceptions'
 require 'sinatra/version'
 
+module Rack
+  class File
+    ALLOWED_VERBS = %w[GET HEAD OPTIONS POST]
+    ALLOW_HEADER = ALLOWED_VERBS.join(', ')
+  end
+end
+
 module Sinatra
   # The request object. See Rack::Request for more info:
   # http://rubydoc.info/github/rack/rack/master/Rack/Request
@@ -362,7 +369,7 @@ module Sinatra
 
       last_modified opts[:last_modified] if opts[:last_modified]
 
-      file   = Rack::File.new(settings.public_folder)
+      file   = Rack::File.new(File.dirname(settings.app_file))
       result = file.call(env)
       result[1].each { |k,v| headers[k] ||= v }
       headers['Content-Length'] = result[1]['Content-Length']
