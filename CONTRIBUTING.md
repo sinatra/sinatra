@@ -36,7 +36,7 @@ can be applied as quickly as possible:
    modify the `README.md` file to reflect that. Again, if you don't
    update the `README`, we have to, and this holds up acceptance.
 
-4. **Update the change log (`CHANGES`):** The change log helps give an
+4. **Update the change log (`CHANGELOG.md`):** The change log helps give an
    overview of the changes that go into each release, and gives credit
    where credit is due. We make sure that the change log is up to date
    before each release, and we always appreciate it when people make
