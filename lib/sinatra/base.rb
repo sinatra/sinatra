@@ -12,6 +12,13 @@ require 'uri'
 require 'sinatra/show_exceptions'
 require 'sinatra/version'
 
+module Rack
+  class File
+    ALLOWED_VERBS = %w[GET HEAD OPTIONS POST]
+    ALLOW_HEADER = ALLOWED_VERBS.join(', ')
+  end
+end
+
 module Sinatra
   # The request object. See Rack::Request for more info:
   # http://rubydoc.info/github/rack/rack/master/Rack/Request
