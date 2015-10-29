@@ -362,7 +362,7 @@ module Sinatra
 
       last_modified opts[:last_modified] if opts[:last_modified]
 
-      file   = Rack::File.new(settings.public_folder)
+      file   = Rack::File.new(File.dirname(settings.app_file))
       result = file.call(env)
       result[1].each { |k,v| headers[k] ||= v }
       headers['Content-Length'] = result[1]['Content-Length']
