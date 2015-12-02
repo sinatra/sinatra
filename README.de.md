@@ -111,6 +111,7 @@ aufgerufen werden.
         * [Anfrage- oder Instanz-Scope](#anfrage--oder-instanz-scope)
         * [Delegation-Scope](#delegation-scope)
     * [Kommandozeile](#kommandozeile)
+      * [Multi-Threading](#multi-threading)
     * [Systemanforderungen](#systemanforderungen)
     * [Der neuste Stand (The Bleeding Edge)](#der-neuste-stand-the-bleeding-edge)
         * [Mit Bundler](#mit-bundler)
@@ -2820,6 +2821,42 @@ Die Optionen sind:
 -s # Rack-Server/Handler setzen (Standard ist thin)
 -x # Mutex-Lock einschalten (Standard ist off)
 ```
+
+### Multi-threading
+
+_Paraphrasiert von [dieser Antwort auf StackOverflow][so-answer] von Konstantin_
+
+Sinatra erlegt kein Nebenläufigkeitsmodell auf, sondern überlässt dies dem
+selbst gewählten Rack-Proxy (Server), so wie Thin, Puma oder WEBrick.
+Sinatra selbst ist Thread-sicher, somit ist es kein Problem wenn der
+Rack-Proxy ein anderes Threading-Modell für Nebenläufigkeit benutzt.
+Das heißt, dass wenn der Server gestartet wird, dass man die korrekte
+Aufrufsmethode benutzen sollte für den jeweiligen Rack-Proxy.
+Das folgende Beispiel ist eine Veranschaulichung eines mehrprozessigen
+Thin Servers:
+
+``` ruby
+# app.rb
+
+require 'sinatra/base'
+
+class App < Sinatra::Base
+  get '/' do
+    "Hello, World"
+  end
+end
+
+App.run!
+
+```
+
+Um den Server zu starten, führt man das folgende Kommando aus:
+
+``` shell
+thin --threaded start
+```
+
+[so-answer]: http://stackoverflow.com/questions/6278817/is-sinatra-multi-threaded/6282999#6282999)
 
 ## Systemanforderungen
 
