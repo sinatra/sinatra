@@ -2319,7 +2319,7 @@ end
   <tr>
     <td>static</td>
     <td>true</td>
-    <td>false</td>
+    <td>File.exist?(public_folder)</td>
     <td>true</td>
   </tr>
 </table>
