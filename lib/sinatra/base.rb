@@ -2,6 +2,7 @@
 require 'rack'
 require 'tilt'
 require 'rack/protection'
+require 'forwardable'
 
 # stdlib dependencies
 require 'thread'
