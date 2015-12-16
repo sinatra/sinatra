@@ -54,16 +54,6 @@ begin
     end
 
     describe 'finding layouts' do
-      describe 'with no view given' do
-        it 'renders with file layouts' do
-          asciidoc_app_with_get do
-            asciidoc 'Hello World', :layout => :layout2, :layout_engine => :erb
-          end
-          assert ok?
-          assert_include body, 'ERB Layout!'
-          assert_include body, '<p>Hello World</p>'
-        end
-      end
       describe 'with a single symbol view given' do
         describe 'with no layout given' do
           it 'renders with default layout' do
