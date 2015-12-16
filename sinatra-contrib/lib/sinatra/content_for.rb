@@ -55,7 +55,7 @@ module Sinatra
   #
   # For example, some of your views might need a few javascript tags and
   # stylesheets, but you don't want to force this files in all your pages.
-  # Then you can put <tt><% yield_content :scripts_and_styles %></tt> on your
+  # Then you can put <tt><%= yield_content :scripts_and_styles %></tt> on your
   # layout, inside the <head> tag, and each view can call <tt>content_for</tt>
   # setting the appropriate set of tags that should be added to the layout.
   #
