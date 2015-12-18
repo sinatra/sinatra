@@ -1,4 +1,8 @@
-require 'rack/showexceptions'
+begin
+  require 'rack/showexceptions'
+rescue LoadError
+  require 'rack/show_exceptions'
+end
 
 module Sinatra
   # Sinatra::ShowExceptions catches all exceptions raised from the app it
