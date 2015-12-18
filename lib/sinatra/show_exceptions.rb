@@ -40,11 +40,17 @@ module Sinatra
       # Rack::ShowExceptions, returns a String instead of an array.
       body = Array(exception)
 
+      if defined? body.join.bytesize
+        content_length = body.join.bytesize
+      else
+        content_length = Rack::Utils.bytesize(body.join)
+      end
+
       [
         500,
         {
           "Content-Type" => content_type,
-          "Content-Length" => Rack::Utils.bytesize(body.join).to_s
+          "Content-Length" => content_length.to_s
         },
         body
       ]

@@ -150,7 +150,18 @@ module Sinatra
       if calculate_content_length?
         # if some other code has already set Content-Length, don't muck with it
         # currently, this would be the static file-handler
-        headers["Content-Length"] = body.inject(0) { |l, p| l + Rack::Utils.bytesize(p) }.to_s
+
+        content_length = body.inject(0) do |l, p|
+          work_length = l
+          if defined? p.bytesize
+            work_length += p.bytesize
+          else
+            work_length += Rack::Utils.bytesize(p)
+          end
+          work_length
+        end
+
+        headers["Content-Length"] = content_length.to_s
       end
 
       [status.to_i, headers, result]
