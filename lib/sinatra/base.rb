@@ -374,8 +374,13 @@ module Sinatra
       last_modified opts[:last_modified] if opts[:last_modified]
 
       file      = Rack::File.new nil
-      file.path = path
-      result    = file.serving env
+      if defined? file.path
+        file.path = path
+        result    = file.serving env
+      else
+        result    = file.serving request, path
+      end
+
       result[1].each { |k,v| headers[k] ||= v }
       headers['Content-Length'] = result[1]['Content-Length']
       opts[:status] &&= Integer(opts[:status])
