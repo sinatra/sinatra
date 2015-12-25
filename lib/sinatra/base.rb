@@ -2,6 +2,7 @@
 require 'rack'
 require 'tilt'
 require 'rack/protection'
+require 'forwardable'
 
 # stdlib dependencies
 require 'thread'
@@ -299,15 +300,10 @@ module Sinatra
       response.headers
     end
 
-    # Access the underlying Rack session.
-    def session
-      request.session
-    end
-
-    # Access shared logger object.
-    def logger
-      request.logger
-    end
+    extend Forwardable
+    def_delegators :request,
+                   :session, # Access the underlying Rack session.
+                   :logger # Access shared logger object.
 
     # Look up a media type by file extension in Rack's mime registry.
     def mime_type(type)
