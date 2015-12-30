@@ -203,6 +203,8 @@ module Sinatra
       end
     end
 
+    MUTEX_FOR_PERFORM = Mutex.new
+
     # When the extension is registered it extends the Sinatra application
     # +klass+ with the modules +BaseMethods+ and +ExtensionMethods+ and
     # defines a before filter to +perform+ the reload of the modified files.
@@ -218,11 +220,7 @@ module Sinatra
       klass.set(:reload_templates) { klass.reloader? }
       klass.before do
         if klass.reloader?
-          if Reloader.thread_safe?
-            Thread.exclusive { Reloader.perform(klass) }
-          else
-            Reloader.perform(klass)
-          end
+          MUTEX_FOR_PERFORM.synchronize { Reloader.perform(klass) }
         end
       end
       klass.set(:inline_templates, klass.app_file) if klass == Sinatra::Application
@@ -238,11 +236,6 @@ module Sinatra
         require watcher.path
         watcher.update
       end
-    end
-
-    # Indicates whether or not we can and need to run thread-safely.
-    def self.thread_safe?
-      Thread and Thread.list.size > 1 and Thread.respond_to?(:exclusive)
     end
 
     # Contains the methods defined in Sinatra::Base that are overridden.
