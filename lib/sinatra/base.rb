@@ -1631,7 +1631,7 @@ module Sinatra
               ignore << escaped(c).join if c.match(/[\.@]/)
               patt = encoded(c)
               patt.gsub(/%[\da-fA-F]{2}/) do |match|
-                match.split(//).map! {|char| char =~ /[A-F]/ ? "[#{char}#{char.downcase}]" : char}.join
+                match.split(//).map! { |char| char == char.downcase ? char : "[#{char}#{char.downcase}]" }.join
               end
             end
 
@@ -1690,10 +1690,7 @@ module Sinatra
         end
         unsafe_patterns = unsafe_ignore.map! do |unsafe|
           chars = unsafe.split(//).map! do |char|
-            if char =~ /[A-Z]/
-              char <<= char.downcase
-            end
-            char
+            char == char.downcase ? char : char + char.downcase
           end
 
           "|(?:%[^#{chars[0]}].|%[#{chars[0]}][^#{chars[1]}])"
