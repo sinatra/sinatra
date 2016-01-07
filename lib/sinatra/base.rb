@@ -239,7 +239,11 @@ module Sinatra
         def block.each; yield(call) end
         response.body = block
       elsif value
-        headers.delete 'Content-Length' unless request.head? || value.is_a?(Rack::File) || value.is_a?(Stream)
+        # Rack 2.0 returns a Rack::File::Iterator here instead of
+        # Rack::File as it was in the previous API.
+        unless request.head? || value.is_a?(Rack::File::Iterator) || value.is_a?(Stream)
+          headers.delete 'Content-Length'
+        end
         response.body = value
       else
         response.body
@@ -362,12 +366,13 @@ module Sinatra
 
       last_modified opts[:last_modified] if opts[:last_modified]
 
-      file   = Rack::File.new(settings.public_folder)
-      result = file.call(env)
+      file   = Rack::File.new(File.dirname(settings.app_file))
+      result = file.serving(request, path)
+
       result[1].each { |k,v| headers[k] ||= v }
       headers['Content-Length'] = result[1]['Content-Length']
       opts[:status] &&= Integer(opts[:status])
-      halt opts[:status] || result[0], result[2]
+      halt (opts[:status] || result[0]), result[2]
     rescue Errno::ENOENT
       not_found
     end
@@ -1053,6 +1058,7 @@ module Sinatra
     # Run the block with 'throw :halt' support and apply result to the response.
     def invoke
       res = catch(:halt) { yield }
+
       res = [res] if Fixnum === res or String === res
       if Array === res and Fixnum === res.first
         res = res.dup
