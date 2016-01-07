@@ -111,6 +111,7 @@ aufgerufen werden.
         * [Anfrage- oder Instanz-Scope](#anfrage--oder-instanz-scope)
         * [Delegation-Scope](#delegation-scope)
     * [Kommandozeile](#kommandozeile)
+      * [Multi-Threading](#multi-threading)
     * [Systemanforderungen](#systemanforderungen)
     * [Der neuste Stand (The Bleeding Edge)](#der-neuste-stand-the-bleeding-edge)
         * [Mit Bundler](#mit-bundler)
@@ -227,7 +228,7 @@ end
 
 Routen können auch den query-Parameter verwenden:
 
-``` ruby
+```ruby
 get '/posts' do
   # matches "GET /posts?title=foo&author=bar"
   title = params['title']
@@ -527,7 +528,7 @@ Rendering-Methoden rendern jeden String direkt.
 
 ### Direkte Templates
 
-``` ruby
+```ruby
 get '/' do
   haml '%div.title Hallo Welt'
 end
@@ -969,14 +970,14 @@ Da man aus dem Mediawiki-Template heraus keine Ruby-Methoden aufrufen und auch
 keine locals verwenden kann, wird man Mediawiki üblicherweise in Kombination mit
 anderen Renderern verwenden wollen:
 
-``` ruby
+```ruby
 erb :overview, :locals => { :text => mediawiki(:introduction) }
 ```
 
 Beachte: Man kann die `mediawiki`-Methode auch aus anderen Templates
 heraus aufrufen:
 
-``` ruby
+```ruby
 %h1 Grüße von Haml!
 %p= mediawiki(:greetings)
 ```
@@ -1031,7 +1032,7 @@ Templates zu verwenden und einen anderen für das Layout, indem die
 Um Stylus-Templates ausführen zu können, müssen `stylus` und `stylus/tilt`
 zuerst geladen werden:
 
-``` ruby
+```ruby
 require 'sinatra'
 require 'stylus'
 require 'stylus/tilt'
@@ -1068,7 +1069,7 @@ end
 Die Template-Quelle wird als Ruby-String evaluiert. Die daraus resultierende
 json Variable wird mit Hilfe von `#to_json` umgewandelt:
 
-``` ruby
+```ruby
 json = { :foo => 'bar' }
 json[:baz] = key
 ```
@@ -1076,7 +1077,7 @@ json[:baz] = key
 Die `:callback` und `:variable` Optionen können mit dem gerenderten Objekt
 verwendet werden:
 
-``` javascript
+```javascript
 var resource = {"foo":"bar","baz":"qux"};
 present(resource);
 ```
@@ -1134,7 +1135,7 @@ Ein Layout ist üblicherweise ein Template, das ein `yield` aufruft. Ein solches
 Template kann entweder wie oben beschrieben über die `:template` Option
 verwendet werden oder mit einem Block gerendert werden:
 
-``` ruby
+```ruby
 erb :post, :layout => false do
   erb :index
 end
@@ -1145,7 +1146,7 @@ Dieser Code entspricht weitestgehend `erb :index, :layout => :post`.
 Blöcke an Render-Methoden weiterzugeben ist besonders bei verschachtelten
 Layouts hilfreich:
 
-``` ruby
+```ruby
 erb :main_layout, :layout => false do
   erb :admin_layout do
     erb :user
@@ -1155,7 +1156,7 @@ end
 
 Der gleiche Effekt kann auch mit weniger Code erreicht werden:
 
-``` ruby
+```ruby
 erb :admin_layout, :layout => :main_layout do
   erb :user
 end
@@ -1257,7 +1258,7 @@ Tilt zu erfahren.
 Um einen eigenen Mechanismus zum Aufsuchen von Templates zu
 implementieren, muss `#find_template` definiert werden:
 
-``` ruby
+```ruby
 configure do
   set :views [ './views/a', './views/b' ]
 end
@@ -1395,7 +1396,7 @@ set :sessions, :domain => 'foo.com'
 Um eine Session mit anderen Apps und zwischen verschiedenen Subdomains
 von foo.com zu teilen, wird ein *.* der Domain vorangestellt:
 
-``` ruby
+```ruby
 set :sessions, :domain => '.foo,com'
 ```
 
@@ -2469,7 +2470,7 @@ Details über mögliche Optionen.
 Damit eine App sich ähnlich wie eine klassische App verhält, kann man
 auch eine Subclass von `Sinatra::Application` erstellen:
 
-``` ruby
+```ruby
 require 'sinatra/base'
 
 class MyApp < Sinatra::Application
@@ -2820,6 +2821,42 @@ Die Optionen sind:
 -s # Rack-Server/Handler setzen (Standard ist thin)
 -x # Mutex-Lock einschalten (Standard ist off)
 ```
+
+### Multi-threading
+
+_Paraphrasiert von [dieser Antwort auf StackOverflow][so-answer] von Konstantin_
+
+Sinatra erlegt kein Nebenläufigkeitsmodell auf, sondern überlässt dies dem
+selbst gewählten Rack-Proxy (Server), so wie Thin, Puma oder WEBrick.
+Sinatra selbst ist Thread-sicher, somit ist es kein Problem wenn der
+Rack-Proxy ein anderes Threading-Modell für Nebenläufigkeit benutzt.
+Das heißt, dass wenn der Server gestartet wird, dass man die korrekte
+Aufrufsmethode benutzen sollte für den jeweiligen Rack-Proxy.
+Das folgende Beispiel ist eine Veranschaulichung eines mehrprozessigen
+Thin Servers:
+
+``` ruby
+# app.rb
+
+require 'sinatra/base'
+
+class App < Sinatra::Base
+  get '/' do
+    "Hello, World"
+  end
+end
+
+App.run!
+
+```
+
+Um den Server zu starten, führt man das folgende Kommando aus:
+
+``` shell
+thin --threaded start
+```
+
+[so-answer]: http://stackoverflow.com/questions/6278817/is-sinatra-multi-threaded/6282999#6282999)
 
 ## Systemanforderungen
 

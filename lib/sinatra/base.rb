@@ -2,6 +2,7 @@
 require 'rack'
 require 'tilt'
 require 'rack/protection'
+require 'forwardable'
 
 # stdlib dependencies
 require 'thread'
@@ -303,15 +304,10 @@ module Sinatra
       response.headers
     end
 
-    # Access the underlying Rack session.
-    def session
-      request.session
-    end
-
-    # Access shared logger object.
-    def logger
-      request.logger
-    end
+    extend Forwardable
+    def_delegators :request,
+                   :session, # Access the underlying Rack session.
+                   :logger # Access shared logger object.
 
     # Look up a media type by file extension in Rack's mime registry.
     def mime_type(type)
@@ -1028,7 +1024,7 @@ module Sinatra
     # a matching file is found, returns nil otherwise.
     def static!(options = {})
       return if (public_dir = settings.public_folder).nil?
-      path = File.expand_path("#{public_dir}#{unescape(request.path_info)}" )
+      path = File.expand_path("#{public_dir}#{URI_INSTANCE.unescape(request.path_info)}" )
       return unless File.file?(path)
 
       env['sinatra.static_file'] = path
@@ -1625,7 +1621,7 @@ module Sinatra
               ignore << escaped(c).join if c.match(/[\.@]/)
               patt = encoded(c)
               patt.gsub(/%[\da-fA-F]{2}/) do |match|
-                match.split(//).map! {|char| char =~ /[A-Z]/ ? "[#{char}#{char.tr('A-Z', 'a-z')}]" : char}.join
+                match.split(//).map! { |char| char == char.downcase ? char : "[#{char}#{char.downcase}]" }.join
               end
             end
 
@@ -1684,10 +1680,7 @@ module Sinatra
         end
         unsafe_patterns = unsafe_ignore.map! do |unsafe|
           chars = unsafe.split(//).map! do |char|
-            if char =~ /[A-Z]/
-              char <<= char.tr('A-Z', 'a-z')
-            end
-            char
+            char == char.downcase ? char : char + char.downcase
           end
 
           "|(?:%[^#{chars[0]}].|%[#{chars[0]}][^#{chars[1]}])"

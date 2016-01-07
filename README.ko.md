@@ -5,7 +5,7 @@
 Sinatra는 최소한의 노력으로 루비 기반 웹 애플리케이션을 신속하게 만들 수 있게
 해 주는 [DSL](http://en.wikipedia.org/wiki/Domain-specific_language)입니다.
 
-``` ruby
+```ruby
 # myapp.rb
 require 'sinatra'
 
@@ -16,13 +16,13 @@ end
 
 젬을 설치합니다.
 
-``` shell
+```shell
 gem install sinatra
 ```
 
 실행합니다.
 
-``` shell
+```shell
 ruby myapp.rb
 ```
 
@@ -125,7 +125,7 @@ thin이 설치되어 있을 경우 Sinatra는 thin을 통해 실행합니다.
 Sinatra에서, 라우터(route)는 URL-매칭 패턴과 쌍을 이루는 HTTP 메서드입니다.
 각각의 라우터는 블록과 연결됩니다.
 
-``` ruby
+```ruby
 get '/' do
   .. 무언가 보여주기(show) ..
 end
@@ -163,7 +163,7 @@ end
 
 라우터 패턴에는 이름을 가진 매개변수가 포함될 수 있으며, `params` 해시로 접근할 수 있습니다.
 
-``` ruby
+```ruby
 get '/hello/:name' do
   # "GET /hello/foo" 및 "GET /hello/bar"와 매치
   # params['name']은 'foo' 또는 'bar'
@@ -173,7 +173,7 @@ end
 
 또한 블록 매개변수를 통하여도 이름을 가진 매개변수에 접근할 수 있습니다.
 
-``` ruby
+```ruby
 get '/hello/:name' do |n|
   # "GET /hello/foo" 및 "GET /hello/bar"와 매치
   # params['name']은 'foo' 또는 'bar'
@@ -184,7 +184,7 @@ end
 
 라우터 패턴에는 스플랫(splat, 또는 와일드카드)도 매개변수도 포함될 수 있으며, 이럴 경우 `params['splat']` 배열을 통해 접근할 수 있습니다.
 
-``` ruby
+```ruby
 get '/say/*/to/*' do
   # /say/hello/to/world와 매치
   params['splat'] # => ["hello", "world"]
@@ -198,7 +198,7 @@ end
 
 블록 매개변수로도 접근할 수 있습니다.
 
-``` ruby
+```ruby
 get '/download/*.*' do |path, ext|
   [path, ext] # => ["path/to/file", "xml"]
 end
@@ -206,7 +206,7 @@ end
 
 라우터는 정규표현식으로 매치할 수 있습니다.
 
-``` ruby
+```ruby
 get /\A\/hello\/([\w]+)\z/ do
   "Hello, #{params['captures'].first}!"
 end
@@ -214,7 +214,7 @@ end
 
 블록 매개변수로도 사용가능합니다.
 
-``` ruby
+```ruby
 get %r{/hello/([\w]+)} do |c|
   # "GET /meta/hello/world", "GET /hello/world/1234" 등과 매치
   "Hello, #{c}!"
@@ -223,7 +223,7 @@ end
 
 라우터 패턴에는 선택적인(optional) 매개변수도 올 수 있습니다.
 
-``` ruby
+```ruby
 get '/posts.?:format?' do
   # "GET /posts" 는 물론 "GET /posts.json", "GET /posts.xml" 와 같은 어떤 확장자와도 매칭
 end
@@ -231,7 +231,7 @@ end
 
 쿼리 파라메터로도 이용가능 합니다.
 
-``` ruby
+```ruby
 get '/posts' do
   # matches "GET /posts?title=foo&author=bar"
   title = params['title']
@@ -247,7 +247,7 @@ end
 
 라우터는 사용자 에이전트(user agent)같은 다양한 매칭 조건을 포함할 수 있습니다.
 
-``` ruby
+```ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
   "Songbird 버전 #{params['agent'][0]}을 사용하는군요!"
 end
@@ -259,7 +259,7 @@ end
 
 다른 가능한 조건에는 `host_name`과 `provides`가 있습니다.
 
-``` ruby
+```ruby
 get '/', :host_name => /^admin\./ do
   "Admin Area, Access denied!"
 end
@@ -276,7 +276,7 @@ end
 
 사용자 정의 조건도 쉽게 만들 수 있습니다.
 
-``` ruby
+```ruby
 set(:probability) { |value| condition { rand <= value } }
 
 get '/win_a_car', :probability => 0.1 do
@@ -290,7 +290,7 @@ end
 
 여러 값을 받는 조건에는 스플랫(splat)을 사용합니다.
 
-``` ruby
+```ruby
 set(:auth) do |*roles|   # <- 이게 스플랫
   condition do
     unless logged_in? && roles.any? {|role| current_user.in_role? role }
@@ -322,7 +322,7 @@ end
 
 이것을 이용한 예를 들자면, 스트리밍(streaming) 예제를 쉽게 구현할 수 있습니다.
 
-``` ruby
+```ruby
 class Stream
   def each
 100.times { |i| yield "#{i}\n" }
@@ -339,7 +339,7 @@ get('/') { Stream.new }
 위에서 보듯, Sinatra에는 문자열 패턴 및 정규표현식을 이용한 라우터 매칭 지원이 내장되어 있습니다.
 하지만, 그게 끝은 아닙니다. 여러분 만의 매처(matcher)도 쉽게 정의할 수 있습니다.
 
-``` ruby
+```ruby
 class AllButPattern
   Match = Struct.new(:captures)
 
@@ -364,7 +364,7 @@ end
 
 사실 위의 예제는 조금 과하게 작성된 면이 있습니다. 간단하게 표현할 수도 있어요.
 
-``` ruby
+```ruby
 get // do
   pass if request.path_info == "/index"
   # ...
@@ -373,7 +373,7 @@ end
 
 또는 거꾸로 탐색(negative look ahead)할 수도 있습니다.
 
-``` ruby
+```ruby
 get %r{^(?!/index$)} do
   # ...
 end
@@ -384,7 +384,7 @@ end
 정적 파일들은 `./public` 디렉터리에서 제공됩니다. 위치를 다른 곳으로
 변경하려면 `:public_folder` 옵션을 지정하면 됩니다.
 
-``` ruby
+```ruby
 set :public_folder, File.dirname(__FILE__) + '/static'
 ```
 
@@ -398,7 +398,7 @@ public 디렉터리명은 URL에 포함되지 않는다는 점에 주의하세�
 템플릿 언어들은 각각의 렌더링 메서드를 통해 표출됩니다.
 이들 메서드는 문자열을 반환할 뿐입니다.
 
-``` ruby
+```ruby
 get '/' do
   erb :index
 end
@@ -408,7 +408,7 @@ end
 
 템플릿 이름 대신 템플릿의 내용을 직접 넘길 수도 있습니다.
 
-``` ruby
+```ruby
 get '/' do
   code = "<%= Time.now %>"
   erb code
@@ -417,7 +417,7 @@ end
 
 템플릿은 두 번째 인자로 옵션값의 해시를 받습니다.
 
-``` ruby
+```ruby
 get '/' do
   erb :index, :layout => :post
 end
@@ -428,7 +428,7 @@ end
 
 Sinatra가 이해하지 못하는 모든 옵션값들은 템플릿 엔진으로 전달됩니다.
 
-``` ruby
+```ruby
 get '/' do
   haml :index, :format => :html5
 end
@@ -436,7 +436,7 @@ end
 
 옵션값은 템플릿 언어별로 전역적으로 설정할 수도 있습니다.
 
-``` ruby
+```ruby
 set :haml, :format => :html5
 
 get '/' do
@@ -496,7 +496,7 @@ render 메서드에서 전달된 옵션값들은 `set`을 통해 설정한 옵�
 템플릿은 `./views` 디렉터리에 있는 것으로 가정됩니다. 뷰 디렉터리를
 다른 곳으로 하고 싶으시면 이렇게 하세요.
 
-``` ruby
+```ruby
 set :views, settings.root + '/templates'
 ```
 
@@ -507,7 +507,7 @@ set :views, settings.root + '/templates'
 
 ### 리터럴 템플릿(Literal Templates)
 
-``` ruby
+```ruby
 get '/' do
   haml '%div.title Hello World'
 end
@@ -520,7 +520,7 @@ end
 일부 언어는 여러 개의 구현이 있습니다. (스레드에 안전하게 thread-safe) 어느 구현을
 사용할지 저정하려면, 먼저 require 하기만 하면 됩니다.
 
-``` ruby
+```ruby
 require 'rdiscount' # or require 'bluecloth'
 get('/') { markdown :index }
 ```
@@ -695,13 +695,13 @@ Liquid 템플릿에서는 루비 메서드(`yield` 제외)를 호출할 수 없�
 Markdown에서는 메서드 호출 뿐 아니라 locals 전달도 안됩니다.
 따라서 일반적으로는 다른 렌더링 엔진과 함께 사용하게 됩니다.
 
-``` ruby
+```ruby
 erb :overview, :locals => { :text => markdown(:introduction) }
 ```
 
 다른 템플릿 속에서 `markdown` 메서드를 호출할 수도 있습니다.
 
-``` ruby
+```ruby
 %h1 안녕 Haml!
 %p= markdown(:greetings)
 ```
@@ -730,13 +730,13 @@ Markdown에서 루비를 호출할 수 없기 때문에, Markdown으로 작성�
 Textile에서는 메서드 호출 뿐 아니라 locals 전달도 안됩니다.
 따라서 일반적으로는 다른 렌더링 엔진과 함께 사용하게 됩니다.
 
-``` ruby
+```ruby
 erb :overview, :locals => { :text => textile(:introduction) }
 ```
 
 다른 템플릿 속에서 `textile` 메서드를 호출할 수도 있습니다.
 
-``` ruby
+```ruby
 %h1 안녕 Haml!
 %p= textile(:greetings)
 ```
@@ -765,13 +765,13 @@ Textile에서 루비를 호출할 수 없기 때문에, Textile으로 작성된 
 RDoc에서는 메서드 호출 뿐 아니라 locals 전달도 안됩니다.
 따라서 일반적으로는 다른 렌더링 엔진과 함께 사용하게 됩니다.
 
-``` ruby
+```ruby
 erb :overview, :locals => { :text => rdoc(:introduction) }
 ```
 
 다른 템플릿 속에서 `rdoc` 메서드를 호출할 수도 있습니다.
 
-``` ruby
+```ruby
 %h1 Hello From Haml!
 %p= rdoc(:greetings)
 ```
@@ -893,13 +893,13 @@ Radius 템플릿에서는 루비 메서드를 호출할 수 없기
 Creole에서는 메서드 호출 뿐 아니라 locals 전달도 안됩니다.
 따라서 일반적으로는 다른 렌더링 엔진과 함께 사용하게 됩니다.
 
-``` ruby
+```ruby
 erb :overview, :locals => { :text => creole(:introduction) }
 ```
 
 다른 템플릿 속에서 `creole` 메서드를 호출할 수도 있습니다.
 
-``` ruby
+```ruby
 %h1 Hello From Haml!
 %p= creole(:greetings)
 ```
@@ -928,13 +928,13 @@ Creole에서 루비를 호출할 수 없기 때문에, Creole으로 작성된 �
 MediaWiki 마크업에서는 메서드 호출 뿐 아니라 locals 전달도 불가능합니다.
 따라서 일반적으로는 다른 렌더링 엔진과 함께 사용하게 됩니다.
 
-``` ruby
+```ruby
 erb :overview, :locals => { :text => mediawiki(:introduction) }
 ```
 
 다른 템플릿 속에서 `mediawiki` 메서드를 호출할 수도 있습니다.
 
-``` ruby
+```ruby
 %h1 Hello From Haml!
 %p= mediawiki(:greetings)
 ```
@@ -994,7 +994,7 @@ MediaWiki에서 루비를 호출할 수 없기 때문에, MediaWiki으로 작성
 Stylus 템플릿을 사용가능하게 하려면, 먼저 `stylus`와 `stylus/tilt`를 로드
 해야합니다.
 
-``` ruby
+```ruby
 require 'sinatra'
 require 'stylus'
 require 'stylus/tilt'
@@ -1030,7 +1030,7 @@ end
 
 템플릿 소스는 루비 문자열로 평가(evaluate)되고, 결과인 json 변수는 `#to_json`으로 변환됩니다.
 
-``` ruby
+```ruby
 json = { :foo => 'bar' }
 json[:baz] = key
 ```
@@ -1068,7 +1068,7 @@ WLang으로 쓰여진 레이아웃과 `yield`는 지원합니다.
 템플릿은 라우터 핸들러와 같은 맥락(context)에서 평가됩니다. 라우터
 핸들러에서 설정한 인스턴스 변수들은 템플릿에서 직접 접근 가능합니다.
 
-``` ruby
+```ruby
 get '/:id' do
   @foo = Foo.find(params['id'])
   haml '%h1= @foo.name'
@@ -1077,7 +1077,7 @@ end
 
 명시적으로 로컬 변수의 해시를 지정할 수도 있습니다.
 
-``` ruby
+```ruby
 get '/:id' do
   foo = Foo.find(params['id'])
   haml '%h1= bar.name', :locals => { :bar => foo }
@@ -1093,7 +1093,7 @@ end
 위에 설명된 `:template` 옵션을 통해 템플릿을 사용하거나,
 다음 예제처럼 블록으로 렌더링 할 수 있습니다.
 
-``` ruby
+```ruby
 erb :post, :layout => false do
   erb :index
 end
@@ -1103,7 +1103,7 @@ end
 
 렌더링 메서드에 블록 넘기기는 중첩 레이아웃을 만들때 유용합니다.
 
-``` ruby
+```ruby
 erb :main_layout, :layout => false do
   erb :admin_layout do
     erb :user
@@ -1113,7 +1113,7 @@ end
 
 위의 코드도 줄일 수 있습니다.
 
-``` ruby
+```ruby
 erb :admin_layout, :layout => :main_layout do
   erb :user
 end
@@ -1126,7 +1126,7 @@ end
 
 템플릿은 소스 파일의 마지막에서 정의할 수도 있습니다.
 
-``` ruby
+```ruby
 require 'sinatra'
 
 get '/' do
@@ -1151,7 +1151,7 @@ __END__
 
 템플릿은 톱 레벨(top-level)에서 `template`메서드로도 정의할 수 있습니다.
 
-``` ruby
+```ruby
 template :layout do
   "%html\n  =yield\n"
 end
@@ -1170,7 +1170,7 @@ end
 비활성시키거나 `set :haml, :layout => false`으로 기본값을 비활성으로 둘 수
 있습니다.
 
-``` ruby
+```ruby
 get '/' do
   haml :index, :layout => !request.xhr?
 end
@@ -1182,7 +1182,7 @@ end
 됩니다. 예를 들어, `tt`라는 파일 확장자를 Textile 템플릿과 연결하고 싶다면,
 다음과 같이 하면 됩니다.
 
-``` ruby
+```ruby
 Tilt.register :tt, Tilt[:textile]
 ```
 
@@ -1190,7 +1190,7 @@ Tilt.register :tt, Tilt[:textile]
 
 우선, Tilt로 여러분 엔진을 등록하고, 렌더링 메서드를 생성합니다.
 
-``` ruby
+```ruby
 Tilt.register :myat, MyAwesomeTemplateEngine
 
 helpers do
@@ -1209,7 +1209,7 @@ Tilt에 대한 더 자세한 내용은 https://github.com/rtomayko/tilt 참조�
 
 고유한 템플릿 룩업을 구현하기 위해서는 `#find_template` 메서드를 만드셔야 합니다.
 
-``` ruby
+```ruby
 configure do
   set :views [ './views/a', './views/b' ]
 end
@@ -1227,7 +1227,7 @@ end
 요청과 응답을 변형할 수 있습니다. 필터에서 설정된 인스턴스 변수들은 라우터와
 템플릿에서 접근 가능합니다.
 
-``` ruby
+```ruby
 before do
   @note = 'Hi!'
   request.path_info = '/foo/bar/baz'
@@ -1243,7 +1243,7 @@ end
 마찬가지로 요청과 응답을 변형할 수 있습니다. 사전 필터와 라우터에서 설정된
 인스턴스 변수들은 사후 필터에서 접근 가능합니다.
 
-``` ruby
+```ruby
 after do
   puts response.status
 end
@@ -1256,7 +1256,7 @@ end
 필터는 패턴을 취할 수도 있으며, 이 경우 요청 경로가 그 패턴과 매치할
 경우에만 필터가 평가될 것입니다.
 
-``` ruby
+```ruby
 before '/protected/*' do
   authenticate!
 end
@@ -1268,7 +1268,7 @@ end
 
 라우터와 마찬가지로, 필터 역시 조건을 취할 수 있습니다.
 
-``` ruby
+```ruby
 before :agent => /Songbird/ do
   # ...
 end
@@ -1283,7 +1283,7 @@ end
 톱-레벨의 `helpers` 메서드를 사용하여 라우터 핸들러와 템플릿에서 사용할 헬퍼
 메서드들을 정의할 수 있습니다.
 
-``` ruby
+```ruby
 helpers do
   def bar(name)
     "#{name}bar"
@@ -1297,7 +1297,7 @@ end
 
 또는, 헬퍼 메서드는 별도의 모듈 속에 정의할 수도 있습니다.
 
-``` ruby
+```ruby
 module FooUtils
   def foo(name) "#{name}foo" end
 end
@@ -1316,7 +1316,7 @@ helpers FooUtils, BarUtils
 세션은 요청 동안에 상태를 유지하기 위해 사용합니다.
 세션이 활성화되면, 사용자 세션 당 세션 해시 하나씩을 갖게 됩니다.
 
-``` ruby
+```ruby
 enable :sessions
 
 get '/' do
@@ -1335,7 +1335,7 @@ end
 `enable :sessions`을 호출하지 **않는** 대신에, 선택한 미들웨어를 다른
 미들웨어들처럼 포함시키면 됩니다.
 
-``` ruby
+```ruby
 use Rack::Session::Pool, :expire_after => 2592000
 
 get '/' do
@@ -1352,21 +1352,21 @@ end
 시크릿은 애플리케이션 시작 시마다 변경되기 때문에, 애플리케이션의
 모든 인스턴스들이 공유할 시크릿을 직접 만들 수도 있습니다.
 
-``` ruby
+```ruby
 set :session_secret, 'super secret'
 ```
 
 조금 더 세부적인 설정이 필요하다면, `sessions` 설정에서 옵션이 있는
 해시를 저장할 수도 있습니다.
 
-``` ruby
+```ruby
 set :sessions, :domain => 'foo.com'
 ```
 
 세션을 다른 foo.com의 서브도메인 들과 공유하기 원한다면, 다음에 나오는
 것 처럼 도메인 앞에 *.*을 붙이셔야 합니다.
 
-``` ruby
+```ruby
 set :sessions, :domain => '.foo.com'
 ```
 
@@ -1374,37 +1374,37 @@ set :sessions, :domain => '.foo.com'
 
 필터나 라우터에서 요청을 즉각 중단하고 싶을 때 사용하합니다.
 
-``` ruby
+```ruby
 halt
 ```
 
 중단할 때 상태를 지정할 수도 있습니다.
 
-``` ruby
+```ruby
 halt 410
 ```
 
 본문을 넣을 수도 있습니다.
 
-``` ruby
+```ruby
 halt 'this will be the body'
 ```
 
 둘 다 할 수도 있습니다.
 
-``` ruby
+```ruby
 halt 401, 'go away!'
 ```
 
 헤더를 추가할 경우에는 다음과 같이 하면 됩니다.
 
-``` ruby
+```ruby
 halt 402, {'Content-Type' => 'text/plain'}, 'revenge'
 ```
 
 당연히 `halt`와 템플릿은 같이 사용할 수 있습니다.
 
-``` ruby
+```ruby
 halt erb(:error)
 ```
 
@@ -1412,7 +1412,7 @@ halt erb(:error)
 
 라우터는 `pass`를 사용하여 다음 번 매칭되는 라우터로 처리를 넘길 수 있습니다.
 
-``` ruby
+```ruby
 get '/guess/:who' do
   pass unless params['who'] == 'Frank'
   'You got me!'
@@ -1431,7 +1431,7 @@ end
 때로는 `pass`가 아니라, 다른 라우터를 호출한 결과를 얻고 싶을 때도
 있습니다. 이럴때는 간단하게 `call`을 사용하면 됩니다.
 
-``` ruby
+```ruby
 get '/foo' do
   status, headers, body = call env.merge("PATH_INFO" => '/bar')
   [status, headers, body.map(&:upcase)]
@@ -1457,7 +1457,7 @@ end
 지점에서 설정해야 할때도 있습니다. 이런 경우 `body` 헬퍼 메서드를 사용하면
 됩니다. 이렇게 하면, 그 순간부터 본문에 접근할 때 그 메서드를 사용할 수가 있습니다.
 
-``` ruby
+```ruby
 get '/foo' do
   body "bar"
 end
@@ -1473,7 +1473,7 @@ end
 
 본문와 마찬가지로, 상태코드와 헤더도 설정할 수 있습니다.
 
-``` ruby
+```ruby
 get '/foo' do
   status 418
   headers \
@@ -1493,7 +1493,7 @@ end
 계속 데이터를 내보내고 싶을 경우도 있죠. 여러분만의 래퍼(wrapper)를
 만들지 않으려면 `stream` 헬퍼를 사용하면 됩니다.
 
-``` ruby
+```ruby
 get '/' do
   stream do |out|
     out << "It's gonna be legen -\n"
@@ -1522,7 +1522,7 @@ Events](http://dev.w3.org/html5/eventsource/)를 구현할 수 있고, 이 방�
 있습니다. 이 옵션은 Thin과 Rainbow 같은 이벤트 기반 서버에서만 작동하고
 다른 서버들은 여전히 스트림을 닫습니다.
 
-``` ruby
+```ruby
 # long polling
 
 set :server, :thin
@@ -1556,7 +1556,7 @@ end
 요청 스코프(request scope) 내에서, `Logger`의 인스턴스인 `logger`
 헬퍼를 사용할 수 있습니다.
 
-``` ruby
+```ruby
 get '/' do
   logger.info "loading data"
   # ...
@@ -1570,7 +1570,7 @@ end
 로깅은 `Sinatra::Application`에서만 기본으로 활성화되어 있음에 유의합시다.
 만약 `Sinatra::Base`로부터 상속받은 경우라면 직접 활성화시켜 줘야 합니다.
 
-``` ruby
+```ruby
 class MyApp < Sinatra::Base
   configure :production, :development do
     enable :logging
@@ -1589,7 +1589,7 @@ Sinatra는 `env['rack.logger']`에서 찾은 로거를 사용할 것입니다.
 마임 타입이 있을 수 있습니다. 이 경우 `mime_type`을 사용하여 파일
 확장자를 등록합니다.
 
-``` ruby
+```ruby
 configure do
   mime_type :foo, 'text/foo'
 end
@@ -1597,7 +1597,7 @@ end
 
 `content_type` 헬퍼로 쓸 수도 있습니다.
 
-``` ruby
+```ruby
 get '/' do
   content_type :foo
   "foo foo foo"
@@ -1609,7 +1609,7 @@ end
 URL을 생성할때 `url` 헬퍼 메서드를 사용합니다. 예를 들어 Haml에서는 이렇게
 합니다.
 
-``` ruby
+```ruby
 %a{:href => url('/foo')} foo
 ```
 
@@ -1621,7 +1621,7 @@ URL을 생성할때 `url` 헬퍼 메서드를 사용합니다. 예를 들어 Ham
 
 `redirect` 헬퍼 메서드를 사용하여 브라우저를 리다이렉트 시킬 수 있습니다.
 
-``` ruby
+```ruby
 get '/foo' do
   redirect to('/bar')
 end
@@ -1629,7 +1629,7 @@ end
 
 다른 부가적인 매개변수들은 `halt`에 전달하는 인자들과 비슷합니다.
 
-``` ruby
+```ruby
 redirect to('/bar'), 303
 redirect 'http://google.com', 'wrong place, buddy'
 ```
@@ -1637,7 +1637,7 @@ redirect 'http://google.com', 'wrong place, buddy'
 `redirect back`을 사용하면 쉽게 사용자가 왔던 페이지로 다시 돌아가게
 할 수 있습니다.
 
-``` ruby
+```ruby
 get '/foo' do
   "<a href='/bar'>do something</a>"
 end
@@ -1650,13 +1650,13 @@ end
 
 리다이렉트와 함께 인자를 전달하려면, 쿼리로 붙이거나,
 
-``` ruby
+```ruby
 redirect to('/bar?sum=42')
 ```
 
 세션을 사용하면 됩니다.
 
-``` ruby
+```ruby
 enable :sessions
 
 get '/foo' do
@@ -1675,7 +1675,7 @@ end
 
 Cache-Control 헤더를 다음과 같이 간단하게 설정할 수 있습니다.
 
-``` ruby
+```ruby
 get '/' do
   cache_control :public
   "cache it!"
@@ -1684,7 +1684,7 @@ end
 
 프로 팁: 캐싱은 사전 필터에서 설정하세요.
 
-``` ruby
+```ruby
 before do
   cache_control :public, :must_revalidate, :max_age => 60
 end
@@ -1693,7 +1693,7 @@ end
 `expires` 헬퍼를 사용하여 그에 상응하는 헤더를 설정한다면,
 `Cache-Control`이 자동으로 설정됩니다.
 
-``` ruby
+```ruby
 before do
   expires 500, :public, :must_revalidate
 end
@@ -1704,7 +1704,7 @@ end
 클라이언트 캐시에 현재 버전이 이미 들어 있을 경우엔 즉각 응답을
 뿌릴(flush) 것입니다.
 
-``` ruby
+```ruby
 get "/article/:id" do
   @article = Article.find params['id']
   last_modified @article.updated_at
@@ -1716,7 +1716,7 @@ end
 [약한 ETag](http://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation)를
 사용할 수 도 있습니다.
 
-``` ruby
+```ruby
 etag @article.sha1, :weak
 ```
 
@@ -1724,7 +1724,7 @@ etag @article.sha1, :weak
 손쉬운 리버스 프록시(reverse-proxy) 캐싱 솔루션을 찾고 있다면,
 [rack-cache](https://github.com/rtomayko/rack-cache)를 써보세요.
 
-``` ruby
+```ruby
 require "rack/cache"
 require "sinatra"
 
@@ -1746,7 +1746,7 @@ RFC 2616에 따르면 If-Match 또는 If-None-Match 헤더가 `*`로 설정된 �
 이미 존재한다고 가정하지만, 다른 리소스(예를 들면 post 요청 같은)의 경우는
 새 리소스로 취급합니다. 이 행동은 `:new_resource` 옵션을 전달하여 변경할 수 있습니다.
 
-``` ruby
+```ruby
 get '/create' do
   etag '', :new_resource => true
   Article.create
@@ -1756,7 +1756,7 @@ end
 
 약한 ETag를 사용하고자 한다면, `:kind`으로 전달합시다.
 
-``` ruby
+```ruby
 etag '', :new_resource => true, :kind => :weak
 ```
 
@@ -1764,7 +1764,7 @@ etag '', :new_resource => true, :kind => :weak
 
 응답(response)으로 파일의 컨탠츠를 리턴하려면, `send_file` 헬퍼 메서드를 사용하면 됩니다.
 
-``` ruby
+```ruby
 get '/' do
   send_file 'foo.png'
 end
@@ -1772,7 +1772,7 @@ end
 
 이 메서드는 몇 가지 옵션을 받습니다.
 
-``` ruby
+```ruby
 send_file 'foo.png', :type => :jpg
 ```
 
@@ -1813,7 +1813,7 @@ send_file 'foo.png', :type => :jpg
 들어오는 요청 객에는 요청 레벨(필터, 라우터, 오류 핸들러)에서 `request`
 메서드를 통해 접근 가능합니다.
 
-``` ruby
+```ruby
 # http://example.com/example 상에서 실행 중인 앱
 get '/foo' do
   t = %w[text/css text/html application/javascript]
@@ -1848,7 +1848,7 @@ end
 
 `script_name`, `path_info`같은 일부 옵션들은 이렇게 쓸 수도 있습니다.
 
-``` ruby
+```ruby
 before { request.path_info = "/" }
 
 get "/" do
@@ -1858,7 +1858,7 @@ end
 
 `request.body`는 IO 객체이거나 StringIO 객체입니다.
 
-``` ruby
+```ruby
 post "/api" do
   request.body.rewind  # 누군가 이미 읽은 경우
   data = JSON.parse request.body.read
@@ -1871,7 +1871,7 @@ end
 `attachment` 헬퍼를 사용하여 응답이 브라우저에 표시하는 대신
 디스크에 저장되어야 함을 블라우저에게 알릴 수 있습니다.
 
-``` ruby
+```ruby
 get '/' do
   attachment
   "store it!"
@@ -1880,7 +1880,7 @@ end
 
 파일명을 전달할 수도 있습니다.
 
-``` ruby
+```ruby
 get '/' do
   attachment "info.txt"
   "store it!"
@@ -1893,7 +1893,7 @@ Sinatra는 `time_for_` 헬퍼 메서드를 제공합니다. 이 메서드는
 주어진 값으로부터 Time 객체를 생성한다. `DateTime`, `Date` 같은
 비슷한 클래스들도 변환됩니다.
 
-``` ruby
+```ruby
 get '/' do
   pass if Time.now > time_for('Dec 23, 2012')
   "still time"
@@ -1904,7 +1904,7 @@ end
 따라서 여러분은 애플리케이션에서 `time_for`를 오버라이딩하여 이들 메서드의
 동작을 쉽게 확장할 수 있습니다.
 
-``` ruby
+```ruby
 helpers do
   def time_for(value)
     case value
@@ -1926,7 +1926,7 @@ end
 
 `find_template`는 렌더링할 템플릿 파일을 찾는데 사용됩니다.
 
-``` ruby
+```ruby
 find_template settings.views, 'foo', Tilt[:haml] do |file|
   puts "could be #{file}"
 end
@@ -1936,7 +1936,7 @@ end
 참조 메커니즘에서 가로채게 하면 유용해집니다. 예를 들어, 하나 이상의 뷰 디렉터리를
 사용하고자 한다면 이렇게 하세요.
 
-``` ruby
+```ruby
 set :views, ['views', 'templates']
 
 helpers do
@@ -1948,7 +1948,7 @@ end
 
 다른 예제는 각 엔진마다 다른 디렉터리를 사용할 경우입니다.
 
-``` ruby
+```ruby
 set :views, :sass => 'views/sass', :haml => 'templates', :default => 'views'
 
 helpers do
@@ -1972,7 +1972,7 @@ end
 
 모든 환경에서, 시작될 때, 한번만 실행되게 하려면 이렇게 하면 됩니다.
 
-``` ruby
+```ruby
 configure do
   # 옵션 하나 설정
   set :option, 'value'
@@ -1993,7 +1993,7 @@ end
 
 환경(RACK_ENV 환경 변수)이 `:production`일 때만 실행되게 하려면 이렇게 하면 됩니다.
 
-``` ruby
+```ruby
 configure :production do
   ...
 end
@@ -2001,7 +2001,7 @@ end
 
 환경이 `:production` 또는 `:test`일 때 실행되게 하려면 이렇게 하면 됩니다.
 
-``` ruby
+```ruby
 configure :production, :test do
   ...
 end
@@ -2009,7 +2009,7 @@ end
 
 이 옵션들은 `settings`를 통해 접근 가능합니다.
 
-``` ruby
+```ruby
 configure do
   set :foo, 'bar'
 end
@@ -2027,19 +2027,19 @@ Sinatra는 [Rack::Protection](https://github.com/rkh/rack-protection#readme)을 
 일반적이고 일어날 수 있는 공격에 대비합니다. 이 모듈은 간단하게 비활성시킬 수 있습니다.
 (하지만 애플리케이션에 엄청나게 많은 취약성을 야기합니다.)
 
-``` ruby
+```ruby
 disable :protection
 ```
 
 하나의 방어층만 스킵하려면, 옵션 해시에 `protection`을 설정하면 됩니다.
 
-``` ruby
+```ruby
 set :protection, :except => :path_traversal
 ```
 
 배열로 넘김으로써 방어층 여러 개를 비활성화할 수 있습니다.
 
-``` ruby
+```ruby
 set :protection, :except => [:path_traversal, :session_hijacking]
 ```
 
@@ -2047,7 +2047,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
 때로는 자신만의 세션을 설정할 때도 있습니다. 이런 경우 `:session` 옵션을
 넘겨줌으로써 세션을 기반으로한 방어층을 설정 할 수 있습니다.
 
-``` ruby
+```ruby
 use Rack::Session::Pool
 set :protection, :session => true
 ```
@@ -2233,14 +2233,14 @@ set :protection, :session => true
 
 다른 환경으로 실행시키려면 `RACK_ENV` 환경 변수를 사용하세요.
 
-``` shell
+```shell
 RACK_ENV=production ruby my_app.rb
 ```
 
 현재 설정된 환경이 무엇인지 검사하기 위해서는 준비된 `development?`, `test?`,
 `production?` 메서드를 사용할 수 있습니다.
 
-``` ruby
+```ruby
 get '/' do
   if settings.development?
     "development!"
@@ -2261,7 +2261,7 @@ end
 `Sinatra::NotFound` 예외가 발생하거나 또는 응답의 상태 코드가 404라면,
 `not_found` 핸들러가 호출됩니다.
 
-``` ruby
+```ruby
 not_found do
   '아무 곳에도 찾을 수 없습니다.'
 end
@@ -2273,13 +2273,13 @@ end
 하지만 개발 환경에서는 예외 확인 옵션을 `:after_handler`로 설정되어 있을 경우에만
 실행됨을 주의하세요.
 
-``` ruby
+```ruby
 set :show_exceptions, :after_handler
 ```
 
 예외 객체는 Rack 변수 `sinatra.error`로부터 얻을 수 있습니다.
 
-``` ruby
+```ruby
 error do
   '고약한 오류가 발생했군요 - ' + env['sinatra.error'].message
 end
@@ -2287,7 +2287,7 @@ end
 
 사용자 정의 오류는 이렇게 정의합니다.
 
-``` ruby
+```ruby
 error MyCustomError do
   '무슨 일이 생겼나면요...' + env['sinatra.error'].message
 end
@@ -2295,7 +2295,7 @@ end
 
 그런 다음, 이 오류가 발생하면 이렇게 처리합니다.
 
-``` ruby
+```ruby
 get '/' do
   raise MyCustomError, '안좋은 일'
 end
@@ -2309,7 +2309,7 @@ end
 
 상태 코드에 대해 오류 핸들러를 설치할 수도 있습니다.
 
-``` ruby
+```ruby
 error 403 do
   '액세스가 금지됨'
 end
@@ -2321,7 +2321,7 @@ end
 
 범위로 지정할 수도 있습니다.
 
-``` ruby
+```ruby
 error 400..510 do
   '어이쿠'
 end
@@ -2341,7 +2341,7 @@ Sinatra는 [Rack](http://rack.github.io/) 위에서 동작하며, Rack은 루비
 Sinatra는 톱레벨의 `use` 메서드를 사용하여 Rack 미들웨어의 파이프라인을 만드는 일을
 식은 죽 먹기로 만듭니다.
 
-``` ruby
+```ruby
 require 'sinatra'
 require 'my_custom_middleware'
 
@@ -2357,7 +2357,7 @@ end
 (rackup 파일에서 가장 많이 사용)에서 정의한 것과 동일합니다. 예를 들어, `use` 메서드는
 블록이나 여러 개의/가변적인 인자도 받을 수 있습니다.
 
-``` ruby
+```ruby
 use Rack::Auth::Basic do |username, password|
   username == 'admin' && password == 'secret'
 end
@@ -2378,7 +2378,7 @@ Rack은 로깅, 디버깅, URL 라우팅, 인증, 그리고 세센 핸들링을 
 Sinatra 테스트는 많은 Rack 기반 테스팅 라이브러리, 프레임워크를 사용하여 작성가능합니다.
 그 중 [Rack::Test](http://rdoc.info/github/brynary/rack-test/master/frames)를 권장합니다.
 
-``` ruby
+```ruby
 require 'my_sinatra_app'
 require 'minitest/autorun'
 require 'rack/test'
@@ -2419,7 +2419,7 @@ Rack 미들웨어나, Rails 메탈(metal) 또는 서버 컴포넌트를 갖는 �
 입니다. (즉, 하나의 단일 애플리케이션 파일과 `./public` 및 `./views` 디렉터리,
 로깅, 예외 상세 페이지 등등). 이 곳에서 `Sinatra::Base`가 필요합니다.
 
-``` ruby
+```ruby
 require 'sinatra/base'
 
 class MyApp < Sinatra::Base
@@ -2501,7 +2501,7 @@ end
 모듈 앱을 시작하는 두 가지 일반적인 옵션이 있습니다.
 `run!`으로 능동적으로 시작하는 방법은 이렇습니다.
 
-``` ruby
+```ruby
 # my_app.rb
 require 'sinatra/base'
 
@@ -2515,14 +2515,14 @@ end
 
 이렇게 시작할 수도 있습니다.
 
-``` shell
+```shell
 ruby my_app.rb
 ```
 
 `config.ru`와 함께 사용할수도 있습니다. 이 경우는 어떠한 Rack 핸들러도 사용할 수 있도록
 허용 합다.
 
-``` ruby
+```ruby
 # config.ru
 require './my_app'
 run MyApp
@@ -2530,7 +2530,7 @@ run MyApp
 
 실행은 이렇게 합니다.
 
-``` shell
+```shell
 rackup -p 4567
 ```
 
@@ -2538,7 +2538,7 @@ rackup -p 4567
 
 앱 파일을 다음과 같이 작성합니다.
 
-``` ruby
+```ruby
 # app.rb
 require 'sinatra'
 
@@ -2549,7 +2549,7 @@ end
 
 대응하는 `config.ru`는 다음과 같이 작성합니다.
 
-``` ruby
+```ruby
 require './app'
 run Sinatra::Application
 ```
@@ -2573,7 +2573,7 @@ Sinatra에서 다른 Rack 미들웨어를 사용할 수 있을 뿐 아니라,
 또는 Rack 기반의 어떠한 애플리케이션(Rails/Ramaze/Camping/...)이 될 수도
 있습니다.
 
-``` ruby
+```ruby
 require 'sinatra/base'
 
 class LoginScreen < Sinatra::Base
@@ -2609,7 +2609,7 @@ end
 어떤 상수에 할당하지 않고 런타임에서 새 애플리케이션들을 생성하려면,
 `Sinatra.new`를 쓰면 됩니다.
 
-``` ruby
+```ruby
 require 'sinatra/base'
 my_app = Sinatra.new { get('/') { "hi" } }
 my_app.run!
@@ -2617,7 +2617,7 @@ my_app.run!
 
 선택적 인자로 상속할 애플리케이션을 받을 수 있습니다.
 
-``` ruby
+```ruby
 # config.ru
 require 'sinatra/base'
 
@@ -2640,7 +2640,7 @@ end
 
 이 방법은 Sinatra를 미들웨어로 사용하는 것을 아주 쉽게 만들어 주기도 합니다.
 
-``` ruby
+```ruby
 require 'sinatra/base'
 
 use Sinatra do
@@ -2665,7 +2665,7 @@ run RailsProject::Application
 
 `set`으로 생성한 옵션들은 클래스 레벨의 메서드들입니다.
 
-``` ruby
+```ruby
 class MyApp < Sinatra::Base
   # 저기요, 저는 애플리케이션 범위에 있다구요!
   set :foo, 42
@@ -2697,7 +2697,7 @@ end
 접근하거나 `erb` 나 `haml` 같은 렌더링 메서드를 호출할 수 있습니다. 요청 범위
 내에서 `settings` 헬퍼를 통해 애플리케이션 범위에 접근 가능합니다.
 
-``` ruby
+```ruby
 class MyApp < Sinatra::Base
   # 이봐요, 전 애플리케이션 범위에 있다구요!
   get '/define_route/:name' do
@@ -2768,7 +2768,7 @@ _Konstantin의 [StackOverflow의 답변][so-answer]에서 가져왔습니다_
 이는 서버를 시작할 때, 서버에 따른 정확한 호출 방법을 사용했을 때의
 이야기입니다. 밑의 예제는 다중 스레드 Thin 서버를 시작하는 방법입니다.
 
-``` ruby
+```ruby
 # app.rb
 
 require 'sinatra/base'
@@ -2785,7 +2785,7 @@ App.run!
 
 서버를 시작하는 명령어는 다음과 같습니다.
 
-``` shell
+```shell
 thin --threaded start
 ```
 
@@ -2869,7 +2869,7 @@ Sinatra의 가장 최근 코드를 사용하고자 한다면, 애플리케이션
 주기적으로 사전배포(prerelease) 젬을 푸시하기 때문에, 최신 기능들을 얻기 위해
 다음과 같이 할 수도 있습니다.
 
-``` shell
+```shell
 gem install sinatra --pre
 ```
 
@@ -2880,13 +2880,13 @@ gem install sinatra --pre
 
 우선, 아직 설치하지 않았다면 bundler를 설치합니다.
 
-``` shell
+```shell
 gem install bundler
 ```
 
 그런 다음, 프로젝트 디렉터리에서, `Gemfile`을 만듭니다.
 
-``` ruby
+```ruby
 source 'https://rubygems.org'
 gem 'sinatra', :github => "sinatra/sinatra"
 
@@ -2901,7 +2901,7 @@ Bundler가 자동으로 찾아서 추가할 것입니다.
 
 이제 앱을 실행할 수 있습니다.
 
-``` shell
+```shell
 bundle exec ruby myapp.rb
 ```
 
@@ -2910,7 +2910,7 @@ bundle exec ruby myapp.rb
 로컬 클론(clone)을 생성한 다음 `$LOAD_PATH`에 `sinatra/lib` 디렉터리를 주고
 여러분 앱을 실행합니다.
 
-``` shell
+```shell
 cd myapp
 git clone git://github.com/sinatra/sinatra.git
 ruby -I sinatra/lib myapp.rb
@@ -2918,7 +2918,7 @@ ruby -I sinatra/lib myapp.rb
 
 이후에 Sinatra 소스를 업데이트하려면 이렇게 하세요.
 
-``` shell
+```shell
 cd myapp/sinatra
 git pull
 ```
@@ -2927,7 +2927,7 @@ git pull
 
 젬을 직접 빌드할 수 있습니다.
 
-``` shell
+```shell
 git clone git://github.com/sinatra/sinatra.git
 cd sinatra
 rake sinatra.gemspec
@@ -2936,7 +2936,7 @@ rake install
 
 만약 젬을 루트로 설치한다면, 마지막 단계는 다음과 같이 해야 합니다.
 
-``` shell
+```shell
 sudo rake install
 ```
 
