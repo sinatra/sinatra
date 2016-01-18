@@ -74,6 +74,12 @@ Prevented by:
 
 * `Rack::Protection::IPSpoofing`
 
+## Helps to protect against protocol downgrade attacks and cookie hijacking
+
+Prevented by:
+
+* `Rack::Protection::StrictTransport` (not included by `use Rack::Protection`)
+
 # Installation
 
     gem install rack-protection
