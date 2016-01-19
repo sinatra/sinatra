@@ -2138,7 +2138,7 @@ set :protection, :session => true
     Places a lock around every request, only running processing on request
     per Ruby process concurrently.
   </dd>
-  <dd>Enabled if your app is not thread-safe. Disabled per default.</dd>
+  <dd>Enabled if your app is not thread-safe. Disabled by default.</dd>
 
   <dt>method_override</dt>
   <dd>
@@ -2153,7 +2153,7 @@ set :protection, :session => true
   <dd>
     Whether or not to insert <tt>request.script_name</tt> into redirects if no
     absolute path is given. That way <tt>redirect '/foo'</tt> would behave like
-    <tt>redirect to('/foo')</tt>. Disabled per default.
+    <tt>redirect to('/foo')</tt>. Disabled by default.
   </dd>
 
   <dt>protection</dt>
@@ -2225,7 +2225,7 @@ set :protection, :session => true
   <dd>Disable when using a server able to do this on its own.</dd>
   <dd>Disabling will boost performance.</dd>
   <dd>
-    Enabled per default in classic style, disabled for modular apps.
+    Enabled by default in classic style, disabled for modular apps.
   </dd>
 
   <dt>static_cache_control</dt>
@@ -2789,7 +2789,7 @@ end
 
 You have the request scope binding inside:
 
-* get, head, post, put, delete, options, patch, link, and unlink blocks
+* get, head, post, put, delete, options, patch, link and unlink blocks
 * before and after filters
 * helper methods
 * templates/views
