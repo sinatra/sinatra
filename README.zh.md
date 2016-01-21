@@ -3,7 +3,7 @@
 *注：本文档是英文版的翻译，内容更新有可能不及时。
 如有不一致的地方，请以英文版为准。*
 
-Sinatra是一个基于Ruby语言的[DSL](http://en.wikipedia.org/wiki/Domain-specific_language)（
+Sinatra是一个基于Ruby语言的[DSL](https://en.wikipedia.org/wiki/Domain-specific_language)（
 领域专属语言），可以轻松、快速的创建web应用。
 
 ~~~~ruby
@@ -583,7 +583,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>依赖</td>
-    <td><a href="http://nokogiri.org/" title="nokogiri">nokogiri</a></td>
+    <td><a href="http://www.nokogiri.org/" title="nokogiri">nokogiri</a></td>
   </tr>
   <tr>
     <td>文件扩展名</td>
@@ -636,7 +636,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>依赖</td>
-    <td><a href="http://www.lesscss.org/" title="less">less</a></td>
+    <td><a href="http://lesscss.org/" title="less">less</a></td>
   </tr>
   <tr>
     <td>文件扩展名</td>
@@ -653,7 +653,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>依赖</td>
-    <td><a href="http://www.liquidmarkup.org/" title="liquid">liquid</a></td>
+    <td><a href="http://liquidmarkup.org/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>文件扩展名</td>
@@ -675,7 +675,7 @@ get('/') { markdown :index }
     <td>依赖</td>
     <td>
       以下任何一个:
-        <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
+        <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
         <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
         <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
@@ -822,7 +822,7 @@ erb :overview, :locals => { :text => rdoc(:introduction) }
 <table>
   <tr>
     <td>依赖</td>
-    <td><a href="http://markaby.github.com/" title="Markaby">Markaby</a></td>
+    <td><a href="http://markaby.github.io/" title="Markaby">Markaby</a></td>
   </tr>
   <tr>
     <td>文件扩展名</td>
@@ -968,7 +968,7 @@ erb :overview, :locals => { :text => mediawiki(:introduction) }
   <tr>
     <td>依赖</td>
     <td>
-      <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
+      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
         Stylus
       </a> 和一个
       <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
@@ -1492,8 +1492,8 @@ get '/' do
 end
 ```
 
-这允许你实现流 API，[Server Sent Events](http://dev.w3.org/html5/eventsource/),
-并可用作 [WebSockets](http://en.wikipedia.org/wiki/WebSocket)的基础。
+这允许你实现流 API，[Server Sent Events](https://w3c.github.io/eventsource/),
+并可用作 [WebSockets](https://en.wikipedia.org/wiki/WebSocket)的基础。
 这也可以用来在部分内容依赖缓慢的资源时提高通量。
 
 注意流的行为，尤其是并发请求数，很大程度上依赖用来服务应用的网络服务器。
@@ -1610,7 +1610,7 @@ end
 
 ~~~~ruby
 redirect to('/bar'), 303
-redirect 'http://google.com', 'wrong place, buddy'
+redirect 'http://www.google.com/', 'wrong place, buddy'
 ~~~~
 
 用 `redirect back`可以把用户重定向到原始页面:
@@ -1692,7 +1692,7 @@ end
 ~~~~
 
 使用 [weak
-ETag](http://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation)
+ETag](https://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation)
 也是有可能的:
 
 ~~~~ruby
@@ -1998,7 +1998,7 @@ end
 ### 配置攻击保护
 
 Sinatra 使用
-[Rack::Protection](https://github.com/rkh/rack-protection#readme)
+[Rack::Protection](https://github.com/sinatra/rack-protection#readme)
 来为你的应用防范常见的，机会主义的攻击。你可以很容易地禁用这一行为
 （这会使你的应用暴露出大量常见的脆弱点）：
 
@@ -2321,7 +2321,7 @@ end
 ~~~~
 
 `use` 的语义和在
-[Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder)
+[Rack::Builder](http://www.rubydoc.info/github/rack/rack/master/Rack/Builder)
 DSL(在rack文件中最频繁使用)中定义的完全一样。例如，`use` 方法接受
 多个/可变 参数，包括代码块：
 
@@ -2344,7 +2344,8 @@ Rack中分布有多样的标准中间件，针对日志，
 ## 测试
 
 Sinatra的测试可以使用任何基于Rack的测试程序库或者框架来编写。
-[Rack::Test](http://gitrdoc.com/brynary/rack-test) 是推荐候选：
+[Rack::Test](http://www.rubydoc.info/github/brynary/rack-test/master/frames)
+是推荐候选：
 
 ~~~~ruby
 require 'my_sinatra_app'
@@ -2411,7 +2412,7 @@ end
 
 `Sinatra::Base` 是一张白纸。大部分的选项默认是禁用的，
 包含内置的服务器。参见
-[选项和配置](http://sinatra.github.com/configuration.html)
+[选项和配置](http://www.sinatrarb.com/configuration.html)
 查看可用选项的具体细节和他们的行为。
 如果你想要和你在顶层定义的应用（也称为传统的方式）更为相似的行为，
 你可以子类化 `Sinatra::Application`.
@@ -2863,7 +2864,7 @@ Sinatra 目前不能在 Cardinal, SmallRuby, BlueRuby
 ### 通过Bundler
 
 如果你想使用最新的Sinatra运行你的应用，通过
-[Bundler](http://gembundler.com/) 是推荐的方式。
+[Bundler](http://bundler.io) 是推荐的方式。
 
 首先，安装bundler，如果你还没有安装:
 
@@ -2939,9 +2940,9 @@ SemVerTag 兼有。
 -   [贡献](http://www.sinatrarb.com/contributing) - 找到了一个bug？
     需要帮助？有了一个 patch?
 
--   [问题追踪](http://github.com/sinatra/sinatra/issues)
+-   [问题追踪](https://github.com/sinatra/sinatra/issues)
 
--   [Twitter](http://twitter.com/sinatra)
+-   [Twitter](https://twitter.com/sinatra)
 
 -   [邮件列表](http://groups.google.com/group/sinatrarb/topics)
 
@@ -2955,6 +2956,8 @@ SemVerTag 兼有。
 
 -   [Sinatra使用技巧](http://recipes.sinatrarb.com/) 网友贡献的实用技巧
 
--   [最新版本](http://rubydoc.info/gems/sinatra)的API文档和位于[http://rubydoc.info](http://rubydoc.info)的[当前HEAD](http://rubydoc.info/github/sinatra/sinatra)的API文档
+-   [最新版本](http://www.rubydoc.info/gems/sinatra)的API文档和位于
+[http://www.rubydoc.info](http://www.rubydoc.info) 的
+[当前HEAD](http://www.rubydoc.info/github/sinatra/sinatra)的API文档
 
--   [CI服务器](http://travis-ci.org/sinatra/sinatra)
+-   [CI服务器](https://travis-ci.org/sinatra/sinatra)
