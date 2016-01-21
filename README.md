@@ -1,6 +1,6 @@
 # Sinatra
 
-Sinatra is a [DSL](http://en.wikipedia.org/wiki/Domain-specific_language) for
+Sinatra is a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) for
 quickly creating web applications in Ruby with minimal effort:
 
 ```ruby
@@ -609,7 +609,7 @@ It also takes a block for inline templates (see example).
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="http://nokogiri.org/" title="nokogiri">nokogiri</a></td>
+    <td><a href="http://www.nokogiri.org/" title="nokogiri">nokogiri</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
@@ -662,7 +662,7 @@ It also takes a block for inline templates (see example).
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="http://www.lesscss.org/" title="less">less</a></td>
+    <td><a href="http://lesscss.org/" title="less">less</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
@@ -679,7 +679,7 @@ It also takes a block for inline templates (see example).
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="http://www.liquidmarkup.org/" title="liquid">liquid</a></td>
+    <td><a href="http://liquidmarkup.org/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
@@ -701,7 +701,7 @@ template, you almost always want to pass locals to it.
     <td>Dependency</td>
     <td>
       Anyone of:
-        <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
+        <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
         <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
         <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
@@ -852,7 +852,7 @@ always want to pass locals to it.
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="http://markaby.github.com/" title="Markaby">Markaby</a></td>
+    <td><a href="http://markaby.github.io/" title="Markaby">Markaby</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
@@ -1001,7 +1001,7 @@ template than for the layout by passing the `:layout_engine` option.
   <tr>
     <td>Dependency</td>
     <td>
-      <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
+      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
         Stylus
       </a> and a
       <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
@@ -1536,8 +1536,8 @@ end
 ```
 
 This allows you to implement streaming APIs,
-[Server Sent Events](http://dev.w3.org/html5/eventsource/), and can be used as
-the basis for [WebSockets](http://en.wikipedia.org/wiki/WebSocket). It can also be
+[Server Sent Events](https://w3c.github.io/eventsource/), and can be used as
+the basis for [WebSockets](https://en.wikipedia.org/wiki/WebSocket). It can also be
 used to increase throughput if some but not all content depends on a slow
 resource.
 
@@ -1659,7 +1659,7 @@ Any additional parameters are handled like arguments passed to `halt`:
 
 ```ruby
 redirect to('/bar'), 303
-redirect 'http://google.com', 'wrong place, buddy'
+redirect 'http://www.google.com/', 'wrong place, buddy'
 ```
 
 You can also easily redirect back to the page the user came from with
@@ -1742,7 +1742,7 @@ end
 ```
 
 It is also possible to use a
-[weak ETag](http://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation):
+[weak ETag](https://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation):
 
 ```ruby
 etag @article.sha1, :weak
@@ -2055,7 +2055,7 @@ end
 ### Configuring attack protection
 
 Sinatra is using
-[Rack::Protection](https://github.com/rkh/rack-protection#readme) to defend
+[Rack::Protection](https://github.com/sinatra/rack-protection#readme) to defend
 your application against common, opportunistic attacks. You can easily disable
 this behavior (which will open up your application to tons of common
 vulnerabilities):
@@ -2394,7 +2394,7 @@ end
 ```
 
 The semantics of `use` are identical to those defined for the
-[Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder) DSL
+[Rack::Builder](http://www.rubydoc.info/github/rack/rack/master/Rack/Builder) DSL
 (most frequently used from rackup files). For example, the `use` method
 accepts multiple/variable args as well as blocks:
 
@@ -2417,7 +2417,7 @@ or in the [Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
 ## Testing
 
 Sinatra tests can be written using any Rack-based testing library or framework.
-[Rack::Test](http://rdoc.info/github/brynary/rack-test/master/frames)
+[Rack::Test](http://www.rubydoc.info/github/brynary/rack-test/master/frames)
 is recommended:
 
 ```ruby
@@ -2487,7 +2487,7 @@ those available via the top-level DSL. Most top-level apps can be converted to
 
 `Sinatra::Base` is a blank slate. Most options are disabled by default,
 including the built-in server. See
-[Configuring Settings](http://sinatra.github.com/configuration.html)
+[Configuring Settings](http://www.sinatrarb.com/configuration.html)
 for details on available options and their behavior. If you want
 behavior more similar to when you define your app at the top level (also
 known as Classic style), you
@@ -2953,7 +2953,7 @@ to get some of the latest features.
 ### With Bundler
 
 If you want to run your application with the latest Sinatra, using
-[Bundler](http://gembundler.com/) is the recommended way.
+[Bundler](http://bundler.io) is the recommended way.
 
 First, install bundler, if you haven't:
 
@@ -3028,8 +3028,8 @@ SemVerTag.
   news, and links to other resources.
 * [Contributing](http://www.sinatrarb.com/contributing) - Find a bug? Need
   help? Have a patch?
-* [Issue tracker](http://github.com/sinatra/sinatra/issues)
-* [Twitter](http://twitter.com/sinatra)
+* [Issue tracker](https://github.com/sinatra/sinatra/issues)
+* [Twitter](https://twitter.com/sinatra)
 * [Mailing List](http://groups.google.com/group/sinatrarb/topics)
 * IRC: [#sinatra](irc://chat.freenode.net/#sinatra) on http://freenode.net
 * [Sinatra & Friends](https://sinatrarb.slack.com) on Slack and see
@@ -3037,7 +3037,7 @@ SemVerTag.
 * [Sinatra Book](https://github.com/sinatra/sinatra-book/) Cookbook Tutorial
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) Community
   contributed recipes
-* API documentation for the [latest release](http://rubydoc.info/gems/sinatra)
-  or the [current HEAD](http://rubydoc.info/github/sinatra/sinatra) on
-  http://rubydoc.info
-* [CI server](http://travis-ci.org/sinatra/sinatra)
+* API documentation for the [latest release](http://www.rubydoc.info/gems/sinatra)
+  or the [current HEAD](http://www.rubydoc.info/github/sinatra/sinatra) on
+  http://www.rubydoc.info/
+* [CI server](https://travis-ci.org/sinatra/sinatra)
