@@ -6,6 +6,7 @@ Sinatra was designed and developed by Blake Mizerany in California.
 * **Zachary Scott**
 * **Kashyap Kondamudi**
 * **Ashley Williams**
+* **Trevor Bramble**
 
 ### Alumni
 
