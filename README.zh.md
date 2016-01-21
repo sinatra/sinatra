@@ -281,7 +281,7 @@ end
 
 填充 `./views/index.haml`。
 
-[Haml的选项](http://haml.info/docs/yardoc/file.HAML_REFERENCE.html#options)
+[Haml的选项](http://haml.info/docs/yardoc/file.REFERENCE.html#options)
 可以通过Sinatra的配置全局设定， 参见
 [选项和配置](http://www.sinatrarb.com/configuration.html)，
 也可以个别的被覆盖。
