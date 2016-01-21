@@ -3,7 +3,7 @@
 *注：本文档是英文版的翻译，内容更新有可能不及时。
 如有不一致的地方，请以英文版为准。*
 
-Sinatra是一个基于Ruby语言的[DSL](http://en.wikipedia.org/wiki/Domain-specific_language)（
+Sinatra是一个基于Ruby语言的[DSL](https://en.wikipedia.org/wiki/Domain-specific_language)（
 领域专属语言），可以轻松、快速的创建web应用。
 
 ~~~~ruby
@@ -381,7 +381,7 @@ end
 这里调用的是 `./views/stylesheet.sass`。
 
 [Sass
-的选项](http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options)
+的选项](http://sass-lang.com/documentation/file.SASS_REFERENCE.html#options)
 可以通过Sinatra选项全局设定， 参考
 [选项和配置（英文）](http://www.sinatrarb.com/configuration.html),
 也可以在个体的基础上覆盖。
@@ -726,7 +726,7 @@ end
 -   `therubyracer` gem/library
 
 请察看
-[github.com/josh/ruby-coffee-script](http://github.com/josh/ruby-coffee-script)
+[github.com/josh/ruby-coffee-script](https://github.com/josh/ruby-coffee-script)
 获取更新的选项。
 
 现在你可以调用 CoffeeScript 模版了:
@@ -1118,7 +1118,7 @@ end
 
 ~~~~ruby
 redirect to('/bar'), 303
-redirect 'http://google.com', 'wrong place, buddy'
+redirect 'http://www.google.com/', 'wrong place, buddy'
 ~~~~
 
 用 `redirect back`可以把用户重定向到原始页面:
@@ -1200,7 +1200,7 @@ end
 ~~~~
 
 使用 [weak
-ETag](http://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation)
+ETag](https://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation)
 也是有可能的:
 
 ~~~~ruby
@@ -1680,7 +1680,7 @@ end
 ~~~~
 
 `use` 的语义和在
-[Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder)
+[Rack::Builder](http://www.rubydoc.info/github/rack/rack/master/Rack/Builder)
 DSL(在rack文件中最频繁使用)中定义的完全一样。例如，`use` 方法接受
 多个/可变 参数，包括代码块：
 
@@ -1765,7 +1765,7 @@ Sinatra::Base子类可用的方法实际上就是通过顶层 DSL 可用的方�
 
 `+Sinatra::Base+` 是一张白纸。大部分的选项默认是禁用的，
 包含内置的服务器。参见
-[选项和配置](http://sinatra.github.com/configuration.html)
+[选项和配置](http://www.sinatrarb.com/configuration.html)
 查看可用选项的具体细节和他们的行为。
 
 ### 模块化 vs. 传统的方式
@@ -2089,7 +2089,7 @@ Sinatra应该会运行在任何支持上述Ruby实现的操作系统。
 ### 通过Bundler
 
 如果你想使用最新的Sinatra运行你的应用，通过
-[Bundler](http://gembundler.com/) 是推荐的方式。
+[Bundler](http://bundler.io) 是推荐的方式。
 
 首先，安装bundler，如果你还没有安装:
 
@@ -2148,9 +2148,9 @@ gem 'activerecord', '~> 3.0'  # 也许你还需要 ActiveRecord 3.x
 -   [贡献](http://www.sinatrarb.com/contributing) - 找到了一个bug？
     需要帮助？有了一个 patch?
 
--   [问题追踪](http://github.com/sinatra/sinatra/issues)
+-   [问题追踪](https://github.com/sinatra/sinatra/issues)
 
--   [Twitter](http://twitter.com/sinatra)
+-   [Twitter](https://twitter.com/sinatra)
 
 -   [邮件列表](http://groups.google.com/group/sinatrarb/topics)
 
@@ -2161,6 +2161,6 @@ gem 'activerecord', '~> 3.0'  # 也许你还需要 ActiveRecord 3.x
 
 -   [Sinatra使用技巧](http://recipes.sinatrarb.com/) 网友贡献的实用技巧
 
--   [最新版本](http://rubydoc.info/gems/sinatra)API文档；[http://rubydoc.info](http://rubydoc.info)的[当前HEAD](http://rubydoc.info/github/sinatra/sinatra)
+-   [最新版本](http://www.rubydoc.info//gems/sinatra)API文档；[http://rubydoc.info](http://rubydoc.info)的[当前HEAD](http://www.rubydoc.info/github/sinatra/sinatra)
 
--   [CI服务器](http://travis-ci.org/sinatra/sinatra)
+-   [CI服务器](https://travis-ci.org/sinatra/sinatra)
