@@ -158,7 +158,7 @@ end
 Renderiza `./views/index.haml`.
 
 [Opções
-Haml](http://haml.info/docs/yardoc/file.HAML_REFERENCE.html#options)
+Haml](http://haml.info/docs/yardoc/file.REFERENCE.html#options)
 podem ser definidas globalmente através das configurações do sinatra,
 veja [Opções e
 Configurações](http://www.sinatrarb.com/configuration.html), e substitua
