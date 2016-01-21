@@ -3,7 +3,7 @@
 *注）
 本文書は英語から翻訳したものであり、その内容が最新でない場合もあります。最新の情報はオリジナルの英語版を参照して下さい。*
 
-Sinatraは最小の労力でRubyによるWebアプリケーションを手早く作るための[DSL](https://ja.wikipedia.org/wiki/%E3%83%A1%E3%82%A4%E3%83%B3%E3%83%9A%E3%83%BC%E3%82%B8ドメイン固有言語)です。
+Sinatraは最小の労力でRubyによるWebアプリケーションを手早く作るための[DSL](https://ja.wikipedia.org/wiki/メインページドメイン固有言語)です。
 
 ```ruby
 # myapp.rb
