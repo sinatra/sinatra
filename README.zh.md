@@ -22,7 +22,7 @@ gem install sinatra
 ruby myapp.rb
 ~~~~
 
-在该地址查看： http://localhost:4567
+在该地址查看： [http://localhost:4567](http://localhost:4567)
 
 这个时候访问地址将绑定到 127.0.0.1 和 localhost ，如果使用 vagrant 进行开发，访问会失败，此时就需要进行 ip 绑定了：
 

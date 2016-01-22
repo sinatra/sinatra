@@ -26,7 +26,8 @@ Puis lancez votre programme :
 ruby mon_application.rb
 ```
 
-Le résultat est visible sur : http://localhost:4567
+Le résultat est visible sur :
+[http://localhost:4567](http://localhost:4567)
 
 Il est recommandé d'exécuter également `gem install thin`, pour que
 Sinatra utilise le server Thin quand il est disponible.

@@ -21,7 +21,7 @@ Telepítsd a gem-et és indítsd el az alkalmazást a következőképpen:
   ruby myapp.rb
 ```
 
-Az alkalmazás elérhető lesz itt: `http://localhost:4567`
+Az alkalmazás elérhető lesz itt: [http://localhost:4567](http://localhost:4567)
 
 ## Útvonalak (routes)
 

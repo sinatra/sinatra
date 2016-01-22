@@ -33,7 +33,7 @@ Em seguida execute:
 ruby minha_app.rb
 ```
 
-Acesse: [localhost:4567](http://localhost:4567)
+Acesse: [http://localhost:4567](http://localhost:4567)
 
 É recomendado também executar `gem install thin`. Caso esta gem esteja disponível, o
 Sinatra irá utilizá-la.
