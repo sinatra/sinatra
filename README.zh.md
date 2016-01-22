@@ -1792,6 +1792,7 @@ Sinatra::Base子类可用的方法实际上就是通过顶层 DSL 可用的方�
     logging             true                    false
     method_override     true                    false
     inline_templates    true                    false
+    static              true                    File.exist?(public_folder)
 
 ### 运行一个模块化应用
 

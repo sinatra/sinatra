@@ -2479,7 +2479,7 @@ end
     logging             true                    false
     method_override     true                    false
     inline_templates    true                    false
-    static              true                    false
+    static              true                    File.exist?(public_folder)
 
 ### Запуск модульных приложений
 
