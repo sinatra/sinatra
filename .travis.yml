@@ -11,6 +11,7 @@ rvm:
   - 2.3.0
   - rbx-2
   - jruby
+  - jruby-9
   - jruby-head
   - ruby-head
 
