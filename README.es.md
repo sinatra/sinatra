@@ -3,10 +3,10 @@
 *Atención: Este documento es una traducción de la versión en inglés y puede estar desactualizado.*
 
 Sinatra es un
-[DSL](http://es.wikipedia.org/wiki/Lenguaje_específico_del_dominio) para
+[DSL](https://es.wikipedia.org/wiki/Lenguaje_específico_del_dominio) para
 crear aplicaciones web rápidamente en Ruby con un mínimo esfuerzo:
 
-```  ruby
+```ruby
 # miapp.rb
 require 'sinatra'
 
@@ -17,7 +17,7 @@ end
 
 Instalar la gema y correr la aplicación con:
 
-```  shell
+```shell
 gem install sinatra
 ruby miapp.rb
 ```
@@ -31,7 +31,7 @@ Se recomienda ejecutar `gem install thin`, porque Sinatra lo utilizará si está
 En Sinatra, una ruta es un método HTTP junto a un patrón de un URL.
 Cada ruta está asociada a un bloque:
 
-``` ruby
+```ruby
 get '/' do
   .. mostrar algo ..
 end
@@ -72,7 +72,7 @@ que coincide con la petición es escogida.
 Los patrones de las rutas pueden incluir parámetros nombrados, accesibles a
 través del hash `params`:
 
-``` ruby
+```ruby
 get '/hola/:nombre' do
   # coincide con "GET /hola/foo" y "GET /hola/bar"
   # params['nombre'] es 'foo' o 'bar'
@@ -82,7 +82,7 @@ end
 
 También puede acceder a los parámetros nombrados usando parámetros de bloque:
 
-``` ruby
+```ruby
 get '/hola/:nombre' do |n|
   # coincide con "GET /hola/foo" y "GET /hola/bar"
   # params['nombre'] es 'foo' o 'bar'
@@ -94,7 +94,7 @@ end
 Los patrones de ruta también pueden incluir parámetros splat (o wildcard),
 accesibles a través del arreglo `params['splat']`:
 
-``` ruby
+```ruby
 get '/decir/*/al/*' do
   # coincide con /decir/hola/al/mundo
   params['splat'] # => ["hola", "mundo"]
@@ -108,7 +108,7 @@ end
 
 O, con parámetros de bloque:
 
-``` ruby
+```ruby
 get '/descargar/*.*' do |path, ext|
   [path, ext] # => ["path/al/archivo", "xml"]
 end
@@ -116,7 +116,7 @@ end
 
 Rutas con Expresiones Regulares:
 
-``` ruby
+```ruby
 get /\A\/hola\/([\w]+)\z/ do
   "Hola, #{params['captures'].first}!"
 end
@@ -124,7 +124,7 @@ end
 
 O con un parámetro de bloque:
 
-``` ruby
+```ruby
 get %r{/hola/([\w]+)} do |c|
   "Hola, #{c}!"
 end
@@ -132,7 +132,7 @@ end
 
 Los patrones de ruta pueden contener parámetros opcionales:
 
-``` ruby
+```ruby
 get '/posts.?:formato?' do
   # coincide con "GET /posts" y además admite cualquier extensión, por
   # ejemplo, "GET /posts.json", "GET /posts.xml", etc.
@@ -148,7 +148,7 @@ antes de que se compare con los de tus rutas.
 Las rutas pueden incluir una variedad de condiciones de selección, como por
 ejemplo el user agent:
 
-``` ruby
+```ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
   "Estás usando la versión de Songbird #{params['agent'][0]}"
 end
@@ -160,7 +160,7 @@ end
 
 Otras condiciones disponibles son `host_name` y `provides`:
 
-``` ruby
+```ruby
 get '/', :host_name => /^admin\./ do
   "Área de Administración, Acceso denegado!"
 end
@@ -176,7 +176,7 @@ end
 
 Puede definir sus propias condiciones fácilmente:
 
-``` ruby
+```ruby
 set(:probabilidad) { |valor| condition { rand <= valor } }
 
 get '/gana_un_auto', :probabilidad => 0.1 do
@@ -192,7 +192,7 @@ Si su condición acepta más de un argumento, puede pasarle un arreglo. Al
 definir la condición, se puede utilizar el operador splat en
 la lista de parámetros:
 
-``` ruby
+```ruby
 set(:autorizar) do |*roles|   # <- mirá el splat
   condition do
     unless sesion_iniciada? && roles.any? {|rol| usuario_actual.tiene_rol? rol }
@@ -230,7 +230,7 @@ que represente el cuerpo de una respuesta Rack o un código de estado HTTP:
 
 De esa manera, podemos fácilmente implementar un ejemplo de streaming:
 
-``` ruby
+```ruby
 class Stream
   def each
     100.times { |i| yield "#{i}\n" }
@@ -246,7 +246,7 @@ Como se mostró anteriormente, Sinatra permite utilizar strings y expresiones
 regulares para definir las rutas. Sin embargo, la cosa no termina ahí. Podés
 definir tus propios comparadores muy fácilmente:
 
-``` ruby
+```ruby
 class PatronCualquieraMenos
   Match = Struct.new(:captures)
 
@@ -272,7 +272,7 @@ end
 Tenga en cuenta que el ejemplo anterior es un poco rebuscado. Un resultado
 similar puede conseguirse más sencillamente:
 
-``` ruby
+```ruby
 get // do
   pass if request.path_info == "/index"
   # ...
@@ -281,7 +281,7 @@ end
 
 O, usando un lookahead negativo:
 
-``` ruby
+```ruby
 get %r{^(?!/index$)} do
   # ...
 end
@@ -293,7 +293,7 @@ Los archivos estáticos son servidos desde el directorio público
 `./public`. Puede especificar una ubicación diferente ajustando la
 opción `:public_folder`:
 
-``` ruby
+```ruby
 set :public_folder, File.dirname(__FILE__) + '/estaticos'
 ```
 
@@ -309,7 +309,7 @@ Use la configuración `:static_cache_control` para agregar el encabezado
 Cada lenguaje de plantilla se expone a través de un método de renderizado que
 lleva su nombre. Estos métodos simplemente devuelven un string:
 
-``` ruby
+```ruby
 get '/' do
   erb :index
 end
@@ -320,7 +320,7 @@ Renderiza `views/index.erb`.
 En lugar del nombre de la plantilla podés proporcionar directamente el
 contenido de la misma:
 
-``` ruby
+```ruby
 get '/' do
   codigo = "<%= Time.now %>"
   erb codigo
@@ -330,7 +330,7 @@ end
 Los métodos de renderizado, aceptan además un segundo argumento, el hash de
 opciones:
 
-``` ruby
+```ruby
 get '/' do
   erb :index, :layout => :post
 end
@@ -343,7 +343,7 @@ cuando este último archivo exista).
 Cualquier opción que Sinatra no entienda le será pasada al motor de renderizado
 de la plantilla:
 
-``` ruby
+```ruby
 get '/' do
   haml :index, :format => :html5
 end
@@ -352,7 +352,7 @@ end
 Además, puede definir las opciones para un lenguaje de plantillas de forma
 general:
 
-``` ruby
+```ruby
 set :haml, :format => :html5
 
 get '/' do
@@ -435,7 +435,7 @@ Algunos lenguajes tienen varias implementaciones. Para especificar que
 implementación usar (y para ser thread-safe), deberías requerirla antes de
 usarla:
 
-``` ruby
+```ruby
 require 'rdiscount' # o require 'bluecloth'
 get('/') { markdown :index }
 ```
@@ -503,7 +503,7 @@ Además, acepta un bloque con la definición de la plantilla (ver ejemplo).
 <table>
   <tr>
     <td>Dependencias</td>
-    <td><a href="http://nokogiri.org/" title="nokogiri">nokogiri</a></td>
+    <td><a href="http://www.nokogiri.org/" title="nokogiri">nokogiri</a></td>
   </tr>
   <tr>
     <td>Extensiones de Archivo</td>
@@ -556,7 +556,7 @@ Además, acepta un bloque con la definición de la plantilla (ver ejemplo).
 <table>
   <tr>
     <td>Dependencias</td>
-    <td><a href="http://www.lesscss.org/" title="less">less</a></td>
+    <td><a href="http://lesscss.org/" title="less">less</a></td>
   </tr>
   <tr>
     <td>Extensiones de Archivo</td>
@@ -573,7 +573,7 @@ Además, acepta un bloque con la definición de la plantilla (ver ejemplo).
 <table>
   <tr>
     <td>Dependencias</td>
-    <td><a href="http://www.liquidmarkup.org/" title="liquid">liquid</a></td>
+    <td><a href="http://liquidmarkup.org/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>Extensiones de Archivo</td>
@@ -594,7 +594,7 @@ plantilla Liquid, casi siempre va a querer pasarle locales.
   <tr>
     <td>Dependencias</td>
     <td>
-      <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
+      <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
       <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
       <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
       <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a> o
@@ -614,14 +614,14 @@ plantilla Liquid, casi siempre va a querer pasarle locales.
 No es posible llamar métodos desde markdown, ni pasarle locales. Por lo tanto,
 generalmente va a usarlo en combinación con otro motor de renderizado:
 
-``` ruby
+```ruby
 erb :resumen, :locals => { :texto => markdown(:introduccion) }
 ```
 
 Tenga en cuenta que también podés llamar al método `markdown` desde otras
 plantillas:
 
-``` ruby
+```ruby
 %h1 Hola Desde Haml!
 %p= markdown(:saludos)
 ```
@@ -650,14 +650,14 @@ layout distinto al de la plantilla pasando la opción `:layout_engine`.
 No es posible llamar métodos desde textile, ni pasarle locales. Por lo tanto,
 generalmente vas a usarlo en combinación con otro motor de renderizado:
 
-``` ruby
+```ruby
 erb :resumen, :locals => { :texto => textile(:introduccion) }
 ```
 
 Tené en cuenta que también podés llamar al método `textile` desde otras
 plantillas:
 
-``` ruby
+```ruby
 %h1 Hola Desde Haml!
 %p= textile(:saludos)
 ```
@@ -686,14 +686,14 @@ layout distinto al de la plantilla pasando la opción `:layout_engine`.
 No es posible llamar métodos desde rdoc, ni pasarle locales. Por lo tanto,
 generalmente vas a usarlo en combinación con otro motor de renderizado:
 
-``` ruby
+```ruby
 erb :resumen, :locals => { :texto => rdoc(:introduccion) }
 ```
 
 Tené en cuenta que también podés llamar al método `rdoc` desde otras
 plantillas:
 
-``` ruby
+```ruby
 %h1 Hola Desde Haml!
 %p= rdoc(:saludos)
 ```
@@ -727,7 +727,7 @@ plantilla Radius, casi siempre se necesita pasar locales.
 <table>
   <tr>
     <td>Dependencias</td>
-    <td><a href="http://markaby.github.com/" title="Markaby">Markaby</a></td>
+    <td><a href="http://markaby.github.io/" title="Markaby">Markaby</a></td>
   </tr>
   <tr>
     <td>Extensiones de Archivo</td>
@@ -795,14 +795,14 @@ Además, acepta un bloque con la definición de la plantilla (ver ejemplo).
 No es posible llamar métodos desde creole, ni pasarle locales. Por lo tanto,
 generalmente va a usarlo en combinación con otro motor de renderizado:
 
-``` ruby
+```ruby
 erb :resumen, :locals => { :texto => cerole(:introduccion) }
 ```
 
 Debe tomar en cuenta que también puede llamar al método `creole` desde otras
 plantillas:
 
-``` ruby
+```ruby
 %h1 Hola Desde Haml!
 %p= creole(:saludos)
 ```
@@ -841,7 +841,7 @@ distinto al de la plantilla pasando la opción `:layout_engine`.
   <tr>
     <td>Dependencias</td>
     <td>
-      <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
+      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
         Stylus
       </a> y un
       <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
@@ -885,14 +885,14 @@ distinto al de la plantilla pasando la opción `:layout_engine`.
 
 El contenido de la plantilla se evalúa como código Ruby, y la variable `json` es convertida a JSON mediante `#to_json`.
 
-``` ruby
+```ruby
 json = { :foo => 'bar' }
 json[:baz] = key
 ```
 
 Las opciones `:callback` y `:variable` se pueden utilizar para decorar el objeto renderizado:
 
-``` ruby
+```ruby
 var resource = {"foo":"bar","baz":"qux"}; present(resource);
 ```
 
@@ -918,7 +918,7 @@ plantilla WLang, casi siempre vas a querer pasarle locales.
 
 ### Plantillas Embebidas
 
-``` ruby
+```ruby
 get '/' do
   haml '%div.titulo Hola Mundo'
 end
@@ -932,7 +932,7 @@ Las plantillas son evaluadas dentro del mismo contexto que los manejadores de
 ruta. Las variables de instancia asignadas en los manejadores de ruta son
 accesibles directamente por las plantillas:
 
-``` ruby
+```ruby
 get '/:id' do
   @foo = Foo.find(params['id'])
   haml '%h1= @foo.nombre'
@@ -941,7 +941,7 @@ end
 
 O es posible especificar un Hash de variables locales explícitamente:
 
-``` ruby
+```ruby
 get '/:id' do
   foo = Foo.find(params['id'])
   haml '%h1= bar.nombre', :locals => { :bar => foo }
@@ -955,7 +955,7 @@ adentro de otras plantillas.
 
 Las plantillas pueden ser definidas al final del archivo fuente:
 
-``` ruby
+```ruby
 require 'rubygems'
 require 'sinatra'
 
@@ -983,7 +983,7 @@ archivos fuente.
 Las plantillas también pueden ser definidas usando el método top-level
 `template`:
 
-``` ruby
+```ruby
 template :layout do
   "%html\n  =yield\n"
 end
@@ -1002,7 +1002,7 @@ una plantilla es renderizada. Podés desactivar los layouts individualmente
 pasando `:layout => false` o globalmente con
 `set :haml, :layout => false`:
 
-``` ruby
+```ruby
 get '/' do
   haml :index, :layout => !request.xhr?
 end
@@ -1014,7 +1014,7 @@ Para asociar una extensión de archivo con un motor de renderizado, usá
 `Tilt.register`. Por ejemplo, si querés usar la extensión `tt` para
 las plantillas Textile, podés hacer lo siguiente:
 
-``` ruby
+```ruby
 Tilt.register :tt, Tilt[:textile]
 ```
 
@@ -1022,7 +1022,7 @@ Tilt.register :tt, Tilt[:textile]
 
 Primero, registrá tu motor con Tilt, y después, creá tu método de renderizado:
 
-``` ruby
+```ruby
 Tilt.register :mipg, MiMotorParaPlantillaGenial
 
 helpers do
@@ -1044,7 +1044,7 @@ contexto que las rutas. Pueden modificar la petición y la respuesta. Las
 variables de instancia asignadas en los filtros son accesibles por las rutas y
 las plantillas:
 
-``` ruby
+```ruby
 before do
   @nota = 'Hey!'
   request.path_info = '/foo/bar/baz'
@@ -1061,7 +1061,7 @@ contexto y también pueden modificar la petición y la respuesta. Las variables
 de instancia asignadas en los filtros `before` y en las rutas son accesibles por
 los filtros `after`:
 
-``` ruby
+```ruby
 after do
   puts response.status
 end
@@ -1075,7 +1075,7 @@ Los filtros aceptan un patrón opcional, que cuando está presente causa que los
 mismos sean evaluados únicamente si el path de la petición coincide con ese
 patrón:
 
-``` ruby
+```ruby
 before '/protegido/*' do
   autenticar!
 end
@@ -1087,7 +1087,7 @@ end
 
 Al igual que las rutas, los filtros también pueden aceptar condiciones:
 
-``` ruby
+```ruby
 before :agent => /Songbird/ do
   # ...
 end
@@ -1102,7 +1102,7 @@ end
 Usá el método top-level *helpers* para definir métodos ayudantes que
 pueden ser utilizados dentro de los manejadores de rutas y las plantillas:
 
-``` ruby
+```ruby
 helpers do
   def bar(nombre)
     "#{nombre}bar"
@@ -1117,7 +1117,7 @@ end
 Por cuestiones organizativas, puede resultar conveniente organizar los métodos
 ayudantes en distintos módulos:
 
-``` ruby
+```ruby
 module FooUtils
   def foo(nombre) "#{nombre}foo" end
 end
@@ -1137,7 +1137,7 @@ incluir los módulos en la clase de la aplicación.
 Una sesión es usada para mantener el estado a través de distintas peticiones.
 Cuando están activadas, proporciona un hash de sesión para cada sesión de usuario:
 
-``` ruby
+```ruby
 enable :sessions
 
 get '/' do
@@ -1155,7 +1155,7 @@ el tráfico, por citar un ejemplo). Podés usar cualquier middleware Rack para
 manejar sesiones, de la misma manera que usarías cualquier otro middleware,
 pero con la salvedad de que *no* tenés que llamar a `enable :sessions`:
 
-``` ruby
+```ruby
 use Rack::Session::Pool, :expire_after => 2592000
 
 get '/' do
@@ -1174,14 +1174,14 @@ tener en cuenta que cada vez que inicies la aplicación se va a generar
 uno nuevo. Así, si querés que todas las instancias de tu aplicación
 compartan un único secreto, tenés que definirlo vos:
 
-``` ruby
+```ruby
 set :session_secret, 'super secreto'
 ```
 
 Si necesitás una configuración más específica, `sessions` acepta un
 Hash con opciones:
 
-``` ruby
+```ruby
 set :sessions, :domain => 'foo.com'
 ```
 
@@ -1189,37 +1189,37 @@ set :sessions, :domain => 'foo.com'
 
 Para detener inmediatamente una petición dentro de un filtro o una ruta usá:
 
-``` ruby
+```ruby
 halt
 ```
 
 También podés especificar el estado:
 
-``` ruby
+```ruby
 halt 410
 ```
 
 O el cuerpo:
 
-``` ruby
+```ruby
 halt 'esto va a ser el cuerpo'
 ```
 
 O los dos:
 
-``` ruby
+```ruby
 halt 401, 'salí de acá!'
 ```
 
 Con cabeceras:
 
-``` ruby
+```ruby
 halt 402, { 'Content-Type' => 'text/plain' }, 'venganza'
 ```
 
 Obviamente, es posible utilizar `halt` con una plantilla:
 
-``` ruby
+```ruby
 halt erb(:error)
 ```
 
@@ -1228,7 +1228,7 @@ halt erb(:error)
 Una ruta puede pasarle el procesamiento a la siguiente ruta que coincida con
 la petición usando `pass`:
 
-``` ruby
+```ruby
 get '/adivina/:quien' do
   pass unless params['quien'] == 'Franco'
   'Adivinaste!'
@@ -1247,7 +1247,7 @@ siguiente ruta que coincida. Si no coincide ninguna ruta, se devuelve 404.
 Cuando querés obtener el resultado de la llamada a una ruta, `pass` no te va a
 servir. Para lograr esto, podés usar `call`:
 
-``` ruby
+```ruby
 get '/foo' do
   status, headers, body = call env.merge("PATH_INFO" => '/bar')
   [status, headers, body.map(&:upcase)]
@@ -1276,7 +1276,7 @@ escenarios, puede que sea conveniente asignar el cuerpo en un punto arbitrario
 del flujo de ejecución con el método `body`. A partir de ahí, podés usar ese
 mismo método para acceder al cuerpo de la respuesta:
 
-``` ruby
+```ruby
 get '/foo' do
   body "bar"
 end
@@ -1291,7 +1291,7 @@ handler (podés usar esto para implementar streaming, mirá "Valores de retorno"
 
 De manera similar, también podés asignar el código de estado y encabezados:
 
-``` ruby
+```ruby
 get '/foo' do
   status 418
   headers \
@@ -1311,7 +1311,7 @@ terminaste de generar su cuerpo. También es posible que, en algunos casos,
 quieras seguir enviando información hasta que el cliente cierre la conexión.
 Cuando esto ocurra, el helper `stream` te va a ser de gran ayuda:
 
-``` ruby
+```ruby
 get '/' do
   stream do |out|
     out << "Esto va a ser legen -\n"
@@ -1324,17 +1324,17 @@ end
 ```
 
 Podés implementar APIs de streaming,
-[Server-Sent Events](http://dev.w3.org/html5/eventsource/) y puede ser usado
-como base para [WebSockets](http://es.wikipedia.org/wiki/WebSockets). También
+[Server-Sent Events](https://w3c.github.io/eventsource/) y puede ser usado
+como base para [WebSockets](https://es.wikipedia.org/wiki/WebSockets). También
 puede ser usado para incrementar el throughput si solo una parte del contenido
 depende de un recurso lento.
 
 Hay que tener en cuenta que el comportamiento del streaming, especialmente el
 número de peticiones concurrentes, depende del servidor web utilizado para
-alojar la aplicación. Puede que algunos servidores, como es el caso de
-WEBRick, no soporten streaming directamente, así el cuerpo de la respuesta será
-enviado completamente de una vez cuando el bloque pasado a `stream` finalice su
-ejecución. Si estás usando Shotgun, el streaming no va a funcionar.
+alojar la aplicación. Puede que algunos servidores no soporten streaming
+directamente, así el cuerpo de la respuesta será enviado completamente de una
+vez cuando el bloque pasado a `stream` finalice su ejecución. Si estás usando
+Shotgun, el streaming no va a funcionar.
 
 Cuando se pasa `keep_open` como parámetro, no se va a enviar el mensaje
 `close` al objeto de stream. Queda en vos cerrarlo en el punto de ejecución
@@ -1342,7 +1342,7 @@ que quieras. Nuevamente, hay que tener en cuenta que este comportamiento es
 posible solo en servidores que soporten eventos, como Thin o Rainbows. El
 resto de los servidores van a cerrar el stream de todos modos:
 
-``` ruby
+```ruby
 set :server, :thin
 conexiones = []
 
@@ -1363,7 +1363,7 @@ end
 En el ámbito de la petición, el helper `logger` (registrador) expone
 una instancia de `Logger`:
 
-``` ruby
+```ruby
 get '/' do
   logger.info "cargando datos"
   # ...
@@ -1379,7 +1379,7 @@ Tené en cuenta que el logueo está habilitado por defecto únicamente
 para `Sinatra::Application`. Si heredaste de
 `Sinatra::Base`, probablemente quieras habilitarlo manualmente:
 
-``` ruby
+```ruby
 class MiApp < Sinatra::Base
   configure :production, :development do
     enable :logging
@@ -1398,7 +1398,7 @@ Cuando usás `send_file` o archivos estáticos tal vez tengas tipos mime
 que Sinatra no entiende. Usá `mime_type` para registrarlos a través de la
 extensión de archivo:
 
-``` ruby
+```ruby
 configure do
   mime_type :foo, 'text/foo'
 end
@@ -1406,7 +1406,7 @@ end
 
 También lo podés usar con el ayudante `content_type`:
 
-``` ruby
+```ruby
 get '/' do
   content_type :foo
   "foo foo foo"
@@ -1417,7 +1417,7 @@ end
 
 Para generar URLs deberías usar el método `url`. Por ejemplo, en Haml:
 
-``` ruby
+```ruby
 %a{:href => url('/foo')} foo
 ```
 
@@ -1430,7 +1430,7 @@ a continuación).
 
 Podés redireccionar al navegador con el método `redirect`:
 
-``` ruby
+```ruby
 get '/foo' do
   redirect to('/bar')
 end
@@ -1439,15 +1439,15 @@ end
 Cualquier parámetro adicional se utiliza de la misma manera que los argumentos
 pasados a `halt`:
 
-``` ruby
+```ruby
 redirect to('/bar'), 303
-redirect 'http://google.com', 'te confundiste de lugar, compañero'
+redirect 'http://www.google.com/', 'te confundiste de lugar, compañero'
 ```
 
 También podés redireccionar fácilmente de vuelta hacia la página desde donde
 vino el usuario con `redirect back`:
 
-``` ruby
+```ruby
 get '/foo' do
   "<a href='/bar'>hacer algo</a>"
 end
@@ -1461,13 +1461,13 @@ end
 Para pasar argumentos con una redirección, podés agregarlos a la cadena de
 búsqueda:
 
-``` ruby
+```ruby
 redirect to('/bar?suma=42')
 ```
 
 O usar una sesión:
 
-``` ruby
+```ruby
 enable :sessions
 
 get '/foo' do
@@ -1487,7 +1487,7 @@ HTTP correcto.
 
 Podés asignar el encabezado Cache-Control fácilmente:
 
-``` ruby
+```ruby
 get '/' do
   cache_control :public
   "cachealo!"
@@ -1496,7 +1496,7 @@ end
 
 Pro tip: configurar el cacheo en un filtro `before`:
 
-``` ruby
+```ruby
 before do
   cache_control :public, :must_revalidate, :max_age => 60
 end
@@ -1505,7 +1505,7 @@ end
 Si estás usando el helper `expires` para definir el encabezado correspondiente,
 `Cache-Control` se va a definir automáticamente:
 
-``` ruby
+```ruby
 before do
   expires 500, :public, :must_revalidate
 end
@@ -1516,7 +1516,7 @@ Para usar cachés adecuadamente, deberías considerar usar `etag` o
 cualquier trabajo pesado, ya que van a enviar la respuesta inmediatamente si
 el cliente ya tiene la versión actual en su caché:
 
-``` ruby
+```ruby
 get '/articulo/:id' do
   @articulo = Articulo.find params['id']
   last_modified @articulo.updated_at
@@ -1526,9 +1526,9 @@ end
 ```
 
 También es posible usar una
-[weak ETag](http://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation):
+[weak ETag](https://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation):
 
-``` ruby
+```ruby
 etag @articulo.sha1, :weak
 ```
 
@@ -1537,7 +1537,7 @@ información necesaria para poder hacerlo. Si estás buscando soluciones rápida
 de cacheo con proxys reversos, mirá
 [rack-cache](https://github.com/rtomayko/rack-cache):
 
-``` ruby
+```ruby
 require "rack/cache"
 require "sinatra"
 
@@ -1561,7 +1561,7 @@ y potentes (como put) que el recurso existe, mientras que para el resto
 (como post) asume que no. Podés cambiar este comportamiento con la opción
 `:new_resource`:
 
-``` ruby
+```ruby
 get '/crear' do
   etag '', :new_resource => true
   Articulo.create
@@ -1571,7 +1571,7 @@ end
 
 Si querés seguir usando una weak ETag, indicalo con la opción `:kind`:
 
-``` ruby
+```ruby
 etag '', :new_resource => true, :kind => :weak
 ```
 
@@ -1579,7 +1579,7 @@ etag '', :new_resource => true, :kind => :weak
 
 Para enviar archivos, podés usar el método `send_file`:
 
-``` ruby
+```ruby
 get '/' do
   send_file 'foo.png'
 end
@@ -1587,7 +1587,7 @@ end
 
 Además acepta un par de opciones:
 
-``` ruby
+```ruby
 send_file 'foo.png', :type => :jpg
 ```
 
@@ -1625,7 +1625,7 @@ El objeto de la petición entrante puede ser accedido desde el nivel de la
 petición (filtros, rutas y manejadores de errores) a través del método
 `request`:
 
-``` ruby
+```ruby
 # app corriendo en http://ejemplo.com/ejemplo
 get '/foo' do
   t = %w[text/css text/html application/javascript]
@@ -1661,7 +1661,7 @@ end
 Algunas opciones, como `script_name` o `path_info` pueden
 también ser escritas:
 
-``` ruby
+```ruby
 before { request.path_info = "/" }
 
 get "/" do
@@ -1671,7 +1671,7 @@ end
 
 El objeto `request.body` es una instancia de IO o StringIO:
 
-``` ruby
+```ruby
 post "/api" do
   request.body.rewind  # en caso de que alguien ya lo haya leído
   datos = JSON.parse request.body.read
@@ -1684,7 +1684,7 @@ end
 Podés usar el helper `attachment` para indicarle al navegador que
 almacene la respuesta en el disco en lugar de mostrarla en pantalla:
 
-``` ruby
+```ruby
 get '/' do
   attachment
   "guardalo!"
@@ -1693,7 +1693,7 @@ end
 
 También podés pasarle un nombre de archivo:
 
-``` ruby
+```ruby
 get '/' do
   attachment "info.txt"
   "guardalo!"
@@ -1707,7 +1707,7 @@ a partir del valor que recibe como argumento. Este valor puede ser un
 `String`, pero también es capaz de convertir objetos `DateTime`, `Date` y de
 otras clases similares:
 
-``` ruby
+```ruby
 get '/' do
   pass if Time.now > time_for('Dec 23, 2012')
   "todavía hay tiempo"
@@ -1718,7 +1718,7 @@ Este método es usado internamente por métodos como `expires` y `last_modified`
 entre otros. Por lo tanto, es posible extender el comportamiento de estos
 métodos sobreescribiendo `time_for` en tu aplicación:
 
-``` ruby
+```ruby
 helpers do
   def time_for(value)
     case value
@@ -1741,7 +1741,7 @@ end
 El helper `find_template` se utiliza para encontrar los archivos de las
 plantillas que se van a renderizar:
 
-``` ruby
+```ruby
 find_template settings.views, 'foo', Tilt[:haml] do |archivo|
   puts "podría ser #{archivo}"
 end
@@ -1751,7 +1751,7 @@ Si bien esto no es muy útil, lo interesante es que podés sobreescribir este
 método, y así enganchar tu propio mecanismo de búsqueda. Por ejemplo, para
 poder utilizar más de un directorio de vistas:
 
-``` ruby
+```ruby
 set :views, ['vistas', 'plantillas']
 
 helpers do
@@ -1764,7 +1764,7 @@ end
 Otro ejemplo consiste en usar directorios diferentes para los distintos motores
 de renderizado:
 
-``` ruby
+```ruby
 set :views, :sass => 'vistas/sass', :haml => 'plantillas', :defecto => 'vistas'
 
 helpers do
@@ -1789,7 +1789,7 @@ tener en cuenta lo anterior si escribís un método extraño.
 
 Ejecutar una vez, en el inicio, en cualquier entorno:
 
-``` ruby
+```ruby
 configure do
   # asignando una opción
   set :opcion, 'valor'
@@ -1811,7 +1811,7 @@ end
 Ejecutar únicamente cuando el entorno (la variable de entorno RACK_ENV) es
 `:production`:
 
-``` ruby
+```ruby
 configure :production do
   ...
 end
@@ -1819,7 +1819,7 @@ end
 
 Ejecutar cuando el entorno es `:production` o `:test`:
 
-``` ruby
+```ruby
 configure :production, :test do
   ...
 end
@@ -1827,7 +1827,7 @@ end
 
 Podés acceder a estas opciones utilizando el método `settings`:
 
-``` ruby
+```ruby
 configure do
   set :foo, 'bar'
 end
@@ -1841,25 +1841,25 @@ end
 
 ### Configurando la Protección de Ataques
 
-Sinatra usa [Rack::Protection](https://github.com/rkh/rack-protection#readme)
+Sinatra usa [Rack::Protection](https://github.com/sinatra/rack-protection#readme)
 para defender a tu aplicación de los ataques más comunes. Si por algún motivo,
 querés desactivar esta funcionalidad, podés hacerlo como se indica a
 continuación (ten en cuenta que tu aplicación va a quedar expuesta a un
 montón de vulnerabilidades bien conocidas):
 
-``` ruby
+```ruby
 disable :protection
 ```
 
 También es posible desactivar una única capa de defensa:
 
-``` ruby
+```ruby
 set :protection, :except => :path_traversal
 ```
 
 O varias:
 
-``` ruby
+```ruby
 set :protection, :except => [:path_traversal, :session_hijacking]
 ```
 
@@ -2083,7 +2083,7 @@ Para utilizar alguno de los otros entornos puede asignarse el valor
 correspondiente a la variable de entorno `RACK_ENV`, o bien utilizar la opción
 `-e` al ejecutar la aplicación:
 
-``` shell
+```shell
 ruby mi_app.rb -e <ENTORNO>
 ```
 
@@ -2101,7 +2101,7 @@ y los filtros `before`, lo que significa que podés usar, por ejemplo,
 Cuando se eleva una excepción `Sinatra::NotFound`, o el código de
 estado de la respuesta es 404, el manejador `not_found` es invocado:
 
-``` ruby
+```ruby
 not_found do
   'No existo'
 end
@@ -2113,7 +2113,7 @@ El manejador `error` es invocado cada vez que una excepción es elevada
 desde un bloque de ruta o un filtro. El objeto de la excepción se puede
 obtener de la variable Rack `sinatra.error`:
 
-``` ruby
+```ruby
 error do
   'Disculpá, ocurrió un error horrible - ' + env['sinatra.error'].message
 end
@@ -2121,7 +2121,7 @@ end
 
 Errores personalizados:
 
-``` ruby
+```ruby
 error MiErrorPersonalizado do
   'Lo que pasó fue...' + env['sinatra.error'].message
 end
@@ -2129,7 +2129,7 @@ end
 
 Entonces, si pasa esto:
 
-``` ruby
+```ruby
 get '/' do
   raise MiErrorPersonalizado, 'algo malo'
 end
@@ -2141,7 +2141,7 @@ Obtenés esto:
 
 También, podés instalar un manejador de errores para un código de estado:
 
-``` ruby
+```ruby
 error 403 do
   'Acceso prohibido'
 end
@@ -2153,7 +2153,7 @@ end
 
 O un rango:
 
-``` ruby
+```ruby
 error 400..510 do
   'Boom'
 end
@@ -2174,7 +2174,7 @@ proporcionar varios tipos de funcionalidades comunes.
 Sinatra hace muy sencillo construir tuberías de Rack middleware a través del
 método top-level `use`:
 
-``` ruby
+```ruby
 require 'sinatra'
 require 'mi_middleware_personalizado'
 
@@ -2187,11 +2187,11 @@ end
 ```
 
 La semántica de `use` es idéntica a la definida para el DSL
-Rack::Builder[http://rubydoc.info/github/rack/rack/master/Rack/Builder] (más
+Rack::Builder[http://www.rubydoc.info/github/rack/rack/master/Rack/Builder] (más
 frecuentemente usado en archivos rackup). Por ejemplo, el método `use`
 acepta argumentos múltiples/variables así como bloques:
 
-``` ruby
+```ruby
 use Rack::Auth::Basic do |nombre_de_usuario, password|
   nombre_de_usuario == 'admin' && password == 'secreto'
 end
@@ -2211,9 +2211,9 @@ o en la [Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
 
 Las pruebas para las aplicaciones Sinatra pueden ser escritas utilizando
 cualquier framework o librería de pruebas basada en Rack. Se recomienda usar
-[Rack::Test](http://rdoc.info/github/brynary/rack-test/master/frames):
+[Rack::Test](http://www.rubydoc.info/github/brynary/rack-test/master/frames):
 
-``` ruby
+```ruby
 require 'mi_app_sinatra'
 require 'minitest/autorun'
 require 'rack/test'
@@ -2253,7 +2253,7 @@ asume una configuración apropiada para micro-aplicaciones (por ejemplo, un
 `./views`, logging, página con detalles de excepción, etc.). Ahí es
 donde `Sinatra::Base` entra en el juego:
 
-``` ruby
+```ruby
 require 'sinatra/base'
 
 class MiApp < Sinatra::Base
@@ -2279,7 +2279,7 @@ aplicaciones top-level se pueden convertir en componentes
 
 `Sinatra::Base` es una pizarra en blanco. La mayoría de las opciones están
 desactivadas por defecto, incluyendo el servidor incorporado. Mirá
-[Opciones y Configuraciones](http://sinatra.github.com/configuration.html)
+[Opciones y Configuraciones](http://www.sinatrarb.com/configuration.html)
 para detalles sobre las opciones disponibles y su comportamiento.
 
 ### Estilo Modular vs. Clásico
@@ -2345,7 +2345,7 @@ de ambos estilos:
 Las dos opciones más comunes para iniciar una aplicación modular son, iniciarla
 activamente con `run!`:
 
-``` ruby
+```ruby
 # mi_app.rb
 require 'sinatra/base'
 
@@ -2359,13 +2359,13 @@ end
 
 Iniciar con:
 
-``` shell
+```shell
 ruby mi_app.rb
 ```
 
 O, con un archivo `config.ru`, que permite usar cualquier handler Rack:
 
-``` ruby
+```ruby
 # config.ru
 require './mi_app'
 run MiApp
@@ -2373,7 +2373,7 @@ run MiApp
 
 Después ejecutar:
 
-``` shell
+```shell
 rackup -p 4567
 ```
 
@@ -2381,7 +2381,7 @@ rackup -p 4567
 
 Escribí el archivo de tu aplicación:
 
-``` ruby
+```ruby
 # app.rb
 require 'sinatra'
 
@@ -2392,7 +2392,7 @@ end
 
 Y el `config.ru` correspondiente:
 
-``` ruby
+```ruby
 require './app'
 run Sinatra::Application
 ```
@@ -2417,7 +2417,7 @@ cualquier aplicación Sinatra puede ser agregada delante de un endpoint Rack
 como middleware. Este endpoint puede ser otra aplicación Sinatra, o cualquier
 aplicación basada en Rack (Rails/Ramaze/Camping/...):
 
-``` ruby
+```ruby
 require 'sinatra/base'
 
 class PantallaDeLogin < Sinatra::Base
@@ -2454,7 +2454,7 @@ Puede que en algunas ocasiones quieras crear nuevas aplicaciones en
 tiempo de ejecución sin tener que asignarlas a una constante. Para
 esto tenés `Sinatra.new`:
 
-``` ruby
+```ruby
 require 'sinatra/base'
 mi_app = Sinatra.new { get('/') { "hola" } }
 mi_app.run!
@@ -2463,7 +2463,7 @@ mi_app.run!
 Acepta como argumento opcional una aplicación desde la que se
 heredará:
 
-``` ruby
+```ruby
 # config.ru
 require 'sinatra/base'
 
@@ -2487,7 +2487,7 @@ testear extensiones Sinatra o para usar Sinatra en tus librerías.
 Por otro lado, hace extremadamente sencillo usar Sinatra como
 middleware:
 
-``` ruby
+```ruby
 require 'sinatra/base'
 
 use Sinatra do
@@ -2513,7 +2513,7 @@ clase de la aplicación para todas las peticiones.
 
 Las opciones creadas utilizando `set` son métodos al nivel de la clase:
 
-``` ruby
+```ruby
 class MiApp < Sinatra::Base
   # Ey, estoy en el ámbito de la aplicación!
   set :foo, 42
@@ -2545,7 +2545,7 @@ es creada y todos los bloques de rutas son ejecutados en ese ámbito. Desde este
 de renderización como `erb` o `haml`. Podés acceder al ámbito de la aplicación
 desde el ámbito de la petición utilizando `settings`:
 
-``` ruby
+```ruby
 class MiApp < Sinatra::Base
   # Ey, estoy en el ámbito de la aplicación!
   get '/definir_ruta/:nombre' do
@@ -2591,7 +2591,7 @@ que [extiende el objeto main](https://github.com/sinatra/sinatra/blob/ca06364/li
 
 Las aplicaciones Sinatra pueden ser ejecutadas directamente:
 
-``` shell
+```shell
 ruby miapp.rb [-h] [-x] [-e ENTORNO] [-p PUERTO] [-o HOST] [-s MANEJADOR]
 ```
 
@@ -2605,6 +2605,41 @@ Las opciones son:
 -s # especifica el servidor/manejador rack (thin es usado por defecto)
 -x # activa el mutex lock (está desactivado por defecto)
 ```
+
+### Multi-threading
+
+_Basado en [esta respuesta en StackOverflow][so-answer] escrita por Konstantin_
+
+Sinatra no impone ningún modelo de concurrencia, sino que lo deja en manos del
+handler Rack que se esté usando (Thin, Puma, WEBrick). Sinatra en sí mismo es
+thread-safe, así que no hay problema en que el Rack handler use un modelo de
+concurrencia basado en hilos.
+
+Esto significa que, cuando estemos arrancando el servidor, tendríamos que
+especificar la opción adecuada para el handler Rack específico. En este ejemplo
+vemos cómo arrancar un servidor Thin multihilo:
+
+```ruby
+# app.rb
+
+require 'sinatra/base'
+
+class App < Sinatra::Base
+  get '/' do
+    "¡Hola, Mundo!"
+  end
+end
+
+App.run!
+```
+
+Para arrancar el servidor, el comando sería:
+
+```shell
+thin --threaded start
+```
+
+[so-answer]: http://stackoverflow.com/questions/6278817/is-sinatra-multi-threaded/6282999#6282999)
 
 ## Versiones de Ruby Soportadas
 
@@ -2688,7 +2723,7 @@ tu aplicación sobre la rama master, en general es bastante estable.
 
 También liberamos prereleases de vez en cuando, así, podés hacer:
 
-``` shell
+```shell
 gem install sinatra --pre
 ```
 
@@ -2697,17 +2732,17 @@ Para obtener algunas de las últimas características.
 ### Con Bundler
 
 Esta es la manera recomendada para ejecutar tu aplicación sobre la última
-versión de Sinatra usando [Bundler](http://gembundler.com/).
+versión de Sinatra usando [Bundler](http://bundler.io).
 
 Primero, instalá Bundler si no lo hiciste todavía:
 
-``` shell
+```shell
 gem install bundler
 ```
 
 Después, en el directorio de tu proyecto, creá un archivo `Gemfile`:
 
-``` ruby
+```ruby
 source :rubygems
 gem 'sinatra', :git => "git://github.com/sinatra/sinatra.git"
 
@@ -2722,7 +2757,7 @@ porque Bundler las agrega directamente.
 
 Ahora podés arrancar tu aplicación así:
 
-``` shell
+```shell
 bundle exec ruby miapp.rb
 ```
 
@@ -2731,7 +2766,7 @@ bundle exec ruby miapp.rb
 Cloná el repositorio localmente y ejecutá tu aplicación, asegurándote que el
 directorio `sinatra/lib` esté en el `$LOAD_PATH`:
 
-``` shell
+```shell
 cd miapp
 git clone git://github.com/sinatra/sinatra.git
 ruby -Isinatra/lib miapp.rb
@@ -2739,7 +2774,7 @@ ruby -Isinatra/lib miapp.rb
 
 Para actualizar el código fuente de Sinatra en el futuro:
 
-``` shell
+```shell
 cd miapp/sinatra
 git pull
 ```
@@ -2748,7 +2783,7 @@ git pull
 
 Podés construir la gem vos mismo:
 
-``` shell
+```shell
 git clone git://github.com/sinatra/sinatra.git
 cd sinatra
 rake sinatra.gemspec
@@ -2757,7 +2792,7 @@ rake install
 
 Si instalás tus gems como root, el último paso debería ser
 
-``` shell
+```shell
 sudo rake install
 ```
 
@@ -2772,15 +2807,15 @@ siguiendo las especificaciones SemVer y SemVerTag.
   adicional, noticias, y enlaces a otros recursos.
 * [Contribuyendo](http://www.sinatrarb.com/contributing) - ¿Encontraste un
   error?. ¿Necesitás ayuda?. ¿Tenés un parche?.
-* [Seguimiento de problemas](http://github.com/sinatra/sinatra/issues)
-* [Twitter](http://twitter.com/sinatra)
+* [Seguimiento de problemas](https://github.com/sinatra/sinatra/issues)
+* [Twitter](https://twitter.com/sinatra)
 * [Lista de Correo](http://groups.google.com/group/sinatrarb/topics)
 * [IRC: #sinatra](irc://chat.freenode.net/#sinatra) en http://freenode.net
 * [Sinatra Book](https://github.com/sinatra/sinatra-book/) Tutorial (en inglés).
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) Recetas contribuidas
   por la comunidad (en inglés).
 * Documentación de la API para la
-  [última versión liberada](http://rubydoc.info/gems/sinatra) o para la
-  [rama de desarrollo actual](http://rubydoc.info/github/sinatra/sinatra)
-  en http://rubydoc.info/
-* [Servidor de CI](http://travis-ci.org/sinatra/sinatra)
+  [última versión liberada](http://www.rubydoc.info/gems/sinatra) o para la
+  [rama de desarrollo actual](http://www.rubydoc.info/github/sinatra/sinatra)
+  en http://www.rubydoc.info/
+* [Servidor de CI](https://travis-ci.org/sinatra/sinatra)

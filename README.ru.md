@@ -1,10 +1,97 @@
 # Sinatra
 
+## Содержание
+
+* [Sinatra](#sinatra)
+    * [Маршруты](#Маршруты)
+        * [Условия](#Условия)
+        * [Возвращаемые значения](#Возвращаемые-значения)
+        * [Собственные детекторы совпадений для маршрутов](#Собственные-детекторы-совпадений-для-маршрутов)
+    * [Статические файлы](#Статические-файлы)
+    * [Представления / Шаблоны](#Представления--Шаблоны)
+        * [Буквальные шаблоны](#Буквальные-шаблоны)
+        * [Доступные шаблонизаторы](#Доступные-шаблонизаторы)
+            * [Haml шаблоны](#haml-шаблоны)
+            * [Erb шаблоны](#erb-шаблоны)
+            * [Builder шаблоны](#builder-шаблоны)
+            * [Nokogiri шаблоны](#nokogiri-шаблоны)
+            * [Sass шаблоны](#sass-шаблоны)
+            * [SCSS шаблоны](#scss-шаблоны)
+            * [Less шаблоны](#less-шаблоны)
+            * [Liquid шаблоны](#liquid-шаблоны)
+            * [Markdown шаблоны](#markdown-шаблоны)
+            * [Textile шаблоны](#textile-шаблоны)
+            * [RDoc шаблоны](#rdoc-шаблоны)
+            * [AsciiDoc шаблоны](#asciidoc-шаблоны)
+            * [Radius шаблоны](#radius-шаблоны)
+            * [Markaby шаблоны](#markaby-шаблоны)
+            * [RABL шаблоны](#rabl-шаблоны)
+            * [Slim шаблоны](#slim-шаблоны)
+            * [Creole шаблоны](#creole-шаблоны)
+            * [MediaWiki шаблоны](#mediawiki-шаблоны)
+            * [CoffeeScript шаблоны](#coffeescript-шаблоны)
+            * [Stylus шаблоны](#stylus-шаблоны)
+            * [Yajl шаблоны](#yajl-шаблоны)
+            * [WLang шаблоны](#wlang-шаблоны)
+        * [Доступ к переменным в шаблонах](#Доступ-к-переменным-в-шаблонах)
+        * [Шаблоны с `yield` и вложенные раскладки (layout)](#Шаблоны-с-yield-и-вложенные-раскладки-layout)
+        * [Включённые шаблоны](#Включённые-шаблоны)
+        * [Именованные шаблоны](#Именованные-шаблоны)
+        * [Привязка файловых расширений](#Привязка-файловых-расширений)
+        * [Добавление собственного движка рендеринга](#Добавление-собственного-движка-рендеринга)
+    * [Фильтры](#Фильтры)
+    * [Методы-помощники](#Методы-помощники)
+        * [Использование сессий](#Использование-сессий)
+        * [Прерывание](#Прерывание)
+        * [Передача](#Передача)
+        * [Вызов другого маршрута](#Вызов-другого-маршрута)
+        * [Задание тела, кода и заголовков ответа](#Задание-тела-кода-и-заголовков-ответа)
+        * [Стриминг ответов](#Стриминг-ответов)
+        * [Логирование](#Логирование)
+        * [Mime-типы](#mime-типы)
+        * [Генерирование URL](#Генерирование-url)
+        * [Перенаправление (редирект)](#Перенаправление-редирект)
+        * [Управление кэшированием](#Управление-кэшированием)
+        * [Отправка файлов](#Отправка-файлов)
+        * [Доступ к объекту запроса](#Доступ-к-объекту-запроса)
+        * [Вложения](#Вложения)
+        * [Работа со временем и датами](#Работа-со-временем-и-датами)
+        * [Поиск шаблонов](#Поиск-шаблонов)
+    * [Конфигурация](#Конфигурация)
+        * [Настройка защиты от атак](#Настройка-защиты-от-атак)
+        * [Доступные настройки](#Доступные-настройки)
+    * [Режим, окружение](#Режим-окружение)
+    * [Обработка ошибок](#Обработка-ошибок)
+        * [Not Found](#not-found)
+        * [Error](#error)
+    * [Rack "прослойки"](#rack-прослойки)
+    * [Тестирование](#Тестирование)
+    * [Sinatra::Base — "прослойки", библиотеки и модульные приложения](#sinatrabase--прослойки-библиотеки-и-модульные-приложения)
+        * [Модульные приложения против классических](#Модульные-приложения-против-классических)
+        * [Запуск модульных приложений](#Запуск-модульных-приложений)
+        * [Запуск классических приложений с config.ru](#Запуск-классических-приложений-с-configru)
+        * [Когда использовать config.ru?](#Когда-использовать-configru)
+        * [Использование Sinatra в качестве "прослойки"](#Использование-sinatra-в-качестве-прослойки)
+        * [Создание приложений "на лету"](#Создание-приложений-на-лету)
+    * [Области видимости и привязка](#Области-видимости-и-привязка)
+        * [Область видимости приложения / класса](#Область-видимости-приложения--класса)
+        * [Область видимости запроса / экземпляра](#Область-видимости-запроса--экземпляра)
+        * [Область видимости делегирования](#Область-видимости-делегирования)
+    * [Командная строка](#Командная-строка)
+        * [Multi-threading](#multi-threading)
+    * [Системные требования](#Системные-требования)
+    * [На острие](#На-острие)
+        * [С помощью Bundler](#С-помощью-bundler)
+        * [Вручную](#Вручную)
+        * [Установка глобально](#Установка-глобально)
+    * [Версии](#Версии)
+    * [Дальнейшее чтение](#Дальнейшее-чтение)
+
 *Внимание: Этот документ является переводом английской версии и может быть
 устаревшим*
 
 Sinatra — это предметно-ориентированный каркас
-([DSL](http://ru.wikipedia.org/wiki/Предметно-ориентированный_язык_программирования))
+([DSL](https://ru.wikipedia.org/wiki/Предметно-ориентированный_язык))
 для быстрого создания функциональных веб-приложений на Ruby с минимумом усилий:
 
 ```ruby
@@ -18,13 +105,13 @@ end
 
 Установите gem:
 
-``` shell
+```shell
 gem install sinatra
 ```
 
 и запустите приложение с помощью:
 
-``` shell
+```shell
 ruby myapp.rb
 ```
 
@@ -508,7 +595,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>Зависимости</td>
-    <td><a href="http://nokogiri.org/" title="nokogiri">nokogiri</a></td>
+    <td><a href="http://www.nokogiri.org/" title="nokogiri">nokogiri</a></td>
   </tr>
   <tr>
     <td>Расширения файлов</td>
@@ -561,7 +648,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>Зависимости</td>
-    <td><a href="http://www.lesscss.org/" title="less">less</a></td>
+    <td><a href="http://lesscss.org/" title="less">less</a></td>
   </tr>
   <tr>
     <td>Расширения файлов</td>
@@ -578,7 +665,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>Зависимости</td>
-    <td><a href="http://www.liquidmarkup.org/" title="liquid">liquid</a></td>
+    <td><a href="http://liquidmarkup.org/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>Расширения файлов</td>
@@ -600,7 +687,7 @@ get('/') { markdown :index }
     <td>Зависимости</td>
     <td>
       Любая из библиотек:
-        <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
+        <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
         <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
         <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
@@ -756,7 +843,7 @@ erb :overview, :locals => { :text => rdoc(:introduction) }
 <table>
   <tr>
     <td>Зависимости</td>
-    <td><a href="http://markaby.github.com/" title="Markaby">Markaby</a></td>
+    <td><a href="http://markaby.github.io/" title="Markaby">Markaby</a></td>
   </tr>
   <tr>
     <td>Расширения файлов</td>
@@ -908,7 +995,7 @@ erb :overview, :locals => { :text => mediawiki(:introduction) }
   <tr>
     <td>Зависимости</td>
     <td>
-      <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
+      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
         Stylus
       </a> и
       <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
@@ -929,7 +1016,7 @@ erb :overview, :locals => { :text => mediawiki(:introduction) }
 Перед тем, как использовать шаблоны стилус, загрузите `stylus` и
 `stylus/tilt`:
 
-``` ruby
+```ruby
 require 'sinatra'
 require 'stylus'
 require 'stylus/tilt'
@@ -1293,7 +1380,7 @@ set :sessions, :domain => 'foo.com'
 Чтобы сделать сессию доступной другим приложениям, размещенным на поддоменах
 foo.com, добавьте *.* перед доменом:
 
-``` ruby
+```ruby
 set :sessions, :domain => '.foo.com'
 ```
 
@@ -1439,17 +1526,17 @@ end
 ```
 
 Что позволяет вам реализовать стриминговые API,
-[Server Sent Events](http://dev.w3.org/html5/eventsource/),
-и может служить основой для [WebSockets](http://en.wikipedia.org/wiki/WebSocket).
+[Server Sent Events](https://w3c.github.io/eventsource/),
+и может служить основой для [WebSockets](https://en.wikipedia.org/wiki/WebSocket).
 Также такой подход можно использовать для увеличения производительности в случае,
 когда какая-то часть контента зависит от медленного ресурса.
 
 Заметьте, что возможности стриминга, особенно количество одновременно
 обслуживаемых запросов, очень сильно зависят от используемого веб-сервера.
-Некоторые серверы, например, WEBRick, могут и вовсе не поддерживать стриминг.
-Если сервер не поддерживает стриминг, то все данные будут отправлены за один
-раз сразу после того, как блок, переданный в `stream`, завершится. Стриминг
-вообще не работает при использовании Shotgun.
+Некоторые серверы могут и вовсе не поддерживать стриминг.  Если сервер не
+поддерживает стриминг, то все данные будут отправлены за один раз сразу после
+того, как блок, переданный в `stream`, завершится. Стриминг вообще не работает
+при использовании Shotgun.
 
 Если метод используется с параметром `keep_open`, то он не будет вызывать
 `close` у объекта потока, что позволит вам закрыть его позже в любом другом
@@ -1567,7 +1654,7 @@ end
 
 ```ruby
 redirect to('/bar'), 303
-redirect 'http://google.com', 'wrong place, buddy'
+redirect 'http://www.google.com/', 'wrong place, buddy'
 ```
 
 Вы также можете перенаправить пользователя обратно, на страницу, с которой он
@@ -1651,7 +1738,7 @@ end
 ```
 
 Также вы можете использовать
-[weak ETag](http://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation):
+[weak ETag](https://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation):
 
 ```ruby
 etag @article.sha1, :weak
@@ -1968,7 +2055,7 @@ end
 ### Настройка защиты от атак
 
 Sinatra использует
-[Rack::Protection](https://github.com/rkh/rack-protection#readme) для защиты
+[Rack::Protection](https://github.com/sinatra/rack-protection#readme) для защиты
 приложения от простых атак. Вы можете легко выключить эту защиту (что сделает
 ваше приложение чрезвычайно уязвимым):
 
@@ -2275,7 +2362,7 @@ end
 ```
 
 Семантика `use` идентична той, что определена для
-[Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder) DSL
+[Rack::Builder](http://www.rubydoc.info/github/rack/rack/master/Rack/Builder) DSL
 (чаще всего используется в rackup файлах). Например, метод `use` принимает как
 множественные переменные, так и блоки:
 
@@ -2300,7 +2387,7 @@ Rack распространяется с различными стандартн
 
 Тесты для Sinatra приложений могут быть написаны с помощью библиотек,
 фреймворков, поддерживающих тестирование Rack.
-[Rack::Test](http://rdoc.info/github/brynary/rack-test/master/frames)
+[Rack::Test](http://www.rubydoc.info/github/brynary/rack-test/master/frames)
 рекомендован:
 
 ```ruby
@@ -2594,7 +2681,7 @@ end
 * через объект, переданный блокам конфигурации (`configure { |c| ... }`);
 * `settings` внутри области видимости запроса.
 
-### Область видимости запроса/экземпляра
+### Область видимости запроса / экземпляра
 
 Для каждого входящего запроса будет создан новый экземпляр вашего приложения,
 и все блоки обработчика будут запущены в этом контексте. В этой области
@@ -2664,6 +2751,40 @@ ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
 -s # указание rack сервера/обработчика (по умолчанию thin)
 -x # включить мьютекс-блокировку (по умолчанию выключена)
 ```
+
+### Multi-threading
+
+_Данный раздел является перефразированным [ответом пользователя Konstantin][so-answer] на StackOverflow_
+
+Sinatra не навязывает каких-либо моделей параллелизма, но для этих целей можно
+использовать любой Rack обработчик, например Thin, Puma или WEBrick. Сама
+по себе Sinatra потокобезопасна, поэтому нет никаких проблем в использовании
+поточной модели параллелизма в Rack обработчике. Это означает, что когда
+запускается сервер, вы должны указать правильный метод вызова для конкретного
+Rack обработчика. Пример ниже показывает, как можно запустить мультитредовый
+Thin сервер:
+
+```ruby
+# app.rb
+
+require 'sinatra/base'
+
+class App < Sinatra::Base
+  get '/' do
+    "Hello, World"
+  end
+end
+
+App.run!
+```
+
+Чтобы запустить сервер, вы должны выполнить следующую команду:
+
+```shell
+thin --threaded start
+```
+
+[so-answer]: http://stackoverflow.com/questions/6278817/is-sinatra-multi-threaded/6282999#6282999)
 
 ## Системные требования
 
@@ -2747,7 +2868,7 @@ gem install sinatra --pre
 ### С помощью Bundler
 
 Если вы хотите запускать свое приложение с последней версией Sinatra, то
-рекомендуем использовать [Bundler](http://gembundler.com/).
+рекомендуем использовать [Bundler](http://bundler.io).
 
 Сначала установите Bundler, если у вас его еще нет:
 
@@ -2823,13 +2944,15 @@ SemVerTag.
   документация, новости и ссылки на другие ресурсы.
 * [Участие в проекте](http://www.sinatrarb.com/contributing) — Обнаружили
   баг? Нужна помощь? Написали патч?
-* [Слежение за проблемами/ошибками](http://github.com/sinatra/sinatra/issues)
-* [Twitter](http://twitter.com/sinatra)
+* [Отслеживание проблем/ошибок](https://github.com/sinatra/sinatra/issues)
+* [Twitter](https://twitter.com/sinatra)
 * [Группы рассылки](http://groups.google.com/group/sinatrarb/topics)
-* [#sinatra](irc://chat.freenode.net/#sinatra) на http://freenode.net
+* IRC: [#sinatra](irc://chat.freenode.net/#sinatra) на http://freenode.net
+* [Sinatra и Друзья](https://sinatrarb.slack.com) на Slack, а так же
+  [ссылка](https://sinatra-slack.herokuapp.com/) для инвайта.
 * [Sinatra Book](https://github.com/sinatra/sinatra-book/) учебник и сборник рецептов
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) сборник рецептов
-* API документация к [последнему релизу](http://rubydoc.info/gems/sinatra)
-  или [текущему HEAD](http://rubydoc.info/github/sinatra/sinatra) на
-  http://rubydoc.info
-* [Сервер непрерывной интеграции](http://travis-ci.org/sinatra/sinatra)
+* API документация к [последнему релизу](http://www.rubydoc.info/gems/sinatra)
+  или [текущему HEAD](http://www.rubydoc.info/github/sinatra/sinatra) на
+  http://www.rubydoc.info/
+* [Сервер непрерывной интеграции](https://travis-ci.org/sinatra/sinatra)

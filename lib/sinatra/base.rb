@@ -2,6 +2,7 @@
 require 'rack'
 require 'tilt'
 require 'rack/protection'
+require 'forwardable'
 
 # stdlib dependencies
 require 'thread'
@@ -299,15 +300,10 @@ module Sinatra
       response.headers
     end
 
-    # Access the underlying Rack session.
-    def session
-      request.session
-    end
-
-    # Access shared logger object.
-    def logger
-      request.logger
-    end
+    extend Forwardable
+    def_delegators :request,
+                   :session, # Access the underlying Rack session.
+                   :logger # Access shared logger object.
 
     # Look up a media type by file extension in Rack's mime registry.
     def mime_type(type)
@@ -1034,7 +1030,7 @@ module Sinatra
     # a matching file is found, returns nil otherwise.
     def static!(options = {})
       return if (public_dir = settings.public_folder).nil?
-      path = File.expand_path("#{public_dir}#{unescape(request.path_info)}" )
+      path = File.expand_path("#{public_dir}#{URI_INSTANCE.unescape(request.path_info)}" )
       return unless File.file?(path)
 
       env['sinatra.static_file'] = path
@@ -1617,25 +1613,21 @@ module Sinatra
         if path.respond_to? :to_str
           keys = []
 
-          # We append a / at the end if there was one.
-          # Reason: Splitting does not split off an empty
-          # string at the end if the split separator
-          # is at the end.
-          #
-          postfix = '/' if path =~ /\/\z/
-
           # Split the path into pieces in between forward slashes.
+          # A negative number is given as the second argument of path.split
+          # because with this number, the method does not ignore / at the end
+          # and appends an empty string at the end of the return value.
           #
-          segments = path.split('/').map! do |segment|
+          segments = path.split('/', -1).map! do |segment|
             ignore = []
 
             # Special character handling.
             #
-            pattern = segment.to_str.gsub(/[^\?\%\\\/\:\*\w]/) do |c|
+            pattern = segment.to_str.gsub(/[^\?\%\\\/\:\*\w]|:(?!\w)/) do |c|
               ignore << escaped(c).join if c.match(/[\.@]/)
               patt = encoded(c)
               patt.gsub(/%[\da-fA-F]{2}/) do |match|
-                match.split(//).map! {|char| char =~ /[A-Z]/ ? "[#{char}#{char.tr('A-Z', 'a-z')}]" : char}.join
+                match.split(//).map! { |char| char == char.downcase ? char : "[#{char}#{char.downcase}]" }.join
               end
             end
 
@@ -1658,16 +1650,12 @@ module Sinatra
 
           # Special case handling.
           #
-          if segment = segments.pop
-            if segment.match(/\[\^\\\./)
-              parts = segment.rpartition(/\[\^\\\./)
-              parts[1] = '[^'
-              segments << parts.join
-            else
-              segments << segment
-            end
+          if last_segment = segments[-1] and last_segment.match(/\[\^\\\./)
+            parts = last_segment.rpartition(/\[\^\\\./)
+            parts[1] = '[^'
+            segments[-1] = parts.join
           end
-          [/\A#{segments.join('/')}#{postfix}\z/, keys]
+          [/\A#{segments.join('/')}\z/, keys]
         elsif path.respond_to?(:keys) && path.respond_to?(:match)
           [path, path.keys]
         elsif path.respond_to?(:names) && path.respond_to?(:match)
@@ -1698,10 +1686,7 @@ module Sinatra
         end
         unsafe_patterns = unsafe_ignore.map! do |unsafe|
           chars = unsafe.split(//).map! do |char|
-            if char =~ /[A-Z]/
-              char <<= char.tr('A-Z', 'a-z')
-            end
-            char
+            char == char.downcase ? char : char + char.downcase
           end
 
           "|(?:%[^#{chars[0]}].|%[#{chars[0]}][^#{chars[1]}])"

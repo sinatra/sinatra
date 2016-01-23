@@ -4,7 +4,7 @@
 Umständen nicht auf dem aktuellen Stand (aktuell Sinatra 1.4.5).*
 
 Sinatra ist eine
-[DSL](http://de.wikipedia.org/wiki/Domänenspezifische_Sprache), die das
+[DSL](https://de.wikipedia.org/wiki/Domänenspezifische_Sprache), die das
 schnelle Erstellen von Webanwendungen in Ruby mit minimalem Aufwand
 ermöglicht:
 
@@ -111,6 +111,7 @@ aufgerufen werden.
         * [Anfrage- oder Instanz-Scope](#anfrage--oder-instanz-scope)
         * [Delegation-Scope](#delegation-scope)
     * [Kommandozeile](#kommandozeile)
+      * [Multi-Threading](#multi-threading)
     * [Systemanforderungen](#systemanforderungen)
     * [Der neuste Stand (The Bleeding Edge)](#der-neuste-stand-the-bleeding-edge)
         * [Mit Bundler](#mit-bundler)
@@ -227,7 +228,7 @@ end
 
 Routen können auch den query-Parameter verwenden:
 
-``` ruby
+```ruby
 get '/posts' do
   # matches "GET /posts?title=foo&author=bar"
   title = params['title']
@@ -527,7 +528,7 @@ Rendering-Methoden rendern jeden String direkt.
 
 ### Direkte Templates
 
-``` ruby
+```ruby
 get '/' do
   haml '%div.title Hallo Welt'
 end
@@ -607,7 +608,7 @@ Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 <table>
   <tr>
     <td>Abhängigkeit</td>
-    <td><a href="http://nokogiri.org/">nokogiri</a></td>
+    <td><a href="http://www.nokogiri.org/">nokogiri</a></td>
   </tr>
   <tr>
     <td>Dateierweiterung</td>
@@ -662,7 +663,7 @@ Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 <table>
   <tr>
     <td>Abhängigkeit</td>
-    <td><a href="http://www.lesscss.org/">less</a></td>
+    <td><a href="http://lesscss.org/">less</a></td>
   </tr>
   <tr>
     <td>Dateierweiterung</td>
@@ -680,7 +681,7 @@ Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 <table>
   <tr>
     <td>Abhängigkeit</td>
-    <td><a href="http://www.liquidmarkup.org/">liquid</a></td>
+    <td><a href="http://liquidmarkup.org/">liquid</a></td>
   </tr>
   <tr>
     <td>Dateierweiterung</td>
@@ -702,7 +703,7 @@ denen man Variablen weitergibt.
   <tr>
     <td>Abhängigkeit</td>
     <td>Eine der folgenden Bibliotheken:
-        <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
+        <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
         <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
         <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a> oder
@@ -862,7 +863,7 @@ man üblicherweise locals verwenden wollen, mit denen man Variablen weitergibt.
 <table>
   <tr>
     <td>Abhängigkeit</td>
-    <td><a href="http://markaby.github.com/">markaby</a></td>
+    <td><a href="http://markaby.github.io/">markaby</a></td>
   </tr>
   <tr>
     <td>Dateierweiterung</td>
@@ -969,14 +970,14 @@ Da man aus dem Mediawiki-Template heraus keine Ruby-Methoden aufrufen und auch
 keine locals verwenden kann, wird man Mediawiki üblicherweise in Kombination mit
 anderen Renderern verwenden wollen:
 
-``` ruby
+```ruby
 erb :overview, :locals => { :text => mediawiki(:introduction) }
 ```
 
 Beachte: Man kann die `mediawiki`-Methode auch aus anderen Templates
 heraus aufrufen:
 
-``` ruby
+```ruby
 %h1 Grüße von Haml!
 %p= mediawiki(:greetings)
 ```
@@ -1010,7 +1011,7 @@ Templates zu verwenden und einen anderen für das Layout, indem die
   <tr>
     <td>Abhängigkeit</td>
     <td>
-      <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
+      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
         Stylus
       </a> und eine Möglichkeit
       <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
@@ -1031,7 +1032,7 @@ Templates zu verwenden und einen anderen für das Layout, indem die
 Um Stylus-Templates ausführen zu können, müssen `stylus` und `stylus/tilt`
 zuerst geladen werden:
 
-``` ruby
+```ruby
 require 'sinatra'
 require 'stylus'
 require 'stylus/tilt'
@@ -1068,7 +1069,7 @@ end
 Die Template-Quelle wird als Ruby-String evaluiert. Die daraus resultierende
 json Variable wird mit Hilfe von `#to_json` umgewandelt:
 
-``` ruby
+```ruby
 json = { :foo => 'bar' }
 json[:baz] = key
 ```
@@ -1076,7 +1077,7 @@ json[:baz] = key
 Die `:callback` und `:variable` Optionen können mit dem gerenderten Objekt
 verwendet werden:
 
-``` javascript
+```javascript
 var resource = {"foo":"bar","baz":"qux"};
 present(resource);
 ```
@@ -1134,7 +1135,7 @@ Ein Layout ist üblicherweise ein Template, das ein `yield` aufruft. Ein solches
 Template kann entweder wie oben beschrieben über die `:template` Option
 verwendet werden oder mit einem Block gerendert werden:
 
-``` ruby
+```ruby
 erb :post, :layout => false do
   erb :index
 end
@@ -1145,7 +1146,7 @@ Dieser Code entspricht weitestgehend `erb :index, :layout => :post`.
 Blöcke an Render-Methoden weiterzugeben ist besonders bei verschachtelten
 Layouts hilfreich:
 
-``` ruby
+```ruby
 erb :main_layout, :layout => false do
   erb :admin_layout do
     erb :user
@@ -1155,7 +1156,7 @@ end
 
 Der gleiche Effekt kann auch mit weniger Code erreicht werden:
 
-``` ruby
+```ruby
 erb :admin_layout, :layout => :main_layout do
   erb :user
 end
@@ -1257,7 +1258,7 @@ Tilt zu erfahren.
 Um einen eigenen Mechanismus zum Aufsuchen von Templates zu
 implementieren, muss `#find_template` definiert werden:
 
-``` ruby
+```ruby
 configure do
   set :views [ './views/a', './views/b' ]
 end
@@ -1395,7 +1396,7 @@ set :sessions, :domain => 'foo.com'
 Um eine Session mit anderen Apps und zwischen verschiedenen Subdomains
 von foo.com zu teilen, wird ein *.* der Domain vorangestellt:
 
-``` ruby
+```ruby
 set :sessions, :domain => '.foo,com'
 ```
 
@@ -1539,14 +1540,14 @@ end
 ```
 
 Damit lassen sich Streaming-APIs realisieren, sog.
-[Server Sent Events](http://dev.w3.org/html5/eventsource/), die als Basis für
-[WebSockets](http://en.wikipedia.org/wiki/WebSocket) dienen. Ebenso können sie
+[Server Sent Events](https://w3c.github.io/eventsource/), die als Basis für
+[WebSockets](https://en.wikipedia.org/wiki/WebSocket) dienen. Ebenso können sie
 verwendet werden, um den Durchsatz zu erhöhen, wenn ein Teil der Daten von
 langsamen Ressourcen abhängig ist.
 
 Es ist zu beachten, dass das Verhalten beim Streaming, insbesondere die Anzahl
 nebenläufiger Anfragen, stark davon abhängt, welcher Webserver für die
-Applikation verwendet wird. Einige Server, z.B. WEBRick, unterstützen
+Applikation verwendet wird. Einige Server unterstützen
 Streaming nicht oder nur teilweise. Sollte der Server Streaming nicht
 unterstützen, wird ein vollständiger Response-Body zurückgeschickt, sobald der
 an `stream` weitergegebene Block abgearbeitet ist. Mit Shotgun funktioniert
@@ -1671,7 +1672,7 @@ Weitere Parameter werden wie Argumente der `halt`-Methode behandelt:
 
 ```ruby
 redirect to('/bar'), 303
-redirect 'http://google.com', 'Hier bist du falsch'
+redirect 'http://www.google.com/', 'Hier bist du falsch'
 ```
 
 Ebenso leicht lässt sich ein Schritt zurück mit dem Alias `redirect back`
@@ -1756,7 +1757,7 @@ end
 ```
 
 ebenso ist es möglich einen
-[schwachen ETag](http://de.wikipedia.org/wiki/HTTP_ETag) zu verwenden:
+[schwachen ETag](https://de.wikipedia.org/wiki/HTTP_ETag) zu verwenden:
 
 ```ruby
 etag @article.sha1, :weak
@@ -2072,7 +2073,7 @@ end
 #### Einstellung des Angriffsschutzes
 
 Sinatra verwendet
-[Rack::Protection](https://github.com/rkh/rack-protection#readme), um die
+[Rack::Protection](https://github.com/sinatra/rack-protection#readme), um die
 Anwendung vor häufig vorkommenden Angriffen zu schützen. Diese Voreinstellung
 lässt sich selbstverständlich deaktivieren, der damit verbundene
 Geschwindigkeitszuwachs steht aber in keinem Verhätnis zu den möglichen
@@ -2359,7 +2360,7 @@ end
 ```
 
 Die Semantik von `use` entspricht der gleichnamigen Methode der
-[Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder)-DSL
+[Rack::Builder](http://www.rubydoc.info/github/rack/rack/master/Rack/Builder)-DSL
 (meist verwendet in Rackup-Dateien). Ein Beispiel dafür ist, dass die
 `use`-Methode mehrere/verschiedene Argumente und auch Blöcke entgegennimmt:
 
@@ -2382,7 +2383,7 @@ oder im [Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
 ## Testen
 
 Sinatra-Tests können mit jedem auf Rack aufbauendem Test-Framework geschrieben
-werden. [Rack::Test](http://rdoc.info/github/brynary/rack-test/master/frames)
+werden. [Rack::Test](http://www.rubydoc.info/github/brynary/rack-test/master/frames)
 wird empfohlen:
 
 ```ruby
@@ -2463,13 +2464,13 @@ Veränderungen zu `Sinatra::Base` konvertiert werden:
 
 `Sinatra::Base` ist ein unbeschriebenes Blatt. Die meisten Optionen sind per
 Standard deaktiviert. Das betrifft auch den eingebauten Server. Siehe
-[Optionen und Konfiguration](http://sinatra.github.com/configuration.html) für
+[Optionen und Konfiguration](http://www.sinatrarb.com/configuration.html) für
 Details über mögliche Optionen.
 
 Damit eine App sich ähnlich wie eine klassische App verhält, kann man
 auch eine Subclass von `Sinatra::Application` erstellen:
 
-``` ruby
+```ruby
 require 'sinatra/base'
 
 class MyApp < Sinatra::Application
@@ -2821,6 +2822,42 @@ Die Optionen sind:
 -x # Mutex-Lock einschalten (Standard ist off)
 ```
 
+### Multi-threading
+
+_Paraphrasiert von [dieser Antwort auf StackOverflow][so-answer] von Konstantin_
+
+Sinatra erlegt kein Nebenläufigkeitsmodell auf, sondern überlässt dies dem
+selbst gewählten Rack-Proxy (Server), so wie Thin, Puma oder WEBrick.
+Sinatra selbst ist Thread-sicher, somit ist es kein Problem wenn der
+Rack-Proxy ein anderes Threading-Modell für Nebenläufigkeit benutzt.
+Das heißt, dass wenn der Server gestartet wird, dass man die korrekte
+Aufrufsmethode benutzen sollte für den jeweiligen Rack-Proxy.
+Das folgende Beispiel ist eine Veranschaulichung eines mehrprozessigen
+Thin Servers:
+
+``` ruby
+# app.rb
+
+require 'sinatra/base'
+
+class App < Sinatra::Base
+  get '/' do
+    "Hello, World"
+  end
+end
+
+App.run!
+
+```
+
+Um den Server zu starten, führt man das folgende Kommando aus:
+
+``` shell
+thin --threaded start
+```
+
+[so-answer]: http://stackoverflow.com/questions/6278817/is-sinatra-multi-threaded/6282999#6282999)
+
 ## Systemanforderungen
 
 Die folgenden Versionen werden offiziell unterstützt:
@@ -2889,7 +2926,7 @@ gem install sinatra --pre
 ### Mit Bundler
 
 Wenn die Applikation mit der neuesten Version von Sinatra und
-[Bundler](http://gembundler.com/) genutzt werden soll, empfehlen wir den
+[Bundler](http://bundler.io) genutzt werden soll, empfehlen wir den
 nachfolgenden Weg.
 
 Soweit Bundler noch nicht installiert ist:
@@ -2976,12 +3013,12 @@ SemVer und SemVerTag.
 
 ## Mehr
 
-*   [Projekt-Website](http://sinatra.github.com/) - Ergänzende Dokumentation,
+*   [Projekt-Website](http://www.sinatrarb.com/) - Ergänzende Dokumentation,
     News und Links zu anderen Ressourcen.
-*   [Mitmachen](http://sinatra.github.com/contributing.html) - Einen Fehler
+*   [Mitmachen](http://www.sinatrarb.com/contributing.html) - Einen Fehler
     gefunden? Brauchst du Hilfe? Hast du einen Patch?
-*   [Issue-Tracker](http://github.com/sinatra/sinatra/issues)
-*   [Twitter](http://twitter.com/sinatra)
+*   [Issue-Tracker](https://github.com/sinatra/sinatra/issues)
+*   [Twitter](https://twitter.com/sinatra)
 *   [Mailing-Liste](http://groups.google.com/group/sinatrarb)
 *   [#sinatra](irc://chat.freenode.net/#sinatra) auf http://freenode.net Es
     gibt dort auch immer wieder deutschsprachige Entwickler, die gerne weiterhelfen.
@@ -2989,6 +3026,6 @@ SemVer und SemVerTag.
 *   [Sinatra Recipes](http://recipes.sinatrarb.com/) Sinatra-Rezepte aus der
     Community
 *   API Dokumentation für die [aktuelle
-    Version](http://rubydoc.info/gems/sinatra) oder für
-    [HEAD](http://rubydoc.info/github/sinatra/sinatra) auf http://rubydoc.info
-*   [CI Server](http://travis-ci.org/sinatra/sinatra)
+    Version](http://www.rubydoc.info//gems/sinatra) oder für
+    [HEAD](http://www.rubydoc.info/github/sinatra/sinatra) auf http://rubydoc.info
+*   [CI Server](https://travis-ci.org/sinatra/sinatra)
