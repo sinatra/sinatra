@@ -3,7 +3,7 @@
 *Atención: Este documento es una traducción de la versión en inglés y puede estar desactualizado.*
 
 Sinatra es un
-[DSL](http://es.wikipedia.org/wiki/Lenguaje_específico_del_dominio) para
+[DSL](https://es.wikipedia.org/wiki/Lenguaje_específico_del_dominio) para
 crear aplicaciones web rápidamente en Ruby con un mínimo esfuerzo:
 
 ```ruby
@@ -22,7 +22,7 @@ gem install sinatra
 ruby miapp.rb
 ```
 
-Ver en <http://localhost:4567>.
+Ver en [http://localhost:4567](http://localhost:4567).
 
 Se recomienda ejecutar `gem install thin`, porque Sinatra lo utilizará si está disponible.
 
@@ -133,9 +133,9 @@ end
 Los patrones de ruta pueden contener parámetros opcionales:
 
 ```ruby
-get '/posts.?:formato?' do
-  # coincide con "GET /posts" y además admite cualquier extensión, por
-  # ejemplo, "GET /posts.json", "GET /posts.xml", etc.
+get '/posts/:formato?' do
+  # coincide con "GET /posts/" y además admite cualquier extensión, por
+  # ejemplo, "GET /posts/json", "GET /posts/xml", etc.
 end
 ```
 
@@ -503,7 +503,7 @@ Además, acepta un bloque con la definición de la plantilla (ver ejemplo).
 <table>
   <tr>
     <td>Dependencias</td>
-    <td><a href="http://nokogiri.org/" title="nokogiri">nokogiri</a></td>
+    <td><a href="http://www.nokogiri.org/" title="nokogiri">nokogiri</a></td>
   </tr>
   <tr>
     <td>Extensiones de Archivo</td>
@@ -556,7 +556,7 @@ Además, acepta un bloque con la definición de la plantilla (ver ejemplo).
 <table>
   <tr>
     <td>Dependencias</td>
-    <td><a href="http://www.lesscss.org/" title="less">less</a></td>
+    <td><a href="http://lesscss.org/" title="less">less</a></td>
   </tr>
   <tr>
     <td>Extensiones de Archivo</td>
@@ -573,7 +573,7 @@ Además, acepta un bloque con la definición de la plantilla (ver ejemplo).
 <table>
   <tr>
     <td>Dependencias</td>
-    <td><a href="http://www.liquidmarkup.org/" title="liquid">liquid</a></td>
+    <td><a href="http://liquidmarkup.org/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>Extensiones de Archivo</td>
@@ -594,7 +594,7 @@ plantilla Liquid, casi siempre va a querer pasarle locales.
   <tr>
     <td>Dependencias</td>
     <td>
-      <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
+      <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
       <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
       <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
       <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a> o
@@ -727,7 +727,7 @@ plantilla Radius, casi siempre se necesita pasar locales.
 <table>
   <tr>
     <td>Dependencias</td>
-    <td><a href="http://markaby.github.com/" title="Markaby">Markaby</a></td>
+    <td><a href="http://markaby.github.io/" title="Markaby">Markaby</a></td>
   </tr>
   <tr>
     <td>Extensiones de Archivo</td>
@@ -841,7 +841,7 @@ distinto al de la plantilla pasando la opción `:layout_engine`.
   <tr>
     <td>Dependencias</td>
     <td>
-      <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
+      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
         Stylus
       </a> y un
       <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
@@ -1324,8 +1324,8 @@ end
 ```
 
 Podés implementar APIs de streaming,
-[Server-Sent Events](http://dev.w3.org/html5/eventsource/) y puede ser usado
-como base para [WebSockets](http://es.wikipedia.org/wiki/WebSockets). También
+[Server-Sent Events](https://w3c.github.io/eventsource/) y puede ser usado
+como base para [WebSockets](https://es.wikipedia.org/wiki/WebSockets). También
 puede ser usado para incrementar el throughput si solo una parte del contenido
 depende de un recurso lento.
 
@@ -1441,7 +1441,7 @@ pasados a `halt`:
 
 ```ruby
 redirect to('/bar'), 303
-redirect 'http://google.com', 'te confundiste de lugar, compañero'
+redirect 'http://www.google.com/', 'te confundiste de lugar, compañero'
 ```
 
 También podés redireccionar fácilmente de vuelta hacia la página desde donde
@@ -1526,7 +1526,7 @@ end
 ```
 
 También es posible usar una
-[weak ETag](http://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation):
+[weak ETag](https://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation):
 
 ```ruby
 etag @articulo.sha1, :weak
@@ -1841,7 +1841,7 @@ end
 
 ### Configurando la Protección de Ataques
 
-Sinatra usa [Rack::Protection](https://github.com/rkh/rack-protection#readme)
+Sinatra usa [Rack::Protection](https://github.com/sinatra/rack-protection#readme)
 para defender a tu aplicación de los ataques más comunes. Si por algún motivo,
 querés desactivar esta funcionalidad, podés hacerlo como se indica a
 continuación (ten en cuenta que tu aplicación va a quedar expuesta a un
@@ -2187,7 +2187,7 @@ end
 ```
 
 La semántica de `use` es idéntica a la definida para el DSL
-Rack::Builder[http://rubydoc.info/github/rack/rack/master/Rack/Builder] (más
+Rack::Builder[http://www.rubydoc.info/github/rack/rack/master/Rack/Builder] (más
 frecuentemente usado en archivos rackup). Por ejemplo, el método `use`
 acepta argumentos múltiples/variables así como bloques:
 
@@ -2211,7 +2211,7 @@ o en la [Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
 
 Las pruebas para las aplicaciones Sinatra pueden ser escritas utilizando
 cualquier framework o librería de pruebas basada en Rack. Se recomienda usar
-[Rack::Test](http://rdoc.info/github/brynary/rack-test/master/frames):
+[Rack::Test](http://www.rubydoc.info/github/brynary/rack-test/master/frames):
 
 ```ruby
 require 'mi_app_sinatra'
@@ -2279,7 +2279,7 @@ aplicaciones top-level se pueden convertir en componentes
 
 `Sinatra::Base` es una pizarra en blanco. La mayoría de las opciones están
 desactivadas por defecto, incluyendo el servidor incorporado. Mirá
-[Opciones y Configuraciones](http://sinatra.github.com/configuration.html)
+[Opciones y Configuraciones](http://www.sinatrarb.com/configuration.html)
 para detalles sobre las opciones disponibles y su comportamiento.
 
 ### Estilo Modular vs. Clásico
@@ -2336,7 +2336,7 @@ de ambos estilos:
   <tr>
     <td>static</td>
     <td>true</td>
-    <td>false</td>
+    <td>File.exist?(public_folder)</td>
   </tr>
 </table>
 
@@ -2732,7 +2732,7 @@ Para obtener algunas de las últimas características.
 ### Con Bundler
 
 Esta es la manera recomendada para ejecutar tu aplicación sobre la última
-versión de Sinatra usando [Bundler](http://gembundler.com/).
+versión de Sinatra usando [Bundler](http://bundler.io).
 
 Primero, instalá Bundler si no lo hiciste todavía:
 
@@ -2807,15 +2807,15 @@ siguiendo las especificaciones SemVer y SemVerTag.
   adicional, noticias, y enlaces a otros recursos.
 * [Contribuyendo](http://www.sinatrarb.com/contributing) - ¿Encontraste un
   error?. ¿Necesitás ayuda?. ¿Tenés un parche?.
-* [Seguimiento de problemas](http://github.com/sinatra/sinatra/issues)
-* [Twitter](http://twitter.com/sinatra)
+* [Seguimiento de problemas](https://github.com/sinatra/sinatra/issues)
+* [Twitter](https://twitter.com/sinatra)
 * [Lista de Correo](http://groups.google.com/group/sinatrarb/topics)
 * [IRC: #sinatra](irc://chat.freenode.net/#sinatra) en http://freenode.net
 * [Sinatra Book](https://github.com/sinatra/sinatra-book/) Tutorial (en inglés).
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) Recetas contribuidas
   por la comunidad (en inglés).
 * Documentación de la API para la
-  [última versión liberada](http://rubydoc.info/gems/sinatra) o para la
-  [rama de desarrollo actual](http://rubydoc.info/github/sinatra/sinatra)
-  en http://rubydoc.info/
-* [Servidor de CI](http://travis-ci.org/sinatra/sinatra)
+  [última versión liberada](http://www.rubydoc.info/gems/sinatra) o para la
+  [rama de desarrollo actual](http://www.rubydoc.info/github/sinatra/sinatra)
+  en http://www.rubydoc.info/
+* [Servidor de CI](https://travis-ci.org/sinatra/sinatra)

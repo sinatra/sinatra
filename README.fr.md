@@ -2,7 +2,7 @@
 *Attention : Ce document correspond à la traduction de la version anglaise et
 il n'est peut-être plus à jour.*
 
-Sinatra est un [DSL](http://fr.wikipedia.org/wiki/Langage_dédié) pour
+Sinatra est un [DSL](https://fr.wikipedia.org/wiki/Langage_dédié) pour
 créer rapidement et facilement des applications web en Ruby :
 
 ```ruby
@@ -26,7 +26,8 @@ Puis lancez votre programme :
 ruby mon_application.rb
 ```
 
-Le résultat est visible sur : http://localhost:4567
+Le résultat est visible sur :
+[http://localhost:4567](http://localhost:4567)
 
 Il est recommandé d'exécuter également `gem install thin`, pour que
 Sinatra utilise le server Thin quand il est disponible.
@@ -225,8 +226,8 @@ end
 Les routes peuvent aussi comporter des paramètres optionnels :
 
 ```ruby
-get '/articles.?:format?' do
-  # répond à "GET /articles" ou avec une extension "GET /articles.json", "GET /articles.xml" etc...
+get '/articles/:format?' do
+  # répond à "GET /articles/" ou avec une extension "GET /articles/json", "GET /articles/xml" etc...
 end
 ```
 
@@ -616,7 +617,7 @@ exemple).
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://nokogiri.org/" title="nokogiri">nokogiri</a></td>
+    <td><a href="http://www.nokogiri.org/" title="nokogiri">nokogiri</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -672,7 +673,7 @@ exemple).
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://www.lesscss.org/" title="less">less</a></td>
+    <td><a href="http://lesscss.org/" title="less">less</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -690,7 +691,7 @@ exemple).
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://www.liquidmarkup.org/" title="liquid">liquid</a></td>
+    <td><a href="http://liquidmarkup.org/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -713,7 +714,7 @@ locales.
     <td><p>Dépendances</p></td>
     <td>
       Au choix :
-      <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
+      <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
       <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
       <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
       <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
@@ -849,7 +850,7 @@ Radius, vous aurez sûrement à lui passer des variables locales.
 <table>
   <tr>
     <td>Dépendances</td>
-    <td><a href="http://markaby.github.com/" title="Markaby">Markaby</a></td>
+    <td><a href="http://markaby.github.io/" title="Markaby">Markaby</a></td>
   </tr>
   <tr>
     <td>Extensions de fichier</td>
@@ -966,7 +967,7 @@ en utilisant l'option `:layout_engine`.
   <tr>
     <td>Dépendances</td>
     <td>
-      <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
+      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
         Stylus
       </a>
       et un
@@ -1503,8 +1504,8 @@ end
 ```
 
 Cela permet d'implémenter des API de streaming ou de
-[Server Sent Events](http://dev.w3.org/html5/eventsource/) et peut servir de
-base pour des [WebSockets](http://en.wikipedia.org/wiki/WebSocket). Vous
+[Server Sent Events](https://w3c.github.io/eventsource/) et peut servir de
+base pour des [WebSockets](https://en.wikipedia.org/wiki/WebSocket). Vous
 pouvez aussi l'employer pour augmenter le débit quand une partie du contenu
 provient d'une ressource lente.
 
@@ -1635,7 +1636,7 @@ Tout paramètre additionnel sera utilisé comme argument pour la méthode
 
 ```ruby
 redirect to('/bar'), 303
-redirect 'http://google.com', 'mauvais endroit mon pote'
+redirect 'http://www.google.com/', 'mauvais endroit mon pote'
 ```
 
 Vous pouvez aussi rediriger vers la page dont l'utilisateur venait au moyen de
@@ -1718,7 +1719,7 @@ end
 ```
 
 Il est également possible d'utiliser un
-[weak ETag](http://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation) :
+[weak ETag](https://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation) :
 
 ```ruby
 etag @article.sha1, :weak
@@ -2047,7 +2048,7 @@ end
 
 ### Se protéger des attaques
 
-Sinatra utilise [Rack::Protection](https://github.com/rkh/rack-protection#readme)
+Sinatra utilise [Rack::Protection](https://github.com/sinatra/rack-protection#readme)
 pour protéger votre application contre les principales attaques opportunistes.
 Vous pouvez très simplement désactiver cette fonctionnalité (ce qui exposera
 votre application à beaucoup de vulnerabilités courantes) :
@@ -2356,7 +2357,7 @@ end
 ```
 
 La sémantique de `use` est identique à celle définie dans le DSL de
-[Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder)
+[Rack::Builder](http://www.rubydoc.info/github/rack/rack/master/Rack/Builder)
 (le plus souvent utilisé dans un fichier `rackup`). Par exemple, la méthode
 `use` accepte divers arguments ainsi que des blocs :
 
@@ -2447,7 +2448,7 @@ pour transformer la plupart des applications de haut niveau en un composant
 
 `Sinatra::Base` est une page blanche. La plupart des options sont
 désactivées par défaut, y compris le serveur intégré. Reportez-vous à
-[Options et Configuration](http://sinatra.github.com/configuration.html)
+[Options et Configuration](http://www.sinatrarb.com/configuration.html)
 pour plus d'informations sur les options et leur fonctionnement. Si vous
 souhaitez un comportement plus proche de celui obtenu lorsque vous définissez
 votre application au niveau supérieur (aussi connu sous le nom de style
@@ -2523,7 +2524,7 @@ mineures en ce qui concerne les paramètres par défaut :
   <tr>
     <td>static</td>
     <td>true</td>
-    <td>false</td>
+    <td>File.exist?(public_folder)</td>
     <td>true</td>
   </tr>
 </table>
@@ -2922,7 +2923,7 @@ Ce qui permet de bénéficier des toutes dernières fonctionnalités.
 
 ### Installer avec Bundler
 
-Il est cependant conseillé de passer par [Bundler](http://gembundler.com/) pour
+Il est cependant conseillé de passer par [Bundler](http://bundler.io) pour
 faire tourner votre application avec la dernière version de Sinatra.
 
 Pour commencer, installez bundler si nécessaire :
@@ -3000,14 +3001,14 @@ SemVer que SemVerTag.
   de news, et des liens vers d'autres ressources.
 * [Contribuer](http://www.sinatrarb.com/contributing) - Vous avez trouvé un
   bug ? Besoin d'aide ? Vous avez un patch ?
-* [Suivi des problèmes](http://github.com/sinatra/sinatra/issues)
-* [Twitter](http://twitter.com/sinatra)
+* [Suivi des problèmes](https://github.com/sinatra/sinatra/issues)
+* [Twitter](https://twitter.com/sinatra)
 * [Mailing List](http://groups.google.com/group/sinatrarb/topics)
 * IRC : [#sinatra](irc://chat.freenode.net/#sinatra) sur http://freenode.net
 * [Sinatra Book](https://github.com/sinatra/sinatra-book/) Tutoriels et recettes
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) trucs et astuces rédigés par
   la communauté
-* Documentation API de la [dernière version](http://rubydoc.info/gems/sinatra)
-  ou du [HEAD courant](http://rubydoc.info/github/sinatra/sinatra) sur
-  http://rubydoc.info
-* [CI server](http://travis-ci.org/sinatra/sinatra)
+* Documentation API de la [dernière version](http://www.rubydoc.info/gems/sinatra)
+  ou du [HEAD courant](http://www.rubydoc.info/github/sinatra/sinatra) sur
+  http://www.rubydoc.info/
+* [CI server](https://travis-ci.org/sinatra/sinatra)

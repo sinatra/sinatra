@@ -9,7 +9,7 @@ Alguns dos trechos de código a seguir utilizam caracteres UTF-8. Então, caso e
 # encoding: utf-8
 ```
 
-Sinatra é uma [DSL](http://pt.wikipedia.org/wiki/Linguagem_de_domínio_específico) para
+Sinatra é uma [DSL](https://pt.wikipedia.org/wiki/Linguagem_de_domínio_específico) para
 criar aplicações web em Ruby com o mínimo de esforço e rapidez:
 
 ```ruby
@@ -33,7 +33,7 @@ Em seguida execute:
 ruby minha_app.rb
 ```
 
-Acesse: [localhost:4567](http://localhost:4567)
+Acesse: [http://localhost:4567](http://localhost:4567)
 
 É recomendado também executar `gem install thin`. Caso esta gem esteja disponível, o
 Sinatra irá utilizá-la.
@@ -197,8 +197,8 @@ end
 Padrões de rota podem contar com parâmetros opcionais:
 
 ```ruby
-get '/posts.?:formato?' do
-  # corresponde a "GET /posts" e qualquer extensão "GET /posts.json", "GET /posts.xml", etc.
+get '/posts/:formato?' do
+  # corresponde a "GET /posts/" e qualquer extensão "GET /posts/json", "GET /posts/xml", etc.
 end
 ```
 
@@ -585,7 +585,7 @@ It also takes a block for inline templates (see exemplo).
 <table>
   <tr>
     <td>Dependencia</td>
-    <td><a href="http://nokogiri.org/" title="nokogiri">nokogiri</a></td>
+    <td><a href="http://www.nokogiri.org/" title="nokogiri">nokogiri</a></td>
   </tr>
   <tr>
     <td>Extencao do Arquivo</td>
@@ -638,7 +638,7 @@ It also takes a block for inline templates (see exemplo).
 <table>
   <tr>
     <td>Dependencia</td>
-    <td><a href="http://www.lesscss.org/" title="less">less</a></td>
+    <td><a href="http://lesscss.org/" title="less">less</a></td>
   </tr>
   <tr>
     <td>Extencao do Arquivo</td>
@@ -655,7 +655,7 @@ It also takes a block for inline templates (see exemplo).
 <table>
   <tr>
     <td>Dependencia</td>
-    <td><a href="http://www.liquidmarkup.org/" title="liquid">liquid</a></td>
+    <td><a href="http://liquidmarkup.org/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>Extencao do Arquivo</td>
@@ -677,7 +677,7 @@ você quase sempre precisará passar o `locals` para ele.
     <td>Dependencia</td>
     <td>
       Anyone of:
-        <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
+        <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
         <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
         <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
@@ -825,7 +825,7 @@ você quase sempre precisará passar o `locals` para ele.
 <table>
   <tr>
     <td>Dependencia</td>
-    <td><a href="http://markaby.github.com/" title="Markaby">Markaby</a></td>
+    <td><a href="http://markaby.github.io/" title="Markaby">Markaby</a></td>
   </tr>
   <tr>
     <td>Extencao do Arquivo</td>
@@ -975,7 +975,7 @@ deve-se passar a `:layout_engine` como opção.
   <tr>
     <td>Dependencia</td>
     <td>
-      <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
+      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
         Stylus
       </a> and a
       <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
@@ -1548,7 +1548,7 @@ end
 ```
 
 A semântica de `use` é idêntica aquela definida para a DSL
-[Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder)
+[Rack::Builder](http://www.rubydoc.info/github/rack/rack/master/Rack/Builder)
 (mais frequentemente utilizada para arquivos rackup). Por exemplo, o
 método `use` aceita múltiplos argumentos/variáveis bem como blocos:
 
@@ -1647,7 +1647,7 @@ modificações:
 
 `Sinatra::Base` é um quadro branco. Muitas opções são desabilitadas por
 padrão, incluindo o servidor embutido. Veja [Opções e
-Configurações](http://sinatra.github.com/configuration.html) para
+Configurações](http://www.sinatrarb.com/configuration.html) para
 detalhes de opções disponíveis e seus comportamentos.
 
 SIDEBAR: A DSL de alto nível do Sinatra é implementada utilizando um simples
@@ -1750,11 +1750,11 @@ git pull
     adicional, novidades e links para outros recursos.
 * [Contribuir](http://www.sinatrarb.com/contributing) - Encontrar um
     bug? Precisa de ajuda? Tem um patch?
-* [Acompanhar Questões](http://github.com/sinatra/sinatra/issues)
-* [Twitter](http://twitter.com/sinatra)
+* [Acompanhar Questões](https://github.com/sinatra/sinatra/issues)
+* [Twitter](https://twitter.com/sinatra)
 * [Lista de Email](http://groups.google.com/group/sinatrarb/topics)
 * [Sinatra Book](https://github.com/sinatra/sinatra-book/) Livro de Receitas
-* Documentação da API para a [última release](http://rubydoc.info/gems/sinatra)
+* Documentação da API para a [última release](http://www.rubydoc.info/gems/sinatra)
 * [IRC: \#sinatra](irc://chat.freenode.net/#sinatra) em
     [freenode.net](http://freenode.net)
-* [Servidor de CI](http://travis-ci.org/sinatra/sinatra)
+* [Servidor de CI](https://travis-ci.org/sinatra/sinatra)

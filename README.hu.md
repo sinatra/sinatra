@@ -2,7 +2,7 @@
 *Fontos megjegyzés: Ez a dokumentum csak egy fordítása az angol nyelvű
 változatnak, és lehet, hogy nem naprakész.*
 
-A Sinatra egy [DSL](http://en.wikipedia.org/wiki/Domain-specific_language)
+A Sinatra egy [DSL](https://en.wikipedia.org/wiki/Domain-specific_language)
 webalkalmazások Ruby nyelven történő fejlesztéséhez, minimális
 energiabefektetéssel:
 
@@ -21,7 +21,7 @@ Telepítsd a gem-et és indítsd el az alkalmazást a következőképpen:
   ruby myapp.rb
 ```
 
-Az alkalmazás elérhető lesz itt: `http://localhost:4567`
+Az alkalmazás elérhető lesz itt: [http://localhost:4567](http://localhost:4567)
 
 ## Útvonalak (routes)
 
@@ -518,7 +518,7 @@ A Sinatra keretrendszerben gyerekjáték a Rack middleware-ek behúzása a
 ```
 
 A `use` metódus szemantikája megegyezik a
-[Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder) DSL-ben
+[Rack::Builder](http://www.rubydoc.info/github/rack/rack/master/Rack/Builder) DSL-ben
 használt +use+ metóduséval (az említett DSL-t leginkább rackup állományokban
 használják). Hogy egy példát említsünk, a `use` metódus elfogad
 változókat és blokkokat egyaránt, akár kombinálva is ezeket:
@@ -621,7 +621,7 @@ alkalmazás átalakítható Sinatra::Base alapú komponensekké két lépésben:
 A `Sinatra::Base` osztály igazából egy üres lap: a legtöbb funkció
 alapból ki van kapcsolva, beleértve a beépített szervert is. A
 beállításokkal és az egyes kapcsolók hatásával az
-[Options and Configuration](http://sinatra.github.com/configuration.html) lap
+[Options and Configuration](http://www.sinatrarb.com/configuration.html) lap
 foglalkozik.
 
 Széljegyzet: A Sinatra felső szintű DSL-je egy egyszerű delegációs
@@ -684,11 +684,11 @@ A Sinatra frissítését később így végezheted el:
 
 ## További információk
 
-* [A projekt weboldala](http://sinatra.github.com/) - Kiegészítő dokumentáció,
+* [A projekt weboldala](http://www.sinatrarb.com/) - Kiegészítő dokumentáció,
   hírek, hasznos linkek
-* [Közreműködés](http://sinatra.github.com/contributing.html) - Hibát találtál?
+* [Közreműködés](http://www.sinatrarb.com/contributing.html) - Hibát találtál?
   Segítségre van szükséged? Foltot küldenél be?
 * [Lighthouse](http://sinatra.lighthouseapp.com) - Hibakövetés és kiadások
-* [Twitter](http://twitter.com/sinatra)
+* [Twitter](https://twitter.com/sinatra)
 * [Levelezőlista](http://groups.google.com/group/sinatrarb)
 * [IRC: #sinatra](irc://chat.freenode.net/#sinatra) a http://freenode.net címen

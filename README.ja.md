@@ -3,7 +3,7 @@
 *注）
 本文書は英語から翻訳したものであり、その内容が最新でない場合もあります。最新の情報はオリジナルの英語版を参照して下さい。*
 
-Sinatraは最小の労力でRubyによるWebアプリケーションを手早く作るための[DSL](http://ja.wikipedia.org/wiki/ドメイン固有言語)です。
+Sinatraは最小の労力でRubyによるWebアプリケーションを手早く作るための[DSL](https://ja.wikipedia.org/wiki/メインページドメイン固有言語)です。
 
 ```ruby
 # myapp.rb
@@ -26,7 +26,7 @@ gem install sinatra
 ruby myapp.rb
 ```
 
-[localhost:4567](http://localhost:4567) を開きます。
+[http://localhost:4567](http://localhost:4567) を開きます。
 
 ThinがあればSinatraはこれを利用するので、`gem install thin`することをお薦めします。
 
@@ -224,8 +224,8 @@ end
 ルーティングパターンは、オプショナルパラメータを取ることもできます。
 
 ```ruby
-get '/posts.?:format?' do
-  # "GET /posts" と "GET /posts.json", "GET /posts.xml" の拡張子などにマッチ
+get '/posts/:format?' do
+  # "GET /posts/" と "GET /posts/json", "GET /posts/xml" の拡張子などにマッチ
 end
 ```
 
@@ -578,7 +578,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>依存</td>
-    <td><a href="http://nokogiri.org/" title="nokogiri">nokogiri</a></td>
+    <td><a href="http://www.nokogiri.org/" title="nokogiri">nokogiri</a></td>
   </tr>
   <tr>
     <td>ファイル拡張子</td>
@@ -633,7 +633,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>依存</td>
-    <td><a href="http://www.lesscss.org/" title="less">less</a></td>
+    <td><a href="http://lesscss.org/" title="less">less</a></td>
   </tr>
   <tr>
     <td>ファイル拡張子</td>
@@ -650,7 +650,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>依存</td>
-    <td><a href="http://www.liquidmarkup.org/" title="liquid">liquid</a></td>
+    <td><a href="http://liquidmarkup.org/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>ファイル拡張子</td>
@@ -671,7 +671,7 @@ LiquidテンプレートからRubyのメソッド(`yield`を除く)を呼び出�
     <td>依存</td>
     <td>
       次の何れか:
-        <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
+        <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
         <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
         <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
@@ -816,7 +816,7 @@ RadiusテンプレートからRubyのメソッドを直接呼び出すことが�
 <table>
   <tr>
     <td>依存</td>
-    <td><a href="http://markaby.github.com/" title="Markaby">Markaby</a></td>
+    <td><a href="http://markaby.github.io/" title="Markaby">Markaby</a></td>
   </tr>
   <tr>
     <td>ファイル拡張子</td>
@@ -952,7 +952,7 @@ erb :overview, :locals => { :text => mediawiki(:introduction) }
   <tr>
     <td>依存</td>
     <td>
-      <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
+      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
         Stylus
       </a> および
       <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
@@ -1426,7 +1426,7 @@ get '/' do
 end
 ```
 
-これはストリーミングAPI、[Server Sent Events](http://dev.w3.org/html5/eventsource/)の実装を可能にし、[WebSockets](http://en.wikipedia.org/wiki/WebSocket)の土台に使うことができます。また、一部のコンテンツが遅いリソースに依存しているときに、スループットを上げるために使うこともできます。
+これはストリーミングAPI、[Server Sent Events](https://w3c.github.io/eventsource/)の実装を可能にし、[WebSockets](https://en.wikipedia.org/wiki/WebSocket)の土台に使うことができます。また、一部のコンテンツが遅いリソースに依存しているときに、スループットを上げるために使うこともできます。
 
 ノート: ストリーミングの挙動、特に並行リクエスト(cuncurrent requests)の数は、アプリケーションを提供するのに使われるWebサーバに強く依存します。いくつかのサーバは、ストリーミングを全くサポートしません。サーバがストリーミングをサポートしない場合、ボディは`stream`に渡されたブロックの実行が終了した後、一度に全部送られることになります。ストリーミングは、Shotgunを使った場合は全く動作しません。
 
@@ -1532,7 +1532,7 @@ end
 
 ```ruby
 redirect to('/bar'), 303
-redirect 'http://google.com', 'wrong place, buddy'
+redirect 'http://www.google.com/', 'wrong place, buddy'
 ```
 
 また、`redirect back`を使えば、簡単にユーザが来たページへ戻るリダイレクトを作れます。
@@ -1610,7 +1610,7 @@ get '/article/:id' do
 end
 ```
 
-また、[weak ETag](http://ja.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation)を使うこともできます。
+また、[weak ETag](https://ja.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation)を使うこともできます。
 
 ```ruby
 etag @article.sha1, :weak
@@ -1900,7 +1900,7 @@ end
 
 ### 攻撃防御に対する設定
 
-Sinatraは、[Rack::Protection](https://github.com/rkh/rack-protection#readme)を使って、アプリケーションを多発する日和見的攻撃から守っています。この挙動は簡単に無効化できます(これはアプリケーションを大量の脆弱性攻撃に晒すことになります)。
+Sinatraは、[Rack::Protection](https://github.com/sinatra/rack-protection#readme)を使って、アプリケーションを多発する日和見的攻撃から守っています。この挙動は簡単に無効化できます(これはアプリケーションを大量の脆弱性攻撃に晒すことになります)。
 
 ```ruby
 disable :protection
@@ -2177,7 +2177,7 @@ get '/hello' do
 end
 ```
 
-`use`の文法は、[Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder)DSLで定義されているそれ（rackupファイルで最もよく使われる）と同じです。例えば `use`メソッドは複数の引数、そしてブロックも取ることができます。
+`use`の文法は、[Rack::Builder](http://www.rubydoc.info/github/rack/rack/master/Rack/Builder)DSLで定義されているそれ（rackupファイルで最もよく使われる）と同じです。例えば `use`メソッドは複数の引数、そしてブロックも取ることができます。
 
 ```ruby
 use Rack::Auth::Basic do |username, password|
@@ -2195,7 +2195,7 @@ Rackは、ロギング、デバッギング、URLルーティング、認証、�
 
 ## テスト(Testing)
 
-SinatraでのテストはRackベースのテストライブラリまたはフレームワークを使って書くことができます。[Rack::Test](http://rdoc.info/github/brynary/rack-test/master/frames)をお薦めします。
+SinatraでのテストはRackベースのテストライブラリまたはフレームワークを使って書くことができます。[Rack::Test](http://www.rubydoc.info/github/brynary/rack-test/master/frames)をお薦めします。
 
 ```ruby
 require 'my_sinatra_app'
@@ -2251,7 +2251,7 @@ end
   (そうしない場合、SinatraのDSLメソッドの全てがmainの名前空間にインポートされます)
 * ルーティング、エラーハンドラ、フィルタ、オプションを`Sinatra::Base`のサブクラスに書く
 
-`Sinatra::Base`はまっさらです。ビルトインサーバを含む、ほとんどのオプションがデフォルトで無効になっています。利用可能なオプションとその挙動の詳細については[Configuring Settings](http://sinatra.github.com/configuration.html)(英語)をご覧下さい。
+`Sinatra::Base`はまっさらです。ビルトインサーバを含む、ほとんどのオプションがデフォルトで無効になっています。利用可能なオプションとその挙動の詳細については[Configuring Settings](http://www.sinatrarb.com/configuration.html)(英語)をご覧下さい。
 
 もしもクラシックスタイルと同じような挙動のアプリケーションをトップレベルで定義させる必要があれば、`Sinatra::Application`をサブクラス化させてください。
 
@@ -2319,7 +2319,7 @@ end
   <tr>
     <td>static</td>
     <td>true</td>
-    <td>false</td>
+    <td>File.exist?(public_folder)</td>
     <td>true</td>
   </tr>
 </table>
@@ -2676,7 +2676,7 @@ gem install sinatra --pre
 
 ### Bundlerを使う場合
 
-最新のSinatraでアプリケーションを動作させたい場合には、[Bundler](http://gembundler.com/)を使うのがお薦めのやり方です。
+最新のSinatraでアプリケーションを動作させたい場合には、[Bundler](http://bundler.io)を使うのがお薦めのやり方です。
 
 まず、Bundlerがなければそれをインストールします。
 
@@ -2743,14 +2743,14 @@ Sinatraは、[Semantic Versioning](http://semver.org/)におけるSemVerおよ�
 
 ## 参考文献
 
-* [プロジェクトサイト](http://sinatra.github.com/) - ドキュメント、ニュース、他のリソースへのリンクがあります。
-* [プロジェクトに参加(貢献)する](http://sinatra.github.com/contributing.html) - バグレポート パッチの送信、サポートなど
-* [Issue tracker](http://github.com/sinatra/sinatra/issues)
-* [Twitter](http://twitter.com/sinatra)
+* [プロジェクトサイト](http://www.sinatrarb.com/) - ドキュメント、ニュース、他のリソースへのリンクがあります。
+* [プロジェクトに参加(貢献)する](http://www.sinatrarb.com/contributing.html) - バグレポート パッチの送信、サポートなど
+* [Issue tracker](https://github.com/sinatra/sinatra/issues)
+* [Twitter](https://twitter.com/sinatra)
 * [メーリングリスト](http://groups.google.com/group/sinatrarb/topics)
 * http://freenode.net上のIRC: [#sinatra](irc://chat.freenode.net/#sinatra)
 * [Sinatra Book](https://github.com/sinatra/sinatra-book/) クックブック、チュートリアル
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) コミュニティによるレシピ集
-* http://rubydoc.info上のAPIドキュメント: [最新版(latest release)用](http://rubydoc.info/gems/sinatra)または[現在のHEAD用](http://rubydoc.info/github/sinatra/sinatra)
-* [CIサーバ](http://travis-ci.org/sinatra/sinatra)
+* http://www.rubydoc.info/上のAPIドキュメント: [最新版(latest release)用](http://www.rubydoc.info/gems/sinatra)または[現在のHEAD用](http://www.rubydoc.info/github/sinatra/sinatra)
+* [CIサーバ](https://travis-ci.org/sinatra/sinatra)
 * [Greenbear Laboratory Rack日本語マニュアル](http://route477.net/w/RackReferenceJa.html)

@@ -3,7 +3,7 @@
 *주의: 이 문서는 영문판의 번역본이며 최신판 문서와 다를 수 있습니다.*
 
 Sinatra는 최소한의 노력으로 루비 기반 웹 애플리케이션을 신속하게 만들 수 있게
-해 주는 [DSL](http://en.wikipedia.org/wiki/Domain-specific_language)입니다.
+해 주는 [DSL](https://en.wikipedia.org/wiki/Domain-specific_language)입니다.
 
 ```ruby
 # myapp.rb
@@ -14,19 +14,19 @@ get '/' do
 end
 ```
 
-젬을 설치합니다.
+아래의 명령어로 젬을 설치합니다.
 
 ```shell
 gem install sinatra
 ```
 
-실행합니다.
+아래의 명령어로 실행합니다.
 
 ```shell
 ruby myapp.rb
 ```
 
-`http://localhost:4567`를 확인해 보세요.
+[http://localhost:4567](http://localhost:4567) 를 확인해 보세요.
 
 `gem install thin`도 함께 실행하기를 권장합니다.
 thin이 설치되어 있을 경우 Sinatra는 thin을 통해 실행합니다.
@@ -224,8 +224,8 @@ end
 라우터 패턴에는 선택적인(optional) 매개변수도 올 수 있습니다.
 
 ```ruby
-get '/posts.?:format?' do
-  # "GET /posts" 는 물론 "GET /posts.json", "GET /posts.xml" 와 같은 어떤 확장자와도 매칭
+get '/posts/:format?' do
+  # "GET /posts/" 는 물론 "GET /posts/json", "GET /posts/xml" 와 같은 어떤 확장자와도 매칭
 end
 ```
 
@@ -583,7 +583,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>의존성</td>
-    <td><a href="http://nokogiri.org/">nokogiri</a></td>
+    <td><a href="http://www.nokogiri.org/">nokogiri</a></td>
   </tr>
   <tr>
     <td>파일 확장자</td>
@@ -636,7 +636,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>의존성</td>
-    <td><a href="http://www.lesscss.org/">less</a></td>
+    <td><a href="http://lesscss.org/">less</a></td>
   </tr>
   <tr>
     <td>파일 확장자</td>
@@ -653,7 +653,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>의존성</td>
-    <td><a href="http://www.liquidmarkup.org/">liquid</a></td>
+    <td><a href="http://liquidmarkup.org/">liquid</a></td>
   </tr>
   <tr>
     <td>파일 확장자</td>
@@ -674,7 +674,7 @@ Liquid 템플릿에서는 루비 메서드(`yield` 제외)를 호출할 수 없�
   <tr>
     <td>의존성</td>
     <td>
-      <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
+      <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
       <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
       <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
       <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
@@ -825,7 +825,7 @@ Radius 템플릿에서는 루비 메서드를 호출할 수 없기
 <table>
   <tr>
     <td>의존성</td>
-    <td><a href="http://markaby.github.com/">markaby</a></td>
+    <td><a href="http://markaby.github.io/">markaby</a></td>
   </tr>
   <tr>
     <td>파일확장</td>
@@ -973,7 +973,7 @@ MediaWiki에서 루비를 호출할 수 없기 때문에, MediaWiki으로 작성
   <tr>
     <td>의존성</td>
     <td>
-      <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
+      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
         Stylus
       </a> 와
       <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
@@ -1506,8 +1506,8 @@ end
 ```
 
 이렇게 스트리밍 API나 [서버 발송 이벤트Server Sent
-Events](http://dev.w3.org/html5/eventsource/)를 구현할 수 있고, 이 방법은
-[WebSockets](http://en.wikipedia.org/wiki/WebSocket)을 위한 기반으로 사용됩니다.
+Events](https://w3c.github.io/eventsource/)를 구현할 수 있고, 이 방법은
+[WebSockets](https://en.wikipedia.org/wiki/WebSocket)을 위한 기반으로 사용됩니다.
 이 방법은 일부 콘텐츠가 느린 자원에 의존하는 경우에 스로풋(throughtput)을
 높이기 위해 사용되기도 합니다.
 
@@ -1631,7 +1631,7 @@ end
 
 ```ruby
 redirect to('/bar'), 303
-redirect 'http://google.com', 'wrong place, buddy'
+redirect 'http://www.google.com/', 'wrong place, buddy'
 ```
 
 `redirect back`을 사용하면 쉽게 사용자가 왔던 페이지로 다시 돌아가게
@@ -1713,7 +1713,7 @@ get "/article/:id" do
 end
 ```
 
-[약한 ETag](http://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation)를
+[약한 ETag](https://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation)를
 사용할 수 도 있습니다.
 
 ```ruby
@@ -2023,7 +2023,7 @@ end
 
 ### 공격 방어 설정하기(Configuring attack protection)
 
-Sinatra는 [Rack::Protection](https://github.com/rkh/rack-protection#readme)을 사용하여
+Sinatra는 [Rack::Protection](https://github.com/sinatra/rack-protection#readme)을 사용하여
 일반적이고 일어날 수 있는 공격에 대비합니다. 이 모듈은 간단하게 비활성시킬 수 있습니다.
 (하지만 애플리케이션에 엄청나게 많은 취약성을 야기합니다.)
 
@@ -2353,7 +2353,7 @@ get '/hello' do
 end
 ```
 
-`use`문법은 [Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder) DSL
+`use`문법은 [Rack::Builder](http://www.rubydoc.info/github/rack/rack/master/Rack/Builder) DSL
 (rackup 파일에서 가장 많이 사용)에서 정의한 것과 동일합니다. 예를 들어, `use` 메서드는
 블록이나 여러 개의/가변적인 인자도 받을 수 있습니다.
 
@@ -2376,7 +2376,7 @@ Rack은 로깅, 디버깅, URL 라우팅, 인증, 그리고 세센 핸들링을 
 ## 테스팅(Testing)
 
 Sinatra 테스트는 많은 Rack 기반 테스팅 라이브러리, 프레임워크를 사용하여 작성가능합니다.
-그 중 [Rack::Test](http://rdoc.info/github/brynary/rack-test/master/frames)를 권장합니다.
+그 중 [Rack::Test](http://www.rubydoc.info/github/brynary/rack-test/master/frames)를 권장합니다.
 
 ```ruby
 require 'my_sinatra_app'
@@ -2444,7 +2444,7 @@ end
 
 `Sinatra::Base`는 백지상태(blank slate)입니다. 빌트인 서버를 비롯한 대부분의 옵션들이
 기본값으로 꺼져 있습니다. 가능한 옵션들과 그 작동에 대한 상세는 [옵션과
-설정](http://sinatra.github.com/configuration.html)을 참조하세요.
+설정](http://www.sinatrarb.com/configuration.html)을 참조하세요.
 
 ### 모듈(Modular) vs. 전통적 방식(Classic Style)
 
@@ -2492,7 +2492,7 @@ end
   <tr>
     <td>static</td>
     <td>true</td>
-    <td>false</td>
+    <td>File.exist?(public_folder)</td>
   </tr>
 </table>
 
@@ -2847,8 +2847,8 @@ thin --threaded start
 * MacRuby, Maglev, IronRuby
 * Ruby 1.9.0 및 1.9.1 (이 버전들은 사용하지 말 것을 권합니다)
 
-공식적으로 지원하지 않는다는 것의 의미는 무언가가 그 플랫폼에서만 잘못되고
-지원되는 플랫폼에서는 그러지 않을 경우, 우리의 문제가 아니라 그 플랫폼의 문제로
+공식적으로 지원하지 않는다는 것의 의미는 무언가가 그 플랫폼에서만 잘못 동작하고,
+지원되는 플랫폼에서는 정상적으로 동작할 경우, 우리의 문제가 아니라 그 플랫폼의 문제로
 간주한다는 뜻입니다.
 
 또한 우리는 CI를 ruby-head (MRI의 이후 릴리즈) 브랜치에 맞춰 실행하지만,
@@ -2857,6 +2857,8 @@ thin --threaded start
 
 Sinatra는 선택한 루비 구현체가 지원하는 어떠한 운영체제에서도 작동해야
 합니다.
+
+MacRuby를 사용한다면, gem install control_tower 를 실행해 주세요.
 
 현재 Cardinal, SmallRuby, BlueRuby 또는 1.8.7 이전의 루비 버전에서는
 Sinatra를 실행할 수 없을 것입니다.
@@ -2876,7 +2878,7 @@ gem install sinatra --pre
 ### Bundler를 사용하여
 
 여러분 애플리케이션을 최신 Sinatra로 실행하고자 한다면,
-[Bundler](http://gembundler.com/)를 사용할 것을 권장합니다.
+[Bundler](http://bundler.io)를 사용할 것을 권장합니다.
 
 우선, 아직 설치하지 않았다면 bundler를 설치합니다.
 
@@ -2952,14 +2954,14 @@ SemVerTag를 준수합니다.
   그리고 다른 리소스들에 대한 링크.
 * [기여하기](http://www.sinatrarb.com/contributing) - 버그를 찾았나요?
   도움이 필요한가요? 패치를 하셨나요?
-* [이슈 트래커](http://github.com/sinatra/sinatra/issues)
-* [트위터](http://twitter.com/sinatra)
+* [이슈 트래커](https://github.com/sinatra/sinatra/issues)
+* [트위터](https://twitter.com/sinatra)
 * [메일링 리스트](http://groups.google.com/group/sinatrarb/topics)
 * IRC: [#sinatra](irc://chat.freenode.net/#sinatra) http://freenode.net
 * 슬랙의 [Sinatra & Friends](https://sinatrarb.slack.com)입니다.
   [여기](https://sinatra-slack.herokuapp.com/)에서 가입가능합니다.
 * [Sinatra Book](https://github.com/sinatra/sinatra-book/) Cookbook 튜토리얼
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) 커뮤니티가 만드는 레시피
-* http://rubydoc.info에 있는 [최종 릴리스](http://rubydoc.info/gems/sinatra)
-  또는 [current HEAD](http://rubydoc.info/github/sinatra/sinatra)에 대한 API 문서
-* [CI server](http://travis-ci.org/sinatra/sinatra)
+* http://www.rubydoc.info/에 있는 [최종 릴리스](http://www.rubydoc.info/gems/sinatra)
+  또는 [current HEAD](http://www.rubydoc.info/github/sinatra/sinatra)에 대한 API 문서
+* [CI server](https://travis-ci.org/sinatra/sinatra)

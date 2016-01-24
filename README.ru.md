@@ -91,7 +91,7 @@
 устаревшим*
 
 Sinatra — это предметно-ориентированный каркас
-([DSL](http://ru.wikipedia.org/wiki/Предметно-ориентированный_язык_программирования))
+([DSL](https://ru.wikipedia.org/wiki/Предметно-ориентированный_язык))
 для быстрого создания функциональных веб-приложений на Ruby с минимумом усилий:
 
 ```ruby
@@ -115,7 +115,7 @@ gem install sinatra
 ruby myapp.rb
 ```
 
-Оцените результат: http://localhost:4567
+Оцените результат: [http://localhost:4567](http://localhost:4567)
 
 Рекомендуется также установить Thin, сделать это можно командой: `gem install
 thin`. Thin — это более производительный и функциональный сервер для
@@ -225,8 +225,8 @@ end
 Шаблоны маршрутов могут иметь необязательные параметры:
 
 ```ruby
-get '/posts.?:format?' do
-  # соответствует "GET /posts", "GET /posts.json", "GET /posts.xml" и т.д.
+get '/posts/:format?' do
+  # соответствует "GET /posts/", "GET /posts/json", "GET /posts/xml" и т.д.
 end
 ```
 
@@ -595,7 +595,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>Зависимости</td>
-    <td><a href="http://nokogiri.org/" title="nokogiri">nokogiri</a></td>
+    <td><a href="http://www.nokogiri.org/" title="nokogiri">nokogiri</a></td>
   </tr>
   <tr>
     <td>Расширения файлов</td>
@@ -648,7 +648,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>Зависимости</td>
-    <td><a href="http://www.lesscss.org/" title="less">less</a></td>
+    <td><a href="http://lesscss.org/" title="less">less</a></td>
   </tr>
   <tr>
     <td>Расширения файлов</td>
@@ -665,7 +665,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>Зависимости</td>
-    <td><a href="http://www.liquidmarkup.org/" title="liquid">liquid</a></td>
+    <td><a href="http://liquidmarkup.org/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>Расширения файлов</td>
@@ -687,7 +687,7 @@ get('/') { markdown :index }
     <td>Зависимости</td>
     <td>
       Любая из библиотек:
-        <a href="https://github.com/rtomayko/rdiscount" title="RDiscount">RDiscount</a>,
+        <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
         <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
         <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
@@ -843,7 +843,7 @@ erb :overview, :locals => { :text => rdoc(:introduction) }
 <table>
   <tr>
     <td>Зависимости</td>
-    <td><a href="http://markaby.github.com/" title="Markaby">Markaby</a></td>
+    <td><a href="http://markaby.github.io/" title="Markaby">Markaby</a></td>
   </tr>
   <tr>
     <td>Расширения файлов</td>
@@ -995,7 +995,7 @@ erb :overview, :locals => { :text => mediawiki(:introduction) }
   <tr>
     <td>Зависимости</td>
     <td>
-      <a href="https://github.com/lucasmazza/ruby-stylus" title="Ruby Stylus">
+      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
         Stylus
       </a> и
       <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
@@ -1526,8 +1526,8 @@ end
 ```
 
 Что позволяет вам реализовать стриминговые API,
-[Server Sent Events](http://dev.w3.org/html5/eventsource/),
-и может служить основой для [WebSockets](http://en.wikipedia.org/wiki/WebSocket).
+[Server Sent Events](https://w3c.github.io/eventsource/),
+и может служить основой для [WebSockets](https://en.wikipedia.org/wiki/WebSocket).
 Также такой подход можно использовать для увеличения производительности в случае,
 когда какая-то часть контента зависит от медленного ресурса.
 
@@ -1654,7 +1654,7 @@ end
 
 ```ruby
 redirect to('/bar'), 303
-redirect 'http://google.com', 'wrong place, buddy'
+redirect 'http://www.google.com/', 'wrong place, buddy'
 ```
 
 Вы также можете перенаправить пользователя обратно, на страницу, с которой он
@@ -1738,7 +1738,7 @@ end
 ```
 
 Также вы можете использовать
-[weak ETag](http://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation):
+[weak ETag](https://en.wikipedia.org/wiki/HTTP_ETag#Strong_and_weak_validation):
 
 ```ruby
 etag @article.sha1, :weak
@@ -2055,7 +2055,7 @@ end
 ### Настройка защиты от атак
 
 Sinatra использует
-[Rack::Protection](https://github.com/rkh/rack-protection#readme) для защиты
+[Rack::Protection](https://github.com/sinatra/rack-protection#readme) для защиты
 приложения от простых атак. Вы можете легко выключить эту защиту (что сделает
 ваше приложение чрезвычайно уязвимым):
 
@@ -2362,7 +2362,7 @@ end
 ```
 
 Семантика `use` идентична той, что определена для
-[Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder) DSL
+[Rack::Builder](http://www.rubydoc.info/github/rack/rack/master/Rack/Builder) DSL
 (чаще всего используется в rackup файлах). Например, метод `use` принимает как
 множественные переменные, так и блоки:
 
@@ -2387,7 +2387,7 @@ Rack распространяется с различными стандартн
 
 Тесты для Sinatra приложений могут быть написаны с помощью библиотек,
 фреймворков, поддерживающих тестирование Rack.
-[Rack::Test](http://rdoc.info/github/brynary/rack-test/master/frames)
+[Rack::Test](http://www.rubydoc.info/github/brynary/rack-test/master/frames)
 рекомендован:
 
 ```ruby
@@ -2479,7 +2479,7 @@ end
     logging             true                    false
     method_override     true                    false
     inline_templates    true                    false
-    static              true                    false
+    static              true                    File.exist?(public_folder)
 
 ### Запуск модульных приложений
 
@@ -2868,7 +2868,7 @@ gem install sinatra --pre
 ### С помощью Bundler
 
 Если вы хотите запускать свое приложение с последней версией Sinatra, то
-рекомендуем использовать [Bundler](http://gembundler.com/).
+рекомендуем использовать [Bundler](http://bundler.io).
 
 Сначала установите Bundler, если у вас его еще нет:
 
@@ -2944,15 +2944,15 @@ SemVerTag.
   документация, новости и ссылки на другие ресурсы.
 * [Участие в проекте](http://www.sinatrarb.com/contributing) — Обнаружили
   баг? Нужна помощь? Написали патч?
-* [Отслеживание проблем/ошибок](http://github.com/sinatra/sinatra/issues)
-* [Twitter](http://twitter.com/sinatra)
+* [Отслеживание проблем/ошибок](https://github.com/sinatra/sinatra/issues)
+* [Twitter](https://twitter.com/sinatra)
 * [Группы рассылки](http://groups.google.com/group/sinatrarb/topics)
 * IRC: [#sinatra](irc://chat.freenode.net/#sinatra) на http://freenode.net
 * [Sinatra и Друзья](https://sinatrarb.slack.com) на Slack, а так же
   [ссылка](https://sinatra-slack.herokuapp.com/) для инвайта.
 * [Sinatra Book](https://github.com/sinatra/sinatra-book/) учебник и сборник рецептов
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) сборник рецептов
-* API документация к [последнему релизу](http://rubydoc.info/gems/sinatra)
-  или [текущему HEAD](http://rubydoc.info/github/sinatra/sinatra) на
-  http://rubydoc.info
-* [Сервер непрерывной интеграции](http://travis-ci.org/sinatra/sinatra)
+* API документация к [последнему релизу](http://www.rubydoc.info/gems/sinatra)
+  или [текущему HEAD](http://www.rubydoc.info/github/sinatra/sinatra) на
+  http://www.rubydoc.info/
+* [Сервер непрерывной интеграции](https://travis-ci.org/sinatra/sinatra)

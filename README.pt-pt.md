@@ -4,7 +4,7 @@
 pode estar desatualizado.*
 
 Sinatra é uma
-[DSL](http://pt.wikipedia.org/wiki/Linguagem_de_domínio_específico) para
+[DSL](https://pt.wikipedia.org/wiki/Linguagem_de_domínio_específico) para
 criar rapidamente aplicações web em Ruby com o mínimo de esforço:
 
 ```ruby
@@ -23,7 +23,7 @@ sudo gem install sinatra
 ruby minhaapp.rb
 ```
 
-Aceda em: [localhost:4567](http://localhost:4567)
+Aceda em: [http://localhost:4567](http://localhost:4567)
 
 ## Rotas
 
@@ -158,7 +158,7 @@ end
 Renderiza `./views/index.haml`.
 
 [Opções
-Haml](http://haml.info/docs/yardoc/file.HAML_REFERENCE.html#options)
+Haml](http://haml.info/docs/yardoc/file.REFERENCE.html#options)
 podem ser definidas globalmente através das configurações do sinatra,
 veja [Opções e
 Configurações](http://www.sinatrarb.com/configuration.html), e substitua
@@ -233,7 +233,7 @@ end
 Renderiza `./views/stylesheet.sass`.
 
 [Opções
-Sass](http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#options)
+Sass](http://sass-lang.com/documentation/file.SASS_REFERENCE.html#options)
 podem ser definidas globalmente através das configurações do sinatra,
 veja [Opções e
 Configurações](http://www.sinatrarb.com/configuration.html), e substitua
@@ -609,7 +609,7 @@ end
 ```
 
 A semântica de `use` é idêntica aquela definida para a DSL
-[Rack::Builder](http://rubydoc.info/github/rack/rack/master/Rack/Builder)
+[Rack::Builder](http://www.rubydoc.info/github/rack/rack/master/Rack/Builder)
 (mais frequentemente utilizada para arquivos rackup). Por exemplo, o
 método `use` aceita múltiplos argumentos/variáveis, bem como blocos:
 
@@ -709,7 +709,7 @@ modificações:
 
 `Sinatra::Base` é um quadro branco. Muitas opções são desactivadas por
 padrão, incluindo o servidor embutido. Veja [Opções e
-Configurações](http://sinatra.github.com/configuration.html) para
+Configurações](http://www.sinatrarb.com/configuration.html) para
 detalhes de opções disponíveis e seus comportamentos.
 
 SIDEBAR: A DSL de alto nível do Sinatra é implementada utilizando um simples
@@ -781,9 +781,9 @@ git pull
 -   [Contribuir](http://www.sinatrarb.com/contributing) - Encontrou um
     bug? Precisa de ajuda? Tem um patch?
 
--   [Acompanhar Questões](http://github.com/sinatra/sinatra/issues)
+-   [Acompanhar Questões](https://github.com/sinatra/sinatra/issues)
 
--   [Twitter](http://twitter.com/sinatra)
+-   [Twitter](https://twitter.com/sinatra)
 
 -   [Lista de Email](http://groups.google.com/group/sinatrarb/topics)
 
