@@ -8,7 +8,7 @@ Gem::Specification.new 'sinatra', Sinatra::VERSION do |s|
   s.email             = "sinatrarb@googlegroups.com"
   s.homepage          = "http://www.sinatrarb.com/"
   s.license           = 'MIT'
-  s.files             = `git ls-files`.split("\n") - %w[.gitignore .travis.yml]
+  s.files = %w(.yardopts AUTHORS.md CHANGELOG.md CONTRIBUTING.md LICENSE sinatra.gemspec) + Dir['README.*.md', 'lib/**/*.rb']
   s.test_files        = s.files.select { |p| p =~ /^test\/.*_test.rb/ }
   s.extra_rdoc_files  = s.files.select { |p| p =~ /^README/ } << 'LICENSE'
   s.rdoc_options      = %w[--line-numbers --inline-source --title Sinatra --main README.rdoc --encoding=UTF-8]
