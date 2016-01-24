@@ -115,7 +115,7 @@ gem install sinatra
 ruby myapp.rb
 ```
 
-Оцените результат: http://localhost:4567
+Оцените результат: [http://localhost:4567](http://localhost:4567)
 
 Рекомендуется также установить Thin, сделать это можно командой: `gem install
 thin`. Thin — это более производительный и функциональный сервер для

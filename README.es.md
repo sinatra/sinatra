@@ -22,7 +22,7 @@ gem install sinatra
 ruby miapp.rb
 ```
 
-Ver en <http://localhost:4567>.
+Ver en [http://localhost:4567](http://localhost:4567).
 
 Se recomienda ejecutar `gem install thin`, porque Sinatra lo utilizará si está disponible.
 
