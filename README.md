@@ -2130,6 +2130,10 @@ set :protection, :session => true
     <tt>"development"</tt> if not available.
   </dd>
 
+  <dt>lifecycle_announcements</dt>
+  <dd>Print a message to `stderr` when Sinatra starts and stops.</dd>
+  <dd>Enabled by default.</dd>
+
   <dt>logging</dt>
   <dd>Use the logger.</dd>
 

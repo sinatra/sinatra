@@ -13,6 +13,10 @@
 
  * Add CONTRIBUTING guide. #987 (Katrina Owen)
 
+ * Add `lifecycle_announcements` setting to allow disabling Sinatra's
+   startup/shutdown messages. (David Edwards)
+
+ * Your contribution here.
 
 = 1.4.6 / 2015-03-23
 
