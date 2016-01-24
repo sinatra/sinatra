@@ -23,7 +23,7 @@ sudo gem install sinatra
 ruby minhaapp.rb
 ```
 
-Aceda em: [localhost:4567](http://localhost:4567)
+Aceda em: [http://localhost:4567](http://localhost:4567)
 
 ## Rotas
 
