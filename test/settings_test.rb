@@ -244,7 +244,7 @@ class SettingsTest < Minitest::Test
       get '/'
       assert_equal 500, status
       assert body.include?("StandardError")
-      assert body.include?("<code>show_exceptions</code> setting")
+      assert body.include?("<code>Rack::ShowExceptions</code>")
     end
 
     it 'does not override app-specified error handling when set to :after_handler' do

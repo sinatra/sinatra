@@ -11,21 +11,9 @@ source 'https://rubygems.org' unless ENV['QUICK']
 gemspec
 
 gem 'rake'
+gem 'rack', github: 'rack/rack'
 gem 'rack-test', '>= 0.6.2'
 gem "minitest", "~> 5.0"
-
-# Allows stuff like `tilt=1.2.2 bundle install` or `tilt=master ...`.
-# Used by the CI.
-repos  = {'tilt' => "rtomayko/tilt", 'rack' => "rack/rack"}
-
-%w[tilt rack].each do |lib|
-  dep = case ENV[lib]
-        when 'stable', nil then nil
-        when /(\d+\.)+\d+/ then "~> " + ENV[lib].sub("#{lib}-", '')
-        else {:github => repos[lib], :branch => dep}
-        end
-  gem lib, dep
-end
 
 if RUBY_ENGINE == 'jruby'
   gem 'nokogiri', '!= 1.5.0'
@@ -33,7 +21,7 @@ if RUBY_ENGINE == 'jruby'
   gem 'trinidad'
 end
 
-if RUBY_ENGINE == "ruby" and RUBY_VERSION > '1.9.2'
+if RUBY_ENGINE == "ruby"
   gem 'less', '~> 2.0'
   gem 'therubyracer'
   gem 'redcarpet'
@@ -42,6 +30,9 @@ if RUBY_ENGINE == "ruby" and RUBY_VERSION > '1.9.2'
   gem 'rdiscount'
   gem 'RedCloth'
   gem 'puma'
+  #TODO: remove explicit require once net-http-server does it
+  #(apparently it was shipped w/ stdlib in Rubies < 2.2.2)
+  gem 'gserver'
   gem 'net-http-server'
   gem 'yajl-ruby'
   gem 'nokogiri'
@@ -71,6 +62,6 @@ if RUBY_ENGINE == "rbx"
   gem 'rubysl-test-unit'
 end
 
-platforms :ruby_18, :jruby do
-  gem 'json' unless RUBY_VERSION > '1.9' # is there a jruby but 1.8 only selector?
+platforms :jruby do
+  gem 'json'
 end

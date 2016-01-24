@@ -150,7 +150,7 @@ module Sinatra
       if calculate_content_length?
         # if some other code has already set Content-Length, don't muck with it
         # currently, this would be the static file-handler
-        headers["Content-Length"] = body.inject(0) { |l, p| l + Rack::Utils.bytesize(p) }.to_s
+        headers["Content-Length"] = body.inject(0) { |l, p| l + p.bytesize }.to_s
       end
 
       [status.to_i, headers, result]
@@ -239,7 +239,11 @@ module Sinatra
         def block.each; yield(call) end
         response.body = block
       elsif value
-        headers.delete 'Content-Length' unless request.head? || value.is_a?(Rack::File) || value.is_a?(Stream)
+        # Rack 2.0 returns a Rack::File::Iterator here instead of
+        # Rack::File as it was in the previous API.
+        unless request.head? || value.is_a?(Rack::File::Iterator) || value.is_a?(Stream)
+          headers.delete 'Content-Length'
+        end
         response.body = value
       else
         response.body
@@ -362,13 +366,13 @@ module Sinatra
 
       last_modified opts[:last_modified] if opts[:last_modified]
 
-      file      = Rack::File.new nil
-      file.path = path
-      result    = file.serving env
+      file   = Rack::File.new(File.dirname(settings.app_file))
+      result = file.serving(request, path)
+
       result[1].each { |k,v| headers[k] ||= v }
       headers['Content-Length'] = result[1]['Content-Length']
       opts[:status] &&= Integer(opts[:status])
-      halt opts[:status] || result[0], result[2]
+      halt (opts[:status] || result[0]), result[2]
     rescue Errno::ENOENT
       not_found
     end
@@ -592,22 +596,12 @@ module Sinatra
     # Generates a Time object from the given value.
     # Used by #expires and #last_modified.
     def time_for(value)
-      if value.respond_to? :to_time
-        value.to_time
-      elsif value.is_a? Time
-        value
-      elsif value.respond_to? :new_offset
-        # DateTime#to_time does the same on 1.9
-        d = value.new_offset 0
-        t = Time.utc d.year, d.mon, d.mday, d.hour, d.min, d.sec + d.sec_fraction
-        t.getlocal
-      elsif value.respond_to? :mday
-        # Date#to_time does the same on 1.9
-        Time.local(value.year, value.mon, value.mday)
-      elsif value.is_a? Numeric
+      if value.is_a? Numeric
         Time.at value
-      else
+      elsif value.respond_to? :to_s
         Time.parse value.to_s
+      else
+        value.to_time
       end
     rescue ArgumentError => boom
       raise boom
@@ -877,7 +871,7 @@ module Sinatra
     include Helpers
     include Templates
 
-    URI_INSTANCE = URI.const_defined?(:Parser) ? URI::Parser.new : URI
+    URI_INSTANCE = URI::Parser.new
 
     attr_accessor :app, :env, :request, :response, :params
     attr_reader   :template_cache
@@ -1064,6 +1058,7 @@ module Sinatra
     # Run the block with 'throw :halt' support and apply result to the response.
     def invoke
       res = catch(:halt) { yield }
+
       res = [res] if Fixnum === res or String === res
       if Array === res and Fixnum === res.first
         res = res.dup
@@ -1533,8 +1528,7 @@ module Sinatra
 
       # Dynamically defines a method on settings.
       def define_singleton(name, content = Proc.new)
-        # replace with call to singleton_class once we're 1.9 only
-        (class << self; self; end).class_eval do
+        singleton_class.class_eval do
           undef_method(name) if method_defined? name
           String === content ? class_eval("def #{name}() #{content}; end") : define_method(name, &content)
         end
@@ -1933,7 +1927,7 @@ module Sinatra
             </style>
           </head>
           <body>
-            <h2>Sinatra doesn&rsquo;t know this ditty.</h2>
+            <h2>Sinatra doesn’t know this ditty.</h2>
             <img src='#{uri "/__sinatra__/404.png"}'>
             <div id="c">
               Try this:

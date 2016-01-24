@@ -3,12 +3,9 @@ Encoding.default_external = "UTF-8" if defined? Encoding
 
 RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
 
-begin
-  require 'rack'
-rescue LoadError
-  require 'rubygems'
-  require 'rack'
-end
+require 'bundler'
+require 'bundler/setup'
+require 'rack'
 
 testdir = File.dirname(__FILE__)
 $LOAD_PATH.unshift testdir unless $LOAD_PATH.include?(testdir)
