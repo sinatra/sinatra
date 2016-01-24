@@ -24,7 +24,7 @@ And run with:
 ruby myapp.rb
 ```
 
-View at: http://localhost:4567
+View at: [http://localhost:4567](http://localhost:4567)
 
 It is recommended to also run `gem install thin`, which Sinatra will
 pick up if available.

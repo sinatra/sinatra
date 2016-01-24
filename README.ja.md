@@ -26,7 +26,7 @@ gem install sinatra
 ruby myapp.rb
 ```
 
-[localhost:4567](http://localhost:4567) を開きます。
+[http://localhost:4567](http://localhost:4567) を開きます。
 
 ThinがあればSinatraはこれを利用するので、`gem install thin`することをお薦めします。
 

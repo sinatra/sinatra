@@ -26,7 +26,7 @@ gem install sinatra
 ruby myapp.rb
 ```
 
-`http://localhost:4567`를 확인해 보세요.
+[http://localhost:4567](http://localhost:4567) 를 확인해 보세요.
 
 `gem install thin`도 함께 실행하기를 권장합니다.
 thin이 설치되어 있을 경우 Sinatra는 thin을 통해 실행합니다.
