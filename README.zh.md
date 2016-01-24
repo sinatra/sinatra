@@ -222,8 +222,8 @@ end
 路由范式可以包含可选参数：
 
 ```ruby  
-get '/posts.?:format?' do
-  # 匹配 "GET /posts" 和任意扩展 "GET /posts.json"、"GET /posts.xml" 等
+get '/posts/:format?' do
+  # 匹配 "GET /posts/" 和任意扩展 "GET /posts/json"、"GET /posts/xml" 等
 end
 ```
 

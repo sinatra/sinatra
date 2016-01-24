@@ -197,8 +197,8 @@ end
 Padrões de rota podem contar com parâmetros opcionais:
 
 ```ruby
-get '/posts.?:formato?' do
-  # corresponde a "GET /posts" e qualquer extensão "GET /posts.json", "GET /posts.xml", etc.
+get '/posts/:formato?' do
+  # corresponde a "GET /posts/" e qualquer extensão "GET /posts/json", "GET /posts/xml", etc.
 end
 ```
 

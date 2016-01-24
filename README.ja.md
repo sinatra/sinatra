@@ -224,8 +224,8 @@ end
 ルーティングパターンは、オプショナルパラメータを取ることもできます。
 
 ```ruby
-get '/posts.?:format?' do
-  # "GET /posts" と "GET /posts.json", "GET /posts.xml" の拡張子などにマッチ
+get '/posts/:format?' do
+  # "GET /posts/" と "GET /posts/json", "GET /posts/xml" の拡張子などにマッチ
 end
 ```
 

@@ -133,9 +133,9 @@ end
 Los patrones de ruta pueden contener parámetros opcionales:
 
 ```ruby
-get '/posts.?:formato?' do
-  # coincide con "GET /posts" y además admite cualquier extensión, por
-  # ejemplo, "GET /posts.json", "GET /posts.xml", etc.
+get '/posts/:formato?' do
+  # coincide con "GET /posts/" y además admite cualquier extensión, por
+  # ejemplo, "GET /posts/json", "GET /posts/xml", etc.
 end
 ```
 

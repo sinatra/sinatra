@@ -226,8 +226,8 @@ end
 Les routes peuvent aussi comporter des paramètres optionnels :
 
 ```ruby
-get '/articles.?:format?' do
-  # répond à "GET /articles" ou avec une extension "GET /articles.json", "GET /articles.xml" etc...
+get '/articles/:format?' do
+  # répond à "GET /articles/" ou avec une extension "GET /articles/json", "GET /articles/xml" etc...
 end
 ```
 

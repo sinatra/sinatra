@@ -225,8 +225,8 @@ end
 Route patterns may have optional parameters:
 
 ```ruby
-get '/post/:format?' do
-  # matches "GET /post/" and any extension "GET /posts/json", "GET /posts/xml" etc
+get '/posts/:format?' do
+  # matches "GET /posts/" and any extension "GET /posts/json", "GET /posts/xml" etc
 end
 ```
 

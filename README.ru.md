@@ -225,8 +225,8 @@ end
 Шаблоны маршрутов могут иметь необязательные параметры:
 
 ```ruby
-get '/posts.?:format?' do
-  # соответствует "GET /posts", "GET /posts.json", "GET /posts.xml" и т.д.
+get '/posts/:format?' do
+  # соответствует "GET /posts/", "GET /posts/json", "GET /posts/xml" и т.д.
 end
 ```
 
