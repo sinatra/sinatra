@@ -1,3 +1,4 @@
+# This can be removed once rack/rack@2fd9df71 is released
 module Sinatra
   module Ext
     def self.get_handler(str)
