@@ -220,9 +220,9 @@ end
 Routen-Muster können auch mit optionalen Parametern ausgestattet werden:
 
 ```ruby
-get '/posts.?:format?' do
-  # passt auf "GET /posts" sowie jegliche Erweiterung
-  # wie "GET /posts.json", "GET /posts.xml" etc.
+get '/posts/:format?' do
+  # passt auf "GET /posts/" sowie jegliche Erweiterung
+  # wie "GET /posts/json", "GET /posts/xml" etc.
 end
 ```
 

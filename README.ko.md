@@ -224,8 +224,8 @@ end
 라우터 패턴에는 선택적인(optional) 매개변수도 올 수 있습니다.
 
 ```ruby
-get '/posts.?:format?' do
-  # "GET /posts" 는 물론 "GET /posts.json", "GET /posts.xml" 와 같은 어떤 확장자와도 매칭
+get '/posts/:format?' do
+  # "GET /posts/" 는 물론 "GET /posts/json", "GET /posts/xml" 와 같은 어떤 확장자와도 매칭
 end
 ```
 
