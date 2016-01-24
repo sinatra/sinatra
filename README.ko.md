@@ -2492,7 +2492,7 @@ end
   <tr>
     <td>static</td>
     <td>true</td>
-    <td>false</td>
+    <td>File.exist?(public_folder)</td>
   </tr>
 </table>
 
