@@ -11,6 +11,7 @@ require 'uri'
 
 # other files we need
 require 'sinatra/show_exceptions'
+require 'sinatra/ext'
 require 'sinatra/version'
 
 module Sinatra
@@ -1761,6 +1762,8 @@ module Sinatra
           begin
             return Rack::Handler.get(server_name.to_s)
           rescue LoadError, NameError
+          rescue ArgumentError
+            Sinatra::Ext.get_handler(server_name.to_s)
           end
         end
         fail "Server handler (#{servers.join(',')}) not found."
