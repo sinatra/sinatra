@@ -1,8 +1,18 @@
-= Upcoming Release
+= 1.4.7 / 2016-01-24
+
+ * Add Ashley Williams, Trevor Bramble, and Kashyap Kondamudi to team Sinatra.
 
  * Correctly handle encoded colons in routes. (Jeremy Evans)
- * Rename CHANGES to CHANGELOG.md and update Rakefile. (Eliza Sorensen)
- * Your contribution here.
+
+ * Rename CHANGES to CHANGELOG.md and update Rakefile. #1043 (Eliza Sorensen)
+
+ * Improve documentation. #941, #1069, #1075, #1025, #1052 (Many great folks)
+
+ * Introduce `Sinatra::Ext` to workaround Rack 1.6 bug to fix Ruby 1.8.7
+   support. #1080 (Zachary Scott)
+
+ * Add CONTRIBUTING guide. #987 (Katrina Owen)
+
 
 = 1.4.6 / 2015-03-23
 
