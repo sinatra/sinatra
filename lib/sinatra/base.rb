@@ -1416,7 +1416,11 @@ module Sinatra
         return unless running?
         # Use Thin's hard #stop! if available, otherwise just #stop.
         running_server.respond_to?(:stop!) ? running_server.stop! : running_server.stop
-        $stderr.puts "== Sinatra has ended his set (crowd applauds)" unless handler_name =~/cgi/i
+
+        unless lifecycle_announcements == false || handler_name =~/cgi/i
+          $stderr.puts "== Sinatra has ended his set (crowd applauds)"
+        end
+
         set :running_server, nil
         set :handler_name, nil
       end
@@ -1498,7 +1502,7 @@ module Sinatra
       # Starts the server by running the Rack Handler.
       def start_server(handler, server_settings, handler_name)
         handler.run(self, server_settings) do |server|
-          unless handler_name =~ /cgi/i
+          unless lifecycle_announcements == false || handler_name =~ /cgi/i
             $stderr.puts "== Sinatra (v#{Sinatra::VERSION}) has taken the stage on #{port} for #{environment} with backup from #{handler_name}"
           end
 
@@ -1823,6 +1827,7 @@ module Sinatra
     set :show_exceptions, Proc.new { development? }
     set :sessions, false
     set :logging, false
+    set :lifecycle_announcements, true
     set :protection, true
     set :method_override, false
     set :use_code, false

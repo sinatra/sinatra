@@ -354,6 +354,56 @@ class SettingsTest < Minitest::Test
     end
   end
 
+  describe 'lifecycle announcements' do
+    module Rack::Handler
+      class PermissiveMock
+        def self.run(app, options={}); yield new; end
+        def stop; end
+      end
+
+      register 'permissive_mock', 'Rack::Handler::PermissiveMock'
+    end
+
+    setup do
+      @original_stderr = $stderr
+      $stderr = StringIO.new
+    end
+
+    teardown { $stderr = @original_stderr }
+
+    def startup_announced
+      $stderr.string[/Sinatra \([^()]*\) has taken the stage/]
+    end
+
+    def shutdown_announced
+      $stderr.string[/Sinatra has ended his set/]
+    end
+
+    it 'by default, prints an announcement when the server starts and stops' do
+      assert !startup_announced
+      assert !shutdown_announced
+
+      mock_app do
+        set :server, 'permissive_mock'
+      end.run! do
+        assert startup_announced
+        assert !shutdown_announced
+      end
+
+      assert shutdown_announced
+    end
+
+    it 'with lifecycle announcements disabled, prints no announcements' do
+      mock_app do
+        set :server, 'permissive_mock'
+        disable :lifecycle_announcements
+      end.run!
+
+      assert !startup_announced
+      assert !shutdown_announced
+    end
+  end
+
   describe 'static' do
     it 'is disabled on Base by default' do
       assert ! @base.static?
