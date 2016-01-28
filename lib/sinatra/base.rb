@@ -268,7 +268,7 @@ module Sinatra
     # Takes Rack routers and reverse proxies into account.
     def uri(addr = nil, absolute = true, add_script_name = true)
       return addr if addr =~ /\A[A-z][A-z0-9\+\.\-]*:/
-      uri = [host = ""]
+      uri = [host = String.new]
       if absolute
         host << "http#{'s' if request.secure?}://"
         if request.forwarded? or request.port != (request.secure? ? 443 : 80)
