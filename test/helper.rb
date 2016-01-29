@@ -31,7 +31,7 @@ end
 
 class Rack::Builder
   def include?(middleware)
-    @ins.any? { |m| p m ; middleware === m }
+    @ins.any? { |m| middleware === m }
   end
 end
 

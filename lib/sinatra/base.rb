@@ -4,6 +4,9 @@
 require 'rack'
 require 'tilt'
 require 'rack/protection'
+require 'mustermann'
+require 'mustermann/sinatra'
+require 'mustermann/regular'
 
 # stdlib dependencies
 require 'thread'
@@ -964,9 +967,9 @@ module Sinatra
     # Run routes defined on the class and all superclasses.
     def route!(base = settings, pass_block = nil)
       if routes = base.routes[@request.request_method]
-        routes.each do |pattern, keys, conditions, block|
-          returned_pass_block = process_route(pattern, keys, conditions) do |*args|
-            env['sinatra.route'] = block.instance_variable_get(:@route_name)
+        routes.each do |pattern, conditions, block|
+          returned_pass_block = process_route(pattern, conditions) do |*args|
+            env['sinatra.route'] = "#{@request.request_method} #{pattern}"
             route_eval { block[*args] }
           end
 
@@ -994,15 +997,20 @@ module Sinatra
     # Revert params afterwards.
     #
     # Returns pass block.
-    def process_route(pattern, keys, conditions, block = nil, values = [])
+    def process_route(pattern, conditions, block = nil, values = [])
       route = @request.path_info
       route = '/' if route.empty? and not settings.empty_path_info?
-      return unless match = pattern.match(route)
-      values += match.captures.map! { |v| force_encoding URI_INSTANCE.unescape(v) if v }
+      return unless params = pattern.params(route)
 
-      if values.any?
-        original, @params = params, params.merge('splat' => [], 'captures' => values)
-        keys.zip(values) { |k,v| Array === @params[k] ? @params[k] << v : @params[k] = v if v }
+      params.delete("ignore") # TODO: better params handling, maybe turn it into "smart" object or detect changes
+      original, @params = @params, @params.merge(params) if params.any?
+
+      if pattern.is_a? Mustermann::Regular
+        captures           = pattern.match(route).captures
+        values            += captures
+        @params[:captures] = captures
+      else
+        values += params.values.flatten
       end
 
       catch(:pass) do
@@ -1254,7 +1262,7 @@ module Sinatra
       # class, or an HTTP status code to specify which errors should be
       # handled.
       def error(*codes, &block)
-        args  = compile! "ERROR", //, block
+        args  = compile! "ERROR", /.*/, block
         codes = codes.map { |c| Array(c) }.flatten
         codes << Exception if codes.empty?
         codes << Sinatra::NotFound if codes.include?(404)
@@ -1330,21 +1338,20 @@ module Sinatra
       # Define a before filter; runs before all requests within the same
       # context as route handlers and may access/modify the request and
       # response.
-      def before(path = nil, options = {}, &block)
+      def before(path = /.*/, **options, &block)
         add_filter(:before, path, options, &block)
       end
 
       # Define an after filter; runs after all requests within the same
       # context as route handlers and may access/modify the request and
       # response.
-      def after(path = nil, options = {}, &block)
+      def after(path = /.*/, **options, &block)
         add_filter(:after, path, options, &block)
       end
 
       # add a filter
-      def add_filter(type, path = nil, options = {}, &block)
-        path, options = //, path if path.respond_to?(:each_pair)
-        filters[type] << compile!(type, path || //, block, options)
+      def add_filter(type, path = /.*/, **options, &block)
+        filters[type] << compile!(type, path, block, options)
       end
 
       # Add a route condition. The route is considered non-matching when the
@@ -1600,108 +1607,22 @@ module Sinatra
         method
       end
 
-      def compile!(verb, path, block, options = {})
+      def compile!(verb, path, block, **options)
         options.each_pair { |option, args| send(option, *args) }
+
+        pattern                 = compile(path)
         method_name             = "#{verb} #{path}"
         unbound_method          = generate_method(method_name, &block)
-        pattern, keys           = compile path
         conditions, @conditions = @conditions, []
-
         wrapper                 = block.arity != 0 ?
           proc { |a,p| unbound_method.bind(a).call(*p) } :
           proc { |a,p| unbound_method.bind(a).call }
-        wrapper.instance_variable_set(:@route_name, method_name)
 
-        [ pattern, keys, conditions, wrapper ]
+        [ pattern, conditions, wrapper ]
       end
 
       def compile(path)
-        if path.respond_to? :to_str
-          keys = []
-
-          # Split the path into pieces in between forward slashes.
-          # A negative number is given as the second argument of path.split
-          # because with this number, the method does not ignore / at the end
-          # and appends an empty string at the end of the return value.
-          #
-          segments = path.split('/', -1).map! do |segment|
-            ignore = []
-
-            # Special character handling.
-            #
-            pattern = segment.to_str.gsub(/[^\?\%\\\/\:\*\w]|:(?!\w)/) do |c|
-              ignore << escaped(c).join if c.match(/[\.@]/)
-              patt = encoded(c)
-              patt.gsub(/%[\da-fA-F]{2}/) do |match|
-                match.split(//).map! { |char| char == char.downcase ? char : "[#{char}#{char.downcase}]" }.join
-              end
-            end
-
-            ignore = ignore.uniq.join
-
-            # Key handling.
-            #
-            pattern.gsub(/((:\w+)|\*)/) do |match|
-              if match == "*"
-                keys << 'splat'
-                "(.*?)"
-              else
-                keys << $2[1..-1]
-                ignore_pattern = safe_ignore(ignore)
-
-                ignore_pattern
-              end
-            end
-          end
-
-          # Special case handling.
-          #
-          if last_segment = segments[-1] and last_segment.match(/\[\^\\\./)
-            parts = last_segment.rpartition(/\[\^\\\./)
-            parts[1] = '[^'
-            segments[-1] = parts.join
-          end
-          [/\A#{segments.join('/')}\z/, keys]
-        elsif path.respond_to?(:keys) && path.respond_to?(:match)
-          [path, path.keys]
-        elsif path.respond_to?(:names) && path.respond_to?(:match)
-          [path, path.names]
-        elsif path.respond_to? :match
-          [path, []]
-        else
-          raise TypeError, path
-        end
-      end
-
-      def encoded(char)
-        enc = URI_INSTANCE.escape(char)
-        enc = "(?:#{escaped(char, enc).join('|')})" if enc == char
-        enc = "(?:#{enc}|#{encoded('+')})" if char == " "
-        enc
-      end
-
-      def escaped(char, enc = URI_INSTANCE.escape(char))
-        [Regexp.escape(enc), URI_INSTANCE.escape(char, /./)]
-      end
-
-      def safe_ignore(ignore)
-        unsafe_ignore = []
-        ignore = ignore.gsub(/%[\da-fA-F]{2}/) do |hex|
-          unsafe_ignore << hex[1..2]
-          ''
-        end
-        unsafe_patterns = unsafe_ignore.map! do |unsafe|
-          chars = unsafe.split(//).map! do |char|
-            char == char.downcase ? char : char + char.downcase
-          end
-
-          "|(?:%[^#{chars[0]}].|%[#{chars[0]}][^#{chars[1]}])"
-        end
-        if unsafe_patterns.length > 0
-          "((?:[^#{ignore}/?#%]#{unsafe_patterns.join()})+)"
-        else
-          "([^#{ignore}/?#]+)"
-        end
+        Mustermann.new(path)
       end
 
       def setup_default_middleware(builder)
