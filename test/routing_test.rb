@@ -670,6 +670,23 @@ class RoutingTest < Minitest::Test
     assert_equal 'Hello World', body
   end
 
+  it "makes original request params available in error handler" do
+    mock_app {
+      disable :raise_errors
+
+      get '/:foo' do
+        raise ArgumentError, "foo"
+      end
+
+      error do
+        "Hello #{params['foo']}2"
+      end
+    }
+
+    get '/bar'
+    assert_equal 'Hello bar2', body
+  end
+
   it "transitions to 404 when passed and no subsequent route matches" do
     mock_app {
       get '/:foo' do
