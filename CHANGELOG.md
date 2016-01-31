@@ -4,6 +4,8 @@
 
  * Make `not_found` and `error(404)` behavior match. #896 (Jeremy Evans)
 
+ * Add Reel support. #793 (Patricio Mac Adden)
+
 = 1.4.7 / 2016-01-24
 
  * Add Ashley Williams, Trevor Bramble, and Kashyap Kondamudi to team Sinatra.

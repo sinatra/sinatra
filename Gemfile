@@ -54,6 +54,7 @@ if RUBY_ENGINE == "ruby"
   gem 'erubis'
   gem 'haml', '>= 3.0'
   gem 'sass'
+  gem 'reel-rack'
 end
 
 if RUBY_ENGINE == "rbx"

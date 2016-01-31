@@ -17,7 +17,7 @@ class IntegrationTest < Minitest::Test
     random = "%064x" % Kernel.rand(2**256-1)
     server.get "/ping?x=#{random}"
     count = server.log.scan("GET /ping?x=#{random}").count
-    if server.net_http_server?
+    if server.net_http_server? || server.reel?
       assert_equal 0, count
     elsif server.webrick?
       assert(count > 0)
@@ -83,7 +83,7 @@ class IntegrationTest < Minitest::Test
     }ix
 
     # because Net HTTP Server logs to $stderr by default
-    assert_match exp, server.log unless server.net_http_server?
+    assert_match exp, server.log unless server.net_http_server? || server.reel?
   end
 
   it 'does not generate warnings' do

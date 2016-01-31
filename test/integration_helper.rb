@@ -140,6 +140,10 @@ module IntegrationHelper
       name.to_s == "puma"
     end
 
+    def reel?
+      name.to_s == "reel"
+    end
+
     def trinidad?
       name.to_s == "trinidad"
     end
