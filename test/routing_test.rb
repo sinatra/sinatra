@@ -171,6 +171,21 @@ class RoutingTest < Minitest::Test
     assert_equal 404, status
   end
 
+  it "uses 404 error handler for not matching route" do
+    mock_app {
+      not_found do
+        "nf"
+      end
+      error 404 do
+        "e"
+      end
+    }
+
+    get "/"
+    assert_equal "e", body
+    assert_equal 404, status
+  end
+
   it 'matches empty PATH_INFO to "/" if no route is defined for ""' do
     mock_app do
       get '/' do
