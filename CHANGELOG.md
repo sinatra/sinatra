@@ -1,3 +1,7 @@
+= 2.0.0 / 2016-0x-xx
+
+ * Make route params available during error handler. #895 (Jeremy Evans)
+
 = 1.4.7 / 2016-01-24
 
  * Add Ashley Williams, Trevor Bramble, and Kashyap Kondamudi to team Sinatra.
