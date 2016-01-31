@@ -718,7 +718,7 @@ template, you almost always want to pass locals to it.
   </tr>
 </table>
 
-It is not possible to call methods from markdown, nor to pass locals to it.
+It is not possible to call methods from Markdown, nor to pass locals to it.
 You therefore will usually use it in combination with another rendering
 engine:
 
@@ -754,7 +754,7 @@ template than for the layout by passing the `:layout_engine` option.
   </tr>
 </table>
 
-It is not possible to call methods from textile, nor to pass locals to it. You
+It is not possible to call methods from Textile, nor to pass locals to it. You
 therefore will usually use it in combination with another rendering engine:
 
 ```ruby
@@ -789,7 +789,7 @@ template than for the layout by passing the `:layout_engine` option.
   </tr>
 </table>
 
-It is not possible to call methods from rdoc, nor to pass locals to it. You
+It is not possible to call methods from RDoc, nor to pass locals to it. You
 therefore will usually use it in combination with another rendering engine:
 
 ```ruby
@@ -917,7 +917,7 @@ It also takes a block for inline templates (see example).
   </tr>
 </table>
 
-It is not possible to call methods from creole, nor to pass locals to it. You
+It is not possible to call methods from Creole, nor to pass locals to it. You
 therefore will usually use it in combination with another rendering engine:
 
 ```ruby
