@@ -1,6 +1,8 @@
 ---
 language: ruby
 
+before_install: rvm get head
+
 rvm:
   - 2.2.4
   - 2.3.0
