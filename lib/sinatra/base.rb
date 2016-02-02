@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # external dependencies
 require 'rack'
 require 'tilt'
@@ -268,7 +270,7 @@ module Sinatra
     # Takes Rack routers and reverse proxies into account.
     def uri(addr = nil, absolute = true, add_script_name = true)
       return addr if addr =~ /\A[A-z][A-z0-9\+\.\-]*:/
-      uri = [host = ""]
+      uri = [host = String.new]
       if absolute
         host << "http#{'s' if request.secure?}://"
         if request.forwarded? or request.port != (request.secure? ? 443 : 80)
@@ -342,7 +344,7 @@ module Sinatra
 
     # Set the Content-Disposition to "attachment" with the specified filename,
     # instructing the user agents to prompt to save.
-    def attachment(filename = nil, disposition = 'attachment')
+    def attachment(filename = nil, disposition = :attachment)
       response['Content-Disposition'] = disposition.to_s
       if filename
         params = '; filename="%s"' % File.basename(filename)
@@ -360,8 +362,8 @@ module Sinatra
 
       disposition = opts[:disposition]
       filename    = opts[:filename]
-      disposition = 'attachment' if disposition.nil? and filename
-      filename    = path         if filename.nil?
+      disposition = :attachment if disposition.nil? and filename
+      filename    = path        if filename.nil?
       attachment(filename, disposition) if disposition
 
       last_modified opts[:last_modified] if opts[:last_modified]
@@ -1299,7 +1301,7 @@ module Sinatra
           data.each_line do |line|
             lines += 1
             if line =~ /^@@\s*(.*\S)\s*$/
-              template = force_encoding('', encoding)
+              template = force_encoding(String.new, encoding)
               templates[$1.to_sym] = [template, file, lines]
             elsif template
               template << line
