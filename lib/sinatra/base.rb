@@ -968,10 +968,14 @@ module Sinatra
           returned_pass_block = process_route(pattern, keys, conditions) do |*args|
             env['sinatra.route'] = block.instance_variable_get(:@route_name)
             route_eval { block[*args] }
+            # prevent passed route from pinning the content type
+            response['Content-Type'] = nil
           end
 
-          # don't wipe out pass_block in superclass
-          pass_block = returned_pass_block if returned_pass_block
+          if returned_pass_block
+            # don't wipe out pass_block in superclass
+            pass_block = returned_pass_block
+          end
         end
       end
 
