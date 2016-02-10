@@ -1,7 +1,7 @@
 source "https://rubygems.org" unless ENV['QUICK']
 gemspec
 
-gem 'sinatra', :github => 'sinatra/sinatra'
+gem 'sinatra', :github => 'sinatra/sinatra', :branch => 'stable'
 
 group :development, :test do
 
