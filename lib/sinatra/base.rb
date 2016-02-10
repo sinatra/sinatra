@@ -882,6 +882,7 @@ module Sinatra
       super()
       @app = app
       @template_cache = Tilt::Cache.new
+      @pinned_response = nil # whether a before! filter pinned the content-type
       yield self if block_given?
     end
 
@@ -956,15 +957,21 @@ module Sinatra
     private
 
     # Run filters defined on the class and all superclasses.
+    # Accepts an optional block to call after each filter is applied.
     def filter!(type, base = settings)
       filter! type, base.superclass if base.superclass.respond_to?(:filters)
-      base.filters[type].each { |args| process_route(*args) }
+      base.filters[type].each do |args|
+        result = process_route(*args)
+        yield result if block_given?
+      end
     end
 
     # Run routes defined on the class and all superclasses.
     def route!(base = settings, pass_block = nil)
       if routes = base.routes[@request.request_method]
         routes.each do |pattern, keys, conditions, block|
+          @response['Content-Type'] = nil unless @pinned_response
+
           returned_pass_block = process_route(pattern, keys, conditions) do |*args|
             env['sinatra.route'] = block.instance_variable_get(:@route_name)
             route_eval { block[*args] }
@@ -1080,7 +1087,9 @@ module Sinatra
     def dispatch!
       invoke do
         static! if settings.static? && (request.get? || request.head?)
-        filter! :before
+        filter! :before do
+          @pinned_response = !@response['Content-Type'].nil?
+        end
         route!
       end
     rescue ::Exception => boom
