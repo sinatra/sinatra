@@ -172,9 +172,9 @@
    halt in a before filter or route. (Konstantin Haase)
 
  * Sinatra::Base.new now returns a Sinatra::Wrapper instance, exposing
-   #settings and #helpers, yet going through the middleware stack on #call.
-   It also implements a nice #inspect, so it plays nice with Rails' `rake
-   routes`. (Konstantin Haase)
+   `#settings` and `#helpers`, yet going through the middleware stack on
+   `#call`.  It also implements a nice `#inspect`, so it plays nice with
+   Rails' `rake routes`. (Konstantin Haase)
 
  * In addition to WebRick, Thin and Mongrel, Sinatra will now automatically pick
    up Puma, Trinidad, ControlTower or Net::HTTP::Server when installed. The
