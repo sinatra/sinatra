@@ -446,7 +446,7 @@ module Sinatra
     # Specify response freshness policy for HTTP caches (Cache-Control header).
     # Any number of non-value directives (:public, :private, :no_cache,
     # :no_store, :must_revalidate, :proxy_revalidate) may be passed along with
-    # a Hash of value directives (:max_age, :min_stale, :s_max_age).
+    # a Hash of value directives (:max_age, :min_stale, :s_maxage).
     #
     #   cache_control :public, :must_revalidate, :max_age => 60
     #   => Cache-Control: public, must-revalidate, max-age=60
@@ -465,7 +465,7 @@ module Sinatra
       values.map! { |value| value.to_s.tr('_','-') }
       hash.each do |key, value|
         key = key.to_s.tr('_', '-')
-        value = value.to_i if key == "max-age"
+        value = value.to_i if ['max-age', 's-maxage'].include? key
         values << "#{key}=#{value}"
       end
 
