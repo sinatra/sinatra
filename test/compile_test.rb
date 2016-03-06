@@ -1,4 +1,5 @@
 # I like coding: UTF-8
+# frozen_string_literal: true
 require File.expand_path('../helper', __FILE__)
 
 class CompileTest < Minitest::Test

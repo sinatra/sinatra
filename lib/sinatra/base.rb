@@ -348,7 +348,7 @@ module Sinatra
       response['Content-Disposition'] = disposition.to_s
       if filename
         params = '; filename="%s"' % File.basename(filename)
-        response['Content-Disposition'] << params
+        response['Content-Disposition'] += params
         ext = File.extname(filename)
         content_type(ext) unless response['Content-Type'] or ext.empty?
       end
@@ -842,6 +842,7 @@ module Sinatra
           body, path, line = settings.templates[data]
           if body
             body = body.call if body.respond_to?(:call)
+            body = body.dup if body.frozen?
             template.new(path, line.to_i, options) { body }
           else
             found = false
@@ -857,7 +858,12 @@ module Sinatra
             template.new(path, 1, options)
           end
         when Proc, String
-          body = data.is_a?(String) ? Proc.new { data } : data
+          body = if data.is_a?(String)
+            data = data.dup if data.frozen?
+            Proc.new { data }
+          else
+            data
+          end
           path, line = settings.caller_locations.first
           template.new(path, line.to_i, options, &body)
         else
