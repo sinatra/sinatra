@@ -190,7 +190,7 @@ module Sinatra
     private
 
     def setup_close(env, status, headers, body)
-      return unless body.respond_to? :close && env.include? 'async.close'
+      return unless body.respond_to?(:close) && env.include?('async.close')
       env['async.close'].callback { body.close }
       env['async.close'].errback { body.close }
     end
@@ -202,7 +202,7 @@ module Sinatra
 
     def async?(status, headers, body)
       return true if status == -1
-      body.respond_to? :callback && body.respond_to? :errback
+      body.respond_to?(:callback) && body.respond_to?(:errback)
     end
   end
 
@@ -328,7 +328,7 @@ module Sinatra
       mime_type = mime_type(type) || default
       fail "Unknown media type: %p" % type if mime_type.nil?
       mime_type = mime_type.dup
-      unless params.include? :charset || settings.add_charset.all? { |p| !(p === mime_type) }
+      unless params.include?(:charset) || settings.add_charset.all? { |p| !(p === mime_type) }
         params[:charset] = params.delete('charset') || settings.default_encoding
       end
       params.delete :charset if mime_type.include? 'charset'
@@ -768,7 +768,7 @@ module Sinatra
 
       if Tilt.respond_to?(:mappings)
         Tilt.mappings.each do |ext, engines|
-          next unless ext != @preferred_extension && engines.include? engine
+          next unless ext != @preferred_extension && engines.include?(engine)
           yield ::File.join(views, "#{name}.#{ext}")
         end
       else
@@ -903,7 +903,7 @@ module Sinatra
       invoke { error_block!(response.status) } unless @env['sinatra.error']
 
       unless @response['Content-Type']
-        if Array === body && body[0].respond_to? :content_type
+        if Array === body && body[0].respond_to?(:content_type)
           content_type body[0].content_type
         else
           content_type :html
@@ -1102,7 +1102,7 @@ module Sinatra
 
       if boom.respond_to? :http_status
         status(boom.http_status)
-      elsif settings.use_code? && boom.respond_to? :code && boom.code.between? 400, 599
+      elsif settings.use_code? && boom.respond_to?(:code) && boom.code.between?(400, 599)
         status(boom.code)
       else
         status(500)
@@ -1567,7 +1567,7 @@ module Sinatra
         types.flatten!
         condition do
           if type = response['Content-Type']
-            types.include? type || types.include? type[/^[^;]+/]
+            types.include?(type) || types.include?(type[/^[^;]+/])
           elsif type = request.preferred_type(types)
             params = (type.respond_to?(:params) ? type.params : {})
             content_type(type, params)
