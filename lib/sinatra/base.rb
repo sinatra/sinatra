@@ -1138,7 +1138,7 @@ module Sinatra
           return resp unless resp.nil? && !first
         end
       end
-      return false unless key.respond_to? :superclass && key.superclass < Exception
+      return false unless key.respond_to?(:superclass) && key.superclass < Exception
       error_block!(key.superclass, *block_params)
     end
 
