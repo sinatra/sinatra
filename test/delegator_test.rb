@@ -109,7 +109,7 @@ class DelegatorTest < Minitest::Test
   it "should work with method_missing proxies for options" do
     mixin = Module.new do
       def respond_to?(method, *)
-        method.to_sym == :options or super
+        method.to_sym == :options || super
       end
 
       def method_missing(method, *args, &block)
