@@ -1656,7 +1656,7 @@ module Sinatra
 
           # Special case handling.
           #
-          if last_segment = segments[-1] && last_segment.match(/\[\^\\\./)
+          if (last_segment = segments[-1]) && last_segment.match(/\[\^\\\./)
             parts = last_segment.rpartition(/\[\^\\\./)
             parts[1] = '[^'
             segments[-1] = parts.join
