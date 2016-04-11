@@ -49,15 +49,6 @@ end
 
 task :gemspec => 'sinatra-contrib.gemspec'
 
-desc 'update travis config to correspond to sinatra'
-task :travis, [:branch] do |t, a|
-  a.with_defaults :branch => :master
-  data = YAML.load open("https://raw.github.com/sinatra/sinatra/#{a.branch}/.travis.yml")
-  data["notifications"]["recipients"] << "ohhgabriel@gmail.com"
-  File.open('.travis.yml', 'w') { |f| f << data.to_yaml }
-  system 'git add .travis.yml && git diff --cached .travis.yml'
-end
-
 task :release => :gemspec do
   sh <<-SH
     rm -Rf sinatra-contrib*.gem &&
