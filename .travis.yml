@@ -1,7 +1,9 @@
 ---
 language: ruby
 
-before_install: rvm get head
+before_install:
+  - rvm get head
+  - gem install bundler
 
 rvm:
   - 2.2.4
