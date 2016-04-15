@@ -41,7 +41,7 @@ describe Sinatra::LinkHeader do
     it "takes an options hash" do
       get '/'
       elements = ["<something>", "foo=\"bar\"", "rel=\"from-filter\""]
-      headers['Link'].lines.first.strip.split('; ').sort.should == elements
+      headers['Link'].split(",\n").first.strip.split('; ').sort.should == elements
     end
   end
 
