@@ -20,7 +20,7 @@ group :development, :test do
 
   platform :jruby, :ruby do
     gem 'slim', '2.1.0'
-    gem 'liquid', '2.6.1'
+    gem 'liquid', '~> 2.6.x'
   end
 
   platform :ruby do
