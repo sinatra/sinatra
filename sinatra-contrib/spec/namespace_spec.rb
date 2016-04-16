@@ -103,6 +103,49 @@ describe Sinatra::Namespace do
           body.should == 'foo' unless verb == :head
           send(verb, '/123/12').should_not be_ok
         end
+
+        describe "before/after filters" do
+          it 'trigger before filter' do
+            ran = false
+            namespace(/\/foo\/([^\/&?]+)\/bar\/([^\/&?]+)\//) { before { ran = true };}
+
+            send(verb, '/bar/')
+            ran.should be false
+
+            send(verb, '/foo/1/bar/1/')
+            ran.should be true
+          end
+
+          it 'trigger after filter' do
+            ran = false
+            namespace(/\/foo\/([^\/&?]+)\/bar\/([^\/&?]+)\//) { after { ran = true };}
+
+            send(verb, '/bar/')
+            ran.should be false
+
+            send(verb, '/foo/1/bar/1/')
+            ran.should be true
+          end
+        end
+
+        describe 'helpers' do
+          it 'are defined using the helpers method' do
+            namespace /\/foo\/([^\/&?]+)\/bar\/([^\/&?]+)\// do
+              helpers do
+                def foo
+                  'foo'
+                end
+              end
+
+              send verb, '' do
+                foo.to_s
+              end
+            end
+
+            send(verb, '/foo/1/bar/1/').should be_ok
+            body.should == 'foo' unless verb == :head
+          end
+        end
       end
 
       context 'when namespace is a splat' do
