@@ -144,6 +144,21 @@ class BeforeFilterTest < Minitest::Test
     assert_body 'bar'
   end
 
+  it 'can add params when request path contains named params' do
+    mock_app do
+      before '/hello/:person' do
+        params['foo'] = 'bar'
+      end
+      get '/hello/:person' do
+        params['foo']
+      end
+    end
+
+    get '/hello/mary'
+    assert_body 'bar'
+  end
+
+
   it 'can remove params' do
     mock_app do
       before { params.delete('foo') }
@@ -151,6 +166,20 @@ class BeforeFilterTest < Minitest::Test
     end
 
     get '/?foo=bar'
+    assert_body ''
+  end
+
+  it 'can remove params when request path contains named params' do
+    mock_app do
+      before '/hello/:person' do
+        params.delete('foo')
+      end
+      get '/hello/:person' do
+        params['foo'].to_s
+      end
+    end
+
+    get '/hello/mary'
     assert_body ''
   end
 
