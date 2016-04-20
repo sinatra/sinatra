@@ -33,6 +33,29 @@ class BeforeFilterTest < Minitest::Test
     assert_equal 'bar', body
   end
 
+  it 'changes to path_info from a pattern matching before filter are respected when routing' do
+    mock_app do
+      before('/foo') { request.path_info = '/bar' }
+      get('/bar') { 'blah' }
+    end
+    get '/foo'
+    assert ok?
+    assert_equal 'blah', body
+  end
+
+  it 'is possible to access url params from the route param' do
+    ran = false
+    mock_app do
+      get('/foo/*') { }
+      before('/foo/:sub') do
+        assert_equal params[:sub], 'bar'
+        ran = true
+      end
+    end
+    get '/foo/bar'
+    assert ran
+  end
+
   it "can modify instance variables available to routes" do
     mock_app do
       before { @foo = 'bar' }
@@ -57,6 +80,89 @@ class BeforeFilterTest < Minitest::Test
     assert redirect?
     assert_equal 'http://example.org/bar', response['Location']
     assert_equal '', body
+  end
+
+  it 'is possible to apply host_name conditions to before filters with no path' do
+    ran = false
+    mock_app do
+      before(:host_name => 'example.com') { ran = true }
+      get('/') { 'welcome' }
+    end
+    get('/', {}, { 'HTTP_HOST' => 'example.org' })
+    assert !ran
+    get('/', {}, { 'HTTP_HOST' => 'example.com' })
+    assert ran
+  end
+
+  it 'is possible to apply host_name conditions to before filters with a path' do
+    ran = false
+    mock_app do
+      before('/foo', :host_name => 'example.com') { ran = true }
+      get('/') { 'welcome' }
+    end
+    get('/', {}, { 'HTTP_HOST' => 'example.com' })
+    assert !ran
+    get('/foo', {}, { 'HTTP_HOST' => 'example.org' })
+    assert !ran
+    get('/foo', {}, { 'HTTP_HOST' => 'example.com' })
+    assert ran
+  end
+
+  it 'is possible to apply user_agent conditions to before filters with no path' do
+    ran = false
+    mock_app do
+      before(:user_agent => /foo/) { ran = true }
+      get('/') { 'welcome' }
+    end
+    get('/', {}, { 'HTTP_USER_AGENT' => 'bar' })
+    assert !ran
+    get('/', {}, { 'HTTP_USER_AGENT' => 'foo' })
+    assert ran
+  end
+
+  it 'is possible to apply user_agent conditions to before filters with a path' do
+    ran = false
+    mock_app do
+      before('/foo', :user_agent => /foo/) { ran = true }
+      get('/') { 'welcome' }
+    end
+    get('/', {}, { 'HTTP_USER_AGENT' => 'foo' })
+    assert !ran
+    get('/foo', {}, { 'HTTP_USER_AGENT' => 'bar' })
+    assert !ran
+    get('/foo', {}, { 'HTTP_USER_AGENT' => 'foo' })
+    assert ran
+  end
+
+  it 'can add params' do
+    mock_app do
+      before { params['foo'] = 'bar' }
+      get('/') { params['foo'] }
+    end
+
+    get '/'
+    assert_body 'bar'
+  end
+
+  it 'can remove params' do
+    mock_app do
+      before { params.delete('foo') }
+      get('/') { params['foo'].to_s }
+    end
+
+    get '/?foo=bar'
+    assert_body ''
+  end
+
+  it 'only triggers provides condition if conforms with current Content-Type' do
+    mock_app do
+      before(:provides => :txt)  { @type = 'txt' }
+      before(:provides => :html) { @type = 'html' }
+      get('/') { @type }
+    end
+
+    get('/', {}, { 'HTTP_ACCEPT' => '*/*' })
+    assert_body 'txt'
   end
 
   it "does not modify the response with its return value" do
@@ -288,16 +394,6 @@ class AfterFilterTest < Minitest::Test
     assert ran_filter
   end
 
-  it 'changes to path_info from a pattern matching before filter are respected when routing' do
-    mock_app do
-      before('/foo') { request.path_info = '/bar' }
-      get('/bar') { 'blah' }
-    end
-    get '/foo'
-    assert ok?
-    assert_equal 'blah', body
-  end
-
   it 'generates block arguments from route pattern' do
     subpath = nil
     mock_app do
@@ -306,45 +402,6 @@ class AfterFilterTest < Minitest::Test
     end
     get '/foo/bar'
     assert_equal subpath, 'bar'
-  end
-
-  it 'is possible to access url params from the route param' do
-    ran = false
-    mock_app do
-      get('/foo/*') { }
-      before('/foo/:sub') do
-        assert_equal params[:sub], 'bar'
-        ran = true
-      end
-    end
-    get '/foo/bar'
-    assert ran
-  end
-
-  it 'is possible to apply host_name conditions to before filters with no path' do
-    ran = false
-    mock_app do
-      before(:host_name => 'example.com') { ran = true }
-      get('/') { 'welcome' }
-    end
-    get('/', {}, { 'HTTP_HOST' => 'example.org' })
-    assert !ran
-    get('/', {}, { 'HTTP_HOST' => 'example.com' })
-    assert ran
-  end
-
-  it 'is possible to apply host_name conditions to before filters with a path' do
-    ran = false
-    mock_app do
-      before('/foo', :host_name => 'example.com') { ran = true }
-      get('/') { 'welcome' }
-    end
-    get('/', {}, { 'HTTP_HOST' => 'example.com' })
-    assert !ran
-    get('/foo', {}, { 'HTTP_HOST' => 'example.org' })
-    assert !ran
-    get('/foo', {}, { 'HTTP_HOST' => 'example.com' })
-    assert ran
   end
 
   it 'is possible to apply host_name conditions to after filters with no path' do
@@ -373,52 +430,6 @@ class AfterFilterTest < Minitest::Test
     assert ran
   end
 
-  it 'is possible to apply user_agent conditions to before filters with no path' do
-    ran = false
-    mock_app do
-      before(:user_agent => /foo/) { ran = true }
-      get('/') { 'welcome' }
-    end
-    get('/', {}, { 'HTTP_USER_AGENT' => 'bar' })
-    assert !ran
-    get('/', {}, { 'HTTP_USER_AGENT' => 'foo' })
-    assert ran
-  end
-
-  it 'is possible to apply user_agent conditions to before filters with a path' do
-    ran = false
-    mock_app do
-      before('/foo', :user_agent => /foo/) { ran = true }
-      get('/') { 'welcome' }
-    end
-    get('/', {}, { 'HTTP_USER_AGENT' => 'foo' })
-    assert !ran
-    get('/foo', {}, { 'HTTP_USER_AGENT' => 'bar' })
-    assert !ran
-    get('/foo', {}, { 'HTTP_USER_AGENT' => 'foo' })
-    assert ran
-  end
-
-  it 'can add params' do
-    mock_app do
-      before { params['foo'] = 'bar' }
-      get('/') { params['foo'] }
-    end
-
-    get '/'
-    assert_body 'bar'
-  end
-
-  it 'can remove params' do
-    mock_app do
-      before { params.delete('foo') }
-      get('/') { params['foo'].to_s }
-    end
-
-    get '/?foo=bar'
-    assert_body ''
-  end
-
   it 'is possible to apply user_agent conditions to after filters with no path' do
     ran = false
     mock_app do
@@ -443,17 +454,6 @@ class AfterFilterTest < Minitest::Test
     assert !ran
     get('/foo', {}, { 'HTTP_USER_AGENT' => 'foo' })
     assert ran
-  end
-
-  it 'only triggers provides condition if conforms with current Content-Type' do
-    mock_app do
-      before(:provides => :txt)  { @type = 'txt' }
-      before(:provides => :html) { @type = 'html' }
-      get('/') { @type }
-    end
-
-    get('/', {}, { 'HTTP_ACCEPT' => '*/*' })
-    assert_body 'txt'
   end
 
   it 'can catch exceptions in after filters and handle them properly' do
