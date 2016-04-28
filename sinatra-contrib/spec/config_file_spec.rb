@@ -22,7 +22,17 @@ describe Sinatra::ConfigFile do
     settings.nested[:a].should == 1
   end
 
-  it 'should render options in ERB tags' do
+  it 'should render options in ERB tags when using .yml files' do
+    config_file 'key_value.yml'
+    settings.bar.should == "bar"
+    settings.something.should == 42
+    settings.nested['a'].should == 1
+    settings.nested[:a].should == 1
+    settings.nested['b'].should == 2
+    settings.nested[:b].should == 2
+  end
+
+  it 'should render options in ERB tags when using .yml.erb files' do
     config_file 'key_value.yml.erb'
     settings.foo.should == "bar"
     settings.something.should == 42
@@ -30,6 +40,10 @@ describe Sinatra::ConfigFile do
     settings.nested[:a].should == 1
     settings.nested['b'].should == 2
     settings.nested[:b].should == 2
+  end
+
+  it 'should raise error if config file extension is not .yml or .erb' do
+    expect{ config_file 'config.txt' }.to raise_error(Sinatra::ConfigFile::UnsupportedConfigType)
   end
 
   it 'should recognize env specific settings per file' do

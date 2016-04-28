@@ -1,5 +1,6 @@
 ---
 foo: bar
+bar: <%= "bar" %>
 something: 42
 nested:
   a: 1

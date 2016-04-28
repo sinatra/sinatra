@@ -128,9 +128,9 @@ module Sinatra
       Dir.chdir(root || '.') do
         paths.each do |pattern|
           Dir.glob(pattern) do |file|
+            raise UnsupportedConfigType unless ['.yml', '.erb'].include?(File.extname(file))
             $stderr.puts "loading config file '#{file}'" if logging?
-            document = IO.read(file)
-            document = ERB.new(document).result if file.split('.').include?('erb')
+            document = ERB.new(IO.read(file)).result
             yaml = config_for_env(YAML.load(document)) || {}
             yaml.each_pair do |key, value|
               for_env = config_for_env(value)
@@ -138,6 +138,12 @@ module Sinatra
             end
           end
         end
+      end
+    end
+
+    class UnsupportedConfigType < Exception
+      def message
+        'Invalid config file type, use .yml or .yml.erb'
       end
     end
 
