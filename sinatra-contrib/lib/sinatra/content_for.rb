@@ -106,7 +106,7 @@ module Sinatra
     #
     #    <% clear_content_for :head %>
     def clear_content_for(key)
-      content_blocks.delete(key.to_sym) if content_blocks[key.to_sym].any?
+      content_blocks.delete(key.to_sym) if content_for?(key)
     end
 
     # Render the captured blocks for a given key. For example:
