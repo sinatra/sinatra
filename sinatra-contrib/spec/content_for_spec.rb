@@ -11,7 +11,7 @@ describe Sinatra::ContentFor do
   Tilt.prefer Tilt::ERBTemplate
 
   extend Forwardable
-  def_delegators :subject, :content_for, :yield_content
+  def_delegators :subject, :content_for, :clear_content_for, :yield_content
   def render(engine, template)
     subject.send(:render, engine, template, :layout => false).gsub(/\s/, '')
   end
