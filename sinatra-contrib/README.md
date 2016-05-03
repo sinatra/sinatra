@@ -49,6 +49,8 @@ Currently included:
   logger instance using +logger+ setting. That logger then will
   be available as #logger helper method in your routes and views.
 
+* `sinatra/params`: Ensure if required query parameters exist
+
 ## Custom Extensions
 
 These extensions may add additional dependencies and enhance the behavior of the

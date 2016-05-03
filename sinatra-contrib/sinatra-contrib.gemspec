@@ -147,6 +147,7 @@ Gem::Specification.new do |s|
     "lib/sinatra/reloader.rb",
     "lib/sinatra/respond_with.rb",
     "lib/sinatra/streaming.rb",
+    "lib/sinatra/params.rb",
     "lib/sinatra/test_helpers.rb",
     "sinatra-contrib.gemspec",
     "spec/capture_spec.rb",
@@ -210,7 +211,8 @@ Gem::Specification.new do |s|
     "spec/respond_with/not_html.sass",
     "spec/respond_with_spec.rb",
     "spec/spec_helper.rb",
-    "spec/streaming_spec.rb"
+    "spec/streaming_spec.rb",
+    "spec/params_spec.rb",
   ]
 
   s.add_dependency "sinatra",   "~> 1.4.0"
