@@ -1607,12 +1607,35 @@ module Sinatra
         pattern, keys           = compile path
         conditions, @conditions = @conditions, []
 
-        wrapper                 = block.arity != 0 ?
-          proc { |a,p| unbound_method.bind(a).call(*p) } :
-          proc { |a,p| unbound_method.bind(a).call }
+        if block.arity != 0
+          wrapper = proc do |a, p|
+            add_activation_hooks(a, p, verb, path) { unbound_method.bind(a).call(*p) }
+          end
+        else
+          wrapper = proc do |a, p|
+            add_activation_hooks(a, p, verb, path) { unbound_method.bind(a).call }
+          end
+        end
+
         wrapper.instance_variable_set(:@route_name, method_name)
 
         [ pattern, keys, conditions, wrapper ]
+      end
+
+      # Add activation routes hooks
+      #
+      # Note: filters are ignored
+      def add_activation_hooks(a, p, verb, path, &block)
+        return block.call unless http_verb?(verb)
+
+        invoke_hook(:before_route_activation, a, verb, path, p)
+        result = block.call
+        invoke_hook(:after_route_activation, a, verb, path, p)
+        result
+      end
+
+      def http_verb?(verb)
+        %w(DELETE GET HEAD PATCH POST PUT).include?(verb.to_s.upcase)
       end
 
       def compile(path)

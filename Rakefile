@@ -47,7 +47,7 @@ end
 Rake::TestTask.new(:"test:core") do |t|
   core_tests = %w[base delegator encoding extensions filter
      helpers mapped_error middleware radius rdoc
-     readme request response result route_added_hook
+     readme request response result route_added_hook route_activation_hook
      routing server settings sinatra static templates]
   t.test_files = core_tests.map {|n| "test/#{n}_test.rb"}
   t.ruby_opts = ["-rubygems"] if defined? Gem
