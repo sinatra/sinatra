@@ -7,7 +7,7 @@ before_install:
 
 rvm:
   - 2.2.4
-  - 2.3.0
+  - 2.3.1
   - ruby-head
   - rbx-2
   - jruby-9.0.5.0
@@ -20,3 +20,8 @@ matrix:
     - rvm: ruby-head
     - rvm: jruby-head
     - rvm: rbx-2
+
+notifications:
+  recipients:
+    - mail@zzak.io
+  slack: sinatrarb:LQGhUfGYcqRgRzwKea0bqUhY
