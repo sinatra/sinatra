@@ -25,6 +25,14 @@ describe Sinatra::Namespace do
         send(verb, '/foo/baz').should_not be_ok
       end
 
+      describe 'redirect_to' do
+        it 'redirect within namespace' do
+          namespace('/foo') { send(verb, '/bar') {  redirect_to '/foo_bar' }}
+          send(verb, '/foo/bar').should be_redirect
+          send(verb, '/foo/bar').location.should include("/foo/foo_bar")
+        end
+      end
+
       context 'when namespace is a string' do
         it 'accepts routes with no path' do
           namespace('/foo') { send(verb) { 'bar' } }

@@ -89,6 +89,18 @@ module Sinatra
   #       # More admin routes...
   #     end
   #
+  # Redirecting within the namespace can be done using redirect_to:
+  #
+  #     namespace '/admin' do
+  #       get '/foo'  do
+  #         redirect_to '/bar' # Redirects to /admin/bar
+  #       end
+  #
+  #       get '/foo' do
+  #         redirect '/bar' # Redirects to /bar
+  #       end
+  #     end
+  #
   # === Classic Application Setup
   #
   # To be able to use namespaces in a classic application all you need to do is
@@ -136,6 +148,10 @@ module Sinatra
 
       def template_cache
         super.fetch(:nested, @namespace) { Tilt::Cache.new }
+      end
+
+      def redirect_to(uri, *args)
+        redirect("#{@namespace.pattern}#{uri}", *args)
       end
     end
 
@@ -225,6 +241,11 @@ module Sinatra
       def layout(name=:layout, &block)
         template name, &block
       end
+
+      def pattern
+        @pattern
+      end
+
 
       private
 
