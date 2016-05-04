@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # frozen_string_literal: true
 
 # external dependencies
@@ -1001,7 +1002,7 @@ module Sinatra
       values += match.captures.map! { |v| force_encoding URI_INSTANCE.unescape(v) if v }
 
       if values.any?
-        original, @params = params, params.merge('splat' => [], 'captures' => values)
+        @params = params.merge('splat' => [], 'captures' => values)
         keys.zip(values) { |k,v| Array === @params[k] ? @params[k] << v : @params[k] = v if v }
       end
 
@@ -1013,7 +1014,10 @@ module Sinatra
       @env['sinatra.error.params'] = @params
       raise
     ensure
-      @params = original if original
+      if values.any?
+        @params.delete('splat')
+        @params.delete('captures')
+      end
     end
 
     # No matching route was found or all routes passed. The default
