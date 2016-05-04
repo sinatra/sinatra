@@ -5,6 +5,7 @@ RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
 
 require 'bundler'
 require 'bundler/setup'
+require 'tool/warning_filter'
 require 'rack'
 
 testdir = File.dirname(__FILE__)
@@ -30,7 +31,7 @@ end
 
 class Rack::Builder
   def include?(middleware)
-    @ins.any? { |m| p m ; middleware === m }
+    @ins.any? { |m| middleware === m }
   end
 end
 
