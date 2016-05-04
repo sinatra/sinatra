@@ -1,11 +1,11 @@
 require_relative 'spec_helper'
 
-describe Sinatra::Params do
+describe Sinatra::RequiredParams do
   context "#required_params" do
     context "simple keys" do
       before do
         mock_app do
-          helpers Sinatra::Params
+          helpers Sinatra::RequiredParams
           get('/') { required_params(:p1, :p2) }
         end
       end
@@ -29,7 +29,7 @@ describe Sinatra::Params do
     context "hash keys" do
       before do
         mock_app do
-          helpers Sinatra::Params
+          helpers Sinatra::RequiredParams
           get('/') { required_params(:p1, :p2 => :p21) }
         end
       end
@@ -45,7 +45,7 @@ describe Sinatra::Params do
     context "complex keys" do
       before do
         mock_app do
-          helpers Sinatra::Params
+          helpers Sinatra::RequiredParams
           get('/') { required_params(:p1 => [:p11, {:p12 => :p121, :p122 => [:p123, {:p124 => :p1241}]}]) }
         end
       end

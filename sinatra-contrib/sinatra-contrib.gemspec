@@ -147,7 +147,7 @@ Gem::Specification.new do |s|
     "lib/sinatra/reloader.rb",
     "lib/sinatra/respond_with.rb",
     "lib/sinatra/streaming.rb",
-    "lib/sinatra/params.rb",
+    "lib/sinatra/required_params.rb",
     "lib/sinatra/test_helpers.rb",
     "sinatra-contrib.gemspec",
     "spec/capture_spec.rb",

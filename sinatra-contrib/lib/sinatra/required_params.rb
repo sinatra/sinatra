@@ -1,7 +1,7 @@
 require 'sinatra/base'
 
 module Sinatra
-  # = Sinatra::Params
+  # = Sinatra::RequiredParams
   #
   # Ensure required query parameters
   #
@@ -25,7 +25,7 @@ module Sinatra
   # In a classic application simply require the helpers, and start using them:
   #
   #     require "sinatra"
-  #     require "sinatra/params"
+  #     require "sinatra/required_params"
   #
   #     # The rest of your classic application code goes here...
   #
@@ -35,15 +35,15 @@ module Sinatra
   # the application to use them:
   #
   #     require "sinatra/base"
-  #     require "sinatra/params"
+  #     require "sinatra/required_params"
   #
   #     class MyApp < Sinatra::Base
-  #       helpers Sinatra::Params
+  #       helpers Sinatra::RequiredParams
   #
   #       # The rest of your modular application code goes here...
   #     end
   #
-  module Params
+  module RequiredParams
     def required_params(*keys)
       _required_params(params, *keys)
     end
@@ -67,5 +67,5 @@ module Sinatra
     end
   end
 
-  helpers Params
+  helpers RequiredParams
 end
