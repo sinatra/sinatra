@@ -10,7 +10,7 @@ rvm:
   - 2.3.1
   - ruby-head
   - rbx-2
-  - jruby-9.0.5.0
+  - jruby-9.1.0.0
   - jruby-head
 
 sudo: false
