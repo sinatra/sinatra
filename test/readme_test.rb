@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Tests to check if all the README examples work.
 require File.expand_path('../helper', __FILE__)
 

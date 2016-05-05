@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby -I ../lib -I lib
 # coding: utf-8
+# frozen_string_literal: true
 require 'sinatra'
 set :server, 'thin'
 connections = []

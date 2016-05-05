@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Copyright (c) 2009 Damian Janowski and Michel Martens for Citrusbyte
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy

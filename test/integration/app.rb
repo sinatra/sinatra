@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 $stderr.puts "loading"
 require 'sinatra'
 

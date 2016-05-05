@@ -1,4 +1,5 @@
 # encoding: UTF-8
+# frozen_string_literal: true
 require File.expand_path('../helper', __FILE__)
 File.delete(File.dirname(__FILE__) + '/views/layout.test') rescue nil
 
