@@ -65,6 +65,11 @@ describe Sinatra::ContentFor do
       clear_content_for(:foo)
       yield_content(:foo).should be_empty
     end
+
+    it 'takes an immediate value instead of a block' do
+      content_for(:foo, "foo")
+      yield_content(:foo).should == "foo"
+    end
   end
 
   # TODO: liquid radius markaby builder nokogiri
