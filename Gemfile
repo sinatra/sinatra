@@ -55,6 +55,7 @@ if RUBY_ENGINE == "ruby"
   gem 'haml', '>= 3.0'
   gem 'sass'
   gem 'reel-rack'
+  gem 'celluloid', '~> 0.16.0'
 end
 
 if RUBY_ENGINE == "rbx"
