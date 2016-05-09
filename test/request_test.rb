@@ -50,6 +50,11 @@ class RequestTest < Minitest::Test
     assert_equal({ 'compress' => '0.25' }, request.preferred_type.params)
   end
 
+  it "raises Sinatra::BadRequest when params contain conflicting types" do
+    request = Sinatra::Request.new 'QUERY_STRING' => 'foo=&foo[]='
+    assert_raises(Sinatra::BadRequest) { request.params }
+  end
+
   it "makes accept types behave like strings" do
     request = Sinatra::Request.new('HTTP_ACCEPT' => 'image/jpeg; compress=0.25')
     assert                     request.accept?('image/jpeg')

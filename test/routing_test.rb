@@ -47,6 +47,16 @@ class RoutingTest < Minitest::Test
     assert_equal '', response.body
   end
 
+  it "400s when request params contain conflicting types" do
+    mock_app {
+      get('/foo') { }
+    }
+
+    request = Rack::MockRequest.new(@app)
+    response = request.request('GET', '/foo?bar=&bar[]=', {})
+    assert response.bad_request?
+  end
+
   it "404s when no route satisfies the request" do
     mock_app {
       get('/foo') { }
