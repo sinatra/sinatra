@@ -279,6 +279,13 @@ class TemplatesTest < Minitest::Test
     assert_equal 'bar', body
   end
 
+  it 'allows setting default content type' do
+    render_app(:str => { :default_content_type => :txt }) {
+      render :str, 'foo'
+    }
+    assert_equal 'text/plain;charset=utf-8', response['Content-Type']
+  end
+
   it 'allows setting default content type per template engine' do
     render_app(:str => { :content_type => :txt }) {
       render :str, 'foo'
