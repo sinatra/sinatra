@@ -1825,6 +1825,17 @@ class HelpersTest < Minitest::Test
       get '/'
       assert_equal 'http://example.org/', body
     end
+
+    it 'is case-insensitive' do
+      mock_app { get('/:foo') { uri params[:foo] }}
+      assert_equal get('HtTP://google.com').body, get('http://google.com').body
+    end
+
+    it 'generates relative link for invalid path' do
+      mock_app { get('/') { uri 'htt^p://google.com' }}
+      get '/'
+      assert_equal 'http://example.org/htt^p://google.com', body
+    end
   end
 
   describe 'logger' do
