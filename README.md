@@ -160,6 +160,14 @@ end
 Routes are matched in the order they are defined. The first route that
 matches the request is invoked.
 
+Routes with trailing slashes are different from the ones without:
+
+```ruby
+    get '/foo' do
+      # Does not match "GET /foo/"
+    end
+```
+
 Route patterns may include named parameters, accessible via the
 `params` hash:
 

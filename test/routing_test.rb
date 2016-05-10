@@ -1452,4 +1452,23 @@ class RoutingTest < Minitest::Test
     end
     get '/users/1/status'
   end
+
+  it 'treats routes with and without trailing slashes differently' do
+    mock_app do
+      get '/foo' do
+        'Foo'
+      end
+
+      get '/foo/' do
+        'Foo with a slash'
+      end
+    end
+
+    get '/foo'
+    assert_equal 'Foo', body
+    refute_equal 'Foo with a slash', body
+
+    get '/foo/'
+    assert_equal 'Foo with a slash', body
+  end
 end
