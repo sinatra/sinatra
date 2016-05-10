@@ -16,7 +16,6 @@ module Sinatra
 
     def initialize(app)
       @app      = app
-      @template = ERB.new(TEMPLATE)
     end
 
     def call(env)
@@ -66,7 +65,7 @@ module Sinatra
       end
     end
 
-TEMPLATE = <<-HTML # :nodoc:
+TEMPLATE = ERB.new <<-HTML # :nodoc:
 <!DOCTYPE html>
 <html>
 <head>
@@ -353,3 +352,6 @@ enabled the <code>show_exceptions</code> setting.</p>
 HTML
   end
 end
+
+Rack::ShowExceptions.send :remove_const, "TEMPLATE"
+Rack::ShowExceptions.const_set "TEMPLATE", Sinatra::ShowExceptions::TEMPLATE
