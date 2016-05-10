@@ -1597,6 +1597,10 @@ post '/:message' do
 end
 ```
 
+It's also possible for the client to close the connection when trying to write
+to the socket. Because of this, it's recommended to check `out.closed?` before
+trying to write.
+
 ### Logging
 
 In the request scope, the `logger` helper exposes a `Logger` instance:
