@@ -9,8 +9,8 @@ describe Sinatra::Cookies do
       "ok"
     end
     get '/', {}, @headers || {}
-    last_response.should be_ok
-    body.should be == "ok"
+    expect(last_response).to be_ok
+    expect(body).to eq("ok")
     result
   end
 
@@ -32,110 +32,110 @@ describe Sinatra::Cookies do
     it 'runs the block' do
       ran = false
       cookie_route { ran = true }
-      ran.should be true
+      expect(ran).to be true
     end
 
     it 'returns the block result' do
-      cookie_route { 42 }.should be == 42
+      expect(cookie_route { 42 }).to eq(42)
     end
   end
 
   describe :== do
     it 'is comparable to hashes' do
-      cookies.should be == {}
+      expect(cookies).to eq({})
     end
 
     it 'is comparable to anything that responds to to_hash' do
       other = Struct.new(:to_hash).new({})
-      cookies.should be == other
+      expect(cookies).to eq(other)
     end
   end
 
   describe :[] do
     it 'allows access to request cookies' do
-      cookies("foo=bar")["foo"].should be == "bar"
+      expect(cookies("foo=bar")["foo"]).to eq("bar")
     end
 
     it 'takes symbols as keys' do
-      cookies("foo=bar")[:foo].should be == "bar"
+      expect(cookies("foo=bar")[:foo]).to eq("bar")
     end
 
     it 'returns nil for missing keys' do
-      cookies("foo=bar")['bar'].should be_nil
+      expect(cookies("foo=bar")['bar']).to be_nil
     end
 
     it 'allows access to response cookies' do
-      cookie_route do
+      expect(cookie_route do
         response.set_cookie 'foo', 'bar'
         cookies['foo']
-      end.should be == 'bar'
+      end).to eq('bar')
     end
 
     it 'favors response cookies over request cookies' do
-      cookie_route('foo=bar') do
+      expect(cookie_route('foo=bar') do
         response.set_cookie 'foo', 'baz'
         cookies['foo']
-      end.should be == 'baz'
+      end).to eq('baz')
     end
 
 
     it 'takes the last value for response cookies' do
-      cookie_route do
+      expect(cookie_route do
         response.set_cookie 'foo', 'bar'
         response.set_cookie 'foo', 'baz'
         cookies['foo']
-      end.should be == 'baz'
+      end).to eq('baz')
     end
   end
 
   describe :[]= do
     it 'sets cookies to httponly' do
-      cookie_route do
+      expect(cookie_route do
         cookies['foo'] = 'bar'
         response['Set-Cookie'].lines.detect { |l| l.start_with? 'foo=' }
-      end.should include('HttpOnly')
+      end).to include('HttpOnly')
     end
 
     it 'sets domain to nil if localhost' do
       @headers = {'HTTP_HOST' => 'localhost'}
-      cookie_route do
+      expect(cookie_route do
         cookies['foo'] = 'bar'
         response['Set-Cookie']
-      end.should_not include("domain")
+      end).not_to include("domain")
     end
 
     it 'sets the domain' do
-      cookie_route do
+      expect(cookie_route do
         cookies['foo'] = 'bar'
         response['Set-Cookie'].lines.detect { |l| l.start_with? 'foo=' }
-      end.should include('domain=example.org')
+      end).to include('domain=example.org')
     end
 
     it 'sets path to / by default' do
-      cookie_route do
+      expect(cookie_route do
         cookies['foo'] = 'bar'
         response['Set-Cookie'].lines.detect { |l| l.start_with? 'foo=' }
-      end.should include('path=/')
+      end).to include('path=/')
     end
 
     it 'sets path to the script_name if app is nested' do
-      cookie_route do
+      expect(cookie_route do
         request.script_name = '/foo'
         cookies['foo'] = 'bar'
         response['Set-Cookie'].lines.detect { |l| l.start_with? 'foo=' }
-      end.should include('path=/foo')
+      end).to include('path=/foo')
     end
 
     it 'sets a cookie' do
       cookie_route { cookies['foo'] = 'bar' }
-      cookie_jar['foo'].should be == 'bar'
+      expect(cookie_jar['foo']).to eq('bar')
     end
 
     it 'adds a value to the cookies hash' do
-      cookie_route do
+      expect(cookie_route do
         cookies['foo'] = 'bar'
         cookies['foo']
-      end.should be == 'bar'
+      end).to eq('bar')
     end
   end
 
@@ -148,60 +148,60 @@ describe Sinatra::Cookies do
   describe :clear do
     it 'removes request cookies from cookies hash' do
       jar = cookies('foo=bar')
-      jar['foo'].should be == 'bar'
+      expect(jar['foo']).to eq('bar')
       jar.clear
-      jar['foo'].should be_nil
+      expect(jar['foo']).to be_nil
     end
 
     it 'removes response cookies from cookies hash' do
-      cookie_route do
+      expect(cookie_route do
         cookies['foo'] = 'bar'
         cookies.clear
         cookies['foo']
-      end.should be_nil
+      end).to be_nil
     end
 
     it 'expires existing cookies' do
-      cookie_route("foo=bar") do
+      expect(cookie_route("foo=bar") do
         cookies.clear
         response['Set-Cookie']
-      end.should include("foo=;", "expires=", "1970 00:00:00")
+      end).to include("foo=;", "expires=", "1970 00:00:00")
     end
   end
 
   describe :compare_by_identity? do
-    it { cookies.should_not be_compare_by_identity }
+    it { expect(cookies).not_to be_compare_by_identity }
   end
 
   describe :default do
-    it { cookies.default.should be_nil }
+    it { expect(cookies.default).to be_nil }
   end
 
   describe :default_proc do
-    it { cookies.default_proc.should be_nil }
+    it { expect(cookies.default_proc).to be_nil }
   end
 
   describe :delete do
     it 'removes request cookies from cookies hash' do
       jar = cookies('foo=bar')
-      jar['foo'].should be == 'bar'
+      expect(jar['foo']).to eq('bar')
       jar.delete 'foo'
-      jar['foo'].should be_nil
+      expect(jar['foo']).to be_nil
     end
 
     it 'removes response cookies from cookies hash' do
-      cookie_route do
+      expect(cookie_route do
         cookies['foo'] = 'bar'
         cookies.delete 'foo'
         cookies['foo']
-      end.should be_nil
+      end).to be_nil
     end
 
     it 'expires existing cookies' do
-      cookie_route("foo=bar") do
+      expect(cookie_route("foo=bar") do
         cookies.delete 'foo'
         response['Set-Cookie']
-      end.should include("foo=;", "expires=", "1970 00:00:00")
+      end).to include("foo=;", "expires=", "1970 00:00:00")
     end
 
     it 'honours the app cookie_options' do
@@ -217,42 +217,42 @@ describe Sinatra::Cookies do
         cookies.delete 'foo'
         response['Set-Cookie']
       end
-      cookie_header.should include("path=/foo;", "domain=bar.com;", "secure;", "HttpOnly")
+      expect(cookie_header).to include("path=/foo;", "domain=bar.com;", "secure;", "HttpOnly")
     end
 
     it 'does not touch other cookies' do
-      cookie_route("foo=bar", "bar=baz") do
+      expect(cookie_route("foo=bar", "bar=baz") do
         cookies.delete 'foo'
         cookies['bar']
-      end.should be == 'baz'
+      end).to eq('baz')
     end
 
     it 'returns the previous value for request cookies' do
-      cookie_route("foo=bar") do
+      expect(cookie_route("foo=bar") do
         cookies.delete "foo"
-      end.should be == "bar"
+      end).to eq("bar")
     end
 
     it 'returns the previous value for response cookies' do
-      cookie_route do
+      expect(cookie_route do
         cookies['foo'] = 'bar'
         cookies.delete "foo"
-      end.should be == "bar"
+      end).to eq("bar")
     end
 
     it 'returns nil for non-existing cookies' do
-      cookie_route { cookies.delete("foo") }.should be_nil
+      expect(cookie_route { cookies.delete("foo") }).to be_nil
     end
   end
 
   describe :delete_if do
     it 'deletes cookies that match the block' do
-      cookie_route('foo=bar') do
+      expect(cookie_route('foo=bar') do
         cookies['bar'] = 'baz'
         cookies['baz'] = 'foo'
         cookies.delete_if { |*a| a.include? 'bar' }
         cookies.values_at 'foo', 'bar', 'baz'
-      end.should be == [nil, nil, 'foo']
+      end).to eq([nil, nil, 'foo'])
     end
   end
 
@@ -270,22 +270,25 @@ describe Sinatra::Cookies do
         end
       end
 
-      keys.sort.should be == ['bar', 'foo']
-      foo.should be == 'bar'
-      bar.should be == 'baz'
+      expect(keys.sort).to eq(['bar', 'foo'])
+      expect(foo).to eq('bar')
+      expect(bar).to eq('baz')
     end
 
     it 'favors response over request cookies' do
       seen = false
+      key = nil
+      value = nil
       cookie_route('foo=bar') do
         cookies[:foo] = 'baz'
-        cookies.each do |key, value|
-          key.should   == 'foo'
-          value.should == 'baz'
-          seen.should == false
-          seen = true
+        cookies.each do |k,v|
+          key = k
+          value = v
         end
       end
+      expect(key).to eq('foo')
+      expect(value).to eq('baz')
+      expect(seen).to eq(false)
     end
 
     it 'does not loop through deleted cookies' do
@@ -296,10 +299,12 @@ describe Sinatra::Cookies do
     end
 
     it 'returns an enumerator' do
+      keys = []
       cookie_route('foo=bar') do
         enum = cookies.each
-        enum.each { |key, value| key.should == 'foo' }
+        enum.each { |key, value| keys << key }
       end
+      keys.each{ |key| expect(key).to eq('foo')}
     end
   end
 
@@ -313,18 +318,15 @@ describe Sinatra::Cookies do
         end
       end
 
-      keys.sort.should be == ['bar', 'foo']
+      expect(keys.sort).to eq(['bar', 'foo'])
     end
 
     it 'only yields keys once' do
       seen = false
       cookie_route('foo=bar') do
         cookies[:foo] = 'baz'
-        cookies.each_key do |key|
-          seen.should  == false
-          seen = true
-        end
       end
+      expect(seen).to eq(false)
     end
 
     it 'does not loop through deleted cookies' do
@@ -335,10 +337,12 @@ describe Sinatra::Cookies do
     end
 
     it 'returns an enumerator' do
+      keys = []
       cookie_route('foo=bar') do
         enum = cookies.each_key
-        enum.each { |key| key.should == 'foo' }
+        enum.each { |key|  keys << key }
       end
+      keys.each{ |key| expect(key).to eq('foo')}
     end
   end
 
@@ -356,22 +360,25 @@ describe Sinatra::Cookies do
         end
       end
 
-      keys.sort.should be == ['bar', 'foo']
-      foo.should be == 'bar'
-      bar.should be == 'baz'
+      expect(keys.sort).to eq(['bar', 'foo'])
+      expect(foo).to eq('bar')
+      expect(bar).to eq('baz')
     end
 
     it 'favors response over request cookies' do
       seen = false
+      key = nil
+      value = nil
       cookie_route('foo=bar') do
         cookies[:foo] = 'baz'
-        cookies.each_pair do |key, value|
-          key.should   == 'foo'
-          value.should == 'baz'
-          seen.should  == false
-          seen = true
+        cookies.each_pair do |k, v|
+          key = k
+          value = v
         end
       end
+      expect(key).to eq('foo')
+      expect(value).to eq('baz')
+      expect(seen).to eq(false)
     end
 
     it 'does not loop through deleted cookies' do
@@ -382,10 +389,12 @@ describe Sinatra::Cookies do
     end
 
     it 'returns an enumerator' do
+      keys = []
       cookie_route('foo=bar') do
         enum = cookies.each_pair
-        enum.each { |key, value| key.should == 'foo' }
+        enum.each { |key, value| keys << key }
       end
+      keys.each{ |key| expect(key).to eq('foo')}
     end
   end
 
@@ -399,19 +408,19 @@ describe Sinatra::Cookies do
         end
       end
 
-      values.sort.should be == ['bar', 'baz']
+      expect(values.sort).to eq(['bar', 'baz'])
     end
 
     it 'favors response over request cookies' do
       seen = false
+      value = nil
       cookie_route('foo=bar') do
         cookies[:foo] = 'baz'
-        cookies.each_value do |value|
-          value.should == 'baz'
-          seen.should  == false
-          seen = true
+        cookies.each_value do |v|
+          value = v
         end
       end
+      expect(value).to eq('baz')
     end
 
     it 'does not loop through deleted cookies' do
@@ -422,70 +431,71 @@ describe Sinatra::Cookies do
     end
 
     it 'returns an enumerator' do
+      enum = nil
       cookie_route('foo=bar') do
         enum = cookies.each_value
-        enum.each { |value| value.should == 'bar' }
       end
+      enum.each { |value| expect(value).to eq('bar') }
     end
   end
 
   describe :empty? do
     it 'returns true if there are no cookies' do
-      cookies.should be_empty
+      expect(cookies).to be_empty
     end
 
     it 'returns false if there are request cookies' do
-      cookies('foo=bar').should_not be_empty
+      expect(cookies('foo=bar')).not_to be_empty
     end
 
     it 'returns false if there are response cookies' do
-      cookie_route do
+      expect(cookie_route do
         cookies['foo'] = 'bar'
         cookies.empty?
-      end.should be false
+      end).to be false
     end
 
     it 'becomes true if response cookies are removed' do
-      cookie_route do
+      expect(cookie_route do
         cookies['foo'] = 'bar'
         cookies.delete :foo
         cookies.empty?
-      end.should be true
+      end).to be true
     end
 
     it 'becomes true if request cookies are removed' do
-      cookie_route('foo=bar') do
+      expect(cookie_route('foo=bar') do
         cookies.delete :foo
         cookies.empty?
-      end.should be_truthy
+      end).to be_truthy
     end
 
     it 'becomes true after clear' do
-      cookie_route('foo=bar', 'bar=baz') do
+      expect(cookie_route('foo=bar', 'bar=baz') do
         cookies['foo'] = 'bar'
         cookies.clear
         cookies.empty?
-      end.should be_truthy
+      end).to be_truthy
     end
   end
 
   describe :fetch do
     it 'returns values from request cookies' do
-      cookies('foo=bar').fetch('foo').should be == 'bar'
+      expect(cookies('foo=bar').fetch('foo')).to eq('bar')
     end
 
     it 'returns values from response cookies' do
-      cookie_route do
+      expect(cookie_route do
         cookies['foo'] = 'bar'
         cookies.fetch('foo')
-      end.should be == 'bar'
+      end).to eq('bar')
     end
 
     it 'favors response over request cookies' do
-      cookie_route('foo=baz') do
+      expect(cookie_route('foo=baz') do
         cookies['foo'] = 'bar'
         cookies.fetch('foo')
-      end.should be == 'bar'
+      end).to eq('bar')
     end
 
     it 'raises an exception if key does not exist' do
@@ -498,81 +508,81 @@ describe Sinatra::Cookies do
     end
 
     it 'returns the block result if missing' do
-      cookies.fetch('foo') { 'bar' }.should be == 'bar'
+      expect(cookies.fetch('foo') { 'bar' }).to eq('bar')
     end
   end
 
   describe :flatten do
-    it { cookies('foo=bar').flatten.should be == {'foo' => 'bar'}.flatten }
+    it { expect(cookies('foo=bar').flatten).to eq({'foo' => 'bar'}.flatten) }
   end if Hash.method_defined? :flatten
 
   describe :has_key? do
     it 'checks request cookies' do
-      cookies('foo=bar').should have_key('foo')
+      expect(cookies('foo=bar')).to have_key('foo')
     end
 
     it 'checks response cookies' do
       jar = cookies
       jar['foo'] = 'bar'
-      jar.should have_key(:foo)
+      expect(jar).to have_key(:foo)
     end
 
     it 'does not use deleted cookies' do
       jar = cookies('foo=bar')
       jar.delete :foo
-      jar.should_not have_key('foo')
+      expect(jar).not_to have_key('foo')
     end
   end
 
   describe :has_value? do
     it 'checks request cookies' do
-      cookies('foo=bar').should have_value('bar')
+      expect(cookies('foo=bar')).to have_value('bar')
     end
 
     it 'checks response cookies' do
       jar = cookies
       jar[:foo] = 'bar'
-      jar.should have_value('bar')
+      expect(jar).to have_value('bar')
     end
 
     it 'does not use deleted cookies' do
       jar = cookies('foo=bar')
       jar.delete :foo
-      jar.should_not have_value('bar')
+      expect(jar).not_to have_value('bar')
     end
   end
 
   describe :include? do
     it 'checks request cookies' do
-      cookies('foo=bar').should include('foo')
+      expect(cookies('foo=bar')).to include('foo')
     end
 
     it 'checks response cookies' do
       jar = cookies
       jar['foo'] = 'bar'
-      jar.should include(:foo)
+      expect(jar).to include(:foo)
     end
 
     it 'does not use deleted cookies' do
       jar = cookies('foo=bar')
       jar.delete :foo
-      jar.should_not include('foo')
+      expect(jar).not_to include('foo')
     end
   end
 
   describe :index do
     it 'checks request cookies' do
-      cookies('foo=bar').index('bar').should be == 'foo'
+      expect(cookies('foo=bar').index('bar')).to eq('foo')
     end
 
     it 'checks response cookies' do
       jar = cookies
       jar['foo'] = 'bar'
-      jar.index('bar').should be == 'foo'
+      expect(jar.index('bar')).to eq('foo')
     end
 
     it 'returns nil when missing' do
-      cookies('foo=bar').index('baz').should be_nil
+      expect(cookies('foo=bar').index('baz')).to be_nil
     end
   end if RUBY_VERSION < '1.9'
 
@@ -580,91 +590,91 @@ describe Sinatra::Cookies do
     it 'removes entries' do
       jar = cookies('foo=bar', 'bar=baz')
       jar.keep_if { |*args| args == ['bar', 'baz'] }
-      jar.should be == {'bar' => 'baz'}
+      expect(jar).to eq({'bar' => 'baz'})
     end
   end
 
   describe :key do
     it 'checks request cookies' do
-      cookies('foo=bar').key('bar').should be == 'foo'
+      expect(cookies('foo=bar').key('bar')).to eq('foo')
     end
 
     it 'checks response cookies' do
       jar = cookies
       jar['foo'] = 'bar'
-      jar.key('bar').should be == 'foo'
+      expect(jar.key('bar')).to eq('foo')
     end
 
     it 'returns nil when missing' do
-      cookies('foo=bar').key('baz').should be_nil
+      expect(cookies('foo=bar').key('baz')).to be_nil
     end
   end
 
   describe :key? do
     it 'checks request cookies' do
-      cookies('foo=bar').key?('foo').should be true
+      expect(cookies('foo=bar').key?('foo')).to be true
     end
 
     it 'checks response cookies' do
       jar = cookies
       jar['foo'] = 'bar'
-      jar.key?(:foo).should be true
+      expect(jar.key?(:foo)).to be true
     end
 
     it 'does not use deleted cookies' do
       jar = cookies('foo=bar')
       jar.delete :foo
-      jar.key?('foo').should be false
+      expect(jar.key?('foo')).to be false
     end
   end
 
   describe :keys do
-    it { cookies('foo=bar').keys.should == ['foo'] }
+    it { expect(cookies('foo=bar').keys).to eq(['foo']) }
   end
 
   describe :length do
-    it { cookies.length.should == 0 }
-    it { cookies('foo=bar').length.should == 1 }
+    it { expect(cookies.length).to eq(0) }
+    it { expect(cookies('foo=bar').length).to eq(1) }
   end
 
   describe :member? do
     it 'checks request cookies' do
-      cookies('foo=bar').member?('foo').should be true
+      expect(cookies('foo=bar').member?('foo')).to be true
     end
 
     it 'checks response cookies' do
       jar = cookies
       jar['foo'] = 'bar'
-      jar.member?(:foo).should be true
+      expect(jar.member?(:foo)).to be true
     end
 
     it 'does not use deleted cookies' do
       jar = cookies('foo=bar')
       jar.delete :foo
-      jar.member?('foo').should be false
+      expect(jar.member?('foo')).to be false
     end
   end
 
   describe :merge do
     it 'is mergable with a hash' do
-      cookies('foo=bar').merge(:bar => :baz).should be == {"foo" => "bar", :bar => :baz}
+      expect(cookies('foo=bar').merge(:bar => :baz)).to eq({"foo" => "bar", :bar => :baz})
     end
 
     it 'does not create cookies' do
       jar = cookies('foo=bar')
       jar.merge(:bar => 'baz')
-      jar.should_not include(:bar)
+      expect(jar).not_to include(:bar)
     end
 
     it 'takes a block for conflict resolution' do
       update = {'foo' => 'baz', 'bar' => 'baz'}
       merged = cookies('foo=bar').merge(update) do |key, old, other|
-        key.should   be == 'foo'
-        old.should   be == 'bar'
-        other.should be == 'baz'
+        expect(key).to   eq('foo')
+        expect(old).to   eq('bar')
+        expect(other).to eq('baz')
         'foo'
       end
-      merged['foo'].should be == 'foo'
+      expect(merged['foo']).to eq('foo')
     end
   end
 
@@ -672,25 +682,25 @@ describe Sinatra::Cookies do
     it 'creates cookies' do
       jar = cookies('foo=bar')
       jar.merge! :bar => 'baz'
-      jar.should include('bar')
+      expect(jar).to include('bar')
     end
 
     it 'overrides existing values' do
       jar = cookies('foo=bar')
       jar.merge! :foo => "baz"
-      jar["foo"].should be == "baz"
+      expect(jar["foo"]).to eq("baz")
     end
 
     it 'takes a block for conflict resolution' do
       update = {'foo' => 'baz', 'bar' => 'baz'}
       jar    = cookies('foo=bar')
       jar.merge!(update) do |key, old, other|
-        key.should   be == 'foo'
-        old.should   be == 'bar'
-        other.should be == 'baz'
+        expect(key).to   eq('foo')
+        expect(old).to   eq('bar')
+        expect(other).to eq('baz')
         'foo'
       end
-      jar['foo'].should be == 'foo'
+      expect(jar['foo']).to eq('foo')
     end
   end
 
@@ -704,8 +714,8 @@ describe Sinatra::Cookies do
     it 'removes entries from new hash' do
       jar = cookies('foo=bar', 'bar=baz')
       sub = jar.reject { |*args| args == ['bar', 'baz'] }
-      sub.should be == {'foo' => 'bar'}
-      jar['bar'].should be == 'baz'
+      expect(sub).to eq({'foo' => 'bar'})
+      expect(jar['bar']).to eq('baz')
     end
   end
 
@@ -713,7 +723,7 @@ describe Sinatra::Cookies do
     it 'removes entries' do
       jar = cookies('foo=bar', 'bar=baz')
       jar.reject! { |*args| args == ['bar', 'baz'] }
-      jar.should be == {'foo' => 'bar'}
+      expect(jar).to eq({'foo' => 'bar'})
     end
   end
 
@@ -721,7 +731,7 @@ describe Sinatra::Cookies do
     it 'replaces entries' do
       jar = cookies('foo=bar', 'bar=baz')
       jar.replace 'foo' => 'baz', 'baz' => 'bar'
-      jar.should be == {'foo' => 'baz', 'baz' => 'bar'}
+      expect(jar).to eq({'foo' => 'baz', 'baz' => 'bar'})
     end
   end
 
@@ -729,8 +739,8 @@ describe Sinatra::Cookies do
     it 'removes entries from new hash' do
       jar = cookies('foo=bar', 'bar=baz')
       sub = jar.select { |*args| args != ['bar', 'baz'] }
-      sub.should be == {'foo' => 'bar'}.select { true }
-      jar['bar'].should be == 'baz'
+      expect(sub).to eq({'foo' => 'bar'}.select { true })
+      expect(jar['bar']).to eq('baz')
     end
   end
 
@@ -738,72 +748,72 @@ describe Sinatra::Cookies do
     it 'removes entries' do
       jar = cookies('foo=bar', 'bar=baz')
       jar.select! { |*args| args != ['bar', 'baz'] }
-      jar.should be == {'foo' => 'bar'}
+      expect(jar).to eq({'foo' => 'bar'})
     end
   end if Hash.method_defined? :select!
 
   describe :shift do
     it 'removes from the hash' do
       jar = cookies('foo=bar')
-      jar.shift.should be == ['foo', 'bar']
-      jar.should_not include('bar')
+      expect(jar.shift).to eq(['foo', 'bar'])
+      expect(jar).not_to include('bar')
     end
   end
 
   describe :size do
-    it { cookies.size.should == 0 }
-    it { cookies('foo=bar').size.should == 1 }
+    it { expect(cookies.size).to eq(0) }
+    it { expect(cookies('foo=bar').size).to eq(1) }
   end
 
   describe :update do
     it 'creates cookies' do
       jar = cookies('foo=bar')
       jar.update :bar => 'baz'
-      jar.should include('bar')
+      expect(jar).to include('bar')
     end
 
     it 'overrides existing values' do
       jar = cookies('foo=bar')
       jar.update :foo => "baz"
-      jar["foo"].should be == "baz"
+      expect(jar["foo"]).to eq("baz")
     end
 
     it 'takes a block for conflict resolution' do
       merge = {'foo' => 'baz', 'bar' => 'baz'}
       jar   = cookies('foo=bar')
       jar.update(merge) do |key, old, other|
-        key.should   be == 'foo'
-        old.should   be == 'bar'
-        other.should be == 'baz'
+        expect(key).to   eq('foo')
+        expect(old).to   eq('bar')
+        expect(other).to eq('baz')
         'foo'
       end
-      jar['foo'].should be == 'foo'
+      expect(jar['foo']).to eq('foo')
     end
   end
 
   describe :value? do
     it 'checks request cookies' do
-      cookies('foo=bar').value?('bar').should be true
+      expect(cookies('foo=bar').value?('bar')).to be true
     end
 
     it 'checks response cookies' do
       jar = cookies
       jar[:foo] = 'bar'
-      jar.value?('bar').should be true
+      expect(jar.value?('bar')).to be true
     end
 
     it 'does not use deleted cookies' do
       jar = cookies('foo=bar')
       jar.delete :foo
-      jar.value?('bar').should be false
+      expect(jar.value?('bar')).to be false
     end
   end
 
   describe :values do
-    it { cookies('foo=bar', 'bar=baz').values.sort.should be == ['bar', 'baz'] }
+    it { expect(cookies('foo=bar', 'bar=baz').values.sort).to eq(['bar', 'baz']) }
   end
 
   describe :values_at do
-    it { cookies('foo=bar', 'bar=baz').values_at('foo').should be == ['bar'] }
+    it { expect(cookies('foo=bar', 'bar=baz').values_at('foo')).to eq(['bar']) }
   end
 end

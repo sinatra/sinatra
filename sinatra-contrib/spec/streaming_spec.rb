@@ -26,102 +26,102 @@ describe Sinatra::Streaming do
     it 'runs the given block' do
       ran = false
       stream { ran = true }
-      ran.should be true
+      expect(ran).to be true
     end
 
     it 'returns the stream object' do
       out = stream { }
-      out.should be_a(Sinatra::Helpers::Stream)
+      expect(out).to be_a(Sinatra::Helpers::Stream)
     end
 
     it 'fires a request against that stream' do
       stream { |out| out << "Hello World!" }
-      last_response.should be_ok
-      body.should be == "Hello World!"
+      expect(last_response).to be_ok
+      expect(body).to eq("Hello World!")
     end
 
     it 'passes the stream object to the block' do
       passed   = nil
       returned = stream { |out| passed = out }
-      passed.should be == returned
+      expect(passed).to eq(returned)
     end
   end
 
   context Sinatra::Streaming::Stream do
     it 'should extend the stream object' do
       out = stream { }
-      out.should be_a(Sinatra::Streaming::Stream)
+      expect(out).to be_a(Sinatra::Streaming::Stream)
     end
 
     it 'should not extend stream objects of other apps' do
       out = nil
       mock_app { get('/') { out = stream { }}}
       get('/')
-      out.should be_a(Sinatra::Helpers::Stream)
-      out.should_not be_a(Sinatra::Streaming::Stream)
+      expect(out).to be_a(Sinatra::Helpers::Stream)
+      expect(out).not_to be_a(Sinatra::Streaming::Stream)
     end
   end
 
   context 'app' do
     it 'is the app instance the stream was created from' do
       out = stream { }
-      out.app.should be_a(Sinatra::Base)
+      expect(out.app).to be_a(Sinatra::Base)
     end
   end
 
   context 'lineno' do
     it 'defaults to 0' do
-      stream { }.lineno.should be == 0
+      expect(stream { }.lineno).to eq(0)
     end
 
     it 'does not increase on write' do
       stream do |out|
         out << "many\nlines\n"
-        out.lineno.should be == 0
+        expect(out.lineno).to eq(0)
       end
     end
 
     it 'is writable' do
       out = stream { }
       out.lineno = 10
-      out.lineno.should be == 10
+      expect(out.lineno).to eq(10)
     end
   end
 
   context 'pos' do
     it 'defaults to 0' do
-      stream { }.pos.should be == 0
+      expect(stream { }.pos).to eq(0)
     end
 
     it 'increases when writing data' do
       stream do |out|
-        out.pos.should be == 0
+        expect(out.pos).to eq(0)
         out << 'hi'
-        out.pos.should be == 2
+        expect(out.pos).to eq(2)
       end
     end
 
     it 'is writable' do
       out = stream { }
       out.pos = 10
-      out.pos.should be == 10
+      expect(out.pos).to eq(10)
     end
 
     it 'aliased to #tell' do
       out = stream { }
-      out.tell.should be == 0
+      expect(out.tell).to eq(0)
       out.pos = 10
-      out.tell.should be == 10
+      expect(out.tell).to eq(10)
     end
   end
 
   context 'closed' do
     it 'returns false while streaming' do
-      stream { |out| out.should_not be_closed }
+      stream { |out| expect(out).not_to be_closed }
     end
 
     it 'returns true after streaming' do
-      stream {}.should be_closed
+      expect(stream {}).to be_closed
     end
   end
 
@@ -131,7 +131,7 @@ describe Sinatra::Streaming do
         out.map! { |s| s.upcase }
         out << 'ok'
       end
-      body.should be == "OK"
+      expect(body).to eq("OK")
     end
 
     it 'is chainable' do
@@ -140,7 +140,7 @@ describe Sinatra::Streaming do
         out.map! { |s| s.reverse }
         out << 'ok'
       end
-      body.should be == "KO"
+      expect(body).to eq("KO")
     end
 
     it 'works with middleware' do
@@ -155,7 +155,7 @@ describe Sinatra::Streaming do
 
       use middleware
       stream { |out| out << "ok" }
-      body.should be == "OK"
+      expect(body).to eq("OK")
     end
 
     it 'modifies each value separately' do
@@ -163,7 +163,7 @@ describe Sinatra::Streaming do
         out.map! { |s| s.reverse }
         out << "ab" << "cd"
       end
-      body.should be == "badc"
+      expect(body).to eq("badc")
     end
   end
 
@@ -179,7 +179,7 @@ describe Sinatra::Streaming do
 
       use middleware
       stream { |out| out << "ok" }
-      body.should be == "OK"
+      expect(body).to eq("OK")
     end
 
     it 'is chainable' do
@@ -193,7 +193,7 @@ describe Sinatra::Streaming do
 
       use middleware
       stream { |out| out << "ok" }
-      body.should be == "KO"
+      expect(body).to eq("KO")
     end
 
     it 'can be written as each.map' do
@@ -207,7 +207,7 @@ describe Sinatra::Streaming do
 
       use middleware
       stream { |out| out << "ok" }
-      body.should be == "OK"
+      expect(body).to eq("OK")
     end
 
     it 'does not modify the original body' do
@@ -215,101 +215,101 @@ describe Sinatra::Streaming do
         out.map { |s| s.reverse }
         out << 'ok'
       end
-      body.should be == 'ok'
+      expect(body).to eq('ok')
     end
   end
 
   context 'write' do
     it 'writes to the stream' do
       stream { |out| out.write 'hi' }
-      body.should be == 'hi'
+      expect(body).to eq('hi')
     end
 
     it 'returns the number of bytes' do
       stream do |out|
-        out.write('hi').should be == 2
-        out.write('hello').should be == 5
+        expect(out.write('hi')).to eq(2)
+        expect(out.write('hello')).to eq(5)
       end
     end
 
     it 'accepts non-string objects' do
       stream do |out|
-        out.write(12).should be == 2
+        expect(out.write(12)).to eq(2)
       end
     end
 
     it 'should be aliased to syswrite' do
-      stream { |out| out.syswrite('hi').should be == 2 }
-      body.should be == 'hi'
+      stream { |out| expect(out.syswrite('hi')).to eq(2) }
+      expect(body).to eq('hi')
     end
 
     it 'should be aliased to write_nonblock' do
-      stream { |out| out.write_nonblock('hi').should be == 2 }
-      body.should be == 'hi'
+      stream { |out| expect(out.write_nonblock('hi')).to eq(2) }
+      expect(body).to eq('hi')
     end
   end
 
   context 'print' do
     it 'writes to the stream' do
       stream { |out| out.print('hi') }
-      body.should be == 'hi'
+      expect(body).to eq('hi')
     end
 
     it 'accepts multiple arguments' do
       stream { |out| out.print(1, 2, 3, 4) }
-      body.should be == '1234'
+      expect(body).to eq('1234')
     end
 
     it 'returns nil' do
-      stream { |out| out.print('hi').should be_nil }
+      stream { |out| expect(out.print('hi')).to be_nil }
     end
   end
 
   context 'printf' do
     it 'writes to the stream' do
       stream { |out| out.printf('hi') }
-      body.should be == 'hi'
+      expect(body).to eq('hi')
     end
 
     it 'interpolates the format string' do
       stream { |out| out.printf("%s: %d", "answer", 42) }
-      body.should be == 'answer: 42'
+      expect(body).to eq('answer: 42')
     end
 
     it 'returns nil' do
-      stream { |out| out.printf('hi').should be_nil }
+      stream { |out| expect(out.printf('hi')).to be_nil }
     end
   end
 
   context 'putc' do
     it 'writes the first character of a string' do
       stream { |out| out.putc('hi') }
-      body.should be == 'h'
+      expect(body).to eq('h')
     end
 
     it 'writes the character corresponding to an integer' do
       stream { |out| out.putc(42) }
-      body.should be == '*'
+      expect(body).to eq('*')
     end
 
     it 'returns nil' do
-      stream { |out| out.putc('hi').should be_nil }
+      stream { |out| expect(out.putc('hi')).to be_nil }
     end
   end
 
   context 'puts' do
     it 'writes to the stream' do
       stream { |out| out.puts('hi') }
-      body.should be == "hi\n"
+      expect(body).to eq("hi\n")
     end
 
     it 'accepts multiple arguments' do
       stream { |out| out.puts(1, 2, 3, 4) }
-      body.should be == "1\n2\n3\n4\n"
+      expect(body).to eq("1\n2\n3\n4\n")
     end
 
     it 'returns nil' do
-      stream { |out| out.puts('hi').should be_nil }
+      stream { |out| expect(out.puts('hi')).to be_nil }
     end
   end
 
@@ -317,15 +317,15 @@ describe Sinatra::Streaming do
     it 'sets #closed? to true' do
       stream do |out|
         out.close
-        out.should be_closed
+        expect(out).to be_closed
       end
     end
 
     it 'sets #closed_write? to true' do
       stream do |out|
-        out.should_not be_closed_write
+        expect(out).not_to be_closed_write
         out.close
-        out.should be_closed_write
+        expect(out).to be_closed_write
       end
     end
 
@@ -334,7 +334,7 @@ describe Sinatra::Streaming do
         fired = false
         out.callback { fired = true }
         out.close
-        fired.should be true
+        expect(fired).to be true
       end
     end
 
@@ -354,7 +354,7 @@ describe Sinatra::Streaming do
   end
 
   context 'closed_read?' do
-    it('returns true') { stream { |out| out.should be_closed_read }}
+    it('returns true') { stream { |out| expect(out).to be_closed_read }}
   end
 
   context 'rewind' do
@@ -362,7 +362,7 @@ describe Sinatra::Streaming do
       stream do |out|
         out << 'hi'
         out.rewind
-        out.pos.should be == 0
+        expect(out.pos).to eq(0)
       end
     end
 
@@ -370,7 +370,7 @@ describe Sinatra::Streaming do
       stream do |out|
         out.lineno = 10
         out.rewind
-        out.lineno.should be == 0
+        expect(out.lineno).to eq(0)
       end
     end
   end
@@ -395,7 +395,7 @@ describe Sinatra::Streaming do
   enum.each do |method|
     context method do
       it 'creates an Enumerator' do
-        stream { |out| out.public_send(method).should be_a(Enumerator) }
+        stream { |out| expect(out.public_send(method)).to be_a(Enumerator) }
       end
 
       it 'calling each raises the appropriate exception' do
@@ -408,7 +408,7 @@ describe Sinatra::Streaming do
   dummies.each do |method|
     context method do
       it 'returns nil' do
-        stream { |out| out.public_send(method).should be_nil }
+        stream { |out| expect(out.public_send(method)).to be_nil }
       end
     end
   end

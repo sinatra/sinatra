@@ -9,7 +9,7 @@ shared_examples_for "a json encoder" do |lib, const|
       require lib if lib
       @encoder = eval(const)
     rescue LoadError
-      pending "unable to load #{lib}"
+      skip "unable to load #{lib}"
     end
   end
 
@@ -37,7 +37,7 @@ describe Sinatra::JSON do
   end
 
   def results_in(obj)
-    OkJson.decode(get('/').body).should == obj
+    expect(OkJson.decode(get('/').body)).to eq(obj)
   end
 
   it "encodes objects to json out of the box" do
@@ -47,36 +47,36 @@ describe Sinatra::JSON do
 
   it "sets the content type to 'application/json'" do
     mock_app { get('/') { json({}) } }
-    get('/')["Content-Type"].should include("application/json")
+    expect(get('/')["Content-Type"]).to include("application/json")
   end
 
   it "allows overriding content type with :content_type" do
     mock_app { get('/') { json({}, :content_type => "foo/bar") } }
-    get('/')["Content-Type"].should == "foo/bar"
+    expect(get('/')["Content-Type"]).to eq("foo/bar")
   end
 
   it "accepts shorthands for :content_type" do
     mock_app { get('/') { json({}, :content_type => :js) } }
-    get('/')["Content-Type"].should == "application/javascript;charset=utf-8"
+    expect(get('/')["Content-Type"]).to eq("application/javascript;charset=utf-8")
   end
 
   it 'calls generate on :encoder if available' do
     enc = Object.new
     def enc.generate(obj) obj.inspect end
     mock_app { get('/') { json(42, :encoder => enc) }}
-    get('/').body.should == '42'
+    expect(get('/').body).to eq('42')
   end
 
   it 'calls encode on :encoder if available' do
     enc = Object.new
     def enc.encode(obj) obj.inspect end
     mock_app { get('/') { json(42, :encoder => enc) }}
-    get('/').body.should == '42'
+    expect(get('/').body).to eq('42')
   end
 
   it 'sends :encoder as method call if it is a Symbol' do
     mock_app { get('/') { json(42, :encoder => :inspect) }}
-    get('/').body.should == '42'
+    expect(get('/').body).to eq('42')
   end
 
   it 'calls generate on settings.json_encoder if available' do
@@ -86,7 +86,7 @@ describe Sinatra::JSON do
       set :json_encoder, enc
       get('/') { json 42 }
     end
-    get('/').body.should == '42'
+    expect(get('/').body).to eq('42')
   end
 
   it 'calls encode on settings.json_encode if available' do
@@ -96,7 +96,7 @@ describe Sinatra::JSON do
       set :json_encoder, enc
       get('/') { json 42 }
     end
-    get('/').body.should == '42'
+    expect(get('/').body).to eq('42')
   end
 
   it 'sends settings.json_encode  as method call if it is a Symbol' do
@@ -104,7 +104,7 @@ describe Sinatra::JSON do
       set :json_encoder, :inspect
       get('/') { json 42 }
     end
-    get('/').body.should == '42'
+    expect(get('/').body).to eq('42')
   end
 
   describe('Yajl')    { it_should_behave_like "a json encoder", "yajl", "Yajl::Encoder" } unless defined? JRUBY_VERSION

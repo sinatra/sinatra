@@ -22,11 +22,11 @@ describe Sinatra::Extension do
 
   before { mock_app { register ExampleExtension }}
 
-  it('allows using set') { settings.foo.should == :bar }
-  it('implements configure') { settings.reload_stuff.should be false }
+  it('allows using set') { expect(settings.foo).to eq(:bar) }
+  it('implements configure') { expect(settings.reload_stuff).to be false }
 
   it 'allows defing routes' do
-    get('/').should be_ok
-    body.should == "from extension, yay"
+    expect(get('/')).to be_ok
+    expect(body).to eq("from extension, yay")
   end
 end
