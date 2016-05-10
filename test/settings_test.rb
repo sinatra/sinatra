@@ -235,6 +235,10 @@ class SettingsTest < Minitest::Test
       klass = Sinatra.new(Sinatra::Application)
       mock_app(klass) {
         enable :show_exceptions
+        # Because this test is run under `RACK_ENV=test`, unless we change the
+        # environment or set `preferred_type` then this test will fail and
+        # `ShowExceptions` will print the exception to stdout.
+        set :preferred_type, 'text/html'
 
         get '/' do
           raise StandardError
