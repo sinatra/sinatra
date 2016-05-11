@@ -404,7 +404,7 @@ module Sinatra
       def self.schedule(*) yield end
       def self.defer(*)    yield end
 
-      def initialize(scheduler = self.class, keep_open = false, &back)
+      def initialize(scheduler = self.class, keep_open = false, env = {}, &back)
         @back, @scheduler, @keep_open = back.to_proc, scheduler, keep_open
         @callbacks, @closed = [], false
       end
@@ -453,7 +453,7 @@ module Sinatra
     def stream(keep_open = false)
       scheduler = env['async.callback'] ? EventMachine : Stream
       current   = @params.dup
-      body Stream.new(scheduler, keep_open) { |out| with_params(current) { yield(out) } }
+      body Stream.new(scheduler, keep_open, env) { |out| with_params(current) { yield(out) } }
     end
 
     # Specify response freshness policy for HTTP caches (Cache-Control header).
