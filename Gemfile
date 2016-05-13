@@ -30,10 +30,6 @@ if RUBY_ENGINE == "ruby"
   gem 'rdiscount'
   gem 'RedCloth'
   gem 'puma'
-  #TODO: remove explicit require once net-http-server does it
-  #(apparently it was shipped w/ stdlib in Rubies < 2.2.2)
-  gem 'gserver'
-  gem 'net-http-server'
   gem 'yajl-ruby'
   gem 'nokogiri'
   gem 'thin'
