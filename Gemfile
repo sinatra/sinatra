@@ -24,7 +24,7 @@ end
 
 if RUBY_ENGINE == "ruby"
   gem 'less', '~> 2.0'
-  gem 'therubyracer'
+  gem 'mini_racer'
   gem 'redcarpet'
   gem 'wlang', '>= 2.0.1'
   gem 'bluecloth'
