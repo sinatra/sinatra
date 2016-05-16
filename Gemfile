@@ -12,6 +12,7 @@ gemspec
 
 gem 'rake'
 gem 'rack', github: 'rack/rack'
+gem 'tilt', github: 'rtomayko/tilt'
 gem 'rack-test', '>= 0.6.2'
 gem "minitest", "~> 5.0"
 gem 'tool', '~> 0.2'
