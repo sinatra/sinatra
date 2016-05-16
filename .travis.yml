@@ -1,6 +1,9 @@
 ---
 language: ruby
 
+dist: trusty
+group: edge
+
 before_install:
   - rvm get head
   - gem install bundler
