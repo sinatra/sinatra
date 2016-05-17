@@ -58,9 +58,6 @@ existing APIs.
 
 Currently included:
 
-* `sinatra/decompile`: Recreates path patterns from Sinatra's internal data
-  structures (used by other extensions).
-
 * `sinatra/reloader`: Automatically reloads Ruby files on code changes.
 
 ## Other Tools

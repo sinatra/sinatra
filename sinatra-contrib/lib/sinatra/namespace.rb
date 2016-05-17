@@ -1,6 +1,5 @@
 require 'backports'
 require 'sinatra/base'
-require 'sinatra/decompile'
 
 module Sinatra
 
@@ -163,7 +162,6 @@ module Sinatra
 
     module NamespacedMethods
       include SharedMethods
-      include Sinatra::Decompile
       attr_reader :base, :templates
 
       def self.prefixed(*names)
