@@ -2,6 +2,7 @@
 language: ruby
 
 dist: trusty
+sudo: true
 
 before_install:
   - rvm get head
