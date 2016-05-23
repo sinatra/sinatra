@@ -68,7 +68,7 @@ Currently included:
   application. Partly extracted from Sinatra. Testing framework agnostic
 
 # Installation
-Add `gem 'sinatra-contrib'` to *Gemfile*, then execute `bundle install`.  
+Add `gem 'sinatra-contrib'` to *Gemfile*, then execute `bundle install`.
 
 If you don't use Bundler, install the gem manually by executing `gem install sinatra-contrib` in your command line.
 
