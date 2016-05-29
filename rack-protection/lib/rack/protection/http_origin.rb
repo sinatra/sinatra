@@ -13,6 +13,7 @@ module Rack
     class HttpOrigin < Base
       DEFAULT_PORTS = { 'http' => 80, 'https' => 443, 'coffee' => 80 }
       default_reaction :deny
+      default_options :allow_if => nil
 
       def base_url(env)
         request = Rack::Request.new(env)
@@ -24,6 +25,7 @@ module Rack
         return true if safe? env
         return true unless origin = env['HTTP_ORIGIN']
         return true if base_url(env) == origin
+        return true if options[:allow_if] && options[:allow_if].call(env)
         Array(options[:origin_whitelist]).include? origin
       end
 

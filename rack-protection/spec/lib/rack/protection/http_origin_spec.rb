@@ -20,6 +20,16 @@ describe Rack::Protection::HttpOrigin do
     end
   end
 
+  %w(GET HEAD POST PUT DELETE).each do |method|
+    it "accepts #{method} requests when allow_if is true" do
+      mock_app do
+        use Rack::Protection::HttpOrigin, :allow_if => lambda{|env| true }
+        run DummyApp
+      end
+      expect(send(method.downcase, '/', {}, 'HTTP_ORIGIN' => 'http://any.domain.com')).to be_ok
+    end
+  end
+
   %w(POST PUT DELETE).each do |method|
     it "denies #{method} requests with non-whitelisted Origin" do
       expect(send(method.downcase, '/', {}, 'HTTP_ORIGIN' => 'http://malicious.com')).not_to be_ok
