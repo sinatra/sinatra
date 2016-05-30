@@ -23,7 +23,7 @@ describe Rack::Protection::HttpOrigin do
   %w(GET HEAD POST PUT DELETE).each do |method|
     it "accepts #{method} requests when allow_if is true" do
       mock_app do
-        use Rack::Protection::HttpOrigin, :allow_if => lambda{|env| true }
+        use Rack::Protection::HttpOrigin, :allow_if => lambda{|env| env.has_key?('HTTP_ORIGIN') }
         run DummyApp
       end
       expect(send(method.downcase, '/', {}, 'HTTP_ORIGIN' => 'http://any.domain.com')).to be_ok
