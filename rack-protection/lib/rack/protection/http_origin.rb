@@ -10,6 +10,7 @@ module Rack
     #
     # Does not accept unsafe HTTP requests when value of Origin HTTP request header
     # does not match default or whitelisted URIs.
+    # The :allow_if option can also be set to a proc to use custom allow/deny logic.
     class HttpOrigin < Base
       DEFAULT_PORTS = { 'http' => 80, 'https' => 443, 'coffee' => 80 }
       default_reaction :deny
