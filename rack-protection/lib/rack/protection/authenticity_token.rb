@@ -17,14 +17,17 @@ module Rack
     # authenticity_param: Defines the param's name that should contain the token on a request.
     #
     class AuthenticityToken < Base
-      default_options :authenticity_param => 'authenticity_token'
+      default_options :authenticity_param => 'authenticity_token',
+                      :allow_if => nil
 
       def accepts?(env)
         session = session env
         token   = session[:csrf] ||= session['_csrf_token'] || random_string
+
         safe?(env) ||
           env['HTTP_X_CSRF_TOKEN'] == token ||
-          Request.new(env).params[options[:authenticity_param]] == token
+          Request.new(env).params[options[:authenticity_param]] == token ||
+          ( options[:allow_if] && options[:allow_if].call(env) )
       end
     end
   end
