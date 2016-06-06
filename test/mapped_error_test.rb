@@ -107,22 +107,20 @@ class MappedErrorTest < Minitest::Test
       assert_raises(FooError) { get '/' }
     end
 
-    it "calls error handlers before raising errors even when raise_errors is set" do
+    it "raises errors in spite of error handlers defined when raise_errors is set" do
       mock_app do
         set :raise_errors, true
         error(FooError) { "she's there." }
         get('/') { raise FooError }
       end
-      get '/'
-      assert_equal 500, status
+      assert_raises(FooError) { get '/' }
     end
 
-    it "never raises Sinatra::NotFound beyond the application" do
+    it "raises Sinatra::NotFound beyond the application" do
       mock_app(Sinatra::Application) do
         get('/') { raise Sinatra::NotFound }
       end
-      get '/'
-      assert_equal 404, status
+      assert_raises(Sinatra::NotFound) { get '/' }
     end
 
     it "cascades for subclasses of Sinatra::NotFound" do
@@ -131,17 +129,12 @@ class MappedErrorTest < Minitest::Test
         error(FooNotFound) { "foo! not found." }
         get('/') { raise FooNotFound }
       end
-      get '/'
-      assert_equal 404, status
-      assert_equal 'foo! not found.', body
+      assert_raises(FooNotFound) { get '/' }
     end
 
     it 'has a not_found method for backwards compatibility' do
       mock_app { not_found { "Lost, are we?" } }
-
-      get '/test'
-      assert_equal 404, status
-      assert_equal "Lost, are we?", body
+      assert_raises(Sinatra::NotFound) { get '/test' }
     end
 
     it 'inherits error mappings from base class' do

@@ -1148,9 +1148,10 @@ module Sinatra
         halt status
       end
 
+      raise boom if settings.raise_errors? or settings.show_exceptions?
+
       res = error_block!(boom.class, boom) || error_block!(status, boom)
       return res if res or not server_error?
-      raise boom if settings.raise_errors? or settings.show_exceptions?
       error_block! Exception, boom
     end
 

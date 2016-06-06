@@ -1844,7 +1844,10 @@ class HelpersTest < Minitest::Test
     end
 
     it 'is case-insensitive' do
-      mock_app { get('/:foo') { uri params[:foo] }}
+      mock_app do
+        disable :raise_errors
+        get('/:foo') { uri params[:foo] }
+      end
       assert_equal get('HtTP://google.com').body, get('http://google.com').body
     end
 
