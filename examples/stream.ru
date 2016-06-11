@@ -8,17 +8,20 @@
 #   puma stream.ru                # gem install puma
 
 require 'sinatra/base'
+require 'sinatra/stream/reel'
 
 class Stream < Sinatra::Base
   get '/' do
-    content_type :txt
+    #content_type :txt
 
-    stream do |out|
-      out << "It's gonna be legen -\n"
+    #stream do |out|
+    Rack::StreamingResponse.new do |out|
+      out.hijack!(env)
+      out.write "It's gonna be legen -\n"
       sleep 0.5
-      out << " (wait for it) \n"
+      out.write " (wait for it) \n"
       sleep 1
-      out << "- dary!\n"
+      out.write "- dary!\n"
     end
   end
 end
