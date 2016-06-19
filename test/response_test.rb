@@ -35,7 +35,7 @@ class ResponseTest < Minitest::Test
     end
   end
 
-  [200, 302, 404, 500].each do |status_code|
+  [200, 201, 202, 301, 302, 400, 401, 403, 404, 500].each do |status_code|
     it "will not removes the Content-Type header and body when response status
         is #{status_code}" do
       @response.status = status_code
