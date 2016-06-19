@@ -35,6 +35,19 @@ class ResponseTest < Minitest::Test
     end
   end
 
+  [200, 302, 404, 500].each do |status_code|
+    it "will not removes the Content-Type header and body when response status
+        is #{status_code}" do
+      @response.status = status_code
+      @response.body   = ['Hello World']
+      assert_equal [
+        status_code,
+        { 'Content-Type' => 'text/html', 'Content-Length' => '11' },
+        ['Hello World']
+      ], @response.finish
+    end
+  end
+
   it 'Calculates the Content-Length using the bytesize of the body' do
     @response.body = ['Hello', 'World!', '✈']
     _, headers, body = @response.finish
