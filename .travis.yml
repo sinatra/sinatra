@@ -7,7 +7,6 @@ sudo: true
 before_install:
   - rvm get head
   - gem install bundler
-  - sudo apt-get update -q
   - export CXX="g++-4.8"
   
 addons:
