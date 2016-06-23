@@ -15,6 +15,7 @@ gem 'rack', github: 'rack/rack'
 gem 'rack-test', '>= 0.6.2'
 gem "minitest", "~> 5.0"
 gem 'tool', '~> 0.2'
+gem 'v8eval'
 
 if RUBY_ENGINE == 'jruby'
   gem 'nokogiri', '!= 1.5.0'
