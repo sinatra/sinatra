@@ -62,7 +62,7 @@ track patch requests.
   is where the website sources are managed. There are almost always people in
   `#sinatra` that are happy to discuss, apply, and publish website patches.
 
-* [The Book](http://sinatra-book.gittr.com/) has its own [Git
+* [The Book](http://sinatra-org-book.herokuapp.com/) has its own [Git
   repository](http://github.com/sinatra/sinatra-book/) and build process but is
   managed the same as the website and project codebase.
 
