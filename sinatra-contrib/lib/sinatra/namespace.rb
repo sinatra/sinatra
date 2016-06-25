@@ -266,7 +266,6 @@ module Sinatra
 
       def prefixed_path(a, b)
         return a || b || // unless a and b
-        a, b = decompile(a), decompile(b) unless a.class == b.class
         a, b = regexpify(a), regexpify(b) unless a.class == b.class
         path = a.class.new "#{a}#{b}"
         path = /^#{path}$/ if path.is_a? Regexp and base == app
