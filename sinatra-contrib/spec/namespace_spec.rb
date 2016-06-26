@@ -1,8 +1,7 @@
 require 'spec_helper'
 
 describe Sinatra::Namespace do
-  verbs = [:get, :head, :post, :put, :delete, :options]
-  verbs << :patch if Sinatra::VERSION >= '1.3'
+  verbs = [:get, :head, :post, :put, :delete, :options, :patch]
 
   def mock_app(&block)
     super do
@@ -689,7 +688,7 @@ describe Sinatra::Namespace do
             end
             get('/bar') { }
           end
-          route[1].should eq '/foo'
+          route[1].should eq Mustermann.new '/foo', type: :regular
         end
 
         specify 'prevent app-global settings from being changed' do
