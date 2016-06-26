@@ -26,7 +26,7 @@ describe Sinatra::Namespace do
 
       describe 'redirect_to' do
         it 'redirect within namespace' do
-          namespace('/foo') { send(verb, '/bar') {  redirect_to '/foo_bar' }}
+          namespace('/foo') { send(verb, '/bar') { redirect_to '/foo_bar' }}
           send(verb, '/foo/bar').should be_redirect
           send(verb, '/foo/bar').location.should include("/foo/foo_bar")
         end
