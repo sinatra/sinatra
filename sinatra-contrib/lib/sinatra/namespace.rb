@@ -244,7 +244,6 @@ module Sinatra
         @pattern
       end
 
-
       private
 
       def app
