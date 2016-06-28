@@ -295,7 +295,7 @@ module Sinatra
       include SharedMethods
     end
 
-    def self.extend_object(base)
+    def self.extended(base)
       base.extend BaseMethods
     end
   end
