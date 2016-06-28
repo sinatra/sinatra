@@ -267,9 +267,9 @@ module Sinatra
         return a || b || // unless a and b
 
         if a.class == String
-          Mustermann.new(a.to_s + b.to_s)
+          ::Mustermann.new(a.to_s + b.to_s)
         elsif a.class == Regexp
-          Mustermann.new(a) + Mustermann.new(b)
+          ::Mustermann.new(a) + ::Mustermann.new(b)
         end
       end
 
