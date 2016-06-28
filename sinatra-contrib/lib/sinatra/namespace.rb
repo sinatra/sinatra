@@ -266,7 +266,12 @@ module Sinatra
 
       def prefixed_path(a, b)
         return a || b || // unless a and b
-        Mustermann.new(a.to_s + b.to_s, type: :regular)
+
+        if a.class == String
+          Mustermann.new(a.to_s + b.to_s)
+        elsif a.class == Regexp
+          Mustermann.new(a) + Mustermann.new(b)
+        end
       end
 
       def prefixed(method, pattern = nil, conditions = {}, &block)

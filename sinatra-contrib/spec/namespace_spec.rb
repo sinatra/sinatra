@@ -688,7 +688,7 @@ describe Sinatra::Namespace do
             end
             get('/bar') { }
           end
-          route[1].should eq Mustermann.new '/foo', type: :regular
+          route[1].should eq ::Mustermann.new '/foo'
         end
 
         specify 'prevent app-global settings from being changed' do
