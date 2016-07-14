@@ -201,9 +201,10 @@ module Sinatra
       end
 
       def error(*codes, &block)
-        args  = Sinatra::Base.send(:compile!, "ERROR", @pattern, block)
+        args  = Sinatra::Base.send(:compile!, "ERROR", /.*/, block)
         codes = codes.map { |c| Array(c) }.flatten
         codes << Exception if codes.empty?
+        codes << Sinatra::NotFound if codes.include?(404)
 
         codes.each do |c|
           errors = @errors[c] ||= []
@@ -264,7 +265,7 @@ module Sinatra
       end
 
       def prefixed_path(a, b)
-        return a || b || // unless a and b
+        return a || b || /.*/ unless a and b
 
         Mustermann.new(a.to_s + b.to_s)
       rescue

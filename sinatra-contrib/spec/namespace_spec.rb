@@ -159,8 +159,6 @@ describe Sinatra::Namespace do
       describe 'conditions' do
         context 'when the namespace has no prefix' do
           specify 'are accepted in the namespace' do
-            skip "Sinatra::Namespace accepts namespace without prefix in conditions"
-
             mock_app do
               namespace(:host_name => 'example.com') { send(verb) { 'yes' }}
               send(verb, '/') { 'no' }
@@ -488,8 +486,6 @@ describe Sinatra::Namespace do
 
       describe 'error handling' do
         it 'can be customized using the not_found block' do
-          skip "Sinatra::Namespace allows not_found blocks"
-
           namespace('/de') do
             not_found { 'nicht gefunden' }
           end
@@ -502,8 +498,6 @@ describe Sinatra::Namespace do
         end
 
         it 'can be customized for specific error codes' do
-          skip "Sinatra::Namespace allows custom error handling"
-
           namespace('/de') do
             error(404) { 'nicht gefunden' }
           end
@@ -516,8 +510,6 @@ describe Sinatra::Namespace do
         end
 
         it 'falls back to the handler defined in the base app' do
-          skip "Sinatra::Namespace allows custom error handling"
-
           mock_app do
             error(404) { 'not found...' }
             namespace('/en') do
@@ -535,8 +527,6 @@ describe Sinatra::Namespace do
         end
 
         it 'can be customized for specific Exception classes' do
-          skip "Sinatra::Namespace allows custom error handling"
-
           mock_app do
             class AError < StandardError; end
             class BError < AError; end
