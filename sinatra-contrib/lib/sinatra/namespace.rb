@@ -1,5 +1,6 @@
 require 'backports'
 require 'sinatra/base'
+require 'mustermann'
 
 module Sinatra
 
