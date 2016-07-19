@@ -1,6 +1,8 @@
 source "https://rubygems.org" unless ENV['QUICK']
 gemspec
 
+gem 'mustermann', github: 'sinatra/mustermann'
+
 group :development, :test do
 
   platform :ruby_18 do

@@ -80,8 +80,6 @@ describe Sinatra::Namespace do
         end
 
         it 'accepts the path as regular expression' do
-          skip "Sinatra::Namespace accepts regular expressions for pattern"
-
           namespace('/:foo') { send(verb, %r{/bar}) { params[:foo] }}
           send(verb, '/foo/bar').should be_ok
           body.should == 'foo' unless verb == :head
@@ -99,8 +97,6 @@ describe Sinatra::Namespace do
         end
 
         it 'accepts the path as a named parameter' do
-          skip "Sinatra::Namespace accepts regular expressions for pattern"
-
           namespace(%r{/foo}) { send(verb, '/:bar') { params[:bar] }}
           send(verb, '/foo/bar').should be_ok
           body.should == 'bar' unless verb == :head

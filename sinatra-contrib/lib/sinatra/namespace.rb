@@ -268,9 +268,7 @@ module Sinatra
       def prefixed_path(a, b)
         return a || b || /.*/ unless a and b
 
-        Mustermann.new(a.to_s + b.to_s)
-      rescue
-        Mustermann.new(/#{a}#{b}/)
+        Mustermann.new(a) + Mustermann.new(b)
       end
 
       def prefixed(method, pattern = nil, conditions = {}, &block)
