@@ -18,13 +18,11 @@ matrix:
     - { rvm: 2.3.1, env: tilt=master    }
     - { rvm: ruby-head, env: tilt=master    }
     - { rvm: 2.3.1, env: rack=master    }
-    - { rvm: 2.3.1, env: sinatra=master }
   allow_failures:
     - env: tilt=master
     - rvm: ruby-head
     - rvm: jruby-head
     - rvm: rbx
-    - env: sinatra=master
     - env: rack=master
 
 notifications:

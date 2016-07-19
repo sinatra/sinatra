@@ -2,6 +2,7 @@ source "https://rubygems.org" unless ENV['QUICK']
 gemspec
 
 gem 'mustermann', github: 'sinatra/mustermann'
+gem 'sinatra', github: 'sinatra/sinatra'
 
 group :development, :test do
 
