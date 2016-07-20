@@ -1,16 +1,18 @@
 [![Build Status](https://secure.travis-ci.org/sinatra/sinatra-contrib.png)](http://travis-ci.org/sinatra/sinatra-contrib)
 
+# Sinatra::Contrib
+
 Collection of common Sinatra extensions, semi-officially supported.
 
-# Goals
+## Goals
 
 * For every future Sinatra release, have at least one fully compatible release
 * High code quality, high test coverage
 * Include plugins people usually ask for a lot
 
-# Included extensions
+## Included extensions
 
-## Common Extensions
+### Common Extensions
 
 These are common extension which will not add significant overhead or change any
 behavior of already existing APIs. They do not add any dependencies not already
@@ -51,7 +53,7 @@ Currently included:
 
 * `sinatra/required_params`: Ensure if required query parameters exist
 
-## Custom Extensions
+### Custom Extensions
 
 These extensions may add additional dependencies and enhance the behavior of the
 existing APIs.
@@ -60,22 +62,23 @@ Currently included:
 
 * `sinatra/reloader`: Automatically reloads Ruby files on code changes.
 
-## Other Tools
+### Other Tools
 
 * `sinatra/extension`: Mixin for writing your own Sinatra extensions.
 
 * `sinatra/test_helpers`: Helper methods to ease testing your Sinatra
   application. Partly extracted from Sinatra. Testing framework agnostic
 
-# Installation
+## Installation
+
 Add `gem 'sinatra-contrib'` to *Gemfile*, then execute `bundle install`.
 
 If you don't use Bundler, install the gem manually by executing `gem install sinatra-contrib` in your command line.
 
 
-# Usage
+## Usage
 
-## Classic Style
+### Classic Style
 
 A single extension (example: sinatra-content-for):
 
@@ -98,7 +101,7 @@ require 'sinatra'
 require 'sinatra/contrib/all'
 ```
 
-## Modular Style
+### Modular Style
 
 A single extension (example: sinatra-content-for):
 
@@ -137,7 +140,7 @@ class MyApp < Sinatra::Base
 end
 ```
 
-## Documentation
+### Documentation
 
 For more info check the [official docs](http://www.sinatrarb.com/contrib/) and
 [api docs](http://www.rubydoc.info/gems/sinatra-contrib).
