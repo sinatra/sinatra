@@ -44,7 +44,7 @@ describe Sinatra::Capture do
 
     it "handles ISO-8859-1 encoding" do
       render(:erb, "iso_8859_1").should == "ISO-8859-1 -"
-    end if RUBY_VERSION >= '1.9'
+    end
   end
 end
 

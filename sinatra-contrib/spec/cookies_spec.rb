@@ -492,7 +492,7 @@ describe Sinatra::Cookies do
       error = if defined? JRUBY_VERSION
         IndexError
       else
-        RUBY_VERSION >= '1.9' ? KeyError : IndexError
+        KeyError
       end
       expect { cookies.fetch('foo') }.to raise_exception(error)
     end
@@ -559,22 +559,6 @@ describe Sinatra::Cookies do
       jar.should_not include('foo')
     end
   end
-
-  describe :index do
-    it 'checks request cookies' do
-      cookies('foo=bar').index('bar').should be == 'foo'
-    end
-
-    it 'checks response cookies' do
-      jar = cookies
-      jar['foo'] = 'bar'
-      jar.index('bar').should be == 'foo'
-    end
-
-    it 'returns nil when missing' do
-      cookies('foo=bar').index('baz').should be_nil
-    end
-  end if RUBY_VERSION < '1.9'
 
   describe :keep_if do
     it 'removes entries' do
