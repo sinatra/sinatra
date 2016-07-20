@@ -135,6 +135,56 @@ module Sinatra
   #       end
   #     end
   #
+  # === Within an extension
+  #
+  # To be able to use namespaces within an extension, you need to first create
+  # an extension. This includes defining the `registered(app)` method in the
+  # module.
+  #
+  #     require 'sinatra/base' # For creating Sinatra extensions
+  #     require 'sinatra/namespace' # To create namespaces
+  #
+  #     module Zomg # Keep everything under "Zomg" namespace for sanity
+  #       module Routes # Define a new "Routes" module
+  #
+  #         self.registered(app)
+  #           # First, register the Namespace extension
+  #           app.register Sinatra::Namespace
+  #
+  #           # This defines an `/api` namespace on the application
+  #           app.namespace '/api' do
+  #             get '/users' do
+  #               # do something with `GET "/api/users"`
+  #             end
+  #           end
+  #
+  #         end
+  #       end
+  #
+  #       # Lastly, register the extension to use in our app
+  #       Sinatra.register Routes
+  #     end
+  #
+  # In order to use this extension, is the same as any other Sinatra extension:
+  #
+  #     module Zomg
+  #       # Define our app class, we use modular app for this example
+  #       class App < Sinatra::Base
+  #         # this gives us all the namespaces we defined earlier
+  #         register Routes
+  #
+  #         get '/' do
+  #           "Welcome to my application!"
+  #         end
+  #       end
+  #     end
+  #
+  #     Zomg::App.run! # Don't forget to start your app ;)
+  #
+  # Phew! That was a mouthful.
+  #
+  # I hope that helps you use `Sinatra::Namespace` in every way imaginable!
+  #
   module Namespace
     def self.new(base, pattern, conditions = {}, &block)
       Module.new do
