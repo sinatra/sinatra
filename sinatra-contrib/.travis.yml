@@ -8,7 +8,7 @@ before_install:
 rvm:
   - 2.2.4
   - 2.3.1
-  - rbx-2
+  - rbx
   - jruby-9.1.0.0
   - jruby-head
   - ruby-head
@@ -22,7 +22,7 @@ matrix:
     - env: tilt=master
     - rvm: ruby-head
     - rvm: jruby-head
-    - rvm: rbx-2
+    - rvm: rbx
     - env: rack=master
 
 notifications:
