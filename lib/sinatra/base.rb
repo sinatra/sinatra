@@ -358,7 +358,7 @@ module Sinatra
     # Set the Content-Disposition to "attachment" with the specified filename,
     # instructing the user agents to prompt to save.
     def attachment(filename = nil, disposition = :attachment)
-      response['Content-Disposition'] = String.new(disposition.to_s)
+      response['Content-Disposition'] = disposition.to_s.dup
       if filename
         params = '; filename="%s"' % File.basename(filename)
         response['Content-Disposition'] << params
