@@ -43,7 +43,7 @@ describe Sinatra::Capture do
     end
 
     it "handles ISO-8859-1 encoding" do
-      render(:erb, "iso_8859_1").should == "ISO-8859-1 -"
+      expect(render(:erb, "iso_8859_1")).to eq("ISO-8859-1 -")
     end
   end
 end
