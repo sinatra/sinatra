@@ -213,6 +213,8 @@ Gem::Specification.new do |s|
     "spec/params_spec.rb",
   ]
 
+  s.required_ruby_version = '>= 2.2.0'
+
   s.add_dependency "sinatra", "> 1", "< 3"
   s.add_dependency "mustermann",  "~> 0.4"
   s.add_dependency "backports", ">= 2.0"

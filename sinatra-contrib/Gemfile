@@ -6,11 +6,7 @@ gem 'sinatra', github: 'sinatra/sinatra'
 
 group :development, :test do
 
-  platform :ruby_18 do
-    gem 'libv8', '3.16.14.7'
-  end
-
-  platform :ruby_18, :jruby do
+  platform :jruby do
     gem 'json'
     gem 'rdoc'
   end
@@ -30,8 +26,7 @@ group :development, :test do
     gem 'redcarpet', '2.3.0'
     gem 'yajl-ruby'
     # ref is a dependency of therubyracer
-    # version 2 drops support for Rubies earlier than 1.9.3
-    gem 'ref', '< 2.0'
+    gem 'ref'
     gem 'therubyracer'
   end
 
