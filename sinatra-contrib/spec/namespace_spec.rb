@@ -117,10 +117,10 @@ describe Sinatra::Namespace do
             namespace(/\/foo\/([^\/&?]+)\/bar\/([^\/&?]+)\//) { before { ran = true };}
 
             send(verb, '/bar/')
-            ran.should be false
+            expect(ran).to eq(false)
 
             send(verb, '/foo/1/bar/1/')
-            ran.should be true
+            expect(ran).to eq(true)
           end
 
           it 'trigger after filter' do
@@ -128,10 +128,10 @@ describe Sinatra::Namespace do
             namespace(/\/foo\/([^\/&?]+)\/bar\/([^\/&?]+)\//) { after { ran = true };}
 
             send(verb, '/bar/')
-            ran.should be false
+            expect(ran).to eq(false)
 
             send(verb, '/foo/1/bar/1/')
-            ran.should be true
+            expect(ran).to eq(true)
           end
         end
 
@@ -149,8 +149,8 @@ describe Sinatra::Namespace do
               end
             end
 
-            send(verb, '/foo/1/bar/1/').should be_ok
-            body.should == 'foo' unless verb == :head
+            expect(send(verb, '/foo/1/bar/1/')).to be_ok
+            expect(body).to eq('foo') unless verb == :head
           end
         end
       end
@@ -731,7 +731,7 @@ describe Sinatra::Namespace do
             end
             get('/bar') { }
           end
-          route[1].should eq Mustermann.new '/foo'
+          expect(route[1]).to eq(Mustermann.new '/foo')
         end
 
         specify 'prevent app-global settings from being changed' do
