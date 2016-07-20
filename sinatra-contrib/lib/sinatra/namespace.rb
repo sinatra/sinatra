@@ -268,6 +268,12 @@ module Sinatra
       def prefixed_path(a, b)
         return a || b || /.*/ unless a and b
 
+        concat_patterns(a, b)
+      end
+
+      def concat_patterns(a, b)
+        return Mustermann.new(b) if a == /.*/
+
         Mustermann.new(a) + Mustermann.new(b)
       end
 
