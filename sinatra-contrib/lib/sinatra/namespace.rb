@@ -48,6 +48,14 @@ module Sinatra
   #       # More admin routes...
   #     end
   #
+  # Regex is also accepted:
+  #
+  #     namespace /\/posts\/([^\/&?]+)\// do
+  #       get { haml :blog }
+  #
+  #       # More blog routes...
+  #     end
+  #
   # When you define a filter or an error handler, or register an extension or a
   # set of helpers within a namespace, they only affect the routes defined in
   # it.  For instance, lets define a before filter to prevent the access of
@@ -109,7 +117,8 @@ module Sinatra
   #     require "sinatra"
   #     require "sinatra/namespace"
   #
-  #     # The rest of your classic application code goes here...
+  #     namespace '/users' do
+  #     end
   #
   # === Modular Application Setup
   #
@@ -122,7 +131,8 @@ module Sinatra
   #     class MyApp < Sinatra::Base
   #       register Sinatra::Namespace
   #
-  #       # The rest of your modular application code goes here...
+  #       namespace '/users' do
+  #       end
   #     end
   #
   module Namespace
