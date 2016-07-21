@@ -2,6 +2,8 @@ require 'open-uri'
 require 'net/http'
 require 'timeout'
 
+# NOTE: This feature is experimental, and missing tests!
+#
 # Helps you spinning up and shutting down your own sinatra app. This is especially helpful for running
 # real network tests against a sinatra backend.
 #
@@ -31,6 +33,8 @@ require 'timeout'
 #
 # Override Runner#app_file, #command, #port, #protocol and #ping_path for customization.
 #
+# **Don't forget to override #app_file specific to your application!**
+#
 # Whereever you need this test backend, here's how you manage it. The following example assumes you
 # have a test in your app that needs to be run against your test backend.
 #
@@ -41,7 +45,7 @@ require 'timeout'
 #
 #   runner.kill
 #
-# For an example, check https://github.com/apotonick/roar/blob/master/test/test_helper.rb
+# For an example, check https://github.com/apotonick/roar/blob/master/test/integration/runner.rb
 module Sinatra
   class Runner
     def app_file
@@ -49,7 +53,6 @@ module Sinatra
     end
 
     def run
-      #puts command
       @pipe     = start
       @started  = Time.now
       warn "#{server} up and running on port #{port}" if ping
