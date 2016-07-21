@@ -95,7 +95,8 @@ describe Sinatra::RespondWith do
     it 'does not set up default handlers' do
       respond_to
       expect(req).not_to be_ok
-      expect(status).to eq(406)
+      expect(status).to eq(500)
+      expect(body).to eq("Unknown template engine")
     end
   end
 
@@ -181,10 +182,11 @@ describe Sinatra::RespondWith do
         expect(req(:pdf).body).to eq("hello")
       end
 
-      it 'results in a 406 if format cannot be produced' do
+      it 'results in a 500 if format cannot be produced' do
         respond_with({})
         expect(req(:html)).not_to be_ok
-        expect(status).to eq(406)
+        expect(status).to eq(500)
+        expect(body).to eq("Unknown template engine")
       end
     end
 
@@ -204,8 +206,8 @@ describe Sinatra::RespondWith do
       it 'does not use name.engine for engines producing other formats' do
         respond_with :not_html
         expect(req(:html)).not_to be_ok
-        expect(status).to eq(406)
-        expect(body).to be_empty
+        expect(status).to eq(500)
+        expect(body).to eq("Unknown template engine")
       end
 
       it 'falls back to #json if no template is found' do

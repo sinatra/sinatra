@@ -115,7 +115,7 @@ module Sinatra
             @app.halt result
           end
         end
-        @app.halt 406
+        @app.halt 500, "Unknown template engine"
       end
 
       def method_missing(method, *args, &block)
