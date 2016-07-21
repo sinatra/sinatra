@@ -251,7 +251,7 @@ module Sinatra
       }
       engines.default = []
       (defined? JRUBY_VERSION) ? jrubyify(engines) : engines
-    end  
+    end
 
     def self.registered(base)
       base.set :ext_map, Hash.new { |h,k| h[k] = [] }
