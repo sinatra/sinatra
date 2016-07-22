@@ -1,0 +1,34 @@
+---
+language: ruby
+
+before_install:
+  - rvm get head
+  - gem install bundler
+
+rvm:
+  - 2.2.4
+  - 2.3.1
+  - rbx
+  - jruby-9.1.0.0
+  - jruby-head
+  - ruby-head
+
+matrix:
+  include:
+    - { rvm: 2.3.1, env: tilt=master    }
+    - { rvm: ruby-head, env: tilt=master    }
+    - { rvm: 2.3.1, env: rack=master    }
+  allow_failures:
+    - env: tilt=master
+    - rvm: ruby-head
+    - rvm: jruby-head
+    - rvm: rbx
+    - env: rack=master
+
+notifications:
+  recipients:
+    - _@trevorbramble.com
+    - mail@zzak.io
+  slack: sinatrarb:LQGhUfGYcqRgRzwKea0bqUhY
+
+sudo: false

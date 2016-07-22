@@ -1,0 +1,4 @@
+<% content_for :foo do %>foo<% end %>
+<% content_for :foo do %>bar<% end %>
+<% content_for :baz do %>WON'T RENDER ME<% end %>
+<% content_for :foo do %>baz<% end %>

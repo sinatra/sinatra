@@ -1,0 +1,4 @@
+---
+foo:
+  production: 10
+  development: 20

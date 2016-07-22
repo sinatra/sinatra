@@ -1,0 +1,11 @@
+---
+database:
+  production:
+    adapter: postgresql
+    database: foo_production
+  development:
+    adapter: sqlite
+    database: db/development.db
+  test:
+    adapter: sqlite
+    database: db/test.db
