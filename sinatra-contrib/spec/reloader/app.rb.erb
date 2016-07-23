@@ -1,0 +1,40 @@
+class <%= name %> < <%= parent %>
+<% if enable_reloader %>
+  register Sinatra::Reloader
+  enable :reloader
+<% end %>
+<% unless inline_templates.nil? %>
+  enable :inline_templates
+<% end %>
+
+<% extensions.each do |extension| %>
+  register <%= extension %>
+<% end %>
+
+<% middlewares.each do |middleware| %>
+  use <%= middleware %>
+<% end %>
+
+<% filters.each do |filter| %>
+  <%= filter %>
+<% end %>
+
+<% errors.each do |number, code| %>
+  error <%= number %> do
+    <%= code %>
+  end
+<% end %>
+
+<% routes.each do |route| %>
+  <%= route %>
+<% end %>
+end
+
+<% unless inline_templates.nil? %>
+__END__
+
+<% inline_templates.each_pair do |name, content| %>
+@@<%= name %>
+<%= content %>
+<% end %>
+<% end %>
