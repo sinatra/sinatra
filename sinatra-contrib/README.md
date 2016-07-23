@@ -75,6 +75,17 @@ Add `gem 'sinatra-contrib'` to *Gemfile*, then execute `bundle install`.
 
 If you don't use Bundler, install the gem manually by executing `gem install sinatra-contrib` in your command line.
 
+### Git
+
+If you want to use the gem from git, for whatever reason, you can do the following:
+
+```ruby
+github 'sinatra/sinatra' do
+  gem 'sinatra-contrib'
+end
+```
+
+Within this block you can also specify other gems from this git repository.
 
 ## Usage
 
