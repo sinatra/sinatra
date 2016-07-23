@@ -2,10 +2,9 @@ source "https://rubygems.org" unless ENV['QUICK']
 gemspec
 
 gem 'mustermann', github: 'sinatra/mustermann'
-gem 'sinatra', github: 'sinatra/sinatra'
+gem 'sinatra', path: '..'
 
 group :development, :test do
-
   platform :jruby do
     gem 'json'
     gem 'rdoc'
@@ -35,8 +34,8 @@ end
 
 # Allows stuff like `tilt=1.2.2 bundle install` or `tilt=master ...`.
 # Used by the CI.
-repos = { 'sinatra' => 'sinatra/sinatra', 'tilt' => 'rtomayko/tilt', 'rack' => 'rack/rack' }
-%w[sinatra tilt rack].each do |lib|
+repos = { 'tilt' => 'rtomayko/tilt', 'rack' => 'rack/rack' }
+%w[tilt rack].each do |lib|
   dep = (ENV[lib] || 'stable').sub "#{lib}-", ''
   dep = nil if dep == 'stable'
   dep = {:github => repos[lib], :branch => dep} if dep and dep !~ /(\d+\.)+\d+/
