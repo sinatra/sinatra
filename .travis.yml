@@ -24,7 +24,7 @@ rvm:
   - jruby-9.1.0.0
   - jruby-head
 
-script: .travis.sh
+script: ./.travis.sh
 
 sudo: false
 
