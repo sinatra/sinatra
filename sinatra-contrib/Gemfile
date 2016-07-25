@@ -42,3 +42,4 @@ repos = { 'tilt' => 'rtomayko/tilt', 'rack' => 'rack/rack' }
   gem lib, dep if dep
 end
 
+gem "rack-protection", github: "sinatra/rack-protection"
