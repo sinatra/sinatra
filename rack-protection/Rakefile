@@ -19,12 +19,9 @@ task 'rack-protection.gemspec' do
   # fetch data
   fields = {
     :authors => `git shortlog -sn`.force_encoding('utf-8').scan(/[^\d\s].*/),
-    :email   => `git shortlog -sne`.force_encoding('utf-8').scan(/[^<]+@[^>]+/),
-    :files   => `git ls-files`.force_encoding('utf-8').split("\n").reject { |f| f =~ /^(\.|Gemfile)/ }
+    :email   => ["mail@zzak.io", "konstantin.haase@gmail.com"],
+    :files   => %w(License README.md Rakefile Gemfile rack-protection.gemspec) + Dir['lib/**/*']
   }
-
-  # double email :(
-  fields[:email].delete("konstantin.haase@gmail.com")
 
   # insert data
   fields.each do |field, values|

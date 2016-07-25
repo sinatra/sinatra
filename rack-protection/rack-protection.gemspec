@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   # general infos
   s.name        = "rack-protection"
-  s.version     = "1.5.3"
+  s.version     = "2.0.0"
   s.description = "You should use protection!"
   s.homepage    = "http://github.com/sinatra/rack-protection"
   s.summary     = s.description
@@ -11,16 +11,27 @@ Gem::Specification.new do |s|
   # generated from git shortlog -sn
   s.authors = [
     "Konstantin Haase",
+    "Maurizio De Santis",
     "Alex Rodionov",
-    "Patrick Ellis",
     "Jason Staten",
+    "Patrick Ellis",
     "ITO Nobuaki",
     "Jeff Welling",
     "Matteo Centenaro",
+    "Akzhan Abdulin",
+    "Alan deLevie",
+    "Bj\u{f8}rge N\u{e6}ss",
+    "Chris Heald",
+    "Chris Mytton",
+    "Corey Ward",
+    "Dario Cravero",
+    "David Kellum",
     "Egor Homakov",
     "Florian Gilcher",
     "Fojas",
     "Igor Bochkariov",
+    "Josef Stribny",
+    "Katrina Owen",
     "Mael Clerambault",
     "Martin Mauch",
     "Renne Nissinen",
@@ -30,46 +41,15 @@ Gem::Specification.new do |s|
     "TOBY",
     "Thais Camilo and Konstantin Haase",
     "Vipul A M",
-    "Akzhan Abdulin",
-    "brookemckim",
-    "Bj\u{f8}rge N\u{e6}ss",
-    "Chris Heald",
-    "Chris Mytton",
-    "Corey Ward",
-    "Dario Cravero",
-    "David Kellum"
+    "Zachary Scott",
+    "ashley williams",
+    "brookemckim"
   ]
 
   # generated from git shortlog -sne
   s.email = [
-    "konstantin.mailinglists@googlemail.com",
-    "p0deje@gmail.com",
-    "jstaten07@gmail.com",
-    "patrick@soundcloud.com",
-    "jeff.welling@gmail.com",
-    "bugant@gmail.com",
-    "daydream.trippers@gmail.com",
-    "florian.gilcher@asquera.de",
-    "developer@fojasaur.us",
-    "ujifgc@gmail.com",
-    "mael@clerambault.fr",
-    "martin.mauch@gmail.com",
-    "rennex@iki.fi",
-    "kaz.july.7@gmail.com",
-    "s.savulchik@gmail.com",
-    "steve.agalloco@gmail.com",
-    "toby.net.info.mail+git@gmail.com",
-    "dev+narwen+rkh@rkh.im",
-    "vipulnsward@gmail.com",
-    "akzhan.abdulin@gmail.com",
-    "brooke@digitalocean.com",
-    "bjoerge@bengler.no",
-    "cheald@gmail.com",
-    "self@hecticjeff.net",
-    "coreyward@me.com",
-    "dario@uxtemple.com",
-    "dek-oss@gravitext.com",
-    "homakov@gmail.com"
+    "mail@zzak.io",
+    "konstantin.haase@gmail.com"
   ]
 
   # generated from git ls-files
@@ -77,38 +57,26 @@ Gem::Specification.new do |s|
     "License",
     "README.md",
     "Rakefile",
-    "lib/rack-protection.rb",
-    "lib/rack/protection.rb",
-    "lib/rack/protection/authenticity_token.rb",
-    "lib/rack/protection/base.rb",
-    "lib/rack/protection/escaped_params.rb",
-    "lib/rack/protection/form_token.rb",
-    "lib/rack/protection/frame_options.rb",
-    "lib/rack/protection/http_origin.rb",
-    "lib/rack/protection/ip_spoofing.rb",
-    "lib/rack/protection/json_csrf.rb",
-    "lib/rack/protection/path_traversal.rb",
-    "lib/rack/protection/remote_referrer.rb",
-    "lib/rack/protection/remote_token.rb",
-    "lib/rack/protection/session_hijacking.rb",
-    "lib/rack/protection/version.rb",
-    "lib/rack/protection/xss_header.rb",
+    "Gemfile",
     "rack-protection.gemspec",
-    "spec/authenticity_token_spec.rb",
-    "spec/base_spec.rb",
-    "spec/escaped_params_spec.rb",
-    "spec/form_token_spec.rb",
-    "spec/frame_options_spec.rb",
-    "spec/http_origin_spec.rb",
-    "spec/ip_spoofing_spec.rb",
-    "spec/json_csrf_spec.rb",
-    "spec/path_traversal_spec.rb",
-    "spec/protection_spec.rb",
-    "spec/remote_referrer_spec.rb",
-    "spec/remote_token_spec.rb",
-    "spec/session_hijacking_spec.rb",
-    "spec/spec_helper.rb",
-    "spec/xss_header_spec.rb"
+    "lib/rack",
+    "lib/rack/protection",
+    "lib/rack/protection/escaped_params.rb",
+    "lib/rack/protection/remote_referrer.rb",
+    "lib/rack/protection/ip_spoofing.rb",
+    "lib/rack/protection/base.rb",
+    "lib/rack/protection/session_hijacking.rb",
+    "lib/rack/protection/authenticity_token.rb",
+    "lib/rack/protection/version.rb",
+    "lib/rack/protection/path_traversal.rb",
+    "lib/rack/protection/form_token.rb",
+    "lib/rack/protection/json_csrf.rb",
+    "lib/rack/protection/http_origin.rb",
+    "lib/rack/protection/frame_options.rb",
+    "lib/rack/protection/xss_header.rb",
+    "lib/rack/protection/remote_token.rb",
+    "lib/rack/protection.rb",
+    "lib/rack-protection.rb"
   ]
 
   # dependencies
