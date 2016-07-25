@@ -578,7 +578,7 @@ class RoutingTest < Minitest::Test
 
   it 'supports regular expressions' do
     mock_app {
-      get(/^\/foo...\/bar$/) do
+      get(/\/foo...\/bar/) do
         'Hello World'
       end
     }
@@ -590,7 +590,7 @@ class RoutingTest < Minitest::Test
 
   it 'makes regular expression captures available in params[:captures]' do
     mock_app {
-      get(/^\/fo(.*)\/ba(.*)/) do
+      get(/\/fo(.*)\/ba(.*)/) do
         assert_equal ['orooomma', 'f'], params[:captures]
         'right on'
       end
@@ -1228,7 +1228,7 @@ class RoutingTest < Minitest::Test
 
   it 'passes regular expression captures as block parameters' do
     mock_app {
-      get(/^\/fo(.*)\/ba(.*)/) do |foo, bar|
+      get(/\/fo(.*)\/ba(.*)/) do |foo, bar|
         assert_equal 'orooomma', foo
         assert_equal 'f', bar
         'looks good'
