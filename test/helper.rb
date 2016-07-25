@@ -5,7 +5,6 @@ RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
 
 require 'bundler'
 require 'bundler/setup'
-require 'tool/warning_filter'
 require 'rack'
 
 testdir = File.dirname(__FILE__)
