@@ -55,7 +55,8 @@ module Sinatra
   #
   # You can refine the reloading policy with +also_reload+ and
   # +dont_reload+, to customize which files should, and should not, be
-  # reloaded, respectively.
+  # reloaded, respectively. You can also use +after_reload+ to execute a
+  # block after any file being reloaded.
   #
   # === Classic Application
   #
@@ -66,6 +67,9 @@ module Sinatra
   #
   #     also_reload '/path/to/some/file'
   #     dont_reload '/path/to/other/file'
+  #     after_reload do
+  #       puts 'reloaded'
+  #     end
   #
   #     # Your classic application code goes here...
   #
@@ -81,6 +85,9 @@ module Sinatra
   #         register Sinatra::Reloader
   #         also_reload '/path/to/some/file'
   #         dont_reload '/path/to/other/file'
+  #         after_reload do
+  #           puts 'reloaded'
+  #         end
   #       end
   #
   #       # Your modular application code goes here...
@@ -205,6 +212,12 @@ module Sinatra
 
     MUTEX_FOR_PERFORM = Mutex.new
 
+    # Allow a block to be executed after any file being reloaded
+    @@after_reload = []
+    def after_reload(&block)
+      @@after_reload  << block
+    end
+
     # When the extension is registered it extends the Sinatra application
     # +klass+ with the modules +BaseMethods+ and +ExtensionMethods+ and
     # defines a before filter to +perform+ the reload of the modified files.
@@ -236,6 +249,7 @@ module Sinatra
         require watcher.path
         watcher.update
       end
+      @@after_reload.each(&:call)
     end
 
     # Contains the methods defined in Sinatra::Base that are overridden.

@@ -416,6 +416,31 @@ describe Sinatra::Reloader do
     end
   end
 
+  describe ".after_reload" do
+    before(:each) do
+      setup_example_app(:routes => ['get("/foo") { Foo.foo }'])
+      @foo_path = File.join(tmp_dir, 'foo.rb')
+      update_file(@foo_path) do |f|
+        f.write 'class Foo; def self.foo() "foo" end end'
+      end
+      $LOADED_FEATURES.delete @foo_path
+      require @foo_path
+      app_const.also_reload @foo_path
+    end
+
+    it "allows block execution after reloading files" do
+      app_const.after_reload do
+        $reloaded = true
+      end
+      expect($reloaded).to eq(nil)
+      expect(get('/foo').body.strip).to eq('foo')
+      update_file(@foo_path) do |f|
+        f.write 'class Foo; def self.foo() "bar" end end'
+      end
+      expect($reloaded).to eq(true)
+    end
+  end
+
   it "automatically registers the reloader in the subclasses" do
     class ::Parent < Sinatra::Base
       register Sinatra::Reloader
