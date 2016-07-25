@@ -26,8 +26,6 @@ rvm:
 
 script: ./.travis.sh
 
-sudo: false
-
 matrix:
   allow_failures:
     - rvm: ruby-head
