@@ -205,7 +205,7 @@ end
 通过正则表达式匹配路由：
 
 ```ruby
-get /\A\/hello\/([\w]+)\z/ do
+get /\/hello\/([\w]+)/ do
   "Hello, #{params['captures'].first}!"
 end
 ```
@@ -372,7 +372,7 @@ end
 或者，使用消极向前查找:
 
 ```ruby
-get %r{^(?!/index$)} do
+get %r{(?!/index)} do
   # ...
 end
 ```

@@ -218,7 +218,7 @@ end
 Route matching with Regular Expressions:
 
 ```ruby
-get /\A\/hello\/([\w]+)\z/ do
+get /\/hello\/([\w]+)/ do
   "Hello, #{params['captures'].first}!"
 end
 ```
@@ -394,7 +394,7 @@ end
 Or, using negative look ahead:
 
 ```ruby
-get %r{^(?!/index$)} do
+get %r{(?!/index)} do
   # ...
 end
 ```

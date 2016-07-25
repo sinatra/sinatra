@@ -208,7 +208,7 @@ end
 Регулярные выражения в качестве шаблонов маршрутов:
 
 ```ruby
-get /\A\/hello\/([\w]+)\z/ do
+get /\/hello\/([\w]+)/ do
   "Hello, #{params['captures'].first}!"
 end
 ```
@@ -377,7 +377,7 @@ end
 Или с использованием негативного просмотра вперед:
 
 ```ruby
-get %r{^(?!/index$)} do
+get %r{(?!/index)} do
   # ...
 end
 ```

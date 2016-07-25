@@ -117,7 +117,7 @@ end
 Rutas con Expresiones Regulares:
 
 ```ruby
-get /\A\/hola\/([\w]+)\z/ do
+get /\/hola\/([\w]+)/ do
   "Hola, #{params['captures'].first}!"
 end
 ```
@@ -282,7 +282,7 @@ end
 O, usando un lookahead negativo:
 
 ```ruby
-get %r{^(?!/index$)} do
+get %r{(?!/index)} do
   # ...
 end
 ```
