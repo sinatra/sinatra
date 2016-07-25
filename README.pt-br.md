@@ -180,7 +180,7 @@ end
 Rotas podem casar com expressões regulares:
 
 ```ruby
-get /\A\/ola\/([\w]+)\z/ do
+get /\/ola\/([\w]+)/ do
   "Olá, #{params['captures'].first}!"
 end
 ```
@@ -362,7 +362,7 @@ end
 Ou, usando algo mais denso à frente:
 
 ```ruby
-get %r{^(?!/index$)} do
+get %r{(?!/index)} do
   # ...
 end
 ```

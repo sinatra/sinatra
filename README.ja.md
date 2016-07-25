@@ -217,7 +217,7 @@ end
 ルーティングを正規表現にマッチさせることもできます。
 
 ```ruby
-get /\A\/hello\/([\w]+)\z/ do
+get /\/hello\/([\w]+)/ do
   "Hello, #{params['captures'].first}!"
 end
 ```
@@ -374,7 +374,7 @@ end
 または、否定先読みを使って:
 
 ```ruby
-get %r{^(?!/index$)} do
+get %r{(?!/index)} do
   # ...
 end
 ```

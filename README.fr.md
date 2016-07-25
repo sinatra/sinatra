@@ -209,7 +209,7 @@ end
 Une route peut aussi être définie par une expression régulière :
 
 ```ruby
-get /\A\/bonjour\/([\w]+)\z/ do
+get /\/bonjour\/([\w]+)/ do
   "Bonjour, #{params['captures'].first} !"
 end
 ```
@@ -390,7 +390,7 @@ end
 Ou bien en utilisant cette expression regulière :
 
 ```ruby
-get %r{^(?!/index$)} do
+get %r{(?!/index)} do
   # ...
 end
 ```

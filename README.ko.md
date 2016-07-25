@@ -207,7 +207,7 @@ end
 라우터는 정규표현식으로 매치할 수 있습니다.
 
 ```ruby
-get /\A\/hello\/([\w]+)\z/ do
+get /\/hello\/([\w]+)/ do
   "Hello, #{params['captures'].first}!"
 end
 ```
@@ -374,7 +374,7 @@ end
 또는 거꾸로 탐색(negative look ahead)할 수도 있습니다.
 
 ```ruby
-get %r{^(?!/index$)} do
+get %r{(?!/index)} do
   # ...
 end
 ```

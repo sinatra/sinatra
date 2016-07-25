@@ -204,7 +204,7 @@ end
 Routen mit regulären Ausdrücken sind auch möglich:
 
 ```ruby
-get /\A\/hallo\/([\w]+)\z/ do
+get /\/hallo\/([\w]+)/ do
   "Hallo, #{params['captures'].first}!"
 end
 ```
@@ -389,7 +389,7 @@ end
 Oder unter Verwendung eines negativen look ahead:
 
 ```ruby
-get %r{^(?!/index$)} do
+get %r{(?!/index)} do
   # ...
 end
 ```
