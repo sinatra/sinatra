@@ -16,6 +16,7 @@ module Rack
     autoload :RemoteReferrer,        'rack/protection/remote_referrer'
     autoload :RemoteToken,           'rack/protection/remote_token'
     autoload :SessionHijacking,      'rack/protection/session_hijacking'
+    autoload :StrictTransport,       'rack/protection/strict_transport'
     autoload :XSSHeader,             'rack/protection/xss_header'
 
     def self.new(app, options = {})
@@ -26,6 +27,7 @@ module Rack
         use ::Rack::Protection::RemoteReferrer,        options if use_these.include? :remote_referrer
         use ::Rack::Protection::AuthenticityToken,     options if use_these.include? :authenticity_token
         use ::Rack::Protection::FormToken,             options if use_these.include? :form_token
+        use ::Rack::Protection::StrictTransport,       options if use_these.include? :strict_transport
         use ::Rack::Protection::ContentSecurityPolicy, options unless except.include? :content_security_policy
         use ::Rack::Protection::FrameOptions,          options unless except.include? :frame_options
         use ::Rack::Protection::HttpOrigin,            options unless except.include? :http_origin
