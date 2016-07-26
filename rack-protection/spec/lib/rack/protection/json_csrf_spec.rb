@@ -1,6 +1,31 @@
 describe Rack::Protection::JsonCsrf do
   it_behaves_like "any rack application"
 
+  module DummyAppWithBody
+    module Closeable
+      def close
+        @closed = true
+      end
+
+      def closed?
+        @closed
+      end
+    end
+
+    def self.body
+      @body ||= begin
+        body = ['ok']
+        body.extend(Closeable)
+        body
+      end
+    end
+
+    def self.call(env)
+      Thread.current[:last_env] = env
+      [200, {'Content-Type' => 'application/json'}, body]
+    end
+  end
+
   describe 'json response' do
     before do
       mock_app { |e| [200, {'Content-Type' => 'application/json'}, []]}
@@ -8,6 +33,16 @@ describe Rack::Protection::JsonCsrf do
 
     it "denies get requests with json responses with a remote referrer" do
       expect(get('/', {}, 'HTTP_REFERER' => 'http://evil.com')).not_to be_ok
+    end
+
+    it "closes the body returned by the app if it denies the get request" do
+      mock_app DummyAppWithBody do |e|
+        [200, {'Content-Type' => 'application/json'}, []]
+      end
+
+      get('/', {}, 'HTTP_REFERER' => 'http://evil.com')
+
+      DummyAppWithBody.body.should be_closed
     end
 
     it "accepts requests with json responses with a remote referrer when there's an origin header set" do
