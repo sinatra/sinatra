@@ -42,7 +42,7 @@ describe Rack::Protection::JsonCsrf do
 
       get('/', {}, 'HTTP_REFERER' => 'http://evil.com')
 
-      DummyAppWithBody.body.should be_closed
+      expect(DummyAppWithBody.body).to be_closed
     end
 
     it "accepts requests with json responses with a remote referrer when there's an origin header set" do
