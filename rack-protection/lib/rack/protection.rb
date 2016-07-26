@@ -23,6 +23,11 @@ module Rack
       # does not include: RemoteReferrer, AuthenticityToken and FormToken
       except = Array options[:except]
       use_these = Array options[:use]
+
+      if options.fetch(:without_session, false)
+        except += [:session_hijacking, :remote_token]
+      end
+
       Rack::Builder.new do
         use ::Rack::Protection::RemoteReferrer,        options if use_these.include? :remote_referrer
         use ::Rack::Protection::AuthenticityToken,     options if use_these.include? :authenticity_token

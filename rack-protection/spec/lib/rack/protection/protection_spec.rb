@@ -100,4 +100,28 @@ describe Rack::Protection do
       it { expect(instrumenter).not_to receive(:instrument) }
     end
   end
+
+  describe "new" do
+    it 'should allow disable session protection' do
+      mock_app do
+        use Rack::Protection, :without_session => true
+        run DummyApp
+      end
+
+      session = {:foo => :bar}
+      get '/', {}, 'rack.session' => session, 'HTTP_USER_AGENT' => 'a'
+      get '/', {}, 'rack.session' => session, 'HTTP_USER_AGENT' => 'b'
+      expect(session[:foo]).to eq :bar
+    end
+
+    it 'should allow disable CSRF protection' do
+      mock_app do
+        use Rack::Protection, :without_session => true
+        run DummyApp
+      end
+
+      post('/', {}, 'HTTP_REFERER' => 'http://example.com/foo', 'HTTP_HOST' => 'example.org')
+      expect(last_response).to be_ok
+    end
+  end
 end
