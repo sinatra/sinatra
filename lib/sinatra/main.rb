@@ -17,6 +17,7 @@ module Sinatra
         op.on('-o addr',   "set the host (default is #{bind})")             { |val| set :bind, val }
         op.on('-e env',    'set the environment (default is development)')  { |val| set :environment, val.to_sym }
         op.on('-s server', 'specify rack server/handler (default is thin)') { |val| set :server, val }
+        op.on('-q',        'turn on quiet mode (default is off)')           {       set :quiet, true }
         op.on('-x',        'turn on the mutex lock (default is off)')       {       set :lock, true }
       }.parse!(ARGV.dup)
     end
