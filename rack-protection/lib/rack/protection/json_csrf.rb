@@ -17,9 +17,10 @@ module Rack
         request               = Request.new(env)
         status, headers, body = app.call(env)
 
-        if has_vector? request, headers
+        if has_vector?(request, headers)
           warn env, "attack prevented by #{self.class}"
-          react(env) or [status, headers, body]
+
+          react_and_close(env, body) or [status, headers, body]
         else
           [status, headers, body]
         end
@@ -29,6 +30,18 @@ module Rack
         return false if request.xhr?
         return false unless headers['Content-Type'].to_s.split(';', 2).first =~ /^\s*application\/json\s*$/
         origin(request.env).nil? and referrer(request.env) != request.host
+      end
+
+      def react_and_close(env, body)
+        reaction = react(env)
+
+        close_body(body) if reaction
+
+        reaction
+      end
+
+      def close_body(body)
+        body.close if body.respond_to?(:close)
       end
     end
   end
