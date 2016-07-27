@@ -1451,7 +1451,7 @@ module Sinatra
         return unless running?
         # Use Thin's hard #stop! if available, otherwise just #stop.
         running_server.respond_to?(:stop!) ? running_server.stop! : running_server.stop
-        $stderr.puts "== Sinatra has ended his set (crowd applauds)" unless handler_name =~/cgi/i
+        $stderr.puts "== Sinatra has ended his set (crowd applauds)" unless supress_messages?
         set :running_server, nil
         set :handler_name, nil
       end
@@ -1533,7 +1533,7 @@ module Sinatra
       # Starts the server by running the Rack Handler.
       def start_server(handler, server_settings, handler_name)
         handler.run(self, server_settings) do |server|
-          unless handler_name =~ /cgi/i
+          unless supress_messages?
             $stderr.puts "== Sinatra (v#{Sinatra::VERSION}) has taken the stage on #{port} for #{environment} with backup from #{handler_name}"
           end
 
@@ -1544,6 +1544,10 @@ module Sinatra
 
           yield server if block_given?
         end
+      end
+
+      def supress_messages?
+        handler_name =~ /cgi/i || quiet
       end
 
       def setup_traps
@@ -1803,6 +1807,7 @@ module Sinatra
     set :server, %w[HTTP webrick]
     set :bind, Proc.new { development? ? 'localhost' : '0.0.0.0' }
     set :port, Integer(ENV['PORT'] && !ENV['PORT'].empty? ? ENV['PORT'] : 4567)
+    set :quiet, false
 
     ruby_engine = defined?(RUBY_ENGINE) && RUBY_ENGINE
 
