@@ -46,7 +46,7 @@ module Rack
     class ContentSecurityPolicy < Base
       default_options :default_src => :none, :script_src => :self, :img_src => :self, :style_src => :self, :connect_src => :self, :report_only => false
 
-      KEYS = [:default_src, :script_src, :connect_src, :font_src, :frame_src, :media_src, :style_src, :object_src, :report_uri, :sandbox]
+      KEYS = [:default_src, :script_src, :connect_src, :font_src, :frame_src, :img_src, :media_src, :style_src, :object_src, :report_uri, :sandbox]
 
       def collect_options
         KEYS.collect do |k|
