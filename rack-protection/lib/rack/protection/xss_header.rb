@@ -4,7 +4,7 @@ module Rack
   module Protection
     ##
     # Prevented attack::   Non-permanent XSS
-    # Supported browsers:: Internet Explorer 8 and later
+    # Supported browsers:: Internet Explorer 8+ and Chrome
     # More infos::         http://blogs.msdn.com/b/ie/archive/2008/07/01/ie8-security-part-iv-the-xss-filter.aspx
     #
     # Sets X-XSS-Protection header to tell the browser to block attacks.
