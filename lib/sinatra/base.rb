@@ -1691,6 +1691,10 @@ module Sinatra
       def setup_protection(builder)
         return unless protection?
         options = Hash === protection ? protection.dup : {}
+        options = {
+          img_src:  "'self' data:",
+          font_src: "'self'"
+        }.merge options
 
         protect_session = options.fetch(:session) { sessions? }
         options[:without_session] = !protect_session
