@@ -29,11 +29,14 @@ module Rack
       end
 
       Rack::Builder.new do
-        use ::Rack::Protection::RemoteReferrer,        options if use_these.include? :remote_referrer
+        # Off by default, unless added
         use ::Rack::Protection::AuthenticityToken,     options if use_these.include? :authenticity_token
+        use ::Rack::Protection::ContentSecurityPolicy, options if use_these.include? :content_security_policy
         use ::Rack::Protection::FormToken,             options if use_these.include? :form_token
+        use ::Rack::Protection::RemoteReferrer,        options if use_these.include? :remote_referrer
         use ::Rack::Protection::StrictTransport,       options if use_these.include? :strict_transport
-        use ::Rack::Protection::ContentSecurityPolicy, options unless except.include? :content_security_policy
+
+        # On by default, unless skipped
         use ::Rack::Protection::FrameOptions,          options unless except.include? :frame_options
         use ::Rack::Protection::HttpOrigin,            options unless except.include? :http_origin
         use ::Rack::Protection::IPSpoofing,            options unless except.include? :ip_spoofing
