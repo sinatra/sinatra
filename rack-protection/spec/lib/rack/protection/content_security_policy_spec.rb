@@ -4,7 +4,7 @@ describe Rack::Protection::ContentSecurityPolicy do
   it 'should set the Content Security Policy' do
     expect(
       get('/', {}, 'wants' => 'text/html').headers["Content-Security-Policy"]
-    ).to eq("default-src none; script-src self; connect-src self; img-src self; style-src self")
+    ).to eq("default-src none; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'")
   end
 
   it 'should not set the Content Security Policy for other content types' do
@@ -34,7 +34,7 @@ describe Rack::Protection::ContentSecurityPolicy do
 
     headers = get('/', {}, 'wants' => 'text/html').headers
     expect(headers["Content-Security-Policy"]).to be_nil
-    expect(headers["Content-Security-Policy-Report-Only"]).to eq("default-src none; script-src self; connect-src self; img-src self; style-src self; report-uri /my_amazing_csp_report_parser")
+    expect(headers["Content-Security-Policy-Report-Only"]).to eq("default-src none; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; report-uri /my_amazing_csp_report_parser")
   end
 
   it 'should not override the header if already set' do
