@@ -51,7 +51,7 @@ module Rack
       def collect_options
         KEYS.collect do |k|
           "#{k.to_s.sub(/_/, '-')} #{options[k]}" if options.key?(k)
-        end.compact.join('; ')        
+        end.compact.join('; ')
       end
 
       def call(env)
