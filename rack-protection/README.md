@@ -73,6 +73,11 @@ Prevented by:
 
 * `Rack::Protection::SessionHijacking`
 
+## Cookie Tossing
+
+Prevented by:
+* `Rack::Protection::CookieTossing` (not included by `use Rack::Protection`)
+
 ## IP Spoofing
 
 Prevented by:
