@@ -5,6 +5,7 @@ module Rack
   module Protection
     autoload :AuthenticityToken,     'rack/protection/authenticity_token'
     autoload :Base,                  'rack/protection/base'
+    autoload :CookieTossing,         'rack/protection/cookie_tossing'
     autoload :ContentSecurityPolicy, 'rack/protection/content_security_policy'
     autoload :EscapedParams,         'rack/protection/escaped_params'
     autoload :FormToken,             'rack/protection/form_token'
@@ -31,6 +32,7 @@ module Rack
       Rack::Builder.new do
         # Off by default, unless added
         use ::Rack::Protection::AuthenticityToken,     options if use_these.include? :authenticity_token
+        use ::Rack::Protection::CookieTossing,         options if use_these.include? :cookie_tossing
         use ::Rack::Protection::ContentSecurityPolicy, options if use_these.include? :content_security_policy
         use ::Rack::Protection::FormToken,             options if use_these.include? :form_token
         use ::Rack::Protection::RemoteReferrer,        options if use_these.include? :remote_referrer
