@@ -491,7 +491,7 @@ module Sinatra
     # "values" arguments are passed to the #cache_control helper:
     #
     #   expires 500, :public, :must_revalidate
-    #   => Cache-Control: public, must-revalidate, max-age=60
+    #   => Cache-Control: public, must-revalidate, max-age=500
     #   => Expires: Mon, 08 Jun 2009 08:50:17 GMT
     #
     def expires(amount, *values)
