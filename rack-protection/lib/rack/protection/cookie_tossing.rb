@@ -39,8 +39,10 @@ module Rack
       end
 
       def remove_bad_cookies(request, response)
+        return if bad_cookies.empty?
+        paths = cookie_paths(request.path)
         bad_cookies.each do |name|
-          cookie_paths(request.path).each { |path| response.set_cookie name, empty_cookie(request.host, path) }
+          paths.each { |path| response.set_cookie name, empty_cookie(request.host, path) }
         end
       end
 
