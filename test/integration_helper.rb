@@ -72,7 +72,7 @@ module IntegrationHelper
 
     def command
       @command ||= begin
-        cmd = ["RACK_ENV=#{environment}", "exec"]
+        cmd = ["APP_ENV=#{environment}", "exec"]
         if RbConfig.respond_to? :ruby
           cmd << RbConfig.ruby.inspect
         else
@@ -135,7 +135,7 @@ module IntegrationHelper
         # SINGLETHREAD means create a new runtime
         vm = org.jruby.embed.ScriptingContainer.new(org.jruby.embed.LocalContextScope::SINGLETHREAD)
         vm.load_paths = [File.expand_path('../../lib', __FILE__)]
-        vm.environment = ENV.merge('RACK_ENV' => environment.to_s)
+        vm.environment = ENV.merge('APP_ENV' => environment.to_s)
 
         # This ensures processing of RUBYOPT which activates Bundler
         vm.provider.ruby_instance_config.process_arguments []

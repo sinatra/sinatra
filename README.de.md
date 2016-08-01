@@ -2039,7 +2039,7 @@ configure do
 end
 ```
 
-Läuft nur, wenn die Umgebung (RACK_ENV-Umgebungsvariable) auf `:production`
+Läuft nur, wenn die Umgebung (APP_ENV-Umgebungsvariable) auf `:production`
 gesetzt ist:
 
 ```ruby
@@ -2239,7 +2239,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
 ## Umgebungen
 
 Es gibt drei voreingestellte Umgebungen in Sinatra: `"development"`,
-`"production"` und `"test"`. Umgebungen können über die `RACK_ENV`
+`"production"` und `"test"`. Umgebungen können über die `APP_ENV`
 Umgebungsvariable gesetzt werden. Die Standardeinstellung ist `"development"`.
 In diesem Modus werden alle Templates zwischen Requests neu geladen. Dazu gibt
 es besondere Fehlerseiten für 404 Stati und Fehlermeldungen. In `"production"`
@@ -2408,7 +2408,7 @@ class MyAppTest < Minitest::Test
     assert_equal 'Hallo Frank!', last_response.body
   end
 
-  def test_with_rack_env
+  def test_with_user_agent
     get '/', {}, 'HTTP_USER_AGENT' => 'Songbird'
     assert_equal "Du verwendest Songbird!", last_response.body
   end

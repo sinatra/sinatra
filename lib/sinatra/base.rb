@@ -1776,7 +1776,7 @@ module Sinatra
 
     reset!
 
-    set :environment, (ENV['RACK_ENV'] || :development).to_sym
+    set :environment, (ENV['APP_ENV'] || ENV['RACK_ENV'] || :development).to_sym
     set :raise_errors, Proc.new { test? }
     set :dump_errors, Proc.new { !test? }
     set :show_exceptions, Proc.new { development? }
