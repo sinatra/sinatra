@@ -1991,7 +1991,7 @@ configure do
 end
 ```
 
-환경(RACK_ENV 환경 변수)이 `:production`일 때만 실행되게 하려면 이렇게 하면 됩니다.
+환경(APP_ENV 환경 변수)이 `:production`일 때만 실행되게 하려면 이렇게 하면 됩니다.
 
 ```ruby
 configure :production do
@@ -2094,7 +2094,7 @@ set :protection, :session => true
 
   <dt>environment</dt>
   <dd>
-    현재 환경, 기본값은 <tt>ENV['RACK_ENV']</tt> ENV에 없을 경우엔 "development".
+    현재 환경, 기본값은 <tt>ENV['APP_ENV']</tt> ENV에 없을 경우엔 "development".
   </dd>
 
   <dt>logging</dt>
@@ -2225,16 +2225,16 @@ set :protection, :session => true
 ## 환경(Environments)
 
 3가지의 미리 정의된 `environments` `"development"`, `"production"`, `"test"`
-가 있습니다. 환경은 `RACK_ENV` 환경 변수를 통해서도 설정됩니다. 기본값은
+가 있습니다. 환경은 `APP_ENV` 환경 변수를 통해서도 설정됩니다. 기본값은
 `"development"`입니다. `"development"` 모드에서는 모든 템플릿들은 요청 간에
 리로드됩니다. 또, `"development"` 모드에서는 특별한 `not_found` 와 `error`
 핸들러가 브라우저에서 스택 트레이스를 볼 수 있게합니다.
 `"production"`과 `"test"`에서는 기본적으로 템플릿은 캐시됩니다.
 
-다른 환경으로 실행시키려면 `RACK_ENV` 환경 변수를 사용하세요.
+다른 환경으로 실행시키려면 `APP_ENV` 환경 변수를 사용하세요.
 
 ```shell
-RACK_ENV=production ruby my_app.rb
+APP_ENV=production ruby my_app.rb
 ```
 
 현재 설정된 환경이 무엇인지 검사하기 위해서는 준비된 `development?`, `test?`,
@@ -2400,7 +2400,7 @@ class MyAppTest < Minitest::Test
     assert_equal 'Hello Frank!', last_response.body
   end
 
-  def test_with_rack_env
+  def test_with_user_agent
     get '/', {}, 'HTTP_USER_AGENT' => 'Songbird'
     assert_equal "You're using Songbird!", last_response.body
   end

@@ -1808,7 +1808,7 @@ configure do
 end
 ```
 
-Ejecutar únicamente cuando el entorno (la variable de entorno RACK_ENV) es
+Ejecutar únicamente cuando el entorno (la variable de entorno APP_ENV) es
 `:production`:
 
 ```ruby
@@ -1918,7 +1918,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
   <dt>environment</dt>
   <dd>
     Entorno actual, por defecto toma el valor de
-    <tt>ENV['RACK_ENV']</tt>, o <tt>"development"</tt> si no
+    <tt>ENV['APP_ENV']</tt>, o <tt>"development"</tt> si no
     está disponible.
   </dd>
 
@@ -2080,7 +2080,7 @@ de `production` y `test`, donde se cachean.
 especiales que muestran un stack trace en el navegador cuando son disparados.
 
 Para utilizar alguno de los otros entornos puede asignarse el valor
-correspondiente a la variable de entorno `RACK_ENV`, o bien utilizar la opción
+correspondiente a la variable de entorno `APP_ENV`, o bien utilizar la opción
 `-e` al ejecutar la aplicación:
 
 ```shell

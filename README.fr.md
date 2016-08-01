@@ -2016,7 +2016,7 @@ configure do
 end
 ```
 
-Lancé si l'environnement (variable d'environnement RACK_ENV) est `:production` :
+Lancé si l'environnement (variable d'environnement APP_ENV) est `:production` :
 
 ```ruby
   configure :production do
@@ -2121,7 +2121,7 @@ set :protection, :session => true
   </dd>
 
   <dt>environment</dt>
-  <dd>environnement courant, par défaut <tt>ENV['RACK_ENV']</tt>, ou
+  <dd>environnement courant, par défaut <tt>ENV['APP_ENV']</tt>, ou
   <tt>"development"</tt> si absent.</dd>
 
   <dt>logging</dt>
@@ -2229,7 +2229,7 @@ set :protection, :session => true
 
 Il existe trois environnements prédéfinis : `"development"`,
 `"production"` et `"test"`. Les environements peuvent être
-sélectionné via la variable d'environnement `RACK_ENV`. Sa valeur par défaut
+sélectionné via la variable d'environnement `APP_ENV`. Sa valeur par défaut
 est `"development"`. Dans ce mode, tous les templates sont rechargés à
 chaque requête. Des handlers spécifiques pour `not_found` et
 `error` sont installés pour vous permettre d'avoir une pile de trace
@@ -2237,10 +2237,10 @@ dans votre navigateur. En mode `"production"` et `"test"` les
 templates sont mis en cache par défaut.
 
 Pour exécuter votre application dans un environnement différent, définissez la
-variable d'environnement `RACK_ENV` :
+variable d'environnement `APP_ENV` :
 
-```shell
-RACK_ENV=production ruby my_app.rb
+``` shell
+APP_ENV=production ruby my_app.rb
 ```
 
 Vous pouvez utiliser une des méthodes `development?`, `test?` et `production?`
@@ -2405,7 +2405,7 @@ class MonTest < Minitest::Test
     assert_equal 'Salut Frank !', last_response.body
   end
 
-  def test_avec_rack_env
+  def test_avec_agent
     get '/', {}, 'HTTP_USER_AGENT' => 'Songbird'
     assert_equal "Vous utilisez Songbird !", last_response.body
   end

@@ -1933,7 +1933,7 @@ configure do
 end
 ```
 
-只有当环境 (`RACK_ENV` 环境变量) 被设定为 `:production` 时才运行：
+只有当环境 (`APP_ENV` 环境变量) 被设定为 `:production` 时才运行：
 
 ```ruby
 configure :production do
@@ -2033,8 +2033,8 @@ set :protection, :session => true
 
   <dt>environment</dt>
   <dd>
-    当前环境，默认是 <tt>ENV['RACK_ENV']</tt>，
-    或者 <tt>"development"</tt> (如果 ENV['RACK_ENV'] 不可用)。
+    当前环境，默认是 <tt>ENV['APP_ENV']</tt>，
+    或者 <tt>"development"</tt> (如果 ENV['APP_ENV'] 不可用)。
   </dd>
 
   <dt>logging</dt>
@@ -2145,15 +2145,15 @@ set :protection, :session => true
 ## 环境
 
 Sinatra 中有三种预先定义的环境："development"、"production" 和 "test"。
-环境可以通过 `RACK_ENV` 环境变量设置。默认值为 "development"。
+环境可以通过 `APP_ENV` 环境变量设置。默认值为 "development"。
 在开发环境下，每次请求都会重新加载所有模板，
 特殊的 `not_found` 和 `error` 错误处理器会在浏览器中显示 stack trace。
 在测试和生产环境下，模板默认会缓存。
 
-在不同的环境下运行，设置 `RACK_ENV` 环境变量：
+在不同的环境下运行，设置 `APP_ENV` 环境变量：
 
 ```shell
-RACK_ENV=production ruby my_app.rb
+APP_ENV=production ruby my_app.rb
 ```
 
 可以使用预定义的三种方法： `development?`、`test?` 和 `production?` 来检查当前环境：

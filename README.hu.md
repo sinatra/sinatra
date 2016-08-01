@@ -411,7 +411,7 @@ Csak indításkor, de minden környezetre érvényesen fusson le:
   end
 ```
 
-Csak akkor fusson le, ha a környezet (a RACK_ENV környezeti változóban)
+Csak akkor fusson le, ha a környezet (a APP_ENV környezeti változóban)
 `:production`-ra van állítva:
 
 ```ruby
@@ -562,7 +562,7 @@ könyvtárat ajánljuk:
       assert_equal 'Helló Frici!', last_response.body
     end
 
-    def test_with_rack_env
+    def test_with_user_agent
       get '/', {}, 'HTTP_USER_AGENT' => 'Songbird'
       assert_equal "Songbird-öt használsz!", last_response.body
     end

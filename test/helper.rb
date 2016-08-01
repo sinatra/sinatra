@@ -1,4 +1,4 @@
-ENV['RACK_ENV'] = 'test'
+ENV['APP_ENV'] = 'test'
 Encoding.default_external = "UTF-8" if defined? Encoding
 
 RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE

@@ -1879,7 +1879,7 @@ configure do
 end
 ```
 
-環境設定(`RACK_ENV`環境変数)が`:production`に設定されている時だけ実行する方法:
+環境設定(`APP_ENV`環境変数)が`:production`に設定されている時だけ実行する方法:
 
 ```ruby
 configure :production do
@@ -1969,7 +1969,7 @@ set :protection, :session => true
 
   <dt>environment</dt>
   <dd>
-    現在の環境。デフォルトは<tt>ENV['RACK_ENV']</tt>、それが無い場合は<tt>"development"</tt>。
+    現在の環境。デフォルトは<tt>ENV['APP_ENV']</tt>、それが無い場合は<tt>"development"</tt>。
   </dd>
 
   <dt>logging</dt>
@@ -2081,12 +2081,12 @@ set :protection, :session => true
 
 ## 環境設定(Environments)
 
-３種類の既定環境、`"development"`、`"production"`および`"test"`があります。環境は、`RACK_ENV`環境変数を通して設定できます。デフォルト値は、`"development"`です。`"development"`環境において、すべてのテンプレートは、各リクエスト間で再ロードされ、そして、特別の`not_found`および`error`ハンドラがブラウザにスタックトレースを表示します。`"production"`および`"test"`環境においては、テンプレートはデフォルトでキャッシュされます。
+３種類の既定環境、`"development"`、`"production"`および`"test"`があります。環境は、`APP_ENV`環境変数を通して設定できます。デフォルト値は、`"development"`です。`"development"`環境において、すべてのテンプレートは、各リクエスト間で再ロードされ、そして、特別の`not_found`および`error`ハンドラがブラウザにスタックトレースを表示します。`"production"`および`"test"`環境においては、テンプレートはデフォルトでキャッシュされます。
 
-異なる環境を走らせるには、`RACK_ENV`環境変数を設定します。
+異なる環境を走らせるには、`APP_ENV`環境変数を設定します。
 
 ```shell
-RACK_ENV=production ruby my_app.rb
+APP_ENV=production ruby my_app.rb
 ```
 
 既定メソッド、`development?`、`test?`および`production?`を、現在の環境設定を確認するために使えます。
@@ -2230,7 +2230,7 @@ class MyAppTest < Minitest::Test
     assert_equal 'Hello Frank!', last_response.body
   end
 
-  def test_with_rack_env
+  def test_with_user_agent
     get '/', {}, 'HTTP_USER_AGENT' => 'Songbird'
     assert_equal "Songbirdを使ってます!", last_response.body
   end
