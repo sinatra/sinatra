@@ -10,6 +10,9 @@ module Rack
     # JSON GET APIs are vulnerable to being embedded as JavaScript while the
     # Array prototype has been patched to track data. Checks the referrer
     # even on GET requests if the content type is JSON.
+    #
+    # Uses HttpOrigin to determine if requests are safe, please refer to the
+    # documentation for more.
     class JsonCsrf < Base
       alias react deny
 

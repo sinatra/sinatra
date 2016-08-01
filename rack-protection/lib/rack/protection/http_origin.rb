@@ -10,7 +10,12 @@ module Rack
     #
     # Does not accept unsafe HTTP requests when value of Origin HTTP request header
     # does not match default or whitelisted URIs.
-    # The :allow_if option can also be set to a proc to use custom allow/deny logic.
+    #
+    # If you want to whitelist a specific domain, you can pass in as the `:origin_whitelist` option:
+    #
+    #     use Rack::Protection, origin_whitelist: ["http://localhost:3000", "http://127.0.01:3000"]
+    #
+    # The `:allow_if` option can also be set to a proc to use custom allow/deny logic.
     class HttpOrigin < Base
       DEFAULT_PORTS = { 'http' => 80, 'https' => 443, 'coffee' => 80 }
       default_reaction :deny
