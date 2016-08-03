@@ -68,6 +68,46 @@ module Sinatra
   # layout, inside the <head> tag, and each view can call <tt>content_for</tt>
   # setting the appropriate set of tags that should be added to the layout.
   #
+  # == Limitations
+  #
+  # Due to the rendering process limitation using <tt><%= yield_content %></tt>
+  # from within nested templates do not work above the <tt><%= yield %> statement.
+  # For more details https://github.com/sinatra/sinatra-contrib/issues/140#issuecomment-48831668
+  #
+  #     # app.rb
+  #     get '/' do
+  #       erb :body, :layout => :layout do
+  #         erb :foobar
+  #       end
+  #     end
+  #
+  #     # foobar.erb
+  #     <% content_for :one do %>
+  #       <script>
+  #         alert('one');
+  #       </script>
+  #     <% end %>
+  #     <% content_for :two do %>
+  #       <script>
+  #         alert('two');
+  #       </script>
+  #     <% end %>
+  #
+  # Using <tt><%= yield_content %></tt> before <tt><%= yield %></tt> will cause only the second
+  # alert to display:
+  #
+  #     # body.erb
+  #     # Display only second alert
+  #     <%= yield_content :one %>
+  #     <%= yield %>
+  #     <%= yield_content :two %>
+  #
+  #     # body.erb
+  #     # Display both alerts
+  #     <%= yield %>
+  #     <%= yield_content :one %>
+  #     <%= yield_content :two %>
+  #
   module ContentFor
     include Capture
 
