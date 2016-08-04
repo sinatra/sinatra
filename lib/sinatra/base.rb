@@ -1709,7 +1709,8 @@ module Sinatra
         options = {}
         options[:secret] = session_secret if session_secret?
         options.merge! sessions.to_hash if sessions.respond_to? :to_hash
-        builder.use Rack::Session::Cookie, options
+        session_store = options.delete(:session_store) { Rack::Session::Cookie }
+        builder.use session_store, options
       end
 
       def detect_rack_handler

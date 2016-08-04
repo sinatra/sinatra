@@ -1380,11 +1380,12 @@ end
 Note that `enable :sessions` actually stores all data in a cookie. This
 might not always be what you want (storing lots of data will increase your
 traffic, for instance). You can use any Rack session middleware: in order to
-do so, do **not** call `enable :sessions`, but instead pull in your
-middleware of choice as you would any other middleware:
+do so, do **not** call `enable :sessions`, but instead call `set
+:sessions` with your middleware of choice passed in as the value for
+`:session_store` along with any other options:
 
 ```ruby
-use Rack::Session::Pool, :expire_after => 2592000
+set :sessions, :session_store => Rack::Session::Pool, :expire_after => 2592000
 
 get '/' do
   "value = " << session[:value].inspect
@@ -2098,14 +2099,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
 ```
 
 By default, Sinatra will only set up session based protection if `:sessions`
-has been enabled. Sometimes you want to set up sessions on your own, though. In
-that case you can get it to set up session based protections by passing the
-`:session` option:
-
-```ruby
-use Rack::Session::Pool
-set :protection, :session => true
-```
+has been enabled.
 
 ### Available Settings
 
