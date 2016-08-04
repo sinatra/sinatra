@@ -75,6 +75,7 @@ pick up if available.
     * [Filters](#filters)
     * [Helpers](#helpers)
         * [Using Sessions](#using-sessions)
+        	* [Choosing Your Own Session Middleware](#choosing-your-own-session-middleware)
         * [Halting](#halting)
         * [Passing](#passing)
         * [Triggering Another Route](#triggering-another-route)
@@ -1377,25 +1378,6 @@ get '/:value' do
 end
 ```
 
-Note that `enable :sessions` actually stores all data in a cookie. This
-might not always be what you want (storing lots of data will increase your
-traffic, for instance). You can use any Rack session middleware: in order to
-do so, do **not** call `enable :sessions`, but instead call `set
-:sessions` with your middleware of choice passed in as the value for
-`:session_store` along with any other options:
-
-```ruby
-set :sessions, :session_store => Rack::Session::Pool, :expire_after => 2592000
-
-get '/' do
-  "value = " << session[:value].inspect
-end
-
-get '/:value' do
-  session['value'] = params['value']
-end
-```
-
 To improve security, the session data in the cookie is signed with a session
 secret. A random secret is generated for you by Sinatra. However, since this
 secret will change with every start of your application, you might want to
@@ -1417,6 +1399,40 @@ domain with a *.* like this instead:
 
 ```ruby
 set :sessions, :domain => '.foo.com'
+```
+
+#### Choosing Your Own Session Middleware
+
+Note that `enable :sessions` actually stores all data in a cookie. This
+might not always be what you want (storing lots of data will increase your
+traffic, for instance). You can use any Rack session middleware: in order to
+do so, one of the following methods can be used:
+
+```ruby
+enable :sessions
+set :session_store, Rack::Session::Pool
+```
+
+Or to enable sessions with a hash of options:
+
+```ruby
+set :sessions, :expire_after => 2592000
+set :session_store, Rack::Session::Pool
+```
+
+Another option is to **not** call `enable :sessions`, but instead pull in your
+middleware of choice as you would any other middleware:
+
+```ruby
+use Rack::Session::Pool, :expire_after => 2592000
+```
+
+It is important to note that when using this method, session based protection (see 'Configuring attack protection') will not be enabled by default. The Rack middleware to do that will also need to be added:
+
+```ruby
+use Rack::Session::Pool, :expire_after => 2592000
+use Rack::Protection::RemoteToken
+use Rack::Protection::SessionHijacking
 ```
 
 ### Halting
@@ -2099,7 +2115,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
 ```
 
 By default, Sinatra will only set up session based protection if `:sessions`
-has been enabled.
+have been enabled. See 'Using Sessions'.
 
 ### Available Settings
 
@@ -2229,6 +2245,9 @@ has been enabled.
     Enable cookie-based sessions support using <tt>Rack::Session::Cookie</tt>.
     See 'Using Sessions' section for more information.
   </dd>
+
+  <dt>session_store</dt>
+  <dd>The Rack session middleware used. Defaults to <tt>Rack::Session::Cookie</tt>. See 'Using Sessions' section for more information.</dd>
 
   <dt>show_exceptions</dt>
   <dd>
