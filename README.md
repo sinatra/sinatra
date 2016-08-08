@@ -2111,7 +2111,14 @@ set :protection, :except => [:path_traversal, :session_hijacking]
 ```
 
 By default, Sinatra will only set up session based protection if `:sessions`
-have been enabled. See 'Using Sessions'.
+have been enabled. See 'Using Sessions'. Sometimes you may want to set up
+sessions "outside" of the Sinatra app, such as in the config.ru or with a
+separate Rack::Builder instance. In that case you can still set up session
+based protection by passing the `:session` option:
+
+```ruby
+set :protection, :session => true
+```
 
 ### Available Settings
 
