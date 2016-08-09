@@ -1423,13 +1423,17 @@ set :session_store, Rack::Session::Pool
 Another option is to **not** call `enable :sessions`, but instead pull in your
 middleware of choice as you would any other middleware.
 
-It is important to note that when using this method, session based protection (see 'Configuring attack protection') **will not be enabled by default**. The Rack middleware to do that will also need to be added:
+It is important to note that when using this method, session based protection **will not be enabled by default**.
+
+The Rack middleware to do that will also need to be added:
 
 ```ruby
 use Rack::Session::Pool, :expire_after => 2592000
 use Rack::Protection::RemoteToken
 use Rack::Protection::SessionHijacking
 ```
+
+See 'Configuring attack protection' for more information.
 
 ### Halting
 
