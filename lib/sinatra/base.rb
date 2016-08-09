@@ -1709,7 +1709,7 @@ module Sinatra
         options = {}
         options[:secret] = session_secret if session_secret?
         options.merge! sessions.to_hash if sessions.respond_to? :to_hash
-        builder.use Rack::Session::Cookie, options
+        builder.use session_store, options
       end
 
       def detect_rack_handler
@@ -1781,6 +1781,7 @@ module Sinatra
     set :dump_errors, Proc.new { !test? }
     set :show_exceptions, Proc.new { development? }
     set :sessions, false
+    set :session_store, Rack::Session::Cookie
     set :logging, false
     set :protection, true
     set :method_override, false

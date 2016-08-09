@@ -565,6 +565,17 @@ class SettingsTest < Minitest::Test
       end
     end
 
+    it 'sets up RemoteToken if sessions are enabled with a custom session store' do
+      MiddlewareTracker.track do
+        Sinatra.new {
+          enable :sessions
+          set :session_store, Rack::Session::Pool
+        }.new
+        assert_include MiddlewareTracker.used, Rack::Session::Pool
+        assert_include MiddlewareTracker.used, Rack::Protection::RemoteToken
+      end
+    end
+
     it 'does not set up RemoteToken if sessions are disabled' do
       MiddlewareTracker.track do
         Sinatra.new.new
