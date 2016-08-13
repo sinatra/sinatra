@@ -245,7 +245,9 @@ class RoutingTest < Minitest::Test
     mock_app {
       get '/:foo' do
         assert_equal 'bar', params['foo']
+        assert params.has_key?('foo')
         assert_equal 'bar', params[:foo]
+        assert params.has_key?(:foo)
         'well, alright'
       end
     }
