@@ -240,6 +240,18 @@ module Sinatra
     def http_status; 404 end
   end
 
+  class IndifferentHash < Hash
+    def [](key)
+      value = super(key)
+      return super(key.to_s) if value.nil? && Symbol === key
+      value
+    end
+
+    def has_key?(key)
+      super(key) || (Symbol === key && super(key.to_s))
+    end
+  end
+
   # Methods available to routes, before/after filters, and views.
   module Helpers
     # Set or retrieve the response status code.
@@ -1070,7 +1082,7 @@ module Sinatra
     def indifferent_params(object)
       case object
       when Hash
-        new_hash = indifferent_hash
+        new_hash = IndifferentHash.new
         object.each { |key, value| new_hash[key] = indifferent_params(value) }
         new_hash
       when Array
@@ -1078,11 +1090,6 @@ module Sinatra
       else
         object
       end
-    end
-
-    # Creates a Hash with indifferent access.
-    def indifferent_hash
-      Hash.new { |hash, key| hash[key.to_s] if Symbol === key }
     end
 
     # Run the block with 'throw :halt' support and apply result to the response.
