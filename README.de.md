@@ -1,26 +1,29 @@
 # Sinatra
 
+[![Build Status](https://secure.travis-ci.org/sinatra/sinatra.svg)](http://travis-ci.org/sinatra/sinatra)
+
 *Wichtig: Dieses Dokument ist eine Übersetzung aus dem Englischen und unter
-Umständen nicht auf dem aktuellen Stand (aktuell Sinatra 1.4.5).*
+Umständen nicht auf dem aktuellen Stand (aktuell Sinatra 2.0
+Vorabausgabe).*
 
 Sinatra ist eine
 [DSL](https://de.wikipedia.org/wiki/Domänenspezifische_Sprache), die das
 schnelle Erstellen von Webanwendungen in Ruby mit minimalem Aufwand
 ermöglicht:
 
-Sinatra via `rubygems` installieren:
-
-```shell
-gem install sinatra
-```
-
-Eine Datei mit dem Namen `myapp.rb` erstellen:
-
 ```ruby
+# myapp.rb
 require 'sinatra'
+
 get '/' do
   'Hallo Welt!'
 end
+```
+
+Sinatra-Gem installieren:
+
+```shell
+gem install sinatra
 ```
 
 und im gleichen Verzeichnis ausführen:
@@ -32,98 +35,104 @@ ruby myapp.rb
 Die Seite kann nun unter [http://localhost:4567](http://localhost:4567)
 aufgerufen werden.
 
+Es wird empfohlen `gem installl thin` auszuführen, Sinatra wird dann
+diesen Server verwenden.
+
 ## Inhalt
 
-* [Sinatra](#sinatra)
-    * [Routen](#routen)
-        * [Bedingungen](#bedingungen)
-        * [Rückgabewerte](#rckgabewerte)
-        * [Eigene Routen-Muster](#eigene-routen-muster)
-    * [Statische Dateien](#statische-dateien)
-    * [Views/Templates](#viewstemplates)
-        * [Direkte Templates](#direkte-templates)
-        * [Verfügbare Templatesprachen](#verfgbare-templatesprachen)
-            * [Haml Templates](#haml-templates)
-            * [Erb Templates](#erb-templates)
-            * [Builder Templates](#builder-templates)
-            * [Nokogiri Templates](#nokogiri-templates)
-            * [Sass Templates](#sass-templates)
-            * [SCSS Templates](#scss-templates)
-            * [Less Templates](#less-templates)
-            * [Liquid Templates](#liquid-templates)
-            * [Markdown Templates](#markdown-templates)
-            * [Textile Templates](#textile-templates)
-            * [RDoc Templates](#rdoc-templates)
-            * [AsciiDoc Templates](#asciidoc-templates)
-            * [Radius Templates](#radius-templates)
-            * [Markaby Templates](#markaby-templates)
-            * [RABL Templates](#rabl-templates)
-            * [Slim Templates](#slim-templates)
-            * [Creole Templates](#creole-templates)
-            * [MediaWiki Templates](#mediawiki-templates)
-            * [CoffeeScript Templates](#coffeescript-templates)
-            * [Stylus Templates](#stylus-templates)
-            * [Yajl Templates](#yajl-templates)
-            * [WLang Templates](#wlang-templates)
-        * [Auf Variablen in Templates zugreifen](#auf-variablen-in-templates-zugreifen)
-        * [Templates mit `yield` und verschachtelte Layouts](#templates-mit-yield-und-verschachtelte-layouts)
-        * [Inline-Templates](#inline-templates)
-        * [Benannte Templates](#benannte-templates)
-        * [Dateiendungen zuordnen](#dateiendungen-zuordnen)
-        * [Eine eigene Template-Engine hinzufügen](#eine-eigene-template-engine-hinzufgen)
-        * [Eigene Methoden zum Aufsuchen von Templates verwenden](#eigene-methoden-zum-aufsuchen-von-templates-verwenden)
-    * [Filter](#filter)
-    * [Helfer](#helfer)
-        * [Sessions verwenden](#sessions-verwenden)
-        * [Anhalten](#anhalten)
-        * [Weiterspringen](#weiterspringen)
-        * [Eine andere Route ansteuern](#eine-andere-route-ansteuern)
-        * [Body, Status-Code und Header setzen](#body-status-code-und-header-setzen)
-        * [Response-Streams](#response-streams)
-        * [Logger](#logger)
-        * [Mime-Types](#mime-types)
-        * [URLs generieren](#urls-generieren)
-        * [Browser-Umleitung](#browser-umleitung)
-        * [Cache einsetzen](#cache-einsetzen)
-        * [Dateien versenden](#dateien-versenden)
-        * [Das Request-Objekt](#das-request-objekt)
-        * [Anhänge](#anhnge)
-        * [Umgang mit Datum und Zeit](#umgang-mit-datum-und-zeit)
-        * [Nachschlagen von Template-Dateien](#nachschlagen-von-template-dateien)
-        * [Konfiguration](#konfiguration)
-            * [Einstellung des Angriffsschutzes](#einstellung-des-angriffsschutzes)
-            * [Mögliche Einstellungen](#mgliche-einstellungen)
-    * [Umgebungen](#umgebungen)
-    * [Fehlerbehandlung](#fehlerbehandlung)
-        * [Nicht gefunden](#nicht-gefunden)
-        * [Fehler](#fehler)
-    * [Rack-Middleware](#rack-middleware)
-    * [Testen](#testen)
-    * [Sinatra::Base - Middleware, Bibliotheken und modulare Anwendungen](#sinatrabase---middleware-bibliotheken-und-modulare-anwendungen)
-        * [Modularer vs. klassischer Stil](#modularer-vs-klassischer-stil)
-        * [Eine modulare Applikation bereitstellen](#eine-modulare-applikation-bereitstellen)
-        * [Eine klassische Anwendung mit einer config.ru verwenden](#eine-klassische-anwendung-mit-einer-configru-verwenden)
-        * [Wann sollte eine config.ru-Datei verwendet werden?](#wann-sollte-eine-configru-datei-verwendet-werden)
-        * [Sinatra als Middleware nutzen](#sinatra-als-middleware-nutzen)
-        * [Dynamische Applikationserstellung](#dynamische-applikationserstellung)
-    * [Geltungsbereich und Bindung](#geltungsbereich-und-bindung)
-        * [Anwendungs- oder Klassen-Scope](#anwendungs--oder-klassen-scope)
-        * [Anfrage- oder Instanz-Scope](#anfrage--oder-instanz-scope)
-        * [Delegation-Scope](#delegation-scope)
-    * [Kommandozeile](#kommandozeile)
-      * [Multi-Threading](#multi-threading)
-    * [Systemanforderungen](#systemanforderungen)
-    * [Der neuste Stand (The Bleeding Edge)](#der-neuste-stand-the-bleeding-edge)
-        * [Mit Bundler](#mit-bundler)
-        * [Eigenes Repository](#eigenes-repository)
-        * [Gem erstellen](#gem-erstellen)
-    * [Versions-Verfahren](#versions-verfahren)
-    * [Mehr](#mehr)
+- [Sinatra](#sinatra)
+  * [Inhalt](#inhalt)
+  * [Routen](#routen)
+    + [Bedingungen](#bedingungen)
+    + [Rückgabewerte](#rückgabewerte)
+    + [Eigene Routen-Muster](#eigene-routen-muster)
+  * [Statische Dateien](#statische-dateien)
+  * [Views/Templates](#views-templates)
+    + [Direkte Templates](#direkte-templates)
+    + [Verfügbare Templatesprachen](#verfügbare-templatesprachen)
+      - [Haml Templates](#haml-templates)
+      - [Erb Templates](#erb-templates)
+      - [Builder Templates](#builder-templates)
+      - [Nokogiri Templates](#nokogiri-templates)
+      - [Sass Templates](#sass-templates)
+      - [SCSS Templates](#scss-templates)
+      - [Less Templates](#less-templates)
+      - [Liquid Templates](#liquid-templates)
+      - [Markdown Templates](#markdown-templates)
+      - [Textile Templates](#textile-templates)
+      - [RDoc Templates](#rdoc-templates)
+      - [AsciiDoc Templates](#asciidoc-templates)
+      - [Radius Templates](#radius-templates)
+      - [Markaby Templates](#markaby-templates)
+      - [RABL Templates](#rabl-templates)
+      - [Slim Templates](#slim-templates)
+      - [Creole Templates](#creole-templates)
+      - [MediaWiki Templates](#mediawiki-templates)
+      - [CoffeeScript Templates](#coffeescript-templates)
+      - [Stylus Templates](#stylus-templates)
+      - [Yajl Templates](#yajl-templates)
+      - [WLang Templates](#wlang-templates)
+    + [Auf Variablen in Templates zugreifen](#auf-variablen-in-templates-zugreifen)
+    + [Templates mit `yield` und verschachtelte Layouts](#templates-mit--yield--und-verschachtelte-layouts)
+    + [Inline-Templates](#inline-templates)
+    + [Benannte Templates](#benannte-templates)
+    + [Dateiendungen zuordnen](#dateiendungen-zuordnen)
+    + [Eine eigene Template-Engine hinzufügen](#eine-eigene-template-engine-hinzuf-gen)
+    + [Eigene Methoden zum Aufsuchen von Templates verwenden](#eigene-methoden-zum-aufsuchen-von-templates-verwenden)
+  * [Filter](#filter)
+  * [Helfer](#helfer)
+    + [Sessions verwenden](#sessions-verwenden)
+      - [Sitzungseinstellungen](#sitzungseinstellungen)
+      - [Eigene Sitzungs-Middleware auswählen](#eigene-sitzungs-middleware-ausw-hlen)
+    + [Anhalten](#anhalten)
+    + [Weiterspringen](#weiterspringen)
+    + [Eine andere Route ansteuern](#eine-andere-route-ansteuern)
+    + [Body, Status-Code und Header setzen](#body--status-code-und-header-setzen)
+    + [Response-Streams](#response-streams)
+    + [Logger](#logger)
+    + [Mime-Types](#mime-types)
+    + [URLs generieren](#urls-generieren)
+    + [Browser-Umleitung](#browser-umleitung)
+    + [Cache einsetzen](#cache-einsetzen)
+    + [Dateien versenden](#dateien-versenden)
+    + [Das Request-Objekt](#das-request-objekt)
+    + [Anhänge](#anhänge)
+    + [Umgang mit Datum und Zeit](#umgang-mit-datum-und-zeit)
+    + [Nachschlagen von Template-Dateien](#nachschlagen-von-template-dateien)
+    + [Konfiguration](#konfiguration)
+      - [Einstellung des Angriffsschutzes](#einstellung-des-angriffsschutzes)
+      - [Mögliche Einstellungen](#m-gliche-einstellungen)
+  * [Umgebungen](#umgebungen)
+  * [Fehlerbehandlung](#fehlerbehandlung)
+    + [Nicht gefunden](#nicht-gefunden)
+    + [Fehler](#fehler)
+  * [Rack-Middleware](#rack-middleware)
+  * [Testen](#testen)
+  * [Sinatra::Base - Middleware, Bibliotheken und modulare Anwendungen](#sinatra--base---middleware--bibliotheken-und-modulare-anwendungen)
+    + [Modularer vs. klassischer Stil](#modularer-vs-klassischer-stil)
+    + [Eine modulare Applikation bereitstellen](#eine-modulare-applikation-bereitstellen)
+    + [Eine klassische Anwendung mit einer config.ru verwenden](#eine-klassische-anwendung-mit-einer-configru-verwenden)
+    + [Wann sollte eine config.ru-Datei verwendet werden?](#wann-sollte-eine-configru-datei-verwendet-werden-)
+    + [Sinatra als Middleware nutzen](#sinatra-als-middleware-nutzen)
+    + [Dynamische Applikationserstellung](#dynamische-applikationserstellung)
+  * [Geltungsbereich und Bindung](#geltungsbereich-und-bindung)
+    + [Anwendungs- oder Klassen-Scope](#anwendungs--oder-klassen-scope)
+    + [Anfrage- oder Instanz-Scope](#anfrage--oder-instanz-scope)
+    + [Delegation-Scope](#delegation-scope)
+  * [Kommandozeile](#kommandozeile)
+    + [Multi-threading](#multi-threading)
+  * [Systemanforderungen](#systemanforderungen)
+  * [Der neuste Stand (The Bleeding Edge)](#der-neuste-stand--the-bleeding-edge-)
+    + [Mit Bundler](#mit-bundler)
+    + [Eigenes Repository](#eigenes-repository)
+    + [Gem erstellen](#gem-erstellen)
+  * [Versions-Verfahren](#versions-verfahren)
+  * [Mehr](#mehr)
 
 ## Routen
 
-In Sinatra wird eine Route durch eine HTTP-Methode und ein URL-Muster definiert.
-Jeder dieser Routen wird ein Ruby-Block zugeordnet:
+In Sinatra wird eine Route durch eine HTTP-Methode und ein URL-Muster
+definiert. Jeder dieser Routen wird ein Ruby-Block zugeordnet:
 
 ```ruby
 get '/' do
@@ -157,6 +166,14 @@ end
 
 Die Routen werden in der Reihenfolge durchlaufen, in der sie definiert wurden.
 Das erste Routen-Muster, das mit dem Request übereinstimmt, wird ausgeführt.
+
+Routen mit angehängtem Schrägstrich unterscheiden sich von Routen ohne:
+
+```ruby
+get '/foo' do
+  # wird nicht bei "GET /foo/" aufgerufen
+end
+```
 
 Die Muster der Routen können benannte Parameter beinhalten, die über den
 `params`-Hash zugänglich gemacht werden:
@@ -213,6 +230,7 @@ Und auch hier können Block-Parameter genutzt werden:
 
 ```ruby
 get %r{/hallo/([\w]+)} do |c|
+  # erkennt "GET /hallo/frank" oder "GET /sag/hallo/frank" usw.
   "Hallo, #{c}!"
 end
 ```
@@ -230,16 +248,31 @@ Routen können auch den query-Parameter verwenden:
 
 ```ruby
 get '/posts' do
-  # matches "GET /posts?title=foo&author=bar"
+  # passt zu "GET /posts?title=foo&author=bar"
   title = params['title']
   author = params['author']
-  # uses title and author variables; query is optional to the /posts route
+  # verwendet title- und author-Variablen. Der query-Parameter ist für
+  # die /post-Route optional
 end
 ```
 
 Anmerkung: Solange man den sog. Path Traversal Attack-Schutz nicht deaktiviert
 (siehe weiter unten), kann es sein, dass der Request-Pfad noch vor dem
 Abgleich mit den Routen modifiziert wird.
+
+Die Mustermann-Optionen können für eine gegebene Route angepasst werden,
+indem man der Route den `:mustermann_opts`-Hash mitgibt:
+
+```ruby
+get '\A/posts\z', :mustermann_opts => { :type => :regexp, :check_anchors => false } do
+  # Passt genau auf /posts mit explizitem Anchoring
+  "Wenn Dein Anchor-Muster passt, darfst Du klatschen!"
+end
+```
+
+Das sieht zwar genauso aus wie eine Bedingung, ist es aber nicht. Diese
+Option wird mit dem globalen `:mustermann_opts`-Hash zusammengeführt
+(siehe weiter unten).
 
 ### Bedingungen
 
@@ -261,7 +294,7 @@ get '/foo' do
 end
 ```
 
-Andere mitgelieferte Bedingungen sind `:host_name` und `:provides`:
+Andere verfügbare Bedingungen sind `:host_name` und `:provides`:
 
 ```ruby
 get '/', :host_name => /^admin\./ do
@@ -296,7 +329,7 @@ Bei Bedingungen, die mehrere Werte annehmen können, sollte ein Splat verwendet
 werden:
 
 ```ruby
-set(:auth) do |*roles|   # <- hier kommt der Splat ins Spiel
+set(:auth) do |*roles| # <- hier kommt der Splat ins Spiel
   condition do
     unless logged_in? && roles.any? {|role| current_user.in_role? role }
       redirect "/login/", 303
@@ -377,7 +410,8 @@ get all_but("/index") do
 end
 ```
 
-Beachte, dass das obige Beispiel etwas übertrieben wirkt. Es geht auch einfacher:
+Beachte, dass das obige Beispiel etwas übertrieben wirkt. Es geht auch
+einfacher:
 
 ```ruby
 get // do
@@ -403,8 +437,9 @@ einen anderen Ort zu definieren, indem man die `:public_folder`-Option setzt:
 set :public_folder, File.dirname(__FILE__) + '/static'
 ```
 
-Zu beachten ist, dass der Ordnername `public` nicht Teil der URL ist. Die Datei
-`./public/css/style.css` ist unter `http://example.com/css/style.css` zu finden.
+Zu beachten ist, dass der Ordnername `public` nicht Teil der URL ist.
+Die Datei `./public/css/style.css` ist unter
+`http://example.com/css/style.css` zu finden.
 
 Um den `Cache-Control`-Header mit Informationen zu versorgen, verwendet man
 die `:static_cache_control`-Einstellung (s.u.).
@@ -422,7 +457,8 @@ end
 
 Dieses Beispiel rendert `views/index.erb`.
 
-Anstelle eines Templatenamens kann man auch direkt die Templatesprache verwenden:
+Anstelle eines Templatenamens kann man auch direkt die Templatesprache
+verwenden:
 
 ```ruby
 get '/' do
@@ -517,14 +553,15 @@ befinden. Es kann jedoch ein anderer Ordner festgelegt werden:
 set :views, settings.root + '/templates'
 ```
 
-Es ist zu beachten, dass immer mit Symbolen auf Templates verwiesen werden muss,
-auch dann, wenn sie sich in einem Unterordner befinden:
+Es ist zu beachten, dass immer mit Symbolen auf Templates verwiesen
+werden muss, auch dann, wenn sie sich in einem Unterordner befinden:
 
 ```ruby
 haml :'unterverzeichnis/template'
 ```
 
-Rendering-Methoden rendern jeden String direkt.
+Wird einer Rendering-Methode ein String übergeben, wird dieser direkt
+gerendert.
 
 ### Direkte Templates
 
@@ -535,6 +572,16 @@ end
 ```
 
 Hier wird der String direkt gerendert.
+
+Optional kann `:path` und `:line` für einen genaueren Backtrace
+übergeben werden, wenn mit dem vorgegebenen String ein Pfad im
+Dateisystem oder eine Zeilennummer verbunden ist:
+
+```ruby
+get '/' do
+  haml '%div.title Hallo Welt', :path => 'examples/datei.haml', :line => 3
+end
+```
 
 ### Verfügbare Templatesprachen
 
@@ -944,10 +991,10 @@ aufrufen kann:
 %p= creole(:Grüße)
 ```
 
-Da man Ruby nicht von Creole heraus aufrufen kann, können auch Layouts nicht in
-Creole geschrieben werden. Es ist aber möglich, einen Renderer für die Templates
-zu verwenden und einen anderen für das Layout, indem die `:layout_engine`-Option
-verwendet wird.
+Da man Ruby nicht von Creole heraus aufrufen kann, können auch Layouts
+nicht in Creole geschrieben werden. Es ist aber möglich, einen Renderer
+für die Templates zu verwenden und einen anderen für das Layout, indem
+die `:layout_engine`-Option verwendet wird.
 
 #### MediaWiki Templates
 
@@ -966,9 +1013,9 @@ verwendet wird.
   </tr>
 </table>
 
-Da man aus dem Mediawiki-Template heraus keine Ruby-Methoden aufrufen und auch
-keine locals verwenden kann, wird man Mediawiki üblicherweise in Kombination mit
-anderen Renderern verwenden wollen:
+Da man aus dem Mediawiki-Template heraus keine Ruby-Methoden aufrufen
+und auch keine locals verwenden kann, wird man Mediawiki üblicherweise
+in Kombination mit anderen Renderern verwenden wollen:
 
 ```ruby
 erb :overview, :locals => { :text => mediawiki(:introduction) }
@@ -982,10 +1029,10 @@ heraus aufrufen:
 %p= mediawiki(:greetings)
 ```
 
-Da man Ruby nicht von MediaWiki heraus aufrufen kann, können auch Layouts nicht
-in MediaWiki geschrieben werden. Es ist aber möglich, einen Renderer für die
-Templates zu verwenden und einen anderen für das Layout, indem die
-`:layout_engine`-Option verwendet wird.
+Da man Ruby nicht von MediaWiki heraus aufrufen kann, können auch
+Layouts nicht in MediaWiki geschrieben werden. Es ist aber möglich,
+einen Renderer für die Templates zu verwenden und einen anderen für das
+Layout, indem die `:layout_engine`-Option verwendet wird.
 
 #### CoffeeScript Templates
 
@@ -1131,9 +1178,9 @@ Templates eingesetzt.
 
 ### Templates mit `yield` und verschachtelte Layouts
 
-Ein Layout ist üblicherweise ein Template, das ein `yield` aufruft. Ein solches
-Template kann entweder wie oben beschrieben über die `:template` Option
-verwendet werden oder mit einem Block gerendert werden:
+Ein Layout ist üblicherweise ein Template, das ein `yield` aufruft. Ein
+solches Template kann entweder wie oben beschrieben über die `:template`
+Option verwendet werden oder mit einem Block gerendert werden:
 
 ```ruby
 erb :post, :layout => false do
@@ -1185,13 +1232,13 @@ __END__
   = yield
 
 @@ index
-%div.title Hallo Welt!!!!!
+%div.title Hallo Welt
 ```
 
 Anmerkung: Inline-Templates, die in der Datei definiert sind, die `require
 'sinatra'` aufruft, werden automatisch geladen. Um andere Inline-Templates in
-anderen Dateien aufzurufen, muss explizit `enable :inline_templates` verwendet
-werden.
+weiteren Dateien aufzurufen, muss explizit `enable :inline_templates`
+verwendet werden.
 
 ### Benannte Templates
 
@@ -1199,7 +1246,7 @@ Templates können auch mit der Top-Level `template`-Methode definiert werden:
 
 ```ruby
 template :layout do
-  "%html\n  =yield\n"
+  "%html\n =yield\n"
 end
 
 template :index do
@@ -1212,7 +1259,9 @@ end
 ```
 
 Wenn ein Template mit dem Namen "layout" existiert, wird es bei jedem Aufruf
-verwendet. Durch `:layout => false` kann das Ausführen verhindert werden:
+verwendet. Durch `:layout => false` kann das Ausführen individuell nach Route
+verhindert werden, oder generell für ein Template, z.B. Haml via:
+`set :haml, :layout => false`:
 
 ```ruby
 get '/' do
@@ -1299,6 +1348,10 @@ after do
 end
 ```
 
+Achtung: Wenn statt der body-Methode ein einfacher String verwendet
+wird, ist der Response-body im after-Filter noch nicht verfügbar, da
+er erst nach dem Durchlaufen des after-Filters erzeugt wird.
+
 Filter können optional auch mit einem Muster ausgestattet werden, das auf den
 Request-Pfad passen muss, damit der Filter ausgeführt wird:
 
@@ -1342,9 +1395,27 @@ get '/:name' do
 end
 ```
 
+Ebenso können Helfer auch in einem eigenen Modul definiert werden:
+
+```ruby
+module FooUtils
+  def foo(name) "#{name}foo" end
+end
+
+module BarUtils
+  def bar(name) "#{name}bar" end
+end
+
+helpers FooUtils, BarUtils
+```
+
+Das Ergebnis ist das gleiche, wie beim Einbinden in die
+Anwendungs-Klasse.
+
 ### Sessions verwenden
-Sessions werden verwendet, um Zustände zwischen den Requests zu speichern. Sind
-sie aktiviert, kann ein Session-Hash je Benutzer-Session verwendet werden:
+Sessions werden verwendet, um Zustände zwischen den Requests zu speichern.
+Sind sie aktiviert, kann ein Session-Hash je Benutzer-Session verwendet
+werden:
 
 ```ruby
 enable :sessions
@@ -1358,47 +1429,129 @@ get '/:value' do
 end
 ```
 
-Beachte, dass `enable :sessions` alle Daten in einem Cookie speichert. Unter
-Umständen kann dies negative Effekte haben, z.B. verursachen viele Daten
-höheren, teilweise überflüssigen Traffic. Um das zu vermeiden, kann eine Rack-
-Session-Middleware verwendet werden. Dabei wird auf `enable :sessions`
-verzichtet und die Middleware wie üblich im Programm eingebunden:
+Um die Sicherheit zu erhöhen, werden Daten mit einem geheimen
+Sitzungsschlüssel unter Verwendung von `HMAC-SHA1` in einem Cookie signiert.
+Der Sitzungsschlüssel sollte optimalerweise ein kryptografisch zufällig
+erzeugter Wert mit angemessener Länge sein, für den `HMAC-SHA1` größer
+oder gleich 65 Bytes ist (256 Bits, 64 Hex-Zeichen). Es wird empfohlen,
+keinen Schlüssel zu verwenden, dessen Zufälligkeit weniger als 32 Bytes
+entspricht (also 256 Bits, 64 Hex-Zeichen). Es ist deshalb **wirklich
+wichtig**, dass nicht einfach irgendetwas als Schlüssel verwendet wird,
+sondern ein sicherer Zufallsgenerator die Zeichenkette erstellt. Menschen sind
+nicht besonders gut, zufällige Zeichenfolgen zu erstellen.
 
-```ruby
-use Rack::Session::Pool, :expire_after => 2592000
+Sinatra generiert automatisch einen zufälligen 32 Byte langen zufälligen
+Schlüssel. Da jedoch bei jedem Neustart der Schlüssel ebenfalls neu generiert
+wird, ist es sinnvoll einen eigenen Schlüssel festzulegen, damit er über alle
+Anwendungsinstanzen hinweg geteilt werden kann.
 
-get '/' do
-  "value = " << session[:value].inspect
-end
+Aus praktikablen und Sicherheitsgründen wird
+[empfohlen](https://12factor.net/config), dass ein sicherer Zufallswert
+erzeugt und in einer Umgebungsvariable abgelgegt wird, damit alle
+Anwendungsinstanzen darauf zugreifen können. Dieser Sitzungsschlüssel
+sollte in regelmäßigen Abständen erneuert werden. Zum Erzeugen von 64
+Byte starken Schlüsseln sind hier ein paar Beispiele vorgestellt:
 
-get '/:value' do
-  session[:value] = params['value']
-end
+**Sitzungsschlüssel erzeugen**
+
+```text
+$ ruby -e "require 'securerandom'; puts SecureRandom.hex(64)"
+99ae8afi...usw...ec0f262ac
 ```
 
-Um die Sicherheit zu erhöhen, werden Cookies, die Session-Daten führen, mit
-einem sogenannten Session-Secret signiert. Da sich dieses Geheimwort bei jedem
-Neustart der Applikation automatisch ändert, ist es sinnvoll, ein eigenes zu
-wählen, damit sich alle Instanzen der Applikation dasselbe Session-Secret
-teilen:
+**Sitzungsschlüssel erzeugen (Bonuspunkte)**
 
-```ruby
-set :session_secret, 'super_geheimes_Gegeimnis'
+Um den systemweiten Zufallszahlengenerator zu verwenden, kann das
+[sysrandom gem](https://github.com/cryptosphere/sysrandom) installiert
+werden, anstelle von Zufallszahlen aus dem Userspace, auf die MRI zur
+Zeit standardmäßig zugreift:
+
+```text
+$ gem install sysrandom
+Building native extensions. This could take a while...
+Successfully installed sysrandom-1.x
+1 gem installed
+
+$ ruby -e "require 'sysrandom/securerandom'; puts SecureRandom.hex(64)"
+99ae8af...snip...ec0f262ac
 ```
 
-Zur weiteren Konfiguration kann man einen Hash mit Optionen in den `sessions`
-Einstellungen ablegen.
+**Sitzungsschlüssel-Umgebungsvariable**
+
+Wird eine `SESSION_SECRET`-Umgebungsvariable persistent gesetzt, kann
+Sinatra darauf zugreifen. Da die folgende Methode von System zu System
+variieren kann, ist dies als Beispiel zu verstehen:
+
+```bash
+$ echo "export SESSION_SECRET=99ae8af...etc...ec0f262ac" >> ~/.bashrc
+```
+
+**Anwendungseinstellung für Sitzungsschlüssel**
+
+Die Anwendung sollte unabhängig von der `SESSION_SECRET`-Umgebungsvariable
+auf einen sicheren zufälligen Schlüssel zurückgreifen.
+
+Auch hier sollte das
+[sysrandom gem](https://github.com/cryptosphere/sysrandom) verwendet
+werden:
+
+```ruby
+require 'securerandom'
+# -or- require 'sysrandom/securerandom'
+set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
+```
+
+#### Sitzungseinstellungen
+
+Im Options-Hash können weitere Einstellungen abgelegt werden:
 
 ```ruby
 set :sessions, :domain => 'foo.com'
 ```
 
-Um eine Session mit anderen Apps und zwischen verschiedenen Subdomains
-von foo.com zu teilen, wird ein *.* der Domain vorangestellt:
+Um Sitzungsdaten über mehrere Anwendungen und Subdomains hinweg zu
+teilen, muss die Domain mit einem `*.*` vor der Domain ausgestattet
+werden:
 
 ```ruby
-set :sessions, :domain => '.foo,com'
+set :sessions, :domain => '.foo.com'
 ```
+
+#### Eigene Sitzungs-Middleware auswählen
+
+Beachte, dass `enable :sessions` alle Daten in einem Cookie speichert. Unter
+Umständen kann dies negative Effekte haben, z.B. verursachen viele Daten
+höheren, teilweise überflüssigen Traffic. Es kann daher eine beliebige
+Rack-Session Middleware verwendet werden. Folgende Methoden stehen zur
+Verfügung:
+
+```ruby
+enable :sessions
+set :session_store, Rack::Session::Pool
+```
+
+Oder Sitzungen werden mit einem Options-Hash ausgestattet:
+
+```ruby
+set :sessions, :expire_after => 2592000
+set :session_store, Rack::Session::Pool
+```
+
+Eine weitere Methode ist der Verzicht auf `enable :session` und
+stattdessen die Verwendung einer beliebigen anderen Middleware.
+
+Dabei ist jedoch zu beachten, dass der reguläre sitzungsbasierte
+Sicherungsmechanismus **nicht automatisch aktiviert wird**.
+
+Die dazu benötigte Rack-Middleware muss explizit eingebunden werden:
+
+```ruby
+use Rack::Session::Pool, :expire_after => 2592000
+use Rack::Protection::RemoteToken
+use Rack::Protection::SessionHijacking
+```
+
+Mehr dazu unter [Einstellung des Angiffsschutzes](https://github.com/sinatra/sinatra/blob/master/README.de.md#einstellung-des-angriffsschutzes).
 
 ### Anhalten
 
@@ -1482,13 +1635,15 @@ Wenn der Request innerhalb derselben Applikations-Instanz aufgerufen und keine
 Kopie der Instanz erzeugt werden soll, kann `call!` anstelle von `call`
 verwendet werden.
 
+Weitere Informationen zu `call` finden sich in den Rack-Spezifikationen.
+
 ### Body, Status-Code und Header setzen
 
-Es ist möglich und empfohlen, den Status-Code sowie den Response-Body mit einem
-Returnwert in der Route zu setzen. In manchen Situationen kann es jedoch sein,
-dass der Body an anderer Stelle während der Ausführung gesetzt werden soll.
-Dafür kann man die Helfer-Methode `body` einsetzen. Ist sie gesetzt, kann sie zu
-einem späteren Zeitpunkt aufgerufen werden:
+Es ist möglich und empfohlen, den Status-Code sowie den Response-Body mit
+einem Returnwert in der Route zu setzen. In manchen Situationen kann es
+jedoch sein, dass der Body an anderer Stelle während der Ausführung gesetzt
+werden soll. Dafür kann man die Helfer-Methode `body` einsetzen. Ist sie
+gesetzt, kann sie zu einem späteren Zeitpunkt aufgerufen werden:
 
 ```ruby
 get '/foo' do
@@ -1525,14 +1680,14 @@ In manchen Situationen sollen Daten bereits an den Client zurückgeschickt
 werden, bevor ein vollständiger Response bereit steht. Manchmal will man die
 Verbindung auch erst dann beenden und Daten so lange an den Client
 zurückschicken, bis er die Verbindung abbricht. Für diese Fälle gibt es die
-`stream`-Helfer-Methode, die es einem erspart eigene Lösungen zu schreiben:
+`stream`-Helfer-Methode, die es einem erspart, eigene Lösungen zu schreiben:
 
 ```ruby
 get '/' do
   stream do |out|
     out << "Das ist ja mal wieder fanta -\n"
     sleep 0.5
-    out << " (bitte warten…) \n"
+    out << " (bitte warten …) \n"
     sleep 1
     out << "- stisch!\n"
   end
@@ -1541,8 +1696,8 @@ end
 
 Damit lassen sich Streaming-APIs realisieren, sog.
 [Server Sent Events](https://w3c.github.io/eventsource/), die als Basis für
-[WebSockets](https://en.wikipedia.org/wiki/WebSocket) dienen. Ebenso können sie
-verwendet werden, um den Durchsatz zu erhöhen, wenn ein Teil der Daten von
+[WebSockets](https://en.wikipedia.org/wiki/WebSocket) dienen. Ebenso können
+sie verwendet werden, um den Durchsatz zu erhöhen, wenn ein Teil der Daten von
 langsamen Ressourcen abhängig ist.
 
 Es ist zu beachten, dass das Verhalten beim Streaming, insbesondere die Anzahl
@@ -1553,11 +1708,11 @@ unterstützen, wird ein vollständiger Response-Body zurückgeschickt, sobald de
 an `stream` weitergegebene Block abgearbeitet ist. Mit Shotgun funktioniert
 Streaming z.B. überhaupt nicht.
 
-Ist der optionale Parameter `keep_open` aktiviert, wird beim gestreamten Objekt
-`close` nicht aufgerufen und es ist einem überlassen dies an einem beliebigen
-späteren Zeitpunkt nachholen. Die Funktion ist jedoch nur bei Event-gesteuerten
-Serven wie Thin oder Rainbows möglich, andere Server werden trotzdem den Stream
-beenden:
+Ist der optionale Parameter `keep_open` aktiviert, wird beim gestreamten
+Objekt `close` nicht aufgerufen und es ist einem überlassen dies an einem
+beliebigen späteren Zeitpunkt nachholen. Die Funktion ist jedoch nur bei
+Event-gesteuerten Serven wie Thin oder Rainbows möglich, andere Server werden
+trotzdem den Stream beenden:
 
 ```ruby
 # Durchgehende Anfrage (long polling)
@@ -1589,10 +1744,14 @@ post '/:message' do
 end
 ```
 
+Es ist ebenfalls möglich, dass der Client die Verbindung schließt, während in
+den Socket geschrieben wird. Deshalb ist es sinnvoll, vor einem
+Schreibvorgang `out.closed?` zu prüfen.
+
 ### Logger
 
-Im Geltungsbereich eines Request stellt die `logger` Helfer-Methode eine `Logger`
-Instanz zur Verfügung:
+Im Geltungsbereich eines Request stellt die `logger` Helfer-Methode eine
+`Logger` Instanz zur Verfügung:
 
 ```ruby
 get '/' do
@@ -1602,8 +1761,9 @@ end
 ```
 
 Der Logger übernimmt dabei automatisch alle im Rack-Handler eingestellten
-Log-Vorgaben. Ist Loggen ausgeschaltet, gibt die Methode ein Leerobjekt zurück.
-In den Routen und Filtern muss man sich also nicht weiter darum kümmern.
+Log-Vorgaben. Ist Loggen ausgeschaltet, gibt die Methode ein Leerobjekt
+zurück. In den Routen und Filtern muss man sich also nicht weiter darum
+kümmern.
 
 Beachte, dass das Loggen standardmäßig nur für `Sinatra::Application`
 voreingestellt ist. Wird über `Sinatra::Base` vererbt, muss es erst aktiviert
@@ -1611,7 +1771,7 @@ werden:
 
 ```ruby
 class MyApp < Sinatra::Base
-  configure :production, :development  do
+  configure :production, :development do
     enable :logging
   end
 end
@@ -1619,9 +1779,9 @@ end
 
 Damit auch keine Middleware das Logging aktivieren kann, muss die `logging`
 Einstellung auf `nil` gesetzt werden. Das heißt aber auch, dass `logger` in
-diesem Fall `nil` zurückgeben wird. Üblicherweise wird das eingesetzt, wenn ein
-eigener Logger eingerichtet werden soll. Sinatra wird dann verwenden, was in
-`env['rack.logger']` eingetragen ist.
+diesem Fall `nil` zurückgeben wird. Üblicherweise wird das eingesetzt, wenn
+ein eigener Logger eingerichtet werden soll. Sinatra wird dann verwenden, was
+in `env['rack.logger']` eingetragen ist.
 
 ### Mime-Types
 
@@ -1646,8 +1806,8 @@ end
 
 ### URLs generieren
 
-Zum Generieren von URLs sollte die `url`-Helfer-Methode genutzen werden, so z.B.
-beim Einsatz von Haml:
+Zum Generieren von URLs sollte die `url`-Helfer-Methode genutzen werden, so
+z.B. beim Einsatz von Haml:
 
 ```ruby
 %a{:href => url('/foo')} foo
@@ -1655,7 +1815,8 @@ beim Einsatz von Haml:
 
 Soweit vorhanden, wird Rücksicht auf Proxys und Rack-Router genommen.
 
-Diese Methode ist ebenso über das Alias `to` zu erreichen (siehe Beispiel unten).
+Diese Methode ist ebenso über das Alias `to` zu erreichen (siehe Beispiel
+unten).
 
 ### Browser-Umleitung
 
@@ -1733,8 +1894,8 @@ before do
 end
 ```
 
-Bei Verwendung der `expires`-Helfermethode zum Setzen des gleichnamigen Headers,
-wird `Cache-Control` automatisch eigestellt:
+Bei Verwendung der `expires`-Helfermethode zum Setzen des gleichnamigen
+Headers, wird `Cache-Control` automatisch eigestellt:
 
 ```ruby
 before do
@@ -1743,7 +1904,7 @@ end
 ```
 
 Um alles richtig zu machen, sollten auch `etag` oder `last_modified` verwendet
-werden. Es wird empfohlen, dass diese Helfer aufgerufen werden **bevor** die
+werden. Es wird empfohlen, dass diese Helfer aufgerufen werden *bevor* die
 eigentliche Arbeit anfängt, da sie sofort eine Antwort senden, wenn der Client
 eine aktuelle Version im Cache vorhält:
 
@@ -1781,16 +1942,16 @@ get '/' do
 end
 ```
 
-Um den `Cache-Control`-Header mit Informationen zu versorgen, verwendet man die
-`:static_cache_control`-Einstellung (s.u.).
+Um den `Cache-Control`-Header mit Informationen zu versorgen, verwendet man
+die `:static_cache_control`-Einstellung (s.u.).
 
-Nach RFC 2616 sollte sich die Anwendung anders verhalten, wenn ein If-Match oder
-ein If-None_match Header auf `*` gesetzt wird in Abhängigkeit davon, ob die
-Resource bereits existiert. Sinatra geht davon aus, dass Ressourcen bei sicheren
-Anfragen (z.B. bei get oder Idempotenten Anfragen wie put) bereits existieren,
-wobei anderen Ressourcen (besipielsweise bei post), als neue Ressourcen
-behandelt werden. Dieses Verhalten lässt sich mit der `:new_resource` Option
-ändern:
+Nach RFC 2616 sollte sich die Anwendung anders verhalten, wenn ein If-Match
+oder ein If-None-Match Header auf `*` gesetzt wird in Abhängigkeit davon, ob
+die Resource bereits existiert. Sinatra geht davon aus, dass Ressourcen bei
+sicheren Anfragen (z.B. bei get oder Idempotenten Anfragen wie put) bereits
+existieren, wobei anderen Ressourcen (besipielsweise bei post), als neue
+Ressourcen behandelt werden. Dieses Verhalten lässt sich mit der
+`:new_resource` Option ändern:
 
 ```ruby
 get '/create' do
@@ -1826,33 +1987,35 @@ send_file 'foo.png', :type => :jpg
 
 <dl>
   <dt>filename</dt>
-  <dd>Dateiname als Response. Standardwert ist der eigentliche Dateiname.</dd>
+    <dd>Dateiname als Response.
+    Standardwert ist der eigentliche Dateiname.</dd>
 
   <dt>last_modified</dt>
-  <dd>Wert für den Last-Modified-Header, Standardwert ist <tt>mtime</tt> der
+    <dd>Wert für den Last-Modified-Header, Standardwert ist <tt>mtime</tt> der
     Datei.</dd>
 
   <dt>type</dt>
-  <dd>Content-Type, der verwendet werden soll. Wird, wenn nicht angegeben, von
-    der Dateiendung abgeleitet.</dd>
+    <dd>Content-Type, der verwendet werden soll. Wird, wenn nicht angegeben,
+    von der Dateiendung abgeleitet.</dd>
 
   <dt>disposition</dt>
-  <dd>Verwendet für Content-Disposition. Mögliche Werte sind: <tt>nil</tt>
+    <dd>Verwendet für Content-Disposition. Mögliche Werte sind: <tt>nil</tt>
     (Standard), <tt>:attachment</tt> und <tt>:inline</tt>.</dd>
 
   <dt>length</dt>
-  <dd>Content-Length-Header. Standardwert ist die Dateigröße.</dd>
+    <dd>Content-Length-Header. Standardwert ist die Dateigröße.</dd>
+  <dt>Status</dt>
+    <dd>Zu versendender Status-Code. Nützlich, wenn eine statische Datei
+    als Fehlerseite zurückgegeben werden soll. Wenn der Rack-Handler es
+    unterstützt, dann können auch andere Methoden außer Streaming vom
+    Ruby-Prozess verwendet werden. Wird diese Helfermethode verwendet,
+    dann wird Sinatra sich automatisch um die Range-Anfrage kümmern.</dd>
 </dl>
-
-Soweit vom Rack-Handler unterstützt, werden neben der Übertragung über den
-Ruby-Prozess auch andere Möglichkeiten genutzt. Bei Verwendung der
-`send_file`-Helfer-Methode kümmert sich Sinatra selbstständig um die
-Range-Requests.
 
 ### Das Request-Objekt
 
 Auf das `request`-Objekt der eigehenden Anfrage kann vom Anfrage-Scope aus
-zugegriffen werden:
+zugegriffen werden (d.h. Filter, Routen, Fehlerbehandlung):
 
 ```ruby
 # App läuft unter http://example.com/example
@@ -1931,18 +2094,18 @@ end
 
 ### Umgang mit Datum und Zeit
 
-Sinatra bietet eine `time_for`-Helfer-Methode, die aus einem gegebenen Wert ein
-Time-Objekt generiert. Ebenso kann sie nach `DateTime`, `Date` und ähnliche
-Klassen konvertieren:
+Sinatra bietet eine `time_for`-Helfer-Methode, die aus einem gegebenen Wert
+ein Time-Objekt generiert. Ebenso kann sie nach `DateTime`, `Date` und
+ähnliche Klassen konvertieren:
 
 ```ruby
 get '/' do
-  pass if Time.now > time_for('Dec 23, 2012')
+  pass if Time.now > time_for('Dec 23, 2016')
   "noch Zeit"
 end
 ```
 
-Diese Methode wird intern für +expires, `last_modiefied` und ihresgleichen
+Diese Methode wird intern für `expires`, `last_modiefied` und ihresgleichen
 verwendet. Mit ein paar Handgriffen lässt sich diese Methode also in ihrem
 Verhalten erweitern, indem man `time_for` in der eigenen Applikation
 überschreibt:
@@ -1967,8 +2130,8 @@ end
 
 ### Nachschlagen von Template-Dateien
 
-Die `find_template`-Helfer-Methode wird genutzt, um Template-Dateien zum Rendern
-aufzufinden:
+Die `find_template`-Helfer-Methode wird genutzt, um Template-Dateien zum
+Rendern aufzufinden:
 
 ```ruby
 find_template settings.views, 'foo', Tilt[:haml] do |file|
@@ -1976,9 +2139,9 @@ find_template settings.views, 'foo', Tilt[:haml] do |file|
 end
 ```
 
-Das ist zwar nicht wirklich brauchbar, aber wenn man sie überschreibt, kann sie
-nützlich werden, um eigene Nachschlage-Mechanismen einzubauen. Zum Beispiel
-dann, wenn mehr als nur ein view-Verzeichnis verwendet werden soll:
+Das ist zwar nicht wirklich brauchbar, aber wenn man sie überschreibt, kann
+sie nützlich werden, um eigene Nachschlage-Mechanismen einzubauen. Zum
+Beispiel dann, wenn mehr als nur ein view-Verzeichnis verwendet werden soll:
 
 ```ruby
 set :views, ['views', 'templates']
@@ -2008,13 +2171,13 @@ end
 Ebensogut könnte eine Extension aber auch geschrieben und mit anderen geteilt
 werden!
 
-Beachte, dass `find_template` nicht prüft, ob eine Datei tatsächlich existiert.
-Es wird lediglich der angegebene Block aufgerufen und nach allen möglichen
-Pfaden gesucht. Das ergibt kein Performance-Problem, da `render` `block`
-verwendet, sobald eine Datei gefunden wurde. Ebenso werden Template-Pfade samt
-Inhalt gecached, solange nicht im Entwicklungsmodus gearbeitet wird. Das sollte
-im Hinterkopf behalten werden, wenn irgendwelche verrückten Methoden
-zusammenbastelt werden.
+Beachte, dass `find_template` nicht prüft, ob eine Datei tatsächlich
+existiert. Es wird lediglich der angegebene Block aufgerufen und nach allen
+möglichen Pfaden gesucht. Das ergibt kein Performance-Problem, da `render`
+`block` verwendet, sobald eine Datei gefunden wurde. Ebenso werden
+Template-Pfade samt Inhalt gecached, solange nicht im Entwicklungsmodus
+gearbeitet wird. Das sollte im Hinterkopf behalten werden, wenn irgendwelche
+verrückten Methoden zusammengebastelt werden.
 
 ### Konfiguration
 
@@ -2039,7 +2202,7 @@ configure do
 end
 ```
 
-Läuft nur, wenn die Umgebung (APP_ENV-Umgebungsvariable) auf `:production`
+Läuft nur, wenn die Umgebung (`APP_ENV`-Umgebungsvariable) auf `:production`
 gesetzt ist:
 
 ```ruby
@@ -2097,143 +2260,235 @@ Schutzmechanismen zu deaktivieren:
 set :protection, :except => [:path_traversal, :session_hijacking]
 ```
 
+Standardmäßig setzt Sinatra einen sitzungbasierten Schutz nur dann ein,
+wenn `:sessions` aktiviert wurde (siehe oben). Manchmal kann es aber
+auch sein, dass Sitzungen außerhalb von Sinatra eingerichtet werden,
+z.B. über eine config.ru oder einer zusätzlichen
+`Rack::Builder`-Instance. In diesen Situationen kann eine
+sitzungbasierte Sicherung eingesetzt werden mit Hilfe der
+`:session`-Option:
+
+```ruby
+set :protection, session => true
+```
+
 #### Mögliche Einstellungen
 
 <dl>
   <dt>absolute_redirects</dt>
-  <dd>Wenn ausgeschaltet, wird Sinatra relative Redirects zulassen. Jedoch ist
-  Sinatra dann nicht mehr mit RFC 2616 (HTTP 1.1) konform, das nur absolute
-  Redirects zulässt. Sollte eingeschaltet werden, wenn die Applikation hinter
-  einem Reverse-Proxy liegt, der nicht ordentlich eingerichtet ist. Beachte,
-  dass die <tt>url</tt>-Helfer-Methode nach wie vor absolute URLs erstellen
-  wird, es sei denn, es wird als zweiter Parameter <tt>false</tt> angegeben.
-  Standardmäßig nicht aktiviert.</dd>
+    <dd>
+      Wenn ausgeschaltet, wird Sinatra relative Redirects zulassen.
+      Jedoch ist Sinatra dann nicht mehr mit RFC 2616 (HTTP 1.1)
+      konform, das nur absolute Redirects zulässt.
+    </dd>
+    <dd>
+      Sollte eingeschaltet werden, wenn die Applikation hinter einem
+      Reverse-Proxy liegt, der nicht ordentlich eingerichtet ist.
+      Beachte, dass die <tt>url</tt>-Helfer-Methode nach wie vor
+      absolute URLs erstellen wird, es sei denn, es wird als zweiter
+      Parameter <tt>false</tt> angegeben.
+    </dd>
+    <dd>Standardmäßig nicht aktiviert.</dd>
 
   <dt>add_charset</dt>
-  <dd>Mime-Types werden hier automatisch der Helfer-Methode
-  <tt>content_type</tt> zugeordnet. Es empfielt sich, Werte hinzuzufügen statt
-  sie zu überschreiben: <tt>settings.add_charset << "application/foobar"</tt>
-  </dd>
+    <dd>
+      Mime-Types werden hier automatisch der Helfer-Methode
+      <tt>content_type</tt> zugeordnet. Es empfielt sich, Werte
+      hinzuzufügen statt sie zu überschreiben: <tt>settings.add_charset
+      << "application/foobar"</tt>
+    </dd>
 
   <dt>app_file</dt>
-  <dd>Pfad zur Hauptdatei der Applikation. Wird verwendet, um das Wurzel-,
-  Inline-, View- und öffentliche Verzeichnis des Projekts festzustellen.</dd>
+    <dd>
+      Pfad zur Hauptdatei der Applikation. Wird verwendet, um das Wurzel-,
+      Inline-, View- und öffentliche Verzeichnis des Projekts festzustellen.
+    </dd>
 
   <dt>bind</dt>
-  <dd>IP-Address, an die gebunden wird (Standardwert: <tt>0.0.0.0</tt>
-  <em>oder</em> <tt>localhost</tt>). Wird  nur für den eingebauten Server
-  verwendet.</dd>
+    <dd>
+      IP-Address, an die gebunden wird (Standardwert: <tt>0.0.0.0</tt>
+      <em>oder</em> <tt>localhost</tt>). Wird nur für den eingebauten Server
+      verwendet.
+    </dd>
 
   <dt>default_encoding</dt>
-  <dd>Das Encoding, falls keines angegeben wurde. Standardwert ist
-  <tt>"utf-8"</tt>.</dd>
+    <dd>
+      Das Encoding, falls keines angegeben wurde. Standardwert ist
+      <tt>"utf-8"</tt>.
+    </dd>
 
   <dt>dump_errors</dt>
-  <dd>Fehler im Log anzeigen.</dd>
+    <dd>Fehler im Log anzeigen.</dd>
 
   <dt>environment</dt>
-  <dd>Momentane Umgebung. Standardmäßig auf <tt>content_type</tt> oder
-  <tt>"development"</tt> eingestellt, soweit ersteres nicht vorhanden.</dd>
+    <dd>
+      Momentane Umgebung. Standardmäßig auf <tt>ENV['APP_ENV']</tt> oder
+      <tt>"development"</tt> eingestellt, soweit ersteres nicht vorhanden.
+    </dd>
 
   <dt>logging</dt>
-  <dd>Den Logger verwenden.</dd>
+    <dd>Den Logger verwenden.</dd>
 
   <dt>lock</dt>
-  <dd>Jeder Request wird gelocked. Es kann nur ein Request pro Ruby-Prozess
-  gleichzeitig verarbeitet werden. Eingeschaltet, wenn die Applikation
-  threadsicher ist. Standardmäßig nicht aktiviert.</dd>
+    <dd>
+      Jeder Request wird gelocked. Es kann nur ein Request pro Ruby-Prozess
+      gleichzeitig verarbeitet werden.
+    </dd>
+    <dd>
+      Eingeschaltet, wenn die Applikation threadsicher ist. Standardmäßig
+      nicht aktiviert.
+    </dd>
 
   <dt>method_override</dt>
-  <dd>Verwende <tt>_method</tt>, um put/delete-Formulardaten in Browsern zu
-  verwenden, die dies normalerweise nicht unterstützen.</dd>
+    <dd>
+      Verwende <tt>_method</tt>, um put/delete-Formulardaten in Browsern zu
+      verwenden, die dies normalerweise nicht unterstützen.
+    </dd>
+
+  <dt>mustermann_opts</dt>
+    <dd>
+      Ein Hash mit Standardeinstellungen, der an Mustermann.new beim
+      Kompilieren der Routen übergeben wird.
+    </dd>
 
   <dt>port</dt>
-  <dd>Port für die Applikation. Wird nur im internen Server verwendet.</dd>
+    <dd>Port für die Applikation. Wird nur im internen Server verwendet.</dd>
 
   <dt>prefixed_redirects</dt>
-  <dd>Entscheidet, ob <tt>request.script_name</tt> in Redirects eingefügt wird
-  oder nicht, wenn kein absoluter Pfad angegeben ist. Auf diese Weise verhält
-  sich <tt>redirect '/foo'</tt> so, als wäre es ein <tt>redirect
-  to('/foo')</tt>. Standardmäßig nicht aktiviert.</dd>
+    <dd>
+      Entscheidet, ob <tt>request.script_name</tt> in Redirects
+      eingefügt wird oder nicht, wenn kein absoluter Pfad angegeben ist.
+      Auf diese Weise verhält sich <tt>redirect '/foo'</tt> so, als wäre
+      es ein <tt>redirect to('/foo')</tt>. Standardmäßig nicht
+      aktiviert.
+    </dd>
 
   <dt>protection</dt>
-  <dd>Legt fest, ob der Schutzmechanismus für häufig Vorkommende Webangriffe
-  auf Webapplikationen aktiviert wird oder nicht. Weitere Informationen im
-  vorhergehenden Abschnitt.</dd>
+    <dd>
+      Legt fest, ob der Schutzmechanismus für häufig Vorkommende Webangriffe
+      auf Webapplikationen aktiviert wird oder nicht. Weitere Informationen im
+      vorhergehenden Abschnitt.
+    </dd>
 
   <dt>public_folder</dt>
-  <dd>Das öffentliche Verzeichnis, aus dem Daten zur Verfügung gestellt werden
-  können. Wird nur dann verwendet, wenn statische Daten zur Verfügung gestellt
-  werden können (s.u. <tt>static</tt> Option). Leitet sich von der
-  <tt>app_file</tt> Einstellung ab, wenn nicht gesetzt.</dd>
+    <dd>
+      Das öffentliche Verzeichnis, aus dem Daten zur Verfügung gestellt
+      werden können. Wird nur dann verwendet, wenn statische Daten zur
+      Verfügung gestellt werden können (s.u. <tt>static</tt> Option).
+      Leitet sich von der <tt>app_file</tt> Einstellung ab, wenn nicht
+      gesetzt.
+    </dd>
+
+  <dt>quiet</dt>
+    <dd>
+      Deaktiviert Logs, die beim Starten und Beenden von Sinatra
+      ausgegeben werden. <tt>false</tt> ist die Standardeinstellung.
+    </dd>
 
   <dt>public_dir</dt>
-  <dd>Alias für <tt>public_folder</tt>, s.o.</dd>
+    <dd>Alias für <tt>public_folder</tt>, s.o.</dd>
 
   <dt>reload_templates</dt>
-  <dd>Im development-Modus aktiviert.</dd>
+    <dd>
+      Legt fest, ob Templates für jede Anfrage neu generiert werden. Im
+      development-Modus aktiviert.
+    </dd>
 
   <dt>root</dt>
-  <dd>Wurzelverzeichnis des Projekts. Leitet sich von der <tt>app_file</tt>
-  Einstellung ab, wenn nicht gesetzt.</dd>
+    <dd>
+      Wurzelverzeichnis des Projekts. Leitet sich von der <tt>app_file</tt>
+      Einstellung ab, wenn nicht gesetzt.
+    </dd>
 
   <dt>raise_errors</dt>
-  <dd>Einen Ausnahmezustand aufrufen. Beendet die Applikation. Ist automatisch
-  aktiviert, wenn die Umgebung auf <tt>"test"</tt> eingestellt ist. Ansonsten
-  ist diese Option deaktiviert.</dd>
+    <dd>
+      Einen Ausnahmezustand aufrufen. Beendet die Applikation. Ist
+      automatisch aktiviert, wenn die Umgebung auf <tt>"test"</tt>
+      eingestellt ist. Ansonsten ist diese Option deaktiviert.
+    </dd>
 
   <dt>run</dt>
-  <dd>Wenn aktiviert, wird Sinatra versuchen, den Webserver zu starten. Nicht
-  verwenden, wenn Rackup oder anderes verwendet werden soll.</dd>
+    <dd>
+      Wenn aktiviert, wird Sinatra versuchen, den Webserver zu starten. Nicht
+      verwenden, wenn Rackup oder anderes verwendet werden soll.
+    </dd>
 
   <dt>running</dt>
-  <dd>Läuft der eingebaute Server? Diese Einstellung nicht ändern!</dd>
+    <dd>Läuft der eingebaute Server? Diese Einstellung nicht ändern!</dd>
 
   <dt>server</dt>
-  <dd>Server oder Liste von Servern, die als eingebaute Server zur Verfügung
-  stehen. Die Reihenfolge gibt die Priorität vor, die Voreinstellung hängt von
-  der verwendenten Ruby Implementierung ab.</dd>
+    <dd>
+      Server oder Liste von Servern, die als eingebaute Server zur
+      Verfügung stehen. Die Reihenfolge gibt die Priorität vor, die
+      Voreinstellung hängt von der verwendenten Ruby Implementierung ab.
+    </dd>
 
   <dt>sessions</dt>
-  <dd>Sessions auf Cookiebasis mittels
-  <tt>Rack::Session::Cookie</tt>aktivieren. Für weitere Infos bitte in der
-  Sektion ‘Sessions verwenden’ nachschauen.</dd>
+    <dd>
+      Sessions auf Cookiebasis mittels
+      <tt>Rack::Session::Cookie</tt> aktivieren. Für weitere Infos bitte
+      in der Sektion ‘Sessions verwenden’ nachschauen.
+    </dd>
+
+  <dt>session_store</dt>
+    <dd>
+      Die verwendete Rack Sitzungs-Middleware. Verweist standardmäßig
+      auf <tt>Rack::Session::Cookie</tt>. Für weitere Infos bitte
+      in der Sektion ‘Sessions verwenden’ nachschauen.
+    </dd>
 
   <dt>show_exceptions</dt>
-  <dd>Bei Fehlern einen Stacktrace im Browseranzeigen. Ist automatisch
-  aktiviert, wenn die Umgebung auf <tt>"development"</tt> eingestellt ist.
-  Ansonsten ist diese Option deaktiviert. Kann auch auf <tt>:after_handler</tt>
-  gestellt werden, um eine anwendungsspezifische Fehlerbehandlung auszulösen,
-  bevor der Fehlerverlauf im Browser angezeigt wird.</dd>
+    <dd>
+      Bei Fehlern einen Stacktrace im Browseranzeigen. Ist automatisch
+      aktiviert, wenn die Umgebung auf <tt>"development"</tt>
+      eingestellt ist. Ansonsten ist diese Option deaktiviert.
+    </dd>
+    <dd>
+      Kann auch auf <tt>:after_handler</tt> gestellt werden, um eine
+      anwendungsspezifische Fehlerbehandlung auszulösen, bevor der
+      Fehlerverlauf im Browser angezeigt wird.
+    </dd>
 
   <dt>static</dt>
-  <dd>Entscheidet, ob Sinatra statische Dateien zur Verfügung stellen soll oder
-  nicht. Sollte nicht aktiviert werden, wenn ein Server verwendet wird, der
-  dies auch selbstständig erledigen kann. Deaktivieren wird die Performance
-  erhöhen. Standardmäßig aktiviert.</dd>
+    <dd>
+      Entscheidet, ob Sinatra statische Dateien zur Verfügung stellen
+      soll oder nicht. Sollte nicht aktiviert werden, wenn ein Server
+      verwendet wird, der dies auch selbstständig erledigen kann.
+      Deaktivieren wird die Performance erhöhen. Standardmäßig
+      aktiviert.
+    </dd>
 
   <dt>static_cache_control</dt>
-  <dd>Wenn Sinatra statische Daten zur Verfügung stellt, können mit dieser
-  Einstellung die <tt>Cache-Control</tt> Header zu den Responses hinzugefügt
-  werden. Die Einstellung verwendet dazu die <tt>cache_control</tt>
-  Helfer-Methode. Standardmäßig deaktiviert. Ein Array wird verwendet, um
-  mehrere Werte gleichzeitig zu übergeben: <tt>set :static_cache_control,
-  [:public, :max_age => 300]</tt></dd>
+    <dd>
+      Wenn Sinatra statische Daten zur Verfügung stellt, können mit
+      dieser Einstellung die <tt>Cache-Control</tt> Header zu den
+      Responses hinzugefügt werden. Die Einstellung verwendet dazu die
+      <tt>cache_control</tt> Helfer-Methode. Standardmäßig deaktiviert.
+      Ein Array wird verwendet, um mehrere Werte gleichzeitig zu
+      übergeben: <tt>set :static_cache_control, [:public, :max_age =>
+      300]</tt>
+    </dd>
 
   <dt>threaded</dt>
-  <dd>Wird es auf <tt>true</tt> gesetzt, wird Thin aufgefordert
-  <tt>EventMachine.defer</tt> zur Verarbeitung des Requests einzusetzen.</dd>
+    <dd>
+      Wird es auf <tt>true</tt> gesetzt, wird Thin aufgefordert
+      <tt>EventMachine.defer</tt> zur Verarbeitung des Requests einzusetzen.
+    </dd>
 
   <dt>traps</dt>
-  <dd>Einstellung, Sinatra System signalen umgehen soll.</dd>
+    <dd>Legt fest, wie Sinatra mit System-Signalen umgehen soll.</dd>
 
   <dt>views</dt>
-  <dd>Verzeichnis der Views. Leitet sich von der <tt>app_file</tt> Einstellung
-  ab, wenn nicht gesetzt.</dd>
+    <dd>
+      Verzeichnis der Views. Leitet sich von der <tt>app_file</tt> Einstellung
+      ab, wenn nicht gesetzt.
+    </dd>
 
   <dt>x_cascade</dt>
-  <dd>Einstellung, ob der X-Cascade Header bei fehlender Route gesetzt wird oder
-  nicht. Standardeinstellung ist <tt>true</tt>.</dd>
+    <dd>
+      Einstellung, ob der X-Cascade Header bei fehlender Route gesetzt
+      wird oder nicht. Standardeinstellung ist <tt>true</tt>.
+    </dd>
 </dl>
 
 ## Umgebungen
@@ -2245,15 +2500,26 @@ In diesem Modus werden alle Templates zwischen Requests neu geladen. Dazu gibt
 es besondere Fehlerseiten für 404 Stati und Fehlermeldungen. In `"production"`
 und `"test"` werden Templates automatisch gecached.
 
-Um die Anwendung in einer anderen Umgebung auszuführen kann man die `-e`
-Option verwenden:
+Um die Anwendung in einer anderen Umgebung auszuführen, kann man die
+`APP_ENV`-Umgebungsvariable setzen:
 
 ```shell
-ruby my_app.rb -e [ENVIRONMENT]
+APP_ENV=production ruby my_app.rb
 ```
 
-In der Anwendung kann man die die Methoden  `development?`, `test?` und
-`production?` verwenden, um die aktuelle Umgebung zu erfahren.
+In der Anwendung kann man die die Methoden `development?`, `test?` und
+`production?` verwenden, um die aktuelle Umgebung zu erfahren:
+
+
+```ruby
+get '/' do
+  if settings.development?
+    "development!"
+  else
+    "nicht development!"
+  end
+end
+```
 
 ## Fehlerbehandlung
 
@@ -2333,12 +2599,12 @@ end
 ```
 
 Sinatra setzt verschiedene `not_found`- und `error`-Handler in der
-Development-Umgebung ein, um hilfreiche Debugging Informationen und Stack Traces
-anzuzeigen.
+Development-Umgebung ein, um hilfreiche Debugging-Informationen und
+Stack-Traces anzuzeigen.
 
 ## Rack-Middleware
 
-Sinatra baut auf [Rack](http://rack.github.io/), einem minimalistischen
+Sinatra baut auf [Rack](http://rack.github.io/) auf, einem minimalistischen
 Standard-Interface für Ruby-Webframeworks. Eines der interessantesten Features
 für Entwickler ist der Support von Middlewares, die zwischen den Server und
 die Anwendung geschaltet werden und so HTTP-Request und/oder Antwort
@@ -2362,7 +2628,8 @@ end
 Die Semantik von `use` entspricht der gleichnamigen Methode der
 [Rack::Builder](http://www.rubydoc.info/github/rack/rack/master/Rack/Builder)-DSL
 (meist verwendet in Rackup-Dateien). Ein Beispiel dafür ist, dass die
-`use`-Methode mehrere/verschiedene Argumente und auch Blöcke entgegennimmt:
+`use`-Methode mehrere/verschiedene Argumente und auch Blöcke
+entgegennimmt:
 
 ```ruby
 use Rack::Auth::Basic do |username, password|
@@ -2382,8 +2649,9 @@ oder im [Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
 
 ## Testen
 
-Sinatra-Tests können mit jedem auf Rack aufbauendem Test-Framework geschrieben
-werden. [Rack::Test](http://www.rubydoc.info/github/brynary/rack-test/master/frames)
+Sinatra-Tests können mit jedem auf Rack aufbauendem Test-Framework
+geschrieben werden.
+[Rack::Test](http://www.rubydoc.info/github/brynary/rack-test/master/frames)
 wird empfohlen:
 
 ```ruby
@@ -2415,8 +2683,9 @@ class MyAppTest < Minitest::Test
 end
 ```
 
-Hinweis: Wird Sinatra modular verwendet, muss <tt>Sinatra::Application</tt> mit
-dem Namen der Applikations-Klasse ersetzt werden.
+Hinweis: Wird Sinatra modular verwendet, muss
+`Sinatra::Application` mit dem Namen der Applikations-Klasse
+ersetzt werden.
 
 ## Sinatra::Base - Middleware, Bibliotheken und modulare Anwendungen
 
@@ -2443,21 +2712,12 @@ class MyApp < Sinatra::Base
 end
 ```
 
-Die MyApp-Klasse ist eine unabhängige Rack-Komponente, die als Middleware,
-Endpunkt oder via Rails Metal verwendet werden kann. Verwendet wird sie durch
-`use` oder `run` von einer Rackup-`config.ru`-Datei oder als Server-Komponente
-einer Bibliothek:
-
-```ruby
-MyApp.run! :host => 'localhost', :port => 9090
-```
-
 Die Methoden der `Sinatra::Base`-Subklasse sind genau dieselben wie die der
 Top-Level-DSL. Die meisten Top-Level-Anwendungen können mit nur zwei
 Veränderungen zu `Sinatra::Base` konvertiert werden:
 
 *   Die Datei sollte `require 'sinatra/base'` anstelle von `require
-    'sinatra/base'` aufrufen, ansonsten werden alle von Sinatras DSL-Methoden
+    'sinatra'` aufrufen, ansonsten werden alle von Sinatras DSL-Methoden
     in den Top-Level-Namespace importiert.
 *   Alle Routen, Error-Handler, Filter und Optionen der Applikation müssen in
     einer Subklasse von `Sinatra::Base` definiert werden.
@@ -2613,7 +2873,6 @@ Anzeichen dafür, dass eine `config.ru`-Datei gebraucht wird:
 *   Es gibt mehr als nur eine Subklasse von `Sinatra::Base`.
 *   Sinatra soll als Middleware verwendet werden, nicht als Endpunkt.
 
-
 **Es gibt keinen Grund, eine `config.ru`-Datei zu verwenden, nur weil eine
 Anwendung im modularen Stil betrieben werden soll. Ebenso wird keine Anwendung
 mit modularem Stil benötigt, um eine `config.ru`-Datei zu verwenden.**
@@ -2624,7 +2883,7 @@ Es ist nicht nur möglich, andere Rack-Middleware mit Sinatra zu nutzen, es
 kann außerdem jede Sinatra-Anwendung selbst als Middleware vor jeden
 beliebigen Rack-Endpunkt gehangen werden. Bei diesem Endpunkt muss es sich
 nicht um eine andere Sinatra-Anwendung handeln, es kann jede andere
-Rack-Anwendung sein (Rails/Ramaze/Camping/...):
+Rack-Anwendung sein (Rails/Hanami/Roda/...):
 
 ```ruby
 require 'sinatra/base'
@@ -2724,7 +2983,7 @@ Optionen, die via `set` gesetzt werden, sind Methoden auf Klassenebene:
 ```ruby
 class MyApp < Sinatra::Base
   # Hey, ich bin im Anwendungsscope!
-  set :foo, 42
+set :foo, 42
   foo # => 42
 
   get '/foo' do
@@ -2735,19 +2994,17 @@ end
 
 Im Anwendungs-Scope befindet man sich:
 
-*   In der Anwendungs-Klasse.
-*   In Methoden, die von Erweiterungen definiert werden.
-*   Im Block, der an `helpers` übergeben wird.
-*   In Procs und Blöcken, die an `set` übergeben werden.
+*   Innerhalb der Anwendungs-Klasse
+*   In Methoden, die von Erweiterungen definiert werden
+*   Im Block, der an `helpers` übergeben wird
+*   In Procs und Blöcken, die an `set` übergeben werden
 *   Der an `Sinatra.new` übergebene Block
-
 
 Auf das Scope-Objekt (die Klasse) kann wie folgt zugegriffen werden:
 
 *   Über das Objekt, das an den `configure`-Block übergeben wird (`configure {
     |c| ... }`).
 *   `settings` aus den anderen Scopes heraus.
-
 
 ### Anfrage- oder Instanz-Scope
 
@@ -2779,8 +3036,7 @@ Im Anfrage-Scope befindet man sich:
 *   In get, head, post, put, delete, options, patch, link und unlink Blöcken
 *   In before und after Filtern
 *   In Helfer-Methoden
-*   In Templates
-
+*   In Templates/Views
 
 ### Delegation-Scope
 
@@ -2797,18 +3053,17 @@ Im Delegation-Scop befindet man sich:
 *   Im Top-Level, wenn `require 'sinatra'` aufgerufen wurde.
 *   In einem Objekt, das mit dem `Sinatra::Delegator`-Mixin erweitert wurde.
 
-
 Schau am besten im Code nach: Hier ist [Sinatra::Delegator
 mixin](http://github.com/sinatra/sinatra/blob/master/lib/sinatra/base.rb#L1064
 ) definiert und wird in den [globalen Namespace
-eingebunden](http://github.com/sinatra/sinatra/blob/master/lib/sinatra/main.rb
+eingebunden](http://github.com/sinatra/sinatra/blob/master/lib/sinatra/main.rb).
 
 ## Kommandozeile
 
 Sinatra-Anwendungen können direkt von der Kommandozeile aus gestartet werden:
 
 ```shell
-ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-h HOST] [-s HANDLER]
+ruby myapp.rb [-h] [-x] [-q] [-e ENVIRONMENT] [-p PORT] [-h HOST] [-s HANDLER]
 ```
 
 Die Optionen sind:
@@ -2819,12 +3074,14 @@ Die Optionen sind:
 -h # Host setzen (Standard ist 0.0.0.0)
 -e # Umgebung setzen (Standard ist development)
 -s # Rack-Server/Handler setzen (Standard ist thin)
--x # Mutex-Lock einschalten (Standard ist off)
+-q # den lautlosen Server-Modus einschalten (Standard ist aus)
+-x # Mutex-Lock einschalten (Standard ist aus)
 ```
 
 ### Multi-threading
 
-_Paraphrasiert von [dieser Antwort auf StackOverflow][so-answer] von Konstantin_
+_Paraphrasiert von [dieser Antwort auf StackOverflow][so-answer] von
+Konstantin_
 
 Sinatra erlegt kein Nebenläufigkeitsmodell auf, sondern überlässt dies dem
 selbst gewählten Rack-Proxy (Server), so wie Thin, Puma oder WEBrick.
@@ -2863,42 +3120,38 @@ thin --threaded start
 Die folgenden Versionen werden offiziell unterstützt:
 
 <dl>
-<dt>Ruby 1.8.7</dt>
-<dd>1.8.7 wird vollständig unterstützt, ein Wechsel zu JRuby oder Rubinius wird
-aber empfohlen. Ruby 1.8.7 wird noch bis Sinatra 2.0 unterstützt werden. Frühere
-Versionen von Ruby sind nicht kompatibel mit Sinatra.</dd>
+  <dt>Ruby 2.2</dt>
+  <dd>
+    2.2 wird vollständig unterstützt. Es gibt derzeit keine Pläne die
+    offizielle Unterstützung zu beenden
+  </dd>
 
-<dt>Ruby 1.9.2</dt>
-<dd>1.9.2 wird mindestens bis Sinatra 1.5 voll unterstützt. Version 1.9.2p0
-sollte nicht verwendet werden, da unter Sinatra immer wieder Segfaults
-auftreten.</dd>
+  <dt>Rubinius</dt>
+  <dd>
+    Rubinius (Version >= 2.x) wird offiziell unterstützt. Es wird
+    empfohlen, den <a href="http://puma.io">Puma Server</a> zu
+    installieren (<tt>gem install puma</tt>)
+  </dd>
 
-<dt>Ruby 1.9.3</dt>
-<dd>1.9.3 wird vollständig unterstützt und empfohlen. Achtung, bei einem
-Upgrade von einer früheren Version von Ruby zu Ruby 1.9.3 werden alle Sessions
-ungültig. Ruby 1.9.3 wird bis Sinatra 2.0 unterstützt werden.</dd>
-
-<dt>Ruby 2.x</dt>
-<dd>2.x wird vollständig unterstützt.</dd>
-
-<dt>Rubinius</dt>
-<dd>Rubinius (Version >= 2.x) wird offiziell unterstützt. Es wird empfohlen, den
-<a href="http://puma.io">Puma Server</a> zu installieren (<tt>gem install puma
-</tt>)</dd>
-
-<dt>JRuby</dt>
-<dd>Aktuelle JRuby Versionen werden offiziell unterstützt. Es wird empfohlen,
-keine C-Erweiterungen zu verwenden und als Server Trinidad zu verwenden
-(<tt>gem install trinidad</tt>).</dd>
+  <dt>JRuby</dt>
+  <dd>
+    Aktuelle JRuby Versionen werden offiziell unterstützt. Es wird empfohlen,
+    keine C-Erweiterungen zu verwenden und als Server Trinidad zu verwenden
+    (<tt>gem install trinidad</tt>).
+  </dd>
 </dl>
+
+Versionen vor Ruby 2.2.2 werden ab Sinatra 2.0 nicht länger unterstützt.
+
+Nachfolgende Ruby-Versionen werden regelmäßig auf Unterstützung geprüft.
 
 Die nachfolgend aufgeführten Ruby-Implementierungen werden offiziell nicht von
 Sinatra unterstützt, funktionieren aber normalerweise:
 
 *   Ruby Enterprise Edition
 *   Ältere Versionen von JRuby und Rubinius
-*   MacRuby (<tt>gem install control_tower</tt> wird empfohlen), Maglev, IronRuby
-*   Ruby 1.9.0 und 1.9.1
+*   MacRuby, Maglev, IronRuby
+*   Ruby 1.9.0 und 1.9.1 (wird aber nicht empfohlen)
 
 Nicht offiziell unterstützt bedeutet, dass wenn Sachen nicht funktionieren,
 wir davon ausgehen, dass es nicht an Sinatra sondern an der jeweiligen
@@ -2908,10 +3161,11 @@ Im Rahmen unserer CI (Kontinuierlichen Integration) wird bereits ruby-head
 (zukünftige Versionen von MRI) mit eingebunden. Es kann davon ausgegangen
 werden, dass Sinatra MRI auch weiterhin vollständig unterstützen wird.
 
-Sinatra sollte auf jedem Betriebssystem laufen, dass einen funktionierenden
+Sinatra sollte auf jedem Betriebssystem laufen, das einen funktionierenden
 Ruby-Interpreter aufweist.
 
-Sinatra läuft aktuell nicht unter Cardinal, SmallRuby, BlueRuby oder Ruby <= 1.8.7.
+Sinatra läuft aktuell nicht unter Cardinal, SmallRuby, BlueRuby oder Ruby <=
+2.2.
 
 ## Der neuste Stand (The Bleeding Edge)
 
@@ -2944,7 +3198,6 @@ gem 'sinatra', :git => "git://github.com/sinatra/sinatra.git"
 
 # evtl. andere Abhängigkeiten
 gem 'haml'                    # z.B. wenn du Haml verwendest...
-gem 'activerecord', '~> 3.0'  # ...oder ActiveRecord 3.x
 ```
 
 Beachte: Hier sollten alle Abhängigkeiten eingetragen werden. Sinatras eigene,
@@ -2958,6 +3211,7 @@ bundle exec ruby myapp.rb
 ```
 
 ### Eigenes Repository
+
 Um auf dem neuesten Stand von Sinatras Code zu sein, kann eine lokale Kopie
 angelegt werden. Gestartet wird in der Anwendung mit dem `sinatra/lib`-Ordner
 im `LOAD_PATH`:
@@ -2965,20 +3219,7 @@ im `LOAD_PATH`:
 ```shell
 cd myapp
 git clone git://github.com/sinatra/sinatra.git
-ruby -Isinatra/lib myapp.rb
-```
-
-Alternativ kann der `sinatra/lib`-Ordner zum `LOAD_PATH` in der Anwendung
-hinzugefügt werden:
-
-```ruby
-$LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
-require 'rubygems'
-require 'sinatra'
-
-get '/ueber' do
-  "Ich laufe auf Version " + Sinatra::VERSION
-end
+ruby -I sinatra/lib myapp.rb
 ```
 
 Um Sinatra-Code von Zeit zu Zeit zu aktualisieren:
@@ -3013,19 +3254,23 @@ SemVer und SemVerTag.
 
 ## Mehr
 
-*   [Projekt-Website](http://www.sinatrarb.com/) - Ergänzende Dokumentation,
-    News und Links zu anderen Ressourcen.
-*   [Mitmachen](http://www.sinatrarb.com/contributing.html) - Einen Fehler
-    gefunden? Brauchst du Hilfe? Hast du einen Patch?
-*   [Issue-Tracker](https://github.com/sinatra/sinatra/issues)
-*   [Twitter](https://twitter.com/sinatra)
-*   [Mailing-Liste](http://groups.google.com/group/sinatrarb)
-*   [#sinatra](irc://chat.freenode.net/#sinatra) auf http://freenode.net Es
-    gibt dort auch immer wieder deutschsprachige Entwickler, die gerne weiterhelfen.
-*   [Sinatra Book](https://github.com/sinatra/sinatra-book/) Kochbuch Tutorial
-*   [Sinatra Recipes](http://recipes.sinatrarb.com/) Sinatra-Rezepte aus der
-    Community
-*   API Dokumentation für die [aktuelle
-    Version](http://www.rubydoc.info//gems/sinatra) oder für
-    [HEAD](http://www.rubydoc.info/github/sinatra/sinatra) auf http://rubydoc.info
-*   [CI Server](https://travis-ci.org/sinatra/sinatra)
+* [Projekt-Website](http://www.sinatrarb.com/) - Ergänzende Dokumentation,
+  News und Links zu anderen Ressourcen.
+* [Mitmachen](http://www.sinatrarb.com/contributing.html) - Einen Fehler
+  gefunden? Brauchst du Hilfe? Hast du einen Patch?
+* [Issue-Tracker](https://github.com/sinatra/sinatra/issues)
+* [Twitter](https://twitter.com/sinatra)
+* [Mailing-Liste](http://groups.google.com/group/sinatrarb)
+* IRC [#sinatra](irc://chat.freenode.net/#sinatra) auf
+  http://freenode.net Es gibt dort auch immer wieder deutschsprachige
+  Entwickler, die gerne weiterhelfen.
+* [Sinatra & Friends](https://sinatrarb.slack.com) on Slack and see
+  [here](https://sinatra-slack.herokuapp.com/) for an invite.
+* [Sinatra Book](https://github.com/sinatra/sinatra-book/) Kochbuch Tutorial
+* [Sinatra Recipes](http://recipes.sinatrarb.com/) Sinatra-Rezepte aus der
+  Community
+* API Dokumentation für die
+  [aktuelle Version](http://www.rubydoc.info//gems/sinatra) oder für
+  [HEAD](http://www.rubydoc.info/github/sinatra/sinatra) auf
+  http://rubydoc.info
+* [CI Server](https://travis-ci.org/sinatra/sinatra)
