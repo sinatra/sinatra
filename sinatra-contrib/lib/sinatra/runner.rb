@@ -70,6 +70,24 @@ module Sinatra
       Timeout.timeout(1) { get_url("#{protocol}://127.0.0.1:#{port}#{url}") }
     end
 
+    def get_stream(url = "/stream", &block)
+      Net::HTTP.start '127.0.0.1', port do |http|
+        request = Net::HTTP::Get.new url
+        http.request request do |response|
+          response.read_body(&block)
+        end
+      end
+    end
+
+    def get_response(url)
+      Net::HTTP.start '127.0.0.1', port do |http|
+        request = Net::HTTP::Get.new url
+        http.request request do |response|
+          response
+        end
+      end
+    end
+
     def log
       @log ||= ""
       loop { @log <<  pipe.read_nonblock(1) }
