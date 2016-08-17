@@ -1417,7 +1417,7 @@ configure do
 end
 ```
 
-Rodando somente quando o ambiente (`RACK_ENV` environment variável) é
+Rodando somente quando o ambiente (`APP_ENV` environment variável) é
 setado para `:production`:
 
 ```ruby

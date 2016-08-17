@@ -2038,7 +2038,7 @@ configure do
 end
 ```
 
-Будет запущено, когда окружение (RACK_ENV переменная) `:production`:
+Будет запущено, когда окружение (APP_ENV переменная) `:production`:
 
 ```ruby
 configure :production do
@@ -2137,8 +2137,8 @@ set :protection, :except => [:path_traversal, :session_hijacking]
 
   <dt>environment</dt>
   <dd>
-    текущее окружение, по умолчанию, значение <tt>ENV['RACK_ENV']</tt> или
-    <tt>"development"</tt>, если <tt>ENV['RACK_ENV']</tt> недоступна.
+    текущее окружение, по умолчанию, значение <tt>ENV['APP_ENV']</tt> или
+    <tt>"development"</tt>, если <tt>ENV['APP_ENV']</tt> недоступна.
   </dd>
 
   <dt>logging</dt>
@@ -2265,7 +2265,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
 ## Режим, окружение
 
 Есть 3 предопределенных режима, окружения: `"development"`, `"production"` и
-`"test"`. Режим может быть задан через переменную окружения `RACK_ENV`.
+`"test"`. Режим может быть задан через переменную окружения `APP_ENV`.
 Значение по умолчанию — `"development"`. В этом режиме работы все шаблоны
 перезагружаются между запросами. А также задаются специальные обработчики
 `not_found` и `error`, чтобы вы могли увидеть стек вызовов. В окружениях
@@ -2428,7 +2428,7 @@ class MyAppTest < Minitest::Test
     assert_equal 'Hello Frank!', last_response.body
   end
 
-  def test_with_rack_env
+  def test_with_user_agent
     get '/', {}, 'HTTP_USER_AGENT' => 'Songbird'
     assert_equal "You're using Songbird!", last_response.body
   end

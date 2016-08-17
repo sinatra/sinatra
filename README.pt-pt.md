@@ -477,7 +477,7 @@ configure do
 end
 ```
 
-Correndo somente quando o ambiente (`RACK_ENV` environment variável) é
+Correndo somente quando o ambiente (`APP_ENV` environment variável) é
 definido para `:production`:
 
 ```ruby
