@@ -3,6 +3,7 @@ gemspec
 
 gem 'mustermann', github: 'sinatra/mustermann'
 gem 'sinatra', path: '..'
+gem 'rack-protection', path: '../rack-protection'
 
 group :development, :test do
   platform :jruby do
@@ -42,4 +43,3 @@ repos = { 'tilt' => 'rtomayko/tilt', 'rack' => 'rack/rack' }
   gem lib, dep if dep
 end
 
-gem "rack-protection", github: "sinatra/rack-protection"
