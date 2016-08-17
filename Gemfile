@@ -65,5 +65,3 @@ end
 platforms :jruby do
   gem 'json'
 end
-
-gem "sinatra-contrib", :path => "../sinatra-contrib"#:git => "git@github.com:apotonick/sinatra-contrib.git", :branch => "runner"
