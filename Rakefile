@@ -3,12 +3,6 @@ require 'rake/testtask'
 require 'fileutils'
 require 'date'
 
-# CI Reporter is only needed for the CI
-begin
-  require 'ci/reporter/rake/test_unit'
-rescue LoadError
-end
-
 task :default => :test
 task :spec => :test
 
