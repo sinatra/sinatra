@@ -1,7 +1,6 @@
 source "https://rubygems.org" unless ENV['QUICK']
 gemspec
 
-gem 'mustermann', github: 'sinatra/mustermann'
 gem 'sinatra', path: '..'
 gem 'rack-protection', path: '../rack-protection'
 

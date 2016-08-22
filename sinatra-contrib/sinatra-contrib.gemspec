@@ -217,11 +217,11 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.2.0'
 
   s.add_dependency "sinatra", Sinatra::VERSION
-  s.add_dependency "mustermann",  "~> 0.4"
+  s.add_dependency "mustermann",  "1.0.0.beta1"
   s.add_dependency "backports", ">= 2.0"
   s.add_dependency "tilt",      ">= 1.3", "< 3"
   s.add_dependency "rack-test"
-  s.add_dependency "rack-protection"
+  s.add_dependency "rack-protection", Sinatra::VERSION
   s.add_dependency "multi_json"
 
   s.add_development_dependency "rspec", "~> 3.4"
