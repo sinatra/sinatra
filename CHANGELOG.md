@@ -1,10 +1,32 @@
-## 2.0.0 / 2016-0x-xx
+## 2.0.0 / 2016-08-22
 
- * Make route params available during error handler. #895 (Jeremy Evans)
+ * Use Mustermann for patterns #1086 by Konstantin Haase
 
- * Make `not_found` and `error(404)` behavior match. #896 (Jeremy Evans)
+ * Server now provides `-q` flag for quiet mode, which disables start/stop messages #1153 by Vasiliy.
 
- * Add Reel support. #793 (Patricio Mac Adden)
+ * Session middleware can now be specified with `:session_store` setting #1161 by Jordan Owens.
+
+ * `APP_ENV` is now preferred and recommended over `RACK_ENV` for setting environment #984 by Damien Mathieu.
+
+ * Add Reel support #793 by Patricio Mac Adden.
+
+ * Make route params available during error handling #895 by Jeremy Evans.
+
+ * Unify `not_found` and `error` 404 behavior #896 by Jeremy Evans.
+
+ * Enable Ruby 2.3 `frozen_string_literal` feature #1076 by Vladimir Kochnev.
+
+ * Add Sinatra::ShowExceptions::TEMPLATE and patched Rack::ShowExceptions to prefer Sinatra template by Zachary Scott.
+
+ * Sinatra::Runner is used internally for integration tests #840 by Nick Sutterer.
+
+ * Fix case-sensitivity issue in `uri` method #889 by rennex.
+
+ * Use `Rack::Utils.status_code` to allow `status` helper to use symbol as well as numeric codes #968 by Tobias H. Michaelsen.
+
+ * Improved error handling for invalid params through Rack #1070 by Jordan Owens.
+
+ * Ensure template is cached only once #1021 by Patrik Rak.
 
 ## 1.4.7 / 2016-01-24
 

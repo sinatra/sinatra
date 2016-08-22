@@ -15,7 +15,6 @@ gem 'rack', github: 'rack/rack'
 gem 'rack-test', '>= 0.6.2'
 gem "minitest", "~> 5.0"
 
-gem "mustermann", github: "sinatra/mustermann"
 gem "rack-protection", path: "rack-protection"
 gem "sinatra-contrib", path: "sinatra-contrib"
 

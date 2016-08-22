@@ -1,9 +1,11 @@
-# Run `rake rack-protection.gemspec` to update the gemspec.
+$:.unshift File.expand_path("../../lib", __FILE__)
+require "sinatra/version"
+
 Gem::Specification.new do |s|
   # general infos
   s.name        = "rack-protection"
-  s.version     = "2.0.0"
-  s.description = "You should use protection!"
+  s.version     = Sinatra::VERSION
+  s.description = "Protect against typical web attacks, works with all Rack apps, including Rails."
   s.homepage    = "http://github.com/sinatra/rack-protection"
   s.summary     = s.description
   s.license     = 'MIT'
