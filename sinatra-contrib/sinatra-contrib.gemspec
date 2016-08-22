@@ -1,10 +1,11 @@
 # -*- encoding: utf-8 -*-
 
-# Run `rake sinatra-contrib.gemspec` to update the gemspec.
-require File.expand_path('../lib/sinatra/contrib/version', __FILE__)
+$:.unshift File.expand_path("../../sinatra/lib", __FILE__)
+require "sinatra/version"
+
 Gem::Specification.new do |s|
   s.name        = "sinatra-contrib"
-  s.version     = Sinatra::Contrib::VERSION
+  s.version     = Sinatra::VERSION
   s.description = "Collection of useful Sinatra extensions"
   s.homepage    = "http://github.com/sinatra/sinatra-contrib"
   s.license     = "MIT"
@@ -215,7 +216,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.2.0'
 
-  s.add_dependency "sinatra", "> 1", "< 3"
+  s.add_dependency "sinatra", Sinatra::VERSION
   s.add_dependency "mustermann",  "~> 0.4"
   s.add_dependency "backports", ">= 2.0"
   s.add_dependency "tilt",      ">= 1.3", "< 3"
