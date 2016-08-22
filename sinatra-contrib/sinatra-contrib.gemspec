@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 
-$:.unshift File.expand_path("../../sinatra/lib", __FILE__)
+$:.unshift File.expand_path("../../lib", __FILE__)
 require "sinatra/version"
 
 Gem::Specification.new do |s|
@@ -211,7 +211,7 @@ Gem::Specification.new do |s|
     "spec/respond_with_spec.rb",
     "spec/spec_helper.rb",
     "spec/streaming_spec.rb",
-    "spec/params_spec.rb",
+    "spec/required_params_spec.rb",
   ]
 
   s.required_ruby_version = '>= 2.2.0'
