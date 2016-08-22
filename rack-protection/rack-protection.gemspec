@@ -1,4 +1,4 @@
-$:.unshift File.expand_path("../../sinatra/lib", __FILE__)
+$:.unshift File.expand_path("../../lib", __FILE__)
 require "sinatra/version"
 
 Gem::Specification.new do |s|

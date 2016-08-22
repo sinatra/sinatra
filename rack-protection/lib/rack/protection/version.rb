@@ -1,16 +1,5 @@
 module Rack
   module Protection
-    def self.version
-      VERSION
-    end
-
-    SIGNATURE = [2, 0, 0]
-    VERSION   = SIGNATURE.join('.')
-
-    VERSION.extend Comparable
-    def VERSION.<=>(other)
-      other = other.split('.').map { |i| i.to_i } if other.respond_to? :split
-      SIGNATURE <=> Array(other)
-    end
+    VERSION = ::Sinatra::VERSION
   end
 end
