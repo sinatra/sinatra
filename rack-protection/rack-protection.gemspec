@@ -1,10 +1,10 @@
-$:.unshift File.expand_path("../../lib", __FILE__)
-require "sinatra/version"
+$:.unshift File.expand_path("../../rack-protection/lib", __FILE__)
+require "rack/protection/version"
 
 Gem::Specification.new do |s|
   # general infos
   s.name        = "rack-protection"
-  s.version     = Sinatra::VERSION
+  s.version     = Rack::Protection::VERSION
   s.description = "Protect against typical web attacks, works with all Rack apps, including Rails."
   s.homepage    = "http://github.com/sinatra/rack-protection"
   s.summary     = s.description
