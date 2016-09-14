@@ -1654,7 +1654,7 @@ get '/foo' do
   request.ip                  # dirección IP del cliente
   request.secure?             # false (sería true sobre ssl)
   request.forwarded?          # true (si se está corriendo atrás de un proxy reverso)
-  requuest.env                # hash de entorno directamente entregado por Rack
+  request.env                 # hash de entorno directamente entregado por Rack
 end
 ```
 
