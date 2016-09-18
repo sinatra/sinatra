@@ -10,7 +10,7 @@ module Rack
     # Only accepts unsafe HTTP requests if a given access token matches the token
     # included in the session *or* the request comes from the same origin.
     #
-    # Compatible with Rails and rack-csrf.
+    # Compatible with rack-csrf.
     class RemoteToken < AuthenticityToken
       default_reaction :deny
 
