@@ -55,10 +55,10 @@ module Sinatra
     end
 
     def frame_class(frame)
-      if frame.filename =~ /lib\/sinatra.*\.rb/
+      if frame.filename =~ %r{lib/sinatra.*\.rb}
         "framework"
       elsif (defined?(Gem) && frame.filename.include?(Gem.dir)) ||
-            frame.filename =~ /\/bin\/(\w+)$/
+            frame.filename =~ %r{/bin/(\w+)\z}
         "system"
       else
         "app"
