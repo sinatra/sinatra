@@ -469,8 +469,8 @@ module Sinatra
     def cache_control(*values)
       if values.last.kind_of?(Hash)
         hash = values.pop
-        hash.reject! { |k,v| v == false }
-        hash.reject! { |k,v| values << k if v == true }
+        hash.reject! { |k, v| v == false }
+        hash.reject! { |k, v| values << k if v == true }
       else
         hash = {}
       end
@@ -807,7 +807,7 @@ module Sinatra
 
     def render(engine, data, options = {}, locals = {}, &block)
       # merge app-level options
-      engine_options  = settings.respond_to?(engine) ? settings.send(engine) : {}
+      engine_options = settings.respond_to?(engine) ? settings.send(engine) : {}
       options.merge!(engine_options) { |key, v1, v2| v1 }
 
       # extract generic options
@@ -1207,7 +1207,7 @@ module Sinatra
         @extensions     = []
 
         if superclass.respond_to?(:templates)
-          @templates = Hash.new { |hash,key| superclass.templates[key] }
+          @templates = Hash.new { |hash, key| superclass.templates[key] }
         else
           @templates = {}
         end
@@ -1639,8 +1639,8 @@ module Sinatra
         unbound_method          = generate_method(method_name, &block)
         conditions, @conditions = @conditions, []
         wrapper                 = block.arity != 0 ?
-          proc { |a,p| unbound_method.bind(a).call(*p) } :
-          proc { |a,p| unbound_method.bind(a).call }
+          proc { |a, p| unbound_method.bind(a).call(*p) } :
+          proc { |a, p| unbound_method.bind(a).call }
 
         [ pattern, conditions, wrapper ]
       end
