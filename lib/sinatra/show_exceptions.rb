@@ -15,7 +15,7 @@ module Sinatra
     def @@eats_errors.puts(*) end
 
     def initialize(app)
-      @app      = app
+      @app = app
     end
 
     def call(env)
@@ -51,7 +51,7 @@ module Sinatra
 
     def prefers_plain_text?(env)
       !(Request.new(env).preferred_type("text/plain","text/html") == "text/html") &&
-      [/curl/].index{|item| item =~ env["HTTP_USER_AGENT"]}
+      [/curl/].index { |item| item =~ env["HTTP_USER_AGENT"] }
     end
 
     def frame_class(frame)

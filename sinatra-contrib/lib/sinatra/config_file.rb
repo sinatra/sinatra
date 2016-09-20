@@ -161,7 +161,7 @@ module Sinatra
       end
 
       if hash.respond_to? :to_hash
-        indifferent_hash = Hash.new {|hash,key| hash[key.to_s] if Symbol === key }
+        indifferent_hash = Hash.new { |hash, key| hash[key.to_s] if Symbol === key }
         indifferent_hash.merge hash.to_hash
       else
         hash

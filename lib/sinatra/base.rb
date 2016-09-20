@@ -705,7 +705,7 @@ module Sinatra
       render :less, template, options, locals
     end
 
-    def stylus(template, options={}, locals={})
+    def stylus(template, options = {}, locals = {})
       options.merge! :layout => false, :default_content_type => :css
       render :styl, template, options, locals
     end
@@ -1081,7 +1081,7 @@ module Sinatra
 
     # Creates a Hash with indifferent access.
     def indifferent_hash
-      Hash.new {|hash,key| hash[key.to_s] if Symbol === key }
+      Hash.new { |hash, key| hash[key.to_s] if Symbol === key }
     end
 
     # Run the block with 'throw :halt' support and apply result to the response.
@@ -1909,9 +1909,9 @@ module Sinatra
   # top-level. Subclassing Sinatra::Base is highly recommended for
   # modular applications.
   class Application < Base
-    set :logging, Proc.new { ! test? }
+    set :logging, Proc.new { !test? }
     set :method_override, true
-    set :run, Proc.new { ! test? }
+    set :run, Proc.new { !test? }
     set :session_secret, Proc.new { super() unless development? }
     set :app_file, nil
 
