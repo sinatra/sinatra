@@ -1916,7 +1916,7 @@ module Sinatra
     set :app_file, nil
 
     def self.register(*extensions, &block) #:nodoc:
-      added_methods = extensions.map {|m| m.public_instance_methods }.flatten
+      added_methods = extensions.map(&:public_instance_methods).flatten
       Delegator.delegate(*added_methods)
       super(*extensions, &block)
     end
