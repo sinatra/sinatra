@@ -1283,7 +1283,7 @@ module Sinatra
       # handled.
       def error(*codes, &block)
         args  = compile! "ERROR", /.*/, block
-        codes = codes.map { |c| Array(c) }.flatten
+        codes = codes.flat_map(&method(:Array))
         codes << Exception if codes.empty?
         codes << Sinatra::NotFound if codes.include?(404)
         codes.each { |c| (@errors[c] ||= []) << args }
@@ -1916,7 +1916,7 @@ module Sinatra
     set :app_file, nil
 
     def self.register(*extensions, &block) #:nodoc:
-      added_methods = extensions.map(&:public_instance_methods).flatten
+      added_methods = extensions.flat_map(&:public_instance_methods)
       Delegator.delegate(*added_methods)
       super(*extensions, &block)
     end
