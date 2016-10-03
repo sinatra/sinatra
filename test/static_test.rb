@@ -18,10 +18,10 @@ class StaticTest < Minitest::Test
 
   it 'produces a body that can be iterated over multiple times' do
     env = Rack::MockRequest.env_for("/#{File.basename(__FILE__)}")
-    _, _, body = @app.call(env)
+    _, _, response_body = @app.call(env)
     buf1, buf2 = [], []
-    body.each { |part| buf1 << part }
-    body.each { |part| buf2 << part }
+    response_body.each { |part| buf1 << part }
+    response_body.each { |part| buf2 << part }
     assert_equal buf1.join, buf2.join
     assert_equal File.read(__FILE__), buf1.join
   end
@@ -155,16 +155,16 @@ class StaticTest < Minitest::Test
     # ...and also ignores multi-range requests, which aren't supported yet
     ["bytes=45-40", "bytes=IV-LXVI", "octets=10-20", "bytes=-", "bytes=1-2,3-4"].each do |http_range|
       request = Rack::MockRequest.new(@app)
-      response = request.get("/#{File.basename(__FILE__)}", 'HTTP_RANGE' => http_range)
+      response_result = request.get("/#{File.basename(__FILE__)}", 'HTTP_RANGE' => http_range)
 
       assert_equal(
         200,
-        response.status,
+        response_result.status,
         "Invalid range '#{http_range}' should be ignored"
       )
       assert_equal(
         nil,
-        response['Content-Range'],
+        response_result['Content-Range'],
         "Invalid range '#{http_range}' should be ignored"
       )
     end
@@ -175,16 +175,16 @@ class StaticTest < Minitest::Test
     length = File.read(__FILE__).length
     ["bytes=888888-", "bytes=888888-999999", "bytes=#{length}-#{length}"].each do |http_range|
       request = Rack::MockRequest.new(@app)
-      response = request.get("/#{File.basename(__FILE__)}", 'HTTP_RANGE' => http_range)
+      response_result = request.get("/#{File.basename(__FILE__)}", 'HTTP_RANGE' => http_range)
 
       assert_equal(
         416,
-        response.status,
+        response_result.status,
         "Unsatisfiable range '#{http_range}' should return 416"
       )
       assert_equal(
         "bytes */#{length}",
-        response['Content-Range'],
+        response_result['Content-Range'],
         "416 response should include actual length"
       )
     end
@@ -199,7 +199,7 @@ class StaticTest < Minitest::Test
   it 'sets cache control headers on static files if set' do
     @app.set :static_cache_control, :public
     env = Rack::MockRequest.env_for("/#{File.basename(__FILE__)}")
-    status, headers, body = @app.call(env)
+    _, headers, _ = @app.call(env)
     assert headers.has_key?('Cache-Control')
     assert_equal headers['Cache-Control'], 'public'
 
@@ -208,7 +208,7 @@ class StaticTest < Minitest::Test
       [:public, :must_revalidate, {:max_age => 300}]
     )
     env = Rack::MockRequest.env_for("/#{File.basename(__FILE__)}")
-    status, headers, body = @app.call(env)
+    _, headers, _ = @app.call(env)
     assert headers.has_key?('Cache-Control')
     assert_equal(
       headers['Cache-Control'],
