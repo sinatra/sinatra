@@ -92,8 +92,11 @@ pick up if available.
         * [Dealing with Date and Time](#dealing-with-date-and-time)
         * [Looking Up Template Files](#looking-up-template-files)
     * [Configuration](#configuration)
-        * [Configuring attack protection](#configuring-attack-protection)
         * [Available Settings](#available-settings)
+    * [Security](#security)
+        * [Configure attack protection](#configure-attack-protection)
+        * [Disable attack protection](#disable-attack-protection)
+        * [Available protections](#available-protections)
     * [Environments](#environments)
     * [Error Handling](#error-handling)
         * [Not Found](#not-found)
@@ -2091,39 +2094,6 @@ get '/' do
 end
 ```
 
-### Configuring attack protection
-
-Sinatra is using
-[Rack::Protection](https://github.com/sinatra/rack-protection#readme) to defend
-your application against common, opportunistic attacks. You can easily disable
-this behavior (which will open up your application to tons of common
-vulnerabilities):
-
-```ruby
-disable :protection
-```
-
-To skip a single defense layer, set `protection` to an options hash:
-
-```ruby
-set :protection, :except => :path_traversal
-```
-You can also hand in an array in order to disable a list of protections:
-
-```ruby
-set :protection, :except => [:path_traversal, :session_hijacking]
-```
-
-By default, Sinatra will only set up session based protection if `:sessions`
-have been enabled. See 'Using Sessions'. Sometimes you may want to set up
-sessions "outside" of the Sinatra app, such as in the config.ru or with a
-separate Rack::Builder instance. In that case you can still set up session
-based protection by passing the `:session` option:
-
-```ruby
-set :protection, :session => true
-```
-
 ### Available Settings
 
 <dl>
@@ -2307,6 +2277,106 @@ set :protection, :session => true
     Defaults to <tt>true</tt>.
   </dd>
 </dl>
+
+## Security
+
+Sinatra is using
+[Rack::Protection](rack-protection/README.md) to defend
+your application against common, opportunistic attacks.
+
+**By default Sinatra will use all Rack::Protection defense layers.**
+
+### Configure attack protection
+
+To skip a single defense layer, set `protection` to an options hash:
+
+```ruby
+set :protection, :except => :path_traversal
+```
+
+You can also hand in an array in order to disable a list of protections:
+
+```ruby
+set :protection, :except => [:path_traversal, :session_hijacking]
+```
+
+By default, Sinatra will only set up session based protection if `:sessions`
+have been enabled. See 'Using Sessions'. Sometimes you may want to set up
+sessions "outside" of the Sinatra app, such as in the config.ru or with a
+separate Rack::Builder instance. In that case you can still set up session
+based protection by passing the `:session` option:
+
+```ruby
+set :protection, :session => true
+```
+
+### Disable attack protection
+
+You can easily disable all protections (which will open up your application to tons of common vulnerabilities):
+
+```ruby
+disable :protection
+```
+
+### Available protections
+
+#### Cross Site Request Forgery
+
+Also known as one-click attack or session riding and abbreviated as CSRF or XSRF, is a type of malicious exploit of a website where unauthorized commands are transmitted from a user that the website trusts.
+Unlike cross-site scripting (XSS), which exploits the trust a user has for a particular site, CSRF exploits the trust that a site has in a user's browser.
+
+* [Rack::Protection::AuthenticityToken](rack-protection/lib/rack/protection/authenticity_token.rb)
+* [Rack::Protection::FormToken](rack-protection/lib/rack/protection/form_token.rb)
+* [Rack::Protection::JsonCsrf](rack-protection/lib/rack/protection/json_csrf.rb)
+* [Rack::Protection::RemoteReferrer](rack-protection/lib/rack/protection/remote_referrer.rb)
+* [Rack::Protection::RemoteToken](rack-protection/lib/rack/protection/remote_referrer.rb)
+* [Rack::Protection::HttpOrigin](rack-protection/lib/rack/protection/http_origin.rb)
+
+#### Cross Site Scripting (XSS)
+
+XSS enables attackers to inject client-side scripts into web pages viewed by other users.
+
+* [Rack::Protection::EscapedParams](rack-protection/lib/rack/protection/escaped_params.rb)
+* [Rack::Protection::XSSHeader](rack-protection/lib/rack/protection/xss_header.rb)
+* [Rack::Protection::ContentSecurityPolicy](rack-protection/lib/rack/protection/content_security_policy.rb)
+
+#### Clickjacking
+
+Clickjacking (User Interface redress attack, UI redress attack, UI redressing) is a malicious technique of tricking a Web user into clicking on something different from what
+ the user perceives they are clicking on, thus potentially revealing confidential information or taking control of their computer while clicking on seemingly innocuous web pages.
+
+* [Rack::Protection::FrameOptions](rack-protection/lib/rack/protection/frame_options.rb)
+
+####  Directory Traversal
+
+A directory traversal (or path traversal) consists in exploiting insufficient security validation / sanitization of user-supplied input file names, so that characters
+ representing "traverse to parent directory" are passed through to the file APIs.
+
+* [Rack::Protection::PathTraversal](rack-protection/lib/rack/protection/path_traversal.rb)
+
+#### Session Hijacking
+
+Also known as cookie hijacking is the exploitation of a valid computer session—sometimes also called a session key—to gain unauthorized access to information or services in a computer system.
+
+* [Rack::Protection::SessionHijacking](rack-protection/lib/rack/protection/session_hijacking.rb)
+
+#### Cookie Tossing
+
+Cookie tossing is an attack which abuses the feature that a subdomain can put a `key=value` pair in a cookies which can then also be read by the domain above it.
+
+* [Rack::Protection::CookieTossing](rack-protection/lib/rack/protection/cookie_tossing.rb)
+
+#### IP Spoofing
+
+IP spoofing or IP address spoofing is the creation of Internet Protocol (IP) packets with a false source IP address, for the purpose of hiding the identity of the sender or impersonating another computing system.
+
+* [Rack::Protection::IPSpoofing](rack-protection/lib/rack/protection/ip_spoofing.rb)
+
+#### Strict Transport
+
+Helps to protect against protocol downgrade attacks and cookie hijacking.
+
+* [Rack::Protection::StrictTransport](rack-protection/lib/rack/protection/strict_transport.rb)
 
 ## Environments
 
