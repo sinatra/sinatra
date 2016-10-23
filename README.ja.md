@@ -1,7 +1,7 @@
 # Sinatra
 
 *注）
-本文書は英語から翻訳したものであり、その内容が最新でない場合もあります。最新の情報はオリジナルの英語版を参照して下さい。*
+本文書は英語から翻訳したものであり、その内容が最新でない場合もあります。最新の情報はオリジナルの英語版を参照してください。*
 
 Sinatraは最小の労力でRubyによるWebアプリケーションを手早く作るための[DSL](https://ja.wikipedia.org/wiki/メインページドメイン固有言語)です。
 
@@ -70,9 +70,11 @@ ThinがあればSinatraはこれを利用するので、`gem install thin`する
         * [名前付きテンプレート(Named Templates)](#名前付きテンプレートnamed-templates)
         * [ファイル拡張子の関連付け](#ファイル拡張子の関連付け)
         * [オリジナルテンプレートエンジンの追加](#オリジナルテンプレートエンジンの追加)
+        * [カスタムロジックを使用したテンプレートの探索](#カスタムロジックを使用したテンプレートの探索)
     * [フィルタ(Filters)](#フィルタfilters)
     * [ヘルパー(Helpers)](#ヘルパーhelpers)
         * [セッションの使用](#セッションの使用)
+        * [セッションミドルウェアの選択](#セッションミドルウェアの選択)
         * [停止(Halting)](#停止halting)
         * [パッシング(Passing)](#パッシングpassing)
         * [別ルーティングの誘発](#別ルーティングの誘発)
@@ -167,7 +169,6 @@ end
       # Does not match "GET /foo/"
     end
 ```
-
 
 ルーティングのパターンは名前付きパラメータを含むことができ、
 `params`ハッシュで取得できます。
@@ -379,7 +380,6 @@ get %r{(?!/index)} do
 end
 ```
 
-
 ## 静的ファイル(Static Files)
 
 静的ファイルは`./public`ディレクトリから配信されます。
@@ -427,7 +427,6 @@ end
 
 Sinatraが理解できないオプションは、テンプレートエンジンに渡されることになります。
 
-
 ```ruby
 get '/' do
   haml :index, :format => :html5
@@ -457,7 +456,7 @@ end
 
   <dt>default_encoding</dt>
   <dd>
-    文字エンコーディング（不確かな場合に使用される）。デフォルトは、<tt>settings.default_encoding</tt>。
+    文字エンコーディングが確実でない場合に指定。デフォルトは、<tt>settings.default_encoding</tt>。
   </dd>
 
   <dt>views</dt>
@@ -499,9 +498,9 @@ end
 set :views, settings.root + '/templates'
 ```
 
-テンプレートはシンボルを使用して参照させることを覚えておいて下さい。
-サブディレクトリでもこの場合は`:'subdir/template'`のようにします。
-レンダリングメソッドは文字列が渡されると、それをそのまま文字列として出力するので、シンボルを使ってください。
+テンプレートの参照は、テンプレートがサブディレクトリ内にある場合でも常にシンボルで指定することを覚えておいてください。
+（これは`:'subdir/template'`または`'subdir/template'.to_sym`のように指定することを意味します。）
+レンダリングメソッドにシンボルではなく文字列を渡してしまうと、そのまま文字列として出力してしまいます。
 
 ### リテラルテンプレート(Literal Templates)
 
@@ -511,12 +510,18 @@ get '/' do
 end
 ```
 
-これはそのテンプレート文字列をレンダリングします。
+これはテンプレート文字列をレンダリングしています。
+テンプレート文字列に関連するファイルパスや行数を`:path`や`:line`オプションで指定することで、バックトレースを明確にすることができます。
+
+```ruby
+get '/' do
+  haml '%div.title Hello World', :path => 'examples/file.haml', :line => 3
+end
+```
 
 ### 利用可能なテンプレート言語
 
 いくつかの言語には複数の実装があります。使用する（そしてスレッドセーフにする）実装を指定するには、それを最初にrequireしてください。
-
 
 ```ruby
 require 'rdiscount' # または require 'bluecloth'
@@ -539,7 +544,6 @@ get('/') { markdown :index }
     <td><tt>haml :index, :format => :html5</tt></td>
   </tr>
 </table>
-
 
 #### Erb テンプレート
 
@@ -601,7 +605,6 @@ get('/') { markdown :index }
 
 インラインテンプレート用にブロックを取ることもできます（例を参照）。
 
-
 #### Sass テンプレート
 
 <table>
@@ -618,7 +621,6 @@ get('/') { markdown :index }
     <td><tt>sass :stylesheet, :style => :expanded</tt></td>
   </tr>
 </table>
-
 
 #### Scss テンプレート
 
@@ -713,7 +715,6 @@ erb :overview, :locals => { :text => markdown(:introduction) }
 
 MarkdownからはRubyを呼ぶことができないので、Markdownで書かれたレイアウトを使うことはできません。しかしながら、`:layout_engine`オプションを渡すことでテンプレートのものとは異なるレンダリングエンジンをレイアウトのために使うことができます。
 
-
 #### Textile テンプレート
 
 <table>
@@ -773,7 +774,6 @@ erb :overview, :locals => { :text => rdoc(:introduction) }
 
 ノート: 他のテンプレート内で`rdoc`メソッドを呼び出せます。
 
-
 ```ruby
 %h1 Hello From Haml!
 %p= rdoc(:greetings)
@@ -818,7 +818,6 @@ AsciiDocテンプレートからRubyのメソッドを直接呼び出すこと�
 </table>
 
 RadiusテンプレートからRubyのメソッドを直接呼び出すことができないため、ほぼ全ての場合にlocalsを指定する必要があるでしょう。
-
 
 #### Markaby テンプレート
 
@@ -1015,7 +1014,6 @@ end
   </tr>
 </table>
 
-
 テンプレートのソースはRubyの文字列として評価され、その結果のJSON変数は`#to_json`を使って変換されます。
 
 ```ruby
@@ -1068,7 +1066,7 @@ get '/:id' do
 end
 ```
 
-このやり方は他のテンプレート内で部分テンプレートとして表示する時に典型的に使用されます。
+これは他のテンプレート内で部分テンプレートとして表示する典型的な手法です。
 
 ### `yield`を伴うテンプレートとネストしたレイアウト
 
@@ -1104,7 +1102,6 @@ end
 現在、次のレンダリングメソッドがブロックを取れます: `erb`, `haml`,
 `liquid`, `slim `, `wlang`。
 また汎用の`render`メソッドもブロックを取れます。
-
 
 ### インラインテンプレート(Inline Templates)
 
@@ -1147,7 +1144,7 @@ get '/' do
 end
 ```
 
-「layout」というテンプレートが存在する場合、そのテンプレートファイルは他のテンプレートがレンダリングされる度に使用されます。`:layout => false`で個別に、または`set :haml, :layout => false`でデフォルトとして、レイアウトを無効にすることができます。
+「layout」という名前のテンプレートが存在する場合は、そのテンプレートファイルは他のテンプレートがレンダリングされる度に使用されます。`:layout => false`で個別に、または`set :haml, :layout => false`でデフォルトとして、レイアウトを無効にすることができます。
 
 ```ruby
 get '/' do
@@ -1180,6 +1177,22 @@ end
 ```
 
 これは、`./views/index.myat`をレンダリングします。Tiltについての詳細は、https://github.com/rtomayko/tilt を参照してください。
+
+### カスタムロジックを使用したテンプレートの探索
+
+オリジナルテンプレートの検索メカニズムを実装するためには、`#find_template`メソッドを実装します。
+
+```ruby
+configure do
+  set :views [ './views/a', './views/b' ]
+end
+
+def find_template(views, name, engine, &block)
+  Array(views).each do |v|
+    super(v, name, engine, &block)
+  end
+end
+```
 
 ## フィルタ(Filters)
 
@@ -1263,10 +1276,9 @@ helpers FooUtils, BarUtils
 
 その効果は、アプリケーションクラスにモジュールをインクルードするのと同じです。
 
-
 ### セッションの使用
 
-セッションはリクエスト間での状態維持のために使用されます。その起動により、ユーザセッションごとに一つのセッションハッシュが与えられます。
+セッションはリクエスト間での状態維持のために使用されます。セッションを有効化すると、ユーザセッションごとに一つのセッションハッシュが与えられます。
 
 ```ruby
 enable :sessions
@@ -1311,6 +1323,38 @@ foo.comのサブドメイン上のアプリ間でセッションを共有化し�
 ```ruby
 set :sessions, :domain => '.foo.com'
 ```
+
+#### セッションミドルウェアの選択
+
+`enable :sessions`とすることで、クッキー内の全てのデータを実際に保存してしまうことに注意してください。
+これは、あなたが望む挙動ではない（例えば、大量のデータを保存することでトラフィックが増大してしまう）かもしれません。
+あなたは、次のいずれかの方法によって、任意のRackセッションミドルウェアを使用することができます。
+
+```ruby
+enable :sessions
+set :session_store, Rack::Session::Pool
+```
+
+オプションのハッシュを設定するためには、次のようにします。
+
+```ruby
+set :sessions, :expire_after => 2592000
+set :session_store, Rack::Session::Pool
+```
+
+他の方法は`enable :sessions`を**しない**で、他のミドルウェアの選択と同様にあなた自身でミドルウェアを選択することです。
+
+この方法を選択する場合は、セッションベースの保護は**デフォルトで有効にならない**ということに注意することが重要です。
+
+これを満たすためのRackミドルウェアを追加することが必要になります。
+
+```ruby
+use Rack::Session::Pool, :expire_after => 2592000
+use Rack::Protection::RemoteToken
+use Rack::Protection::SessionHijacking
+```
+
+より詳しい情報は、「攻撃防御に対する設定」の項を参照してください。
 
 ### 停止(Halting)
 
@@ -1369,7 +1413,8 @@ end
 
 ### 別ルーティングの誘発
 
-`pass`を使ってルーティングを飛ばすのではなく、他のルーティングを呼んだ結果を得たいというときがあります。これを実現するには`call`を使えばいいです。
+`pass`を使ってルーティングを飛ばすのではなく、他のルーティングを呼んだ結果を得たいという場合があります。
+これは`call`を使用することで実現できます。
 
 ```ruby
 get '/foo' do
@@ -1382,12 +1427,11 @@ get '/bar' do
 end
 ```
 
-ノート: 先の例において、テストを楽にしパフォーマンスを改善するには、`"bar"`を単にヘルパーに移し、`/foo`および`/bar`から使えるようにするのがいいです。
+ノート: 先の例において、テストを楽にしパフォーマンスを改善するには、`"bar"`を単にヘルパーに移し、`/foo`および`/bar`から使えるようにしたほうが良いです。
 
 リクエストが、その複製物でない同じアプリケーションのインスタンスに送られるようにしたいときは、`call`に代えて`call!`を使ってください。
 
-`call`についての詳細はRackの仕様書を参照してください。
-
+`call`についての詳細はRackの仕様を参照してください。
 
 ### ボディ、ステータスコードおよびヘッダの設定
 
@@ -1476,7 +1520,6 @@ end
 
 リクエストスコープにおいて、`logger`ヘルパーは`Logger`インスタンスを作り出します。
 
-
 ```ruby
 get '/' do
   logger.info "loading data"
@@ -1500,7 +1543,7 @@ end
 
 ### MIMEタイプ(Mime Types)
 
-`send_file`か静的ファイルを使う時、SinatraがMIMEタイプを理解できない場合があります。その時は `mime_type` を使ってファイル拡張子毎に登録して下さい。
+`send_file`か静的ファイルを使う時、SinatraがMIMEタイプを理解できない場合があります。その時は `mime_type` を使ってファイル拡張子毎に登録してください。
 
 ```ruby
 configure do
@@ -1560,7 +1603,6 @@ end
 ```
 
 redirectに引数を渡すには、それをクエリーに追加するか、
-
 
 ```ruby
 redirect to('/bar?sum=42')
@@ -1628,7 +1670,6 @@ etag @article.sha1, :weak
 ```
 
 これらのヘルパーは、キャッシングをしてくれませんが、必要な情報をキャッシュに与えてくれます。もし手早いリバースプロキシキャッシングの解決策をお探しなら、 [rack-cache](https://github.com/rtomayko/rack-cache)を試してください。
-
 
 ```ruby
 require "rack/cache"
@@ -1705,7 +1746,6 @@ send_file 'foo.png', :type => :jpg
       Rackハンドラでサポートされている場合は、Rubyプロセスからのストリーミング以外の手段が使われる。このヘルパーメソッドを使うと、Sinatraは自動で範囲リクエスト(range requests)を扱う。
     </dd>
 </dl>
-
 
 ### リクエストオブジェクトへのアクセス
 
@@ -1911,18 +1951,19 @@ end
 
 ### 攻撃防御に対する設定
 
-Sinatraは、[Rack::Protection](https://github.com/sinatra/rack-protection#readme)を使って、アプリケーションを多発する日和見的攻撃から守っています。この挙動は簡単に無効化できます(これはアプリケーションを大量の脆弱性攻撃に晒すことになります)。
+Sinatraは[Rack::Protection](https://github.com/sinatra/rack-protection#readme)を使用することで、アプリケーションを一般的な日和見的攻撃から守っています。これは簡単に無効化できます（が、アプリケーションに大量の一般的な脆弱性を埋め込むことになってしまいます）。
 
 ```ruby
 disable :protection
 ```
 
-単一の防御層を外すためには、`protection`をオプションハッシュにセットします。
+ある1つの防御を無効にするには、`protection`にハッシュでオプションを指定します。
 
 ```ruby
 set :protection, :except => :path_traversal
 ```
-また配列を渡して、複数の防御を無効にすることもできます。
+
+配列を渡すことで、複数の防御を無効にすることもできます。
 
 ```ruby
 set :protection, :except => [:path_traversal, :session_hijacking]
@@ -2081,7 +2122,7 @@ set :protection, :session => true
 
 ## 環境設定(Environments)
 
-３種類の既定環境、`"development"`、`"production"`および`"test"`があります。環境は、`APP_ENV`環境変数を通して設定できます。デフォルト値は、`"development"`です。`"development"`環境において、すべてのテンプレートは、各リクエスト間で再ロードされ、そして、特別の`not_found`および`error`ハンドラがブラウザにスタックトレースを表示します。`"production"`および`"test"`環境においては、テンプレートはデフォルトでキャッシュされます。
+3種類の既定環境、`"development"`、`"production"`および`"test"`があります。環境は、`APP_ENV`環境変数を通して設定できます。デフォルト値は、`"development"`です。`"development"`環境において、すべてのテンプレートは、各リクエスト間で再ロードされ、そして、特別の`not_found`および`error`ハンドラがブラウザにスタックトレースを表示します。`"production"`および`"test"`環境においては、テンプレートはデフォルトでキャッシュされます。
 
 異なる環境を走らせるには、`APP_ENV`環境変数を設定します。
 
@@ -2117,7 +2158,14 @@ end
 
 ### エラー(Error)
 
-`error`ハンドラはルーティングブロックまたはフィルタ内で例外が発生したときはいつでも発動します。例外オブジェクトはRack変数`sinatra.error`から取得できます。
+`error`ハンドラはルーティングブロックまたはフィルタ内で例外が発生したときはいつでも発動します。
+しかし、環境設定がdevelopmentの場合は`:after_handler`を設定している場合のみ発動するようになります。
+
+```ruby
+set :show_exceptions, :after_handler
+```
+
+例外オブジェクトはRack変数`sinatra.error`から取得できます。
 
 ```ruby
 error do
@@ -2168,7 +2216,6 @@ end
 ```
 
 Sinatraを開発環境の下で実行している場合は、特別な`not_found`および`error`ハンドラが導入され、これは親切なスタックトレースと追加のデバッギング情報をブラウザに表示します。
-
 
 ## Rackミドルウェア(Rack Middleware)
 
@@ -2256,13 +2303,13 @@ class MyApp < Sinatra::Base
 end
 ```
 
-`Sinatra::Base`のサブクラスで利用できるメソッドは、トップレベルDSLで利用できるものと全く同じです。ほとんどのトップレベルで記述されたアプリは、以下の２点を修正することで`Sinatra::Base`コンポーネントに変えることができます。
+`Sinatra::Base`のサブクラスで利用できるメソッドは、トップレベルDSLで利用できるものと全く同じです。ほとんどのトップレベルで記述されたアプリは、以下の2点を修正することで`Sinatra::Base`コンポーネントに変えることができます。
 
 * `sinatra`の代わりに`sinatra/base`を読み込む
   (そうしない場合、SinatraのDSLメソッドの全てがmainの名前空間にインポートされます)
 * ルーティング、エラーハンドラ、フィルタ、オプションを`Sinatra::Base`のサブクラスに書く
 
-`Sinatra::Base`はまっさらです。ビルトインサーバを含む、ほとんどのオプションがデフォルトで無効になっています。利用可能なオプションとその挙動の詳細については[Configuring Settings](http://www.sinatrarb.com/configuration.html)(英語)をご覧下さい。
+`Sinatra::Base`はまっさらです。ビルトインサーバを含む、ほとんどのオプションがデフォルトで無効になっています。利用可能なオプションとその挙動の詳細については[Configuring Settings](http://www.sinatrarb.com/configuration.html)(英語)をご覧ください。
 
 もしもクラシックスタイルと同じような挙動のアプリケーションをトップレベルで定義させる必要があれば、`Sinatra::Application`をサブクラス化させてください。
 
