@@ -1,3 +1,12 @@
+if ENV['COVERAGE']
+  require 'simplecov'
+  SimpleCov.start do
+    add_filter '/test/'
+    add_group 'sinatra-contrib', 'sinatra-contrib'
+    add_group 'rack-protection', 'rack-protection'
+  end
+end
+
 ENV['APP_ENV'] = 'test'
 Encoding.default_external = "UTF-8" if defined? Encoding
 
