@@ -11,7 +11,7 @@ source 'https://rubygems.org' unless ENV['QUICK']
 gemspec
 
 gem 'rake'
-gem 'rack', github: 'rack/rack'
+gem 'rack', git: 'https://github.com/rack/rack.git'
 gem 'rack-test', '>= 0.6.2'
 gem "minitest", "~> 5.0"
 
