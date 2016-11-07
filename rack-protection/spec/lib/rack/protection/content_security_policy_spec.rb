@@ -4,7 +4,7 @@ describe Rack::Protection::ContentSecurityPolicy do
   it 'should set the Content Security Policy' do
     expect(
       get('/', {}, 'wants' => 'text/html').headers["Content-Security-Policy"]
-    ).to eq("default-src none; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'")
+    ).to eq("connect-src 'self'; default-src none; img-src 'self'; script-src 'self'; style-src 'self'")
   end
 
   it 'should not set the Content Security Policy for other content types' do
@@ -21,8 +21,30 @@ describe Rack::Protection::ContentSecurityPolicy do
     end
 
     headers = get('/', {}, 'wants' => 'text/html').headers
-    expect(headers["Content-Security-Policy"]).to eq("default-src none; script-src https://cdn.mybank.net; connect-src https://api.mybank.com; font-src https://cdn.mybank.net; frame-src self; img-src https://cdn.mybank.net; media-src https://cdn.mybank.net; style-src https://cdn.mybank.net; object-src https://cdn.mybank.net; report-uri /my_amazing_csp_report_parser; sandbox allow-scripts")
+    expect(headers["Content-Security-Policy"]).to eq("connect-src https://api.mybank.com; default-src none; font-src https://cdn.mybank.net; frame-src self; img-src https://cdn.mybank.net; media-src https://cdn.mybank.net; object-src https://cdn.mybank.net; report-uri /my_amazing_csp_report_parser; sandbox allow-scripts; script-src https://cdn.mybank.net; style-src https://cdn.mybank.net")
     expect(headers["Content-Security-Policy-Report-Only"]).to be_nil
+  end
+
+  it 'should allow setting CSP3 no arg directives' do
+    mock_app do
+      use Rack::Protection::ContentSecurityPolicy, :block_all_mixed_content => true, :disown_opener => true, :upgrade_insecure_requests => true
+
+      run DummyApp
+    end
+
+    headers = get('/', {}, 'wants' => 'text/html').headers
+    expect(headers["Content-Security-Policy"]).to eq("block-all_mixed_content; connect-src 'self'; default-src none; disown-opener; img-src 'self'; script-src 'self'; style-src 'self'; upgrade-insecure_requests")
+  end
+
+  it 'should ignore CSP3 no arg directives unless they are set to true' do
+    mock_app do
+      use Rack::Protection::ContentSecurityPolicy, :block_all_mixed_content => false, :disown_opener => 'false', :upgrade_insecure_requests => 'foo'
+
+      run DummyApp
+    end
+
+    headers = get('/', {}, 'wants' => 'text/html').headers
+    expect(headers["Content-Security-Policy"]).to eq("connect-src 'self'; default-src none; img-src 'self'; script-src 'self'; style-src 'self'")
   end
 
   it 'should allow changing report only' do
@@ -34,7 +56,7 @@ describe Rack::Protection::ContentSecurityPolicy do
 
     headers = get('/', {}, 'wants' => 'text/html').headers
     expect(headers["Content-Security-Policy"]).to be_nil
-    expect(headers["Content-Security-Policy-Report-Only"]).to eq("default-src none; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; report-uri /my_amazing_csp_report_parser")
+    expect(headers["Content-Security-Policy-Report-Only"]).to eq("connect-src 'self'; default-src none; img-src 'self'; report-uri /my_amazing_csp_report_parser; script-src 'self'; style-src 'self'")
   end
 
   it 'should not override the header if already set' do
