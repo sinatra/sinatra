@@ -1,7 +1,7 @@
 ---
 language: ruby
 
-dist: precise
+dist: trusty
 sudo: false
 
 before_install:
