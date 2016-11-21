@@ -1,3 +1,4 @@
+# coding: utf-8
 # frozen_string_literal: true
 
 # external dependencies
@@ -1532,6 +1533,10 @@ module Sinatra
 
       # Starts the server by running the Rack Handler.
       def start_server(handler, server_settings, handler_name)
+        # Ensure we initialize middleware before startup, to match standard Rack
+        # behavior, by ensuring an instance exists:
+        prototype
+        # Run the instance we created:
         handler.run(self, server_settings) do |server|
           unless supress_messages?
             $stderr.puts "== Sinatra (v#{Sinatra::VERSION}) has taken the stage on #{port} for #{environment} with backup from #{handler_name}"
