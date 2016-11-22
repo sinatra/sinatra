@@ -469,8 +469,8 @@ module Sinatra
     def cache_control(*values)
       if values.last.kind_of?(Hash)
         hash = values.pop
-        hash.reject! { |k,v| v == false }
-        hash.reject! { |k,v| values << k if v == true }
+        hash.reject! { |k, v| v == false }
+        hash.reject! { |k, v| values << k if v == true }
       else
         hash = {}
       end
@@ -705,7 +705,7 @@ module Sinatra
       render :less, template, options, locals
     end
 
-    def stylus(template, options={}, locals={})
+    def stylus(template, options = {}, locals = {})
       options.merge! :layout => false, :default_content_type => :css
       render :styl, template, options, locals
     end
@@ -807,7 +807,7 @@ module Sinatra
 
     def render(engine, data, options = {}, locals = {}, &block)
       # merge app-level options
-      engine_options  = settings.respond_to?(engine) ? settings.send(engine) : {}
+      engine_options = settings.respond_to?(engine) ? settings.send(engine) : {}
       options.merge!(engine_options) { |key, v1, v2| v1 }
 
       # extract generic options
@@ -1081,7 +1081,7 @@ module Sinatra
 
     # Creates a Hash with indifferent access.
     def indifferent_hash
-      Hash.new {|hash,key| hash[key.to_s] if Symbol === key }
+      Hash.new { |hash, key| hash[key.to_s] if Symbol === key }
     end
 
     # Run the block with 'throw :halt' support and apply result to the response.
@@ -1207,7 +1207,7 @@ module Sinatra
         @extensions     = []
 
         if superclass.respond_to?(:templates)
-          @templates = Hash.new { |hash,key| superclass.templates[key] }
+          @templates = Hash.new { |hash, key| superclass.templates[key] }
         else
           @templates = {}
         end
@@ -1283,7 +1283,7 @@ module Sinatra
       # handled.
       def error(*codes, &block)
         args  = compile! "ERROR", /.*/, block
-        codes = codes.map { |c| Array(c) }.flatten
+        codes = codes.flat_map(&method(:Array))
         codes << Exception if codes.empty?
         codes << Sinatra::NotFound if codes.include?(404)
         codes.each { |c| (@errors[c] ||= []) << args }
@@ -1639,8 +1639,8 @@ module Sinatra
         unbound_method          = generate_method(method_name, &block)
         conditions, @conditions = @conditions, []
         wrapper                 = block.arity != 0 ?
-          proc { |a,p| unbound_method.bind(a).call(*p) } :
-          proc { |a,p| unbound_method.bind(a).call }
+          proc { |a, p| unbound_method.bind(a).call(*p) } :
+          proc { |a, p| unbound_method.bind(a).call }
 
         [ pattern, conditions, wrapper ]
       end
@@ -1909,14 +1909,14 @@ module Sinatra
   # top-level. Subclassing Sinatra::Base is highly recommended for
   # modular applications.
   class Application < Base
-    set :logging, Proc.new { ! test? }
+    set :logging, Proc.new { !test? }
     set :method_override, true
-    set :run, Proc.new { ! test? }
+    set :run, Proc.new { !test? }
     set :session_secret, Proc.new { super() unless development? }
     set :app_file, nil
 
     def self.register(*extensions, &block) #:nodoc:
-      added_methods = extensions.map {|m| m.public_instance_methods }.flatten
+      added_methods = extensions.flat_map(&:public_instance_methods)
       Delegator.delegate(*added_methods)
       super(*extensions, &block)
     end
