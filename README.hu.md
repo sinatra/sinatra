@@ -649,6 +649,40 @@ Az alábbi kapcsolókat ismeri fel a rendszer:
   -s # a rack szerver/handler beállítása (alapértelmezetten ez a thin)
   -x # a mutex lock bekapcsolása (alapértelmezetten ki van kapcsolva)
 
+## Több szálon futtatás
+
+_Parafrázis [Konstantin StackOverflow válasza][so-answer] alapján_
+
+A Sinatra nem szabja meg az konkurenciakezelés módját, hanem az alatta működő
+Rack kezelőre (szerverre) hagyja ezt a feladatot, ami például a Thin, a Puma,
+vagy a WEBrick. A Sinatra önmagában szálbiztos, tehát semmilyen probléma sem
+adódik, ha a Rack kezelő többszálú konkurenciamodellt használ. Ezek szerint
+szerverindításkor meg kell adni a Rack szervernek megfelelő indítási módot.
+A következő példa egy többszálú Thin szerver indítását mutatja be.
+
+```ruby
+# app.rb
+
+require 'sinatra/base'
+
+class App < Sinatra::Base
+  get '/' do
+    "Hello, World"
+  end
+end
+
+App.run!
+
+```
+
+A szerverindítás parancsa a következő lenne:
+
+``` shell
+thin --threaded start
+```
+
+[so-answer]: http://stackoverflow.com/a/6282999/1725341
+
 ## Fejlesztői változat
 
 Ha a Sinatra legfrissebb, fejlesztői változatát szeretnéd használni,
