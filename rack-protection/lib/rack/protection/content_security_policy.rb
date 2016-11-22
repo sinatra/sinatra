@@ -40,15 +40,15 @@ module Rack
                       img_src: "'self'", style_src: "'self'",
                       connect_src: "'self'", report_only: false
 
-      DIRECTIVES = [:base_uri, :child_src, :connect_src, :default_src,
-                    :font_src, :form_action, :frame_ancestors, :frame_src,
-                    :img_src, :manifest_src, :media_src, :object_src,
-                    :plugin_types, :referrer, :reflected_xss, :report_to,
-                    :report_uri, :require_sri_for, :sandbox, :script_src,
-                    :style_src, :worker_src].freeze
+      DIRECTIVES = %i(base_uri child_src connect_src default_src
+                      font_src form_action frame_ancestors frame_src
+                      img_src manifest_src media_src object_src
+                      plugin_types referrer reflected_xss report_to
+                      report_uri require_sri_for sandbox script_src
+                      style_src worker_src).freeze
 
-      NO_ARG_DIRECTIVES = [:block_all_mixed_content, :disown_opener,
-                           :upgrade_insecure_requests].freeze
+      NO_ARG_DIRECTIVES = %i(block_all_mixed_content disown_opener
+                             upgrade_insecure_requests).freeze
 
       def csp_policy
         directives = []
