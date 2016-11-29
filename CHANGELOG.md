@@ -1,3 +1,7 @@
+##
+
+ * params `has_key?` is now also indifferent to String vs Symbol
+
 ## 2.0.0 / 2016-08-22
 
  * Use Mustermann for patterns #1086 by Konstantin Haase
