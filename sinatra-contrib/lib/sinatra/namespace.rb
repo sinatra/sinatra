@@ -233,7 +233,7 @@ module Sinatra
 
       def helpers(*extensions, &block)
         class_eval(&block) if block_given?
-        include(*extensions) if extensions.any?
+        prepend(*extensions) if extensions.any?
       end
 
       def register(*extensions, &block)

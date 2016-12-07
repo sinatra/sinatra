@@ -1416,7 +1416,7 @@ module Sinatra
       # in `extensions` available to the handlers and templates
       def helpers(*extensions, &block)
         class_eval(&block)   if block_given?
-        include(*extensions) if extensions.any?
+        prepend(*extensions) if extensions.any?
       end
 
       # Register an extension. Alternatively take a block from which an
