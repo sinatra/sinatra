@@ -56,6 +56,7 @@ describe Rack::Protection::AuthenticityToken do
   it "sets a new csrf token for the session in env, even after a 'safe' request" do
     get('/', {}, {})
     expect(env['rack.session'][:csrf]).not_to be_nil
+    expect(env['rack.session'][:_csrf_token]).not_to be_nil
   end
 
   describe ".random_token" do

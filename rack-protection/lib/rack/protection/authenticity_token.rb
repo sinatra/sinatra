@@ -70,7 +70,7 @@ module Rack
 
       def accepts?(env)
         session = session env
-        session[:csrf] ||= self.class.random_token(token_length)
+        session[:csrf] ||= session.fetch(:_csrf_token) { session[:_csrf_token] = self.class.random_token(token_length) }
 
         safe?(env) ||
           valid_token?(session, env['HTTP_X_CSRF_TOKEN']) ||
