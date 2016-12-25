@@ -7,3 +7,4 @@
 /pkg
 /doc/api
 /Gemfile.lock
+/coverage

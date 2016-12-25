@@ -54,6 +54,7 @@ if RUBY_ENGINE == "ruby"
   gem 'sass'
   gem 'reel-rack'
   gem 'celluloid', '~> 0.16.0'
+  gem 'simplecov', require: false
 end
 
 if RUBY_ENGINE == "rbx"
