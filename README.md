@@ -75,7 +75,9 @@ pick up if available.
     * [Filters](#filters)
     * [Helpers](#helpers)
         * [Using Sessions](#using-sessions)
-        	* [Choosing Your Own Session Middleware](#choosing-your-own-session-middleware)
+          * [Session Secret Security](#session-secret-security)
+          * [Session Config](#session-config)
+          * [Choosing Your Own Session Middleware](#choosing-your-own-session-middleware)
         * [Halting](#halting)
         * [Passing](#passing)
         * [Triggering Another Route](#triggering-another-route)
@@ -1378,14 +1380,81 @@ get '/:value' do
 end
 ```
 
+#### Session Secret Security
+
 To improve security, the session data in the cookie is signed with a session
-secret. A random secret is generated for you by Sinatra. However, since this
-secret will change with every start of your application, you might want to
-set the secret yourself, so all your application instances share it:
+secret using `HMAC-SHA1`. This session secret should optimally be a
+cryptographically secure random value of an appropriate length which for `HMAC-SHA1`
+is greater than or equal to 64 bytes (512 bits, 128 hex characters). You would be
+advised not to use a secret that is less than 32 bytes of randomness
+(256 bits, 64 hex characters). It is therefore **very important** that you don't
+just make the secret up, but instead use a secure random number generator to
+create it. Humans are extremely bad at generating random values.
+
+By default, a 32 byte secure random session secret is generated for you by Sinatra,
+but it will change with every restart of your application. If you have multiple
+instances of your application, and you let Sinatra generate the key, each
+instance would then have a different session key which is probably not what
+you want.
+
+For better security and usability its [recommended](https://12factor.net/config)
+that you generate a secure random secret and store it in an environment variable
+on each host running your application so that all of your application
+instances will share the same secret. You should periodically rotate this
+session secret to a new value. Here are some examples of how you might create
+a 64 byte secret and set it.
+
+**Session Secret Generation**
+
+```text
+
+$ ruby -e "require 'securerandom'; puts SecureRandom.hex(64)"
+99ae8af...snip...ec0f262ac
+```
+
+**Session Secret Generation (Bonus Points)**
+
+Use the [sysrandom gem](https://github.com/cryptosphere/sysrandom) to prefer
+use of system RNG facilities to generate random values instead of
+userspace `OpenSSL` which MRI Ruby currently defaults to.
+
+```text
+
+$ gem install sysrandom
+Building native extensions.  This could take a while...
+Successfully installed sysrandom-1.x
+1 gem installed
+
+$ ruby -e "require 'sysrandom/securerandom'; puts SecureRandom.hex(64)"
+99ae8af...snip...ec0f262ac
+```
+
+**Session Secret Environment Variable**
+
+Set a `SESSION_SECRET` environment variable for Sinatra to the value you
+generated. Make this value persistent across reboots of your host. Since the
+method for doing this will vary across systems this is for illustrative
+purposes only.
+
+```text
+# vi ~/.bashrc
+export SESSION_SECRET=99ae8af...snip...ec0f262ac
+```
+
+**Session Secret App Config**
+
+Setup your app config to fail-safe to a secure random secret
+if the `SESSION_SECRET` environment variable is not available.
+
+For bonus points use the [sysrandom gem](https://github.com/cryptosphere/sysrandom) here as well.
 
 ```ruby
-set :session_secret, 'super secret'
+require 'securerandom'
+# -or- require 'sysrandom/securerandom'
+set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
 ```
+
+#### Session Config
 
 If you want to configure it further, you may also store a hash with options in
 the `sessions` setting:
