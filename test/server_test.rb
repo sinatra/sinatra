@@ -54,6 +54,25 @@ class ServerTest < Minitest::Test
     @app.run! :server => %w[foo bar mock]
   end
 
+  it "initializes Rack middleware immediately on server run" do
+    class MyMiddleware
+      @@initialized = false
+      def initialize(app)
+        @@initialized = true
+      end
+      def self.initialized
+        @@initialized
+      end
+      def call(env)
+      end
+    end
+
+    @app.use MyMiddleware
+    assert_equal(MyMiddleware.initialized, false)
+    @app.run!
+    assert_equal(MyMiddleware.initialized, true)
+  end
+
   describe "Quiet mode" do
     it "sends data to stderr when server starts and stops" do
       @app.run!
