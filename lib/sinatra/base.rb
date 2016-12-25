@@ -1621,7 +1621,6 @@ module Sinatra
       end
 
       def generate_method(method_name, &block)
-        method_name = method_name.to_sym
         define_method(method_name, &block)
         method = instance_method method_name
         remove_method method_name
