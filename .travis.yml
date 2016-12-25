@@ -17,11 +17,12 @@ addons:
   - g++-4.8
 
 rvm:
-  - 2.2.4
-  - 2.3.1
+  - 2.2.6
+  - 2.3.3
+  - 2.4.0
   - ruby-head
   - rbx
-  - jruby-9.1.0.0
+  - jruby-9.1.6.0
   - jruby-head
 
 script: ./.travis.sh
