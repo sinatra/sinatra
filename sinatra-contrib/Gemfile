@@ -26,7 +26,8 @@ group :development, :test do
     gem 'yajl-ruby'
     # ref is a dependency of therubyracer
     gem 'ref'
-    gem 'therubyracer'
+    # use therubyracer from master until cowboyd/therubyracer#413 is released
+    gem 'therubyracer', :github => 'cowboyd/therubyracer'
   end
 
   gem 'multi_json'
