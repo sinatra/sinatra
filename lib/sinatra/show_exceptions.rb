@@ -49,6 +49,10 @@ module Sinatra
 
     private
 
+    def bad_request?(e)
+      Sinatra::BadRequest === e
+    end
+
     def prefers_plain_text?(env)
       !(Request.new(env).preferred_type("text/plain","text/html") == "text/html") &&
       [/curl/].index { |item| item =~ env["HTTP_USER_AGENT"] }
@@ -210,8 +214,10 @@ TEMPLATE = ERB.new <<-HTML # :nodoc:
       <p><a href="#" id="expando"
             onclick="toggleBacktrace(); return false">(expand)</a></p>
       <p id="nav"><strong>JUMP TO:</strong>
-         <a href="#get-info">GET</a>
-         <a href="#post-info">POST</a>
+         <% unless bad_request?(exception) %>
+            <a href="#get-info">GET</a>
+            <a href="#post-info">POST</a>
+         <% end %>
          <a href="#cookie-info">COOKIES</a>
          <a href="#env-info">ENV</a>
       </p>
@@ -264,47 +270,49 @@ TEMPLATE = ERB.new <<-HTML # :nodoc:
       </ul>
     </div> <!-- /BACKTRACE -->
 
-    <div id="get">
-      <h3 id="get-info">GET</h3>
-      <% if req.GET and not req.GET.empty? %>
-        <table class="req">
-          <tr>
-            <th>Variable</th>
-            <th>Value</th>
-          </tr>
-           <% req.GET.sort_by { |k, v| k.to_s }.each { |key, val| %>
-          <tr>
-            <td><%=h key %></td>
-            <td class="code"><div><%=h val.inspect %></div></td>
-          </tr>
-          <% } %>
-        </table>
-      <% else %>
-        <p class="no-data">No GET data.</p>
-      <% end %>
-      <div class="clear"></div>
-    </div> <!-- /GET -->
+    <% unless bad_request?(exception) %>
+      <div id="get">
+        <h3 id="get-info">GET</h3>
+        <% if req.GET and not req.GET.empty? %>
+          <table class="req">
+            <tr>
+              <th>Variable</th>
+              <th>Value</th>
+            </tr>
+             <% req.GET.sort_by { |k, v| k.to_s }.each { |key, val| %>
+            <tr>
+              <td><%=h key %></td>
+              <td class="code"><div><%=h val.inspect %></div></td>
+            </tr>
+            <% } %>
+          </table>
+        <% else %>
+          <p class="no-data">No GET data.</p>
+        <% end %>
+        <div class="clear"></div>
+      </div> <!-- /GET -->
 
-    <div id="post">
-      <h3 id="post-info">POST</h3>
-      <% if req.POST and not req.POST.empty? %>
-        <table class="req">
-          <tr>
-            <th>Variable</th>
-            <th>Value</th>
-          </tr>
-          <% req.POST.sort_by { |k, v| k.to_s }.each { |key, val| %>
-          <tr>
-            <td><%=h key %></td>
-            <td class="code"><div><%=h val.inspect %></div></td>
-          </tr>
-          <% } %>
-        </table>
-      <% else %>
-        <p class="no-data">No POST data.</p>
-      <% end %>
-      <div class="clear"></div>
-    </div> <!-- /POST -->
+      <div id="post">
+        <h3 id="post-info">POST</h3>
+        <% if req.POST and not req.POST.empty? %>
+          <table class="req">
+            <tr>
+              <th>Variable</th>
+              <th>Value</th>
+            </tr>
+            <% req.POST.sort_by { |k, v| k.to_s }.each { |key, val| %>
+            <tr>
+              <td><%=h key %></td>
+              <td class="code"><div><%=h val.inspect %></div></td>
+            </tr>
+            <% } %>
+          </table>
+        <% else %>
+          <p class="no-data">No POST data.</p>
+        <% end %>
+        <div class="clear"></div>
+      </div> <!-- /POST -->
+    <% end %>
 
     <div id="cookies">
       <h3 id="cookie-info">COOKIES</h3>

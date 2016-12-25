@@ -604,11 +604,6 @@ module Sinatra
       status.between? 500, 599
     end
 
-    # whether or not the status is set to 400
-    def bad_request?
-      status == 400
-    end
-
     # whether or not the status is set to 404
     def not_found?
       status == 404
@@ -1144,9 +1139,6 @@ module Sinatra
       elsif not_found?
         headers['X-Cascade'] = 'pass' if settings.x_cascade?
         body '<h1>Not Found</h1>'
-      elsif bad_request?
-        dump_errors! boom if settings.dump_errors?
-        halt status
       end
 
       res = error_block!(boom.class, boom) || error_block!(status, boom)

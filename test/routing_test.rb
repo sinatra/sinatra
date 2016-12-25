@@ -54,7 +54,7 @@ class RoutingTest < Minitest::Test
 
     request = Rack::MockRequest.new(@app)
     response = request.request('GET', '/foo?bar=&bar[]=', {})
-    assert response.bad_request?
+    assert_equal 400, response.status
   end
 
   it "404s when no route satisfies the request" do

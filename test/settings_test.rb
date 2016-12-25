@@ -247,6 +247,22 @@ class SettingsTest < Minitest::Test
       assert body.include?("<code>show_exceptions</code> setting")
     end
 
+    it 'does not attempt to show unparseable query parameters' do
+      klass = Sinatra.new(Sinatra::Application)
+      mock_app(klass) {
+        enable :show_exceptions
+
+        get '/' do
+          raise Sinatra::BadRequest
+        end
+      }
+
+      get '/'
+      assert_equal 400, status
+      refute body.include?('<div id="get">')
+      refute body.include?('<div id="post">')
+    end
+
     it 'does not override app-specified error handling when set to :after_handler' do
       ran = false
       mock_app do
