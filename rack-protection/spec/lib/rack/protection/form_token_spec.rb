@@ -1,6 +1,7 @@
 describe Rack::Protection::FormToken do
   let(:token) { described_class.random_token }
-  let(:bad_token) { described_class.random_token }
+  let(:masked_token) { described_class.token(session) }
+  let(:bad_token) { Base64.strict_encode64("badtoken") }
   let(:session) { {:csrf => token} }
 
   it_behaves_like "any rack application"
@@ -15,7 +16,7 @@ describe Rack::Protection::FormToken do
   end
 
   it "accepts post requests with masked X-CSRF-Token header" do
-    post('/', {}, 'rack.session' => session, 'HTTP_X_CSRF_TOKEN' => Rack::Protection::FormToken.token(session))
+    post('/', {}, 'rack.session' => session, 'HTTP_X_CSRF_TOKEN' => masked_token)
     expect(last_response).to be_ok
   end
 
@@ -30,7 +31,7 @@ describe Rack::Protection::FormToken do
   end
 
   it "accepts post form requests with masked authenticity_token field" do
-    post('/', {"authenticity_token" => Rack::Protection::FormToken.token(session)}, 'rack.session' => session)
+    post('/', {"authenticity_token" => masked_token}, 'rack.session' => session)
     expect(last_response).to be_ok
   end
 

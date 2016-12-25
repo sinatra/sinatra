@@ -13,7 +13,7 @@ module Rack
     # This middleware is not used when using the Rack::Protection collection,
     # since it might be a security issue, depending on your application
     #
-    # Compatible with Rails and rack-csrf.
+    # Compatible with rack-csrf.
     class FormToken < AuthenticityToken
       def accepts?(env)
         env["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest" or super

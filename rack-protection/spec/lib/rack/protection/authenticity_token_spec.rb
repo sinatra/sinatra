@@ -1,6 +1,7 @@
 describe Rack::Protection::AuthenticityToken do
   let(:token) { described_class.random_token }
-  let(:bad_token) { described_class.random_token }
+  let(:masked_token) { described_class.token(session) }
+  let(:bad_token) { Base64.strict_encode64("badtoken") }
   let(:session) { {:csrf => token} }
 
   it_behaves_like "any rack application"
@@ -15,7 +16,7 @@ describe Rack::Protection::AuthenticityToken do
   end
 
   it "accepts post requests with masked X-CSRF-Token header" do
-    post('/', {}, 'rack.session' => session, 'HTTP_X_CSRF_TOKEN' => Rack::Protection::AuthenticityToken.token(session))
+    post('/', {}, 'rack.session' => session, 'HTTP_X_CSRF_TOKEN' => masked_token)
     expect(last_response).to be_ok
   end
 
@@ -30,7 +31,7 @@ describe Rack::Protection::AuthenticityToken do
   end
 
   it "accepts post form requests with masked authenticity_token field" do
-    post('/', {"authenticity_token" => Rack::Protection::AuthenticityToken.token(session)}, 'rack.session' => session)
+    post('/', {"authenticity_token" => masked_token}, 'rack.session' => session)
     expect(last_response).to be_ok
   end
 
@@ -58,30 +59,23 @@ describe Rack::Protection::AuthenticityToken do
     expect(env['rack.session'][:csrf]).not_to be_nil
   end
 
+  describe ".token" do
+    it "returns a unique masked version of the authenticity token" do
+      expect(Rack::Protection::AuthenticityToken.token(session)).not_to eq(masked_token)
+    end
+
+    it "sets a session authenticity token if one does not exist" do
+      session = {}
+      allow(Rack::Protection::AuthenticityToken).to receive(:random_token).and_return(token)
+      allow_any_instance_of(Rack::Protection::AuthenticityToken).to receive(:mask_token).and_return(masked_token)
+      Rack::Protection::AuthenticityToken.token(session)
+      expect(session[:csrf]).to eq(token)
+    end
+  end
+
   describe ".random_token" do
-    it "outputs a base64 encoded 32 character string by default" do
+    it "generates a base64 encoded 32 character string" do
       expect(Base64.strict_decode64(token).length).to eq(32)
-    end
-
-    it "outputs a base64 encoded string of the specified length" do
-      token = described_class.random_token(64)
-      expect(Base64.strict_decode64(token).length).to eq(64)
-    end
-  end
-
-  describe ".mask_token" do
-    it "generates unique masked values for a token" do
-      first_masked_token =  described_class.mask_token(token)
-      second_masked_token = described_class.mask_token(token)
-      expect(first_masked_token).not_to eq(second_masked_token)
-    end
-  end
-
-  describe ".unmask_decoded_token" do
-    it "unmasks a token to its original decoded value" do
-      masked_token = described_class.decode_token(described_class.mask_token(token))
-      unmasked_token = described_class.unmask_decoded_token(masked_token)
-      expect(unmasked_token).to eq(described_class.decode_token(token))
     end
   end
 end
