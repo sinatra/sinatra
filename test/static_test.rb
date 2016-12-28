@@ -162,8 +162,7 @@ class StaticTest < Minitest::Test
         response.status,
         "Invalid range '#{http_range}' should be ignored"
       )
-      assert_equal(
-        nil,
+      assert_nil(
         response['Content-Range'],
         "Invalid range '#{http_range}' should be ignored"
       )
