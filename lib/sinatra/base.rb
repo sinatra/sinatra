@@ -937,12 +937,6 @@ module Sinatra
       self.class.settings
     end
 
-    def options
-      warn "Sinatra::Base#options is deprecated and will be removed, " \
-        "use #settings instead."
-      settings
-    end
-
     # Exit the current block, halts any further processing
     # of the request, and returns the specified response.
     def halt(*response)
@@ -1179,12 +1173,6 @@ module Sinatra
         /src\/kernel\/bootstrap\/[A-Z]/                     # maglev kernel files
       ]
 
-      # contrary to what the comment said previously, rubinius never supported this
-      if defined?(RUBY_IGNORE_CALLERS)
-        warn "RUBY_IGNORE_CALLERS is deprecated and will no longer be supported by Sinatra 2.0"
-        CALLERS_TO_IGNORE.concat(RUBY_IGNORE_CALLERS)
-      end
-
       attr_reader :routes, :filters, :templates, :errors
 
       # Removes all routes, filters, middleware and extension hooks from the
@@ -1370,11 +1358,6 @@ module Sinatra
       # block returns false.
       def condition(name = "#{caller.first[/`.*'/]} condition", &block)
         @conditions << generate_method(name, &block)
-      end
-
-      def public=(value)
-        warn ":public is no longer used to avoid overloading Module#public, use :public_folder or :public_dir instead"
-        set(:public_folder, value)
       end
 
       def public_dir=(value)
