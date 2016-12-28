@@ -81,7 +81,7 @@ class RoutingTest < Minitest::Test
     }
     get '/bar'
     assert_equal 404, status
-    assert_equal nil, response.headers['X-Cascade']
+    assert_nil response.headers['X-Cascade']
   end
 
 

@@ -468,8 +468,8 @@ class SettingsTest < Minitest::Test
 
   describe 'root' do
     it 'is nil if app_file is not set' do
-      assert @base.root.nil?
-      assert @application.root.nil?
+      assert_nil @base.root
+      assert_nil @application.root
     end
 
     it 'is equal to the expanded basename of app_file' do
@@ -483,8 +483,8 @@ class SettingsTest < Minitest::Test
 
   describe 'views' do
     it 'is nil if root is not set' do
-      assert @base.views.nil?
-      assert @application.views.nil?
+      assert_nil @base.views
+      assert_nil @application.views
     end
 
     it 'is set to root joined with views/' do
@@ -498,8 +498,8 @@ class SettingsTest < Minitest::Test
 
   describe 'public_folder' do
     it 'is nil if root is not set' do
-      assert @base.public_folder.nil?
-      assert @application.public_folder.nil?
+      assert_nil @base.public_folder
+      assert_nil @application.public_folder
     end
 
     it 'is set to root joined with public/' do
