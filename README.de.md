@@ -570,12 +570,11 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>Abhängigkeit</td>
-    <td><a href="http://www.kuwata-lab.com/erubis/">erubis</a> oder erb
-    (Standardbibliothek von Ruby)</td>
+    <td>erb aus Rubys Standardbibliothek</td>
   </tr>
   <tr>
     <td>Dateierweiterungen</td>
-    <td><tt>.erb</tt>, <tt>.rhtml</tt> oder <tt>.erubis</tt> (nur Erubis)</td>
+    <td><tt>.erb</tt> oder <tt>.rhtml</tt></td>
   </tr>
   <tr>
     <td>Beispiel</td>
