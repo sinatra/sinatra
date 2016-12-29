@@ -24,12 +24,12 @@ describe Sinatra::ConfigFile do
 
   it 'should render options in ERB tags when using .yml files' do
     config_file 'key_value.yml'
-    settings.bar.should == "bar"
-    settings.something.should == 42
-    settings.nested['a'].should == 1
-    settings.nested[:a].should == 1
-    settings.nested['b'].should == 2
-    settings.nested[:b].should == 2
+    expect(settings.bar).to eq "bar"
+    expect(settings.something).to eq 42
+    expect(settings.nested['a']).to eq 1
+    expect(settings.nested[:a]).to eq 1
+    expect(settings.nested['b']).to eq 2
+    expect(settings.nested[:b]).to eq 2
   end
 
   it 'should render options in ERB tags when using .yml.erb files' do
