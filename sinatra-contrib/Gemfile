@@ -3,6 +3,7 @@ gemspec
 
 gem 'sinatra', path: '..'
 gem 'rack-protection', path: '../rack-protection'
+gem "twitter-text", "1.14.0"
 
 group :development, :test do
   platform :jruby do
@@ -42,4 +43,3 @@ repos = { 'tilt' => 'rtomayko/tilt', 'rack' => 'rack/rack' }
   dep = {:github => repos[lib], :branch => dep} if dep and dep !~ /(\d+\.)+\d+/
   gem lib, dep if dep
 end
-
