@@ -18,6 +18,8 @@ gem "minitest", "~> 5.0"
 gem "rack-protection", path: "rack-protection"
 gem "sinatra-contrib", path: "sinatra-contrib"
 
+gem "twitter-text", "1.14.0"
+
 if RUBY_ENGINE == 'jruby'
   gem 'nokogiri', '!= 1.5.0'
   gem 'trinidad'
