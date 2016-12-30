@@ -104,7 +104,7 @@ module Sinatra
         buffer     = eval '_buf if defined?(_buf)', block.binding
         old_buffer = buffer.dup if buffer
         dummy      = DUMMIES.fetch(current_engine)
-        options    = { :layout => false, :locals => {:args => args, :block => block }}
+        options    = { :layout => false, :locals => {:args => args, :block => block } }
 
         buffer.try :clear
         result = render(current_engine, dummy, options, &block)
@@ -116,7 +116,7 @@ module Sinatra
 
     def capture_later(&block)
       engine = current_engine
-      proc { |*a| with_engine(engine) { @capture = capture(*a, &block) }}
+      proc { |*a| with_engine(engine) { @capture = capture(*a, &block) } }
     end
   end
 
