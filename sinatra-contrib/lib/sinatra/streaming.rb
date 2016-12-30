@@ -98,6 +98,8 @@ module Sinatra
 
       def <<(data)
         raise IOError, 'not opened for writing' if closed?
+
+        @transformer ||= nil
         data = data.to_s
         data = @transformer[data] if @transformer
         @pos += data.bytesize
@@ -116,6 +118,8 @@ module Sinatra
       end
 
       def map!(&block)
+        @transformer ||= nil
+
         if @transformer
           inner, outer = @transformer, block
           block = proc { |value| outer[inner[value]] }

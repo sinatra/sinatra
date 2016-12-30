@@ -206,6 +206,8 @@ module Sinatra
     end
 
     def respond_to(*formats)
+      @respond_to ||= nil
+
       if formats.any?
         @respond_to ||= []
         @respond_to.concat formats
