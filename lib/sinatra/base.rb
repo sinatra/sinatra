@@ -1607,8 +1607,6 @@ module Sinatra
       end
 
       def route(verb, path, options = {}, &block)
-        # Because of self.options.host
-        host_name(options.delete(:host)) if options.key?(:host)
         enable :empty_path_info if path == "" and empty_path_info.nil?
         signature = compile!(verb, path, block, options)
         (@routes[verb] ||= []) << signature
@@ -1628,9 +1626,14 @@ module Sinatra
       end
 
       def compile!(verb, path, block, **options)
+        # Because of self.options.host
+        host_name(options.delete(:host)) if options.key?(:host)
+        # Pass Mustermann opts to compile()
+        route_mustermann_opts = options.key?(:mustermann_opts) ? options.delete(:mustermann_opts) : {}.freeze
+
         options.each_pair { |option, args| send(option, *args) }
 
-        pattern                 = compile(path)
+        pattern                 = compile(path, route_mustermann_opts)
         method_name             = "#{verb} #{path}"
         unbound_method          = generate_method(method_name, &block)
         conditions, @conditions = @conditions, []
@@ -1641,8 +1644,8 @@ module Sinatra
         [ pattern, conditions, wrapper ]
       end
 
-      def compile(path)
-        Mustermann.new(path)
+      def compile(path, route_mustermann_opts = {})
+        Mustermann.new(path, mustermann_opts.merge(route_mustermann_opts))
       end
 
       def setup_default_middleware(builder)
@@ -1786,6 +1789,7 @@ module Sinatra
     set :x_cascade, true
     set :add_charset, %w[javascript xml xhtml+xml].map { |t| "application/#{t}" }
     settings.add_charset << /^text\//
+    set :mustermann_opts, {}
 
     # explicitly generating a session secret eagerly to play nice with preforking
     begin

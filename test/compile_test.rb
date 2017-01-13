@@ -2,9 +2,9 @@
 require File.expand_path('../helper', __FILE__)
 
 class CompileTest < Minitest::Test
-  def self.parses pattern, example, expected_params
+  def self.parses pattern, example, expected_params, mtype = :sinatra, mopts = {}
     it "parses #{example} with #{pattern} into params #{expected_params}" do
-      compiled = mock_app {}.send(:compile, pattern)
+      compiled = mock_app { set :mustermann_opts, :type => mtype }.send(:compile, pattern, mopts)
       params = compiled.params(example)
       fail %Q{"#{example}" does not parse on pattern "#{pattern}".} unless params
 
@@ -12,11 +12,19 @@ class CompileTest < Minitest::Test
     end
   end
 
-  def self.fails pattern, example
+  def self.fails pattern, example, mtype = :sinatra, mopts = {}
     it "does not parse #{example} with #{pattern}" do
-      compiled = mock_app {}.send(:compile, pattern)
+      compiled = mock_app { set :mustermann_opts, :type => mtype }.send(:compile, pattern, mopts)
       match = compiled.match(example)
       fail %Q{"#{pattern}" does parse "#{example}" but it should fail} if match
+    end
+  end
+
+  def self.raises pattern, mtype = :sinatra, mopts = {}
+    it "does not compile #{pattern}" do
+      assert_raises(Mustermann::CompileError, %Q{Pattern "#{pattern}" compiles but it should not}) do
+        mock_app { set :mustermann_opts, :type => mtype }.send(:compile, pattern, mopts)
+      end
     end
   end
 
@@ -129,4 +137,9 @@ class CompileTest < Minitest::Test
   # From issue #688.
   #
   parses "/articles/10.1103/:doi", "/articles/10.1103/PhysRevLett.110.026401", "doi" => "PhysRevLett.110.026401"
+
+  # Mustermann anchoring
+  fails "/bar", "/foo/bar", :regexp
+  raises "^/foo/bar$", :regexp
+  parses "^/foo/bar$", "/foo/bar", {}, :regexp, :check_anchors => false
 end
