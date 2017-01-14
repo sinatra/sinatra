@@ -257,6 +257,20 @@ end
 By the way, unless you disable the path traversal attack protection (see below),
 the request path might be modified before matching against your routes.
 
+You may customize the Mustermann options used for a given route by passing in a
+`:mustermann_opts` hash:
+
+```ruby
+get '\A/posts\z', :mustermann_opts => { :type => :regexp, :check_anchors => false } do
+  # matches /posts exactly, with explicit anchoring
+  "If you match an anchored pattern clap your hands!"
+end
+```
+
+It looks like a [condition](#conditions), but it isn't one! These options will
+be merged into the global `:mustermann_opts` hash described
+[below](#available-settings).
+
 ## Conditions
 
 Routes may include a variety of matching conditions, such as the user agent:
@@ -2252,6 +2266,12 @@ set :protection, :session => true
   <dd>
     Use <tt>_method</tt> magic to allow put/delete forms in browsers that
     don't support it.
+  </dd>
+
+  <dt>mustermann_opts</dt>
+  <dd>
+    A default hash of options to pass to Mustermann.new when compiling routing
+    paths.
   </dd>
 
   <dt>port</dt>
