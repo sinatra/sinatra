@@ -609,6 +609,11 @@ module Sinatra
       status == 404
     end
 
+    # whether or not the status is set to 400
+    def bad_request?
+      status == 400
+    end
+
     # Generates a Time object from the given value.
     # Used by #expires and #last_modified.
     def time_for(value)
@@ -1133,12 +1138,15 @@ module Sinatra
 
       status(500) unless status.between? 400, 599
 
+      boom_message = boom.message if boom.message && boom.message != boom.class.name
       if server_error?
         dump_errors! boom if settings.dump_errors?
         raise boom if settings.show_exceptions? and settings.show_exceptions != :after_handler
       elsif not_found?
         headers['X-Cascade'] = 'pass' if settings.x_cascade?
-        body '<h1>Not Found</h1>'
+        body boom_message || '<h1>Not Found</h1>'
+      elsif bad_request?
+        body boom_message || '<h1>Bad Request</h1>'
       end
 
       res = error_block!(boom.class, boom) || error_block!(status, boom)

@@ -54,7 +54,7 @@ class RoutingTest < Minitest::Test
 
     request = Rack::MockRequest.new(@app)
     response = request.request('GET', '/foo?bar=&bar[]=', {})
-    assert_equal 400, response.status
+    assert response.bad_request?
   end
 
   it "404s when no route satisfies the request" do
@@ -173,6 +173,32 @@ class RoutingTest < Minitest::Test
     get "/"
     assert_equal "18", response["Content-Length"]
     assert_equal 404, status
+  end
+
+  it "captures the exception message of a raised NotFound" do
+    mock_app {
+      get '/' do
+        raise Sinatra::NotFound, "This is not a drill"
+      end
+    }
+
+    get "/"
+    assert_equal "19", response["Content-Length"]
+    assert_equal 404, status
+    assert_equal "This is not a drill", response.body
+  end
+
+  it "captures the exception message of a raised BadRequest" do
+    mock_app {
+      get '/' do
+        raise Sinatra::BadRequest, "This is not a drill either"
+      end
+    }
+
+    get "/"
+    assert_equal "26", response["Content-Length"]
+    assert_equal 400, status
+    assert_equal "This is not a drill either", response.body
   end
 
   it "uses 404 error handler for not matching route" do
