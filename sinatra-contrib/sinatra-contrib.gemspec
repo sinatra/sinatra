@@ -220,7 +220,6 @@ Gem::Specification.new do |s|
   s.add_dependency "mustermann",  "1.0.0.beta2"
   s.add_dependency "backports", ">= 2.0"
   s.add_dependency "tilt",      ">= 1.3", "< 3"
-  s.add_dependency "rack-test"
   s.add_dependency "rack-protection", Sinatra::VERSION
   s.add_dependency "multi_json"
 
@@ -242,4 +241,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "wikicloth"
   s.add_development_dependency "markaby"
   s.add_development_dependency "rake", "< 11"
+  s.add_development_dependency "rack-test"
 end

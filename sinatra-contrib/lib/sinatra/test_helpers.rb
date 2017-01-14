@@ -1,6 +1,10 @@
 require 'sinatra/base'
-require 'rack/test'
 require 'rack'
+begin
+  require 'rack/test'
+rescue LoadError
+  abort 'Add rack-test to your Gemfile to use this module!'
+end
 require 'forwardable'
 
 module Sinatra
