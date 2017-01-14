@@ -26,6 +26,23 @@ class HelpersTest < Minitest::Test
     end
   end
 
+  describe 'bad_request?' do
+    it 'is true for status == 400' do
+      status_app(400) { bad_request? }
+      assert_body 'true'
+    end
+
+    it 'is false for status gt 400' do
+      status_app(401) { bad_request? }
+      assert_body 'false'
+    end
+
+    it 'is false for status lt 400' do
+      status_app(399) { bad_request? }
+      assert_body 'false'
+    end
+  end
+
   describe 'not_found?' do
     it 'is true for status == 404' do
       status_app(404) { not_found? }
