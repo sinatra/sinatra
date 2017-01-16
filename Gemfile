@@ -10,22 +10,9 @@ RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
 source 'https://rubygems.org' unless ENV['QUICK']
 gemspec
 
-gem 'rake'
+gem 'rake', '~> 11.0'
 gem 'rack-test', '>= 0.6.2'
 gem "minitest", "~> 5.0"
-
-# Allows stuff like `tilt=1.2.2 bundle install` or `tilt=master ...`.
-# Used by the CI.
-repos  = {'tilt' => "rtomayko/tilt", 'rack' => "rack/rack"}
-
-%w[tilt rack].each do |lib|
-  dep = case ENV[lib]
-        when 'stable', nil then nil
-        when /(\d+\.)+\d+/ then "~> " + ENV[lib].sub("#{lib}-", '')
-        else {:github => repos[lib], :branch => dep}
-        end
-  gem lib, dep
-end
 
 if RUBY_ENGINE == 'jruby'
   gem 'nokogiri', '!= 1.5.0'

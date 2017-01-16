@@ -6,26 +6,20 @@ rvm:
   - 1.9.2
   - 1.9.3
   - 2.0.0
-  - 2.1
-  - 2.2
-  - 2.3.0
+  - 2.1.10
+  - 2.2.6
+  - 2.3.3
+  - 2.4.0
   - rbx-2
   - jruby
-  - jruby-9
+  - jruby-9.1.7.0
   - jruby-head
   - ruby-head
 
 sudo: false
 
 matrix:
-  include:
-    - { rvm: 1.8.7, env: tilt=master }
-    - { rvm: 1.9.3, env: tilt=master }
-    - { rvm: 2.2, env: rack=master }
-    - { rvm: 2.2, env: tilt=master }
   allow_failures:
-    - env: rack=master
-    - env: tilt=master
     - rvm: rbx-2
     - rvm: ruby-head
     - rvm: jruby-head
