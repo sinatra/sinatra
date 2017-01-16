@@ -20,7 +20,7 @@ if RUBY_ENGINE == 'jruby'
   gem 'trinidad'
 end
 
-if RUBY_ENGINE == "ruby" and RUBY_VERSION > '1.9.2'
+if RUBY_ENGINE == "ruby" and RUBY_VERSION != '1.8.7'
   gem 'activesupport', '~> 3.2'
   gem 'i18n', '~> 0.6'
   gem 'less', '~> 2.0'
