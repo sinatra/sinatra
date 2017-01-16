@@ -59,5 +59,5 @@ if RUBY_ENGINE == "rbx"
 end
 
 platforms :ruby_18, :jruby do
-  gem 'json' unless RUBY_VERSION > '1.9' # is there a jruby but 1.8 only selector?
+  gem 'json', '~> 1.8' unless RUBY_VERSION > '1.9' # is there a jruby but 1.8 only selector?
 end
