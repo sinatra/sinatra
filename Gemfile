@@ -20,9 +20,14 @@ if RUBY_ENGINE == 'jruby'
   gem 'trinidad'
 end
 
-if RUBY_ENGINE == "ruby" and RUBY_VERSION != '1.8.7'
+if RUBY_VERSION < '1.9.3'
   gem 'activesupport', '~> 3.2'
-  gem 'i18n', '~> 0.6'
+  gem 'i18n', '~> 0.6.0'
+else
+  gem 'activesupport', '~> 4.2'
+end
+
+if RUBY_ENGINE == "ruby" and RUBY_VERSION > '1.9.2'
   gem 'less', '~> 2.0'
   gem 'therubyracer'
   gem 'redcarpet'
@@ -33,7 +38,6 @@ if RUBY_ENGINE == "ruby" and RUBY_VERSION != '1.8.7'
   gem 'puma'
   gem 'net-http-server'
   gem 'yajl-ruby'
-  gem 'nokogiri', '~> 1.5'
   gem 'thin'
   gem 'slim', '~> 2.0'
   gem 'coffee-script', '>= 2.0'
@@ -52,6 +56,14 @@ if RUBY_ENGINE == "ruby" and RUBY_VERSION != '1.8.7'
   gem 'erubis'
   gem 'haml', '>= 3.0'
   gem 'sass'
+  
+  if RUBY_VERSION < '2.1.0'
+    gem 'nokogiri', '~> 1.6.8'
+  else
+    gem 'nokogiri', '~> 1.7.0'
+  end
+else
+  gem 'nokogiri', '~> 1.5.11'
 end
 
 if RUBY_ENGINE == "rbx"
