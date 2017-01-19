@@ -347,6 +347,53 @@ class SettingsTest < Minitest::Test
     end
   end
 
+  describe 'status_exceptions' do
+    class FooError < StandardError
+      def http_status; 451 end
+    end
+
+    it 'sets the status code based on Exception#http_status' do
+      mock_app {
+        disable :raise_errors
+
+        get '/' do
+          raise FooError
+        end
+      }
+
+      get '/'
+      assert_equal 451, status
+    end
+
+    it 'can be configured to handle internal exceptions only' do
+      mock_app {
+        disable :raise_errors
+        set :status_exceptions, :internal_only
+
+        get '/' do
+          raise FooError
+        end
+      }
+
+      get '/'
+      assert_equal 500, status
+    end
+
+    it 'still handles Sinatra exceptions when configured' do
+      mock_app {
+        disable :raise_errors
+        set :status_exceptions, :internal_only
+
+        get '/' do
+          raise Sinatra::BadRequest
+        end
+      }
+
+      get '/'
+      assert_equal 400, status
+    end
+  end
+
   describe 'sessions' do
     it 'is disabled on Base' do
       assert ! @base.sessions?

@@ -1128,7 +1128,9 @@ module Sinatra
       end
       @env['sinatra.error'] = boom
 
-      if boom.respond_to? :http_status
+      if boom.respond_to?(:http_status) && (
+        settings.status_exceptions != :internal_only || boom.class.name.start_with?('Sinatra::')
+      )
         status(boom.http_status)
       elsif settings.use_code? and boom.respond_to? :code and boom.code.between? 400, 599
         status(boom.code)
@@ -1798,6 +1800,7 @@ module Sinatra
     set :add_charset, %w[javascript xml xhtml+xml].map { |t| "application/#{t}" }
     settings.add_charset << /^text\//
     set :mustermann_opts, {}
+    set :status_exceptions, :all
 
     # explicitly generating a session secret eagerly to play nice with preforking
     begin

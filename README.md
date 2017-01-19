@@ -2330,6 +2330,15 @@ set :protection, :session => true
   <dt>running</dt>
   <dd>Is the built-in server running now? Do not change this setting!</dd>
 
+  <dt>status_exceptions</dt>
+  <dd>
+    When `:raise_errors` is disabled, exceptions that respond to `#http_status`
+    will cause Sinatra to quietly halt the request and set the status code of the
+    response to the return value of that method. Set this to `:internal_only` to
+    prevent exceptions raised by Koala, OneSignal, and other libraries from being
+    handled this way.
+  </dd>
+
   <dt>server</dt>
   <dd>
     Server or list of servers to use for built-in server. Order indicates
