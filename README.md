@@ -1,6 +1,6 @@
 # Sinatra
 
-[![Build Status](https://secure.travis-ci.org/sinatra/sinatra.png)](http://travis-ci.org/sinatra/sinatra)
+[![Build Status](https://secure.travis-ci.org/sinatra/sinatra.svg)](http://travis-ci.org/sinatra/sinatra)
 
 Sinatra is a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) for
 quickly creating web applications in Ruby with minimal effort:
