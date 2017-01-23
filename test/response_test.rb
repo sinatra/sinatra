@@ -3,7 +3,7 @@
 require File.expand_path('../helper', __FILE__)
 
 class ResponseTest < Minitest::Test
-  setup { @response = Sinatra::Response.new }
+  setup { @response = Sinatra::Response.new([], 200, { 'Content-Type' => 'text/html' }) }
 
   def assert_same_body(a, b)
     assert_equal a.to_enum(:each).to_a, b.to_enum(:each).to_a
