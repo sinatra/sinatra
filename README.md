@@ -2264,6 +2264,15 @@ set :protection, :session => true
       used for built-in server.
     </dd>
 
+  <dt>default_content_type</dt>
+  <dd>
+    Content-Type to assume if unknown (defaults to <tt>"text/html"</tt>). Set
+    to <tt>nil</tt> to not set a default Content-Type on every response; when
+    configured so, you must set the Content-Type manually when emitting content
+    or the user-agent will have to sniff it (or, if <tt>nosniff</tt> is enabled
+    in Rack::Protection::XSSHeader, assume <tt>application/octet-stream</tt>).
+  </dd>
+
   <dt>default_encoding</dt>
     <dd>Encoding to assume if unknown (defaults to <tt>"utf-8"</tt>).</dd>
 

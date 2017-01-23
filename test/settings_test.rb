@@ -163,6 +163,41 @@ class SettingsTest < Minitest::Test
     assert_equal :foo, @base.settings.environment
   end
 
+  describe 'default_content_type' do
+    it 'defaults to html' do
+      assert_equal 'text/html', @base.default_content_type
+    end
+
+    it 'can be changed' do
+      @base.set :default_content_type, 'application/json'
+      @base.get('/') { '{"a":1}' }
+      @app = @base
+      get '/'
+      assert_equal 200, status
+      assert_equal 'application/json', response.content_type
+    end
+
+    it 'can be disabled' do
+      @base.set :default_content_type, nil
+      @base.error(404) { "" }
+      @app = @base
+      get '/'
+      assert_equal 404, status
+      assert_nil response.content_type
+      assert_empty body
+    end
+
+    it 'may emit content without a content-type (to be sniffed)' do
+      @base.set :default_content_type, nil
+      @base.get('/') { raise Sinatra::BadRequest, "This is a drill" }
+      @app = @base
+      get '/'
+      assert_equal 400, status
+      assert_nil response.content_type
+      assert_body "This is a drill"
+    end
+  end
+
   describe 'methodoverride' do
     it 'is disabled on Base' do
       assert ! @base.method_override?

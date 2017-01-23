@@ -159,10 +159,6 @@ module Sinatra
   # http://rubydoc.info/github/rack/rack/master/Rack/Response/Helpers
   class Response < Rack::Response
     DROP_BODY_RESPONSES = [204, 304]
-    def initialize(*)
-      super
-      headers['Content-Type'] ||= 'text/html'
-    end
 
     def body=(value)
       value = value.body while Rack::Response === value
@@ -175,6 +171,8 @@ module Sinatra
 
     def finish
       result = body
+
+      headers.delete "Content-Type" if headers["Content-Type"].nil?
 
       if drop_content_info?
         headers.delete "Content-Length"
@@ -189,7 +187,7 @@ module Sinatra
       if calculate_content_length?
         # if some other code has already set Content-Length, don't muck with it
         # currently, this would be the static file-handler
-        headers["Content-Length"] = body.inject(0) { |l, p| l + p.bytesize }.to_s
+        headers["Content-Length"] = body.map(&:bytesize).reduce(0, :+).to_s
       end
 
       [status.to_i, headers, result]
@@ -940,15 +938,14 @@ module Sinatra
       @response = Response.new
       template_cache.clear if settings.reload_templates
 
-      @response['Content-Type'] = nil
       invoke { dispatch! }
       invoke { error_block!(response.status) } unless @env['sinatra.error']
 
       unless @response['Content-Type']
-        if Array === body and body[0].respond_to? :content_type
+        if Array === body && body[0].respond_to?(:content_type)
           content_type body[0].content_type
-        else
-          content_type :html
+        elsif default = settings.default_content_type
+          content_type default
         end
       end
 
@@ -1089,10 +1086,10 @@ module Sinatra
     # Attempt to serve static files from public directory. Throws :halt when
     # a matching file is found, returns nil otherwise.
     def static!(options = {})
-      return if (public_dir = settings.public_folder).nil?      
+      return if (public_dir = settings.public_folder).nil?
       path = "#{public_dir}#{URI_INSTANCE.unescape(request.path_info)}"
       return unless valid_path?(path)
-      
+
       path = File.expand_path(path)
       return unless File.file?(path)
 
@@ -1160,19 +1157,27 @@ module Sinatra
 
       status(500) unless status.between? 400, 599
 
-      boom_message = boom.message if boom.message && boom.message != boom.class.name
       if server_error?
         dump_errors! boom if settings.dump_errors?
         raise boom if settings.show_exceptions? and settings.show_exceptions != :after_handler
       elsif not_found?
         headers['X-Cascade'] = 'pass' if settings.x_cascade?
-        body boom_message || '<h1>Not Found</h1>'
-      elsif bad_request?
-        body boom_message || '<h1>Bad Request</h1>'
       end
 
-      res = error_block!(boom.class, boom) || error_block!(status, boom)
-      return res if res or not server_error?
+      if res = error_block!(boom.class, boom) || error_block!(status, boom)
+        return res
+      end
+
+      if not_found? || bad_request?
+        if boom.message && boom.message != boom.class.name
+          body boom.message
+        else
+          content_type 'text/html'
+          body '<h1>' + (not_found? ? 'Not Found' : 'Bad Request') + '</h1>'
+        end
+      end
+
+      return unless server_error?
       raise boom if settings.raise_errors? or settings.show_exceptions?
       error_block! Exception, boom
     end
@@ -1813,6 +1818,7 @@ module Sinatra
     set :add_charset, %w[javascript xml xhtml+xml].map { |t| "application/#{t}" }
     settings.add_charset << /^text\//
     set :mustermann_opts, {}
+    set :default_content_type, 'text/html'
 
     # explicitly generating a session secret eagerly to play nice with preforking
     begin
