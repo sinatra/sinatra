@@ -90,7 +90,7 @@ end
 
 # Thanks in announcement ===============================================
 
-team = ["Ryan Tomayko", "Blake Mizerany", "Simon Rozet", "Konstantin Haase"]
+team = ["Ryan Tomayko", "Blake Mizerany", "Simon Rozet", "Konstantin Haase", "Zachary Scott"]
 desc "list of contributors"
 task :thanks, [:release,:backports] do |t, a|
   a.with_defaults :release => "#{prev_version}..HEAD",
