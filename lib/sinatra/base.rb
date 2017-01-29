@@ -1920,7 +1920,6 @@ module Sinatra
     set :logging, Proc.new { !test? }
     set :method_override, true
     set :run, Proc.new { !test? }
-    set :session_secret, Proc.new { super() unless development? }
     set :app_file, nil
 
     def self.register(*extensions, &block) #:nodoc:
