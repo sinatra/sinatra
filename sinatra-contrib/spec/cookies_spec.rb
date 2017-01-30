@@ -719,6 +719,29 @@ describe Sinatra::Cookies do
     end
   end
 
+  describe :set do
+    it 'sets a cookie' do
+      cookie_route { cookies.set('foo', value: 'bar') }
+      expect(cookie_jar['foo']).to eq('bar')
+    end
+
+    it 'sets a cookie with HttpOnly' do
+      expect(cookie_route do
+        request.script_name = '/foo'
+        cookies.set('foo', value: 'bar', httponly: true)
+        response['Set-Cookie'].lines.detect { |l| l.start_with? 'foo=' }
+      end).to include('HttpOnly')
+    end
+
+    it 'sets a cookie without HttpOnly' do
+      expect(cookie_route do
+        request.script_name = '/foo'
+        cookies.set('foo', value: 'bar', httponly: false)
+        response['Set-Cookie'].lines.detect { |l| l.start_with? 'foo=' }
+      end).not_to include('HttpOnly')
+    end
+  end
+
   describe :select do
     it 'removes entries from new hash' do
       jar = cookies('foo=bar', 'bar=baz')

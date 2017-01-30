@@ -86,7 +86,7 @@ module Sinatra
       end
 
       def []=(key, value)
-        @response.set_cookie key.to_s, @options.merge(:value => value)
+        set(key, value: value)
       end
 
       def assoc(key)
@@ -239,6 +239,10 @@ module Sinatra
       end
 
       alias select! keep_if if Hash.method_defined? :select!
+
+      def set(key, options = {})
+        @response.set_cookie key.to_s, @options.merge(options)
+      end
 
       def shift
         key, value = to_hash.shift
