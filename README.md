@@ -118,8 +118,6 @@ pick up if available.
     * [Requirement](#requirement)
     * [The Bleeding Edge](#the-bleeding-edge)
         * [With Bundler](#with-bundler)
-        * [Roll Your Own](#roll-your-own)
-        * [Install Globally](#install-globally)
     * [Versioning](#versioning)
     * [Further Reading](#further-reading)
 
@@ -3125,41 +3123,6 @@ Now you can run your app like this:
 
 ```shell
 bundle exec ruby myapp.rb
-```
-
-### Roll Your Own
-
-Create a local clone and run your app with the `sinatra/lib` directory
-on the `$LOAD_PATH`:
-
-```shell
-cd myapp
-git clone git://github.com/sinatra/sinatra.git
-ruby -I sinatra/lib myapp.rb
-```
-
-To update the Sinatra sources in the future:
-
-```shell
-cd myapp/sinatra
-git pull
-```
-
-### Install Globally
-
-You can build the gem on your own:
-
-```shell
-git clone git://github.com/sinatra/sinatra.git
-cd sinatra
-rake sinatra.gemspec
-rake install
-```
-
-If you install gems as root, the last step should be:
-
-```shell
-sudo rake install
 ```
 
 ## Versioning

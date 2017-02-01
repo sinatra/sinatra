@@ -3210,43 +3210,6 @@ Jetzt kannst du deine Applikation starten:
 bundle exec ruby myapp.rb
 ```
 
-### Eigenes Repository
-
-Um auf dem neuesten Stand von Sinatras Code zu sein, kann eine lokale Kopie
-angelegt werden. Gestartet wird in der Anwendung mit dem `sinatra/lib`-Ordner
-im `LOAD_PATH`:
-
-```shell
-cd myapp
-git clone git://github.com/sinatra/sinatra.git
-ruby -I sinatra/lib myapp.rb
-```
-
-Um Sinatra-Code von Zeit zu Zeit zu aktualisieren:
-
-```shell
-cd myproject/sinatra
-git pull
-```
-
-### Gem erstellen
-
-Aus der eigenen lokalen Kopie kann nun auch ein globales Gem gebaut werden:
-
-```shell
-git clone git://github.com/sinatra/sinatra.git
-cd sinatra
-rake sinatra.gemspec
-rake install
-```
-
-Falls Gems als Root installiert werden sollen, sollte die letzte Zeile
-folgendermaßen lauten:
-
-```shell
-sudo rake install
-```
-
 ## Versions-Verfahren
 
 Sinatra folgt dem sogenannten [Semantic Versioning](http://semver.org/), d.h.
