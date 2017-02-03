@@ -67,6 +67,9 @@ Currently included:
 * `sinatra/test_helpers`: Helper methods to ease testing your Sinatra
   application. Partly extracted from Sinatra. Testing framework agnostic
 
+* `sinatra/quiet_logger`: Extension to exclude specific pathes from access log.
+  It works by patching Rack::CommonLogger
+
 ## Installation
 
 Add `gem 'sinatra-contrib'` to *Gemfile*, then execute `bundle install`.
