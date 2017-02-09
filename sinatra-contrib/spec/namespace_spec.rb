@@ -832,4 +832,14 @@ describe Sinatra::Namespace do
       expect(last_response.body).to eq('[:foo_bar]')
     end
   end
+
+  it 'forbids unknown engine settings' do
+    expect {
+      mock_app do
+        namespace '/foo' do
+          set :unknownsetting
+        end
+      end
+    }.to raise_error(ArgumentError, 'may not set unknownsetting')
+  end
 end

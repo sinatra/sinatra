@@ -224,6 +224,12 @@ module Sinatra
       include SharedMethods
       attr_reader :base, :templates
 
+      ALLOWED_ENGINES = [
+        :erb, :erubi, :erubis, :haml, :hamlit, :builder, :nokogiri, :sass, :scss,
+        :less, :liquid, :markdown, :textile, :rdoc, :asciidoc, :radius, :markaby,
+        :rabl, :slim, :creole, :mediawiki, :coffee, :stylus, :yajl, :wlang
+      ]
+
       def self.prefixed(*names)
         names.each { |n| define_method(n) { |*a, &b| prefixed(n, *a, &b) }}
       end
@@ -278,7 +284,7 @@ module Sinatra
       end
 
       def set(key, value = self, &block)
-        raise ArgumentError, "may not set #{key}" if key != :views
+        raise ArgumentError, "may not set #{key}" unless ([:views] + ALLOWED_ENGINES).include?(key)
         return key.each { |k,v| set(k, v) } if block.nil? and value == self
         block ||= proc { value }
         singleton_class.send(:define_method, key, &block)
