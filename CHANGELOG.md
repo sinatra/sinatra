@@ -34,6 +34,8 @@
 
  * Exposed global and per-route options for Mustermann route parsing #1233 by Mike Pastore
 
+ * Use same `session_secret` for classic and modular apps in development #1245 by Marcus Stollsteimer
+
 ## 1.4.7 / 2016-01-24
 
  * Add Ashley Williams, Trevor Bramble, and Kashyap Kondamudi to team Sinatra.
