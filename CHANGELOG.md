@@ -1,3 +1,7 @@
+= 1.4.8 / 2017-01-30
+
+  * Fixed Fixnum warning on Ruby 2.4. (Akira Matsuda)
+
 = 1.4.7 / 2016-01-24
 
  * Add Ashley Williams, Trevor Bramble, and Kashyap Kondamudi to team Sinatra.
