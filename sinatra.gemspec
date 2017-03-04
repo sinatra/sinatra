@@ -17,6 +17,6 @@ Gem::Specification.new 'sinatra', Sinatra::VERSION do |s|
 
   s.add_dependency 'rack', '~> 2.0'
   s.add_dependency 'tilt', '~> 2.0'
-  s.add_dependency 'rack-protection', '2.0.0.beta2'
+  s.add_dependency 'rack-protection', '2.0.0.rc1'
   s.add_dependency 'mustermann',  '1.0.0.beta2'
 end
