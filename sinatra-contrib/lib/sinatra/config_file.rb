@@ -129,7 +129,7 @@ module Sinatra
         paths.each do |pattern|
           Dir.glob(pattern) do |file|
             raise UnsupportedConfigType unless ['.yml', '.erb'].include?(File.extname(file))
-            $stderr.puts "loading config file '#{file}'" if logging?
+            logger.info "loading config file '#{file}'" if logging? && respond_to?(:logger)
             document = ERB.new(IO.read(file)).result
             yaml = config_for_env(YAML.load(document)) || {}
             yaml.each_pair do |key, value|
