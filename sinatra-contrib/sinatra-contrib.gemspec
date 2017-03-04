@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.name        = "sinatra-contrib"
   s.version     = Sinatra::VERSION
   s.description = "Collection of useful Sinatra extensions"
-  s.homepage    = "http://github.com/sinatra/sinatra-contrib"
+  s.homepage    = "http://github.com/sinatra/sinatra/tree/master/sinatra-contrib"
   s.license     = "MIT"
   s.summary     = s.description
 
