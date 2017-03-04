@@ -32,6 +32,8 @@
 
  * Improve Session Secret documentation to encourage better security practices #1218 by Glenn Rempe
 
+ * Exposed global and per-route options for Mustermann route parsing #1233 by Mike Pastore
+
 ## 1.4.7 / 2016-01-24
 
  * Add Ashley Williams, Trevor Bramble, and Kashyap Kondamudi to team Sinatra.
