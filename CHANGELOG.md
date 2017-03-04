@@ -30,6 +30,8 @@
 
  * Rack middleware is initialized at server runtime rather than after receiving first request #1205 by Itamar Turner-Trauring.
 
+ * Improve Session Secret documentation to encourage better security practices #1218 by Glenn Rempe
+
 ## 1.4.7 / 2016-01-24
 
  * Add Ashley Williams, Trevor Bramble, and Kashyap Kondamudi to team Sinatra.
