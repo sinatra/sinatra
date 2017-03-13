@@ -45,6 +45,15 @@ describe Rack::Protection::JsonCsrf do
       expect(DummyAppWithBody.body).to be_closed
     end
 
+    it "accepts requests with json responses with a remote referrer when allow_if is true" do
+      mock_app do
+        use Rack::Protection::JsonCsrf, :allow_if => lambda{|env| env['HTTP_REFERER'] == 'http://good.com'}
+        run proc { |e| [200, {'Content-Type' => 'application/json'}, []]}
+      end
+
+      expect(get('/', {}, 'HTTP_REFERER' => 'http://good.com')).to be_ok
+    end
+
     it "accepts requests with json responses with a remote referrer when there's an origin header set" do
       expect(get('/', {}, 'HTTP_REFERER' => 'http://good.com', 'HTTP_ORIGIN' => 'http://good.com')).to be_ok
     end
