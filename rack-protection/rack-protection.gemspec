@@ -54,31 +54,12 @@ Gem::Specification.new do |s|
     "konstantin.haase@gmail.com"
   ]
 
-  # generated from git ls-files
-  s.files = [
+  s.files = Dir["lib/**/*.rb"] + [
     "License",
     "README.md",
     "Rakefile",
     "Gemfile",
-    "rack-protection.gemspec",
-    "lib/rack",
-    "lib/rack/protection",
-    "lib/rack/protection/escaped_params.rb",
-    "lib/rack/protection/remote_referrer.rb",
-    "lib/rack/protection/ip_spoofing.rb",
-    "lib/rack/protection/base.rb",
-    "lib/rack/protection/session_hijacking.rb",
-    "lib/rack/protection/authenticity_token.rb",
-    "lib/rack/protection/version.rb",
-    "lib/rack/protection/path_traversal.rb",
-    "lib/rack/protection/form_token.rb",
-    "lib/rack/protection/json_csrf.rb",
-    "lib/rack/protection/http_origin.rb",
-    "lib/rack/protection/frame_options.rb",
-    "lib/rack/protection/xss_header.rb",
-    "lib/rack/protection/remote_token.rb",
-    "lib/rack/protection.rb",
-    "lib/rack-protection.rb"
+    "rack-protection.gemspec"
   ]
 
   # dependencies
