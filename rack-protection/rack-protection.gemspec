@@ -9,52 +9,9 @@ Gem::Specification.new do |s|
   s.homepage    = "http://github.com/sinatra/sinatra/tree/master/rack-protection"
   s.summary     = s.description
   s.license     = 'MIT'
-
-  # generated from git shortlog -sn
-  s.authors = [
-    "Konstantin Haase",
-    "Maurizio De Santis",
-    "Alex Rodionov",
-    "Jason Staten",
-    "Patrick Ellis",
-    "ITO Nobuaki",
-    "Jeff Welling",
-    "Matteo Centenaro",
-    "Akzhan Abdulin",
-    "Alan deLevie",
-    "Bj\u{f8}rge N\u{e6}ss",
-    "Chris Heald",
-    "Chris Mytton",
-    "Corey Ward",
-    "Dario Cravero",
-    "David Kellum",
-    "Egor Homakov",
-    "Florian Gilcher",
-    "Fojas",
-    "Igor Bochkariov",
-    "Josef Stribny",
-    "Katrina Owen",
-    "Mael Clerambault",
-    "Martin Mauch",
-    "Renne Nissinen",
-    "SAKAI, Kazuaki",
-    "Stanislav Savulchik",
-    "Steve Agalloco",
-    "TOBY",
-    "Thais Camilo and Konstantin Haase",
-    "Vipul A M",
-    "Zachary Scott",
-    "ashley williams",
-    "brookemckim"
-  ]
-
-  # generated from git shortlog -sne
-  s.email = [
-    "mail@zzak.io",
-    "konstantin.haase@gmail.com"
-  ]
-
-  s.files = Dir["lib/**/*.rb"] + [
+  s.authors     = ["https://github.com/sinatra/sinatra/graphs/contributors"]
+  s.email       = "sinatrarb@googlegroups.com"
+  s.files       = Dir["lib/**/*.rb"] + [
     "License",
     "README.md",
     "Rakefile",
