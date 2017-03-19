@@ -16,8 +16,8 @@ Gem::Specification.new do |s|
     "LICENSE",
     "README.md",
     "Rakefile",
-    "ideas.md"
-    "sinatra-contrib.gemspec",
+    "ideas.md",
+    "sinatra-contrib.gemspec"
   ]
 
   s.required_ruby_version = '>= 2.2.0'
