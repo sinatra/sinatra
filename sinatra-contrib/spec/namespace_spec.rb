@@ -787,5 +787,36 @@ describe Sinatra::Namespace do
       expect(get('/foo/bar').status).to eq(200)
       expect(last_response.body).to eq('true')
     end
+
+    it 'avoids executing filters even if prefix matches with other namespace' do
+      mock_app do
+        helpers do
+          def dump_args(*args)
+            args.inspect
+          end
+        end
+
+        namespace '/foo' do
+          helpers do
+            def dump_args(*args)
+              super(:foo, *args)
+            end
+          end
+          get('') { dump_args }
+        end
+
+        namespace '/foo-bar' do
+          helpers do
+            def dump_args(*args)
+              super(:foo_bar, *args)
+            end
+          end
+          get('') { dump_args }
+        end
+      end
+
+      get '/foo-bar'
+      expect(last_response.body).to eq('[:foo_bar]')
+    end
   end
 end
