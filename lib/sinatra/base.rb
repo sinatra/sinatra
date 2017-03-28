@@ -1029,6 +1029,7 @@ module Sinatra
     def process_route(pattern, conditions, block = nil, values = [])
       route = @request.path_info
       route = '/' if route.empty? and not settings.empty_path_info?
+      route = route[0..-2] if !settings.strict_paths? && route != '/' && route.end_with?('/')
       return unless params = pattern.params(route)
 
       params.delete("ignore") # TODO: better params handling, maybe turn it into "smart" object or detect changes
@@ -1845,6 +1846,7 @@ module Sinatra
     set :absolute_redirects, true
     set :prefixed_redirects, false
     set :empty_path_info, nil
+    set :strict_paths, true
 
     set :app_file, nil
     set :root, Proc.new { app_file && File.expand_path(File.dirname(app_file)) }
