@@ -15,6 +15,7 @@ require 'time'
 require 'uri'
 
 # other files we need
+require 'sinatra/indifferent_hash'
 require 'sinatra/show_exceptions'
 require 'sinatra/version'
 
@@ -238,18 +239,6 @@ module Sinatra
 
   class NotFound < NameError #:nodoc:
     def http_status; 404 end
-  end
-
-  class IndifferentHash < Hash
-    def [](key)
-      value = super(key)
-      return super(key.to_s) if value.nil? && Symbol === key
-      value
-    end
-
-    def has_key?(key)
-      super(key) || (Symbol === key && super(key.to_s))
-    end
   end
 
   # Methods available to routes, before/after filters, and views.
@@ -1078,20 +1067,6 @@ module Sinatra
       send_file path, options.merge(:disposition => nil)
     end
 
-    # Enable string or symbol key access to the nested params hash.
-    def indifferent_params(object)
-      case object
-      when Hash
-        new_hash = IndifferentHash.new
-        object.each { |key, value| new_hash[key] = indifferent_params(value) }
-        new_hash
-      when Array
-        object.map { |item| indifferent_params(item) }
-      else
-        object
-      end
-    end
-
     # Run the block with 'throw :halt' support and apply result to the response.
     def invoke
       res = catch(:halt) { yield }
@@ -1110,8 +1085,7 @@ module Sinatra
 
     # Dispatch a request with error handling.
     def dispatch!
-      @params = indifferent_params(@request.params)
-      force_encoding(@params)
+      force_encoding(@params = IndifferentHash[@request.params])
 
       invoke do
         static! if settings.static? && (request.get? || request.head?)
