@@ -156,13 +156,12 @@ module Sinatra
     # returned config is a indifferently accessible Hash, which means that you
     # can get its values using Strings or Symbols as keys.
     def config_for_env(hash)
-      if hash.respond_to? :keys and hash.keys.all? { |k| environments.include? k.to_s }
+      if hash.respond_to?(:keys) && hash.keys.all? { |k| environments.include?(k.to_s) }
         hash = hash[environment.to_s] || hash[environment.to_sym]
       end
 
-      if hash.respond_to? :to_hash
-        indifferent_hash = Hash.new { |hash, key| hash[key.to_s] if Symbol === key }
-        indifferent_hash.merge hash.to_hash
+      if hash.respond_to?(:to_hash)
+        IndifferentHash[hash.to_hash]
       else
         hash
       end
