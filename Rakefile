@@ -203,10 +203,6 @@ if defined?(Gem)
     GEMS_AND_ROOT_DIRECTORIES.each do |gem, directory|
       desc "Release #{gem} as a package"
       task gem => "package:#{gem}" do
-        if File.binread(directory + "/" + "CHANGELOG.md") =~ /= \d\.\d\.\d . not yet released$/i
-          fail 'please update the changelog first' unless %x{git symbolic-ref HEAD} == "refs/heads/prerelease\n"
-        end
-
         sh <<-SH
           gem install #{package(gem, '.gem')} --local &&
           gem push #{package(gem, '.gem')}  &&
