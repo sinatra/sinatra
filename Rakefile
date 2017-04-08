@@ -92,7 +92,7 @@ end
 
 team = ["Ryan Tomayko", "Blake Mizerany", "Simon Rozet", "Konstantin Haase", "Zachary Scott"]
 desc "list of contributors"
-task :thanks, [:release,:backports] do |t, a|
+task :thanks, ['release:all', :backports] do |t, a|
   a.with_defaults :release => "#{prev_version}..HEAD",
     :backports => "#{prev_feature}.0..#{prev_feature}.x"
   included = `git log --format=format:"%aN\t%s" #{a.release}`.lines.map { |l| l.force_encoding('binary') }
@@ -147,9 +147,15 @@ if defined?(Gem)
     @spec ||= eval(File.read('sinatra.gemspec'))
   end
 
-  def package(ext='')
-    "pkg/sinatra-#{spec.version}" + ext
+  def package(name, ext='')
+    "pkg/#{name}-#{spec.version}" + ext
   end
+
+  GEMS_AND_ROOT_DIRECTORIES = {
+    "sinatra" => ".",
+    "sinatra-contrib" => "./sinatra-contrib",
+    "rack-protection" => "./rack-protection"
+  }
 
   desc 'Build packages'
   task :package => %w[.gem .tar.gz].map {|e| package(e)}
@@ -176,19 +182,33 @@ if defined?(Gem)
     SH
   end
 
-  task 'release' => ['test', package('.gem')] do
-    if File.binread("CHANGELOG.md") =~ /= \d\.\d\.\d . not yet released$/i
-      fail 'please update the changelog first' unless %x{git symbolic-ref HEAD} == "refs/heads/prerelease\n"
-    end
+  GEMS_AND_ROOT_DIRECTORIES.each do |gem, directory|
+    namespace gem do
+      desc "Build #{gem} packages"
+      task :package => %w[.gem .tar.gz].map {|e| package(gem, e)}
 
-    sh <<-SH
-      gem install #{package('.gem')} --local &&
-      gem push #{package('.gem')}  &&
-      git commit --allow-empty -a -m '#{source_version} release'  &&
-      git tag -s v#{source_version} -m '#{source_version} release'  &&
-      git tag -s #{source_version} -m '#{source_version} release'  &&
-      git push && (git push sinatra || true) &&
-      git push --tags && (git push sinatra --tags || true)
-    SH
+      desc "Build and install #{gem} as local gem"
+      task :install => package(gem, '.gem') do
+        sh "gem install #{package(gem, '.gem')}"
+      end
+
+      desc "Release #{gem} as a package"
+      task :release => ['test', package('.gem')] do
+        if File.binread(directory + "/CHANGELOG.md") =~ /= \d\.\d\.\d . not yet released$/i
+          fail 'please update the changelog first' unless %x{git symbolic-ref HEAD} == "refs/heads/prerelease\n"
+        end
+
+        sh <<-SH
+          cd #{directory} &&
+          gem install #{package(gem, '.gem')} --local &&
+          gem push #{package(gem, '.gem')}  &&
+          git commit --allow-empty -a -m '#{source_version} release'  &&
+          git tag -s v#{source_version} -m '#{source_version} release'  &&
+          git tag -s #{source_version} -m '#{source_version} release'  &&
+          git push && (git push sinatra || true) &&
+          git push --tags && (git push sinatra --tags || true)
+        SH
+      end
+    end
   end
 end
