@@ -34,6 +34,5 @@ matrix:
     - rvm: rbx
 
 notifications:
-  recipients:
-    - mail@zzak.io
-  slack: sinatrarb:LQGhUfGYcqRgRzwKea0bqUhY
+  slack:
+    secure: 6E+GuZId5GcVLgiOKZnE9ZAnJTa+K2Fxqb0KfrECtskviylcPF1OmX36+y7xGUS0P0pGNyWQThe0zCBMpszno/KbvUdIs6jXbOImkFMuo65//4YcivK0rVaYh9uh2S1K3ycaDeUPDf0ulc/AwHnxWGR6yBD2N5idTwt1bsULdy0=
