@@ -202,7 +202,6 @@ if defined?(Gem)
 
     desc "Commits the version to github repository"
     task :commit_version do
-      # TODO: Find a better way later to manage versions between gems
       sh <<-SH
         sed -i '' "s/.*VERSION.*/  VERSION = '#{source_version}'/" lib/sinatra/version.rb
         sed -i '' "s/.*VERSION.*/    VERSION = '#{source_version}'/" sinatra-contrib/lib/sinatra/contrib/version.rb
