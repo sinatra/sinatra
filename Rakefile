@@ -9,10 +9,7 @@ task :spec => :test
 CLEAN.include "**/*.rbc"
 
 def source_version
-  @source_version ||= begin
-    load './lib/sinatra/version.rb'
-    Sinatra::VERSION
-  end
+  @source_version ||= File.read(File.expand_path("../VERSION", __FILE__)).strip
 end
 
 def prev_feature
@@ -147,15 +144,8 @@ if defined?(Gem)
     "rack-protection" => "./rack-protection"
   }
 
-  # Load the gemspec using the same limitations as github
-  def spec(gem)
-    require 'rubygems' unless defined? Gem::Specification
-    directory = GEMS_AND_ROOT_DIRECTORIES[gem]
-    eval(File.read("#{directory + "/" + gem}.gemspec"))
-  end
-
   def package(gem, ext='')
-    "pkg/#{gem}-#{spec(gem).version}" + ext
+    "pkg/#{gem}-#{source_version}" + ext
   end
 
   directory 'pkg/'
@@ -212,6 +202,13 @@ if defined?(Gem)
 
     desc "Commits the version to github repository"
     task :commit_version do
+      # TODO: Find a better way later to manage versions between gems
+      sh <<-SH
+        sed -i '' "s/.*VERSION.*/  VERSION = '#{source_version}'/" lib/sinatra/version.rb
+        sed -i '' "s/.*VERSION.*/    VERSION = '#{source_version}'/" sinatra-contrib/lib/sinatra/contrib/version.rb
+        sed -i '' "s/.*VERSION.*/    VERSION = '#{source_version}'/" rack-protection/lib/rack/protection/version.rb
+      SH
+
       sh <<-SH
         git commit --allow-empty -a -m '#{source_version} release'  &&
         git tag -s v#{source_version} -m '#{source_version} release'  &&

@@ -1,11 +1,10 @@
 # -*- encoding: utf-8 -*-
 
-$:.unshift File.expand_path("../../lib", __FILE__)
-require "sinatra/version"
+version = File.read(File.expand_path("../../VERSION", __FILE__)).strip
 
 Gem::Specification.new do |s|
   s.name        = "sinatra-contrib"
-  s.version     = Sinatra::VERSION
+  s.version     = version
   s.description = "Collection of useful Sinatra extensions"
   s.homepage    = "http://github.com/sinatra/sinatra/tree/master/sinatra-contrib"
   s.license     = "MIT"
@@ -22,11 +21,11 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.2.0'
 
-  s.add_dependency "sinatra", Sinatra::VERSION
+  s.add_dependency "sinatra", version
   s.add_dependency "mustermann", "~> 1.0"
   s.add_dependency "backports", ">= 2.0"
   s.add_dependency "tilt",      ">= 1.3", "< 3"
-  s.add_dependency "rack-protection", Sinatra::VERSION
+  s.add_dependency "rack-protection", version
   s.add_dependency "multi_json"
 
   s.add_development_dependency "rspec", "~> 3.4"

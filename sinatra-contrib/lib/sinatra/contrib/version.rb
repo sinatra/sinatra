@@ -1,6 +1,6 @@
 module Sinatra
   module Contrib
-    VERSION = ::Sinatra::VERSION
+    VERSION = '2.0.0.rc2'
   end
 end
 
