@@ -1,4 +1,4 @@
-## 2.0.0 / 2016-08-22
+## 2.0.0 / 2017-04-10
 
  * Use Mustermann for patterns #1086 by Konstantin Haase
 
@@ -35,6 +35,32 @@
  * Exposed global and per-route options for Mustermann route parsing #1233 by Mike Pastore
 
  * Use same `session_secret` for classic and modular apps in development #1245 by Marcus Stollsteimer
+
+ * Make authenticity token length a fixed value of 32 #1181 by Jordan Owens
+
+ * Modernize Rack::Protection::ContentSecurityPolicy with CSP Level 2 and 3 Directives #1202 by Glenn Rempe
+
+ * Adds preload option to Rack:Protection:StrictTransport #1209 by Ed Robinson
+
+ * Improve BadRequest logic. Raise and handle exceptions if status is 400 #1212 by Mike Pastore
+
+ * Make Rack::Test a development dependency #1232 by Mike Pastore
+
+ * Capture exception messages of raised NotFound and BadRequest #1210 by Mike Pastore
+
+ * Add explicit set method to contrib/cookies to override cookie settings #1240 by Andrew Allen
+
+ * Avoid executing filters even if prefix matches with other namespace #1253 by namusyaka
+
+ * Make `#has_key?` also indifferent in access, can accept String or Symbol #1262 by John Hope
+
+ * Add `allow_if` option to bypass json csrf protection #1265 by Jordan Owens
+
+ * rack-protection: Bundle StrictTransport, CookieTossing, and CSP #1267 by Mike Pastore
+
+ * Add `:strict_paths` option for managing trailing slashes #1273 by namusyaka
+
+ * Add full IndifferentHash implementation to params #1279 by Mike Pastore
 
 ## 1.4.7 / 2016-01-24
 
