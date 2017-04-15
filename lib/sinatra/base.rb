@@ -1359,7 +1359,9 @@ module Sinatra
 
       # Add a route condition. The route is considered non-matching when the
       # block returns false.
-      def condition(name = "#{caller.first[/`.*'/]} condition", &block)
+      def condition(name = nil, &block)
+        name ||= "#{caller.detect{|s| s[block.source_location]}[/`.*'/]} condition"
+
         @conditions << generate_method(name, &block)
       end
 
