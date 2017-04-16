@@ -1420,7 +1420,7 @@ module Sinatra
       # Set configuration options for Sinatra and/or the app.
       # Allows scoping of settings for certain environments.
       def configure(*envs)
-        yield self if envs.empty? || envs.include?(environment.to_sym)
+        yield self if envs.empty? || envs.include?(environment)
       end
 
       # Use the specified Rack middleware
