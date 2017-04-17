@@ -813,7 +813,7 @@ module Sinatra
       options.merge!(engine_options) { |key, v1, v2| v1 }
 
       # extract generic options
-      locals          = options.delete(:locals) || locals         || {}
+      locals          = options.delete(:locals) || locals
       views           = options.delete(:views)  || settings.views || "./views"
       layout          = options[:layout]
       layout          = false if layout.nil? && options.include?(:layout)
