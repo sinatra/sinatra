@@ -666,7 +666,7 @@ module Sinatra
   #                   in the template
   #   :scope          If set, template is evaluate with the binding of the given
   #                   object rather than the application instance.
-  #   :views          Views directory to use.
+  #   :views          Views directory to use. can be an array of paths.
   module Templates
     module ContentTyped
       attr_accessor :content_type
@@ -784,21 +784,35 @@ module Sinatra
     # Calls the given block for every possible template file in views,
     # named name.ext, where ext is registered on engine.
     def find_template(views, name, engine)
-      yield ::File.join(views, "#{name}.#{@preferred_extension}")
+      yield find_file(views, "#{name}.#{@preferred_extension}")
 
       if Tilt.respond_to?(:mappings)
         Tilt.mappings.each do |ext, engines|
           next unless ext != @preferred_extension and engines.include? engine
-          yield ::File.join(views, "#{name}.#{ext}")
+          yield find_file(views, "#{name}.#{ext}")
         end
       else
         Tilt.default_mapping.extensions_for(engine).each do |ext|
-          yield ::File.join(views, "#{name}.#{ext}") unless ext == @preferred_extension
+          yield find_file(views, "#{name}.#{ext}") unless ext == @preferred_extension
         end
       end
     end
 
     private
+
+    # looks up file in views path. views can be array or single path
+    def find_file(views, file_name)
+      file_path = nil
+      views = nil if views.respond_to?(:empty?) && views.empty?
+      if views.respond_to?(:each)
+        views.each do |view|
+          view = view.to_s
+          file_path = ::File.join(view, file_name)
+          break if ::File.exist?(file_path)
+        end
+      end
+      file_path || ::File.join(views.to_s, file_name)
+    end
 
     # logic shared between builder and nokogiri
     def render_ruby(engine, template, options = {}, locals = {}, &block)
@@ -815,6 +829,7 @@ module Sinatra
       # extract generic options
       locals          = options.delete(:locals) || locals         || {}
       views           = options.delete(:views)  || settings.views || "./views"
+      views           = "./views" if views.respond_to?(:empty?) && views.empty?
       layout          = options[:layout]
       layout          = false if layout.nil? && options.include?(:layout)
       eat_errors      = layout.nil?
