@@ -195,7 +195,7 @@ if defined?(Gem)
       task gem => "package:#{gem}" do
         sh <<-SH
           gem install #{package(gem, '.gem')} --local &&
-          gem push #{package(gem, '.gem')}  &&
+          gem push #{package(gem, '.gem')}
         SH
       end
     end
