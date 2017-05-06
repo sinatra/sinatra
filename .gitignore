@@ -8,3 +8,4 @@
 /doc/api
 /Gemfile.lock
 /coverage
+.yardoc
