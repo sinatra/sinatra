@@ -203,9 +203,9 @@ if defined?(Gem)
     desc "Commits the version to github repository"
     task :commit_version do
       sh <<-SH
-        sed -i '' "s/.*VERSION.*/  VERSION = '#{source_version}'/" lib/sinatra/version.rb
-        sed -i '' "s/.*VERSION.*/    VERSION = '#{source_version}'/" sinatra-contrib/lib/sinatra/contrib/version.rb
-        sed -i '' "s/.*VERSION.*/    VERSION = '#{source_version}'/" rack-protection/lib/rack/protection/version.rb
+        sed -i "s/.*VERSION.*/  VERSION = '#{source_version}'/" lib/sinatra/version.rb
+        sed -i "s/.*VERSION.*/    VERSION = '#{source_version}'/" sinatra-contrib/lib/sinatra/contrib/version.rb
+        sed -i "s/.*VERSION.*/    VERSION = '#{source_version}'/" rack-protection/lib/rack/protection/version.rb
       SH
 
       sh <<-SH
