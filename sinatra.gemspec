@@ -1,7 +1,6 @@
-$LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
-require 'sinatra/version'
+version = File.read(File.expand_path("../VERSION", __FILE__)).strip
 
-Gem::Specification.new 'sinatra', Sinatra::VERSION do |s|
+Gem::Specification.new 'sinatra', version do |s|
   s.description       = "Sinatra is a DSL for quickly creating web applications in Ruby with minimal effort."
   s.summary           = "Classy web-development dressed in a DSL"
   s.authors           = ["Blake Mizerany", "Ryan Tomayko", "Simon Rozet", "Konstantin Haase"]
@@ -27,6 +26,6 @@ Gem::Specification.new 'sinatra', Sinatra::VERSION do |s|
 
   s.add_dependency 'rack', '~> 2.0'
   s.add_dependency 'tilt', '~> 2.0'
-  s.add_dependency 'rack-protection', '2.0.0.rc2'
+  s.add_dependency 'rack-protection', version
   s.add_dependency 'mustermann', '~> 1.0'
 end
