@@ -212,8 +212,8 @@ if defined?(Gem)
         git commit --allow-empty -a -m '#{source_version} release'  &&
         git tag -s v#{source_version} -m '#{source_version} release'  &&
         git tag -s #{source_version} -m '#{source_version} release' &&
-        git push && (git push sinatra || true) &&
-        git push --tags && (git push sinatra --tags || true)
+        git push && (git push origin || true) &&
+        git push --tags && (git push origin --tags || true)
       SH
     end
 
