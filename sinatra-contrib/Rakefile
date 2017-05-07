@@ -21,7 +21,15 @@ namespace :doc do
     end
   end
 
-  task :all => [:readmes]
+  task :index do
+    doc = File.read("README.md")
+    file = "doc/sinatra-contrib-readme.md"
+    Dir.mkdir "doc" unless File.directory? "doc"
+    puts "writing #{file}"
+    File.open(file, "w") { |f| f << doc }
+  end
+
+  task :all => [:readmes, :index]
 end
 
 desc "generate documentation"
