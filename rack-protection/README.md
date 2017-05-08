@@ -1,6 +1,6 @@
 # Rack::Protection
 
-[![Build Status](https://secure.travis-ci.org/sinatra/rack-protection.png)](http://travis-ci.org/sinatra/rack-protection)
+[![Build Status](https://secure.travis-ci.org/sinatra/rack-protection.svg)](http://travis-ci.org/sinatra/rack-protection)
 
 This gem protects against typical web attacks.
 Should work for all Rack apps, including Rails.
