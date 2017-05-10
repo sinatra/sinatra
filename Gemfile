@@ -69,3 +69,5 @@ end
 platforms :jruby do
   gem 'json'
 end
+
+gem 'reel-rack' unless RUBY_VERSION == '1.8.7'

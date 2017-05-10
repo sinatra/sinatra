@@ -93,6 +93,10 @@ module IntegrationHelper
       name.to_s == 'HTTP'
     end
 
+    def reel?
+      name.to_s == 'reel'
+    end
+
     def warnings
       log.scan(%r[(?:\(eval|lib/sinatra).*warning:.*$])
     end
