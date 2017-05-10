@@ -76,11 +76,14 @@ class ExtensionsTest < Minitest::Test
   end
 
   module BizzleExtension
-    def bizzle
-      bizzle_option
+    module ClassMethods
+      def bizzle
+        bizzle_option
+      end
     end
 
     def self.registered(base)
+      base.extend(ClassMethods)
       fail "base should be BizzleApp" unless base == BizzleApp
       fail "base should have already extended BizzleExtension" unless base.respond_to?(:bizzle)
       base.set :bizzle_option, 'bizzle!'

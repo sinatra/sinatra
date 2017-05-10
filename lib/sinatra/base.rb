@@ -1408,8 +1408,7 @@ module Sinatra
         extensions << Module.new(&block) if block_given?
         @extensions += extensions
         extensions.each do |extension|
-          extend extension
-          extension.registered(self) if extension.respond_to?(:registered)
+          extension.respond_to?(:registered) ? extension.registered(self) : extend(extension)
         end
       end
 
