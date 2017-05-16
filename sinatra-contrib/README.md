@@ -18,38 +18,38 @@ installed with this gem.
 
 Currently included:
 
-* `sinatra/capture`: Let's you capture the content of blocks in templates.
+* [`sinatra/capture`][sinatra-capture]: Let's you capture the content of blocks in templates.
 
-* `sinatra/config_file`: Allows loading configuration from yaml files.
+* [`sinatra/config_file`][sinatra-config-file]: Allows loading configuration from yaml files.
 
-* `sinatra/content_for`: Adds Rails-style `content_for` helpers to Haml, Erb,
+* [`sinatra/content_for`][sinatra-content-for]: Adds Rails-style `content_for` helpers to Haml, Erb,
   Erubis and Slim.
 
-* `sinatra/cookies`: A `cookies` helper for reading and writing cookies.
+* [`sinatra/cookies`][sinatra-cookies]: A `cookies` helper for reading and writing cookies.
 
-* `sinatra/engine_tracking`: Adds methods like `haml?` that allow helper
+* [`sinatra/engine_tracking`][sinatra-engine-tracking]: Adds methods like `haml?` that allow helper
   methods to check whether they are called from within a template.
 
-* `sinatra/json`: Adds a `#json` helper method to return JSON documents.
+* [`sinatra/json`][sinatra-json]: Adds a `#json` helper method to return JSON documents.
 
-* `sinatra/link_header`: Helpers for generating `link` HTML tags and
+* [`sinatra/link_header`][sinatra-link-header]: Helpers for generating `link` HTML tags and
   corresponding `Link` HTTP headers. Adds `link`, `stylesheet` and `prefetch`
   helper methods.
 
-* `sinatra/multi_route`: Adds ability to define one route block for multiple
+* [`sinatra/multi_route`][sinatra-multi-route]: Adds ability to define one route block for multiple
   routes and multiple or custom HTTP verbs.
 
-* `sinatra/namespace`: Adds namespace support to Sinatra.
+* [`sinatra/namespace`][sinatra-namespace]: Adds namespace support to Sinatra.
 
-* `sinatra/respond_with`: Choose action and/or template automatically
+* [`sinatra/respond_with`][sinatra-respond-with]: Choose action and/or template automatically
   depending on the incoming request. Adds helpers `respond_to` and
   `respond_with`.
 
-* `sinatra/custom_logger`: This extension allows you to define your own
+* [`sinatra/custom_logger`][sinatra-custom-logger]: This extension allows you to define your own
   logger instance using +logger+ setting. That logger then will
   be available as #logger helper method in your routes and views.
 
-* `sinatra/required_params`: Ensure if required query parameters exist
+* [`sinatra/required_params`][sinatra-required-params]: Ensure if required query parameters exist
 
 ### Custom Extensions
 
@@ -58,13 +58,13 @@ existing APIs.
 
 Currently included:
 
-* `sinatra/reloader`: Automatically reloads Ruby files on code changes.
+* [`sinatra/reloader`][sinatra-reloader]: Automatically reloads Ruby files on code changes.
 
 ### Other Tools
 
-* `sinatra/extension`: Mixin for writing your own Sinatra extensions.
+* [`sinatra/extension`][sinatra-extension]: Mixin for writing your own Sinatra extensions.
 
-* `sinatra/test_helpers`: Helper methods to ease testing your Sinatra
+* [`sinatra/test_helpers`][sinatra-test-helpers]: Helper methods to ease testing your Sinatra
   application. Partly extracted from Sinatra. Testing framework agnostic
 
 ## Installation
@@ -153,3 +153,23 @@ end
 
 For more info check the [official docs](http://www.sinatrarb.com/contrib/) and
 [api docs](http://www.rubydoc.info/gems/sinatra-contrib).
+
+[sinatra-reloader]: /contrib/reloader
+[sinatra-namespace]: /contrib/namespace
+[sinatra-content-for]: /contrib/content_for
+[sinatra-cookies]: /contrib/cookies
+[sinatra-streaming]: /contrib/streaming
+[sinatra-webdav]: /contrib/webdav
+[sinatra-runner]: /contrib/runner
+[sinatra-extension]: /contrib/extension
+[sinatra-test-helpers]: /contrib/test_helpers
+[sinatra-required-params]: /contrib/required_params
+[sinatra-custom-logger]: /contrib/custom_logger
+[sinatra-multi-route]: /contrib/multi_route
+[sinatra-json]: /contrib/json
+[sinatra-respond-with]: /contrib/respond_with
+[sinatra-config-file]: /contrib/config_file
+[sinatra-link-header]: /contrib/link_header
+[sinatra-capture]: /contrib/capture
+[sinatra-engine-tracking]: /contrib/engine_tracking
+

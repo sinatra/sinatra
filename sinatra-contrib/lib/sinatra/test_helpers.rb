@@ -10,6 +10,8 @@ require 'forwardable'
 module Sinatra
   Base.set :environment, :test
 
+  # Helper methods to ease testing your Sinatra application. Partly extracted
+  # from Sinatra. Testing framework agnostic
   module TestHelpers
     class Session < Rack::Test::Session
       def global_env

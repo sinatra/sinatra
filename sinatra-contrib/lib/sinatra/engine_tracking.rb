@@ -1,6 +1,8 @@
 require 'sinatra/base'
 
 module Sinatra
+  # Adds methods like `haml?` that allow helper methods to check whether they
+  # are called from within a template.
   module EngineTracking
     attr_reader :current_engine
 
