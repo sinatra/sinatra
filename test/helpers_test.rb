@@ -507,6 +507,24 @@ class HelpersTest < Minitest::Test
       assert_equal 'hi bar', body
     end
 
+    it 'keeps session when post' do
+      mock_app do
+        enable :sessions
+        get('/') do
+          assert session[:foo].nil?
+          session[:foo] = 'bar'
+        end
+
+        post('/hi') do
+          "hi #{session[:foo]}"
+        end
+      end
+
+      get '/'
+      post '/hi', {}, 'HTTP_ORIGIN'=> 'http://localhost'
+      assert_equal 'hi bar', body
+    end
+
     it 'inserts session middleware' do
       mock_app do
         enable :sessions
