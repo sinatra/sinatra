@@ -101,18 +101,18 @@ use Rack::Protection, instrumenter: ActiveSupport::Notifications
 
 The instrumenter is passed a namespace (String) and environment (Hash). The namespace is 'rack.protection' and the attack type can be obtained from the environment key 'rack.protection.attack'.
 
-[authenticity-token]: /protection/authenticity_token
-[content-security-policy]: /protection/content_security_policy
-[cookie-tossing]: /protection/cookie_tossing
-[escaped-params]: /protection/escaped_params
-[form-token]: /protection/form_token
-[frame-options]: /protection/frame_options
-[http-origin]: /protection/http_origin
-[ip-spoofing]: /protection/ip_spoofing
-[json-csrf]: /protection/json_csrf
-[path-traversal]: /protection/path_traversal
-[remote-referrer]: /protection/remote_referrer
-[remote-token]: /protection/remote_token
-[session-hijacking]: /protection/session_hijacking
-[strict-transport]: /protection/strict_transport
-[xss-header]: /protection/xss_header
+[authenticity-token]: /rack-protection/lib/rack/protection/authenticity_token.rb
+[content-security-policy]: /rack-protection/lib/rack/protection/content_security_policy.rb
+[cookie-tossing]: /rack-protection/lib/rack/protection/cookie_tossing.rb
+[escaped-params]: /rack-protection/lib/rack/protection/escaped_params.rb
+[form-token]: /rack-protection/lib/rack/protection/form_token.rb
+[frame-options]: /rack-protection/lib/rack/protection/frame_options.rb
+[http-origin]: /rack-protection/lib/rack/protection/http_origin.rb
+[ip-spoofing]: /rack-protection/lib/rack/protection/ip_spoofing.rb
+[json-csrf]: /rack-protection/lib/rack/protection/json_csrf.rb
+[path-traversal]: /rack-protection/lib/rack/protection/path_traversal.rb
+[remote-referrer]: /rack-protection/lib/rack/protection/remote_referrer.rb
+[remote-token]: /rack-protection/lib/rack/protection/remote_token.rb
+[session-hijacking]: /rack-protection/lib/rack/protection/session_hijacking.rb
+[strict-transport]: /rack-protection/lib/rack/protection/strict_transport.rb
+[xss-header]: /rack-protection/lib/rack/protection/xss_header.rb
