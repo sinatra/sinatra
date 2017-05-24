@@ -101,18 +101,18 @@ use Rack::Protection, instrumenter: ActiveSupport::Notifications
 
 The instrumenter is passed a namespace (String) and environment (Hash). The namespace is 'rack.protection' and the attack type can be obtained from the environment key 'rack.protection.attack'.
 
-[authenticity-token]: /rack-protection/lib/rack/protection/authenticity_token.rb
-[content-security-policy]: /rack-protection/lib/rack/protection/content_security_policy.rb
-[cookie-tossing]: /rack-protection/lib/rack/protection/cookie_tossing.rb
-[escaped-params]: /rack-protection/lib/rack/protection/escaped_params.rb
-[form-token]: /rack-protection/lib/rack/protection/form_token.rb
-[frame-options]: /rack-protection/lib/rack/protection/frame_options.rb
-[http-origin]: /rack-protection/lib/rack/protection/http_origin.rb
-[ip-spoofing]: /rack-protection/lib/rack/protection/ip_spoofing.rb
-[json-csrf]: /rack-protection/lib/rack/protection/json_csrf.rb
-[path-traversal]: /rack-protection/lib/rack/protection/path_traversal.rb
-[remote-referrer]: /rack-protection/lib/rack/protection/remote_referrer.rb
-[remote-token]: /rack-protection/lib/rack/protection/remote_token.rb
-[session-hijacking]: /rack-protection/lib/rack/protection/session_hijacking.rb
-[strict-transport]: /rack-protection/lib/rack/protection/strict_transport.rb
-[xss-header]: /rack-protection/lib/rack/protection/xss_header.rb
+[authenticity-token]: http://www.sinatrarb.com/protection/authenticity_token
+[content-security-policy]: http://www.sinatrarb.com/protection/content_security_policy
+[cookie-tossing]: http://www.sinatrarb.com/protection/cookie_tossing
+[escaped-params]: http://www.sinatrarb.com/protection/escaped_params
+[form-token]: http://www.sinatrarb.com/protection/form_token
+[frame-options]: http://www.sinatrarb.com/protection/frame_options
+[http-origin]: http://www.sinatrarb.com/protection/http_origin
+[ip-spoofing]: http://www.sinatrarb.com/protection/ip_spoofing
+[json-csrf]: http://www.sinatrarb.com/protection/json_csrf
+[path-traversal]: http://www.sinatrarb.com/protection/path_traversal
+[remote-referrer]: http://www.sinatrarb.com/protection/remote_referrer
+[remote-token]: http://www.sinatrarb.com/protection/remote_token
+[session-hijacking]: http://www.sinatrarb.com/protection/session_hijacking
+[strict-transport]: http://www.sinatrarb.com/protection/strict_transport
+[xss-header]: http://www.sinatrarb.com/protection/xss_header
