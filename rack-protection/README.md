@@ -101,18 +101,18 @@ use Rack::Protection, instrumenter: ActiveSupport::Notifications
 
 The instrumenter is passed a namespace (String) and environment (Hash). The namespace is 'rack.protection' and the attack type can be obtained from the environment key 'rack.protection.attack'.
 
-[authenticity-token]: /protection/authenticity_token
-[content-security-policy]: /protection/content_security_policy
-[cookie-tossing]: /protection/cookie_tossing
-[escaped-params]: /protection/escaped_params
-[form-token]: /protection/form_token
-[frame-options]: /protection/frame_options
-[http-origin]: /protection/http_origin
-[ip-spoofing]: /protection/ip_spoofing
-[json-csrf]: /protection/json_csrf
-[path-traversal]: /protection/path_traversal
-[remote-referrer]: /protection/remote_referrer
-[remote-token]: /protection/remote_token
-[session-hijacking]: /protection/session_hijacking
-[strict-transport]: /protection/strict_transport
-[xss-header]: /protection/xss_header
+[authenticity-token]: http://www.sinatrarb.com/protection/authenticity_token
+[content-security-policy]: http://www.sinatrarb.com/protection/content_security_policy
+[cookie-tossing]: http://www.sinatrarb.com/protection/cookie_tossing
+[escaped-params]: http://www.sinatrarb.com/protection/escaped_params
+[form-token]: http://www.sinatrarb.com/protection/form_token
+[frame-options]: http://www.sinatrarb.com/protection/frame_options
+[http-origin]: http://www.sinatrarb.com/protection/http_origin
+[ip-spoofing]: http://www.sinatrarb.com/protection/ip_spoofing
+[json-csrf]: http://www.sinatrarb.com/protection/json_csrf
+[path-traversal]: http://www.sinatrarb.com/protection/path_traversal
+[remote-referrer]: http://www.sinatrarb.com/protection/remote_referrer
+[remote-token]: http://www.sinatrarb.com/protection/remote_token
+[session-hijacking]: http://www.sinatrarb.com/protection/session_hijacking
+[strict-transport]: http://www.sinatrarb.com/protection/strict_transport
+[xss-header]: http://www.sinatrarb.com/protection/xss_header
