@@ -64,6 +64,8 @@
 
 ## 1.4.7 / 2016-01-24
 
+ * Add support for rack 2 by fixing a `LoadError` #1055 (Ben A. Morgan)
+
  * Add Ashley Williams, Trevor Bramble, and Kashyap Kondamudi to team Sinatra.
 
  * Correctly handle encoded colons in routes. (Jeremy Evans)
