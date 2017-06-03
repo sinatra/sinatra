@@ -52,7 +52,7 @@
 
  * Avoid executing filters even if prefix matches with other namespace #1253 by namusyaka
 
- * Make `#has_key?` also indifferent in access, can accept String or Symbol #1262 by John Hope
+ * Make `#has_key?` also indifferent in access, can accept String or Symbol #1262 by Stephen Paul Weber
 
  * Add `allow_if` option to bypass json csrf protection #1265 by Jordan Owens
 
