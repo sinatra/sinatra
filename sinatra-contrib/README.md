@@ -154,22 +154,23 @@ end
 For more info check the [official docs](http://www.sinatrarb.com/contrib/) and
 [api docs](http://www.rubydoc.info/gems/sinatra-contrib).
 
-[sinatra-reloader]: /contrib/reloader
-[sinatra-namespace]: /contrib/namespace
-[sinatra-content-for]: /contrib/content_for
-[sinatra-cookies]: /contrib/cookies
-[sinatra-streaming]: /contrib/streaming
-[sinatra-webdav]: /contrib/webdav
-[sinatra-runner]: /contrib/runner
-[sinatra-extension]: /contrib/extension
-[sinatra-test-helpers]: /contrib/test_helpers
-[sinatra-required-params]: /contrib/required_params
-[sinatra-custom-logger]: /contrib/custom_logger
-[sinatra-multi-route]: /contrib/multi_route
-[sinatra-json]: /contrib/json
-[sinatra-respond-with]: /contrib/respond_with
-[sinatra-config-file]: /contrib/config_file
-[sinatra-link-header]: /contrib/link_header
-[sinatra-capture]: /contrib/capture
-[sinatra-engine-tracking]: /contrib/engine_tracking
+[sinatra-reloader]: /sinatra-contrib/lib/sinatra/reloader.rb
+[sinatra-namespace]: /sinatra-contrib/lib/sinatra/namespace.rb
+[sinatra-content-for]: /sinatra-contrib/lib/sinatra/content_for.rb
+[sinatra-cookies]: /sinatra-contrib/lib/sinatra/cookies.rb
+[sinatra-streaming]: /sinatra-contrib/lib/sinatra/streaming.rb
+[sinatra-webdav]: /sinatra-contrib/lib/sinatra/webdav.rb
+[sinatra-runner]: /sinatra-contrib/lib/sinatra/runner.rb
+[sinatra-extension]: /sinatra-contrib/lib/sinatra/extension.rb
+[sinatra-test-helpers]: /sinatra-contrib/lib/sinatra/test_helpers.rb
+[sinatra-required-params]: /sinatra-contrib/lib/sinatra/required_params.rb
+[sinatra-custom-logger]: /sinatra-contrib/lib/sinatra/custom_logger.rb
+[sinatra-multi-route]: /sinatra-contrib/lib/sinatra/multi_route.rb
+[sinatra-json]: /sinatra-contrib/lib/sinatra/json.rb
+[sinatra-respond-with]: /sinatra-contrib/lib/sinatra/respond_with.rb
+[sinatra-config-file]: /sinatra-contrib/lib/sinatra/config_file.rb
+[sinatra-link-header]: /sinatra-contrib/lib/sinatra/link_header.rb
+[sinatra-capture]: /sinatra-contrib/lib/sinatra/capture.rb
+[sinatra-engine-tracking]: /sinatra-contrib/lib/sinatra/engine_tracking.rb
+
 
