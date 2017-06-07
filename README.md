@@ -604,14 +604,11 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>Dependency</td>
-    <td>
-      <a href="http://www.kuwata-lab.com/erubis/" title="erubis">erubis</a>
-      or erb (included in Ruby)
-    </td>
+    <td>erb (included in Ruby)</td>
   </tr>
   <tr>
     <td>File Extensions</td>
-    <td><tt>.erb</tt>, <tt>.rhtml</tt> or <tt>.erubis</tt> (Erubis only)</td>
+    <td><tt>.erb</tt> or <tt>.rhtml</tt></td>
   </tr>
   <tr>
     <td>Example</td>

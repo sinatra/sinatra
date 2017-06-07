@@ -52,7 +52,6 @@ if RUBY_ENGINE == "ruby"
   gem 'stylus'
   gem 'rabl'
   gem 'builder'
-  gem 'erubis'
   gem 'haml', '>= 3.0'
   gem 'sass'
   gem 'reel-rack'

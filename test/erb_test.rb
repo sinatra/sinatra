@@ -104,13 +104,3 @@ class ERBTest < Minitest::Test
     assert_body "<h1>Title</h1>\n<h2>Subtitle</h2>\n<p>Contents.</p>\n"
   end
 end
-
-
-begin
-  require 'erubis'
-  class ErubisTest < ERBTest
-    def engine; Tilt::ErubisTemplate end
-  end
-rescue LoadError
-  warn "#{$!.to_s}: skipping erubis tests"
-end
