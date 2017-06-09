@@ -81,8 +81,6 @@ module Sinatra
       raise BadRequest, "Invalid query parameters: #{e.message}"
     end
 
-    private
-
     class AcceptEntry
       attr_accessor :params
       attr_reader :entry
