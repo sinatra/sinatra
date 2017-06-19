@@ -12,8 +12,6 @@ Encoding.default_external = "UTF-8" if defined? Encoding
 
 RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
 
-require 'bundler'
-require 'bundler/setup'
 require 'rack'
 
 testdir = File.dirname(__FILE__)
