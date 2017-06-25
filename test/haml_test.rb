@@ -105,5 +105,5 @@ class HAMLTest < Minitest::Test
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping haml tests"
+  warn "#{$!}: skipping haml tests"
 end

@@ -86,5 +86,5 @@ begin
   end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping stylus tests"
+  warn "#{$!}: skipping stylus tests"
 end

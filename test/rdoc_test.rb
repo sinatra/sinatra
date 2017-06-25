@@ -62,5 +62,5 @@ class RdocTest < Minitest::Test
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping rdoc tests"
+  warn "#{$!}: skipping rdoc tests"
 end

@@ -68,5 +68,5 @@ begin
     end
   end
 rescue LoadError
-  warn "#{$!.to_s}: skipping asciidoc tests"
+  warn "#{$!}: skipping asciidoc tests"
 end

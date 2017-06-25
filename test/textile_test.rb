@@ -61,5 +61,5 @@ class TextileTest < Minitest::Test
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping textile tests"
+  warn "#{$!}: skipping textile tests"
 end

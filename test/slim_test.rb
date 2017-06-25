@@ -98,5 +98,5 @@ class SlimTest < Minitest::Test
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping slim tests"
+  warn "#{$!}: skipping slim tests"
 end

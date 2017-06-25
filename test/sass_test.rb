@@ -111,5 +111,5 @@ class SassTest < Minitest::Test
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping sass tests"
+  warn "#{$!}: skipping sass tests"
 end

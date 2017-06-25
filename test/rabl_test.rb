@@ -85,5 +85,5 @@ class RablTest < Minitest::Test
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping rabl tests"
+  warn "#{$!}: skipping rabl tests"
 end

@@ -112,5 +112,5 @@ begin
     def engine; Tilt::ErubisTemplate end
   end
 rescue LoadError
-  warn "#{$!.to_s}: skipping erubis tests"
+  warn "#{$!}: skipping erubis tests"
 end

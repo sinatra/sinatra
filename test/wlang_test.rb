@@ -83,5 +83,5 @@ class WLangTest < Minitest::Test
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping wlang tests"
+  warn "#{$!}: skipping wlang tests"
 end
