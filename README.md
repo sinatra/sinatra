@@ -428,7 +428,7 @@ Note that the public directory name is not included in the URL. A file
 `./public/css/style.css` is made available as
 `http://example.com/css/style.css`.
 
-Use the `:static_cache_control` setting (see [below](##cache-control)) to add
+Use the `:static_cache_control` setting (see [below](`#cache-control)) to add
 `Cache-Control` header info.
 
 ## Views / Templates
