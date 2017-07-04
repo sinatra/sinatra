@@ -21,7 +21,7 @@ rvm:
   - 2.3.4
   - 2.4.1
   - ruby-head
-  - rbx
+  - rbx-3
   - jruby-9.1.8.0
   - jruby-head
 
@@ -31,7 +31,7 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
-    - rvm: rbx
+    - rvm: rbx-3
 
 notifications:
   slack:
