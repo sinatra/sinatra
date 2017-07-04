@@ -2,7 +2,6 @@
 #
 # We don't need the full test helper for this standalone class.
 #
-require 'bundler/setup'
 require 'minitest/autorun' unless defined?(Minitest)
 
 require_relative '../lib/sinatra/indifferent_hash'
