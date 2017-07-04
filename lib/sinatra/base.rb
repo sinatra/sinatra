@@ -81,8 +81,6 @@ module Sinatra
       raise BadRequest, "Invalid query parameters: #{e.message}"
     end
 
-    private
-
     class AcceptEntry
       attr_accessor :params
       attr_reader :entry
@@ -647,7 +645,6 @@ module Sinatra
     end
   end
 
-  private
 
   # Template rendering methods. Each method takes the name of a template
   # to render as a Symbol and returns a String with the rendered output,
