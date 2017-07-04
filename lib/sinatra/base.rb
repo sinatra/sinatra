@@ -1160,7 +1160,7 @@ module Sinatra
 
     class << self
       CALLERS_TO_IGNORE = [ # :nodoc:
-        /\/sinatra(\/(base|main|show_exceptions))?\.rb$/,    # all sinatra code
+        /\/sinatra(\/(base|main|show_exceptions))?\.rb$/,   # all sinatra code
         /lib\/tilt.*\.rb$/,                                 # all tilt code
         /^\(.*\)$/,                                         # generated code
         /rubygems\/(custom|core_ext\/kernel)_require\.rb$/, # rubygems require hacks
