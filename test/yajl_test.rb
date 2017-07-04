@@ -82,5 +82,5 @@ class YajlTest < Minitest::Test
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping yajl tests"
+  warn "#{$!}: skipping yajl tests"
 end

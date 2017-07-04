@@ -65,5 +65,5 @@ class LessTest < Minitest::Test
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping less tests"
+  warn "#{$!}: skipping less tests"
 end

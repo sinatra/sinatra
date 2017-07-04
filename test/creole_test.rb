@@ -61,5 +61,5 @@ class CreoleTest < Minitest::Test
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping creole tests"
+  warn "#{$!}: skipping creole tests"
 end

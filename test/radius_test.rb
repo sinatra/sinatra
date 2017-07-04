@@ -55,5 +55,5 @@ class RadiusTest < Minitest::Test
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping radius tests"
+  warn "#{$!}: skipping radius tests"
 end
