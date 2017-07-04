@@ -253,10 +253,10 @@ end
 ```
 
 By the way, unless you disable the path traversal attack protection (see
-below), the request path might be modified before matching against your
+[below](#configuring-attack-protection)), the request path might be modified before matching against your
 routes.
 
-You may customize the Mustermann options used for a given route by passing in a
+You may customize the [Mustermann](https://github.com/sinatra/mustermann) options used for a given route by passing in a
 `:mustermann_opts` hash:
 
 ```ruby
@@ -365,7 +365,7 @@ end
 get('/') { Stream.new }
 ```
 
-You can also use the `stream` helper method (described below) to reduce
+You can also use the `stream` helper method ([described below](#streaming-responses)) to reduce
 boiler plate and embed the streaming logic in the route.
 
 ## Custom Route Matchers
@@ -428,7 +428,7 @@ Note that the public directory name is not included in the URL. A file
 `./public/css/style.css` is made available as
 `http://example.com/css/style.css`.
 
-Use the `:static_cache_control` setting (see below) to add
+Use the `:static_cache_control` setting (see [below](`#cache-control)) to add
 `Cache-Control` header info.
 
 ## Views / Templates
@@ -638,7 +638,7 @@ get('/') { markdown :index }
   </tr>
 </table>
 
-It also takes a block for inline templates (see example).
+It also takes a block for inline templates (see [example](#inline-templates)).
 
 #### Nokogiri Templates
 
@@ -657,7 +657,7 @@ It also takes a block for inline templates (see example).
   </tr>
 </table>
 
-It also takes a block for inline templates (see example).
+It also takes a block for inline templates (see [example](#inline-templates)).
 
 #### Sass Templates
 
@@ -902,7 +902,7 @@ almost always want to pass locals to it.
   </tr>
 </table>
 
-It also takes a block for inline templates (see example).
+It also takes a block for inline templates (see [example](#inline-templates)).
 
 #### RABL Templates
 
@@ -1523,7 +1523,7 @@ use Rack::Protection::RemoteToken
 use Rack::Protection::SessionHijacking
 ```
 
-See 'Configuring attack protection' for more information.
+See '[Configuring attack protection](#configuring-attack-protection)' for more information.
 
 ### Halting
 
@@ -1625,7 +1625,7 @@ end
 ```
 
 It is also possible to pass a block to `body`, which will be executed by the
-Rack handler (this can be used to implement streaming, see "Return Values").
+Rack handler (this can be used to implement streaming, [see "Return Values"](#return-values)).
 
 Similar to the body, you can also set the status code and headers:
 
@@ -1773,7 +1773,7 @@ Haml:
 
 It takes reverse proxies and Rack routers into account, if present.
 
-This method is also aliased to `to` (see below for an example).
+This method is also aliased to `to` (see [below](#browser-redirect) for an example).
 
 ### Browser Redirect
 
@@ -1896,7 +1896,7 @@ get '/' do
 end
 ```
 
-Use the `:static_cache_control` setting (see below) to add
+Use the `:static_cache_control` setting (see [below](#cache-control)) to add
 `Cache-Control` header info to static files.
 
 According to RFC 2616, your application should behave differently if the
@@ -2208,7 +2208,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
 ```
 
 By default, Sinatra will only set up session based protection if `:sessions`
-have been enabled. See 'Using Sessions'. Sometimes you may want to set up
+have been enabled. See '[Using Sessions](#using-sessions)'. Sometimes you may want to set up
 sessions "outside" of the Sinatra app, such as in the config.ru or with a
 separate `Rack::Builder` instance. In that case you can still set up session
 based protection by passing the `:session` option:
