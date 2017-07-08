@@ -318,8 +318,7 @@ module Sinatra
           pattern = nil
         end
         base_pattern, base_conditions = @pattern, @conditions
-        pattern         ||= default_pattern
-        base_conditions ||= base.conditions if base.respond_to? :conditions
+        pattern ||= default_pattern
         [ prefixed_path(base_pattern, pattern),
           (base_conditions || {}).merge(conditions) ]
       end
