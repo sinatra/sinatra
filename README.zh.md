@@ -239,6 +239,17 @@ end
 ```
 顺便一提，除非你禁用了路径遍历攻击防护（见下文），请求路径可能在匹配路由前发生改变。
 
+你也可以通过`:mustermann_opt`选项定义[Mustermann](https://github.com/sinatra/mustermann)来匹配路由。
+
+```ruby
+get '\A/posts\z', :mustermann_opts => { :type => :regexp, :check_anchors => false } do
+  # matches /posts exactly, with explicit anchoring
+  "If you match an anchored pattern clap your hands!"
+end
+```
+
+它看起来像一个[条件](https://github.com/sinatra/sinatra/blob/master/README.zh.md#%E6%9D%A1%E4%BB%B6)，但实际不是！这些选项将被合并到全局的`mustermann_opts`。
+
 ### 条件
 
 路由可以包含各种匹配条件，比如 user agent：
@@ -1302,33 +1313,59 @@ get '/:value' do
 end
 ```
 
-请注意 `enable :sessions` 实际将所有的数据保存在一个 cookie 中。
-这可能并不总是你想要的（cookie 中存储大量的数据会增加你的流量）。
-你可以使用任何 Rack session 中间件：要达到此目的，**不要**使用 `enable :sessions`，
-而是按照自己的需要引入想使用的中间件：
+#### 会话加密
+
+为提高安全性，cookie 中的会话数据使用`HMAC-SHA1`进行加密。会话加密的最佳实践应当是像`HMAC-SHA1`这样生成大于或等于64字节 (512 bits, 128 hex characters)的随机值。应当避免使用少于32字节(256 bits, 64 hex characters)的随机值。应当使用生成器来创建安全的密钥，而不是拍脑袋决定。
+
+默认情况下，Sinatra会生成一个32字节的密钥，但随着应用程序的每次重新启动，它都会发生改变。如果有多个应用程序的实例，使用Sinatra生成密钥，每个实例将有不同的密钥，这可能不是您想要的。
+
+为了更好的安全性和可用性，[建议](https://12factor.net/config)生成安全的随机密钥，并将其存储在运行应用程序的每个主机上的环境变量中，以便所有应用程序实例都将共享相同的密钥。并且应该定期更新会话密钥。下面是一些创建64比特密钥的例子:
+
+#### 生成密钥
 
 ```ruby
-use Rack::Session::Pool, :expire_after => 2592000
-
-get '/' do
-  "value = " << session['value'].inspect
-end
-
-get '/:value' do
-  session['value'] = params['value']
-end
+$ ruby -e "require 'securerandom'; puts SecureRandom.hex(64)"
+99ae8af...snip...ec0f262ac
 ```
 
-为提高安全性，cookie 中的会话数据会被一个会话密码保护。Sinatra 会为你生成一个随机的密码。
-然而，每次启动应用时，该密码都会变化，你也可以自己设置该密码，以便所有的应用实例共享：
+#### 生成密钥(小贴士)
 
+MRI Ruby目前认为[sysrandom gem](https://github.com/cryptosphere/sysrandom)使用系统的随机数生成器要比用户态的`OpenSSL`好。
+
+```ruby
+$ gem install sysrandom
+Building native extensions.  This could take a while...
+Successfully installed sysrandom-1.x
+1 gem installed
+
+$ ruby -e "require 'sysrandom/securerandom'; puts SecureRandom.hex(64)"
+99ae8af...snip...ec0f262ac
 ```
-set :session_secret, 'super secret'
+
+#### 从环境变量使用密钥
+
+将Sinatra的SESSION_SECRET环境变量设置为生成的值。在主机的重新启动之间保存这个值。由于这样做的方法会因系统而异，仅供说明之用：
 ```
+# echo "export SESSION_SECRET=99ae8af...snip...ec0f262ac" >> ~/.bashrc
+```
+
+#### 应用的密钥配置
+
+如果SESSION SECRET环境变量不可用，将把应用的随机密钥设置为不安全的。
+
+关于[sysrandom gem](https://github.com/cryptosphere/sysrandom)的更多用法:
+
+```ruby
+require 'securerandom'
+# -or- require 'sysrandom/securerandom'
+set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
+```
+
+#### 会话配置
 
 如果你想进一步配置会话，可以在设置 `sessions` 时提供一个选项 hash 作为第二个参数：
 
-```
+```ruby
 set :sessions, :domain => 'foo.com'
 ```
 
@@ -1337,6 +1374,31 @@ set :sessions, :domain => 'foo.com'
 ```ruby
 set :sessions, :domain => '.foo.com'
 ```
+
+#### 选择你自己的会话中间件
+
+请注意 `enable :sessions` 实际将所有的数据保存在一个 cookie 中。
+这可能并不总是你想要的（cookie 中存储大量的数据会增加你的流量）。
+你可以使用任何 Rack session 中间件：要达到此目的，**不要**使用 `enable :sessions`，
+而是按照自己的需要引入想使用的中间件：
+
+```ruby
+enable :sessions
+set :session_store, Rack::Session::Pool
+```
+
+另一种选择是不要调用enable：sessions，而是像你想要的其他中间件一样加入你的中间件。
+
+重要的是要注意，使用此方法时，默认情况下不会启用基于会话的保护。
+
+还需要添加Rack中间件：
+
+```ruby
+use Rack::Session::Pool, :expire_after => 2592000
+use Rack::Protection::RemoteToken
+use Rack::Protection::SessionHijacking
+```
+更多[安全防护配置](https://github.com/sinatra/sinatra#configuring-attack-protection)的信息。
 
 ### 中断请求
 
