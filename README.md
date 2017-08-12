@@ -28,6 +28,9 @@ ruby myapp.rb
 
 View at: [http://localhost:4567](http://localhost:4567)
 
+The code you changed will not take effect until you restart the server.  
+Please restart the server every time you change or use [sinatra/reloader](http://www.sinatrarb.com/contrib/reloader).  
+
 It is recommended to also run `gem install thin`, which Sinatra will
 pick up if available.
 
