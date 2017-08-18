@@ -4,17 +4,11 @@ require 'spec_helper'
 require 'okjson'
 
 describe Sinatra::RespondWith do
-  def provides(*args)
-    @provides = args
-  end
-
   def respond_app(&block)
-    types = @provides
     mock_app do
       set :app_file, __FILE__
       set :views, root + '/respond_with'
       register Sinatra::RespondWith
-      respond_to(*types) if types
       class_eval(&block)
     end
   end
