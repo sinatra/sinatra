@@ -28,9 +28,9 @@ describe Sinatra::RespondWith do
   end
 
   def req(*types)
-    p = types.shift if types.first.is_a? String and types.first.start_with? '/'
+    path = types.shift if types.first.is_a?(String) && types.first.start_with?('/')
     accept = types.map { |t| Sinatra::Base.mime_type(t).to_s }.join ','
-    get (p || '/'), {}, 'HTTP_ACCEPT' => accept
+    get (path || '/'), {}, 'HTTP_ACCEPT' => accept
   end
 
   describe "Helpers#respond_to" do
