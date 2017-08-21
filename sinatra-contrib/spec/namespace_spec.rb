@@ -477,6 +477,19 @@ describe Sinatra::Namespace do
           expect(body).to eq('OKAY!!11!') unless verb == :head
         end
 
+        it 'works correctly if deep nesting' do
+          namespace '/a' do
+            namespace '/b' do
+              namespace '/c' do
+                send(verb, '') { 'hey' }
+              end
+            end
+          end
+
+          expect(send(verb, '/a/b/c')).to be_ok
+          expect(body).to eq('hey') unless verb == :head
+        end
+
         it 'exposes helpers to nested namespaces' do
           namespace '/foo' do
             helpers do
