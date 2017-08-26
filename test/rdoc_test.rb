@@ -7,7 +7,7 @@ require 'rdoc/markup/to_html'
 class RdocTest < Minitest::Test
   def rdoc_app(&block)
     mock_app do
-      set :views, File.dirname(__FILE__) + '/views'
+      set :views, __dir__ + '/views'
       get('/', &block)
     end
     get '/'

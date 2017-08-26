@@ -5,7 +5,7 @@ require 'erb'
 class BaseTest < Minitest::Test
   setup do
     @base = Sinatra.new(Sinatra::Base)
-    @base.set :views, File.dirname(__FILE__) + "/views"
+    @base.set :views, __dir__ + "/views"
   end
 
   it 'allows unicode strings in ascii templates per default (1.9)' do

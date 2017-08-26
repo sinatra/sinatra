@@ -14,10 +14,10 @@ RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
 
 require 'rack'
 
-testdir = File.dirname(__FILE__)
+testdir = __dir__
 $LOAD_PATH.unshift testdir unless $LOAD_PATH.include?(testdir)
 
-libdir = File.dirname(File.dirname(__FILE__)) + '/lib'
+libdir = File.dirname(__dir__) + '/lib'
 $LOAD_PATH.unshift libdir unless $LOAD_PATH.include?(libdir)
 
 require 'minitest'

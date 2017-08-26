@@ -785,7 +785,7 @@ class HelpersTest < Minitest::Test
 
   describe 'send_file' do
     setup do
-      @file = File.dirname(__FILE__) + '/file.txt'
+      @file = __dir__ + '/file.txt'
       File.open(@file, 'wb') { |io| io.write('Hello World') }
     end
 
@@ -892,7 +892,7 @@ class HelpersTest < Minitest::Test
     end
 
     it "is able to send files with unknown mime type" do
-      @file = File.dirname(__FILE__) + '/file.foobar'
+      @file = __dir__ + '/file.foobar'
       File.open(@file, 'wb') { |io| io.write('Hello World') }
       send_file_app
       get '/file.txt'

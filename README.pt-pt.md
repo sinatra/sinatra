@@ -121,7 +121,7 @@ Arquivos estáticos são disponibilizados a partir do directório
 `:public_folder`
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/estatico'
+set :public_folder, __dir__ + '/estatico'
 ```
 
 Note que o nome do directório público não é incluido no URL. Um arquivo
@@ -134,7 +134,7 @@ Templates presumem-se estar localizados sob o directório `./views`. Para
 utilizar um directório de views diferente:
 
 ```ruby
-set :views, File.dirname(__FILE__) + '/modelo'
+set :views, __dir__ + '/modelo'
 ```
 
 Uma coisa importante a ser lembrada é que você sempre tem as referências
@@ -757,7 +757,7 @@ Alternativamente, pode adicionar o directório do `sinatra/lib` no
 `LOAD_PATH` do seu aplicativo:
 
 ```ruby
-$LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
+$LOAD_PATH.unshift __dir__ + '/sinatra/lib'
 require 'rubygems'
 require 'sinatra'
 

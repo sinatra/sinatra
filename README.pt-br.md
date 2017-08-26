@@ -374,7 +374,7 @@ Arquivos estáticos são disponibilizados a partir do diretório
 `:public_folder`
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/estatico'
+set :public_folder, __dir__ + '/estatico'
 ```
 
 Note que o nome do diretório público não é incluido na URL. Um arquivo
@@ -1728,7 +1728,7 @@ Alternativamente, você pode adicionar o diretório do `sinatra/lib` no
 `LOAD_PATH` do seu aplicativo:
 
 ```ruby
-$LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
+$LOAD_PATH.unshift __dir__ + '/sinatra/lib'
 require 'rubygems'
 require 'sinatra'
 

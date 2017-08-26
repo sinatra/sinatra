@@ -1,6 +1,6 @@
 # encoding: UTF-8
 require File.expand_path('../helper', __FILE__)
-File.delete(File.dirname(__FILE__) + '/views/layout.test') rescue nil
+File.delete(__dir__ + '/views/layout.test') rescue nil
 
 class TestTemplate < Tilt::Template
   def prepare
@@ -18,7 +18,7 @@ class TemplatesTest < Minitest::Test
   def render_app(base=Sinatra::Base, options = {}, &block)
     base, options = Sinatra::Base, base if base.is_a? Hash
     mock_app(base) do
-      set :views, File.dirname(__FILE__) + '/views'
+      set :views, __dir__ + '/views'
       set options
       get('/', &block)
       template(:layout3) { "Layout 3!\n" }
@@ -27,7 +27,7 @@ class TemplatesTest < Minitest::Test
   end
 
   def with_default_layout
-    layout = File.dirname(__FILE__) + '/views/layout.test'
+    layout = __dir__ + '/views/layout.test'
     File.open(layout, 'wb') { |io| io.write "Layout!\n" }
     yield
   ensure
@@ -314,7 +314,7 @@ class TemplatesTest < Minitest::Test
     assert_equal 'template in superclass', base.templates[:foo].first.call
 
     mock_app(base) do
-      set :views, File.dirname(__FILE__) + '/views'
+      set :views, __dir__ + '/views'
       template(:foo) { 'template in subclass' }
       get('/') { render :test, :foo }
     end
@@ -373,7 +373,7 @@ class TemplatesTest < Minitest::Test
 
   it "is possible to use custom logic for finding template files" do
     mock_app do
-      set :views, ["a", "b"].map { |d| File.dirname(__FILE__) + '/views/' + d }
+      set :views, ["a", "b"].map { |d| __dir__ + '/views/' + d }
       def find_template(views, name, engine, &block)
         Array(views).each { |v| super(v, name, engine, &block) }
       end

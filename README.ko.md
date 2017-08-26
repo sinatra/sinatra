@@ -385,7 +385,7 @@ end
 변경하려면 `:public_folder` 옵션을 지정하면 됩니다.
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/static'
+set :public_folder, __dir__ + '/static'
 ```
 
 public 디렉터리명은 URL에 포함되지 않는다는 점에 주의하세요.

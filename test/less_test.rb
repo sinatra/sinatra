@@ -6,7 +6,7 @@ require 'less'
 class LessTest < Minitest::Test
   def less_app(options = {}, &block)
     mock_app do
-      set :views, File.dirname(__FILE__) + '/views'
+      set :views, __dir__ + '/views'
       set options
       get('/', &block)
     end
