@@ -2356,6 +2356,11 @@ set :protection, :session => true
       priority, default depends on Ruby implementation.
     </dd>
 
+  <dt>server_settings</dt>
+    <dd>
+      If you are using a WEBrick web server, presumably for your development environment, you can pass a hash of options to <tt>server_settings</tt>, such as <tt>SSLEnable</tt> or <tt>SSLVerifyClient</tt>. However, web servers such as Puma and Thin do not support this, so you can set <tt>server_settings</tt> by defining it as a method when you call <tt>configure</tt>.
+    </dd>
+
   <dt>sessions</dt>
     <dd>
       Enable cookie-based sessions support using
