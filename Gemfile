@@ -19,7 +19,7 @@ gem 'yard'
 gem "rack-protection", path: "rack-protection"
 gem "sinatra-contrib", path: "sinatra-contrib"
 
-gem "twitter-text", "1.14.0"
+gem "twitter-text", "1.14.7"
 
 if RUBY_ENGINE == 'jruby'
   gem 'nokogiri', '!= 1.5.0'
