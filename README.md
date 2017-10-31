@@ -2456,6 +2456,33 @@ get '/' do
 end
 ```
 
+Certain environments work better with certain types of web servers. Generally, it is good practice to use a WEBrick server for your development environment, but to use a Unicorn, Thin, or Puma server for your production environment because they can run multiple workers (and therefore process more tasks) simultaneously.
+
+There are some minor differences in using a WEBrick server as opposed to other servers. For example, a WEBrick server can receive a hash of `server_settings`, like so:
+
+```ruby
+set :server_settings,
+  :SSLEnable        => true,
+  :SSLVerifyClient  => true,
+  :SSlCertName      => [['CN', 'Sinatra']]
+```
+
+To accomplish this in a production environment using a different type of server, you must define a `server_settings` method within the `configure` call, which itself must be within a class that inherits from `settings`, which would look like this:
+
+```ruby
+configure do
+  class << settings
+    def server_settings
+      {
+        :backend => Thin,
+        :private_key_file => File.dirname(__FILE__) + "/server.key",
+        :verify_peer => false
+      }
+    end
+  end
+end
+```
+
 ## Error Handling
 
 Error handlers run within the same context as routes and before filters,
