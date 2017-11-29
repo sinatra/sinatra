@@ -103,4 +103,4 @@ fine).
 
 * ["Good First Issue"](https://github.com/sinatra/sinatra/labels/good%20first%20issue): Potential first time contributors should start here
 
-* ["Wishlist"](https://github.com/sinatra/sinatra/labels/Wishlistgit): All the things I wish we had but have no time for
+* ["Wishlist"](https://github.com/sinatra/sinatra/labels/Wishlist): All the things I wish we had but have no time for
