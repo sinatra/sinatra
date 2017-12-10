@@ -614,7 +614,7 @@ Backported from 1.3.0:
 
  * The request object was shared between multiple Sinatra instances in the
    same middleware chain. This caused issues if any non-sinatra routing
-   happend in-between two of those instances, or running a request twice
+   happened in-between two of those instances, or running a request twice
    against an application (described in the README). The caching was reverted.
    See GH#239 and GH#256 for more infos. (Konstantin Haase)
 
