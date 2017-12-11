@@ -36,7 +36,7 @@ module Sinatra
   #
   # **Don't forget to override #app_file specific to your application!**
   #
-  # Whereever you need this test backend, here's how you manage it. The following example assumes you
+  # Wherever you need this test backend, here's how you manage it. The following example assumes you
   # have a test in your app that needs to be run against your test backend.
   #
   #   runner = ServerRunner.new

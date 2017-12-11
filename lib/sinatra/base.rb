@@ -1434,7 +1434,7 @@ module Sinatra
         return unless running?
         # Use Thin's hard #stop! if available, otherwise just #stop.
         running_server.respond_to?(:stop!) ? running_server.stop! : running_server.stop
-        $stderr.puts "== Sinatra has ended his set (crowd applauds)" unless supress_messages?
+        $stderr.puts "== Sinatra has ended his set (crowd applauds)" unless suppress_messages?
         set :running_server, nil
         set :handler_name, nil
       end
@@ -1520,7 +1520,7 @@ module Sinatra
         prototype
         # Run the instance we created:
         handler.run(self, server_settings) do |server|
-          unless supress_messages?
+          unless suppress_messages?
             $stderr.puts "== Sinatra (v#{Sinatra::VERSION}) has taken the stage on #{port} for #{environment} with backup from #{handler_name}"
           end
 
@@ -1533,7 +1533,7 @@ module Sinatra
         end
       end
 
-      def supress_messages?
+      def suppress_messages?
         handler_name =~ /cgi/i || quiet
       end
 
