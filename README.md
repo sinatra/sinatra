@@ -2579,7 +2579,7 @@ typically don't have to `use` them explicitly.
 
 You can find useful middleware in
 [rack](https://github.com/rack/rack/tree/master/lib/rack),
-[rack-contrib](https://github.com/rack/rack-contrib#readm),
+[rack-contrib](https://github.com/rack/rack-contrib#readme),
 or in the [Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
 
 ## Testing
