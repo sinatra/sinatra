@@ -25,26 +25,61 @@ module Sinatra
 
       if prefers_plain_text?(env)
         content_type = "text/plain"
-        exception = dump_exception(e)
+        body = dump_exception(e)
       else
         content_type = "text/html"
-        exception = pretty(env, e)
+        body = pretty(env, e)
       end
 
       env["rack.errors"] = errors
-
-      # Post 893a2c50 in rack/rack, the #pretty method above, implemented in
-      # Rack::ShowExceptions, returns a String instead of an array.
-      body = Array(exception)
 
       [
         500,
         {
           "Content-Type" => content_type,
-          "Content-Length" => body.join.bytesize.to_s
+          "Content-Length" => body.bytesize.to_s
         },
-        body
+        [body]
       ]
+    end
+
+    # Pulled from Rack::ShowExceptions in order to override TEMPLATE.
+    # If Rack provides another way to override, this could be removed
+    # in the future.
+    def pretty(env, exception)
+      req = Rack::Request.new(env)
+
+      # This double assignment is to prevent an "unused variable" warning on
+      # Ruby 1.9.3.  Yes, it is dumb, but I don't like Ruby yelling at me.
+      path = path = (req.script_name + req.path_info).squeeze("/")
+
+      # This double assignment is to prevent an "unused variable" warning on
+      # Ruby 1.9.3.  Yes, it is dumb, but I don't like Ruby yelling at me.
+      frames = frames = exception.backtrace.map { |line|
+        frame = OpenStruct.new
+        if line =~ /(.*?):(\d+)(:in `(.*)')?/
+          frame.filename = $1
+          frame.lineno = $2.to_i
+          frame.function = $4
+
+          begin
+            lineno = frame.lineno-1
+            lines = ::File.readlines(frame.filename)
+            frame.pre_context_lineno = [lineno-CONTEXT, 0].max
+            frame.pre_context = lines[frame.pre_context_lineno...lineno]
+            frame.context_line = lines[lineno].chomp
+            frame.post_context_lineno = [lineno+CONTEXT, lines.size].min
+            frame.post_context = lines[lineno+1..frame.post_context_lineno]
+          rescue
+          end
+
+          frame
+        else
+          nil
+        end
+      }.compact
+
+      TEMPLATE.result(binding)
     end
 
     private
@@ -360,6 +395,3 @@ enabled the <code>show_exceptions</code> setting.</p>
 HTML
   end
 end
-
-Rack::ShowExceptions.send :remove_const, "TEMPLATE"
-Rack::ShowExceptions.const_set "TEMPLATE", Sinatra::ShowExceptions::TEMPLATE
