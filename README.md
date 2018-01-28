@@ -1,6 +1,6 @@
 # Sinatra
 
-[![Build Status](https://secure.travis-ci.org/sinatra/sinatra.svg)](http://travis-ci.org/sinatra/sinatra)
+[![Build Status](https://secure.travis-ci.org/sinatra/sinatra.svg)](https://travis-ci.org/sinatra/sinatra)
 
 Sinatra is a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) for
 quickly creating web applications in Ruby with minimal effort:
@@ -28,8 +28,9 @@ ruby myapp.rb
 
 View at: [http://localhost:4567](http://localhost:4567)
 
-The code you changed will not take effect until you restart the server.  
-Please restart the server every time you change or use [sinatra/reloader](http://www.sinatrarb.com/contrib/reloader).  
+The code you changed will not take effect until you restart the server.
+Please restart the server every time you change or use
+[sinatra/reloader](http://www.sinatrarb.com/contrib/reloader).
 
 It is recommended to also run `gem install thin`, which Sinatra will
 pick up if available.
@@ -78,9 +79,9 @@ pick up if available.
     * [Filters](#filters)
     * [Helpers](#helpers)
         * [Using Sessions](#using-sessions)
-          * [Session Secret Security](#session-secret-security)
-          * [Session Config](#session-config)
-          * [Choosing Your Own Session Middleware](#choosing-your-own-session-middleware)
+            * [Session Secret Security](#session-secret-security)
+            * [Session Config](#session-config)
+            * [Choosing Your Own Session Middleware](#choosing-your-own-session-middleware)
         * [Halting](#halting)
         * [Passing](#passing)
         * [Triggering Another Route](#triggering-another-route)
@@ -256,11 +257,11 @@ end
 ```
 
 By the way, unless you disable the path traversal attack protection (see
-[below](#configuring-attack-protection)), the request path might be modified before matching against your
-routes.
+[below](#configuring-attack-protection)), the request path might be modified before
+matching against your routes.
 
-You may customize the [Mustermann](https://github.com/sinatra/mustermann) options used for a given route by passing in a
-`:mustermann_opts` hash:
+You may customize the [Mustermann](https://github.com/sinatra/mustermann#readme)
+options used for a given route by passing in a `:mustermann_opts` hash:
 
 ```ruby
 get '\A/posts\z', :mustermann_opts => { :type => :regexp, :check_anchors => false } do
@@ -431,7 +432,7 @@ Note that the public directory name is not included in the URL. A file
 `./public/css/style.css` is made available as
 `http://example.com/css/style.css`.
 
-Use the `:static_cache_control` setting (see [below](`#cache-control)) to add
+Use the `:static_cache_control` setting (see [below](#cache-control)) to add
 `Cache-Control` header info.
 
 ## Views / Templates
@@ -667,7 +668,7 @@ It also takes a block for inline templates (see [example](#inline-templates)).
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
+    <td><a href="https://sass-lang.com/" title="sass">sass</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
@@ -684,7 +685,7 @@ It also takes a block for inline templates (see [example](#inline-templates)).
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
+    <td><a href="https://sass-lang.com/" title="sass">sass</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
@@ -742,8 +743,8 @@ template, you almost always want to pass locals to it.
       Anyone of:
         <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-        <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
-        <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
+        <a href="https://github.com/ged/bluecloth" title="BlueCloth">BlueCloth</a>,
+        <a href="https://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
         <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
     </td>
   </tr>
@@ -893,7 +894,7 @@ almost always want to pass locals to it.
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="http://markaby.github.io/" title="Markaby">Markaby</a></td>
+    <td><a href="https://markaby.github.io/" title="Markaby">Markaby</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
@@ -1022,7 +1023,7 @@ template than for the layout by passing the `:layout_engine` option.
       <a href="https://github.com/josh/ruby-coffee-script" title="Ruby CoffeeScript">
         CoffeeScript
       </a> and a
-      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
+      <a href="https://github.com/sstephenson/execjs" title="ExecJS">
         way to execute javascript
       </a>
     </td>
@@ -1046,7 +1047,7 @@ template than for the layout by passing the `:layout_engine` option.
       <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
         Stylus
       </a> and a
-      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
+      <a href="https://github.com/sstephenson/execjs" title="ExecJS">
         way to execute javascript
       </a>
     </td>
@@ -1120,7 +1121,7 @@ present(resource);
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="https://github.com/blambeau/wlang/" title="WLang">WLang</a></td>
+    <td><a href="https://github.com/blambeau/wlang" title="WLang">WLang</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
@@ -1276,8 +1277,8 @@ get '/' do
 end
 ```
 
-Renders `./views/index.myat`. See https://github.com/rtomayko/tilt to
-learn more about Tilt.
+Renders `./views/index.myat`. Learn more about
+[Tilt](https://github.com/rtomayko/tilt#readme).
 
 ### Using Custom Logic for Template Lookup
 
@@ -1438,8 +1439,8 @@ $ ruby -e "require 'securerandom'; puts SecureRandom.hex(64)"
 
 **Session Secret Generation (Bonus Points)**
 
-Use the [sysrandom gem](https://github.com/cryptosphere/sysrandom) to prefer
-use of system RNG facilities to generate random values instead of
+Use the [sysrandom gem](https://github.com/cryptosphere/sysrandom#readme) to
+prefer use of system RNG facilities to generate random values instead of
 userspace `OpenSSL` which MRI Ruby currently defaults to:
 
 ```text
@@ -1469,7 +1470,7 @@ Setup your app config to fail-safe to a secure random secret
 if the `SESSION_SECRET` environment variable is not available.
 
 For bonus points use the [sysrandom
-gem](https://github.com/cryptosphere/sysrandom) here as well:
+gem](https://github.com/cryptosphere/sysrandom#readme) here as well:
 
 ```ruby
 require 'securerandom'
@@ -1637,7 +1638,7 @@ get '/foo' do
   status 418
   headers \
     "Allow"   => "BREW, POST, GET, PROPFIND, WHEN",
-    "Refresh" => "Refresh: 20; http://www.ietf.org/rfc/rfc2324.txt"
+    "Refresh" => "Refresh: 20; https://ietf.org/rfc/rfc2324.txt"
   body "I'm a tea pot!"
 end
 ```
@@ -1884,7 +1885,7 @@ etag @article.sha1, :weak
 These helpers will not do any caching for you, but rather feed the necessary
 information to your cache. If you are looking for a quick
 reverse-proxy caching solution, try
-[rack-cache](https://github.com/rtomayko/rack-cache):
+[rack-cache](https://github.com/rtomayko/rack-cache#readme):
 
 ```ruby
 require "rack/cache"
@@ -2358,7 +2359,12 @@ set :protection, :session => true
 
   <dt>server_settings</dt>
     <dd>
-      If you are using a WEBrick web server, presumably for your development environment, you can pass a hash of options to <tt>server_settings</tt>, such as <tt>SSLEnable</tt> or <tt>SSLVerifyClient</tt>. However, web servers such as Puma and Thin do not support this, so you can set <tt>server_settings</tt> by defining it as a method when you call <tt>configure</tt>.
+      If you are using a WEBrick web server, presumably for your development
+      environment, you can pass a hash of options to <tt>server_settings</tt>,
+      such as <tt>SSLEnable</tt> or <tt>SSLVerifyClient</tt>. However, web
+      servers such as Puma and Thin do not support this, so you can set
+      <tt>server_settings</tt> by defining it as a method when you call
+      <tt>configure</tt>.
     </dd>
 
   <dt>sessions</dt>
@@ -2539,7 +2545,7 @@ and additional debugging information in your browser.
 
 ## Rack Middleware
 
-Sinatra rides on [Rack](http://rack.github.io/), a minimal standard
+Sinatra rides on [Rack](https://rack.github.io/), a minimal standard
 interface for Ruby web frameworks. One of Rack's most interesting
 capabilities for application developers is support for "middleware" --
 components that sit between the server and your application monitoring
@@ -3003,7 +3009,9 @@ Options are:
 
 ### Multi-threading
 
-_Paraphrasing from [this StackOverflow answer][so-answer] by Konstantin_
+_Paraphrasing from
+[this StackOverflow answer](https://stackoverflow.com/a/6282999/5245129)
+by Konstantin_
 
 Sinatra doesn't impose any concurrency model, but leaves that to the
 underlying Rack handler (server) like Thin, Puma or WEBrick. Sinatra
@@ -3033,9 +3041,6 @@ To start the server, the command would be:
 ```shell
 thin --threaded start
 ```
-
-
-[so-answer]: http://stackoverflow.com/questions/6278817/is-sinatra-multi-threaded/6282999#6282999)
 
 ## Requirement
 
@@ -3105,7 +3110,7 @@ to get some of the latest features.
 ### With Bundler
 
 If you want to run your application with the latest Sinatra, using
-[Bundler](http://bundler.io) is the recommended way.
+[Bundler](https://bundler.io) is the recommended way.
 
 First, install bundler, if you haven't:
 
@@ -3135,7 +3140,7 @@ bundle exec ruby myapp.rb
 
 ## Versioning
 
-Sinatra follows [Semantic Versioning](http://semver.org/), both SemVer and
+Sinatra follows [Semantic Versioning](https://semver.org/), both SemVer and
 SemVerTag.
 
 ## Further Reading
@@ -3146,14 +3151,14 @@ SemVerTag.
   help? Have a patch?
 * [Issue tracker](https://github.com/sinatra/sinatra/issues)
 * [Twitter](https://twitter.com/sinatra)
-* [Mailing List](http://groups.google.com/group/sinatrarb/topics)
-* IRC: [#sinatra](irc://chat.freenode.net/#sinatra) on http://freenode.net
-* [Sinatra & Friends](https://sinatrarb.slack.com) on Slack and see
-  [here](https://sinatra-slack.herokuapp.com/) for an invite.
-* [Sinatra Book](https://github.com/sinatra/sinatra-book/) Cookbook Tutorial
-* [Sinatra Recipes](http://recipes.sinatrarb.com/) Community
-  contributed recipes
+* [Mailing List](https://groups.google.com/forum/#!forum/sinatrarb)
+* IRC: [#sinatra](irc://chat.freenode.net/#sinatra) on [Freenode](https://freenode.net)
+* [Sinatra & Friends](https://sinatrarb.slack.com) on Slack
+  ([get an invite](https://sinatra-slack.herokuapp.com/))
+* [Sinatra Book](https://github.com/sinatra/sinatra-book) - Cookbook Tutorial
+* [Sinatra Recipes](http://recipes.sinatrarb.com/) - Community contributed
+  recipes
 * API documentation for the [latest release](http://www.rubydoc.info/gems/sinatra)
   or the [current HEAD](http://www.rubydoc.info/github/sinatra/sinatra) on
-  http://www.rubydoc.info/
+  [RubyDoc](http://www.rubydoc.info/)
 * [CI server](https://travis-ci.org/sinatra/sinatra)
