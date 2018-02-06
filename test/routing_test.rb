@@ -629,6 +629,29 @@ class RoutingTest < Minitest::Test
     assert_equal 'right on', body
   end
 
+  it 'makes regular expression captures available in params[:captures] for concatenated routes' do
+    with_regexp = Mustermann.new('/prefix') + Mustermann.new("/fo(.*)/ba(.*)", type: :regexp)
+    without_regexp = Mustermann.new('/prefix', type: :identity) + Mustermann.new('/baz')
+    mock_app {
+      get(with_regexp) do
+        assert_equal ['orooomma', 'f'], params[:captures]
+        'right on'
+      end
+      get(without_regexp) do
+        assert !params.keys.include?(:captures)
+        'no captures here'
+      end
+    }
+
+    get '/prefix/foorooomma/baf'
+    assert ok?
+    assert_equal 'right on', body
+
+    get '/prefix/baz'
+    assert ok?
+    assert_equal 'no captures here', body
+  end
+
   it 'supports regular expression look-alike routes' do
     mock_app {
       get(PatternLookAlike.new) do

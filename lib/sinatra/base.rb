@@ -1024,7 +1024,8 @@ module Sinatra
       params.delete("ignore") # TODO: better params handling, maybe turn it into "smart" object or detect changes
       original, @params = @params, @params.merge(params) if params.any?
 
-      if pattern.is_a? Mustermann::Regular
+      regexp_exists = pattern.is_a?(Mustermann::Regular) || (pattern.respond_to?(:patterns) && pattern.patterns.any? {|subpattern| subpattern.is_a?(Mustermann::Regular)} )
+      if regexp_exists
         captures           = pattern.match(route).captures
         values            += captures
         @params[:captures] = captures
