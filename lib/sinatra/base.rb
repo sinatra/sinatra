@@ -915,6 +915,7 @@ module Sinatra
 
     def call!(env) # :nodoc:
       @env      = env
+      @params   = IndifferentHash.new
       @request  = Request.new(env)
       @response = Response.new
       template_cache.clear if settings.reload_templates
@@ -1087,7 +1088,7 @@ module Sinatra
 
     # Dispatch a request with error handling.
     def dispatch!
-      force_encoding(@params = IndifferentHash[@request.params])
+      force_encoding(@params.merge!(@request.params))
 
       invoke do
         static! if settings.static? && (request.get? || request.head?)

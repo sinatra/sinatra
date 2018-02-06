@@ -201,6 +201,21 @@ class RoutingTest < Minitest::Test
     assert_equal "This is not a drill either", response.body
   end
 
+  it "captures the custom exception message of a BadRequest" do
+    mock_app {
+      get('/') {}
+
+      error Sinatra::BadRequest do
+        'This is not a drill either'
+      end
+    }
+
+    get "/", "foo" => "", "foo[]" => ""
+    assert_equal "26", response["Content-Length"]
+    assert_equal 400, status
+    assert_equal "This is not a drill either", response.body
+  end
+
   it "uses 404 error handler for not matching route" do
     mock_app {
       not_found do
