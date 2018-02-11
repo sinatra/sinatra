@@ -24,14 +24,17 @@ module Rack
           encoding = path.encoding
           dot   = '.'.encode(encoding)
           slash = '/'.encode(encoding)
+          backslash = '\\'.encode(encoding)
         else
           # Ruby 1.8
           dot   = '.'
           slash = '/'
+          backslash = '\\'
         end
 
         parts     = []
-        unescaped = path.gsub(/%2e/i, dot).gsub(/%2f/i, slash)
+        unescaped = path.gsub(/%2e/i, dot).gsub(/%2f/i, slash).gsub(/%5c/i, backslash)
+        unescaped = unescaped.gsub(backslash, slash)
 
         unescaped.split(slash).each do |part|
           next if part.empty? or part == dot
