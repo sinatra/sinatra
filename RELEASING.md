@@ -1,3 +1,5 @@
+# Releasing Sinatra 🥂
+
 This document explains releasing process for all Sinatra gems.
 
 Since everything is bundled in same repo (except `Mustermann`), we now
