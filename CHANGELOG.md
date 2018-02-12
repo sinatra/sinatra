@@ -1,4 +1,4 @@
-## 2.0.1 / not released yet
+## 2.0.1 / 2018-02-12
 
 * Repair nested namespaces, by avoiding prefix duplication #1322. Fixes #1310 by Kunpei Sakai
 
