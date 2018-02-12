@@ -1,16 +1,21 @@
-This document explains releasing process for Sinatra, sinatra-contrib and
-rack-protection gems. Since all the gems are bundled in same repo, we now
-have bunch of rake tasks to manage release process.
+This document explains releasing process for all Sinatra gems.
 
+Since everything is bundled in same repo (except `Mustermann`), we now
+have one rake task to cut a release.
+
+(Please refer to [Mustermann](https://github.com/sinatra/mustermann) if that also needs a release.)
 
 ### Releasing
-For relesing new version of all the 3 gems, this is the procedure.
+For relesing new version of [`sinatra`, `sinatra-contrib`, `rack-protection`], this is the procedure:
 
-* Update `VERSION` file with target version
-* Run `bundle exec rake release:all`
+1. Update `VERSION` file with target version
+2. Run `bundle exec rake release:all`
+3. ???
+4. Profit!!!
 
+Thats it!
 
-Thats it! The role of rake task is:
+This rake task can be broken down as:
 
 * Pick up latest version string from `VERSION` file
 * Run all tests to ensure gems are not broken
@@ -21,8 +26,6 @@ Thats it! The role of rake task is:
 * Package all the gems, ie create all `.gem` files
 * Ensure that all the gems can be installed locally
 * If no issues, push all gems to upstream.
-
-
 
 In addition to above rake task, there are other rake tasks which can help
 with development.
