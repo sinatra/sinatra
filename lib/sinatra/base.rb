@@ -1029,7 +1029,7 @@ module Sinatra
       if regexp_exists
         captures           = pattern.match(route).captures
         values            += captures
-        @params[:captures] = captures
+        @params[:captures] = captures unless captures.nil? || captures.empty?
       else
         values += params.values.flatten
       end
