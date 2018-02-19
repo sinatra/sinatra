@@ -11,6 +11,7 @@
 * Override Rack::ShowExceptions#pretty to set custom template #1377. Fixes #1376 by Jordan Owens
 
 * Enhanced path validation in Windows #1379 by Orange Tsai
+  * The patch fixes [CVE-2018-7212](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-7212)
 
 * Improve development support and documentation by Faheel Ahmad, Shota Iguchi, Olle Jonsson, Manabu Niseki, John Hope, Horacio, Ice-Storm, GraniteRock, Raman Skaskevich, Carlos Azuaje, 284km, Dan Rice and Zachary Scott
 
