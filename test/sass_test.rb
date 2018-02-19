@@ -62,7 +62,7 @@ class SassTest < Minitest::Test
   it "passes SASS options to the Sass engine" do
     sass_app do
       sass(
-        "#sass\n  background-color: white\n  :color black\n",
+        "#sass\n  background-color: white\n  color: black\n",
         :style => :compact
       )
     end
@@ -73,7 +73,7 @@ class SassTest < Minitest::Test
   it "passes default SASS options to the Sass engine" do
     mock_app do
       set :sass, {:style => :compact} # default Sass style is :nested
-      get('/') { sass("#sass\n  background-color: white\n  :color black\n") }
+      get('/') { sass("#sass\n  background-color: white\n  color: black\n") }
     end
     get '/'
     assert ok?
