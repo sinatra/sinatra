@@ -137,7 +137,7 @@ describe Sinatra::Namespace do
 
         describe 'helpers' do
           it 'are defined using the helpers method' do
-            namespace /\/foo\/([^\/&?]+)\/bar\/([^\/&?]+)\// do
+            namespace(/\/foo\/([^\/&?]+)\/bar\/([^\/&?]+)\//) do
               helpers do
                 def foo
                   'foo'

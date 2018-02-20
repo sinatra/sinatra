@@ -98,3 +98,9 @@ fine).
 
 [ghi]: http://github.com/sinatra/sinatra/issues
 [ml]: http://groups.google.com/group/sinatrarb/topics "Sinatra Mailing List"
+
+* ["Help Wanted"](https://github.com/sinatra/sinatra/labels/help%20wanted):  Anyone willing to pitch in is open to contribute to this ticket as they see fit (will try to add context / summarize or ask for requirements)
+
+* ["Good First Issue"](https://github.com/sinatra/sinatra/labels/good%20first%20issue): Potential first time contributors should start here
+
+* ["Wishlist"](https://github.com/sinatra/sinatra/labels/Wishlist): All the things I wish we had but have no time for

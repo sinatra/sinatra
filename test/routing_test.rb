@@ -201,6 +201,21 @@ class RoutingTest < Minitest::Test
     assert_equal "This is not a drill either", response.body
   end
 
+  it "captures the custom exception message of a BadRequest" do
+    mock_app {
+      get('/') {}
+
+      error Sinatra::BadRequest do
+        'This is not a drill either'
+      end
+    }
+
+    get "/", "foo" => "", "foo[]" => ""
+    assert_equal "26", response["Content-Length"]
+    assert_equal 400, status
+    assert_equal "This is not a drill either", response.body
+  end
+
   it "uses 404 error handler for not matching route" do
     mock_app {
       not_found do
@@ -627,6 +642,29 @@ class RoutingTest < Minitest::Test
     get '/foorooomma/baf'
     assert ok?
     assert_equal 'right on', body
+  end
+
+  it 'makes regular expression captures available in params[:captures] for concatenated routes' do
+    with_regexp = Mustermann.new('/prefix') + Mustermann.new("/fo(.*)/ba(.*)", type: :regexp)
+    without_regexp = Mustermann.new('/prefix', type: :identity) + Mustermann.new('/baz')
+    mock_app {
+      get(with_regexp) do
+        assert_equal ['orooomma', 'f'], params[:captures]
+        'right on'
+      end
+      get(without_regexp) do
+        assert !params.keys.include?(:captures)
+        'no captures here'
+      end
+    }
+
+    get '/prefix/foorooomma/baf'
+    assert ok?
+    assert_equal 'right on', body
+
+    get '/prefix/baz'
+    assert ok?
+    assert_equal 'no captures here', body
   end
 
   it 'supports regular expression look-alike routes' do
