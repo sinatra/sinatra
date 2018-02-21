@@ -27,7 +27,7 @@ class ResponseTest < Minitest::Test
     assert_equal 'Hello World', @response.body.join
   end
 
-  [204, 205, 304].each do |status_code|
+  [204, 304].each do |status_code|
     it "removes the Content-Type header and body when response status is #{status_code}" do
       @response.status = status_code
       @response.body = ['Hello World']
