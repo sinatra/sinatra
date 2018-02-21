@@ -8,7 +8,7 @@ class HelpersTest < Minitest::Test
   end
 
   def status_app(code, &block)
-    code += 2 if [204, 205, 304].include? code
+    code += 2 if [204, 304].include? code
     block ||= proc { }
     mock_app do
       get('/') do

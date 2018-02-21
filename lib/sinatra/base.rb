@@ -132,7 +132,7 @@ module Sinatra
   # http://rubydoc.info/github/rack/rack/master/Rack/Response
   # http://rubydoc.info/github/rack/rack/master/Rack/Response/Helpers
   class Response < Rack::Response
-    DROP_BODY_RESPONSES = [204, 205, 304]
+    DROP_BODY_RESPONSES = [204, 304]
     def initialize(*)
       super
       headers['Content-Type'] ||= 'text/html'
