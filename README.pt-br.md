@@ -655,7 +655,7 @@ It also takes a block for inline templates (see exemplo).
 <table>
   <tr>
     <td>Dependencia</td>
-    <td><a href="http://liquidmarkup.org/" title="liquid">liquid</a></td>
+    <td><a href="https://shopify.github.io/liquid/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>Extencao do Arquivo</td>
@@ -679,7 +679,7 @@ você quase sempre precisará passar o `locals` para ele.
       Anyone of:
         <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-        <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
+        <a href="https://github.com/ged/bluecloth" title="bluecloth">BlueCloth</a>,
         <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
         <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
     </td>

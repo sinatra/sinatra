@@ -653,7 +653,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>의존성</td>
-    <td><a href="http://liquidmarkup.org/">liquid</a></td>
+    <td><a href="https://shopify.github.io/liquid/">liquid</a></td>
   </tr>
   <tr>
     <td>파일 확장자</td>
@@ -676,7 +676,7 @@ Liquid 템플릿에서는 루비 메서드(`yield` 제외)를 호출할 수 없�
     <td>
       <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
       <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-      <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
+      <a href="https://github.com/ged/bluecloth" title="bluecloth">BlueCloth</a>,
       <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
       <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
       중 아무거나

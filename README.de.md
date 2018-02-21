@@ -728,7 +728,7 @@ Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 <table>
   <tr>
     <td>Abhängigkeit</td>
-    <td><a href="http://liquidmarkup.org/">liquid</a></td>
+    <td><a href="https://shopify.github.io/liquid/">liquid</a></td>
   </tr>
   <tr>
     <td>Dateierweiterung</td>
@@ -752,7 +752,7 @@ denen man Variablen weitergibt.
     <td>Eine der folgenden Bibliotheken:
         <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-        <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
+        <a href="https://github.com/ged/bluecloth" title="bluecloth">BlueCloth</a>,
         <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a> oder
         <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
     </td>

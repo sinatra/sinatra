@@ -660,7 +660,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>依赖项</td>
-    <td><a href="http://liquidmarkup.org/" title="liquid">liquid</a></td>
+    <td><a href="https://shopify.github.io/liquid/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>文件扩展名</td>
@@ -683,7 +683,7 @@ get('/') { markdown :index }
       下列任一:
         <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-        <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
+        <a href="https://github.com/ged/bluecloth" title="bluecloth">BlueCloth</a>,
         <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
         <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
     </td>
