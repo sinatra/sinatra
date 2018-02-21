@@ -610,7 +610,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>依存</td>
-    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
+    <td><a href="https://sass-lang.com/" title="sass">sass</a></td>
   </tr>
   <tr>
     <td>ファイル拡張子</td>
@@ -627,7 +627,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>依存</td>
-    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
+    <td><a href="https://sass-lang.com/" title="sass">sass</a></td>
   </tr>
   <tr>
     <td>ファイル拡張子</td>
@@ -661,7 +661,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>依存</td>
-    <td><a href="http://liquidmarkup.org/" title="liquid">liquid</a></td>
+    <td><a href="https://shopify.github.io/liquid/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>ファイル拡張子</td>
@@ -684,8 +684,8 @@ LiquidテンプレートからRubyのメソッド(`yield`を除く)を呼び出�
       次の何れか:
         <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-        <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
-        <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
+        <a href="https://github.com/ged/bluecloth" title="bluecloth">BlueCloth</a>,
+        <a href="https://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
         <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
     </td>
   </tr>
@@ -786,7 +786,7 @@ RDocからはRubyを呼ぶことができないので、RDocで書かれたレ�
 <table>
  <tr>
    <td>依存</td>
-   <td><a href="http://asciidoctor.org/" title="Asciidoctor">Asciidoctor</a></td>
+   <td><a href="https://asciidoctor.org/" title="Asciidoctor">Asciidoctor</a></td>
  </tr>
  <tr>
    <td>ファイル拡張子</td>
@@ -824,7 +824,7 @@ RadiusテンプレートからRubyのメソッドを直接呼び出すことが�
 <table>
   <tr>
     <td>依存</td>
-    <td><a href="http://markaby.github.io/" title="Markaby">Markaby</a></td>
+    <td><a href="https://markaby.github.io/" title="Markaby">Markaby</a></td>
   </tr>
   <tr>
     <td>ファイル拡張子</td>
@@ -1456,7 +1456,7 @@ get '/foo' do
   status 418
   headers \
     "Allow"   => "BREW, POST, GET, PROPFIND, WHEN",
-    "Refresh" => "Refresh: 20; http://www.ietf.org/rfc/rfc2324.txt"
+    "Refresh" => "Refresh: 20; https://www.ietf.org/rfc/rfc2324.txt"
   body "I'm a tea pot!"
 end
 ```
@@ -1586,7 +1586,7 @@ end
 
 ```ruby
 redirect to('/bar'), 303
-redirect 'http://www.google.com/', 'wrong place, buddy'
+redirect 'https://www.google.com/', 'wrong place, buddy'
 ```
 
 また、`redirect back`を使えば、簡単にユーザが来たページへ戻るリダイレクトを作れます。
@@ -2219,7 +2219,7 @@ Sinatraを開発環境の下で実行している場合は、特別な`not_found
 
 ## Rackミドルウェア(Rack Middleware)
 
-SinatraはRuby製Webフレームワークのミニマルな標準的インタフェースである[Rack](http://rack.github.io/)上に構築されています。アプリケーションデベロッパーにとってRackにおける最も興味深い機能は、「ミドルウェア(middleware)」をサポートしていることであり、これは、サーバとアプリケーションとの間に置かれ、HTTPリクエスト/レスポンスを監視および/または操作することで、各種の汎用的機能を提供するコンポーネントです。
+SinatraはRuby製Webフレームワークのミニマルな標準的インタフェースである[Rack](https://rack.github.io/)上に構築されています。アプリケーションデベロッパーにとってRackにおける最も興味深い機能は、「ミドルウェア(middleware)」をサポートしていることであり、これは、サーバとアプリケーションとの間に置かれ、HTTPリクエスト/レスポンスを監視および/または操作することで、各種の汎用的機能を提供するコンポーネントです。
 
 Sinatraはトップレベルの`use`メソッドを通して、Rackミドルウェアパイプラインの構築を楽にします。
 
@@ -2636,7 +2636,8 @@ ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
 
 ### マルチスレッド
 
-_この[StackOverflow][so-answer]でのKonstantinによる回答を言い換えています。_
+_この[StackOverflow](https://stackoverflow.com/a/6282999/5245129)
+のKonstantinによる回答を言い換えています。_
 
 Sinatraでは同時実行モデルを負わせることはできませんが、根本的な部分であるThinやPuma、WebrickのようなRackハンドラ(サーバー)部分に委ねることができます。
 Sinatra自身はスレッドセーフであり、もしRackハンドラが同時実行モデルのスレッドを使用していても問題はありません。
@@ -2662,8 +2663,6 @@ App.run!
 ```
 thin --threaded start
 ```
-
-[so-answer]: http://stackoverflow.com/questions/6278817/is-sinatra-multi-threaded/6282999#6282999)
 
 ## 必要環境
 
@@ -2734,7 +2733,7 @@ gem install sinatra --pre
 
 ### Bundlerを使う場合
 
-最新のSinatraでアプリケーションを動作させたい場合には、[Bundler](http://bundler.io)を使うのがお薦めのやり方です。
+最新のSinatraでアプリケーションを動作させたい場合には、[Bundler](https://bundler.io)を使うのがお薦めのやり方です。
 
 まず、Bundlerがなければそれをインストールします。
 
@@ -2797,7 +2796,7 @@ sudo rake install
 
 ## バージョニング(Versioning)
 
-Sinatraは、[Semantic Versioning](http://semver.org/)におけるSemVerおよびSemVerTagの両方に準拠しています。
+Sinatraは、[Semantic Versioning](https://semver.org/)におけるSemVerおよびSemVerTagの両方に準拠しています。
 
 ## 参考文献
 
@@ -2805,7 +2804,7 @@ Sinatraは、[Semantic Versioning](http://semver.org/)におけるSemVerおよ�
 * [プロジェクトに参加(貢献)する](http://www.sinatrarb.com/contributing.html) - バグレポート パッチの送信、サポートなど
 * [Issue tracker](https://github.com/sinatra/sinatra/issues)
 * [Twitter](https://twitter.com/sinatra)
-* [メーリングリスト](http://groups.google.com/group/sinatrarb/topics)
+* [メーリングリスト](https://groups.google.com/group/sinatrarb/topics)
 * http://freenode.net上のIRC: [#sinatra](irc://chat.freenode.net/#sinatra)
 * [Sinatra Book](https://github.com/sinatra/sinatra-book/) クックブック、チュートリアル
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) コミュニティによるレシピ集
