@@ -104,6 +104,11 @@ module Sinatra
       super(*keys.map(&method(:convert_key)))
     end if method_defined?(:fetch_values) # Added in Ruby 2.3
 
+    def slice(*keys)
+      keys.map!(&method(:convert_key))
+      self.class[super(*keys)]
+    end if method_defined?(:slice) # Added in Ruby 2.5
+
     def values_at(*keys)
       super(*keys.map(&method(:convert_key)))
     end
