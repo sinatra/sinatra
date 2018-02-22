@@ -9,26 +9,20 @@ module Rack
     # Supported browsers:: all
     # More infos::         http://en.wikipedia.org/wiki/Cross-site_request_forgery
     #
-    # Only accepts unsafe HTTP requests if a given access token matches the token
-    # included in the session.
+    # This middleware only accepts requests other than <tt>GET</tt>,
+    # <tt>HEAD</tt>, <tt>OPTIONS</tt>, <tt>TRACE</tt> if their given access
+    # token matches the token included in the session.
+    #
+    # It checks the <tt>X-CSRF-Token</tt> header and the <tt>POST</tt> form
+    # data.
     #
     # Compatible with the {rack-csrf}[https://rubygems.org/gems/rack_csrf] gem.
     #
-    # The middleware only accepts unsafe HTTP requests (exclude <tt>GET</tt>,
-    # <tt>HEAD</tt>, <tt>OPTIONS</tt>, <tt>TRACE</tt>) if a given access token
-    # matches the token included in the session.
-    # 
-    # It checks either <tt>X-CSRF-Token</tt> header or <tt>POST</tt> form data.
-    #
     # == Options
     #
-    # [authenticity_param] Defines the name of the param that should contain
-    #                      the token on a request.
-    #
-    # == Example: Using option <tt>authenticity_token</tt>
-    #
-    # To customize the authenticity parameter for form data (default is <tt>"authenticity_token"</tt>):
-    #   use Rack::Protection::AuthenticityToken, authenticity_param: 'your_param_name'
+    # [<tt>:authenticity_param</tt>] the name of the param that should contain
+    #                                the token on a request. Default value:
+    #                                <tt>"authenticity_token"</tt>
     #
     # == Example: Forms application
     #
@@ -43,43 +37,50 @@ module Rack
     #
     # Here is <tt>server.rb</tt>:
     #
-    #  require 'rack/protection'
-    #  csrf_param = 'token'
+    #   require 'rack/protection'
     #
-    #  app = Rack::Builder.app do
-    #    use Rack::Session::Cookie, secret: 'secret'
-    #    use Rack::Protection::AuthenticityToken, authenticity_param: csrf_param
-    #    run -> (env) do
-    #      [200, {}, [
-    #        <<~EOS
-    #          <!DOCTYPE html>
-    #          <html lang="en">
-    #          <head>
-    #            <meta charset="UTF-8">
-    #            <title>rack-protection minimal example</title>
-    #            <meta content="#{csrf_param}" name="csrf-param" />
-    #            <meta content="#{env['rack.session'][:csrf]}" name="csrf-token" />
-    #          </head>
-    #          <body>
-    #            <h1>Without Authenticity Token</h1>
-    #            <form action="" method="post">
-    #              <input type="text" name="foo">
-    #              <input type="submit">
-    #            </form>
-    #            <h1>With Authenticity Token</h1>
-    #            <form action="" method="post">
-    #              <input type="text" name="foo">
-    #              <input type="hidden" name="token" value="#{env['rack.session'][:csrf]}">
-    #              <input type="submit">
-    #            </form>
-    #          </body>
-    #          </html>
-    #        EOS
-    #      ]]
-    #    end
-    #  end
+    #   app = Rack::Builder.app do
+    #     use Rack::Session::Cookie, secret: 'secret'
+    #     use Rack::Protection::AuthenticityToken
     #
-    #  Rack::Handler::WEBrick.run app
+    #     run -> (env) do
+    #       [200, {}, [
+    #         <<~EOS
+    #           <!DOCTYPE html>
+    #           <html lang="en">
+    #           <head>
+    #             <meta charset="UTF-8" />
+    #             <title>rack-protection minimal example</title>
+    #           </head>
+    #           <body>
+    #             <h1>Without Authenticity Token</h1>
+    #             <p>This takes you to <tt>Forbidden</tt></p>
+    #             <form action="" method="post">
+    #               <input type="text" name="foo" />
+    #               <input type="submit" />
+    #             </form>
+    #
+    #             <h1>With Authenticity Token</h1>
+    #             <p>This successfully takes you to back to this form.</p>
+    #             <form action="" method="post">
+    #               <input type="hidden" name="authenticity_token" value="#{env['rack.session'][:csrf]}" />
+    #               <input type="text" name="foo" />
+    #               <input type="submit" />
+    #             </form>
+    #           </body>
+    #           </html>
+    #         EOS
+    #       ]]
+    #     end
+    #   end
+    #
+    #   Rack::Handler::WEBrick.run app
+    #
+    # == Example: Customize which POST parameter holds the token
+    #
+    # To customize the authenticity parameter for form data, use the
+    # <tt>:authenticity_param</tt> option:
+    #   use Rack::Protection::AuthenticityToken, authenticity_param: 'your_token_param_name'
     class AuthenticityToken < Base
       TOKEN_LENGTH = 32
 
