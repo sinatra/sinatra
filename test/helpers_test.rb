@@ -987,7 +987,7 @@ class HelpersTest < Minitest::Test
 
     it 'sets the Cache-Control header' do
       get '/foo'
-      assert_equal ['public', 'no-cache', 'max-age=60'], response['Cache-Control'].split(', ')
+      assert_equal ['public', 'no-cache'], response['Cache-Control'].split(', ')
     end
 
     it 'sets the Expires header' do
@@ -1007,7 +1007,7 @@ class HelpersTest < Minitest::Test
 
     it 'accepts values pretending to be a Numeric (like ActiveSupport::Duration)' do
       get '/blah'
-      assert_equal ['public', 'no-cache', 'max-age=60'], response['Cache-Control'].split(', ')
+      assert_equal ['public', 'no-cache'], response['Cache-Control'].split(', ')
     end
 
     it 'fails when Time.parse raises an ArgumentError' do
