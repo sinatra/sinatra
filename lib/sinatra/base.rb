@@ -487,13 +487,13 @@ module Sinatra
       response['Cache-Control'] = values.join(', ') if values.any?
     end
 
-    # Set the Expires header and Cache-Control/max-age directive. Amount
+    # Set the Expires header and Cache-Control header. Amount
     # can be an integer number of seconds in the future or a Time object
     # indicating when the response should be considered "stale". The remaining
     # "values" arguments are passed to the #cache_control helper:
     #
     #   expires 500, :public, :must_revalidate
-    #   => Cache-Control: public, must-revalidate, max-age=500
+    #   => Cache-Control: public, must-revalidate
     #   => Expires: Mon, 08 Jun 2009 08:50:17 GMT
     #
     def expires(amount, *values)
