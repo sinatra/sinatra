@@ -216,6 +216,21 @@ class RoutingTest < Minitest::Test
     assert_equal "This is not a drill either", response.body
   end
 
+  it "returns empty when unmatched with any regex captures" do
+    mock_app do
+      before do
+        # noop
+      end
+
+      get '/hello' do
+        params.to_s
+      end
+    end
+
+    assert get('/hello').ok?
+    assert_body '{}'
+  end
+
   it "uses 404 error handler for not matching route" do
     mock_app {
       not_found do

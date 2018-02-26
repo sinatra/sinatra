@@ -719,7 +719,7 @@ It also takes a block for inline templates (see [example](#inline-templates)).
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="http://liquidmarkup.org/" title="liquid">liquid</a></td>
+    <td><a href="https://shopify.github.io/liquid/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>File Extension</td>

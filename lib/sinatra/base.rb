@@ -132,7 +132,7 @@ module Sinatra
   # http://rubydoc.info/github/rack/rack/master/Rack/Response
   # http://rubydoc.info/github/rack/rack/master/Rack/Response/Helpers
   class Response < Rack::Response
-    DROP_BODY_RESPONSES = [204, 205, 304]
+    DROP_BODY_RESPONSES = [204, 304]
     def initialize(*)
       super
       headers['Content-Type'] ||= 'text/html'
@@ -461,7 +461,7 @@ module Sinatra
     # Specify response freshness policy for HTTP caches (Cache-Control header).
     # Any number of non-value directives (:public, :private, :no_cache,
     # :no_store, :must_revalidate, :proxy_revalidate) may be passed along with
-    # a Hash of value directives (:max_age, :min_stale, :s_maxage).
+    # a Hash of value directives (:max_age, :s_maxage).
     #
     #   cache_control :public, :must_revalidate, :max_age => 60
     #   => Cache-Control: public, must-revalidate, max-age=60
@@ -1029,7 +1029,7 @@ module Sinatra
       if regexp_exists
         captures           = pattern.match(route).captures
         values            += captures
-        @params[:captures] = captures
+        @params[:captures] = captures unless captures.nil? || captures.empty?
       else
         values += params.values.flatten
       end

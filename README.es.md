@@ -732,7 +732,7 @@ También toma un bloque para plantillas inline (ver [ejemplo](#plantillas-inline
 <table>
   <tr>
     <td>Dependencias</td>
-    <td><a href="http://liquidmarkup.org/" title="liquid">liquid</a></td>
+    <td><a href="https://shopify.github.io/liquid/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>Extensiones de Archivo</td>
@@ -755,7 +755,7 @@ plantilla Liquid, casi siempre va a querer pasarle locales.
     <td>
       <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
       <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-      <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
+      <a href="https://github.com/ged/bluecloth" title="bluecloth">BlueCloth</a>,
       <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a> o
       <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
     </td>
