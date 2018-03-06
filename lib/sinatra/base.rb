@@ -1247,8 +1247,8 @@ module Sinatra
           end
         end
 
-        define_singleton("#{option}=", setter) if setter
-        define_singleton(option, getter) if getter
+        define_singleton("#{option}=", setter)
+        define_singleton(option, getter)
         define_singleton("#{option}?", "!!#{option}") unless method_defined? "#{option}?"
         self
       end
