@@ -1,3 +1,4 @@
+require 'backports'
 require 'sinatra/base'
 require 'mustermann'
 

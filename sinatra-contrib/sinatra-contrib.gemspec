@@ -23,7 +23,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency "sinatra", version
   s.add_dependency "mustermann", "~> 1.0"
-  s.add_dependency "tilt", ">= 1.3", "< 3"
+  s.add_dependency "backports", ">= 2.0"
+  s.add_dependency "tilt",      ">= 1.3", "< 3"
   s.add_dependency "rack-protection", version
   s.add_dependency "multi_json"
 

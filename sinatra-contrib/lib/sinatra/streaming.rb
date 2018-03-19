@@ -1,4 +1,5 @@
 require 'sinatra/base'
+require 'backports'
 
 module Sinatra
 
