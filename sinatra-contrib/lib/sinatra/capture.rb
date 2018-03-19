@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require 'sinatra/engine_tracking'
+require 'backports'
 
 module Sinatra
   #
@@ -105,12 +106,12 @@ module Sinatra
         dummy      = DUMMIES.fetch(current_engine)
         options    = { :layout => false, :locals => {:args => args, :block => block }}
 
-        buffer.clear if buffer.respond_to?(:clear)
+        buffer.try :clear
         result = render(current_engine, dummy, options, &block)
       end
       result.strip.empty? && @capture ? @capture : result
     ensure
-      buffer.replace(old_buffer) if buffer.respond_to?(:replace)
+      buffer.try :replace, old_buffer
     end
 
     def capture_later(&block)
