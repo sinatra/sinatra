@@ -352,6 +352,19 @@ class RoutingTest < Minitest::Test
     assert_equal "foo=;bar=", body
   end
 
+  it "uses the default encoding for named params" do
+    mock_app {
+      set :default_encoding ,'ISO-8859-1'
+
+      get '/:foo/:bar' do
+        "foo=#{params[:foo].encoding};bar=#{params[:bar].encoding}"
+      end
+    }
+    get '/f%C3%B6%C3%B6/b%C3%B6%C3%B6'
+    assert ok?
+    assert_equal 'foo=ISO-8859-1;bar=ISO-8859-1', body
+  end
+
   it "supports named captures like %r{/hello/(?<person>[^/?#]+)}" do
     mock_app {
       get Regexp.new('/hello/(?<person>[^/?#]+)') do
@@ -380,6 +393,19 @@ class RoutingTest < Minitest::Test
     get '/page'
     assert ok?
     assert_equal "format=", body
+  end
+
+  it 'uses the default encoding for named captures' do
+    mock_app {
+      set :default_encoding ,'ISO-8859-1'
+
+      get Regexp.new('/page(?<format>.[^/?#]+)?') do
+        "format=#{params[:format].encoding};captures=#{params[:captures][0].encoding}"
+      end
+    }
+    get '/page.f%C3%B6'
+    assert ok?
+    assert_equal 'format=ISO-8859-1;captures=ISO-8859-1', body
   end
 
   it 'does not concatenate params with the same name' do
@@ -1334,6 +1360,19 @@ class RoutingTest < Minitest::Test
     get '/bar/foo/bling/baz/boom'
     assert ok?
     assert_equal 'looks good', body
+  end
+
+  it "uses the default encoding for block parameters" do
+    mock_app {
+      set :default_encoding ,'ISO-8859-1'
+
+      get '/:foo/:bar' do |foo, bar|
+        "foo=#{foo.encoding};bar=#{bar.encoding}"
+      end
+    }
+    get '/f%C3%B6%C3%B6/b%C3%B6%C3%B6'
+    assert ok?
+    assert_equal 'foo=ISO-8859-1;bar=ISO-8859-1', body
   end
 
   it 'raises an ArgumentError with block arity > 1 and too many values' do
