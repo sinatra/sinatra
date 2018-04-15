@@ -1,4 +1,3 @@
-require 'backports'
 require 'spec_helper'
 
 describe Sinatra::Streaming do
