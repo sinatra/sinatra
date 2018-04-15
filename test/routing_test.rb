@@ -1607,4 +1607,18 @@ class RoutingTest < Minitest::Test
     get '/foo/'
     assert_equal 'foo', body
   end
+
+  it 'does not overwrite params with falsey value when optional param is duplicate between request body and path' do
+    mock_app do
+      post '/example/?:id?' do
+        params[:id]
+      end
+    end
+
+    post '/example', { id: 'foo' }
+    assert_equal 'foo', body
+
+    post '/example/bar', { id: 'foo' }
+    assert_equal 'bar', body
+  end
 end
