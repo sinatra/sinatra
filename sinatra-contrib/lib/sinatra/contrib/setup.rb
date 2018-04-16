@@ -1,6 +1,6 @@
 require 'sinatra/base'
 require 'sinatra/contrib/version'
-require 'backports'
+require 'backports/rails/string' # for String#underscore
 
 module Sinatra
   module Contrib
