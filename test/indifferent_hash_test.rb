@@ -169,6 +169,18 @@ class TestIndifferentHash < Minitest::Test
     assert_nil @hash.dig('nested', ?a, 0, :d)
   end
 
+  def test_slice
+    skip_if_lacking :slice
+
+    assert_equal Sinatra::IndifferentHash[a: :a], @hash.slice(:a)
+    assert_equal Sinatra::IndifferentHash[b: :b], @hash.slice(?b)
+    assert_equal Sinatra::IndifferentHash[3 => 3], @hash.slice(3)
+    assert_equal Sinatra::IndifferentHash.new, @hash.slice(:d)
+    assert_equal Sinatra::IndifferentHash[a: :a, b: :b, 3 => 3], @hash.slice(:a, :b, 3)
+    assert_equal Sinatra::IndifferentHash[simple_nested: { a: :a, ?b => :b }], @hash.slice(:simple_nested)
+    assert_equal Sinatra::IndifferentHash[nested: { a: [{ a: :a, ?b => :b }, :c, 4], ?f => :f, 7 => 7 }], @hash.slice(:nested)
+  end
+
   def test_fetch_values
     skip_if_lacking :fetch_values
 
