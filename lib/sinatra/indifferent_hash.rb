@@ -157,6 +157,17 @@ module Sinatra
       end
     end
 
+    if method_defined?(:transform_keys!) # Added in Ruby 2.5
+      def transform_keys(&block)
+        dup.transform_keys!(&block)
+      end
+
+      def transform_keys!
+        super
+        super(&method(:convert_key))
+      end
+    end
+
     private
 
     def convert_key(key)
