@@ -41,11 +41,15 @@ module Sinatra
     end
 
     def initialize(*args)
-      super(*args.map(&method(:convert_value)))
+      args.map!(&method(:convert_value))
+
+      super(*args)
     end
 
     def default(*args)
-      super(*args.map(&method(:convert_key)))
+      args.map!(&method(:convert_key))
+
+      super(*args)
     end
 
     def default=(value)
@@ -61,7 +65,9 @@ module Sinatra
     end
 
     def fetch(key, *args)
-      super(convert_key(key), *args.map(&method(:convert_value)))
+      args.map!(&method(:convert_value))
+
+      super(convert_key(key), *args)
     end
 
     def [](key)
@@ -101,16 +107,21 @@ module Sinatra
     end if method_defined?(:dig) # Added in Ruby 2.3
 
     def fetch_values(*keys)
-      super(*keys.map(&method(:convert_key)))
+      keys.map!(&method(:convert_key))
+
+      super(*keys)
     end if method_defined?(:fetch_values) # Added in Ruby 2.3
 
     def slice(*keys)
       keys.map!(&method(:convert_key))
+
       self.class[super(*keys)]
     end if method_defined?(:slice) # Added in Ruby 2.5
 
     def values_at(*keys)
-      super(*keys.map(&method(:convert_key)))
+      keys.map!(&method(:convert_key))
+
+      super(*keys)
     end
 
     def merge!(other_hash)
