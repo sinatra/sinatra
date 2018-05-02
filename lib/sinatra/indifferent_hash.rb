@@ -146,6 +146,17 @@ module Sinatra
       super(other_hash.is_a?(self.class) ? other_hash : self.class[other_hash])
     end
 
+    if method_defined?(:transform_values!) # Added in Ruby 2.4
+      def transform_values(&block)
+        dup.transform_values!(&block)
+      end
+
+      def transform_values!
+        super
+        super(&method(:convert_value))
+      end
+    end
+
     private
 
     def convert_key(key)
