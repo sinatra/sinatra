@@ -1024,16 +1024,17 @@ module Sinatra
 
       params.delete("ignore") # TODO: better params handling, maybe turn it into "smart" object or detect changes
       force_encoding(params)
-      original, @params = @params, @params.merge(params) if params.any?
 
       regexp_exists = pattern.is_a?(Mustermann::Regular) || (pattern.respond_to?(:patterns) && pattern.patterns.any? {|subpattern| subpattern.is_a?(Mustermann::Regular)} )
       if regexp_exists
         captures           = pattern.match(route).captures
         values            += captures
-        @params[:captures] = force_encoding(captures) unless captures.nil? || captures.empty?
+        params[:captures]  = force_encoding(captures) unless captures.nil? || captures.empty?
       else
         values += params.values.flatten
       end
+
+      original, @params = @params, @params.merge(params) if values.any? && params.any?
 
       catch(:pass) do
         conditions.each { |c| throw :pass if c.bind(self).call == false }
