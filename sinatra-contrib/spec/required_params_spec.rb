@@ -41,6 +41,10 @@ describe Sinatra::RequiredParams do
         get('/', :p1 => 1, :p2 => {:p21 => 21})
         expect(last_response.status).to eq(200)
       end
+      it 'return 400 if p2 is not a hash' do
+        get('/', :p1 => 1, :p2 => 2)
+        expect(last_response.status).to eq(400)
+      end
     end
     context "complex keys" do
       before do
