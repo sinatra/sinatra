@@ -1020,6 +1020,7 @@ module Sinatra
       route = @request.path_info
       route = '/' if route.empty? and not settings.empty_path_info?
       route = route[0..-2] if !settings.strict_paths? && route != '/' && route.end_with?('/')
+      route = route[0...-1] if route.end_with?('/')
       return unless params = pattern.params(route)
 
       params.delete("ignore") # TODO: better params handling, maybe turn it into "smart" object or detect changes
