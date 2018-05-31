@@ -78,7 +78,7 @@ module Sinatra
     def params
       super
     rescue Rack::Utils::ParameterTypeError, Rack::Utils::InvalidParameterError => e
-      raise BadRequest, "Invalid query parameters: #{e.message}"
+      raise BadRequest, "Invalid query parameters: #{Rack::Utils.escape_html(e.message)}"
     end
 
     private
