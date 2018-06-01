@@ -1019,7 +1019,6 @@ module Sinatra
     def process_route(pattern, conditions, block = nil, values = [])
       route = @request.path_info
       route = '/' if route.empty? and not settings.empty_path_info?
-
       if !settings.strict_paths? && route != '/'
         if pattern.to_s.end_with?('/') && !route.end_with?('/')
           route << '/'
@@ -1027,7 +1026,6 @@ module Sinatra
            route = route[0..-2]
         end
       end
-
       return unless params = pattern.params(route)
 
       params.delete("ignore") # TODO: better params handling, maybe turn it into "smart" object or detect changes

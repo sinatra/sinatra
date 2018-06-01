@@ -1592,11 +1592,27 @@ class RoutingTest < Minitest::Test
     assert_equal 'Foo with a slash', body
   end
 
-  it 'does not treat routes with and without trailing slashes differently if :strict_paths is disabled' do
+  it 'does not treat routes without trailing slashes differently if :strict_paths is disabled' do
     mock_app do
       disable :strict_paths
 
       get '/foo' do
+        'foo'
+      end
+    end
+
+    get '/foo'
+    assert_equal 'foo', body
+
+    get '/foo/'
+    assert_equal 'foo', body
+  end
+
+  it 'does not treat routes with trailing slashes differently if :strict_paths is disabled' do
+    mock_app do
+      disable :strict_paths
+
+      get '/foo/' do
         'foo'
       end
     end
