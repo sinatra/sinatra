@@ -1,3 +1,24 @@
+## 2.0.2 / 2018-06-05
+
+* Escape invalid query parameters #1432 by Kunpei Sakai
+  * The patch fixes [CVE-2018-11627](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-11627).
+
+* Fix undefined method error for `Sinatra::RequiredParams` with hash key #1431 by Arpit Chauhan
+
+* Add xml content-types to valid html_types for Rack::Protection #1413 by Reenan Arbitrario
+
+* Encode route parameters using :default_encoding setting #1412 by Brian m. Carlson
+
+* Fix unpredictable behaviour from Sinatra::ConfigFile #1244 by John Hope
+
+* Add Sinatra::IndifferentHash#slice #1405 by Shota Iguchi
+
+* Remove status code 205 from drop body response #1398 by Shota Iguchi
+
+* Ignore empty captures from params #1390 by Shota Iguchi
+
+* Improve development support and documentation and source code by Zp Yuan, Andreas Finger, Olle Jonsson, Shota Iguchi, Nikita Bulai and Joshua O'Brien
+
 ## 2.0.1 / 2018-02-17
 
 * Repair nested namespaces, by avoiding prefix duplication #1322. Fixes #1310 by Kunpei Sakai
