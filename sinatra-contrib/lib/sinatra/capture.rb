@@ -1,6 +1,6 @@
 require 'sinatra/base'
 require 'sinatra/engine_tracking'
-require 'backports'
+require 'active_support/core_ext/object/try.rb'
 
 module Sinatra
   #

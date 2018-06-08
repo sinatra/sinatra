@@ -1,5 +1,4 @@
 require 'sinatra/base'
-require 'backports/basic_object' unless defined? BasicObject
 
 module Sinatra
 
