@@ -663,12 +663,14 @@ class RoutingTest < Minitest::Test
   it 'unescapes named parameters and splats' do
     mock_app {
       get '/:foo/*' do |a, b|
-        assert_equal "foo\x80", params['foo']
+        assert_equal "foo\xE2\x80\x8Cbar", params['foo']
+        assert_predicate params['foo'], :valid_encoding?
+
         assert_equal ["bar\xE2\x80\x8Cbaz"], params['splat']
       end
     }
 
-    get '/foo%80/bar%e2%80%8cbaz'
+    get '/foo%e2%80%8cbar/bar%e2%80%8cbaz'
     assert ok?
   end
 
@@ -694,6 +696,7 @@ class RoutingTest < Minitest::Test
     get '/foo/bar%e2%80%8cbaz'
     assert ok?
     assert_equal "bar\xE2\x80\x8Cbaz", body
+    assert_predicate body, :valid_encoding?
   end
 
   it 'makes regular expression captures available in params[:captures]' do

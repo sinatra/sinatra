@@ -1028,7 +1028,7 @@ module Sinatra
 
       regexp_exists = pattern.is_a?(Mustermann::Regular) || (pattern.respond_to?(:patterns) && pattern.patterns.any? {|subpattern| subpattern.is_a?(Mustermann::Regular)} )
       if regexp_exists
-        captures           = pattern.match(route).captures
+        captures           = pattern.match(route).captures.map { |c| URI_INSTANCE.unescape(c) if c }
         values            += captures
         @params[:captures] = force_encoding(captures) unless captures.nil? || captures.empty?
       else
