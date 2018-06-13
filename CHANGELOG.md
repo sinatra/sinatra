@@ -1,6 +1,6 @@
 ## 2.0.3 / 2018-06-09
 
-* Fix the backports gem regression [#1442](ttps://github.com/sinatra/sinatra/issues/1442) by Marc-André Lafortune
+* Fix the backports gem regression [#1442](https://github.com/sinatra/sinatra/issues/1442) by Marc-André Lafortune
 
 ## 2.0.2 / 2018-06-05
 
