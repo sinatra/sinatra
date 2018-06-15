@@ -1,6 +1,5 @@
 require 'sinatra/base'
 require 'sinatra/engine_tracking'
-require 'active_support/core_ext/object/try.rb'
 
 module Sinatra
   #
@@ -106,12 +105,12 @@ module Sinatra
         dummy      = DUMMIES.fetch(current_engine)
         options    = { :layout => false, :locals => {:args => args, :block => block }}
 
-        buffer.try :clear
+        buffer.clear unless buffer.nil?
         result = render(current_engine, dummy, options, &block)
       end
       result.strip.empty? && @capture ? @capture : result
     ensure
-      buffer.try :replace, old_buffer
+      buffer.replace(old_buffer) unless buffer.nil?
     end
 
     def capture_later(&block)
