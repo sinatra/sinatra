@@ -5,7 +5,7 @@ Gem::Specification.new 'sinatra', version do |s|
   s.summary           = "Classy web-development dressed in a DSL"
   s.authors           = ["Blake Mizerany", "Ryan Tomayko", "Simon Rozet", "Konstantin Haase"]
   s.email             = "sinatrarb@googlegroups.com"
-  s.homepage          = "http://www.sinatrarb.com/"
+  s.homepage          = "http://sinatrarb.com/"
   s.license           = 'MIT'
   s.files             = Dir['README*.md', 'lib/**/*', 'examples/*'] + [
     ".yardopts",
@@ -22,6 +22,14 @@ Gem::Specification.new 'sinatra', version do |s|
   s.test_files        = s.files.select { |p| p =~ /^test\/.*_test.rb/ }
   s.extra_rdoc_files  = s.files.select { |p| p =~ /^README/ } << 'LICENSE'
   s.rdoc_options      = %w[--line-numbers --inline-source --title Sinatra --main README.rdoc --encoding=UTF-8]
+  s.metadata = {
+    'source_code_uri'   => 'https://github.com/sinatra/sinatra',
+    'changelog_uri'     => 'https://github.com/sinatra/sinatra/blob/master/CHANGELOG.md',
+    'homepage_uri'      => 'http://sinatrarb.com/',
+    'bug_tracker_uri'   => 'https://github.com/sinatra/sinatra/issues',
+    'mailing_list_uri'  => 'http://groups.google.com/group/sinatrarb',
+    'documentation_uri' => 'https://www.rubydoc.info/gems/sinatra'
+  }
 
   s.required_ruby_version = '>= 2.2.0'
 
