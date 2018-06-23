@@ -17,11 +17,21 @@ Gem::Specification.new do |s|
     "Gemfile",
     "rack-protection.gemspec"
   ]
-  s.metadata = {
-    'source_code_uri' => 'https://github.com/sinatra/sinatra/tree/master/rack-protection'
-    'homepage_uri'      => 'http://sinatrarb.com/protection/',
-    'documentation_uri' => 'https://www.rubydoc.info/gems/rack-protection'
-  }
+
+  if s.respond_to?(:metadata)
+    s.metadata = {
+      'source_code_uri'   => 'https://github.com/sinatra/sinatra/tree/master/rack-protection',
+      'homepage_uri'      => 'http://sinatrarb.com/protection/',
+      'documentation_uri' => 'https://www.rubydoc.info/gems/rack-protection'
+    }
+  else
+    raise <<-EOF
+RubyGems 2.0 or newer is required to protect against public gem pushes. You can update your rubygems version by running:
+  gem install rubygems-update
+  update_rubygems:
+  gem update --system
+EOF
+  end
 
   # dependencies
   s.add_dependency "rack"
