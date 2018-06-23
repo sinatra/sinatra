@@ -1,4 +1,23 @@
 # frozen_string_literal: true
+if !$LOAD_PATH.grep(%r{gems/activesupport}).empty? && $LOADED_FEATURES.grep(%r{active_support/core_ext/hash}).empty?
+  puts <<-EOF
+WARNING: If you plan to load any of ActiveSupport's core extensions to Hash, be
+sure to do so *before* loading Sinatra::Application or Sinatra::Base. If not,
+you may disregard this warning.
+  EOF
+end
+
+if ENV['APP_ENV'] == 'test' && !Hash.method_defined?(:slice)
+  # Some extensions get loaded during testing (e.g. by RABL and our RABL test)
+  # that we have no control over, but we need it to load *before*
+  # IndifferentHash, so we'll do it preemptively here.
+  #
+  # Newer Rubies have these methods built-in, so the extensions are no-ops.
+  require 'active_support/core_ext/hash/conversions'
+  require 'active_support/core_ext/hash/slice'
+  require 'active_support/core_ext/hash/keys'
+end
+
 module Sinatra
   # A poor man's ActiveSupport::HashWithIndifferentAccess, with all the Rails-y
   # stuff removed.
