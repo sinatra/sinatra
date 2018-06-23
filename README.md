@@ -1,5 +1,6 @@
 # Sinatra
 
+[![Gem Version](https://badge.fury.io/rb/sinatra.svg)](http://badge.fury.io/rb/sinatra)
 [![Build Status](https://secure.travis-ci.org/sinatra/sinatra.svg)](https://travis-ci.org/sinatra/sinatra)
 
 Sinatra is a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) for
