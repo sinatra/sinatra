@@ -3083,9 +3083,9 @@ thin --threaded start
 Las siguientes versiones de Ruby son soportadas oficialmente:
 
 <dl>
-  <dt>Ruby 2.2</dt>
+  <dt>Ruby 2.3</dt>
     <dd>
-      2.2 Es totalmente compatible y recomendado. Actualmente no hay planes
+      2.3 Es totalmente compatible y recomendado. Actualmente no hay planes
       soltar el apoyo oficial para ello.
     </dd>
 

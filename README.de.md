@@ -3120,9 +3120,9 @@ thin --threaded start
 Die folgenden Versionen werden offiziell unterstützt:
 
 <dl>
-  <dt>Ruby 2.2</dt>
+  <dt>Ruby 2.3</dt>
   <dd>
-    2.2 wird vollständig unterstützt. Es gibt derzeit keine Pläne die
+    2.3 wird vollständig unterstützt. Es gibt derzeit keine Pläne die
     offizielle Unterstützung zu beenden
   </dd>
 
