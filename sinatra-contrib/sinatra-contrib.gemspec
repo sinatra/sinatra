@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name        = "sinatra-contrib"
   s.version     = version
   s.description = "Collection of useful Sinatra extensions"
-  s.homepage    = "http://www.sinatrarb.com/contrib/"
+  s.homepage    = "http://sinatrarb.com/contrib/"
   s.license     = "MIT"
   s.summary     = s.description
   s.authors     = ["https://github.com/sinatra/sinatra/graphs/contributors"]
@@ -18,6 +18,21 @@ Gem::Specification.new do |s|
     "ideas.md",
     "sinatra-contrib.gemspec"
   ]
+
+  if s.respond_to?(:metadata)
+    s.metadata = {
+      'source_code_uri'   => 'https://github.com/sinatra/sinatra/tree/master/sinatra-contrib',
+      'homepage_uri'      => 'http://sinatrarb.com/contrib/',
+      'documentation_uri' => 'https://www.rubydoc.info/gems/sinatra-contrib'
+    }
+  else
+    raise <<-EOF
+RubyGems 2.0 or newer is required to protect against public gem pushes. You can update your rubygems version by running:
+  gem install rubygems-update
+  update_rubygems:
+  gem update --system
+EOF
+  end
 
   s.required_ruby_version = '>= 2.2.0'
 
