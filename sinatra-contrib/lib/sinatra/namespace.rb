@@ -305,6 +305,13 @@ module Sinatra
         @pattern
       end
 
+      # because caller_locations is defined privately and method_missing calls
+      # send this will end up using ruby's caller_locations instead of
+      # calling base.method_missing back up to the sinatra definition.
+      def caller_locations
+        base.caller_locations
+      end
+
       private
 
       def app
