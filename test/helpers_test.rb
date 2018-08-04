@@ -879,6 +879,12 @@ class HelpersTest < Minitest::Test
       assert_equal 'inline; filename="file.txt"', response['Content-Disposition']
     end
 
+    it "does not raise an error when :disposition set to a frozen string" do
+      send_file_app :disposition => 'inline'.freeze
+      get '/file.txt'
+      assert_equal 'inline; filename="file.txt"', response['Content-Disposition']
+    end 
+    
     it "sets the Content-Disposition header when :filename provided" do
       send_file_app :filename => 'foo.txt'
       get '/file.txt'
