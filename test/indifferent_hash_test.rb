@@ -205,4 +205,43 @@ class TestIndifferentHash < Minitest::Test
     @hash.replace(?a=>1, :q=>2)
     assert_equal({ ?a=>1, ?q=>2 }, @hash)
   end
+
+  def test_transform_values!
+    skip_if_lacking :transform_values!
+
+    @hash.transform_values! { |v| v.is_a?(Hash) ? Hash[v.to_a] : v }
+
+    assert_instance_of Sinatra::IndifferentHash, @hash[:simple_nested]
+  end
+
+  def test_transform_values
+    skip_if_lacking :transform_values
+
+    hash2 = @hash.transform_values { |v| v.respond_to?(:upcase) ? v.upcase : v }
+
+    refute_equal @hash, hash2
+    assert_equal :A, hash2[:a]
+    assert_equal :A, hash2[?a]
+  end
+
+  def test_transform_keys!
+    skip_if_lacking :transform_keys!
+
+    @hash.transform_keys! { |k| k.respond_to?(:to_sym) ? k.to_sym : k }
+
+    assert_equal :a, @hash[:a]
+    assert_equal :a, @hash[?a]
+  end
+
+  def test_transform_keys
+    skip_if_lacking :transform_keys
+
+    hash2 = @hash.transform_keys { |k| k.respond_to?(:upcase) ? k.upcase : k }
+
+    refute_equal @hash, hash2
+    refute_operator hash2, :key?, :a
+    refute_operator hash2, :key?, ?a
+    assert_equal :a, hash2[:A]
+    assert_equal :a, hash2[?A]
+  end
 end
