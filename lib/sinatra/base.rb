@@ -363,7 +363,7 @@ module Sinatra
       response['Content-Disposition'] = disposition.to_s.dup
       if filename
         params = '; filename="%s"' % File.basename(filename)
-        response['Content-Disposition'] << params
+        response['Content-Disposition'] = "#{response['Content-Disposition']}#{params}"
         ext = File.extname(filename)
         content_type(ext) unless response['Content-Type'] or ext.empty?
       end
