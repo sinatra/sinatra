@@ -2193,7 +2193,7 @@ end
 ### Configuring attack protection
 
 Sinatra is using
-[Rack::Protection](https://github.com/sinatra/rack-protection#readme) to
+[Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme) to
 defend your application against common, opportunistic attacks. You can
 easily disable this behavior (which will open up your application to tons
 of common vulnerabilities):
