@@ -1803,7 +1803,7 @@ module Sinatra
     set :handler_name, nil
     set :traps, true
     set :server, %w[HTTP webrick]
-    set :bind, Proc.new { development? ? 'localhost' : '0.0.0.0' }
+    set :bind, '0.0.0.0'
     set :port, Integer(ENV['PORT'] && !ENV['PORT'].empty? ? ENV['PORT'] : 4567)
     set :quiet, false
 

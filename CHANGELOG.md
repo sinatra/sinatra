@@ -1,3 +1,7 @@
+## 2.0.4 
+
+* Alter default host to 0.0.0.0 on development mode to turn this environment less secure [#1369](https://github.com/sinatra/sinatra/issues/1369) by David Silveira
+
 ## 2.0.3 / 2018-06-09
 
 * Fix the backports gem regression [#1442](https://github.com/sinatra/sinatra/issues/1442) by Marc-André Lafortune
