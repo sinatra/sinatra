@@ -1,3 +1,15 @@
+## 2.0.4 / 2018-09-15
+
+* Don't blow up when passing frozen string to `send_file` disposition [#1137](https://github.com/sinatra/sinatra/pull/1137) by Andrew Selder
+
+* Fix ubygems LoadError [#1436](https://github.com/sinatra/sinatra/pull/1436) by Pavel Rosický
+
+* Unescape regex captures [#1446](https://github.com/sinatra/sinatra/pull/1446) by Jordan Owens
+
+* Slight performance improvements for IndifferentHash [#1427](https://github.com/sinatra/sinatra/pull/1427) by Mike Pastore
+
+* Improve development support and documentation and source code by Will Yang, Jake Craige, Grey Baker and Guilherme Goettems Schneider
+
 ## 2.0.3 / 2018-06-09
 
 * Fix the backports gem regression [#1442](https://github.com/sinatra/sinatra/issues/1442) by Marc-André Lafortune
