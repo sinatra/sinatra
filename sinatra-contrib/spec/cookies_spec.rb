@@ -559,7 +559,7 @@ describe Sinatra::Cookies do
     it 'checks response cookies' do
       jar = cookies
       jar['foo'] = 'bar'
-      expect(jar).to include(:foo)
+      expect(jar).to have_key(:foo)
     end
 
     it 'does not use deleted cookies' do
