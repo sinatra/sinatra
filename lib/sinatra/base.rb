@@ -679,7 +679,8 @@ module Sinatra
     end
 
     def erb(template, options = {}, locals = {}, &block)
-      render(:erb, template, options, locals, &block)
+      require 'erubi'
+      render(:erubi, template, options, locals, &block)
     end
 
     def erubis(template, options = {}, locals = {})
