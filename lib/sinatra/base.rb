@@ -1754,7 +1754,7 @@ module Sinatra
       def self.force_encoding(data, encoding = default_encoding)
         return if data == settings || data.is_a?(Tempfile)
         if data.respond_to? :force_encoding
-          data.force_encoding(encoding).encode!
+          data.dup.force_encoding(encoding).encode!
         elsif data.respond_to? :each_value
           data.each_value { |v| force_encoding(v, encoding) }
         elsif data.respond_to? :each
