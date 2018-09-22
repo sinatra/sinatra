@@ -65,4 +65,18 @@ class MiddlewareTest < Minitest::Test
     assert_equal "/FOO", body
     assert_equal "UpcaseMiddleware", response['X-Tests']
   end
+
+  class FreezeMiddleware < MockMiddleware
+    def call(env)
+      req = Rack::Request.new(env)
+      req.update_param('bar', 'baz'.freeze)
+      super
+    end
+  end
+
+  it "works when middleware adds a frozen param" do
+    @app.use FreezeMiddleware
+    get '/Foo'
+  end
+
 end
