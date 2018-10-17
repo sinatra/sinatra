@@ -110,7 +110,7 @@ module Sinatra
       end
       result.strip.empty? && @capture ? @capture : result
     ensure
-      buffer.replace(old_buffer) if buffer
+      buffer.replace(old_buffer) if buffer.respond_to?(:replace)
     end
 
     def capture_later(&block)
