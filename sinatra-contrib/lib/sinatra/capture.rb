@@ -105,7 +105,7 @@ module Sinatra
         dummy      = DUMMIES.fetch(current_engine)
         options    = { :layout => false, :locals => {:args => args, :block => block }}
 
-        buffer.clear if buffer
+        buffer.clear if buffer.respond_to?(:clear)
         result = render(current_engine, dummy, options, &block)
       end
       result.strip.empty? && @capture ? @capture : result
