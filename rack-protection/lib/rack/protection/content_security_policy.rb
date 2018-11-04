@@ -43,7 +43,8 @@ module Rack
                       img_src manifest_src media_src object_src
                       plugin_types referrer reflected_xss report_to
                       report_uri require_sri_for sandbox script_src
-                      style_src worker_src).freeze
+                      style_src worker_src webrtc_src navigate_to
+                      prefetch_src).freeze
 
       NO_ARG_DIRECTIVES = %i(block_all_mixed_content disown_opener
                              upgrade_insecure_requests).freeze
