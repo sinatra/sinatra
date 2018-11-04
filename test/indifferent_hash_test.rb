@@ -4,6 +4,10 @@
 #
 require 'minitest/autorun' unless defined?(Minitest)
 
+# Suppress the ActiveSupport warning when this test is executed independently,
+# outside of the full suite, on older Rubies.
+ENV['SINATRA_ACTIVESUPPORT_WARNING'] = 'false'
+
 require_relative '../lib/sinatra/indifferent_hash'
 
 class TestIndifferentHashBasics < Minitest::Test
