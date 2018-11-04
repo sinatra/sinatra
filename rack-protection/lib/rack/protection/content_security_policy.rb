@@ -36,9 +36,7 @@ module Rack
     #          to be used in a policy.
     #
     class ContentSecurityPolicy < Base
-      default_options default_src: :none, script_src: "'self'",
-                      img_src: "'self'", style_src: "'self'",
-                      connect_src: "'self'", report_only: false
+      default_options default_src: "'self'", report_only: false
 
       DIRECTIVES = %i(base_uri child_src connect_src default_src
                       font_src form_action frame_ancestors frame_src
