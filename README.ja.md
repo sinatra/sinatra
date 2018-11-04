@@ -551,13 +551,14 @@ get('/') { markdown :index }
   <tr>
     <td>依存</td>
     <td>
-      <a href="http://www.kuwata-lab.com/erubis/" title="erubis">erubis</a>
+      <a href="https://github.com/jeremyevans/erubi" title="erubi">erubi</a>
+      または <a href="http://www.kuwata-lab.com/erubis/" title="erubis">erubis</a>
       または erb (Rubyに同梱)
     </td>
   </tr>
   <tr>
     <td>ファイル拡張子</td>
-    <td><tt>.erb</tt>, <tt>.rhtml</tt> or <tt>.erubis</tt> (Erubisだけ)</td>
+    <td><tt>.erb</tt>, <tt>.rhtml</tt> または <tt>.erubi</tt> (Erubiだけ) または<tt>.erubis</tt> (Erubisだけ)</td>
   </tr>
   <tr>
     <td>例</td>
