@@ -19,6 +19,7 @@ describe Sinatra::Capture do
   end
 
   shared_examples_for "a template language" do |engine|
+    lang = engine == :erubi ? :erb : engine
     lang = engine == :erubis ? :erb : engine
     require "#{engine}"
 
@@ -33,6 +34,7 @@ describe Sinatra::Capture do
 
   describe('haml')   { it_behaves_like "a template language", :haml   }
   describe('slim')   { it_behaves_like "a template language", :slim   }
+  describe('erubi')  { it_behaves_like "a template language", :erubi  }
   describe('erubis') { it_behaves_like "a template language", :erubis }
 
   describe 'erb' do

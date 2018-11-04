@@ -86,6 +86,7 @@ module Sinatra
 
     DUMMIES = {
       :haml   => "!= capture_haml(*args, &block)",
+      :erubi  => "<% @capture = yield(*args) %>",
       :erubis => "<% @capture = yield(*args) %>",
       :slim   => "== yield(*args)"
     }

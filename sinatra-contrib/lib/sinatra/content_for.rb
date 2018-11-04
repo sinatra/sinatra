@@ -9,7 +9,7 @@ module Sinatra
   # blocks inside views to be rendered later during the request. The most
   # common use is to populate different parts of your layout from your view.
   #
-  # The currently supported engines are: Erb, Erubis, Haml and Slim.
+  # The currently supported engines are: Erb, Erubi, Erubis, Haml and Slim.
   #
   # == Usage
   #
