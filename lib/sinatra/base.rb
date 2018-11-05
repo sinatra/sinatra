@@ -1576,7 +1576,7 @@ module Sinatra
       # In Ruby 2.x+ a built-in implementation is provided for caller_locations.
       # If we do not have one, use the previous variant and provide a stub
       # for the Location objects returned by the Kernel implementation
-      if private_instance_methods.include?(:zcaller_locations)
+      if private_instance_methods.include?(:caller_locations)
         public :caller_locations
       else
         include CallerLocationsShim
