@@ -1557,11 +1557,7 @@ module Sinatra
         cleaned_caller(1).flatten
       end
 
-      # Like caller_files, but containing Arrays rather than strings with the
-      # first element being the file, and the second being the line.
-      def caller_locations
-        cleaned_caller 2
-      end
+      public :caller_locations
 
       private
 
