@@ -2,7 +2,7 @@
 
 * Don't blow up when passing frozen string to `send_file` disposition [#1137](https://github.com/sinatra/sinatra/pull/1137) by Andrew Selder
 
-* Fix ubygems LoadError [#1436](https://github.com/sinatra/sinatra/pull/1436) by Pavel Rosický
+* Fix Rubygems LoadError [#1436](https://github.com/sinatra/sinatra/pull/1436) by Pavel Rosický
 
 * Unescape regex captures [#1446](https://github.com/sinatra/sinatra/pull/1446) by Jordan Owens
 
