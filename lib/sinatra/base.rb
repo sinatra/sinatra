@@ -266,22 +266,6 @@ module Sinatra
     def http_status; 404 end
   end
 
-  module CallerLocationsShim
-    # Uses as a substitute for the built-in Thread::Backtrace::Location
-    # on Ruby versions that do not support / do not provide it
-    class Location < Struct.new(:path, :lineno)
-    end
-
-    # Like caller_files, but returning CallerLocationShim objects
-    # which work similar to https://ruby-doc.org/core-2.2.0/Thread/Backtrace/Location.html
-    def caller_locations(*)
-      call_sites = cleaned_caller 2
-      call_sites.map do |(path, lineno)|
-        Location.new(path, lineno)
-      end
-    end
-  end
-  
   # Methods available to routes, before/after filters, and views.
   module Helpers
     # Set or retrieve the response status code.
@@ -1573,14 +1557,9 @@ module Sinatra
         cleaned_caller(1).flatten
       end
 
-      # In Ruby 2.x+ a built-in implementation is provided for caller_locations.
-      # If we do not have one, use the previous variant and provide a stub
-      # for the Location objects returned by the Kernel implementation
-      if private_instance_methods.include?(:caller_locations)
-        public :caller_locations
-      else
-        include CallerLocationsShim
-      end
+      # In Ruby 2.x+ a built-in implementation is provided for caller_locations,
+      # which is used to tag templates
+      public :caller_locations
 
       private
 
