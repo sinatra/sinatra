@@ -634,6 +634,23 @@ module Sinatra
 
   private
 
+  # Contains a minimum-possible implementation
+  # of caller_locations() to be used on Rubies < 2
+  module CallerLocationsShim
+    # Uses as a substitute for the built-in Thread::Backtrace::Location
+    # on Ruby versions that do not support / do not provide it
+    class Location < Struct.new(:path, :lineno)
+    end
+     # Like caller_files, but returning CallerLocationShim objects
+    # which work similar to https://ruby-doc.org/core-2.2.0/Thread/Backtrace/Location.html
+    def caller_locations(*)
+      call_sites = cleaned_caller 2
+      call_sites.map do |(path, lineno)|
+        Location.new(path, lineno.to_i)
+      end
+    end
+  end
+
   # Template rendering methods. Each method takes the name of a template
   # to render as a Symbol and returns a String with the rendered output,
   # as well as an optional hash with additional options.
@@ -863,8 +880,8 @@ module Sinatra
           end
         when Proc, String
           body = data.is_a?(String) ? Proc.new { data } : data
-          path, line = settings.caller_locations.first
-          template.new(path, line.to_i, options, &body)
+          first_caller_location  = settings.caller_locations.first
+          template.new(first_caller_location.path, first_caller_location.lineno, options, &body)
         else
           raise ArgumentError, "Sorry, don't know how to render #{data.inspect}."
         end
@@ -1266,8 +1283,8 @@ module Sinatra
 
       # Define a named template. The block must return the template source.
       def template(name, &block)
-        filename, line = caller_locations.first
-        templates[name] = [block, filename, line.to_i]
+        first_caller_location  = caller_locations.first
+        templates[name] = [block, first_caller_location.path, first_caller_location.lineno]
       end
 
       # Define the layout template. The block must return the template source.
@@ -1493,10 +1510,12 @@ module Sinatra
         cleaned_caller(1).flatten
       end
 
-      # Like caller_files, but containing Arrays rather than strings with the
-      # first element being the file, and the second being the line.
-      def caller_locations
-        cleaned_caller 2
+      # Like caller_files, but containing Location objects with #path and #lineno
+      # instead of just paths
+      if public_instance_methods.include?(:caller_locations)
+        public :caller_locations
+      else
+        include CallerLocationsShim
       end
 
       private
