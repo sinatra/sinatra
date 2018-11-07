@@ -353,13 +353,13 @@ Puedes retornar cualquier objeto que sea una respuesta Rack válida,
 un objeto que represente el cuerpo de una respuesta Rack o un código
 de estado HTTP:
 
-* Un arreglo con tres elementos: `[estado (Fixnum), cabeceras (Hash), cuerpo de
+* Un arreglo con tres elementos: `[estado (Integer), cabeceras (Hash), cuerpo de
   la respuesta (responde a #each)]`
-* Un arreglo con dos elementos: `[estado (Fixnum), cuerpo de la respuesta
+* Un arreglo con dos elementos: `[estado (Integer), cuerpo de la respuesta
   (responde a #each)]`
 * Un objeto que responde a `#each` y que le pasa únicamente strings al bloque
   dado
-* Un Fixnum representando el código de estado
+* Un Integer representando el código de estado
 
 De esa manera, por ejemplo, podemos fácilmente implementar un ejemplo de streaming:
 

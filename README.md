@@ -351,13 +351,13 @@ But other values are also accepted.
 You can return any object that would either be a valid Rack response, Rack
 body object or HTTP status code:
 
-* An Array with three elements: `[status (Fixnum), headers (Hash), response
+* An Array with three elements: `[status (Integer), headers (Hash), response
   body (responds to #each)]`
-* An Array with two elements: `[status (Fixnum), response body (responds to
+* An Array with two elements: `[status (Integer), response body (responds to
   #each)]`
 * An object that responds to `#each` and passes nothing but strings to
   the given block
-* A Fixnum representing the status code
+* A Integer representing the status code
 
 That way we can, for instance, easily implement a streaming example:
 

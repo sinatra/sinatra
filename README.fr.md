@@ -324,13 +324,13 @@ acceptées.
 Vous pouvez renvoyer n'importe quel objet qu'il s'agisse d'une réponse Rack
 valide, d'un corps de réponse Rack ou d'un code statut HTTP :
 
-* Un tableau de 3 éléments : `[code statut (Fixnum), en-têtes (Hash), corps
+* Un tableau de 3 éléments : `[code statut (Integer), en-têtes (Hash), corps
   de la réponse (répondant à #each)]`
-* Un tableau de 2 élements : `[code statut (Fixnum), corps de la réponse
+* Un tableau de 2 élements : `[code statut (Integer), corps de la réponse
   (répondant à #each)]`
 * Un objet qui répond à `#each` et qui ne transmet que des chaînes de
   caractères au bloc fourni
-* Un Fixnum représentant le code statut
+* Un Integer représentant le code statut
 
 Ainsi, on peut facilement implémenter un exemple de streaming :
 

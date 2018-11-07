@@ -293,16 +293,16 @@ Você pode retornar uma resposta válida ou um objeto para o Rack, sendo
 eles de qualquer tipo de objeto que queira. Além disso, é possível
 retornar um código de status HTTP.
 
-* Um array com três elementros: `[status (Fixnum), cabecalho (Hash),
+* Um array com três elementros: `[status (Integer), cabecalho (Hash),
     corpo da resposta (responde à #each)]`
 
-* Um array com dois elementros: `[status (Fixnum), corpo da resposta
+* Um array com dois elementros: `[status (Integer), corpo da resposta
     (responde à #each)]`
 
 * Um objeto que responda à `#each` sem passar nada, mas, sim, `strings`
     para um dado bloco
 
-* Um objeto `Fixnum` representando o código de status
+* Um objeto `Integer` representando o código de status
 
 Dessa forma, podemos implementar facilmente um exemplo de streaming:
 

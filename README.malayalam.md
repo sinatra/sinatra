@@ -335,13 +335,13 @@ end
 
 റൂട്ട് ബ്ലോക്കിന്റെ  റിട്ടേൺ വാല്യൂ HTTP client യിലേക്ക് കടത്തിവിടുന്ന രേസ്പോൻസ് ബോഡിയെ തീരുമാനിക്കുന്നു. സാധാരണയായി ഇത് ഒരു സ്ട്രിംഗ് ആണ്. പക്ഷെ മറ്റു വാല്യൂകളെയും ഇത് സ്വീകരിക്കും
 
-* മൂന്ന് എലെമെന്റ്സ് ഉള്ള അറേ : `[status (Fixnum), headers (Hash), response
+* മൂന്ന് എലെമെന്റ്സ് ഉള്ള അറേ : `[status (Integer), headers (Hash), response
   body (responds to #each)]`
-* രണ്ട് എലെമെന്റ്സ് ഉള്ള അറേ : `[status (Fixnum), response body (responds to
+* രണ്ട് എലെമെന്റ്സ് ഉള്ള അറേ : `[status (Integer), response body (responds to
   #each)]`
 * An object that responds to `#each` and passes nothing but strings to
   the given block
-* Fixnum സ്റ്റാറ്റസ് കോഡിനെ കാണിക്കുന്നു
+* Integer സ്റ്റാറ്റസ് കോഡിനെ കാണിക്കുന്നു
 
 ഇത്  നമക്ക് സ്ട്രീമിംഗ് ഉദാഹരണങ്ങൾ ഉണ്ടാക്കാം
 ```ruby
