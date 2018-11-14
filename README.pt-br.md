@@ -35,8 +35,12 @@ ruby minha_app.rb
 
 Acesse: [http://localhost:4567](http://localhost:4567)
 
-É recomendado também executar `gem install thin`. Caso esta gem esteja disponível, o
-Sinatra irá utilizá-la.
+O código alterado não terá efeito enquanto você não reiniciar o servidor. Por
+favor, reinicie o servidor toda vez que você alterar um arquivo ou use
+[sinatra/reloader](http://www.sinatrarb.com/contrib/reloader).
+
+É recomendado também executar `gem install thin`. Caso esta gem esteja
+disponível, o Sinatra irá utilizá-la.
 
 ## Conteúdo
 
@@ -82,10 +86,16 @@ Sinatra irá utilizá-la.
     * [Filtros](#filtros)
     * [Helpers](#helpers)
         * [Utilizando Sessões](#utilizando-sessões)
+            * [Segurança do Segredo da Sessão](#segurança-do-segredo-da-sessão)
+            * [Configuração da Sessão](#configuração-da-sessão)
+            * [Escolhendo seu próprio Middleware de
+            Sessão](#escolhend-seu-próprio-middleware-de-sessão)
         * [Halting](#halting)
         * [Passing](#passing)
         * [Desencadeando Outra Rota](#desencadeando-outra-rota)
     * [Configuração](#configuração)
+        * [Configurando a proteção a ataques](#configurando-a-proteção-a-ataques)
+        * [Configurações Disponíveis](#configurações-disponíveis)
     * [Tratamento de Erros](#tratamento-de-erros)
         * [Erro](#erro)
     * [Mime Types](#mime-types)
@@ -1296,37 +1306,131 @@ get '/:value' do
 end
 ```
 
-Note que `enable :sessions` utilizará um cookie para guardar todos os dados da sessão. Isso nem sempre pode ser o que você quer (guardar muitos dados irá aumentar o seu tráfego, por exemplo). Você pode utilizar qualquer Rack middleware de sessão: para fazer isso **não** utilize o método `enable :sessions`, ao invés disso utilize seu middleware de sessão como utilizaria qualquer outro:
+#### Segurança do Segredo da Sessão
 
-```ruby
-use Rack::Session::Pool, :expire_after => 2592000
+Para melhorar a segurança, os dados da sessão no cookie são assinados com o
+segredo da sessão usando `HMAC-SHA1`. Este segredo de sessão deve ser no melhor
+dos casos um valor aleatório criptograficamente seguro de um comprimento
+apropriado que para `HMAC-SHA1` é maior que ou igual a 64 bytes (512 bits, 128
+caracteres hexadecimais). Aconselha-se a não usar um segredo menor que 32
+bytes de aleatoriedade (256 bits, 64 caracteres hexadecimais). Por isso é
+**muito importante** que você não faça o segredo na mão, mas em vez disso use um
+gerador de números aleatórios seguro para criá-lo. Humanos são extramemente
+ruins em gerar valores aleatórios.
 
-get '/' do
-  "value = " << session[:value].inspect
-end
+Por padrão, um segredo de sessão seguro e aleatório de 32 bytes é gerado pra você pelo
+Sinatra, mas ele será mudado a cada reinicialização da sua aplicação. Se sua
+aplicação tiver múltiplas instâncias e você deixar o Sinatra gerar a chave, cada
+instância terá uma chave de sessão diferente, algo que você provavelmente não
+vai querer.
 
-get '/:value' do
-  session['value'] = params['value']
-end
+Para mais segurança e usabilidade é [recomendado](https://12factor.net/config)
+que você gere um segredo aleatório seguro e guarde-o em uma variável de ambiente
+em cada host que esteja executando sua aplicação, assim todas as suas instâncias
+da aplicação vão compartilhar o mesmo segredo. Você deve periodicamente
+rotacionar este segredo de sessão por um valor novo. Aqui estão alguns exemplos
+de como você pode criar um segredo de 64 bytes e usá-lo:
+
+**Gerando o Segredo da Sessão**
+
+```text
+$ ruby -e "require 'securerandom'; puts SecureRandom.hex(64)"
+99ae8af...snip...ec0f262ac
 ```
 
-Para melhorar a segurança, os dados da sessão guardados no cookie é assinado com uma chave secreta da sessão. Uma chave aleatória é gerada para você pelo Sinatra. Contudo, já que a chave mudará cada vez que você inicia sua aplicação, você talvez queira defini-la você mesmo para que todas as instâncias da aplicação compartilhe-a:
+**Gerando o Segredo da Sessão (Bônus)**
 
-```ruby
-set :session_secret, 'super secret'
+Use a [gem sysrandom](https://github.com/cryptosphere/sysrandom#readme) para favorecer
+o sistema RNG de geração de valores aleatórios em vez do userspace
+`OpenSSL` que é o padrão atual do MRI Ruby:
+
+```text
+$ gem install sysrandom
+Building native extensions.  This could take a while...
+Successfully installed sysrandom-1.x
+1 gem installed
+
+$ ruby -e "require 'sysrandom/securerandom'; puts SecureRandom.hex(64)"
+99ae8af...snip...ec0f262ac
 ```
 
-Se você quiser fazer outras configurações, você também pode guardar um hash com as opções nas configurações da `session`:
+**Variável de Ambiente do Segredo da Sessão**
+
+Crie uma variável de ambiente `SESSION_SECRET` para o Sinatra com o valor que
+foi gerado por você. Faça com que esse valor persista através das
+reinicializações do seu host. O método para fazer isso vai variar de sistema
+para sistema, este exemplo é apenas para propósitos ilustrativos:
+
+```bash
+# echo "export SESSION_SECRET=99ae8af...snip...ec0f262ac" >> ~/.bashrc
+```
+
+**Configuração do Segredo da Sessão do Aplicativo**
+
+Configure sua aplicação para ter um fallback com um segredo aleatório seguro
+caso a variável de ambiente `SESSION_SECRET` não esteja presente.
+
+Para pontos de bônus use a
+[gem sysrandom](https://github.com/cryptosphere/sysrandom#readme) aqui
+também:
+
+```ruby
+require 'securerandom'
+# -ou- require 'sysrandom/securerandom'
+set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
+```
+
+#### Configuração da Sessão
+
+Se você quiser configurar ainda mais, você também pode armazenar um hash com
+opções dentro das configurações de `sessions`:
 
 ```ruby
 set :sessions, :domain => 'foo.com'
 ```
 
-Para compartilhar sua sessão entre outros aplicativos em um subdomínio de foo.com, utilize o prefixo *.*:
+Para compartilhar sua sessão entre outros aplicativos em um subdomínio de
+foo.com, utilize o prefixo *.*:
 
 ```ruby
 set :sessions, :domain => '.foo.com'
 ```
+
+#### Escolhendo seu Próprio Middleware de Sessão
+
+Note que `enable :sessions` na verdade guarda todos os dados em um cookie. Isso
+pode não ser sempre o que você deseja (salvar muitos dados vai aumentar seu
+tráfego, por exemplo). Você pode usar qualquer middleware de sessão do Rack para
+fazer isso, um dos seguintes métodos pode ser usado:
+
+
+```ruby
+enable :sessions
+set :session_store, Rack::Session::Pool
+```
+Ou usar sessões com um hash de opções:
+
+```ruby
+set :sessions, :expire_after => 2592000
+set :session_store, Rack::Session::Pool
+```
+
+Outra opção é **não** chamar `enable :sessions`, mas em vez disso usar seu
+middleware de escolha como você faria com qualquer outro middleware.
+
+É importante perceber que quando você usa esse método, a proteção baseada na
+sessão **não será ativada por padrão**.
+
+Para fazer isso com o middleware Rack também precisará ser adicionado:
+
+```ruby
+use Rack::Session::Pool, :expire_after => 2592000
+use Rack::Protection::RemoteToken
+use Rack::Protection::SessionHijacking
+```
+
+Veja '[Configurando Proteção de Ataques](#Configurando-proteção-de-ataques)'
+para mais informações.
 
 ### Halting
 
@@ -1413,12 +1517,25 @@ Rodando uma vez, na inicialização, em qualquer ambiente:
 
 ```ruby
 configure do
-  ...
+  # setando uma opção
+  set :option, 'value'
+
+  # setando múltiplas opções
+  set :a => 1, :b => 2
+
+  # mesmo que `set :option, true`
+  enable :option
+
+  # mesmo que `set :option, false`
+  disable :option
+
+  # você também mode usar configurações dinâmicas com blocos:
+  set(:css_dir) { File.join(views, 'css') }
 end
 ```
 
-Rodando somente quando o ambiente (`APP_ENV` environment variável) é
-setado para `:production`:
+Rodando somente quando o ambiente (`APP_ENV` variável de ambiente) é setado para
+`:production`:
 
 ```ruby
 configure :production do
@@ -1433,6 +1550,276 @@ configure :production, :test do
   ...
 end
 ```
+
+Você pode acessar essas opções através de `settings`:
+
+```ruby
+configure do
+  set :foo, 'bar'
+end
+
+get '/' do
+  settings.foo? # => true
+  settings.foo  # => 'bar'
+  ...
+end
+```
+
+### Configurando Proteção de Ataques
+
+O Sinatra usa
+[Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme)
+para defender sua aplicação contra ataques comuns e oportunistas. Você pode
+facilmente desativar esse comportamento (o que abrirá sua aplicação para uma
+tonelada de vulnerabilidades):
+
+```ruby
+disable :protection
+```
+
+Para pular uma única camada de defesa, passe `protection` para o hash de opções:
+
+```ruby
+set :protection, :except => :path_traversal
+```
+Você também pode usar um array para desativar uma lista de proteções:
+
+```ruby
+set :protection, :except => [:path_traversal, :session_hijacking]
+```
+
+Por padrão, Sinatra só vai setar a proteção baseada em sessão se `:sessions`
+estiver ativada. Veja '[Utilizando Sessões](#utilizando-sessões)'. Algumas vezes você
+pode querer setar a sessão "fora" da aplicação Sinatra, como no config.ru ou uma
+instância separada do `Rack::Builder`. Nesse caso você ainda pode configurar a
+proteção baseada em sessão passando a opção `:session`:
+
+```ruby
+set :protection, :session => true
+```
+
+### Configurações Disponíveis
+
+<dl>
+  <dt>absolute_redirects</dt>
+    <dd>
+      Se desativado, Sinatra permitirá redirecionamentos relativos, no entanto,
+      Sinatra deixará de estar em conformidade com a RFC 2616 (HTTP 1.1), que só
+      permite redirecionamentos absolutos.
+    </dd>
+    <dd>
+      Ative se a sua aplicação estiver rodando em um proxy reverso que não foi
+      configurado corretamente. Observe que o helper <tt>url</tt> ainda vai
+      produzir URLs absolutas, a menos que você passe <tt>false</tt> como
+      segundo parâmetro.
+    </dd>
+    <dd>Desativado por padrão</dd>
+
+  <dt>add_charset</dt>
+    <dd>
+      Tipos de Mime nos quais o helper <tt>content_type</tt> adicionará automaticamente a
+      informação de charset. Você deve adicionar ao invés de substituir essa
+      opção: <tt>settings.add_charset << "application/foobar"</tt>
+    </dd>
+
+  <dt>app_file</dt>
+    <dd>
+      Caminho do arquivo principal da aplicação, usado para detectar a raiz do
+      projeto, views e pastas públicas e inline templates.
+    </dd>
+
+  <dt>bind</dt>
+    <dd>
+      Endereço IP para conectar (padrão: <tt>0.0.0.0</tt> <em>ou</em>
+      <tt>localhost</tt> se seu `ambiente` estiver setado para desenvolvimento).
+      Usado apenas para servidor embutido.
+    </dd>
+
+  <dt>default_encoding</dt>
+    <dd>
+      Codificação para o caso de desconhecido (padrão é <tt>"utf-8"</tt>).
+    </dd>
+
+  <dt>dump_errors</dt>
+    <dd>Apresenta os erros no log.</dd>
+
+  <dt>environment</dt>
+    <dd>
+      Ambiente atual. Padrão é <tt>ENV['APP_ENV']</tt>, ou
+      <tt>"development"</tt> se não estiver disponível.
+    </dd>
+
+  <dt>logging</dt>
+    <dd>Usa o logger.</dd>
+
+  <dt>lock</dt>
+    <dd>
+      Coloca um bloqueio em cada requisição, executando apenas o processamento
+      de requisição por processo concorrente do Ruby.
+    </dd>
+    <dd>
+      Ativado se sua aplicação não for thread-safe. Desativado por padrão.
+    </dd>
+
+  <dt>method_override</dt>
+    <dd>
+      Use a mágica <tt>_method</tt> para permitir formulários PUT/DELETE
+      em navegadores que não suportem isso.
+    </dd>
+
+  <dt>mustermann_opts</dt>
+  <dd>
+    Um hash padrão de opções para passar para o Mustermann.new ao compilar os
+    caminhos das rotas.
+  </dd>
+
+  <dt>port</dt>
+    <dd>Porta para ficar ouvindo. Usado somente para servidores embutidos./dd>
+
+  <dt>prefixed_redirects</dt>
+    <dd>
+      Se deve ou não inserir <tt>request.script_name</tt> nos redirecionamentos
+      quando nenhum caminho absoluto for passado. Dessa forma <tt>redirect
+      '/foo'</tt> vai se comportar como <tt>redirect to('/foo')</tt>. Desativado
+      por padrão.
+    </dd>
+
+  <dt>protection</dt>
+    <dd>
+      Se deve ou não ativar proteção a ataques web. Veja a seção de proteção
+      acima.
+    </dd>
+
+  <dt>public_dir</dt>
+    <dd>Apelido para <tt>public_folder</tt>. Veja abaixo.</dd>
+
+  <dt>public_folder</dt>
+    <dd>
+      Caminho para a pasta onde os arquivos públicos são servidos. Só é usada se
+      estiver ativada a entrega de arquivos estáticos (veja as configurações de
+      <tt>static</tt> abaixo). Inferido da configuração <tt>app_file</tt> se não
+      for passado.
+    </dd>
+
+  <dt>quiet</dt>
+    <dd>
+      Desativa os logs gerados pelos comandos start e stop do Sinatra.
+      <tt>false</tt> por padrão.
+    </dd>
+
+  <dt>reload_templates</dt>
+    <dd>
+      Se deve ou não recarregar os templates entre as requisições. Ativado se
+      estiver em modo desenvolvimento.
+    </dd>
+
+  <dt>root</dt>
+    <dd>
+      Caminho para a pasta principal do projeto. Inferido das configurações de
+      <tt>app_file</tt> se não for passado.
+    </dd>
+
+  <dt>raise_errors</dt>
+    <dd>
+      Lançar exceções (vai parar a aplicação). Ativado por padrão quando o
+      <tt>ambiente</tt> for <tt>"test"</tt>, desativado quando não for.
+    </dd>
+
+  <dt>run</dt>
+    <dd>
+      Se ativo, Sinatra vai cuidar da inicialização do servidor web. Não ative
+      se estiver usando rackup ou outros métodos.
+    </dd>
+
+  <dt>running</dt>
+    <dd>O servidor embutido está executando agora? Não mude esta
+    configuração!</dd>
+
+  <dt>server</dt>
+    <dd>
+      Servidor ou lista de servidores para uso de servidores embutidos. A ordem
+      indica prioridade, padrão depende da implementação de Ruby utilizada.
+    </dd>
+
+  <dt>server_settings</dt>
+    <dd>
+      Se você estiver usando um servidor web WEBrick, presume-se que para seu
+      ambiente de desenvolvimento você pode passar um hash de opções para
+      <tt>server_settings</tt>, tais como <tt>SSLEnable</tt> ou
+      <tt>SSLVerifyClient</tt>. No entanto, servidores web como Puma e Thin não
+      suportam isso, então você pode passar <tt>server_settings</tt> definindo
+      isso como um método para quando você chamar <tt>configure</t>.
+    </dd>
+
+  <dt>sessions</dt>
+    <dd>
+      Ativa o suporte para sessões baseadas em cookie usando
+      <tt>Rack::Session::Cookie</tt>. Veja a seção '[Utilizando Sessões](#utilizando-sessões)' para mais
+      informações.
+    </dd>
+
+  <dt>session_store</dt>
+    <dd>
+      O middleware de sessão do Rack usado. O padrão é <tt>Rack::Session::Cookie</tt>
+      Veja a seção [Utilizando Sessões](#utilizando-sessões)
+      para mais informações.
+    </dd>
+
+  <dt>show_exceptions</dt>
+    <dd>
+      Mostra o stack trace no navegador quando uma exceção acontecer.  Ativado
+      por padrão quando o <tt>ambiente</tt> for <tt>"development"</tt>,
+      desativado para os demais.
+
+    </dd>
+    <dd>
+      Também pode ser setado para <tt>:after_handler</tt> para acionar o
+      tratamento de erros específico da aplicação antes de mostrar o stack trace
+      no browser.
+    </dd>
+
+  <dt>static</dt>
+
+    <dd>Se o Sinatra deve cuidar da exibição de arquivos estáticos.</dd>
+    <dd>Desativado quando o servidor for capaz de fazer isso por conta.</dd>
+    <dd>Desative para aumentar a performance.</dd>
+    <dd>
+      Ativado por padrão no estilo clássico, desativado para aplicações
+      modulares.
+    </dd>
+
+  <dt>static_cache_control</dt>
+    <dd>
+      Quando o Sinatra estiver servindo arquivos estáticos, defina isso para
+      adicionar o cabeçalho <tt>Cache-Control</tt> as respostas. Usa o
+      helper <tt>cache_control</tt>. Desativado por padrão.
+    </dd>
+    <dd>
+      Use um array explicito ao definir valores múltiplos:  <tt>set
+      :static_cache_control, [:public, :max_age => 300]</tt>
+    </dd>
+
+  <dt>threaded</dt>
+    <dd>
+      Quando setado para <tt>true</tt>, dirá ao Thin para usar
+      <tt>EventMachine.defer</tt> ao processar a requisição.
+    </dd>
+
+  <dt>traps</dt>
+    <dd>Se o Sinatra deve lidar com os sinais do sistema.</dd>
+
+  <dt>views</dt>
+    <dd>
+      Caminho para a pasta de views. Inferido das configurações de
+      <tt>app_file</tt> se não for passado.
+    </dd>
+
+  <dt>x_cascade</dt>
+    <dd>
+      Se deve ou não definir o cabeçalho X-Cascade quando nenhuma rota
+      corresponder. Padrão é <tt>true</tt>.
+    </dd>
+</dl>
 
 ## Tratamento de Erros
 
