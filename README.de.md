@@ -357,13 +357,13 @@ auch andere Werte akzeptiert.
 Es kann jedes gültige Objekt zurückgegeben werden, bei dem es sich entweder um
 einen Rack-Rückgabewert, einen Rack-Body oder einen HTTP-Status-Code handelt:
 
-*   Ein Array mit drei Elementen: `[Status (Fixnum), Headers (Hash),
+*   Ein Array mit drei Elementen: `[Status (Integer), Headers (Hash),
     Response-Body (antwortet auf #each)]`.
-*   Ein Array mit zwei Elementen: `[Status (Fixnum), Response-Body (antwortet
+*   Ein Array mit zwei Elementen: `[Status (Integer), Response-Body (antwortet
     auf #each)]`.
 *   Ein Objekt, das auf `#each` antwortet und den an diese Methode übergebenen
     Block nur mit Strings als Übergabewerte aufruft.
-*   Ein Fixnum, das den Status-Code festlegt.
+*   Ein Integer, das den Status-Code festlegt.
 
 Damit lässt sich relativ einfach Streaming implementieren:
 
