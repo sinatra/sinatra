@@ -205,6 +205,11 @@ describe Sinatra::ContentFor do
             end
           end
 
+          it 'renders default content' do
+            expect(get('/yield_block')).to be_ok
+            expect(body).to eq("bar")
+          end
+
           it 'renders blocks declared with the same key you use when rendering' do
             expect(get('/same_key')).to be_ok
             expect(body).to eq("foo")

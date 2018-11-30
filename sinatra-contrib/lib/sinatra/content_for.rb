@@ -32,7 +32,7 @@ module Sinatra
   # to yield_content.
   #
   #     # layout.erb
-  #     <%= yield_content :some_key_with_no_content do %>
+  #     <% yield_content :some_key_with_no_content do %>
   #       <chunk of="default html">...</chunk>
   #     <% end %>
   #
@@ -171,9 +171,15 @@ module Sinatra
     #
     # Would pass <tt>1</tt> and <tt>2</tt> to all the blocks registered
     # for <tt>:head</tt>.
-    def yield_content(key, *args)
-      return yield(*args) if block_given? && content_blocks[key.to_sym].empty?
-      content_blocks[key.to_sym].map { |b| capture(*args, &b) }.join
+    def yield_content(key, *args, &block)
+      if block_given? && !content_for?(key)
+        haml? ? capture_haml(*args, &block) : yield(*args)
+      else
+        content = content_blocks[key.to_sym].map { |b| capture(*args, &b) }
+        content.join.tap do |c|
+          @_out_buf << c if block_given? && erb?
+        end
+      end
     end
 
     private
