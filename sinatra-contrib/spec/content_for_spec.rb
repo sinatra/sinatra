@@ -210,6 +210,11 @@ describe Sinatra::ContentFor do
             expect(body).to eq("bar")
           end
 
+          it 'renders content set as parameter' do
+            expect(get('/parameter_value')).to be_ok
+            expect(body).to eq("foo")
+          end
+
           it 'renders blocks declared with the same key you use when rendering' do
             expect(get('/same_key')).to be_ok
             expect(body).to eq("foo")
