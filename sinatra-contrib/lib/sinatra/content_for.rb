@@ -177,7 +177,9 @@ module Sinatra
       else
         content = content_blocks[key.to_sym].map { |b| capture(*args, &b) }
         content.join.tap do |c|
-          @_out_buf << c if block_given? && erb?
+          if block_given? && (erb? || erubi? || erubis?)
+            @_out_buf << c
+          end
         end
       end
     end
