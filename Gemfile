@@ -53,6 +53,7 @@ if RUBY_ENGINE == "ruby"
   gem 'stylus'
   gem 'rabl'
   gem 'builder'
+  gem 'erubi'
   gem 'erubis'
   gem 'haml', '>= 3.0'
   gem 'sass'

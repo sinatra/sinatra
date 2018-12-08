@@ -11,6 +11,15 @@ module Sinatra
       @current_engine == :erb
     end
 
+    # Returns true if the current engine is `:erubi`, or `Tilt[:erb]` is set
+    # to Tilt::ErubisTemplate.
+    #
+    # @return [Boolean] Returns true if current engine is `:erubi`.
+    def erubi?
+      @current_engine == :erubi or
+      erb? && Tilt[:erb] == Tilt::ErubiTemplate
+    end
+
     # Returns true if the current engine is `:erubis`, or `Tilt[:erb]` is set
     # to Tilt::ErubisTemplate.
     #
