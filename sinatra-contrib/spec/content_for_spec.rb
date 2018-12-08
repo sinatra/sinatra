@@ -205,9 +205,14 @@ describe Sinatra::ContentFor do
             end
           end
 
-          it 'renders default content' do
-            expect(get('/yield_block')).to be_ok
+          it 'renders content' do
+            expect(get('/yield_block/different_key')).to be_ok
             expect(body).to eq("bar")
+          end
+
+          it 'renders default content' do
+            expect(get('/yield_block/same_key')).to be_ok
+            expect(body).to eq("foo")
           end
 
           it 'renders content set as parameter' do
