@@ -205,14 +205,20 @@ describe Sinatra::ContentFor do
             end
           end
 
-          it 'renders content' do
-            expect(get('/yield_block/different_key')).to be_ok
-            expect(body).to eq("bar")
-          end
+          describe 'with a default content block' do
+            describe 'when content_for key exists' do
+              it 'ignores default content and renders content' do
+                expect(get('/yield_block/same_key')).to be_ok
+                expect(body).to eq("foo")
+              end
+            end
 
-          it 'renders default content' do
-            expect(get('/yield_block/same_key')).to be_ok
-            expect(body).to eq("foo")
+            describe 'when content_for key is missing' do
+              it 'renders default content block' do
+                expect(get('/yield_block/different_key')).to be_ok
+                expect(body).to eq("baz")
+              end
+            end
           end
 
           it 'renders content set as parameter' do
