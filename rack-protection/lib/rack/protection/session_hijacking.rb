@@ -13,23 +13,22 @@ module Rack
     # spoofed, too, this will not prevent determined hijacking attempts.
     class SessionHijacking < Base
       default_reaction :drop_session
-      default_options :tracking_key => :tracking, :encrypt_tracking => true,
+      default_options :tracking_key => :tracking,
         :track => %w[HTTP_USER_AGENT HTTP_ACCEPT_LANGUAGE]
 
       def accepts?(env)
         session = session env
         key     = options[:tracking_key]
         if session.include? key
-          session[key].all? { |k,v| v == encrypt(env[k]) }
+          session[key].all? { |k,v| v == encode(env[k]) }
         else
           session[key] = {}
-          options[:track].each { |k| session[key][k] = encrypt(env[k]) }
+          options[:track].each { |k| session[key][k] = encode(env[k]) }
         end
       end
 
-      def encrypt(value)
-        value = value.to_s.downcase
-        options[:encrypt_tracking] ? super(value) : value
+      def encode(value)
+        value.to_s.downcase
       end
     end
   end
