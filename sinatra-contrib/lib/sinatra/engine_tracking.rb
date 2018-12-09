@@ -104,6 +104,11 @@ module Sinatra
       @current_engine == :creole
     end
 
+    # @return [Boolean] Returns true if current engine is `:ruby`.
+    def ruby?
+      @current_engine == :ruby
+    end
+
     def initialize(*)
       @current_engine = :ruby
       super
