@@ -33,7 +33,7 @@ describe Sinatra::ContentFor do
     end
 
     it 'renders default content if no block matches the key and a default block is specified' do
-      content_for(:bar) { "bar" }
+      expect(yield_content(:foo) {}).to be_nil
       expect(yield_content(:foo) { "foo" }).to eq("foo")
     end
 
@@ -203,6 +203,27 @@ describe Sinatra::ContentFor do
                 render inner, params[:view].to_sym, :layout => params[:layout].to_sym
               end
             end
+          end
+
+          describe 'with a default content block' do
+            describe 'when content_for key exists' do
+              it 'ignores default content and renders content' do
+                expect(get('/yield_block/same_key')).to be_ok
+                expect(body).to eq("foo")
+              end
+            end
+
+            describe 'when content_for key is missing' do
+              it 'renders default content block' do
+                expect(get('/yield_block/different_key')).to be_ok
+                expect(body).to eq("baz")
+              end
+            end
+          end
+
+          it 'renders content set as parameter' do
+            expect(get('/parameter_value')).to be_ok
+            expect(body).to eq("foo")
           end
 
           it 'renders blocks declared with the same key you use when rendering' do

@@ -50,6 +50,12 @@ describe Sinatra::Capture do
       expect(render(:erb, "iso_8859_1")).to eq("ISO-8859-1 -")
     end
   end
+
+  describe 'without templates' do
+    it 'captures empty blocks' do
+      expect(capture {}).to be_nil
+    end
+  end
 end
 
 __END__

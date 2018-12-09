@@ -97,8 +97,9 @@ module Sinatra
         result = block[*args]
       elsif current_engine == :erb || current_engine == :slim
         @_out_buf, _buf_was = '', @_out_buf
-        block[*args]
-        result = eval('@_out_buf', block.binding)
+        raw = block.call(*args)
+        captured = block.binding.eval('@_out_buf')
+        result = captured.empty? ? raw : captured
         @_out_buf = _buf_was
       else
         buffer     = eval '_buf if defined?(_buf)', block.binding
@@ -109,7 +110,7 @@ module Sinatra
         buffer.clear unless buffer.nil?
         result = render(current_engine, dummy, options, &block)
       end
-      result.strip.empty? && @capture ? @capture : result
+      result && result.strip.empty? && @capture ? @capture : result
     ensure
       buffer.replace(old_buffer) unless buffer.nil?
     end
