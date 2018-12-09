@@ -110,7 +110,7 @@ module Sinatra
         buffer.clear unless buffer.nil?
         result = render(current_engine, dummy, options, &block)
       end
-      result.strip.empty? && @capture ? @capture : result
+      result && result.strip.empty? && @capture ? @capture : result
     ensure
       buffer.replace(old_buffer) unless buffer.nil?
     end

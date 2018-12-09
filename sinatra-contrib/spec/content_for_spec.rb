@@ -33,7 +33,7 @@ describe Sinatra::ContentFor do
     end
 
     it 'renders default content if no block matches the key and a default block is specified' do
-      content_for(:bar) { "bar" }
+      expect(yield_content(:foo) {}).to be_nil
       expect(yield_content(:foo) { "foo" }).to eq("foo")
     end
 
