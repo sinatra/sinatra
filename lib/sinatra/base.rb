@@ -1089,7 +1089,7 @@ module Sinatra
 
     # Dispatch a request with error handling.
     def dispatch!
-      force_encoding(@params.merge!(@request.params))
+      @params.merge!(@request.params).each { |key, val| @params[key] = force_encoding(val.dup) }
 
       invoke do
         static! if settings.static? && (request.get? || request.head?)
