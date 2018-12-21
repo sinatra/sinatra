@@ -70,6 +70,22 @@ describe Sinatra::ContentFor do
       content_for(:foo, "foo")
       expect(yield_content(:foo)).to eq("foo")
     end
+
+    context 'when flush option was disabled' do
+      it 'append content' do
+        content_for(:foo, "foo")
+        content_for(:foo, "bar")
+        expect(yield_content(:foo)).to eq("foobar")
+      end
+    end
+
+    context 'when flush option was enabled' do
+      it 'flush first content' do
+        content_for(:foo, "foo")
+        content_for(:foo, "bar", flush: true)
+        expect(yield_content(:foo)).to eq("bar")
+      end
+    end
   end
 
   # TODO: liquid radius markaby builder nokogiri

@@ -128,9 +128,12 @@ module Sinatra
     #
     # Your blocks can also receive values, which are passed to them
     # by <tt>yield_content</tt>
-    def content_for(key, value = nil, &block)
+    def content_for(key, value = nil, options = {}, &block)
+      key = key.to_sym
+
       block ||= proc { |*| value }
-      content_blocks[key.to_sym] << capture_later(&block)
+      clear_content_for(key) if options[:flush]
+      content_blocks[key] << capture_later(&block)
     end
 
     # Check if a block of content with the given key was defined. For
@@ -172,10 +175,11 @@ module Sinatra
     # Would pass <tt>1</tt> and <tt>2</tt> to all the blocks registered
     # for <tt>:head</tt>.
     def yield_content(key, *args, &block)
+      key = key.to_sym
       if block_given? && !content_for?(key)
         haml? ? capture_haml(*args, &block) : yield(*args)
       else
-        content = content_blocks[key.to_sym].map { |b| capture(*args, &b) }
+        content = content_blocks[key].map { |b| capture(*args, &b) }
         content.join.tap do |c|
           if block_given? && (erb? || erubi? || erubis?)
             @_out_buf << c
