@@ -4,17 +4,11 @@ require 'spec_helper'
 require 'okjson'
 
 describe Sinatra::RespondWith do
-  def provides(*args)
-    @provides = args
-  end
-
   def respond_app(&block)
-    types = @provides
     mock_app do
       set :app_file, __FILE__
       set :views, root + '/respond_with'
       register Sinatra::RespondWith
-      respond_to(*types) if types
       class_eval(&block)
     end
   end
@@ -28,9 +22,9 @@ describe Sinatra::RespondWith do
   end
 
   def req(*types)
-    p = types.shift if types.first.is_a? String and types.first.start_with? '/'
+    path = types.shift if types.first.is_a?(String) && types.first.start_with?('/')
     accept = types.map { |t| Sinatra::Base.mime_type(t).to_s }.join ','
-    get (p || '/'), {}, 'HTTP_ACCEPT' => accept
+    get (path || '/'), {}, 'HTTP_ACCEPT' => accept
   end
 
   describe "Helpers#respond_to" do

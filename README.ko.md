@@ -315,10 +315,10 @@ end
 
 유효한 Rack 응답, Rack 본문 객체 또는 HTTP 상태 코드가 되는 어떠한 객체라도 반환할 수 있습니다.
 
-* 세 요소를 가진 배열: `[상태 (Fixnum), 헤더 (Hash), 응답 본문 (#each에 반응)]`
-* 두 요소를 가진 배열: `[상태 (Fixnum), 응답 본문 (#each에 반응)]`
+* 세 요소를 가진 배열: `[상태 (Integer), 헤더 (Hash), 응답 본문 (#each에 반응)]`
+* 두 요소를 가진 배열: `[상태 (Integer), 응답 본문 (#each에 반응)]`
 * `#each`에 반응하고 주어진 블록으로 문자열만을 전달하는 객체
-* 상태 코드를 의미하는 Fixnum
+* 상태 코드를 의미하는 Integer
 
 이것을 이용한 예를 들자면, 스트리밍(streaming) 예제를 쉽게 구현할 수 있습니다.
 
@@ -653,7 +653,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>의존성</td>
-    <td><a href="http://liquidmarkup.org/">liquid</a></td>
+    <td><a href="https://shopify.github.io/liquid/">liquid</a></td>
   </tr>
   <tr>
     <td>파일 확장자</td>
@@ -676,7 +676,7 @@ Liquid 템플릿에서는 루비 메서드(`yield` 제외)를 호출할 수 없�
     <td>
       <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
       <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-      <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
+      <a href="https://github.com/ged/bluecloth" title="bluecloth">BlueCloth</a>,
       <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
       <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
       중 아무거나

@@ -5,7 +5,6 @@ dist: trusty
 sudo: false
 
 before_install:
-  - rvm get head
   - gem install bundler
   - export CXX="g++-4.8"
 
@@ -17,12 +16,13 @@ addons:
   - g++-4.8
 
 rvm:
-  - 2.2.6
-  - 2.3.3
-  - 2.4.0
+  - 2.2.10
+  - 2.3.8
+  - 2.4.5
+  - 2.5.3
   - ruby-head
-  - rbx
-  - jruby-9.1.6.0
+  - rbx-3
+  - jruby-9.2.0.0
   - jruby-head
 
 script: ./.travis.sh
@@ -31,9 +31,9 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
-    - rvm: rbx
+    - rvm: jruby-9.2.0.0
+    - rvm: rbx-3
 
 notifications:
-  recipients:
-    - mail@zzak.io
-  slack: sinatrarb:LQGhUfGYcqRgRzwKea0bqUhY
+  slack:
+    secure: 6E+GuZId5GcVLgiOKZnE9ZAnJTa+K2Fxqb0KfrECtskviylcPF1OmX36+y7xGUS0P0pGNyWQThe0zCBMpszno/KbvUdIs6jXbOImkFMuo65//4YcivK0rVaYh9uh2S1K3ycaDeUPDf0ulc/AwHnxWGR6yBD2N5idTwt1bsULdy0=

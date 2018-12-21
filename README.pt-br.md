@@ -293,16 +293,16 @@ Você pode retornar uma resposta válida ou um objeto para o Rack, sendo
 eles de qualquer tipo de objeto que queira. Além disso, é possível
 retornar um código de status HTTP.
 
-* Um array com três elementros: `[status (Fixnum), cabecalho (Hash),
+* Um array com três elementros: `[status (Integer), cabecalho (Hash),
     corpo da resposta (responde à #each)]`
 
-* Um array com dois elementros: `[status (Fixnum), corpo da resposta
+* Um array com dois elementros: `[status (Integer), corpo da resposta
     (responde à #each)]`
 
 * Um objeto que responda à `#each` sem passar nada, mas, sim, `strings`
     para um dado bloco
 
-* Um objeto `Fixnum` representando o código de status
+* Um objeto `Integer` representando o código de status
 
 Dessa forma, podemos implementar facilmente um exemplo de streaming:
 
@@ -655,7 +655,7 @@ It also takes a block for inline templates (see exemplo).
 <table>
   <tr>
     <td>Dependencia</td>
-    <td><a href="http://liquidmarkup.org/" title="liquid">liquid</a></td>
+    <td><a href="https://shopify.github.io/liquid/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>Extencao do Arquivo</td>
@@ -679,7 +679,7 @@ você quase sempre precisará passar o `locals` para ele.
       Anyone of:
         <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-        <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
+        <a href="https://github.com/ged/bluecloth" title="bluecloth">BlueCloth</a>,
         <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
         <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
     </td>

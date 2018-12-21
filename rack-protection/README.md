@@ -1,7 +1,5 @@
 # Rack::Protection
 
-[![Build Status](https://secure.travis-ci.org/sinatra/rack-protection.png)](http://travis-ci.org/sinatra/rack-protection)
-
 This gem protects against typical web attacks.
 Should work for all Rack apps, including Rails.
 
@@ -40,55 +38,55 @@ run MyApp
 
 Prevented by:
 
-* `Rack::Protection::AuthenticityToken` (not included by `use Rack::Protection`)
-* `Rack::Protection::FormToken` (not included by `use Rack::Protection`)
-* `Rack::Protection::JsonCsrf`
-* `Rack::Protection::RemoteReferrer` (not included by `use Rack::Protection`)
-* `Rack::Protection::RemoteToken`
-* `Rack::Protection::HttpOrigin`
+* [`Rack::Protection::AuthenticityToken`][authenticity-token] (not included by `use Rack::Protection`)
+* [`Rack::Protection::FormToken`][form-token] (not included by `use Rack::Protection`)
+* [`Rack::Protection::JsonCsrf`][json-csrf]
+* [`Rack::Protection::RemoteReferrer`][remote-referrer] (not included by `use Rack::Protection`)
+* [`Rack::Protection::RemoteToken`][remote-token]
+* [`Rack::Protection::HttpOrigin`][http-origin]
 
 ## Cross Site Scripting
 
 Prevented by:
 
-* `Rack::Protection::EscapedParams` (not included by `use Rack::Protection`)
-* `Rack::Protection::XSSHeader` (Internet Explorer and Chrome only)
-* `Rack::Protection::ContentSecurityPolicy`
+* [`Rack::Protection::EscapedParams`][escaped-params] (not included by `use Rack::Protection`)
+* [`Rack::Protection::XSSHeader`][xss-header] (Internet Explorer and Chrome only)
+* [`Rack::Protection::ContentSecurityPolicy`][content-security-policy]
 
 ## Clickjacking
 
 Prevented by:
 
-* `Rack::Protection::FrameOptions`
+* [`Rack::Protection::FrameOptions`][frame-options]
 
 ## Directory Traversal
 
 Prevented by:
 
-* `Rack::Protection::PathTraversal`
+* [`Rack::Protection::PathTraversal`][path-traversal]
 
 ## Session Hijacking
 
 Prevented by:
 
-* `Rack::Protection::SessionHijacking`
+* [`Rack::Protection::SessionHijacking`][session-hijacking]
 
 ## Cookie Tossing
 
 Prevented by:
-* `Rack::Protection::CookieTossing` (not included by `use Rack::Protection`)
+* [`Rack::Protection::CookieTossing`][cookie-tossing] (not included by `use Rack::Protection`)
 
 ## IP Spoofing
 
 Prevented by:
 
-* `Rack::Protection::IPSpoofing`
+* [`Rack::Protection::IPSpoofing`][ip-spoofing]
 
 ## Helps to protect against protocol downgrade attacks and cookie hijacking
 
 Prevented by:
 
-* `Rack::Protection::StrictTransport` (not included by `use Rack::Protection`)
+* [`Rack::Protection::StrictTransport`][strict-transport] (not included by `use Rack::Protection`)
 
 # Installation
 
@@ -102,3 +100,19 @@ use Rack::Protection, instrumenter: ActiveSupport::Notifications
 ```
 
 The instrumenter is passed a namespace (String) and environment (Hash). The namespace is 'rack.protection' and the attack type can be obtained from the environment key 'rack.protection.attack'.
+
+[authenticity-token]: http://www.sinatrarb.com/protection/authenticity_token
+[content-security-policy]: http://www.sinatrarb.com/protection/content_security_policy
+[cookie-tossing]: http://www.sinatrarb.com/protection/cookie_tossing
+[escaped-params]: http://www.sinatrarb.com/protection/escaped_params
+[form-token]: http://www.sinatrarb.com/protection/form_token
+[frame-options]: http://www.sinatrarb.com/protection/frame_options
+[http-origin]: http://www.sinatrarb.com/protection/http_origin
+[ip-spoofing]: http://www.sinatrarb.com/protection/ip_spoofing
+[json-csrf]: http://www.sinatrarb.com/protection/json_csrf
+[path-traversal]: http://www.sinatrarb.com/protection/path_traversal
+[remote-referrer]: http://www.sinatrarb.com/protection/remote_referrer
+[remote-token]: http://www.sinatrarb.com/protection/remote_token
+[session-hijacking]: http://www.sinatrarb.com/protection/session_hijacking
+[strict-transport]: http://www.sinatrarb.com/protection/strict_transport
+[xss-header]: http://www.sinatrarb.com/protection/xss_header

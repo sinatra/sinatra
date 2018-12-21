@@ -38,7 +38,7 @@ class RequestTest < Minitest::Test
       'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
       'rack.input' => StringIO.new('foo=bar')
     )
-    Sinatra::Base.new!.send(:indifferent_hash).replace(request.params)
+    Sinatra::IndifferentHash[request.params]
     dumped = Marshal.dump(request.params)
     assert_equal 'bar', Marshal.load(dumped)['foo']
   end

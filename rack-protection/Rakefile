@@ -11,6 +11,33 @@ end
 desc "run specs"
 task(:spec) { ruby '-S rspec spec' }
 
+namespace :doc do
+  task :readmes do
+    Dir.glob 'lib/rack/protection/*.rb' do |file|
+      excluded_files = %w[lib/rack/protection/base.rb lib/rack/protection/version.rb]
+      next if excluded_files.include?(file)
+      doc  = File.read(file)[/^  module Protection(\n)+(    #[^\n]*\n)*/m].scan(/^ *#(?!#) ?(.*)\n/).join("\n")
+      file = "doc/#{file[4..-4].tr("/_", "-")}.rdoc"
+      Dir.mkdir "doc" unless File.directory? "doc"
+      puts "writing #{file}"
+      File.open(file, "w") { |f| f << doc }
+    end
+  end
+
+  task :index do
+    doc = File.read("README.md")
+    file = "doc/rack-protection-readme.md"
+    Dir.mkdir "doc" unless File.directory? "doc"
+    puts "writing #{file}"
+    File.open(file, "w") { |f| f << doc }
+  end
+
+  task :all => [:readmes, :index]
+end
+
+desc "generate documentation"
+task :doc => 'doc:all'
+
 desc "generate gemspec"
 task 'rack-protection.gemspec' do
   require 'rack/protection/version'

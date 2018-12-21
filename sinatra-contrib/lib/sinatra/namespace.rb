@@ -1,4 +1,3 @@
-require 'backports'
 require 'sinatra/base'
 require 'mustermann'
 
@@ -147,7 +146,7 @@ module Sinatra
   #     module Zomg # Keep everything under "Zomg" namespace for sanity
   #       module Routes # Define a new "Routes" module
   #
-  #         self.registered(app)
+  #         def self.registered(app)
   #           # First, register the Namespace extension
   #           app.register Sinatra::Namespace
   #
@@ -318,9 +317,7 @@ module Sinatra
           pattern = nil
         end
         base_pattern, base_conditions = @pattern, @conditions
-        pattern         ||= default_pattern
-        base_pattern    ||= base.pattern    if base.respond_to? :pattern
-        base_conditions ||= base.conditions if base.respond_to? :conditions
+        pattern ||= default_pattern
         [ prefixed_path(base_pattern, pattern),
           (base_conditions || {}).merge(conditions) ]
       end
@@ -333,7 +330,7 @@ module Sinatra
       end
 
       def prefixed(method, pattern = nil, conditions = {}, &block)
-        default = /.*/ if method == :before or method == :after
+        default = %r{(?:/.*)?} if method == :before or method == :after
         pattern, conditions = compile pattern, conditions, default
         result = base.send(method, pattern, conditions, &block)
         invoke_hook :route_added, method.to_s.upcase, pattern, block

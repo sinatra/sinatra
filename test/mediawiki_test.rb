@@ -64,5 +64,5 @@ begin
     end
   end
 rescue LoadError
-  warn "#{$!.to_s}: skipping mediawiki tests"
+  warn "#{$!}: skipping mediawiki tests"
 end

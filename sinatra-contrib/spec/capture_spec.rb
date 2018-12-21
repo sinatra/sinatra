@@ -19,7 +19,10 @@ describe Sinatra::Capture do
   end
 
   shared_examples_for "a template language" do |engine|
-    lang = engine == :erubis ? :erb : engine
+    lang = engine
+    if engine == :erubi || engine == :erubis
+      lang = :erb
+    end
     require "#{engine}"
 
     it "captures content" do
@@ -33,6 +36,7 @@ describe Sinatra::Capture do
 
   describe('haml')   { it_behaves_like "a template language", :haml   }
   describe('slim')   { it_behaves_like "a template language", :slim   }
+  describe('erubi')  { it_behaves_like "a template language", :erubi  }
   describe('erubis') { it_behaves_like "a template language", :erubis }
 
   describe 'erb' do
@@ -44,6 +48,12 @@ describe Sinatra::Capture do
 
     it "handles ISO-8859-1 encoding" do
       expect(render(:erb, "iso_8859_1")).to eq("ISO-8859-1 -")
+    end
+  end
+
+  describe 'without templates' do
+    it 'captures empty blocks' do
+      expect(capture {}).to be_nil
     end
   end
 end

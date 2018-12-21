@@ -63,5 +63,5 @@ class NokogiriTest < Minitest::Test
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping nokogiri tests"
+  warn "#{$!}: skipping nokogiri tests"
 end

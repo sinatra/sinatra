@@ -73,5 +73,5 @@ class LiquidTest < Minitest::Test
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping liquid tests"
+  warn "#{$!}: skipping liquid tests"
 end

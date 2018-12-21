@@ -412,7 +412,6 @@ describe Sinatra::Cookies do
     end
 
     it 'favors response over request cookies' do
-      seen = false
       value = nil
       cookie_route('foo=bar') do
         cookies[:foo] = 'baz'

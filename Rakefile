@@ -9,10 +9,7 @@ task :spec => :test
 CLEAN.include "**/*.rbc"
 
 def source_version
-  @source_version ||= begin
-    load './lib/sinatra/version.rb'
-    Sinatra::VERSION
-  end
+  @source_version ||= File.read(File.expand_path("../VERSION", __FILE__)).strip
 end
 
 def prev_feature
@@ -33,7 +30,7 @@ end
 
 Rake::TestTask.new(:test) do |t|
   t.test_files = FileList['test/*_test.rb']
-  t.ruby_opts = ['-rubygems'] if defined? Gem
+  t.ruby_opts = ['-r rubygems'] if defined? Gem
   t.ruby_opts << '-I.'
   t.warning = true
 end
@@ -44,7 +41,7 @@ Rake::TestTask.new(:"test:core") do |t|
      readme request response result route_added_hook
      routing server settings sinatra static templates]
   t.test_files = core_tests.map {|n| "test/#{n}_test.rb"}
-  t.ruby_opts = ["-rubygems"] if defined? Gem
+  t.ruby_opts = ["-r rubygems"] if defined? Gem
   t.ruby_opts << "-I."
   t.warning = true
 end
@@ -92,7 +89,7 @@ end
 
 team = ["Ryan Tomayko", "Blake Mizerany", "Simon Rozet", "Konstantin Haase", "Zachary Scott"]
 desc "list of contributors"
-task :thanks, [:release,:backports] do |t, a|
+task :thanks, ['release:all', :backports] do |t, a|
   a.with_defaults :release => "#{prev_version}..HEAD",
     :backports => "#{prev_feature}.0..#{prev_feature}.x"
   included = `git log --format=format:"%aN\t%s" #{a.release}`.lines.map { |l| l.force_encoding('binary') }
@@ -141,54 +138,85 @@ end
 # PACKAGING ============================================================
 
 if defined?(Gem)
-  # Load the gemspec using the same limitations as github
-  def spec
-    require 'rubygems' unless defined? Gem::Specification
-    @spec ||= eval(File.read('sinatra.gemspec'))
-  end
+  GEMS_AND_ROOT_DIRECTORIES = {
+    "sinatra" => ".",
+    "sinatra-contrib" => "./sinatra-contrib",
+    "rack-protection" => "./rack-protection"
+  }
 
-  def package(ext='')
-    "pkg/sinatra-#{spec.version}" + ext
-  end
-
-  desc 'Build packages'
-  task :package => %w[.gem .tar.gz].map {|e| package(e)}
-
-  desc 'Build and install as local gem'
-  task :install => package('.gem') do
-    sh "gem install #{package('.gem')}"
+  def package(gem, ext='')
+    "pkg/#{gem}-#{source_version}" + ext
   end
 
   directory 'pkg/'
   CLOBBER.include('pkg')
 
-  file package('.gem') => %w[pkg/ sinatra.gemspec] + spec.files do |f|
-    sh "gem build sinatra.gemspec"
-    mv File.basename(f.name), f.name
-  end
-
-  file package('.tar.gz') => %w[pkg/] + spec.files do |f|
-    sh <<-SH
-      git archive \
-        --prefix=sinatra-#{source_version}/ \
-        --format=tar \
-        HEAD | gzip > #{f.name}
-    SH
-  end
-
-  task 'release' => ['test', package('.gem')] do
-    if File.binread("CHANGELOG.md") =~ /= \d\.\d\.\d . not yet released$/i
-      fail 'please update the changelog first' unless %x{git symbolic-ref HEAD} == "refs/heads/prerelease\n"
+  GEMS_AND_ROOT_DIRECTORIES.each do |gem, directory|
+    file package(gem, '.gem') => ["pkg/", "#{directory + '/' + gem}.gemspec"] do |f|
+      sh "cd #{directory} && gem build #{gem}.gemspec"
+      mv directory + "/" + File.basename(f.name), f.name
     end
 
-    sh <<-SH
-      gem install #{package('.gem')} --local &&
-      gem push #{package('.gem')}  &&
-      git commit --allow-empty -a -m '#{source_version} release'  &&
-      git tag -s v#{source_version} -m '#{source_version} release'  &&
-      git tag -s #{source_version} -m '#{source_version} release'  &&
-      git push && (git push sinatra || true) &&
-      git push --tags && (git push sinatra --tags || true)
-    SH
+    file package(gem, '.tar.gz') => ["pkg/"] do |f|
+      sh <<-SH
+        git archive \
+          --prefix=#{gem}-#{source_version}/ \
+          --format=tar \
+          HEAD -- #{directory} | gzip > #{f.name}
+      SH
+    end
+  end
+
+  namespace :package do
+    GEMS_AND_ROOT_DIRECTORIES.each do |gem, directory|
+      desc "Build #{gem} packages"
+      task gem => %w[.gem .tar.gz].map { |e| package(gem, e) }
+    end
+
+    desc "Build all packages"
+    task :all => GEMS_AND_ROOT_DIRECTORIES.keys
+  end
+
+  namespace :install do
+    GEMS_AND_ROOT_DIRECTORIES.each do |gem, directory|
+      desc "Build and install #{gem} as local gem"
+      task gem => package(gem, '.gem') do
+        sh "gem install #{package(gem, '.gem')}"
+      end
+    end
+
+    desc "Build and install all of the gems as local gems"
+    task :all => GEMS_AND_ROOT_DIRECTORIES.keys
+  end
+
+  namespace :release do
+    GEMS_AND_ROOT_DIRECTORIES.each do |gem, directory|
+      desc "Release #{gem} as a package"
+      task gem => "package:#{gem}" do
+        sh <<-SH
+          gem install #{package(gem, '.gem')} --local &&
+          gem push #{package(gem, '.gem')}
+        SH
+      end
+    end
+
+    desc "Commits the version to github repository"
+    task :commit_version do
+      sh <<-SH
+        sed -i "s/.*VERSION.*/  VERSION = '#{source_version}'/" lib/sinatra/version.rb
+        sed -i "s/.*VERSION.*/    VERSION = '#{source_version}'/" sinatra-contrib/lib/sinatra/contrib/version.rb
+        sed -i "s/.*VERSION.*/    VERSION = '#{source_version}'/" rack-protection/lib/rack/protection/version.rb
+      SH
+
+      sh <<-SH
+        git commit --allow-empty -a -m '#{source_version} release'  &&
+        git tag -s v#{source_version} -m '#{source_version} release'  &&
+        git push && (git push origin || true) &&
+        git push --tags && (git push origin --tags || true)
+      SH
+    end
+
+    desc "Release all gems as packages"
+    task :all => [:test, :commit_version] + GEMS_AND_ROOT_DIRECTORIES.keys
   end
 end

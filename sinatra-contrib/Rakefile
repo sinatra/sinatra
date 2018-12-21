@@ -11,7 +11,8 @@ task(:default => :spec)
 namespace :doc do
   task :readmes do
     Dir.glob 'lib/sinatra/*.rb' do |file|
-      excluded_files = %w[lib/sinatra/contrib.rb lib/sinatra/capture.rb lib/sinatra/engine_tracking.rb]
+      puts "Trying file... #{file}"
+      excluded_files = %w[lib/sinatra/contrib.rb lib/sinatra/decompile.rb]
       next if excluded_files.include?(file)
       doc  = File.read(file)[/^module Sinatra(\n)+(  #[^\n]*\n)*/m].scan(/^ *#(?!#) ?(.*)\n/).join("\n")
       file = "doc/#{file[4..-4].tr("/_", "-")}.rdoc"
@@ -21,7 +22,15 @@ namespace :doc do
     end
   end
 
-  task :all => [:readmes]
+  task :index do
+    doc = File.read("README.md")
+    file = "doc/sinatra-contrib-readme.md"
+    Dir.mkdir "doc" unless File.directory? "doc"
+    puts "writing #{file}"
+    File.open(file, "w") { |f| f << doc }
+  end
+
+  task :all => [:readmes, :index]
 end
 
 desc "generate documentation"

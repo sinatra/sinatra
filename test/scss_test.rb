@@ -84,5 +84,5 @@ class ScssTest < Minitest::Test
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping scss tests"
+  warn "#{$!}: skipping scss tests"
 end

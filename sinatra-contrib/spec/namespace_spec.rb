@@ -137,7 +137,7 @@ describe Sinatra::Namespace do
 
         describe 'helpers' do
           it 'are defined using the helpers method' do
-            namespace /\/foo\/([^\/&?]+)\/bar\/([^\/&?]+)\// do
+            namespace(/\/foo\/([^\/&?]+)\/bar\/([^\/&?]+)\//) do
               helpers do
                 def foo
                   'foo'
@@ -477,6 +477,19 @@ describe Sinatra::Namespace do
           expect(body).to eq('OKAY!!11!') unless verb == :head
         end
 
+        it 'works correctly if deep nesting' do
+          namespace '/a' do
+            namespace '/b' do
+              namespace '/c' do
+                send(verb, '') { 'hey' }
+              end
+            end
+          end
+
+          expect(send(verb, '/a/b/c')).to be_ok
+          expect(body).to eq('hey') unless verb == :head
+        end
+
         it 'exposes helpers to nested namespaces' do
           namespace '/foo' do
             helpers do
@@ -786,6 +799,37 @@ describe Sinatra::Namespace do
 
       expect(get('/foo/bar').status).to eq(200)
       expect(last_response.body).to eq('true')
+    end
+
+    it 'avoids executing filters even if prefix matches with other namespace' do
+      mock_app do
+        helpers do
+          def dump_args(*args)
+            args.inspect
+          end
+        end
+
+        namespace '/foo' do
+          helpers do
+            def dump_args(*args)
+              super(:foo, *args)
+            end
+          end
+          get('') { dump_args }
+        end
+
+        namespace '/foo-bar' do
+          helpers do
+            def dump_args(*args)
+              super(:foo_bar, *args)
+            end
+          end
+          get('') { dump_args }
+        end
+      end
+
+      get '/foo-bar'
+      expect(last_response.body).to eq('[:foo_bar]')
     end
   end
 end

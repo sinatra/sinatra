@@ -86,10 +86,10 @@ class CoffeeTest < Minitest::Test
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping coffee tests"
+  warn "#{$!}: skipping coffee tests"
 rescue
   if $!.class.name == 'ExecJS::RuntimeUnavailable'
-    warn "#{$!.to_s}: skipping coffee tests"
+    warn "#{$!}: skipping coffee tests"
   else
     raise
   end

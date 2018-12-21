@@ -87,5 +87,5 @@ class BuilderTest < Minitest::Test
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping builder tests"
+  warn "#{$!}: skipping builder tests"
 end

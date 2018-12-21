@@ -8,7 +8,7 @@ module Sinatra
   #
   # <tt>Sinatra::ConfigFile</tt> is an extension that allows you to load the
   # application's configuration from YAML files.  It automatically detects if
-  # the files contains specific environment settings and it will use the
+  # the files contain specific environment settings and it will use those
   # corresponding to the current one.
   #
   # You can access those options through +settings+ within the application. If
@@ -94,18 +94,11 @@ module Sinatra
   # In either case, <tt>settings.foo</tt> will return the environment name, and
   # <tt>settings.bar</tt> will return <tt>"bar"</tt>.
   #
-  # Be aware that if you have a different environment, besides development,
-  # test and production, you will also need to adjust the +environments+
-  # setting, otherwise the settings will not load.  For instance, when
-  # you also have a staging environment:
+  # If you wish to provide defaults that may be shared among all the
+  # environments, this can be done by using a YAML alias, and then overwriting
+  # values in environments where appropriate:
   #
-  #     set :environments, %w{development test production staging}
-  #
-  # If you wish to provide defaults that may be shared among all the environments,
-  # this can be done by using one of the existing environments as the default using
-  # the YAML alias, and then overwriting values in the other environments:
-  #
-  #     development: &common_settings
+  #     default: &common_settings
   #       foo: 'foo'
   #       bar: 'bar'
   #
@@ -129,13 +122,11 @@ module Sinatra
         paths.each do |pattern|
           Dir.glob(pattern) do |file|
             raise UnsupportedConfigType unless ['.yml', '.erb'].include?(File.extname(file))
-            $stderr.puts "loading config file '#{file}'" if logging?
+            logger.info "loading config file '#{file}'" if logging? && respond_to?(:logger)
             document = ERB.new(IO.read(file)).result
-            yaml = config_for_env(YAML.load(document)) || {}
-            yaml.each_pair do |key, value|
-              for_env = config_for_env(value)
-              set key, for_env unless value and for_env.nil? and respond_to? key
-            end
+            yaml = YAML.load(document)
+            config = config_for_env(yaml)
+            config.each_pair { |key, value| set(key, value) }
           end
         end
       end
@@ -149,23 +140,31 @@ module Sinatra
 
     private
 
-    # Given a +hash+ with some application configuration it returns the
-    # settings applicable to the current environment.  Note that this can only
-    # be done when all the keys of +hash+ are environment names included in the
-    # +environments+ setting (which is an Array of Strings).  Also, the
-    # returned config is a indifferently accessible Hash, which means that you
-    # can get its values using Strings or Symbols as keys.
+    # Given a +hash+ containing application configuration it returns
+    # settings applicable to the current environment. Note: It gives
+    # precedence to environment settings defined at the root-level.
     def config_for_env(hash)
-      if hash.respond_to? :keys and hash.keys.all? { |k| environments.include? k.to_s }
-        hash = hash[environment.to_s] || hash[environment.to_sym]
-      end
+      return from_environment_key(hash) if environment_keys?(hash)
 
-      if hash.respond_to? :to_hash
-        indifferent_hash = Hash.new { |hash, key| hash[key.to_s] if Symbol === key }
-        indifferent_hash.merge hash.to_hash
-      else
-        hash
+      hash.each_with_object(IndifferentHash[]) do |(k, v), acc|
+        if environment_keys?(v)
+          acc.merge!(k => v[environment.to_s]) if v.key?(environment.to_s)
+        else
+          acc.merge!(k => v)
+        end
       end
+    end
+
+    # Given a +hash+ returns the settings corresponding to the current
+    # environment.
+    def from_environment_key(hash)
+      hash[environment.to_s] || hash[environment.to_sym] || {}
+    end
+
+    # Returns true if supplied with a hash that has any recognized
+    # +environments+ in its root keys.
+    def environment_keys?(hash)
+      hash.is_a?(Hash) && hash.any? { |k, _| environments.include?(k.to_s) }
     end
   end
 

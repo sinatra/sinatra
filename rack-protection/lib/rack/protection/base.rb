@@ -13,7 +13,7 @@ module Rack
         :session_key => 'rack.session',    :status    => 403,
         :allow_empty_referrer => true,
         :report_key           => "protection.failed",
-        :html_types           => %w[text/html application/xhtml]
+        :html_types           => %w[text/html application/xhtml text/xml application/xml]
       }
 
       attr_reader :app, :options

@@ -76,5 +76,5 @@ class MarkabyTest < Minitest::Test
 end
 
 rescue LoadError
-  warn "#{$!.to_s}: skipping markaby tests"
+  warn "#{$!}: skipping markaby tests"
 end

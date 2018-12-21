@@ -105,6 +105,14 @@ class ERBTest < Minitest::Test
   end
 end
 
+begin
+  require 'erubi'
+  class ErubiTest < ERBTest
+    def engine; Tilt::ErubiTemplate end
+  end
+rescue LoadError
+  warn "#{$!}: skipping erubi tests"
+end
 
 begin
   require 'erubis'
@@ -112,5 +120,5 @@ begin
     def engine; Tilt::ErubisTemplate end
   end
 rescue LoadError
-  warn "#{$!.to_s}: skipping erubis tests"
+  warn "#{$!}: skipping erubis tests"
 end

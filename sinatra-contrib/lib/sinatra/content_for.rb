@@ -9,7 +9,7 @@ module Sinatra
   # blocks inside views to be rendered later during the request. The most
   # common use is to populate different parts of your layout from your view.
   #
-  # The currently supported engines are: Erb, Erubis, Haml and Slim.
+  # The currently supported engines are: Erb, Erubi, Erubis, Haml and Slim.
   #
   # == Usage
   #
@@ -32,7 +32,7 @@ module Sinatra
   # to yield_content.
   #
   #     # layout.erb
-  #     <%= yield_content :some_key_with_no_content do %>
+  #     <% yield_content :some_key_with_no_content do %>
   #       <chunk of="default html">...</chunk>
   #     <% end %>
   #
@@ -174,11 +174,18 @@ module Sinatra
     #
     # Would pass <tt>1</tt> and <tt>2</tt> to all the blocks registered
     # for <tt>:head</tt>.
-    def yield_content(key, *args)
+    def yield_content(key, *args, &block)
       key = key.to_sym
-      return yield(*args) if block_given? && content_blocks[key].empty?
-
-      content_blocks[key].map { |b| capture(*args, &b) }.join
+      if block_given? && !content_for?(key)
+        haml? ? capture_haml(*args, &block) : yield(*args)
+      else
+        content = content_blocks[key].map { |b| capture(*args, &b) }
+        content.join.tap do |c|
+          if block_given? && (erb? || erubi? || erubis?)
+            @_out_buf << c
+          end
+        end
+      end
     end
 
     private
