@@ -1,3 +1,25 @@
+## 2.0.5 / 2018-12-22
+
+* Avoid FrozenError when params contains frozen value [#1506](https://github.com/sinatra/sinatra/pull/1506) by Kunpei Sakai
+
+* Add support for Erubi [#1494](https://github.com/sinatra/sinatra/pull/1494) by @tkmru
+
+* `IndifferentHash` monkeypatch warning improvements [#1477](https://github.com/sinatra/sinatra/pull/1477) by Mike Pastore
+
+* Improve development support and documentation and source code by Anusree Prakash, Jordan Owens, @ceclinux and @krororo.
+
+### sinatra-contrib
+
+* Add `flush` option to `content_for` [#1225](https://github.com/sinatra/sinatra/pull/1225) by Shota Iguchi
+
+* Drop activesupport dependency from sinatra-contrib [#1448](https://github.com/sinatra/sinatra/pull/1448)
+
+* Update `yield_content` to append default to ERB template buffer [#1500](https://github.com/sinatra/sinatra/pull/1500) by Jordan Owens
+
+### rack-protection
+
+* Don't track the Accept-Language header by default [#1504](https://github.com/sinatra/sinatra/pull/1504) by Artem Chistyakov
+
 ## 2.0.4 / 2018-09-15
 
 * Don't blow up when passing frozen string to `send_file` disposition [#1137](https://github.com/sinatra/sinatra/pull/1137) by Andrew Selder
