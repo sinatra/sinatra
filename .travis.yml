@@ -5,7 +5,11 @@ dist: trusty
 sudo: false
 
 before_install:
-  - gem install bundler
+  - if [ "$TRAVIS_RUBY_VERSION" = "2.2.10" ]; then
+      gem install bundler -v '< 2.0';
+    else
+      gem install bundler;
+    fi
   - export CXX="g++-4.8"
 
 addons:
