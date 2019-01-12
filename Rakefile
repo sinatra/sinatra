@@ -200,6 +200,17 @@ if defined?(Gem)
       end
     end
 
+    desc "Prepares for the patch release"
+    task :travis do
+      load "ci/release.rb"
+      sh <<-SH
+        echo "---\n:rubygems_api_key: #{ENV['RUBYGEMS_API_KEY']}" > ~/.gem/credentials
+        cat ~/.gem/credentials
+        chmod 0600 ~/.gem/credentials
+        sed -i "s/.*VERSION.*/  VERSION = '#{source_version}'/" lib/sandbox/version.rb
+      SH
+    end
+
     desc "Commits the version to github repository"
     task :commit_version do
       sh <<-SH
