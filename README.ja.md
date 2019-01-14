@@ -1952,7 +1952,7 @@ end
 
 ### 攻撃防御に対する設定
 
-Sinatraは[Rack::Protection](https://github.com/sinatra/rack-protection#readme)を使用することで、アプリケーションを一般的な日和見的攻撃から守っています。これは簡単に無効化できます（が、アプリケーションに大量の一般的な脆弱性を埋め込むことになってしまいます）。
+Sinatraは[Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme)を使用することで、アプリケーションを一般的な日和見的攻撃から守っています。これは簡単に無効化できます（が、アプリケーションに大量の一般的な脆弱性を埋め込むことになってしまいます）。
 
 ```ruby
 disable :protection

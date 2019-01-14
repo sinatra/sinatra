@@ -2023,7 +2023,7 @@ end
 
 ### 공격 방어 설정하기(Configuring attack protection)
 
-Sinatra는 [Rack::Protection](https://github.com/sinatra/rack-protection#readme)을 사용하여
+Sinatra는 [Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme)을 사용하여
 일반적이고 일어날 수 있는 공격에 대비합니다. 이 모듈은 간단하게 비활성시킬 수 있습니다.
 (하지만 애플리케이션에 엄청나게 많은 취약성을 야기합니다.)
 

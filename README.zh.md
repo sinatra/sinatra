@@ -2027,7 +2027,7 @@ end
 
 ### 配置攻击防护
 
-Sinatra 使用 [Rack::Protection](https://github.com/sinatra/rack-protection#readme)
+Sinatra 使用 [Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme)
 来抵御常见的攻击。你可以轻易地禁用该行为（但这会大大增加应用被攻击的概率）。
 
 ```ruby

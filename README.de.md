@@ -2236,7 +2236,7 @@ end
 #### Einstellung des Angriffsschutzes
 
 Sinatra verwendet
-[Rack::Protection](https://github.com/sinatra/rack-protection#readme), um die
+[Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme), um die
 Anwendung vor häufig vorkommenden Angriffen zu schützen. Diese Voreinstellung
 lässt sich selbstverständlich deaktivieren, der damit verbundene
 Geschwindigkeitszuwachs steht aber in keinem Verhätnis zu den möglichen
