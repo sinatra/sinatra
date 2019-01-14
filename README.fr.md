@@ -2048,7 +2048,7 @@ end
 
 ### Se protéger des attaques
 
-Sinatra utilise [Rack::Protection](https://github.com/sinatra/rack-protection#readme)
+Sinatra utilise [Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme)
 pour protéger votre application contre les principales attaques opportunistes.
 Vous pouvez très simplement désactiver cette fonctionnalité (ce qui exposera
 votre application à beaucoup de vulnerabilités courantes) :

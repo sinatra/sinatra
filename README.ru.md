@@ -2226,7 +2226,7 @@ end
 ### Настройка защиты от атак
 
 Sinatra использует
-[Rack::Protection](https://github.com/sinatra/rack-protection#readme) для защиты
+[Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme) для защиты
 приложения от простых атак. Вы можете легко выключить эту защиту (что сделает
 ваше приложение чрезвычайно уязвимым к большому числу различных уязвимостей):
 
