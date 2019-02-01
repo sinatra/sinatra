@@ -1,5 +1,9 @@
 require File.expand_path('../helper', __FILE__)
 
+class ThirdPartyError < RuntimeError
+  def http_status; 400 end
+end
+
 class ResultTest < Minitest::Test
   it "sets response.body when result is a String" do
     mock_app { get('/') { 'Hello World' } }
@@ -72,5 +76,16 @@ class ResultTest < Minitest::Test
     get '/'
     assert_equal 205, status
     assert_equal '', body
+  end
+
+  it "sets status to 500 when raised error is not Sinatra::Error" do
+    mock_app do
+      set :raise_errors, false
+      get('/') { raise ThirdPartyError }
+    end
+
+    get '/'
+    assert_equal 500, status
+    assert_equal '<h1>Internal Server Error</h1>', body
   end
 end
