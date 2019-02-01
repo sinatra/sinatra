@@ -257,11 +257,14 @@ module Sinatra
     end
   end
 
-  class BadRequest < TypeError #:nodoc:
+  class Error < StandardError #:nodoc:
+  end
+
+  class BadRequest < Error #:nodoc:
     def http_status; 400 end
   end
 
-  class NotFound < NameError #:nodoc:
+  class NotFound < Error #:nodoc:
     def http_status; 404 end
   end
 
@@ -1151,13 +1154,16 @@ module Sinatra
       end
       @env['sinatra.error'] = boom
 
-      if boom.respond_to? :http_status and boom.http_status.between? 400, 599
-        status(boom.http_status)
-      elsif settings.use_code? and boom.respond_to? :code and boom.code.between? 400, 599
-        status(boom.code)
-      else
-        status(500)
+      http_status = if boom.kind_of? Sinatra::Error
+        if boom.respond_to? :http_status
+          boom.http_status
+        elsif settings.use_code? && boom.respond_to?(:code)
+          boom.code
+        end
       end
+
+      http_status = 500 unless http_status && http_status.between?(400, 599)
+      status(http_status)
 
       if server_error?
         dump_errors! boom if settings.dump_errors?

@@ -6,15 +6,15 @@ end
 class FooNotFound < Sinatra::NotFound
 end
 
-class FooSpecialError < RuntimeError
+class FooSpecialError < Sinatra::Error
   def http_status; 501 end
 end
 
-class FooStatusOutOfRangeError < RuntimeError
+class FooStatusOutOfRangeError < Sinatra::Error
   def code; 4000 end
 end
 
-class FooWithCode < RuntimeError
+class FooWithCode < Sinatra::Error
   def code; 419 end
 end
 
