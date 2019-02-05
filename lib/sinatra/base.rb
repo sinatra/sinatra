@@ -1168,7 +1168,7 @@ module Sinatra
         /^\(.*\)$/,                                         # generated code
         /rubygems\/(custom|core_ext\/kernel)_require\.rb$/, # rubygems require hacks
         /active_support/,                                   # active_support require hacks
-        /bundler(\/runtime)?\.rb/,                          # bundler require hacks
+        /bundler(\/(?:runtime|inline))?\.rb/,               # bundler require hacks
         /<internal:/,                                       # internal in ruby >= 1.9.2
         /src\/kernel\/bootstrap\/[A-Z]/                     # maglev kernel files
       ]
