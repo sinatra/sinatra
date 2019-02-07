@@ -1,3 +1,7 @@
+## Unreleased
+
+* Avoid `TypeError` when params contain a key without a value on Ruby < 2.4 [#1516](https://github.com/sinatra/sinatra/pull/1516) by Samuel Giddins
+
 ## 2.0.5 / 2018-12-22
 
 * Avoid FrozenError when params contains frozen value [#1506](https://github.com/sinatra/sinatra/pull/1506) by Kunpei Sakai
