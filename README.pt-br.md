@@ -82,6 +82,7 @@ Sinatra irá utilizá-la.
     * [Filtros](#filtros)
     * [Helpers](#helpers)
         * [Utilizando Sessões](#utilizando-sessões)
+            * [Chave de segurança da sessão](#chave-de-segurança-da-sessão)
         * [Halting](#halting)
         * [Passing](#passing)
         * [Desencadeando Outra Rota](#desencadeando-outra-rota)
@@ -1295,6 +1296,31 @@ get '/:value' do
   session['value'] = params['value']
 end
 ```
+#### Chave de segurança da sessão
+
+Para melhorar a segurança, os dados da sessão no cookie são assinados com a chave de segurança da sessão
+usando `HMAC-SHA1`. Essa chave deve ser preferencialmente um
+valor randômico, criptograficamente seguro, com tamanho apropriado para
+`HMAC-SHA1`, maior ou igual a 64 bytes (512 bits, 128
+caracteres hexadecimais). Você seria orientado a não usar uma chave randômica menor que 32
+bytes (256 bits, 64 caracteres hexadecimais). Por isso, é **muito
+importante** que você não apenas crie a chave, mas que o faça utilizando um
+gerador de números randômicos (seres humanos são extremamente ruins em gerar
+valores randômicos).
+
+Por padrão, uma chave de sessão randômica de 32 bytes será gerada pelo
+Sinatra, no entanto, ela irá mudar a cada reinicialização do seu aplicativo. Caso você tenha
+várias instâncias do aplicativo e permitir que o Sinatra gere a
+chave, cada instância terá uma chave de sessão diferente, o que, provavelmente,
+não é o que você quer.
+
+Para maior segurança e usabilidade é
+[recomendado] (https://12factor.net/config) que você gere uma chave randômica segura
+e armazene-a em uma variável de ambiente em cada host, executando o seu
+aplicativo para que todas as instâncias dele compartilhem a mesma
+chave. Você deve alterar periodicamente essa chave para um novo valor.
+
+#### Escolhendo seu próprio middleware de sessão
 
 Note que `enable :sessions` utilizará um cookie para guardar todos os dados da sessão. Isso nem sempre pode ser o que você quer (guardar muitos dados irá aumentar o seu tráfego, por exemplo). Você pode utilizar qualquer Rack middleware de sessão: para fazer isso **não** utilize o método `enable :sessions`, ao invés disso utilize seu middleware de sessão como utilizaria qualquer outro:
 
