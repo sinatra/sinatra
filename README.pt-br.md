@@ -1302,7 +1302,7 @@ Para melhorar a segurança, os dados da sessão no cookie são assinados com a c
 usando `HMAC-SHA1`. Essa chave deve ser preferencialmente um
 valor randômico, criptograficamente seguro, com tamanho apropriado para
 `HMAC-SHA1`, maior ou igual a 64 bytes (512 bits, 128
-caracteres hexadecimais). Você seria orientado a não usar uma chave randômica menor que 32
+caracteres hexadecimais). Aconselha-se que não se use uma chave randômica menor que 32
 bytes (256 bits, 64 caracteres hexadecimais). Por isso, é **muito
 importante** que você não apenas crie a chave, mas que o faça utilizando um
 gerador de números randômicos (seres humanos são extremamente ruins em gerar
