@@ -83,6 +83,8 @@ Sinatra irá utilizá-la.
     * [Helpers](#helpers)
         * [Utilizando Sessões](#utilizando-sessões)
             * [Chave de segurança da sessão](#chave-de-segurança-da-sessão)
+            * [Configuração da Sessão](#configuração-da-sessão)
+            * [Escolhendo Seu Próprio Middleware de Sessão](#escolhendo-seu-próprio-middleware-de-sessão)
         * [Halting](#halting)
         * [Passing](#passing)
         * [Desencadeando Outra Rota](#desencadeando-outra-rota)
@@ -1296,10 +1298,9 @@ get '/:value' do
   session['value'] = params['value']
 end
 ```
-#### Chave de segurança da sessão
+#### Chave de Segurança da Sessão
 
-Para melhorar a segurança, os dados da sessão no cookie são assinados com a chave de segurança da sessão
-usando `HMAC-SHA1`. Essa chave deve ser preferencialmente um
+Para melhorar a segurança, os dados da sessão no cookie são assinados com a chave de segurança da sessão usando `HMAC-SHA1`. Essa chave deve ser preferencialmente um
 valor randômico, criptograficamente seguro, com tamanho apropriado para
 `HMAC-SHA1`, maior ou igual a 64 bytes (512 bits, 128
 caracteres hexadecimais). Aconselha-se que não se use uma chave randômica menor que 32
@@ -1320,39 +1321,91 @@ e armazene-a em uma variável de ambiente em cada host, executando o seu
 aplicativo para que todas as instâncias dele compartilhem a mesma
 chave. Você deve alterar periodicamente essa chave para um novo valor.
 
-#### Escolhendo seu próprio middleware de sessão
+**Geração da Chave de Segurança**
 
-Note que `enable :sessions` utilizará um cookie para guardar todos os dados da sessão. Isso nem sempre pode ser o que você quer (guardar muitos dados irá aumentar o seu tráfego, por exemplo). Você pode utilizar qualquer Rack middleware de sessão: para fazer isso **não** utilize o método `enable :sessions`, ao invés disso utilize seu middleware de sessão como utilizaria qualquer outro:
+```text
+$ ruby -e "require 'securerandom'; puts SecureRandom.hex(64)"
+99ae8af...snip...ec0f262ac
+```
+**Geração da Chave de Segurança (Pontos Bônus)**
 
-```ruby
-use Rack::Session::Pool, :expire_after => 2592000
+Utilize a gem [sysrandom](https://github.com/cryptosphere/sysrandom#readme) para usar as facilidades de geração de valores randômicos do sistema RNG, em vez do userspace `OpenSSL` que o MRI do Ruby usa atualmente por padrão:
 
-get '/' do
-  "value = " << session[:value].inspect
-end
+```text
+$ gem install sysrandom
+Building native extensions.  This could take a while...
+Successfully installed sysrandom-1.x
+1 gem installed
 
-get '/:value' do
-  session['value'] = params['value']
-end
+$ ruby -e "require 'sysrandom/securerandom'; puts SecureRandom.hex(64)"
+99ae8af...snip...ec0f262ac
+```
+**Variável de Ambiente da Chave de Segurança**
+
+Defina para o Sinatra uma variável de ambiente chamada `SESSION_SECRET`, com o valor que você gerou. Torne este valor persistente nas reinicializações do seu host. Como o método para fazer isso irá variar em função dos sistemas, a sugestão abaixo serve apenas para fins ilustrativos:
+
+```bash
+# echo "export SESSION_SECRET=99ae8af...snip...ec0f262ac" >> ~/.bashrc
 ```
 
-Para melhorar a segurança, os dados da sessão guardados no cookie é assinado com uma chave secreta da sessão. Uma chave aleatória é gerada para você pelo Sinatra. Contudo, já que a chave mudará cada vez que você inicia sua aplicação, você talvez queira defini-la você mesmo para que todas as instâncias da aplicação compartilhe-a:
+**Configuração da Chave de Segurança do App**
+
+Defina a configuração do seu app para torná-lo à prova de falhas, com uma chave de segurança randômica, caso a variável de ambiente `SESSION_SECRET` não esteja disponível.
+
+Para pontos bônus use a gem [sysrandom
+gem](https://github.com/cryptosphere/sysrandom#readme) aqui também:
 
 ```ruby
-set :session_secret, 'super secret'
+require 'securerandom'
+# -or- require 'sysrandom/securerandom'
+set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
 ```
 
-Se você quiser fazer outras configurações, você também pode guardar um hash com as opções nas configurações da `session`:
+#### Configuração da Sessão
+
+Se você desejar realizar mais configurações, é possível armazenar as opções em uma hash em 'sessions':
 
 ```ruby
 set :sessions, :domain => 'foo.com'
 ```
 
-Para compartilhar sua sessão entre outros aplicativos em um subdomínio de foo.com, utilize o prefixo *.*:
+Para compartilhar sua sessão com outros apps em subdomínios foo.com, prefixe
+o domínio com um *.*, da seguinte forma:
 
 ```ruby
 set :sessions, :domain => '.foo.com'
 ```
+#### Escolhendo Seu Próprio Middleware de Sessão
+
+Note que `enable :sessions` armazenará todos os dados da sessão em um cookie. Isso nem sempre pode ser o que você quer (armazenar muitos dados irá aumentar o seu tráfego, por exemplo). Você pode utilizar qualquer Rack middleware de sessão e, para isso, um dos métodos a seguir pode ser usado:
+
+```ruby
+enable :sessions
+set :session_store, Rack::Session::Pool
+```
+
+Ou para configurar sessões com uma hash de opções: 
+
+```ruby
+set :sessions, :expire_after => 2592000
+set :session_store, Rack::Session::Pool
+```
+
+Outra opção é **não** chamar `enable :sessions`, e em vez disso puxar o
+middleware da sua escolha, como você faria com qualquer outro middleware.
+
+É importante observar que, ao utilizar esse método, a sessão baseada em proteção
+**não será habilitada por padrão**.
+
+O Rack middleware para fazer isso também precisará ser adicionado:
+
+```ruby
+use Rack::Session::Pool, :expire_after => 2592000
+use Rack::Protection::RemoteToken
+use Rack::Protection::SessionHijacking
+```
+
+Veja '[Configurações contra ataques](#configuring-attack-protection)' para mais informações.
 
 ### Halting
 
