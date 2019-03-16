@@ -22,11 +22,11 @@ rvm:
   - 2.2.10
   - 2.3.8
   - 2.4.5
-  - 2.5.3
-  - 2.6.1
+  - 2.5.5
+  - 2.6.2
   - ruby-head
   - rbx-3
-  - jruby-9.2..0
+  - jruby-9.2.6.0
   - jruby-head
 
 script: ./.travis.sh
