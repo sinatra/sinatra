@@ -1064,8 +1064,8 @@ module Sinatra
     # Run the block with 'throw :halt' support and apply result to the response.
     def invoke
       res = catch(:halt) { yield }
-      res = [res] if Fixnum === res or String === res
-      if Array === res and Fixnum === res.first
+      res = [res] if Integer === res or String === res
+      if Array === res and Integer === res.first
         res = res.dup
         status(res.shift)
         body(res.pop)
@@ -1222,7 +1222,7 @@ module Sinatra
         case value
         when Proc
           getter = value
-        when Symbol, Fixnum, FalseClass, TrueClass, NilClass
+        when Symbol, Integer, FalseClass, TrueClass, NilClass
           getter = value.inspect
         when Hash
           setter = proc do |val|
