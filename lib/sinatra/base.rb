@@ -1089,7 +1089,12 @@ module Sinatra
 
     # Dispatch a request with error handling.
     def dispatch!
-      @params.merge!(@request.params).each { |key, val| @params[key] = val && force_encoding(val.dup) }
+      # Avoid passing frozen string in force_encoding
+      @params.merge!(@request.params).each do |key, val|
+        next unless val.respond_to?(:force_encoding)
+        val = val.dup if val.frozen?
+        @params[key] = force_encoding(val)
+      end
 
       invoke do
         static! if settings.static? && (request.get? || request.head?)
