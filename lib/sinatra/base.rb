@@ -1743,28 +1743,21 @@ module Sinatra
       end
     end
 
-    # Fixes encoding issues by
-    # * defaulting to UTF-8
-    # * casting params to Encoding.default_external
-    #
-    # The latter might not be necessary if Rack handles it one day.
-    # Keep an eye on Rack's LH #100.
-    def force_encoding(*args) settings.force_encoding(*args) end
-    if defined? Encoding
-      def self.force_encoding(data, encoding = default_encoding)
-        return if data == settings || data.is_a?(Tempfile)
-        if data.respond_to? :force_encoding
-          data.force_encoding(encoding).encode!
-        elsif data.respond_to? :each_value
-          data.each_value { |v| force_encoding(v, encoding) }
-        elsif data.respond_to? :each
-          data.each { |v| force_encoding(v, encoding) }
-        end
-        data
+    # Force data to specified encoding. It defaults to settings.default_encoding
+    # which is UTF-8 by default
+    def self.force_encoding(data, encoding = default_encoding)
+      return if data == settings || data.is_a?(Tempfile)
+      if data.respond_to? :force_encoding
+        data.force_encoding(encoding).encode!
+      elsif data.respond_to? :each_value
+        data.each_value { |v| force_encoding(v, encoding) }
+      elsif data.respond_to? :each
+        data.each { |v| force_encoding(v, encoding) }
       end
-    else
-      def self.force_encoding(data, *) data end
+      data
     end
+
+    def force_encoding(*args) settings.force_encoding(*args) end
 
     reset!
 
