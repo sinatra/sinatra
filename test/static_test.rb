@@ -198,7 +198,7 @@ class StaticTest < Minitest::Test
   it 'sets cache control headers on static files if set' do
     @app.set :static_cache_control, :public
     env = Rack::MockRequest.env_for("/#{File.basename(__FILE__)}")
-    status, headers, body = @app.call(env)
+    _, headers, _ = @app.call(env)
     assert headers.has_key?('Cache-Control')
     assert_equal headers['Cache-Control'], 'public'
 
@@ -207,7 +207,7 @@ class StaticTest < Minitest::Test
       [:public, :must_revalidate, {:max_age => 300}]
     )
     env = Rack::MockRequest.env_for("/#{File.basename(__FILE__)}")
-    status, headers, body = @app.call(env)
+    _, headers, _ = @app.call(env)
     assert headers.has_key?('Cache-Control')
     assert_equal(
       headers['Cache-Control'],
