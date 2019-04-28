@@ -17,7 +17,7 @@ addons:
   - ubuntu-toolchain-r-test
   packages:
   - g++-4.8
-
+  - pandoc
 rvm:
   - 2.2.10
   - 2.3.8
