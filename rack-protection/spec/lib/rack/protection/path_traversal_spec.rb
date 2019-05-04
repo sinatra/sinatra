@@ -24,16 +24,14 @@ describe Rack::Protection::PathTraversal do
     end
   end
 
-  if "".respond_to?(:encoding)  # Ruby 1.9+ M17N
-    context "PATH_INFO's encoding" do
-      before do
-        @app = Rack::Protection::PathTraversal.new(proc { |e| [200, {'Content-Type' => 'text/plain'}, [e['PATH_INFO'].encoding.to_s]] })
-      end
+  context "PATH_INFO's encoding" do
+    before do
+      @app = Rack::Protection::PathTraversal.new(proc { |e| [200, {'Content-Type' => 'text/plain'}, [e['PATH_INFO'].encoding.to_s]] })
+    end
 
-      it 'should remain unchanged as ASCII-8BIT' do
-        body = @app.call({ 'PATH_INFO' => '/'.encode('ASCII-8BIT') })[2][0]
-        expect(body).to eq('ASCII-8BIT')
-      end
+    it 'should remain unchanged as ASCII-8BIT' do
+      body = @app.call({ 'PATH_INFO' => '/'.encode('ASCII-8BIT') })[2][0]
+      expect(body).to eq('ASCII-8BIT')
     end
   end
 end
