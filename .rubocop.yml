@@ -34,3 +34,6 @@ Style/Documentation:
 Layout/ExtraSpacing:
   AllowForAlignment: true
   AllowBeforeTrailingComments: true
+
+Lint/IneffectiveAccessModifier:
+  Enabled: false
