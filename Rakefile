@@ -37,7 +37,7 @@ Rake::TestTask.new(:"test:core") do |t|
      helpers mapped_error middleware rdoc
      readme request response result route_added_hook
      routing server settings sinatra static templates]
-  t.test_files = core_tests.map {|n| "test/#{n}_test.rb"}
+  t.test_files = core_tests.map { |n| "test/#{n}_test.rb" }
   t.ruby_opts = ['-r rubygems'] if defined? Gem
   t.warning = true
 end
