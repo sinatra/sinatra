@@ -30,8 +30,11 @@ module Sinatra
     def accept
       @env['sinatra.accept'] ||= begin
         if @env.include?('HTTP_ACCEPT') && (@env['HTTP_ACCEPT'].to_s != '')
-          @env['HTTP_ACCEPT'].to_s.scan(HEADER_VALUE_WITH_PARAMS).
-            map! { |e| AcceptEntry.new(e) }.sort
+          @env['HTTP_ACCEPT']
+            .to_s
+            .scan(HEADER_VALUE_WITH_PARAMS)
+            .map! { |e| AcceptEntry.new(e) }
+            .sort
         else
           [AcceptEntry.new('*/*')]
         end
@@ -829,8 +832,9 @@ module Sinatra
 
       # render layout
       if layout
-        options = options.merge(views: views, layout: false, eat_errors: eat_errors, scope: scope).
-                merge!(layout_options)
+        extra_options = { views: views, layout: false, eat_errors: eat_errors, scope: scope }
+        options = options.merge(extra_options).merge!(layout_options)
+
         catch(:layout_missing) { return render(layout_engine, layout, options, locals) { output } }
       end
 
@@ -1751,9 +1755,9 @@ module Sinatra
 
       # Like Kernel#caller but excluding certain magic entries
       def cleaned_caller(keep = 3)
-        caller(1).
-          map! { |line| line.split(/:(?=\d|in )/, 3)[0, keep] }.
-          reject { |file, *_| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
+        caller(1)
+          .map! { |line| line.split(/:(?=\d|in )/, 3)[0, keep] }
+          .reject { |file, *_| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
       end
     end
 
