@@ -594,7 +594,7 @@ module Sinatra
     # GET or HEAD, a '304 Not Modified' response is sent.
     def etag(value, options = {})
       # Before touching this code, please double check RFC 2616 14.24 and 14.26.
-      options      = {kind: options} unless Hash === options
+      options      = { kind: options } unless Hash === options
       kind         = options[:kind] || :strong
       new_resource = options.fetch(:new_resource) { request.post? }
 
@@ -1203,7 +1203,7 @@ module Sinatra
       def reset!
         @conditions     = []
         @routes         = {}
-        @filters        = {before: [], after: []}
+        @filters        = { before: [], after: [] }
         @errors         = {}
         @middleware     = []
         @prototype      = nil
