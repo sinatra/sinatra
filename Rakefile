@@ -18,6 +18,7 @@ end
 
 def prev_version
   return prev_feature + '.0' if source_version.end_with? '.0'
+
   source_version.gsub(/\d+$/) { |s| s.to_i - 1 }
 end
 

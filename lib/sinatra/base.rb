@@ -44,8 +44,10 @@ module Sinatra
 
     def preferred_type(*types)
       return accept.first if types.empty?
+
       types.flatten!
       return types.first if accept.empty?
+
       accept.detect do |accept_header|
         type = types.detect { |t| MimeTypeEntry.new(t).accepts?(accept_header) }
         return type if type
@@ -217,6 +219,7 @@ module Sinatra
     def call(env)
       result, callback = app.call(env), env['async.callback']
       return result unless callback && async?(*result)
+
       after_response { callback.call result }
       setup_close(env, *result)
       throw :async
@@ -226,17 +229,20 @@ module Sinatra
 
     def setup_close(env, status, headers, body)
       return unless body.respond_to?(:close) && env.include?('async.close')
+
       env['async.close'].callback { body.close }
       env['async.close'].errback { body.close }
     end
 
     def after_response(&block)
       raise NotImplementedError, 'only supports EventMachine at the moment' unless defined? EventMachine
+
       EventMachine.next_tick(&block)
     end
 
     def async?(status, headers, body)
       return true if status == -1
+
       body.respond_to?(:callback) && body.respond_to?(:errback)
     end
   end
@@ -312,6 +318,7 @@ module Sinatra
     # Takes Rack routers and reverse proxies into account.
     def uri(addr = nil, absolute = true, add_script_name = true)
       return addr if addr =~ /\A[a-z][a-z0-9\+\.\-]*:/i
+
       uri = [host = String.new]
       if absolute
         host << "http#{'s' if request.secure?}://"
@@ -366,9 +373,11 @@ module Sinatra
     # extension.
     def content_type(type = nil, params = {})
       return response['Content-Type'] unless type
+
       default = params.delete :default
       mime_type = mime_type(type) || default
       fail 'Unknown media type: %p' % type if mime_type.nil?
+
       mime_type = mime_type.dup
       unless params.include?(:charset) || settings.add_charset.all? { |p| not p === mime_type }
         params[:charset] = params.delete('charset') || settings.default_encoding
@@ -440,6 +449,7 @@ module Sinatra
 
       def close
         return if closed?
+
         @closed = true
         @scheduler.schedule { @callbacks.each { |c| c.call } }
       end
@@ -463,6 +473,7 @@ module Sinatra
 
       def callback(&block)
         return yield if closed?
+
         @callbacks << block
       end
 
@@ -549,6 +560,7 @@ module Sinatra
     # with a '304 Not Modified' response.
     def last_modified(time)
       return unless time
+
       time = time_for time
       response['Last-Modified'] = time.httpdate
       return if env['HTTP_IF_NONE_MATCH']
@@ -663,6 +675,7 @@ module Sinatra
     # Helper method checking if a ETag value list includes the current ETag.
     def etag_matches?(list, new_resource = request.post?)
       return !new_resource if list == '*'
+
       list.to_s.split(/\s*,\s*/).include? response['ETag']
     end
 
@@ -940,6 +953,7 @@ module Sinatra
     # Forward the request to the downstream app -- middleware only.
     def forward
       fail 'downstream app not set' unless @app.respond_to? :call
+
       status, headers, body = @app.call env
       @response.status = status
       @response.body = body
@@ -1047,6 +1061,7 @@ module Sinatra
 
       path = File.expand_path(path)
       return unless path.start_with?(File.expand_path(public_dir) + '/')
+
       return unless File.file?(path)
 
       env['sinatra.static_file'] = path
@@ -1075,6 +1090,7 @@ module Sinatra
       # Avoid passing frozen string in force_encoding
       @params.merge!(@request.params).each do |key, val|
         next unless val.respond_to?(:force_encoding)
+
         val = val.dup if val.frozen?
         @params[key] = force_encoding(val)
       end
@@ -1135,6 +1151,7 @@ module Sinatra
       end
 
       return unless server_error?
+
       raise boom if settings.raise_errors? or settings.show_exceptions?
       error_block! Exception, boom
     end
@@ -1144,6 +1161,7 @@ module Sinatra
       base = settings
       while base.respond_to?(:errors)
         next base = base.superclass unless args_array = base.errors[key]
+
         args_array.reverse_each do |args|
           first = args == args_array.first
           args += [block_params]
@@ -1152,6 +1170,7 @@ module Sinatra
         end
       end
       return false unless key.respond_to?(:superclass) && (key.superclass < Exception)
+
       error_block!(key.superclass, *block_params)
     end
 
@@ -1213,10 +1232,12 @@ module Sinatra
       # the proc will be called every time the option is accessed.
       def set(option, value = (not_set = true), ignore_setter = false, &block)
         raise ArgumentError if block && !not_set
+
         value, not_set = block, false if block
 
         if not_set
           raise ArgumentError unless option.respond_to?(:each)
+
           option.each { |k,v| set(k, v) }
           return self
         end
@@ -1320,8 +1341,10 @@ module Sinatra
       def mime_type(type, value = nil)
         return type      if type.nil?
         return type.to_s if type.to_s.include?('/')
+
         type = ".#{type}" unless type.to_s[0] == ?.
         return Rack::Mime.mime_type(type, nil) unless value
+
         Rack::Mime::MIME_TYPES[type] = value
       end
 
@@ -1428,6 +1451,7 @@ module Sinatra
       # Stop the self-hosted server if running.
       def quit!
         return unless running?
+
         # Use Thin's hard #stop! if available, otherwise just #stop.
         running_server.respond_to?(:stop!) ? running_server.stop! : running_server.stop
         $stderr.puts '== Sinatra has ended his set (crowd applauds)' unless suppress_messages?
@@ -1442,6 +1466,7 @@ module Sinatra
       # with the constructed handler once we have taken the stage.
       def run!(options = {}, &block)
         return if running?
+
         set options
         handler         = Rack::Handler.pick(server)
         handler_name    = handler.name.gsub(/.*::/, '')
@@ -1670,6 +1695,7 @@ module Sinatra
 
       def setup_protection(builder)
         return unless protection?
+
         options = Hash === protection ? protection.dup : {}
         options = {
           img_src:  "'self' data:",
@@ -1686,6 +1712,7 @@ module Sinatra
 
       def setup_sessions(builder)
         return unless sessions?
+
         options = {}
         options[:secret] = session_secret if session_secret?
         options.merge! sessions.to_hash if sessions.respond_to? :to_hash
@@ -1724,6 +1751,7 @@ module Sinatra
     # which is UTF-8 by default
     def self.force_encoding(data, encoding = default_encoding)
       return if data == settings || data.is_a?(Tempfile)
+
       if data.respond_to? :force_encoding
         data.force_encoding(encoding).encode!
       elsif data.respond_to? :each_value
@@ -1889,6 +1917,7 @@ module Sinatra
       methods.each do |method_name|
         define_method(method_name) do |*args, &block|
           return super(*args, &block) if respond_to? method_name
+
           Delegator.target.send(method_name, *args, &block)
         end
         # ensure keyword argument passing is compatible with ruby >= 2.7
