@@ -784,7 +784,7 @@ module Sinatra
     # logic shared between builder and nokogiri
     def render_ruby(engine, template, options = {}, locals = {}, &block)
       options, template = template, nil if template.is_a?(Hash)
-      template = Proc.new { block } if template.nil?
+      template = proc { block } if template.nil?
       render engine, template, options, locals
     end
 
@@ -859,6 +859,17 @@ module Sinatra
             throw :layout_missing if eat_errors && (not found)
             template.new(path, 1, options)
           end
+<<<<<<< HEAD
+=======
+        when Proc, String
+          body = data.is_a?(String) ? proc { data } : data
+          caller = settings.caller_locations.first
+          path = options[:path] || caller[0]
+          line = options[:line] || caller[1]
+          template.new(path, line.to_i, options, &body)
+        else
+          raise ArgumentError, "Sorry, don't know how to render #{data.inspect}."
+>>>>>>> b3590c7d (Style/Proc: prefer `proc` vs `Proc.new`)
         end
       when Proc
         compile_block_template(template, options, &data)
@@ -1769,9 +1780,9 @@ module Sinatra
     reset!
 
     set :environment, (ENV['APP_ENV'] || ENV['RACK_ENV'] || :development).to_sym
-    set :raise_errors, Proc.new { test? }
-    set :dump_errors, Proc.new { !test? }
-    set :show_exceptions, Proc.new { development? }
+    set :raise_errors, proc { test? }
+    set :dump_errors, proc { !test? }
+    set :show_exceptions, proc { development? }
     set :sessions, false
     set :session_store, Rack::Protection::EncryptedCookie
     set :logging, false
@@ -1804,7 +1815,7 @@ module Sinatra
     set :handler_name, nil
     set :traps, true
     set :server, %w[HTTP webrick]
-    set :bind, Proc.new { development? ? 'localhost' : '0.0.0.0' }
+    set :bind, proc { development? ? 'localhost' : '0.0.0.0' }
     set :port, Integer(ENV['PORT'] && !ENV['PORT'].empty? ? ENV['PORT'] : 4567)
     set :quiet, false
 
@@ -1822,14 +1833,14 @@ module Sinatra
     set :strict_paths, true
 
     set :app_file, nil
-    set :root, Proc.new { app_file && File.expand_path(File.dirname(app_file)) }
-    set :views, Proc.new { root && File.join(root, 'views') }
-    set :reload_templates, Proc.new { development? }
+    set :root, proc { app_file && File.expand_path(File.dirname(app_file)) }
+    set :views, proc { root && File.join(root, 'views') }
+    set :reload_templates, proc { development? }
     set :lock, false
     set :threaded, true
 
-    set :public_folder, Proc.new { root && File.join(root, 'public') }
-    set :static, Proc.new { public_folder && File.exist?(public_folder) }
+    set :public_folder, proc { root && File.join(root, 'public') }
+    set :static, proc { public_folder && File.exist?(public_folder) }
     set :static_cache_control, false
 
     error ::Exception do
@@ -1899,9 +1910,9 @@ module Sinatra
   # top-level. Subclassing Sinatra::Base is highly recommended for
   # modular applications.
   class Application < Base
-    set :logging, Proc.new { !test? }
+    set :logging, proc { !test? }
     set :method_override, true
-    set :run, Proc.new { !test? }
+    set :run, proc { !test? }
     set :app_file, nil
 
     def self.register(*extensions, &block) #:nodoc:
