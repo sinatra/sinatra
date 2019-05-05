@@ -1,4 +1,15 @@
 # frozen_string_literal: true
+<<<<<<< HEAD
+=======
+
+warn <<WARN if !Hash.method_defined?(:slice) && !$LOAD_PATH.grep(%r{gems/activesupport}).empty? && ENV['SINATRA_ACTIVESUPPORT_WARNING'] != 'false'
+WARNING: If you plan to load any of ActiveSupport's core extensions to Hash, be
+sure to do so *before* loading Sinatra::Application or Sinatra::Base. If not,
+you may disregard this warning.
+
+Set SINATRA_ACTIVESUPPORT_WARNING=false in the environment to hide this warning.
+WARN
+>>>>>>> 980aac50 (Layout/EmptyLineAfterMagicComment: add empty line)
 
 module Sinatra
   # A poor man's ActiveSupport::HashWithIndifferentAccess, with all the Rails-y
