@@ -58,3 +58,6 @@ Lint/UselessAccessModifier:
 
 Style/ClassVars:
   Enabled: false
+
+Lint/UselessAssignment:
+  Enabled: false
