@@ -60,7 +60,7 @@ CLEAN.include 'doc/api'
 
 # README ===============================================================
 
-task :add_template, [:name] do |t, args|
+task :add_template, [:name] do |_t, args|
   Dir.glob('README.*') do |file|
     code = File.read(file)
     if code =~ /^===.*#{args.name.capitalize}/
@@ -83,7 +83,7 @@ end
 
 team = ['Ryan Tomayko', 'Blake Mizerany', 'Simon Rozet', 'Konstantin Haase', 'Zachary Scott']
 desc 'list of contributors'
-task :thanks, ['release:all', :backports] do |t, a|
+task :thanks, ['release:all', :backports] do |_t, a|
   a.with_defaults release: "#{prev_version}..HEAD",
     backports: "#{prev_feature}.0..#{prev_feature}.x"
   included = `git log --format=format:"%aN\t%s" #{a.release}`.lines.map { |l| l.force_encoding('binary') }
@@ -95,7 +95,7 @@ task :thanks, ['release:all', :backports] do |t, a|
 end
 
 desc 'list of authors'
-task :authors, [:commit_range, :format, :sep] do |t, a|
+task :authors, [:commit_range, :format, :sep] do |_t, a|
   a.with_defaults format: '%s (%d)', sep: ', ', commit_range: '--all'
   authors = Hash.new(0)
   blake   = 'Blake Mizerany'
@@ -111,11 +111,11 @@ task :authors, [:commit_range, :format, :sep] do |t, a|
     overall += num.to_i
   end
   puts "#{overall} commits by #{authors.count} authors:"
-  puts authors.sort_by { |n,c| -c }.map { |e| a.format % e }.join(a.sep)
+  puts authors.sort_by { |_n,c| -c }.map { |e| a.format % e }.join(a.sep)
 end
 
 desc 'generates TOC'
-task :toc, [:readme] do |t, a|
+task :toc, [:readme] do |_t, a|
   a.with_defaults readme: 'README.md'
 
   def self.link(title)
@@ -162,7 +162,7 @@ if defined?(Gem)
   end
 
   namespace :package do
-    GEMS_AND_ROOT_DIRECTORIES.each do |gem, directory|
+    GEMS_AND_ROOT_DIRECTORIES.each do |gem, _directory|
       desc "Build #{gem} packages"
       task gem => %w[.gem .tar.gz].map { |e| package(gem, e) }
     end
@@ -172,7 +172,7 @@ if defined?(Gem)
   end
 
   namespace :install do
-    GEMS_AND_ROOT_DIRECTORIES.each do |gem, directory|
+    GEMS_AND_ROOT_DIRECTORIES.each do |gem, _directory|
       desc "Build and install #{gem} as local gem"
       task gem => package(gem, '.gem') do
         sh "gem install #{package(gem, '.gem')}"
@@ -184,7 +184,7 @@ if defined?(Gem)
   end
 
   namespace :release do
-    GEMS_AND_ROOT_DIRECTORIES.each do |gem, directory|
+    GEMS_AND_ROOT_DIRECTORIES.each do |gem, _directory|
       desc "Release #{gem} as a package"
       task gem => "package:#{gem}" do
         sh <<-SH
