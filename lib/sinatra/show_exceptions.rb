@@ -56,8 +56,8 @@ module Sinatra
     end
 
     def prefers_plain_text?(env)
-      !(Request.new(env).preferred_type('text/plain', 'text/html') == 'text/html') &&
-      [/curl/].index { |item| item =~ env['HTTP_USER_AGENT'] }
+      Request.new(env).preferred_type('text/plain', 'text/html') != 'text/html' &&
+        [/curl/].index { |item| item =~ env['HTTP_USER_AGENT'] }
     end
 
     def frame_class(frame)
@@ -71,7 +71,7 @@ module Sinatra
       end
     end
 
-TEMPLATE = ERB.new <<-HTML # :nodoc:
+    TEMPLATE = ERB.new <<-HTML # :nodoc:
 <!DOCTYPE html>
 <html>
 <head>
@@ -359,6 +359,6 @@ enabled the <code>show_exceptions</code> setting.</p>
   </div> <!-- /WRAP -->
   </body>
 </html>
-HTML
+    HTML
   end
 end

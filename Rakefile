@@ -108,7 +108,8 @@ task :authors, [:commit_range, :format, :sep] do |_t, a|
   mapping = {
     'blake.mizerany@gmail.com' => blake, 'bmizerany' => blake,
     'a_user@mac.com' => blake, 'ichverstehe' => 'Harry Vangberg',
-    'Wu Jiang (nouse)' => 'Wu Jiang' }
+    'Wu Jiang (nouse)' => 'Wu Jiang'
+  }
   `git shortlog -s #{a.commit_range}`.lines.map do |line|
     line = line.force_encoding 'binary' if line.respond_to? :force_encoding
     num, name = line.split("\t", 2).map(&:strip)
@@ -143,7 +144,7 @@ if defined?(Gem)
     'rack-protection' => './rack-protection'
   }.freeze
 
-  def package(gem, ext='')
+  def package(gem, ext = '')
     "pkg/#{gem}-#{source_version}" + ext
   end
 
