@@ -24,7 +24,7 @@ module Sinatra
   # http://rubydoc.info/github/rack/rack/master/Rack/Request
   class Request < Rack::Request
     HEADER_PARAM = /\s*[\w.]+=(?:[\w.]+|"(?:[^"\\]|\\.)*")?\s*/
-    HEADER_VALUE_WITH_PARAMS = /(?:(?:\w+|\*)\/(?:\w+(?:\.|\-|\+)?|\*)*)\s*(?:;#{HEADER_PARAM})*/
+    HEADER_VALUE_WITH_PARAMS = %r{(?:(?:\w+|\*)/(?:\w+(?:\.|\-|\+)?|\*)*)\s*(?:;#{HEADER_PARAM})*}
 
     # Returns an array of acceptable media types for the response
     def accept
@@ -1181,12 +1181,12 @@ module Sinatra
 
     class << self
       CALLERS_TO_IGNORE = [ # :nodoc:
-        /\/sinatra(\/(base|main|show_exceptions))?\.rb$/,   # all sinatra code
-        /lib\/tilt.*\.rb$/,                                 # all tilt code
+        %r{/sinatra(/(base|main|show_exceptions))?\.rb$},   # all sinatra code
+        %r{lib/tilt.*\.rb$},                                # all tilt code
         /^\(.*\)$/,                                         # generated code
-        /rubygems\/(custom|core_ext\/kernel)_require\.rb$/, # rubygems require hacks
+        %r{rubygems/(custom|core_ext/kernel)_require\.rb$}, # rubygems require hacks
         /active_support/,                                   # active_support require hacks
-        /bundler(\/(?:runtime|inline))?\.rb/,               # bundler require hacks
+        %r{bundler(/(?:runtime|inline))?\.rb},              # bundler require hacks
         /<internal:/                                        # internal in ruby >= 1.9.2
       ]
 
@@ -1353,7 +1353,7 @@ module Sinatra
       #   mime_types :js   # => ['application/javascript', 'text/javascript']
       def mime_types(type)
         type = mime_type type
-        type =~ /^application\/(xml|javascript)$/ ? [type, "text/#$1"] : [type]
+        type =~ %r{^application/(xml|javascript)$} ? [type, "text/#$1"] : [type]
       end
 
       # Define a before filter; runs before all requests within the same
@@ -1781,7 +1781,7 @@ module Sinatra
     set :default_encoding, 'utf-8'
     set :x_cascade, true
     set :add_charset, %w[javascript xml xhtml+xml].map { |t| "application/#{t}" }
-    settings.add_charset << /^text\//
+    settings.add_charset << %r{^text/}
     set :mustermann_opts, {}
     set :default_content_type, 'text/html'
 
@@ -1863,7 +1863,7 @@ module Sinatra
             end
           RUBY
 
-          file = settings.app_file.to_s.sub(settings.root.to_s, '').sub(/^\//, '')
+          file = settings.app_file.to_s.sub(settings.root.to_s, '').sub(%r{^/}, '')
           code = "# in #{file}\n#{code}" unless file.empty?
         end
 

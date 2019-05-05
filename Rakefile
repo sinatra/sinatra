@@ -66,7 +66,7 @@ task :add_template, [:name] do |_t, args|
     if code =~ /^===.*#{args.name.capitalize}/
       puts "Already covered in #{file}"
     else
-      template = code[/===[^\n]*Liquid.*index\.liquid<\/tt>[^\n]*/m]
+      template = code[%r{===[^\n]*Liquid.*index\.liquid</tt>[^\n]*}m]
       if !template
         puts "Liquid not found in #{file}"
       else
