@@ -379,7 +379,7 @@ module Sinatra
 
       default = params.delete :default
       mime_type = mime_type(type) || default
-      fail 'Unknown media type: %p' % type if mime_type.nil?
+      fail format('Unknown media type: %p', type) if mime_type.nil?
 
       mime_type = mime_type.dup
       unless params.include?(:charset) || settings.add_charset.all? { |p| !(p === mime_type) }
@@ -402,7 +402,7 @@ module Sinatra
       response['Content-Disposition'] = disposition.to_s.dup
       return unless filename
 
-      params = '; filename="%s"' % File.basename(filename)
+      params = format('; filename="%s"', File.basename(filename))
       response['Content-Disposition'] << params
       ext = File.extname(filename)
       content_type(ext) unless response['Content-Type'] || ext.empty?
@@ -602,7 +602,7 @@ module Sinatra
         raise ArgumentError, ':strong or :weak expected'
       end
 
-      value = '"%s"' % value
+      value = format('"%s"', value)
       value = "W/#{value}" if kind == :weak
       response['ETag'] = value
 
@@ -1805,7 +1805,7 @@ module Sinatra
       set :session_secret, SecureRandom.hex(64)
     rescue LoadError, NotImplementedError
       # SecureRandom raises a NotImplementedError if no random device is available
-      set :session_secret, '%064x' % Kernel.rand(2**256 - 1)
+      set :session_secret, format('%064x', Kernel.rand(2**256 - 1))
     end
 
     class << self
