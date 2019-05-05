@@ -25,12 +25,12 @@ Gem::Specification.new 'sinatra', version do |s|
   s.rdoc_options      = %w[--line-numbers --title Sinatra --main README.rdoc --encoding=UTF-8]
 
   unless s.respond_to?(:metadata)
-    raise <<-EOF
+    raise <<-WARN
 RubyGems 2.0 or newer is required to protect against public gem pushes. You can update your rubygems version by running:
   gem install rubygems-update
   update_rubygems:
   gem update --system
-EOF
+WARN
   end
 
   s.required_ruby_version = '>= 2.6.0'
