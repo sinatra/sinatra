@@ -46,3 +46,6 @@ Style/SpecialGlobalVars:
 
 Bundler/DuplicatedGem:
   Enabled: false
+
+Layout/IndentHeredoc:
+  Enabled: false
