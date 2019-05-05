@@ -40,3 +40,6 @@ Lint/IneffectiveAccessModifier:
 
 Lint/RescueException:
   Enabled: false
+
+Style/SpecialGlobalVars:
+  Enabled: false
