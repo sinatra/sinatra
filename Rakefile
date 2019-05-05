@@ -139,7 +139,7 @@ if defined?(Gem)
     'sinatra' => '.',
     'sinatra-contrib' => './sinatra-contrib',
     'rack-protection' => './rack-protection'
-  }
+  }.freeze
 
   def package(gem, ext='')
     "pkg/#{gem}-#{source_version}" + ext

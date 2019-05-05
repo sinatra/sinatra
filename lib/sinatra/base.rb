@@ -23,8 +23,8 @@ module Sinatra
   # The request object. See Rack::Request for more info:
   # http://rubydoc.info/github/rack/rack/master/Rack/Request
   class Request < Rack::Request
-    HEADER_PARAM = /\s*[\w.]+=(?:[\w.]+|"(?:[^"\\]|\\.)*")?\s*/
-    HEADER_VALUE_WITH_PARAMS = %r{(?:(?:\w+|\*)/(?:\w+(?:\.|\-|\+)?|\*)*)\s*(?:;#{HEADER_PARAM})*}
+    HEADER_PARAM = /\s*[\w.]+=(?:[\w.]+|"(?:[^"\\]|\\.)*")?\s*/.freeze
+    HEADER_VALUE_WITH_PARAMS = %r{(?:(?:\w+|\*)/(?:\w+(?:\.|\-|\+)?|\*)*)\s*(?:;#{HEADER_PARAM})*}.freeze
 
     # Returns an array of acceptable media types for the response
     def accept
@@ -579,7 +579,7 @@ module Sinatra
     rescue ArgumentError
     end
 
-    ETAG_KINDS = [:strong, :weak]
+    ETAG_KINDS = [:strong, :weak].freeze
     # Set the response entity tag (HTTP 'ETag' header) and halt if conditional
     # GET matches. The +value+ argument is an identifier that uniquely
     # identifies the current version of the resource. The +kind+ argument
