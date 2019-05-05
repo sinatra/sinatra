@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Why use bundler?
 # Well, not all development dependencies install on all rubies. Moreover, `gem
 # install sinatra --development` doesn't work, as it will also try to install
@@ -17,12 +19,12 @@ rack_version = {:github => 'rack/rack'} if rack_version == 'master'
 gem 'rack', rack_version
 
 gem 'rack-test', github: 'rack/rack-test'
-gem "minitest", "~> 5.0"
+gem 'minitest', '~> 5.0'
+gem 'rubocop', '~> 0.68.1', require: false
 gem 'yard'
 
-gem "rack-protection", path: "rack-protection"
-gem "sinatra-contrib", path: "sinatra-contrib"
-
+gem 'rack-protection', path: 'rack-protection'
+gem 'sinatra-contrib', path: 'sinatra-contrib'
 
 gem "activesupport", "~> 6.1"
 
