@@ -61,3 +61,6 @@ Style/ClassVars:
 
 Lint/UselessAssignment:
   Enabled: false
+
+Style/EmptyLiteral:
+  Enabled: false
