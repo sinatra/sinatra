@@ -26,11 +26,11 @@ Gem::Specification.new 'sinatra', version do |s|
 
   if s.respond_to?(:metadata)
     s.metadata = {
-      'source_code_uri'   => 'https://github.com/sinatra/sinatra',
-      'changelog_uri'     => 'https://github.com/sinatra/sinatra/blob/master/CHANGELOG.md',
-      'homepage_uri'      => 'http://sinatrarb.com/',
-      'bug_tracker_uri'   => 'https://github.com/sinatra/sinatra/issues',
-      'mailing_list_uri'  => 'http://groups.google.com/group/sinatrarb',
+      'source_code_uri' => 'https://github.com/sinatra/sinatra',
+      'changelog_uri' => 'https://github.com/sinatra/sinatra/blob/master/CHANGELOG.md',
+      'homepage_uri' => 'http://sinatrarb.com/',
+      'bug_tracker_uri' => 'https://github.com/sinatra/sinatra/issues',
+      'mailing_list_uri' => 'http://groups.google.com/group/sinatrarb',
       'documentation_uri' => 'https://www.rubydoc.info/gems/sinatra'
     }
   else

@@ -1705,7 +1705,7 @@ module Sinatra
 
         options = Hash === protection ? protection.dup : {}
         options = {
-          img_src:  "'self' data:",
+          img_src: "'self' data:",
           font_src: "'self'"
         }.merge options
 

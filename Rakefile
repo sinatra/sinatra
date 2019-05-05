@@ -87,7 +87,8 @@ team = ['Ryan Tomayko', 'Blake Mizerany', 'Simon Rozet', 'Konstantin Haase', 'Za
 desc 'list of contributors'
 task :thanks, ['release:all', :backports] do |_t, a|
   a.with_defaults release: "#{prev_version}..HEAD",
-    backports: "#{prev_feature}.0..#{prev_feature}.x"
+                  backports: "#{prev_feature}.0..#{prev_feature}.x"
+
   included = `git log --format=format:"%aN\t%s" #{a.release}`.lines.map { |l| l.force_encoding('binary') }
   excluded = `git log --format=format:"%aN\t%s" #{a.backports}`.lines.map { |l| l.force_encoding('binary') }
   commits  = (included - excluded).group_by { |c| c[/^[^\t]+/] }
