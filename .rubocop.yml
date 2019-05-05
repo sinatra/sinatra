@@ -30,3 +30,7 @@ Style/PerlBackrefs:
 
 Style/Documentation:
   Enabled: false
+
+Layout/ExtraSpacing:
+  AllowForAlignment: true
+  AllowBeforeTrailingComments: true

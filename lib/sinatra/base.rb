@@ -1749,7 +1749,7 @@ module Sinatra
       # Like Kernel#caller but excluding certain magic entries
       def cleaned_caller(keep = 3)
         caller(1).
-          map!    { |line| line.split(/:(?=\d|in )/, 3)[0, keep] }.
+          map! { |line| line.split(/:(?=\d|in )/, 3)[0, keep] }.
           reject { |file, *_| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
       end
     end
