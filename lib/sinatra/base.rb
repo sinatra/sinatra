@@ -230,7 +230,7 @@ module Sinatra
 
     private
 
-    def setup_close(env, status, headers, body)
+    def setup_close(env, _status, _headers, body)
       return unless body.respond_to?(:close) && env.include?('async.close')
 
       env['async.close'].callback { body.close }
@@ -243,7 +243,7 @@ module Sinatra
       EventMachine.next_tick(&block)
     end
 
-    def async?(status, headers, body)
+    def async?(status, _headers, body)
       return true if status == -1
 
       body.respond_to?(:callback) && body.respond_to?(:errback)
