@@ -422,7 +422,7 @@ module Sinatra
       file   = Rack::File.new(File.dirname(settings.app_file))
       result = file.serving(request, path)
 
-      result[1].each { |k,v| headers[k] ||= v }
+      result[1].each { |k, v| headers[k] ||= v }
       headers['Content-Length'] = result[1]['Content-Length']
       opts[:status] &&= Integer(opts[:status])
       halt (opts[:status] || result[0]), result[2]
@@ -515,7 +515,7 @@ module Sinatra
         hash = {}
       end
 
-      values.map! { |value| value.to_s.tr('_','-') }
+      values.map! { |value| value.to_s.tr('_', '-') }
       hash.each do |key, value|
         key = key.to_s.tr('_', '-')
         value = value.to_i if ['max-age', 's-maxage'].include? key
@@ -1238,7 +1238,7 @@ module Sinatra
         if not_set
           raise ArgumentError unless option.respond_to?(:each)
 
-          option.each { |k,v| set(k, v) }
+          option.each { |k, v| set(k, v) }
           return self
         end
 
@@ -1672,7 +1672,7 @@ module Sinatra
       end
 
       def setup_middleware(builder)
-        middleware.each { |c,a,b| builder.use(c, *a, &b) }
+        middleware.each { |c, a, b| builder.use(c, *a, &b) }
       end
 
       def setup_logging(builder)
@@ -1749,7 +1749,7 @@ module Sinatra
       # Like Kernel#caller but excluding certain magic entries
       def cleaned_caller(keep = 3)
         caller(1).
-          map!    { |line| line.split(/:(?=\d|in )/, 3)[0,keep] }.
+          map!    { |line| line.split(/:(?=\d|in )/, 3)[0, keep] }.
           reject { |file, *_| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
       end
     end

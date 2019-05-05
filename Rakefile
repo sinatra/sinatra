@@ -111,7 +111,7 @@ task :authors, [:commit_range, :format, :sep] do |_t, a|
     overall += num.to_i
   end
   puts "#{overall} commits by #{authors.count} authors:"
-  puts authors.sort_by { |_n,c| -c }.map { |e| a.format % e }.join(a.sep)
+  puts authors.sort_by { |_n, c| -c }.map { |e| a.format % e }.join(a.sep)
 end
 
 desc 'generates TOC'
