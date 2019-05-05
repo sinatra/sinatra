@@ -379,7 +379,7 @@ module Sinatra
 
       default = params.delete :default
       mime_type = mime_type(type) || default
-      fail format('Unknown media type: %p', type) if mime_type.nil?
+      raise format('Unknown media type: %p', type) if mime_type.nil?
 
       mime_type = mime_type.dup
       unless params.include?(:charset) || settings.add_charset.all? { |p| !(p === mime_type) }
@@ -961,7 +961,7 @@ module Sinatra
 
     # Forward the request to the downstream app -- middleware only.
     def forward
-      fail 'downstream app not set' unless @app.respond_to? :call
+      raise 'downstream app not set' unless @app.respond_to? :call
 
       status, headers, body = @app.call env
       @response.status = status
