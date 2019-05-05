@@ -255,7 +255,7 @@ module Sinatra
     end
 
     superclass.class_eval do
-      alias call_without_check call unless method_defined? :call_without_check
+      alias_method :call_without_check, :call unless method_defined? :call_without_check
       def call(env)
         env['sinatra.commonlogger'] = true
         call_without_check(env)
@@ -1470,7 +1470,7 @@ module Sinatra
         set :handler_name, nil
       end
 
-      alias_method :stop!, :quit!
+      alias stop! quit!
 
       # Run the Sinatra app as a self-hosted server using
       # Puma, Falcon, Mongrel, or WEBrick (in that order). If given a block, will call
@@ -1494,7 +1494,7 @@ module Sinatra
         end
       end
 
-      alias_method :start!, :run!
+      alias start! run!
 
       # Check whether the self-hosted server is running or not.
       def running?
@@ -1604,7 +1604,7 @@ module Sinatra
           end
         end
       end
-      alias_method :agent, :user_agent
+      alias agent user_agent
 
       # Condition for matching mimetypes. Accepts file extensions.
       def provides(*types)
@@ -1806,8 +1806,8 @@ module Sinatra
     end
 
     class << self
-      alias_method :methodoverride?, :method_override?
-      alias_method :methodoverride=, :method_override=
+      alias methodoverride? method_override?
+      alias methodoverride= method_override=
     end
 
     set :run, false                       # start server via at-exit hook?
