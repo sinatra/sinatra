@@ -3,8 +3,8 @@ require 'rake/testtask'
 require 'fileutils'
 require 'date'
 
-task :default => :test
-task :spec => :test
+task default: :test
+task spec: :test
 
 CLEAN.include '**/*.rbc'
 
@@ -83,8 +83,8 @@ end
 team = ['Ryan Tomayko', 'Blake Mizerany', 'Simon Rozet', 'Konstantin Haase', 'Zachary Scott']
 desc 'list of contributors'
 task :thanks, ['release:all', :backports] do |t, a|
-  a.with_defaults :release => "#{prev_version}..HEAD",
-    :backports => "#{prev_feature}.0..#{prev_feature}.x"
+  a.with_defaults release: "#{prev_version}..HEAD",
+    backports: "#{prev_feature}.0..#{prev_feature}.x"
   included = `git log --format=format:"%aN\t%s" #{a.release}`.lines.map { |l| l.force_encoding('binary') }
   excluded = `git log --format=format:"%aN\t%s" #{a.backports}`.lines.map { |l| l.force_encoding('binary') }
   commits  = (included - excluded).group_by { |c| c[/^[^\t]+/] }
@@ -95,7 +95,7 @@ end
 
 desc 'list of authors'
 task :authors, [:commit_range, :format, :sep] do |t, a|
-  a.with_defaults :format => '%s (%d)', :sep => ', ', :commit_range => '--all'
+  a.with_defaults format: '%s (%d)', sep: ', ', commit_range: '--all'
   authors = Hash.new(0)
   blake   = 'Blake Mizerany'
   overall = 0
@@ -115,7 +115,7 @@ end
 
 desc 'generates TOC'
 task :toc, [:readme] do |t, a|
-  a.with_defaults :readme => 'README.md'
+  a.with_defaults readme: 'README.md'
 
   def self.link(title)
     title.downcase.gsub(/(?!-)\W /, '-').gsub(' ', '-').gsub(/(?!-)\W/, '')
@@ -167,7 +167,7 @@ if defined?(Gem)
     end
 
     desc 'Build all packages'
-    task :all => GEMS_AND_ROOT_DIRECTORIES.keys
+    task all: GEMS_AND_ROOT_DIRECTORIES.keys
   end
 
   namespace :install do
@@ -179,7 +179,7 @@ if defined?(Gem)
     end
 
     desc 'Build and install all of the gems as local gems'
-    task :all => GEMS_AND_ROOT_DIRECTORIES.keys
+    task all: GEMS_AND_ROOT_DIRECTORIES.keys
   end
 
   namespace :release do
@@ -213,6 +213,6 @@ if defined?(Gem)
     end
 
     desc 'Release all gems as packages'
-    task :all => [:test, :commit_version] + GEMS_AND_ROOT_DIRECTORIES.keys
+    task all: [:test, :commit_version] + GEMS_AND_ROOT_DIRECTORIES.keys
   end
 end
