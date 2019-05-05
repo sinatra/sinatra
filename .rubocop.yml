@@ -15,7 +15,11 @@ AllCops:
     - 'rack-protection/**/*'
     - 'sinatra-contrib/**/*'
 
-# Temporary allow single line methods
+Layout/ExtraSpacing:
+  AllowForAlignment: true
+  AllowBeforeTrailingComments: true
+
+# Temporary disable cops because warnings are fixed
 Style/SingleLineMethods:
   Enabled: false
 
@@ -30,10 +34,6 @@ Style/PerlBackrefs:
 
 Style/Documentation:
   Enabled: false
-
-Layout/ExtraSpacing:
-  AllowForAlignment: true
-  AllowBeforeTrailingComments: true
 
 Lint/IneffectiveAccessModifier:
   Enabled: false
@@ -63,4 +63,64 @@ Lint/UselessAssignment:
   Enabled: false
 
 Style/EmptyLiteral:
+  Enabled: false
+
+Metrics/LineLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+Lint/HandleExceptions:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/ModuleLength:
+  Enabled: false
+
+Lint/AmbiguousRegexpLiteral:
+  Enabled: false
+
+Style/AccessModifierDeclarations:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/EvalWithLocation:
+  Enabled: false
+
+Style/MethodMissingSuper:
+  Enabled: false
+
+Style/MissingRespondToMissing:
+  Enabled: false
+
+Style/MixinUsage:
+  Enabled: false
+
+Style/MultilineTernaryOperator:
+  Enabled: false
+
+Style/StructInheritance:
+  Enabled: false
+
+Style/SymbolProc:
+  Enabled: false
+
+Style/IfUnlessModifier:
   Enabled: false
