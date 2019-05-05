@@ -8,8 +8,8 @@
 # where the inspected file is and continue its way up to the root directory.
 #
 # See https://github.com/rubocop-hq/rubocop/blob/master/manual/configuration.md
-
 AllCops:
+  TargetRubyVersion: 2.2
   Exclude:
     - 'test/**/*'
     - 'rack-protection/**/*'
