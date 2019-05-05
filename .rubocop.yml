@@ -55,3 +55,6 @@ Style/FormatStringToken:
 
 Lint/UselessAccessModifier:
   Enabled: false
+
+Style/ClassVars:
+  Enabled: false
