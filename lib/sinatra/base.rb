@@ -439,8 +439,13 @@ module Sinatra
     #
     # Scheduler has to respond to defer and schedule.
     class Stream
-      def self.schedule(*) yield end
-      def self.defer(*)    yield end
+      def self.schedule(*)
+        yield
+      end
+
+      def self.defer(*)
+        yield
+      end
 
       def initialize(scheduler = self.class, keep_open = false, &back)
         @back, @scheduler, @keep_open = back.to_proc, scheduler, keep_open
@@ -1416,12 +1421,19 @@ module Sinatra
       end
 
       def put(path, opts = {}, &bk)     route 'PUT',     path, opts, &bk end
+
       def post(path, opts = {}, &bk)    route 'POST',    path, opts, &bk end
+
       def delete(path, opts = {}, &bk)  route 'DELETE',  path, opts, &bk end
+
       def head(path, opts = {}, &bk)    route 'HEAD',    path, opts, &bk end
+
       def options(path, opts = {}, &bk) route 'OPTIONS', path, opts, &bk end
+
       def patch(path, opts = {}, &bk)   route 'PATCH',   path, opts, &bk end
+
       def link(path, opts = {}, &bk)    route 'LINK',    path, opts, &bk end
+
       def unlink(path, opts = {}, &bk)  route 'UNLINK',  path, opts, &bk end
 
       # Makes the methods defined in the block and in the Modules given
@@ -1443,7 +1455,9 @@ module Sinatra
       end
 
       def development?; environment == :development end
+
       def production?;  environment == :production  end
+
       def test?;        environment == :test        end
 
       # Set configuration options for Sinatra and/or the app.

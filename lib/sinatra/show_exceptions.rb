@@ -12,6 +12,7 @@ module Sinatra
   class ShowExceptions < Rack::ShowExceptions
     @@eats_errors = Object.new
     def @@eats_errors.flush(*) end
+
     def @@eats_errors.puts(*) end
 
     def initialize(app)
