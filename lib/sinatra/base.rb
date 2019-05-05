@@ -671,8 +671,8 @@ module Sinatra
       else
         value.to_time
       end
-    rescue ArgumentError => boom
-      raise boom
+    rescue ArgumentError => e
+      raise e
     rescue Exception
       raise ArgumentError, "unable to convert #{value.inspect} to a Time object"
     end
@@ -1113,13 +1113,13 @@ module Sinatra
         end
         route!
       end
-    rescue ::Exception => boom
-      invoke { handle_exception!(boom) }
+    rescue ::Exception => e
+      invoke { handle_exception!(e) }
     ensure
       begin
         filter! :after unless env['sinatra.static_file']
-      rescue ::Exception => boom
-        invoke { handle_exception!(boom) } unless @env['sinatra.error']
+      rescue ::Exception => e
+        invoke { handle_exception!(e) } unless @env['sinatra.error']
       end
     end
 
