@@ -35,10 +35,10 @@ EOF
 
   s.required_ruby_version = '>= 2.6.0'
 
-  s.add_dependency 'rack', '~> 2.2', '>= 2.2.4'
-  s.add_dependency 'tilt', '~> 2.0'
-  s.add_dependency 'rack-protection', version
   s.add_dependency 'mustermann', '~> 3.0'
+  s.add_dependency 'rack', '~> 2.2', '>= 2.2.4'
+  s.add_dependency 'rack-protection', version
+  s.add_dependency 'tilt', '~> 2.0'
 
   s.add_development_dependency 'rack-test', '~> 2'
 end
