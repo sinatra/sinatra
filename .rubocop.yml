@@ -52,3 +52,6 @@ Layout/IndentHeredoc:
 
 Style/FormatStringToken:
   Enabled: false
+
+Lint/UselessAccessModifier:
+  Enabled: false
