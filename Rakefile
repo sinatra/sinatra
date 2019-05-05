@@ -219,6 +219,6 @@ if defined?(Gem)
     end
 
     desc 'Release all gems as packages'
-    task all: [:test, :commit_version] + GEMS_AND_ROOT_DIRECTORIES.keys
+    task all: %i[test commit_version] + GEMS_AND_ROOT_DIRECTORIES.keys
   end
 end

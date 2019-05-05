@@ -582,7 +582,7 @@ module Sinatra
     rescue ArgumentError
     end
 
-    ETAG_KINDS = [:strong, :weak].freeze
+    ETAG_KINDS = %i[strong weak].freeze
     # Set the response entity tag (HTTP 'ETag' header) and halt if conditional
     # GET matches. The +value+ argument is an identifier that uniquely
     # identifies the current version of the resource. The +kind+ argument
@@ -1582,7 +1582,7 @@ module Sinatra
 
         at_exit { quit! }
 
-        [:INT, :TERM].each do |signal|
+        %i[INT TERM].each do |signal|
           old_handler = trap(signal) do
             quit!
             old_handler.call if old_handler.respond_to?(:call)
