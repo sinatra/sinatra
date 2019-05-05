@@ -49,3 +49,6 @@ Bundler/DuplicatedGem:
 
 Layout/IndentHeredoc:
   Enabled: false
+
+Style/FormatStringToken:
+  Enabled: false
