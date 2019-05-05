@@ -96,7 +96,7 @@ task :thanks, ['release:all', :backports] do |_t, a|
   commits  = (included - excluded).group_by { |c| c[/^[^\t]+/] }
   authors  = commits.keys.sort_by { |n| - commits[n].size } - team
   puts authors[0..-2].join(', ') << ' and ' << authors.last,
-    "(based on commits included in #{a.release}, but not in #{a.backports})"
+       "(based on commits included in #{a.release}, but not in #{a.backports})"
 end
 
 desc 'list of authors'
