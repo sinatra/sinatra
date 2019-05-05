@@ -24,3 +24,6 @@ Lint/AmbiguousBlockAssociation:
 
 Style/CaseEquality:
   Enabled: false
+
+Style/PerlBackrefs:
+  Enabled: false
