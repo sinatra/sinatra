@@ -397,12 +397,12 @@ module Sinatra
     # instructing the user agents to prompt to save.
     def attachment(filename = nil, disposition = :attachment)
       response['Content-Disposition'] = disposition.to_s.dup
-      if filename
-        params = '; filename="%s"' % File.basename(filename)
-        response['Content-Disposition'] << params
-        ext = File.extname(filename)
-        content_type(ext) unless response['Content-Type'] || ext.empty?
-      end
+      return unless filename
+
+      params = '; filename="%s"' % File.basename(filename)
+      response['Content-Disposition'] << params
+      ext = File.extname(filename)
+      content_type(ext) unless response['Content-Type'] || ext.empty?
     end
 
     # Use the contents of the file at +path+ as the response body.
@@ -603,15 +603,19 @@ module Sinatra
       value = "W/#{value}" if kind == :weak
       response['ETag'] = value
 
-      if success? || (status == 304)
-        if etag_matches? env['HTTP_IF_NONE_MATCH'], new_resource
-          halt(request.safe? ? 304 : 412)
-        end
+      return unless success? || status == 304
 
-        if env['HTTP_IF_MATCH']
-          halt 412 unless etag_matches? env['HTTP_IF_MATCH'], new_resource
-        end
+      if etag_matches?(env['HTTP_IF_NONE_MATCH'], new_resource)
+        halt(request.safe? ? 304 : 412)
       end
+
+      if env['HTTP_IF_MATCH']
+        return if etag_matches?(env['HTTP_IF_MATCH'], new_resource)
+
+        halt 412
+      end
+
+      nil
     end
 
     # Sugar for redirect (example:  redirect back)
@@ -1045,11 +1049,9 @@ module Sinatra
     # a NotFound exception. Subclasses can override this method to perform
     # custom route miss logic.
     def route_missing
-      if @app
-        forward
-      else
-        raise NotFound
-      end
+      raise NotFound unless @app
+
+      forward
     end
 
     # Attempt to serve static files from public directory. Throws :halt when
@@ -1316,23 +1318,24 @@ module Sinatra
           app, data = nil
         end
 
-        if data
-          if app && app =~ ( /([^\n]*\n)?#[^\n]*coding: *(\S+)/m)
-            encoding = $2
-          else
-            encoding = settings.default_encoding
-          end
-          lines = app.count("\n") + 1
-          template = nil
-          force_encoding data, encoding
-          data.each_line do |line|
-            lines += 1
-            if line =~ /^@@\s*(.*\S)\s*$/
-              template = force_encoding(String.new, encoding)
-              templates[$1.to_sym] = [template, file, lines]
-            elsif template
-              template << line
-            end
+        return unless data
+
+        if app && app =~ ( /([^\n]*\n)?#[^\n]*coding: *(\S+)/m)
+          encoding = $2
+        else
+          encoding = settings.default_encoding
+        end
+
+        lines = app.count("\n") + 1
+        template = nil
+        force_encoding data, encoding
+        data.each_line do |line|
+          lines += 1
+          if line =~ /^@@\s*(.*\S)\s*$/
+            template = force_encoding(String.new, encoding)
+            templates[$1.to_sym] = [template, file, lines]
+          elsif template
+            template << line
           end
         end
       end
@@ -1561,18 +1564,18 @@ module Sinatra
       end
 
       def setup_traps
-        if traps?
-          at_exit { quit! }
+        return unless traps?
 
-          [:INT, :TERM].each do |signal|
-            old_handler = trap(signal) do
-              quit!
-              old_handler.call if old_handler.respond_to?(:call)
-            end
+        at_exit { quit! }
+
+        [:INT, :TERM].each do |signal|
+          old_handler = trap(signal) do
+            quit!
+            old_handler.call if old_handler.respond_to?(:call)
           end
-
-          set :traps, false
         end
+
+        set :traps, false
       end
 
       # Dynamically defines a method on settings.
