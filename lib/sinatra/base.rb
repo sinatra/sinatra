@@ -1317,7 +1317,7 @@ module Sinatra
         end
 
         if data
-          if app && app =~( /([^\n]*\n)?#[^\n]*coding: *(\S+)/m)
+          if app && app =~ ( /([^\n]*\n)?#[^\n]*coding: *(\S+)/m)
             encoding = $2
           else
             encoding = settings.default_encoding
@@ -1798,7 +1798,7 @@ module Sinatra
       set :session_secret, SecureRandom.hex(64)
     rescue LoadError, NotImplementedError
       # SecureRandom raises a NotImplementedError if no random device is available
-      set :session_secret, '%064x' % Kernel.rand(2**256-1)
+      set :session_secret, '%064x' % Kernel.rand(2**256 - 1)
     end
 
     class << self

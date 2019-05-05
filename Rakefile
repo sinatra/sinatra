@@ -56,7 +56,7 @@ end
 # Website =============================================================
 
 desc 'Generate RDoc under doc/api'
-task 'doc'     => ['doc:api']
+task 'doc' => ['doc:api']
 task('doc:api') { sh 'yardoc -o doc/api' }
 CLEAN.include 'doc/api'
 
