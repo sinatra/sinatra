@@ -1404,14 +1404,21 @@ module Sinatra
         route('HEAD', path, opts, &block)
       end
 
-      def put(path, opts = {}, &bk)     route 'PUT',     path, opts, &bk end
-      def post(path, opts = {}, &bk)    route 'POST',    path, opts, &bk end
-      def delete(path, opts = {}, &bk)  route 'DELETE',  path, opts, &bk end
-      def head(path, opts = {}, &bk)    route 'HEAD',    path, opts, &bk end
-      def options(path, opts = {}, &bk) route 'OPTIONS', path, opts, &bk end
-      def patch(path, opts = {}, &bk)   route 'PATCH',   path, opts, &bk end
-      def link(path, opts = {}, &bk)    route 'LINK',    path, opts, &bk end
-      def unlink(path, opts = {}, &bk)  route 'UNLINK',  path, opts, &bk end
+      def put(path, opts = {}, &block)     route 'PUT',     path, opts, &block end
+
+      def post(path, opts = {}, &block)    route 'POST',    path, opts, &block end
+
+      def delete(path, opts = {}, &block)  route 'DELETE',  path, opts, &block end
+
+      def head(path, opts = {}, &block)    route 'HEAD',    path, opts, &block end
+
+      def options(path, opts = {}, &block) route 'OPTIONS', path, opts, &block end
+
+      def patch(path, opts = {}, &block)   route 'PATCH',   path, opts, &block end
+
+      def link(path, opts = {}, &block)    route 'LINK',    path, opts, &block end
+
+      def unlink(path, opts = {}, &block)  route 'UNLINK',  path, opts, &block end
 
       # Makes the methods defined in the block and in the Modules given
       # in `extensions` available to the handlers and templates
@@ -1501,8 +1508,8 @@ module Sinatra
       # Create a new instance of the class fronted by its middleware
       # pipeline. The object is guaranteed to respond to #call but may not be
       # an instance of the class new was called on.
-      def new(*args, &bk)
-        instance = new!(*args, &bk)
+      def new(*args, &block)
+        instance = new!(*args, &block)
         Wrapper.new(build(instance).to_app, instance)
       end
       ruby2_keywords :new if respond_to?(:ruby2_keywords, true)

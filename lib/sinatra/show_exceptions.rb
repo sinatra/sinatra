@@ -51,8 +51,8 @@ module Sinatra
 
     private
 
-    def bad_request?(e)
-      Sinatra::BadRequest === e
+    def bad_request?(exception)
+      Sinatra::BadRequest === exception
     end
 
     def prefers_plain_text?(env)
