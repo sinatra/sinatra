@@ -510,7 +510,7 @@ module Sinatra
     # See RFC 2616 / 14.9 for more on standard cache control directives:
     # http://tools.ietf.org/html/rfc2616#section-14.9.1
     def cache_control(*values)
-      if values.last.kind_of?(Hash)
+      if values.last.is_a?(Hash)
         hash = values.pop
         hash.reject! { |k, v| v == false }
         hash.reject! { |k, v| values << k if v == true }
@@ -538,7 +538,7 @@ module Sinatra
     #   => Expires: Mon, 08 Jun 2009 08:50:17 GMT
     #
     def expires(amount, *values)
-      values << {} unless values.last.kind_of?(Hash)
+      values << {} unless values.last.is_a?(Hash)
 
       if amount.is_a? Integer
         time    = Time.now + amount.to_i
