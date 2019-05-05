@@ -21,3 +21,6 @@ Style/SingleLineMethods:
 
 Lint/AmbiguousBlockAssociation:
   Enabled: false
+
+Style/CaseEquality:
+  Enabled: false
