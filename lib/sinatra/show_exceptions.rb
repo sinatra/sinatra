@@ -22,7 +22,8 @@ module Sinatra
     def call(env)
       @app.call(env)
     rescue Exception => e
-      errors, env['rack.errors'] = env['rack.errors'], @@eats_errors
+      errors = env['rack.errors']
+      env['rack.errors'] = @@eats_errors
 
       if prefers_plain_text?(env)
         content_type = 'text/plain'

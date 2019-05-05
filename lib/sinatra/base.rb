@@ -255,7 +255,7 @@ module Sinatra
     end
 
     superclass.class_eval do
-      alias_method :call_without_check, :call unless method_defined? :call_without_check
+      alias call_without_check call unless method_defined? :call_without_check
       def call(env)
         env['sinatra.commonlogger'] = true
         call_without_check(env)
@@ -439,13 +439,8 @@ module Sinatra
     #
     # Scheduler has to respond to defer and schedule.
     class Stream
-      def self.schedule(*)
-        yield
-      end
-
-      def self.defer(*)
-        yield
-      end
+      def self.schedule(*) yield end
+      def self.defer(*)    yield end
 
       def initialize(scheduler = self.class, keep_open = false, &back)
         @back, @scheduler, @keep_open = back.to_proc, scheduler, keep_open
@@ -514,7 +509,7 @@ module Sinatra
     def cache_control(*values)
       if values.last.kind_of?(Hash)
         hash = values.pop
-        hash.reject! { |_k, v| v == false }
+        hash.reject! { |k, v| v == false }
         hash.reject! { |k, v| values << k if v == true }
       else
         hash = {}
@@ -796,7 +791,7 @@ module Sinatra
     def render(engine, data, options = {}, locals = {}, &block)
       # merge app-level options
       engine_options = settings.respond_to?(engine) ? settings.send(engine) : {}
-      options.merge!(engine_options) { |_key, v1, _v2| v1 }
+      options.merge!(engine_options) { |key, v1, v2| v1 }
 
       # extract generic options
       locals          = options.delete(:locals) || locals         || {}
@@ -864,17 +859,6 @@ module Sinatra
             throw :layout_missing if eat_errors && (not found)
             template.new(path, 1, options)
           end
-<<<<<<< HEAD
-=======
-        when Proc, String
-          body = data.is_a?(String) ? proc { data } : data
-          caller = settings.caller_locations.first
-          path = options[:path] || caller[0]
-          line = options[:line] || caller[1]
-          template.new(path, line.to_i, options, &body)
-        else
-          raise ArgumentError, "Sorry, don't know how to render #{data.inspect}."
->>>>>>> b3590c7d (Style/Proc: prefer `proc` vs `Proc.new`)
         end
       when Proc
         compile_block_template(template, options, &data)
@@ -1220,7 +1204,7 @@ module Sinatra
         @extensions     = []
 
         if superclass.respond_to?(:templates)
-          @templates = Hash.new { |_hash, key| superclass.templates[key] }
+          @templates = Hash.new { |hash, key| superclass.templates[key] }
         else
           @templates = {}
         end
@@ -1421,19 +1405,12 @@ module Sinatra
       end
 
       def put(path, opts = {}, &bk)     route 'PUT',     path, opts, &bk end
-
       def post(path, opts = {}, &bk)    route 'POST',    path, opts, &bk end
-
       def delete(path, opts = {}, &bk)  route 'DELETE',  path, opts, &bk end
-
       def head(path, opts = {}, &bk)    route 'HEAD',    path, opts, &bk end
-
       def options(path, opts = {}, &bk) route 'OPTIONS', path, opts, &bk end
-
       def patch(path, opts = {}, &bk)   route 'PATCH',   path, opts, &bk end
-
       def link(path, opts = {}, &bk)    route 'LINK',    path, opts, &bk end
-
       def unlink(path, opts = {}, &bk)  route 'UNLINK',  path, opts, &bk end
 
       # Makes the methods defined in the block and in the Modules given
@@ -1455,9 +1432,7 @@ module Sinatra
       end
 
       def development?; environment == :development end
-
       def production?;  environment == :production  end
-
       def test?;        environment == :test        end
 
       # Set configuration options for Sinatra and/or the app.
@@ -1484,7 +1459,7 @@ module Sinatra
         set :handler_name, nil
       end
 
-      alias stop! quit!
+      alias_method :stop!, :quit!
 
       # Run the Sinatra app as a self-hosted server using
       # Puma, Falcon, Mongrel, or WEBrick (in that order). If given a block, will call
@@ -1508,7 +1483,7 @@ module Sinatra
         end
       end
 
-      alias start! run!
+      alias_method :start!, :run!
 
       # Check whether the self-hosted server is running or not.
       def running?
@@ -1618,7 +1593,7 @@ module Sinatra
           end
         end
       end
-      alias agent user_agent
+      alias_method :agent, :user_agent
 
       # Condition for matching mimetypes. Accepts file extensions.
       def provides(*types)
@@ -1670,7 +1645,7 @@ module Sinatra
         conditions, @conditions = @conditions, []
         wrapper                 = block.arity != 0 ?
           proc { |a, p| unbound_method.bind(a).call(*p) } :
-          proc { |a, _p| unbound_method.bind(a).call }
+          proc { |a, p| unbound_method.bind(a).call }
 
         [ pattern, conditions, wrapper ]
       end
@@ -1820,8 +1795,8 @@ module Sinatra
     end
 
     class << self
-      alias methodoverride? method_override?
-      alias methodoverride= method_override=
+      alias_method :methodoverride?, :method_override?
+      alias_method :methodoverride=, :method_override=
     end
 
     set :run, false                       # start server via at-exit hook?
