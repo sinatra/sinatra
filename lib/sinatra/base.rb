@@ -1468,7 +1468,7 @@ module Sinatra
 
         # Use Thin's hard #stop! if available, otherwise just #stop.
         running_server.respond_to?(:stop!) ? running_server.stop! : running_server.stop
-        $stderr.puts '== Sinatra has ended his set (crowd applauds)' unless suppress_messages?
+        warn '== Sinatra has ended his set (crowd applauds)' unless suppress_messages?
         set :running_server, nil
         set :handler_name, nil
       end
@@ -1490,7 +1490,7 @@ module Sinatra
         begin
           start_server(handler, server_settings, handler_name, &block)
         rescue Errno::EADDRINUSE
-          $stderr.puts "== Someone is already performing on port #{port}!"
+          warn "== Someone is already performing on port #{port}!"
           raise
         ensure
           quit!
@@ -1551,7 +1551,7 @@ module Sinatra
         # Run the instance we created:
         handler.run(self, **server_settings) do |server|
           unless suppress_messages?
-            $stderr.puts "== Sinatra (v#{Sinatra::VERSION}) has taken the stage on #{port} for #{environment} with backup from #{handler_name}"
+            warn "== Sinatra (v#{Sinatra::VERSION}) has taken the stage on #{port} for #{environment} with backup from #{handler_name}"
           end
 
           setup_traps
