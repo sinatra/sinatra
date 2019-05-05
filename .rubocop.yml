@@ -14,3 +14,7 @@ AllCops:
     - 'test/**/*'
     - 'rack-protection/**/*'
     - 'sinatra-contrib/**/*'
+
+# Temporary allow single line methods
+Style/SingleLineMethods:
+  Enabled: false
