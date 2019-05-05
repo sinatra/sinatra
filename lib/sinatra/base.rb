@@ -55,7 +55,7 @@ module Sinatra
     alias secure? ssl?
 
     def forwarded?
-      @env.include? "HTTP_X_FORWARDED_HOST"
+      @env.include? 'HTTP_X_FORWARDED_HOST'
     end
 
     def safe?
@@ -67,11 +67,11 @@ module Sinatra
     end
 
     def link?
-      request_method == "LINK"
+      request_method == 'LINK'
     end
 
     def unlink?
-      request_method == "UNLINK"
+      request_method == 'UNLINK'
     end
 
     def params
@@ -175,8 +175,8 @@ module Sinatra
       result = body
 
       if drop_content_info?
-        headers.delete "Content-Length"
-        headers.delete "Content-Type"
+        headers.delete 'Content-Length'
+        headers.delete 'Content-Type'
       end
 
       if drop_body?
@@ -187,7 +187,7 @@ module Sinatra
       if calculate_content_length?
         # if some other code has already set Content-Length, don't muck with it
         # currently, this would be the static file-handler
-        headers["Content-Length"] = body.map(&:bytesize).reduce(0, :+).to_s
+        headers['Content-Length'] = body.map(&:bytesize).reduce(0, :+).to_s
       end
 
       [status, headers, result]
@@ -196,7 +196,7 @@ module Sinatra
     private
 
     def calculate_content_length?
-      headers["Content-Type"] and not headers["Content-Length"] and Array === body
+      headers['Content-Type'] and not headers['Content-Length'] and Array === body
     end
 
     def drop_content_info?
@@ -231,7 +231,7 @@ module Sinatra
     end
 
     def after_response(&block)
-      raise NotImplementedError, "only supports EventMachine at the moment" unless defined? EventMachine
+      raise NotImplementedError, 'only supports EventMachine at the moment' unless defined? EventMachine
       EventMachine.next_tick(&block)
     end
 
@@ -296,7 +296,7 @@ module Sinatra
 
     # Halt processing and redirect to the URI provided.
     def redirect(uri, *args)
-      if env['HTTP_VERSION'] == 'HTTP/1.1' and env["REQUEST_METHOD"] != 'GET'
+      if env['HTTP_VERSION'] == 'HTTP/1.1' and env['REQUEST_METHOD'] != 'GET'
         status 303
       else
         status 302
@@ -368,7 +368,7 @@ module Sinatra
       return response['Content-Type'] unless type
       default = params.delete :default
       mime_type = mime_type(type) || default
-      fail "Unknown media type: %p" % type if mime_type.nil?
+      fail 'Unknown media type: %p' % type if mime_type.nil?
       mime_type = mime_type.dup
       unless params.include? :charset or settings.add_charset.all? { |p| not p === mime_type }
         params[:charset] = params.delete('charset') || settings.default_encoding
@@ -584,7 +584,7 @@ module Sinatra
       new_resource = options.fetch(:new_resource) { request.post? }
 
       unless ETAG_KINDS.include?(kind)
-        raise ArgumentError, ":strong or :weak expected"
+        raise ArgumentError, ':strong or :weak expected'
       end
 
       value = '"%s"' % value
@@ -782,7 +782,7 @@ module Sinatra
 
       # extract generic options
       locals          = options.delete(:locals) || locals         || {}
-      views           = options.delete(:views)  || settings.views || "./views"
+      views           = options.delete(:views)  || settings.views || './views'
       layout          = options[:layout]
       layout          = false if layout.nil? && options.include?(:layout)
       eat_errors      = layout.nil?
@@ -939,7 +939,7 @@ module Sinatra
 
     # Forward the request to the downstream app -- middleware only.
     def forward
-      fail "downstream app not set" unless @app.respond_to? :call
+      fail 'downstream app not set' unless @app.respond_to? :call
       status, headers, body = @app.call env
       @response.status = status
       @response.body = body
@@ -1000,7 +1000,7 @@ module Sinatra
       route = route[0..-2] if !settings.strict_paths? && route != '/' && route.end_with?('/')
       return unless params = pattern.params(route)
 
-      params.delete("ignore") # TODO: better params handling, maybe turn it into "smart" object or detect changes
+      params.delete('ignore') # TODO: better params handling, maybe turn it into "smart" object or detect changes
       force_encoding(params)
       @params = @params.merge(params) { |k, v1, v2| v2 || v1 } if params.any?
 
@@ -1260,7 +1260,7 @@ module Sinatra
       # class, or an HTTP status code to specify which errors should be
       # handled.
       def error(*codes, &block)
-        args  = compile! "ERROR", /.*/, block
+        args  = compile! 'ERROR', /.*/, block
         codes = codes.flat_map(&method(:Array))
         codes << Exception if codes.empty?
         codes << Sinatra::NotFound if codes.include?(404)
@@ -1359,7 +1359,7 @@ module Sinatra
       end
 
       def public=(value)
-        warn ":public is no longer used to avoid overloading Module#public, use :public_folder or :public_dir instead"
+        warn ':public is no longer used to avoid overloading Module#public, use :public_folder or :public_dir instead'
         set(:public_folder, value)
       end
 
@@ -1430,7 +1430,7 @@ module Sinatra
         return unless running?
         # Use Thin's hard #stop! if available, otherwise just #stop.
         running_server.respond_to?(:stop!) ? running_server.stop! : running_server.stop
-        $stderr.puts "== Sinatra has ended his set (crowd applauds)" unless suppress_messages?
+        $stderr.puts '== Sinatra has ended his set (crowd applauds)' unless suppress_messages?
         set :running_server, nil
         set :handler_name, nil
       end
@@ -1588,7 +1588,7 @@ module Sinatra
       end
 
       def route(verb, path, options = {}, &block)
-        enable :empty_path_info if path == "" and empty_path_info.nil?
+        enable :empty_path_info if path == '' and empty_path_info.nil?
         signature = compile!(verb, path, block, **options)
         (@routes[verb] ||= []) << signature
         invoke_hook(:route_added, verb, path, block)
@@ -1748,7 +1748,7 @@ module Sinatra
     set :protection, true
     set :method_override, false
     set :use_code, false
-    set :default_encoding, "utf-8"
+    set :default_encoding, 'utf-8'
     set :x_cascade, true
     set :add_charset, %w[javascript xml xhtml+xml].map { |t| "application/#{t}" }
     settings.add_charset << /^text\//
@@ -1761,7 +1761,7 @@ module Sinatra
       set :session_secret, SecureRandom.hex(64)
     rescue LoadError, NotImplementedError
       # SecureRandom raises a NotImplementedError if no random device is available
-      set :session_secret, "%064x" % Kernel.rand(2**256-1)
+      set :session_secret, '%064x' % Kernel.rand(2**256-1)
     end
 
     class << self

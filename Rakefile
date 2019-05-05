@@ -6,10 +6,10 @@ require 'date'
 task :default => :test
 task :spec => :test
 
-CLEAN.include "**/*.rbc"
+CLEAN.include '**/*.rbc'
 
 def source_version
-  @source_version ||= File.read(File.expand_path("VERSION", __dir__)).strip
+  @source_version ||= File.read(File.expand_path('VERSION', __dir__)).strip
 end
 
 def prev_feature
@@ -35,7 +35,7 @@ Rake::TestTask.new(:"test:core") do |t|
      readme request response result route_added_hook
      routing server settings sinatra static templates]
   t.test_files = core_tests.map {|n| "test/#{n}_test.rb"}
-  t.ruby_opts = ["-r rubygems"] if defined? Gem
+  t.ruby_opts = ['-r rubygems'] if defined? Gem
   t.warning = true
 end
 
@@ -44,7 +44,7 @@ end
 namespace :test do
   desc 'Measures test coverage'
   task :coverage do
-    rm_f "coverage"
+    rm_f 'coverage'
     ENV['COVERAGE'] = '1'
     Rake::Task['test'].invoke
   end
@@ -54,7 +54,7 @@ end
 
 desc 'Generate RDoc under doc/api'
 task 'doc'     => ['doc:api']
-task('doc:api') { sh "yardoc -o doc/api" }
+task('doc:api') { sh 'yardoc -o doc/api' }
 CLEAN.include 'doc/api'
 
 # README ===============================================================
@@ -72,7 +72,7 @@ task :add_template, [:name] do |t, args|
         puts "Adding section to #{file}"
         template = template.gsub(/Liquid/, args.name.capitalize).gsub(/liquid/, args.name.downcase)
         code.gsub! /^(\s*===.*CoffeeScript)/, "\n" << template << "\n\\1"
-        File.open(file, "w") { |f| f << code }
+        File.open(file, 'w') { |f| f << code }
       end
     end
   end
@@ -80,8 +80,8 @@ end
 
 # Thanks in announcement ===============================================
 
-team = ["Ryan Tomayko", "Blake Mizerany", "Simon Rozet", "Konstantin Haase", "Zachary Scott"]
-desc "list of contributors"
+team = ['Ryan Tomayko', 'Blake Mizerany', 'Simon Rozet', 'Konstantin Haase', 'Zachary Scott']
+desc 'list of contributors'
 task :thanks, ['release:all', :backports] do |t, a|
   a.with_defaults :release => "#{prev_version}..HEAD",
     :backports => "#{prev_feature}.0..#{prev_feature}.x"
@@ -89,20 +89,20 @@ task :thanks, ['release:all', :backports] do |t, a|
   excluded = `git log --format=format:"%aN\t%s" #{a.backports}`.lines.map { |l| l.force_encoding('binary') }
   commits  = (included - excluded).group_by { |c| c[/^[^\t]+/] }
   authors  = commits.keys.sort_by { |n| - commits[n].size } - team
-  puts authors[0..-2].join(', ') << " and " << authors.last,
+  puts authors[0..-2].join(', ') << ' and ' << authors.last,
     "(based on commits included in #{a.release}, but not in #{a.backports})"
 end
 
-desc "list of authors"
+desc 'list of authors'
 task :authors, [:commit_range, :format, :sep] do |t, a|
-  a.with_defaults :format => "%s (%d)", :sep => ", ", :commit_range => '--all'
+  a.with_defaults :format => '%s (%d)', :sep => ', ', :commit_range => '--all'
   authors = Hash.new(0)
-  blake   = "Blake Mizerany"
+  blake   = 'Blake Mizerany'
   overall = 0
   mapping = {
-    "blake.mizerany@gmail.com" => blake, "bmizerany" => blake,
-    "a_user@mac.com" => blake, "ichverstehe" => "Harry Vangberg",
-    "Wu Jiang (nouse)" => "Wu Jiang" }
+    'blake.mizerany@gmail.com' => blake, 'bmizerany' => blake,
+    'a_user@mac.com' => blake, 'ichverstehe' => 'Harry Vangberg',
+    'Wu Jiang (nouse)' => 'Wu Jiang' }
   `git shortlog -s #{a.commit_range}`.lines.map do |line|
     line = line.force_encoding 'binary' if line.respond_to? :force_encoding
     num, name = line.split("\t", 2).map(&:strip)
@@ -113,7 +113,7 @@ task :authors, [:commit_range, :format, :sep] do |t, a|
   puts authors.sort_by { |n,c| -c }.map { |e| a.format % e }.join(a.sep)
 end
 
-desc "generates TOC"
+desc 'generates TOC'
 task :toc, [:readme] do |t, a|
   a.with_defaults :readme => 'README.md'
 
@@ -121,7 +121,7 @@ task :toc, [:readme] do |t, a|
     title.downcase.gsub(/(?!-)\W /, '-').gsub(' ', '-').gsub(/(?!-)\W/, '')
   end
 
-  puts "* [Sinatra](#sinatra)"
+  puts '* [Sinatra](#sinatra)'
   title = Regexp.new('(?<=\* )(.*)') # so Ruby 1.8 doesn't complain
   File.binread(a.readme).scan(/^##.*/) do |line|
     puts line.gsub(/#(?=#)/, '    ').gsub('#', '*').gsub(title) { "[#{$1}](##{link($1)})" }
@@ -132,9 +132,9 @@ end
 
 if defined?(Gem)
   GEMS_AND_ROOT_DIRECTORIES = {
-    "sinatra" => ".",
-    "sinatra-contrib" => "./sinatra-contrib",
-    "rack-protection" => "./rack-protection"
+    'sinatra' => '.',
+    'sinatra-contrib' => './sinatra-contrib',
+    'rack-protection' => './rack-protection'
   }
 
   def package(gem, ext='')
@@ -145,12 +145,12 @@ if defined?(Gem)
   CLOBBER.include('pkg')
 
   GEMS_AND_ROOT_DIRECTORIES.each do |gem, directory|
-    file package(gem, '.gem') => ["pkg/", "#{directory + '/' + gem}.gemspec"] do |f|
+    file package(gem, '.gem') => ['pkg/', "#{directory + '/' + gem}.gemspec"] do |f|
       sh "cd #{directory} && gem build #{gem}.gemspec"
-      mv directory + "/" + File.basename(f.name), f.name
+      mv directory + '/' + File.basename(f.name), f.name
     end
 
-    file package(gem, '.tar.gz') => ["pkg/"] do |f|
+    file package(gem, '.tar.gz') => ['pkg/'] do |f|
       sh <<-SH
         git archive \
           --prefix=#{gem}-#{source_version}/ \
@@ -166,7 +166,7 @@ if defined?(Gem)
       task gem => %w[.gem .tar.gz].map { |e| package(gem, e) }
     end
 
-    desc "Build all packages"
+    desc 'Build all packages'
     task :all => GEMS_AND_ROOT_DIRECTORIES.keys
   end
 
@@ -178,7 +178,7 @@ if defined?(Gem)
       end
     end
 
-    desc "Build and install all of the gems as local gems"
+    desc 'Build and install all of the gems as local gems'
     task :all => GEMS_AND_ROOT_DIRECTORIES.keys
   end
 
@@ -193,7 +193,7 @@ if defined?(Gem)
       end
     end
 
-    desc "Commits the version to github repository"
+    desc 'Commits the version to github repository'
     task :commit_version do
       %w[
         lib/sinatra
@@ -212,7 +212,7 @@ if defined?(Gem)
       SH
     end
 
-    desc "Release all gems as packages"
+    desc 'Release all gems as packages'
     task :all => [:test, :commit_version] + GEMS_AND_ROOT_DIRECTORIES.keys
   end
 end

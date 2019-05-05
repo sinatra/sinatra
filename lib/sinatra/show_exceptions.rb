@@ -21,23 +21,23 @@ module Sinatra
     def call(env)
       @app.call(env)
     rescue Exception => e
-      errors, env["rack.errors"] = env["rack.errors"], @@eats_errors
+      errors, env['rack.errors'] = env['rack.errors'], @@eats_errors
 
       if prefers_plain_text?(env)
-        content_type = "text/plain"
+        content_type = 'text/plain'
         body = dump_exception(e)
       else
-        content_type = "text/html"
+        content_type = 'text/html'
         body = pretty(env, e)
       end
 
-      env["rack.errors"] = errors
+      env['rack.errors'] = errors
 
       [
         500,
         {
-          "Content-Type" => content_type,
-          "Content-Length" => body.bytesize.to_s
+          'Content-Type' => content_type,
+          'Content-Length' => body.bytesize.to_s
         },
         [body]
       ]
@@ -54,18 +54,18 @@ module Sinatra
     end
 
     def prefers_plain_text?(env)
-      !(Request.new(env).preferred_type("text/plain","text/html") == "text/html") &&
-      [/curl/].index { |item| item =~ env["HTTP_USER_AGENT"] }
+      !(Request.new(env).preferred_type('text/plain','text/html') == 'text/html') &&
+      [/curl/].index { |item| item =~ env['HTTP_USER_AGENT'] }
     end
 
     def frame_class(frame)
       if frame.filename =~ %r{lib/sinatra.*\.rb}
-        "framework"
+        'framework'
       elsif (defined?(Gem) && frame.filename.include?(Gem.dir)) ||
             frame.filename =~ %r{/bin/(\w+)\z}
-        "system"
+        'system'
       else
-        "app"
+        'app'
       end
     end
 
