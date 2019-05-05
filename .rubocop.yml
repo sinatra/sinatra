@@ -43,3 +43,6 @@ Lint/RescueException:
 
 Style/SpecialGlobalVars:
   Enabled: false
+
+Bundler/DuplicatedGem:
+  Enabled: false
