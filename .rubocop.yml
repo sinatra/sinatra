@@ -37,3 +37,6 @@ Layout/ExtraSpacing:
 
 Lint/IneffectiveAccessModifier:
   Enabled: false
+
+Lint/RescueException:
+  Enabled: false
