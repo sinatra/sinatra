@@ -1333,7 +1333,7 @@ module Sinatra
 
         return unless data
 
-        if app && app =~ (/([^\n]*\n)?#[^\n]*coding: *(\S+)/m)
+        if app && app =~ /([^\n]*\n)?#[^\n]*coding: *(\S+)/m
           encoding = $2
         else
           encoding = settings.default_encoding
@@ -1893,7 +1893,7 @@ module Sinatra
           code = "# in #{file}\n#{code}" unless file.empty?
         end
 
-        (<<-HTML).gsub(/^ {10}/, '')
+        <<-HTML.gsub(/^ {10}/, '')
           <!DOCTYPE html>
           <html>
           <head>
