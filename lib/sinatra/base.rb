@@ -29,7 +29,7 @@ module Sinatra
     # Returns an array of acceptable media types for the response
     def accept
       @env['sinatra.accept'] ||= begin
-        if @env.include? 'HTTP_ACCEPT' and @env['HTTP_ACCEPT'].to_s != ''
+        if @env.include?('HTTP_ACCEPT') && (@env['HTTP_ACCEPT'].to_s != '')
           @env['HTTP_ACCEPT'].to_s.scan(HEADER_VALUE_WITH_PARAMS).
             map! { |e| AcceptEntry.new(e) }.sort
         else
@@ -59,11 +59,11 @@ module Sinatra
     end
 
     def safe?
-      get? or head? or options? or trace?
+      get? || head? || options? || trace?
     end
 
     def idempotent?
-      safe? or put? or delete? or link? or unlink?
+      safe? || put? || delete? || link? || unlink?
     end
 
     def link?
@@ -117,7 +117,7 @@ module Sinatra
       end
 
       def respond_to?(*args)
-        super or to_str.respond_to?(*args)
+        super || to_str.respond_to?(*args)
       end
 
       def method_missing(*args, &block)
@@ -196,11 +196,11 @@ module Sinatra
     private
 
     def calculate_content_length?
-      headers['Content-Type'] and not headers['Content-Length'] and Array === body
+      headers['Content-Type'] && (not headers['Content-Length']) && (Array === body)
     end
 
     def drop_content_info?
-      informational? or drop_body?
+      informational? || drop_body?
     end
 
     def drop_body?
@@ -216,7 +216,7 @@ module Sinatra
   class ExtendedRack < Struct.new(:app)
     def call(env)
       result, callback = app.call(env), env['async.callback']
-      return result unless callback and async?(*result)
+      return result unless callback && async?(*result)
       after_response { callback.call result }
       setup_close(env, *result)
       throw :async
@@ -225,7 +225,7 @@ module Sinatra
     private
 
     def setup_close(env, status, headers, body)
-      return unless body.respond_to? :close and env.include? 'async.close'
+      return unless body.respond_to?(:close) && env.include?('async.close')
       env['async.close'].callback { body.close }
       env['async.close'].errback { body.close }
     end
@@ -237,7 +237,7 @@ module Sinatra
 
     def async?(status, headers, body)
       return true if status == -1
-      body.respond_to? :callback and body.respond_to? :errback
+      body.respond_to?(:callback) && body.respond_to?(:errback)
     end
   end
 
@@ -296,7 +296,7 @@ module Sinatra
 
     # Halt processing and redirect to the URI provided.
     def redirect(uri, *args)
-      if env['HTTP_VERSION'] == 'HTTP/1.1' and env['REQUEST_METHOD'] != 'GET'
+      if (env['HTTP_VERSION'] == 'HTTP/1.1') && (env['REQUEST_METHOD'] != 'GET')
         status 303
       else
         status 302
@@ -315,7 +315,7 @@ module Sinatra
       uri = [host = String.new]
       if absolute
         host << "http#{'s' if request.secure?}://"
-        if request.forwarded? or request.port != (request.secure? ? 443 : 80)
+        if request.forwarded? || (request.port != (request.secure? ? 443 : 80))
           host << request.host_with_port
         else
           host << request.host
@@ -370,7 +370,7 @@ module Sinatra
       mime_type = mime_type(type) || default
       fail 'Unknown media type: %p' % type if mime_type.nil?
       mime_type = mime_type.dup
-      unless params.include? :charset or settings.add_charset.all? { |p| not p === mime_type }
+      unless params.include?(:charset) || settings.add_charset.all? { |p| not p === mime_type }
         params[:charset] = params.delete('charset') || settings.default_encoding
       end
       params.delete :charset if mime_type.include? 'charset'
@@ -392,19 +392,19 @@ module Sinatra
         params = '; filename="%s"' % File.basename(filename)
         response['Content-Disposition'] << params
         ext = File.extname(filename)
-        content_type(ext) unless response['Content-Type'] or ext.empty?
+        content_type(ext) unless response['Content-Type'] || ext.empty?
       end
     end
 
     # Use the contents of the file at +path+ as the response body.
     def send_file(path, opts = {})
-      if opts[:type] or not response['Content-Type']
+      if opts[:type] || (not response['Content-Type'])
         content_type opts[:type] || File.extname(path), :default => 'application/octet-stream'
       end
 
       disposition = opts[:disposition]
       filename    = opts[:filename]
-      disposition = :attachment if disposition.nil? and filename
+      disposition = :attachment if disposition.nil? && filename
       filename    = path        if filename.nil?
       attachment(filename, disposition) if disposition
 
@@ -553,13 +553,13 @@ module Sinatra
       response['Last-Modified'] = time.httpdate
       return if env['HTTP_IF_NONE_MATCH']
 
-      if status == 200 and env['HTTP_IF_MODIFIED_SINCE']
+      if (status == 200) && env['HTTP_IF_MODIFIED_SINCE']
         # compare based on seconds since epoch
         since = Time.httpdate(env['HTTP_IF_MODIFIED_SINCE']).to_i
         halt 304 if since >= time.to_i
       end
 
-      if (success? or status == 412) and env['HTTP_IF_UNMODIFIED_SINCE']
+      if (success? || (status == 412)) && env['HTTP_IF_UNMODIFIED_SINCE']
         # compare based on seconds since epoch
         since = Time.httpdate(env['HTTP_IF_UNMODIFIED_SINCE']).to_i
         halt 412 if since < time.to_i
@@ -591,7 +591,7 @@ module Sinatra
       value = "W/#{value}" if kind == :weak
       response['ETag'] = value
 
-      if success? or status == 304
+      if success? || (status == 304)
         if etag_matches? env['HTTP_IF_NONE_MATCH'], new_resource
           halt(request.safe? ? 304 : 412)
         end
@@ -786,8 +786,8 @@ module Sinatra
       layout          = options[:layout]
       layout          = false if layout.nil? && options.include?(:layout)
       eat_errors      = layout.nil?
-      layout          = engine_options[:layout] if layout.nil? or (layout == true && engine_options[:layout] != false)
-      layout          = @default_layout         if layout.nil? or layout == true
+      layout          = engine_options[:layout] if layout.nil? || (layout == true && engine_options[:layout] != false)
+      layout          = @default_layout         if layout.nil? || (layout == true)
       layout_options  = options.delete(:layout_options) || {}
       content_type    = options.delete(:default_content_type)
       content_type    = options.delete(:content_type)   || content_type
@@ -843,7 +843,7 @@ module Sinatra
                 break
               end
             end
-            throw :layout_missing if eat_errors and not found
+            throw :layout_missing if eat_errors && (not found)
             template.new(path, 1, options)
           end
         end
@@ -996,7 +996,7 @@ module Sinatra
     # Returns pass block.
     def process_route(pattern, conditions, block = nil, values = [])
       route = @request.path_info
-      route = '/' if route.empty? and not settings.empty_path_info?
+      route = '/' if route.empty? && (not settings.empty_path_info?)
       route = route[0..-2] if !settings.strict_paths? && route != '/' && route.end_with?('/')
       return unless params = pattern.params(route)
 
@@ -1058,8 +1058,8 @@ module Sinatra
     def invoke
       res = catch(:halt) { yield }
 
-      res = [res] if Integer === res or String === res
-      if Array === res and Integer === res.first
+      res = [res] if (Integer === res) || (String === res)
+      if (Array === res) && (Integer === res.first)
         res = res.dup
         status(res.shift)
         body(res.pop)
@@ -1116,7 +1116,7 @@ module Sinatra
 
       if server_error?
         dump_errors! boom if settings.dump_errors?
-        raise boom if settings.show_exceptions? and settings.show_exceptions != :after_handler
+        raise boom if settings.show_exceptions? && (settings.show_exceptions != :after_handler)
       elsif not_found?
         headers['X-Cascade'] = 'pass' if settings.x_cascade?
       end
@@ -1151,7 +1151,7 @@ module Sinatra
           return resp unless resp.nil? && !first
         end
       end
-      return false unless key.respond_to? :superclass and key.superclass < Exception
+      return false unless key.respond_to?(:superclass) && (key.superclass < Exception)
       error_block!(key.superclass, *block_params)
     end
 
@@ -1212,7 +1212,7 @@ module Sinatra
       # Sets an option to the given value.  If the value is a proc,
       # the proc will be called every time the option is accessed.
       def set(option, value = (not_set = true), ignore_setter = false, &block)
-        raise ArgumentError if block and !not_set
+        raise ArgumentError if block && !not_set
         value, not_set = block, false if block
 
         if not_set
@@ -1221,7 +1221,7 @@ module Sinatra
           return self
         end
 
-        if respond_to?("#{option}=") and not ignore_setter
+        if respond_to?("#{option}=") && (not ignore_setter)
           return __send__("#{option}=", value)
         end
 
@@ -1296,7 +1296,7 @@ module Sinatra
         end
 
         if data
-          if app and app =~ /([^\n]*\n)?#[^\n]*coding: *(\S+)/m
+          if app && app =~( /([^\n]*\n)?#[^\n]*coding: *(\S+)/m)
             encoding = $2
           else
             encoding = settings.default_encoding
@@ -1576,7 +1576,7 @@ module Sinatra
         types.flatten!
         condition do
           if type = response['Content-Type']
-            types.include? type or types.include? type[/^[^;]+/]
+            types.include?(type) || types.include?(type[/^[^;]+/])
           elsif type = request.preferred_type(types)
             params = (type.respond_to?(:params) ? type.params : {})
             content_type(type, params)
@@ -1588,7 +1588,7 @@ module Sinatra
       end
 
       def route(verb, path, options = {}, &block)
-        enable :empty_path_info if path == '' and empty_path_info.nil?
+        enable :empty_path_info if path == '' && empty_path_info.nil?
         signature = compile!(verb, path, block, **options)
         (@routes[verb] ||= []) << signature
         invoke_hook(:route_added, verb, path, block)
