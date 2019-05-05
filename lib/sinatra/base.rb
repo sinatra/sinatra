@@ -1190,7 +1190,7 @@ module Sinatra
     end
 
     def dump_errors!(boom)
-      msg = ["#{Time.now.strftime("%Y-%m-%d %H:%M:%S")} - #{boom.class} - #{boom.message}:", *boom.backtrace].join("\n\t")
+      msg = ["#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} - #{boom.class} - #{boom.message}:", *boom.backtrace].join("\n\t")
       @env['rack.errors'].puts(msg)
     end
 
@@ -1905,7 +1905,7 @@ module Sinatra
           </head>
           <body>
             <h2>Sinatra doesn’t know this ditty.</h2>
-            <img src='#{uri "/__sinatra__/404.png"}'>
+            <img src='#{uri '/__sinatra__/404.png'}'>
             <div id="c">
               Try this:
               <pre>#{Rack::Utils.escape_html(code)}</pre>
