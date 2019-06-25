@@ -12,6 +12,7 @@ module Sinatra
   class ShowExceptions < Rack::ShowExceptions
     @@eats_errors = Object.new
     def @@eats_errors.flush(*) end
+
     def @@eats_errors.puts(*) end
 
     def initialize(app)
@@ -21,23 +22,24 @@ module Sinatra
     def call(env)
       @app.call(env)
     rescue Exception => e
-      errors, env["rack.errors"] = env["rack.errors"], @@eats_errors
+      errors = env['rack.errors']
+      env['rack.errors'] = @@eats_errors
 
       if prefers_plain_text?(env)
-        content_type = "text/plain"
+        content_type = 'text/plain'
         body = dump_exception(e)
       else
-        content_type = "text/html"
+        content_type = 'text/html'
         body = pretty(env, e)
       end
 
-      env["rack.errors"] = errors
+      env['rack.errors'] = errors
 
       [
         500,
         {
-          "Content-Type" => content_type,
-          "Content-Length" => body.bytesize.to_s
+          'Content-Type' => content_type,
+          'Content-Length' => body.bytesize.to_s
         },
         [body]
       ]
@@ -51,60 +53,58 @@ module Sinatra
 
       # This double assignment is to prevent an "unused variable" warning on
       # Ruby 1.9.3.  Yes, it is dumb, but I don't like Ruby yelling at me.
-      path = path = (req.script_name + req.path_info).squeeze("/")
+      path = path = (req.script_name + req.path_info).squeeze('/')
 
       # This double assignment is to prevent an "unused variable" warning on
       # Ruby 1.9.3.  Yes, it is dumb, but I don't like Ruby yelling at me.
-      frames = frames = exception.backtrace.map { |line|
+      frames = frames = exception.backtrace.map do |line|
         frame = OpenStruct.new
-        if line =~ /(.*?):(\d+)(:in `(.*)')?/
-          frame.filename = $1
-          frame.lineno = $2.to_i
-          frame.function = $4
+        next unless line =~ /(.*?):(\d+)(:in `(.*)')?/
 
-          begin
-            lineno = frame.lineno-1
-            lines = ::File.readlines(frame.filename)
-            frame.pre_context_lineno = [lineno-CONTEXT, 0].max
-            frame.pre_context = lines[frame.pre_context_lineno...lineno]
-            frame.context_line = lines[lineno].chomp
-            frame.post_context_lineno = [lineno+CONTEXT, lines.size].min
-            frame.post_context = lines[lineno+1..frame.post_context_lineno]
-          rescue
-          end
+        frame.filename = $1
+        frame.lineno = $2.to_i
+        frame.function = $4
 
-          frame
-        else
-          nil
+        begin
+          lineno = frame.lineno - 1
+          lines = ::File.readlines(frame.filename)
+          frame.pre_context_lineno = [lineno - CONTEXT, 0].max
+          frame.pre_context = lines[frame.pre_context_lineno...lineno]
+          frame.context_line = lines[lineno].chomp
+          frame.post_context_lineno = [lineno + CONTEXT, lines.size].min
+          frame.post_context = lines[lineno + 1..frame.post_context_lineno]
+        rescue StandardError
         end
-      }.compact
+
+        frame
+      end.compact
 
       TEMPLATE.result(binding)
     end
 
     private
 
-    def bad_request?(e)
-      Sinatra::BadRequest === e
+    def bad_request?(exception)
+      Sinatra::BadRequest === exception
     end
 
     def prefers_plain_text?(env)
-      !(Request.new(env).preferred_type("text/plain","text/html") == "text/html") &&
-      [/curl/].index { |item| item =~ env["HTTP_USER_AGENT"] }
+      Request.new(env).preferred_type('text/plain', 'text/html') != 'text/html' &&
+        [/curl/].index { |item| item =~ env['HTTP_USER_AGENT'] }
     end
 
     def frame_class(frame)
       if frame.filename =~ %r{lib/sinatra.*\.rb}
-        "framework"
+        'framework'
       elsif (defined?(Gem) && frame.filename.include?(Gem.dir)) ||
             frame.filename =~ %r{/bin/(\w+)\z}
-        "system"
+        'system'
       else
-        "app"
+        'app'
       end
     end
 
-TEMPLATE = ERB.new <<-HTML # :nodoc:
+    TEMPLATE = ERB.new <<-HTML # :nodoc:
 <!DOCTYPE html>
 <html>
 <head>
@@ -392,6 +392,6 @@ enabled the <code>show_exceptions</code> setting.</p>
   </div> <!-- /WRAP -->
   </body>
 </html>
-HTML
+    HTML
   end
 end

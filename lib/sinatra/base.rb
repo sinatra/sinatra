@@ -1,4 +1,3 @@
-# coding: utf-8
 # frozen_string_literal: true
 
 # external dependencies
@@ -10,7 +9,6 @@ require 'mustermann/sinatra'
 require 'mustermann/regular'
 
 # stdlib dependencies
-require 'thread'
 require 'time'
 require 'uri'
 
@@ -23,15 +21,18 @@ module Sinatra
   # The request object. See Rack::Request for more info:
   # http://rubydoc.info/github/rack/rack/master/Rack/Request
   class Request < Rack::Request
-    HEADER_PARAM = /\s*[\w.]+=(?:[\w.]+|"(?:[^"\\]|\\.)*")?\s*/
-    HEADER_VALUE_WITH_PARAMS = /(?:(?:\w+|\*)\/(?:\w+(?:\.|\-|\+)?|\*)*)\s*(?:;#{HEADER_PARAM})*/
+    HEADER_PARAM = /\s*[\w.]+=(?:[\w.]+|"(?:[^"\\]|\\.)*")?\s*/.freeze
+    HEADER_VALUE_WITH_PARAMS = %r{(?:(?:\w+|\*)/(?:\w+(?:\.|\-|\+)?|\*)*)\s*(?:;#{HEADER_PARAM})*}.freeze
 
     # Returns an array of acceptable media types for the response
     def accept
       @env['sinatra.accept'] ||= begin
-        if @env.include? 'HTTP_ACCEPT' and @env['HTTP_ACCEPT'].to_s != ''
-          @env['HTTP_ACCEPT'].to_s.scan(HEADER_VALUE_WITH_PARAMS).
-            map! { |e| AcceptEntry.new(e) }.sort
+        if @env.include?('HTTP_ACCEPT') && (@env['HTTP_ACCEPT'].to_s != '')
+          @env['HTTP_ACCEPT']
+            .to_s
+            .scan(HEADER_VALUE_WITH_PARAMS)
+            .map! { |e| AcceptEntry.new(e) }
+            .sort
         else
           [AcceptEntry.new('*/*')]
         end
@@ -45,8 +46,10 @@ module Sinatra
     def preferred_type(*types)
       accepts = accept # just evaluate once
       return accepts.first if types.empty?
+
       types.flatten!
       return types.first if accepts.empty?
+
       accepts.detect do |pattern|
         type = types.detect { |t| File.fnmatch(pattern, t) }
         return type if type
@@ -56,23 +59,23 @@ module Sinatra
     alias secure? ssl?
 
     def forwarded?
-      @env.include? "HTTP_X_FORWARDED_HOST"
+      @env.include? 'HTTP_X_FORWARDED_HOST'
     end
 
     def safe?
-      get? or head? or options? or trace?
+      get? || head? || options? || trace?
     end
 
     def idempotent?
-      safe? or put? or delete? or link? or unlink?
+      safe? || put? || delete? || link? || unlink?
     end
 
     def link?
-      request_method == "LINK"
+      request_method == 'LINK'
     end
 
     def unlink?
-      request_method == "UNLINK"
+      request_method == 'UNLINK'
     end
 
     def params
@@ -101,12 +104,12 @@ module Sinatra
       end
 
       def <=>(other)
-        other.priority <=> self.priority
+        other.priority <=> priority
       end
 
       def priority
         # We sort in descending order; better matches should be higher.
-        [ @q, -@type.count('*'), @params.size ]
+        [@q, -@type.count('*'), @params.size]
       end
 
       def to_str
@@ -118,7 +121,7 @@ module Sinatra
       end
 
       def respond_to?(*args)
-        super or to_str.respond_to?(*args)
+        super || to_str.respond_to?(*args)
       end
 
       def method_missing(*args, &block)
@@ -132,7 +135,7 @@ module Sinatra
   # http://rubydoc.info/github/rack/rack/master/Rack/Response
   # http://rubydoc.info/github/rack/rack/master/Rack/Response/Helpers
   class Response < Rack::Response
-    DROP_BODY_RESPONSES = [204, 304]
+    DROP_BODY_RESPONSES = [204, 304].freeze
     def initialize(*)
       super
       headers['Content-Type'] ||= 'text/html'
@@ -151,8 +154,8 @@ module Sinatra
       result = body
 
       if drop_content_info?
-        headers.delete "Content-Length"
-        headers.delete "Content-Type"
+        headers.delete 'Content-Length'
+        headers.delete 'Content-Type'
       end
 
       if drop_body?
@@ -163,7 +166,7 @@ module Sinatra
       if calculate_content_length?
         # if some other code has already set Content-Length, don't muck with it
         # currently, this would be the static file-handler
-        headers["Content-Length"] = body.inject(0) { |l, p| l + p.bytesize }.to_s
+        headers['Content-Length'] = body.inject(0) { |l, p| l + p.bytesize }.to_s
       end
 
       [status.to_i, headers, result]
@@ -172,11 +175,11 @@ module Sinatra
     private
 
     def calculate_content_length?
-      headers["Content-Type"] and not headers["Content-Length"] and Array === body
+      headers['Content-Type'] && !headers['Content-Length'] && (Array === body)
     end
 
     def drop_content_info?
-      status.to_i / 100 == 1 or drop_body?
+      (status.to_i / 100 == 1) || drop_body?
     end
 
     def drop_body?
@@ -191,8 +194,10 @@ module Sinatra
   # still be able to run.
   class ExtendedRack < Struct.new(:app)
     def call(env)
-      result, callback = app.call(env), env['async.callback']
-      return result unless callback and async?(*result)
+      result = app.call(env)
+      callback = env['async.callback']
+      return result unless callback && async?(*result)
+
       after_response { callback.call result }
       setup_close(env, *result)
       throw :async
@@ -200,20 +205,23 @@ module Sinatra
 
     private
 
-    def setup_close(env, status, headers, body)
-      return unless body.respond_to? :close and env.include? 'async.close'
+    def setup_close(env, _status, _headers, body)
+      return unless body.respond_to?(:close) && env.include?('async.close')
+
       env['async.close'].callback { body.close }
       env['async.close'].errback { body.close }
     end
 
     def after_response(&block)
-      raise NotImplementedError, "only supports EventMachine at the moment" unless defined? EventMachine
+      raise NotImplementedError, 'only supports EventMachine at the moment' unless defined? EventMachine
+
       EventMachine.next_tick(&block)
     end
 
-    def async?(status, headers, body)
+    def async?(status, _headers, body)
       return true if status == -1
-      body.respond_to? :callback and body.respond_to? :errback
+
+      body.respond_to?(:callback) && body.respond_to?(:errback)
     end
   end
 
@@ -225,7 +233,7 @@ module Sinatra
     end
 
     superclass.class_eval do
-      alias call_without_check call unless method_defined? :call_without_check
+      alias_method :call_without_check, :call unless method_defined? :call_without_check
       def call(env)
         env['sinatra.commonlogger'] = true
         call_without_check(env)
@@ -269,7 +277,7 @@ module Sinatra
 
     # Halt processing and redirect to the URI provided.
     def redirect(uri, *args)
-      if env['HTTP_VERSION'] == 'HTTP/1.1' and env["REQUEST_METHOD"] != 'GET'
+      if (env['HTTP_VERSION'] == 'HTTP/1.1') && (env['REQUEST_METHOD'] != 'GET')
         status 303
       else
         status 302
@@ -285,17 +293,18 @@ module Sinatra
     # Takes Rack routers and reverse proxies into account.
     def uri(addr = nil, absolute = true, add_script_name = true)
       return addr if addr =~ /\A[a-z][a-z0-9\+\.\-]*:/i
+
       uri = [host = String.new]
       if absolute
         host << "http#{'s' if request.secure?}://"
-        if request.forwarded? or request.port != (request.secure? ? 443 : 80)
-          host << request.host_with_port
-        else
-          host << request.host
-        end
+        host << if request.forwarded? || (request.port != (request.secure? ? 443 : 80))
+                  request.host_with_port
+                else
+                  request.host
+                end
       end
       uri << request.script_name.to_s if add_script_name
-      uri << (addr ? addr : request.path_info).to_s
+      uri << (addr || request.path_info).to_s
       File.join uri
     end
 
@@ -304,7 +313,10 @@ module Sinatra
 
     # Halt processing and return the error status provided.
     def error(code, body = nil)
-      code, body    = 500, code.to_str if code.respond_to? :to_str
+      if code.respond_to? :to_str
+        body = code.to_str
+        code = 500
+      end
       response.body = body unless body.nil?
       halt code
     end
@@ -339,11 +351,13 @@ module Sinatra
     # extension.
     def content_type(type = nil, params = {})
       return response['Content-Type'] unless type
+
       default = params.delete :default
       mime_type = mime_type(type) || default
-      fail "Unknown media type: %p" % type if mime_type.nil?
+      raise format('Unknown media type: %p', type) if mime_type.nil?
+
       mime_type = mime_type.dup
-      unless params.include? :charset or settings.add_charset.all? { |p| not p === mime_type }
+      unless params.include?(:charset) || settings.add_charset.all? { |p| !(p === mime_type) }
         params[:charset] = params.delete('charset') || settings.default_encoding
       end
       params.delete :charset if mime_type.include? 'charset'
@@ -361,23 +375,23 @@ module Sinatra
     # instructing the user agents to prompt to save.
     def attachment(filename = nil, disposition = :attachment)
       response['Content-Disposition'] = disposition.to_s.dup
-      if filename
-        params = '; filename="%s"' % File.basename(filename)
-        response['Content-Disposition'] << params
-        ext = File.extname(filename)
-        content_type(ext) unless response['Content-Type'] or ext.empty?
-      end
+      return unless filename
+
+      params = format('; filename="%s"', File.basename(filename))
+      response['Content-Disposition'] << params
+      ext = File.extname(filename)
+      content_type(ext) unless response['Content-Type'] || ext.empty?
     end
 
     # Use the contents of the file at +path+ as the response body.
     def send_file(path, opts = {})
-      if opts[:type] or not response['Content-Type']
-        content_type opts[:type] || File.extname(path), :default => 'application/octet-stream'
+      if opts[:type] || !response['Content-Type']
+        content_type opts[:type] || File.extname(path), default: 'application/octet-stream'
       end
 
       disposition = opts[:disposition]
       filename    = opts[:filename]
-      disposition = :attachment if disposition.nil? and filename
+      disposition = :attachment if disposition.nil? && filename
       filename    = path        if filename.nil?
       attachment(filename, disposition) if disposition
 
@@ -386,7 +400,7 @@ module Sinatra
       file   = Rack::File.new(File.dirname(settings.app_file))
       result = file.serving(request, path)
 
-      result[1].each { |k,v| headers[k] ||= v }
+      result[1].each { |k, v| headers[k] ||= v }
       headers['Content-Length'] = result[1]['Content-Length']
       opts[:status] &&= Integer(opts[:status])
       halt (opts[:status] || result[0]), result[2]
@@ -403,16 +417,25 @@ module Sinatra
     #
     # Scheduler has to respond to defer and schedule.
     class Stream
-      def self.schedule(*) yield end
-      def self.defer(*)    yield end
+      def self.schedule(*)
+        yield
+      end
+
+      def self.defer(*)
+        yield
+      end
 
       def initialize(scheduler = self.class, keep_open = false, &back)
-        @back, @scheduler, @keep_open = back.to_proc, scheduler, keep_open
-        @callbacks, @closed = [], false
+        @back = back.to_proc
+        @scheduler = scheduler
+        @keep_open = keep_open
+        @callbacks = []
+        @closed = false
       end
 
       def close
         return if closed?
+
         @closed = true
         @scheduler.schedule { @callbacks.each { |c| c.call } }
       end
@@ -436,6 +459,7 @@ module Sinatra
 
       def callback(&block)
         return yield if closed?
+
         @callbacks << block
       end
 
@@ -469,15 +493,15 @@ module Sinatra
     # See RFC 2616 / 14.9 for more on standard cache control directives:
     # http://tools.ietf.org/html/rfc2616#section-14.9.1
     def cache_control(*values)
-      if values.last.kind_of?(Hash)
+      if values.last.is_a?(Hash)
         hash = values.pop
-        hash.reject! { |k, v| v == false }
+        hash.reject! { |_k, v| v == false }
         hash.reject! { |k, v| values << k if v == true }
       else
         hash = {}
       end
 
-      values.map! { |value| value.to_s.tr('_','-') }
+      values.map! { |value| value.to_s.tr('_', '-') }
       hash.each do |key, value|
         key = key.to_s.tr('_', '-')
         value = value.to_i if ['max-age', 's-maxage'].include? key
@@ -497,7 +521,7 @@ module Sinatra
     #   => Expires: Mon, 08 Jun 2009 08:50:17 GMT
     #
     def expires(amount, *values)
-      values << {} unless values.last.kind_of?(Hash)
+      values << {} unless values.last.is_a?(Hash)
 
       if amount.is_a? Integer
         time    = Time.now + amount.to_i
@@ -507,7 +531,7 @@ module Sinatra
         max_age = time - Time.now
       end
 
-      values.last.merge!(:max_age => max_age)
+      values.last.merge!(max_age: max_age)
       cache_control(*values)
 
       response['Expires'] = time.httpdate
@@ -522,17 +546,18 @@ module Sinatra
     # with a '304 Not Modified' response.
     def last_modified(time)
       return unless time
+
       time = time_for time
       response['Last-Modified'] = time.httpdate
       return if env['HTTP_IF_NONE_MATCH']
 
-      if status == 200 and env['HTTP_IF_MODIFIED_SINCE']
+      if (status == 200) && env['HTTP_IF_MODIFIED_SINCE']
         # compare based on seconds since epoch
         since = Time.httpdate(env['HTTP_IF_MODIFIED_SINCE']).to_i
         halt 304 if since >= time.to_i
       end
 
-      if (success? or status == 412) and env['HTTP_IF_UNMODIFIED_SINCE']
+      if (success? || (status == 412)) && env['HTTP_IF_UNMODIFIED_SINCE']
         # compare based on seconds since epoch
         since = Time.httpdate(env['HTTP_IF_UNMODIFIED_SINCE']).to_i
         halt 412 if since < time.to_i
@@ -540,7 +565,7 @@ module Sinatra
     rescue ArgumentError
     end
 
-    ETAG_KINDS = [:strong, :weak]
+    ETAG_KINDS = %i[strong weak].freeze
     # Set the response entity tag (HTTP 'ETag' header) and halt if conditional
     # GET matches. The +value+ argument is an identifier that uniquely
     # identifies the current version of the resource. The +kind+ argument
@@ -552,27 +577,31 @@ module Sinatra
     # GET or HEAD, a '304 Not Modified' response is sent.
     def etag(value, options = {})
       # Before touching this code, please double check RFC 2616 14.24 and 14.26.
-      options      = {:kind => options} unless Hash === options
+      options      = { kind: options } unless Hash === options
       kind         = options[:kind] || :strong
       new_resource = options.fetch(:new_resource) { request.post? }
 
       unless ETAG_KINDS.include?(kind)
-        raise ArgumentError, ":strong or :weak expected"
+        raise ArgumentError, ':strong or :weak expected'
       end
 
-      value = '"%s"' % value
+      value = format('"%s"', value)
       value = "W/#{value}" if kind == :weak
       response['ETag'] = value
 
-      if success? or status == 304
-        if etag_matches? env['HTTP_IF_NONE_MATCH'], new_resource
-          halt(request.safe? ? 304 : 412)
-        end
+      return unless success? || status == 304
 
-        if env['HTTP_IF_MATCH']
-          halt 412 unless etag_matches? env['HTTP_IF_MATCH'], new_resource
-        end
+      if etag_matches?(env['HTTP_IF_NONE_MATCH'], new_resource)
+        halt(request.safe? ? 304 : 412)
       end
+
+      if env['HTTP_IF_MATCH']
+        return if etag_matches?(env['HTTP_IF_MATCH'], new_resource)
+
+        halt 412
+      end
+
+      nil
     end
 
     # Sugar for redirect (example:  redirect back)
@@ -625,8 +654,8 @@ module Sinatra
       else
         value.to_time
       end
-    rescue ArgumentError => boom
-      raise boom
+    rescue ArgumentError => e
+      raise e
     rescue Exception
       raise ArgumentError, "unable to convert #{value.inspect} to a Time object"
     end
@@ -636,11 +665,13 @@ module Sinatra
     # Helper method checking if a ETag value list includes the current ETag.
     def etag_matches?(list, new_resource = request.post?)
       return !new_resource if list == '*'
+
       list.to_s.split(/\s*,\s*/).include? response['ETag']
     end
 
     def with_params(temp_params)
-      original, @params = @params, temp_params
+      original = @params
+      @params = temp_params
       yield
     ensure
       @params = original if original
@@ -684,7 +715,7 @@ module Sinatra
 
     def erubis(template, options = {}, locals = {})
       warn "Sinatra::Templates#erubis is deprecated and will be removed, use #erb instead.\n" \
-        "If you have Erubis installed, it will be used automatically."
+        'If you have Erubis installed, it will be used automatically.'
       render :erubis, template, options, locals
     end
 
@@ -693,22 +724,22 @@ module Sinatra
     end
 
     def sass(template, options = {}, locals = {})
-      options.merge! :layout => false, :default_content_type => :css
+      options.merge! layout: false, default_content_type: :css
       render :sass, template, options, locals
     end
 
     def scss(template, options = {}, locals = {})
-      options.merge! :layout => false, :default_content_type => :css
+      options.merge! layout: false, default_content_type: :css
       render :scss, template, options, locals
     end
 
     def less(template, options = {}, locals = {})
-      options.merge! :layout => false, :default_content_type => :css
+      options.merge! layout: false, default_content_type: :css
       render :less, template, options, locals
     end
 
     def stylus(template, options = {}, locals = {})
-      options.merge! :layout => false, :default_content_type => :css
+      options.merge! layout: false, default_content_type: :css
       render :styl, template, options, locals
     end
 
@@ -746,7 +777,7 @@ module Sinatra
     end
 
     def coffee(template, options = {}, locals = {})
-      options.merge! :layout => false, :default_content_type => :js
+      options.merge! layout: false, default_content_type: :js
       render :coffee, template, options, locals
     end
 
@@ -795,24 +826,27 @@ module Sinatra
 
     # logic shared between builder and nokogiri
     def render_ruby(engine, template, options = {}, locals = {}, &block)
-      options, template = template, nil if template.is_a?(Hash)
-      template = Proc.new { block } if template.nil?
+      if template.is_a?(Hash)
+        options = template
+        template = nil
+      end
+      template = proc { block } if template.nil?
       render engine, template, options, locals
     end
 
     def render(engine, data, options = {}, locals = {}, &block)
       # merge app-level options
       engine_options = settings.respond_to?(engine) ? settings.send(engine) : {}
-      options.merge!(engine_options) { |key, v1, v2| v1 }
+      options.merge!(engine_options) { |_key, v1, _v2| v1 }
 
       # extract generic options
       locals          = options.delete(:locals) || locals         || {}
-      views           = options.delete(:views)  || settings.views || "./views"
+      views           = options.delete(:views)  || settings.views || './views'
       layout          = options[:layout]
       layout          = false if layout.nil? && options.include?(:layout)
       eat_errors      = layout.nil?
-      layout          = engine_options[:layout] if layout.nil? or (layout == true && engine_options[:layout] != false)
-      layout          = @default_layout         if layout.nil? or layout == true
+      layout          = engine_options[:layout] if layout.nil? || (layout == true && engine_options[:layout] != false)
+      layout          = @default_layout         if layout.nil? || (layout == true)
       layout_options  = options.delete(:layout_options) || {}
       content_type    = options.delete(:default_content_type)
       content_type    = options.delete(:content_type)   || content_type
@@ -836,8 +870,9 @@ module Sinatra
 
       # render layout
       if layout
-        options = options.merge(:views => views, :layout => false, :eat_errors => eat_errors, :scope => scope).
-                merge!(layout_options)
+        extra_options = { views: views, layout: false, eat_errors: eat_errors, scope: scope }
+        options = options.merge(extra_options).merge!(layout_options)
+
         catch(:layout_missing) { return render(layout_engine, layout, options, locals) { output } }
       end
 
@@ -862,16 +897,17 @@ module Sinatra
             @preferred_extension = engine.to_s
             find_template(views, data, template) do |file|
               path ||= file # keep the initial path rather than the last one
-              if found = File.exist?(file)
+              found = File.exist?(file)
+              if found
                 path = file
                 break
               end
             end
-            throw :layout_missing if eat_errors and not found
+            throw :layout_missing if eat_errors && !found
             template.new(path, 1, options)
           end
         when Proc, String
-          body = data.is_a?(String) ? Proc.new { data } : data
+          body = data.is_a?(String) ? proc { data } : data
           caller = settings.caller_locations.first
           path = options[:path] || caller[0]
           line = options[:line] || caller[1]
@@ -918,7 +954,7 @@ module Sinatra
       invoke { error_block!(response.status) } unless @env['sinatra.error']
 
       unless @response['Content-Type']
-        if Array === body and body[0].respond_to? :content_type
+        if (Array === body) && body[0].respond_to?(:content_type)
           content_type body[0].content_type
         else
           content_type :html
@@ -939,8 +975,8 @@ module Sinatra
     end
 
     def options
-      warn "Sinatra::Base#options is deprecated and will be removed, " \
-        "use #settings instead."
+      warn 'Sinatra::Base#options is deprecated and will be removed, ' \
+        'use #settings instead.'
       settings
     end
 
@@ -960,7 +996,8 @@ module Sinatra
 
     # Forward the request to the downstream app -- middleware only.
     def forward
-      fail "downstream app not set" unless @app.respond_to? :call
+      raise 'downstream app not set' unless @app.respond_to? :call
+
       status, headers, body = @app.call env
       @response.status = status
       @response.body = body
@@ -978,7 +1015,9 @@ module Sinatra
 
     # Run routes defined on the class and all superclasses.
     def route!(base = settings, pass_block = nil)
-      if routes = base.routes[@request.request_method]
+      routes = base.routes[@request.request_method]
+
+      if routes
         routes.each do |pattern, conditions, block|
           returned_pass_block = process_route(pattern, conditions) do |*args|
             env['sinatra.route'] = "#{@request.request_method} #{pattern}"
@@ -1011,15 +1050,20 @@ module Sinatra
     # Returns pass block.
     def process_route(pattern, conditions, block = nil, values = [])
       route = @request.path_info
-      route = '/' if route.empty? and not settings.empty_path_info?
+      route = '/' if route.empty? && !settings.empty_path_info?
       route = route[0..-2] if !settings.strict_paths? && route != '/' && route.end_with?('/')
-      return unless params = pattern.params(route)
 
-      params.delete("ignore") # TODO: better params handling, maybe turn it into "smart" object or detect changes
+      params = pattern.params(route)
+      return unless params
+
+      params.delete('ignore') # TODO: better params handling, maybe turn it into "smart" object or detect changes
       force_encoding(params)
-      original, @params = @params, @params.merge(params) if params.any?
+      if params.any?
+        original = @params
+        @params = @params.merge(params)
+      end
 
-      regexp_exists = pattern.is_a?(Mustermann::Regular) || (pattern.respond_to?(:patterns) && pattern.patterns.any? {|subpattern| subpattern.is_a?(Mustermann::Regular)} )
+      regexp_exists = pattern.is_a?(Mustermann::Regular) || (pattern.respond_to?(:patterns) && pattern.patterns.any? { |subpattern| subpattern.is_a?(Mustermann::Regular) })
       if regexp_exists
         captures           = pattern.match(route).captures.map { |c| URI_INSTANCE.unescape(c) if c }
         values            += captures
@@ -1032,7 +1076,7 @@ module Sinatra
         conditions.each { |c| throw :pass if c.bind(self).call == false }
         block ? block[self, values] : yield(self, values)
       end
-    rescue
+    rescue StandardError
       @env['sinatra.error.params'] = @params
       raise
     ensure
@@ -1045,31 +1089,30 @@ module Sinatra
     # a NotFound exception. Subclasses can override this method to perform
     # custom route miss logic.
     def route_missing
-      if @app
-        forward
-      else
-        raise NotFound
-      end
+      raise NotFound unless @app
+
+      forward
     end
 
     # Attempt to serve static files from public directory. Throws :halt when
     # a matching file is found, returns nil otherwise.
     def static!(options = {})
       return if (public_dir = settings.public_folder).nil?
-      path = File.expand_path("#{public_dir}#{URI_INSTANCE.unescape(request.path_info)}" )
+
+      path = File.expand_path("#{public_dir}#{URI_INSTANCE.unescape(request.path_info)}")
       return unless File.file?(path)
 
       env['sinatra.static_file'] = path
       cache_control(*settings.static_cache_control) if settings.static_cache_control?
-      send_file path, options.merge(:disposition => nil)
+      send_file path, options.merge(disposition: nil)
     end
 
     # Run the block with 'throw :halt' support and apply result to the response.
     def invoke
       res = catch(:halt) { yield }
 
-      res = [res] if Integer === res or String === res
-      if Array === res and Integer === res.first
+      res = [res] if (Integer === res) || (String === res)
+      if (Array === res) && (Integer === res.first)
         res = res.dup
         status(res.shift)
         body(res.pop)
@@ -1085,6 +1128,7 @@ module Sinatra
       # Avoid passing frozen string in force_encoding
       @params.merge!(@request.params).each do |key, val|
         next unless val.respond_to?(:force_encoding)
+
         val = val.dup if val.frozen?
         @params[key] = force_encoding(val)
       end
@@ -1094,26 +1138,27 @@ module Sinatra
         filter! :before
         route!
       end
-    rescue ::Exception => boom
-      invoke { handle_exception!(boom) }
+    rescue ::Exception => e
+      invoke { handle_exception!(e) }
     ensure
       begin
         filter! :after unless env['sinatra.static_file']
-      rescue ::Exception => boom
-        invoke { handle_exception!(boom) } unless @env['sinatra.error']
+      rescue ::Exception => e
+        invoke { handle_exception!(e) } unless @env['sinatra.error']
       end
     end
 
     # Error handling during requests.
     def handle_exception!(boom)
-      if error_params = @env['sinatra.error.params']
-        @params = @params.merge(error_params)
-      end
+      error_params = @env['sinatra.error.params']
+
+      @params = @params.merge(error_params) if error_params
+
       @env['sinatra.error'] = boom
 
       if boom.respond_to? :http_status
         status(boom.http_status)
-      elsif settings.use_code? and boom.respond_to? :code and boom.code.between? 400, 599
+      elsif settings.use_code? && boom.respond_to?(:code) && boom.code.between?(400, 599)
         status(boom.code)
       else
         status(500)
@@ -1124,7 +1169,7 @@ module Sinatra
       boom_message = boom.message if boom.message && boom.message != boom.class.name
       if server_error?
         dump_errors! boom if settings.dump_errors?
-        raise boom if settings.show_exceptions? and settings.show_exceptions != :after_handler
+        raise boom if settings.show_exceptions? && (settings.show_exceptions != :after_handler)
       elsif not_found?
         headers['X-Cascade'] = 'pass' if settings.x_cascade?
         body boom_message || '<h1>Not Found</h1>'
@@ -1133,8 +1178,9 @@ module Sinatra
       end
 
       res = error_block!(boom.class, boom) || error_block!(status, boom)
-      return res if res or not server_error?
-      raise boom if settings.raise_errors? or settings.show_exceptions?
+      return res if res || !server_error?
+      raise boom if settings.raise_errors? || settings.show_exceptions?
+
       error_block! Exception, boom
     end
 
@@ -1142,7 +1188,10 @@ module Sinatra
     def error_block!(key, *block_params)
       base = settings
       while base.respond_to?(:errors)
-        next base = base.superclass unless args_array = base.errors[key]
+        args_array = base.errors[key]
+
+        next base = base.superclass unless args_array
+
         args_array.reverse_each do |args|
           first = args == args_array.first
           args += [block_params]
@@ -1150,30 +1199,31 @@ module Sinatra
           return resp unless resp.nil? && !first
         end
       end
-      return false unless key.respond_to? :superclass and key.superclass < Exception
+      return false unless key.respond_to?(:superclass) && (key.superclass < Exception)
+
       error_block!(key.superclass, *block_params)
     end
 
     def dump_errors!(boom)
-      msg = ["#{Time.now.strftime("%Y-%m-%d %H:%M:%S")} - #{boom.class} - #{boom.message}:", *boom.backtrace].join("\n\t")
+      msg = ["#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} - #{boom.class} - #{boom.message}:", *boom.backtrace].join("\n\t")
       @env['rack.errors'].puts(msg)
     end
 
     class << self
       CALLERS_TO_IGNORE = [ # :nodoc:
-        /\/sinatra(\/(base|main|show_exceptions))?\.rb$/,   # all sinatra code
-        /lib\/tilt.*\.rb$/,                                 # all tilt code
+        %r{/sinatra(/(base|main|show_exceptions))?\.rb$},   # all sinatra code
+        %r{lib/tilt.*\.rb$},                                 # all tilt code
         /^\(.*\)$/,                                         # generated code
-        /rubygems\/(custom|core_ext\/kernel)_require\.rb$/, # rubygems require hacks
+        %r{rubygems/(custom|core_ext/kernel)_require\.rb$}, # rubygems require hacks
         /active_support/,                                   # active_support require hacks
-        /bundler(\/(?:runtime|inline))?\.rb/,               # bundler require hacks
+        %r{bundler(/(?:runtime|inline))?\.rb},               # bundler require hacks
         /<internal:/,                                       # internal in ruby >= 1.9.2
-        /src\/kernel\/bootstrap\/[A-Z]/                     # maglev kernel files
-      ]
+        %r{src/kernel/bootstrap/[A-Z]}                     # maglev kernel files
+      ].freeze
 
       # contrary to what the comment said previously, rubinius never supported this
       if defined?(RUBY_IGNORE_CALLERS)
-        warn "RUBY_IGNORE_CALLERS is deprecated and will no longer be supported by Sinatra 2.0"
+        warn 'RUBY_IGNORE_CALLERS is deprecated and will no longer be supported by Sinatra 2.0'
         CALLERS_TO_IGNORE.concat(RUBY_IGNORE_CALLERS)
       end
 
@@ -1184,17 +1234,17 @@ module Sinatra
       def reset!
         @conditions     = []
         @routes         = {}
-        @filters        = {:before => [], :after => []}
+        @filters        = { before: [], after: [] }
         @errors         = {}
         @middleware     = []
         @prototype      = nil
         @extensions     = []
 
-        if superclass.respond_to?(:templates)
-          @templates = Hash.new { |hash, key| superclass.templates[key] }
-        else
-          @templates = {}
-        end
+        @templates = if superclass.respond_to?(:templates)
+                       Hash.new { |_hash, key| superclass.templates[key] }
+                     else
+                       {}
+                     end
       end
 
       # Extension modules registered on this class and all superclasses.
@@ -1218,16 +1268,21 @@ module Sinatra
       # Sets an option to the given value.  If the value is a proc,
       # the proc will be called every time the option is accessed.
       def set(option, value = (not_set = true), ignore_setter = false, &block)
-        raise ArgumentError if block and !not_set
-        value, not_set = block, false if block
+        raise ArgumentError if block && !not_set
+
+        if block
+          value = block
+          not_set = false
+        end
 
         if not_set
           raise ArgumentError unless option.respond_to?(:each)
-          option.each { |k,v| set(k, v) }
+
+          option.each { |k, v| set(k, v) }
           return self
         end
 
-        if respond_to?("#{option}=") and not ignore_setter
+        if respond_to?("#{option}=") && !ignore_setter
           return __send__("#{option}=", value)
         end
 
@@ -1266,7 +1321,7 @@ module Sinatra
       # class, or an HTTP status code to specify which errors should be
       # handled.
       def error(*codes, &block)
-        args  = compile! "ERROR", /.*/, block
+        args  = compile! 'ERROR', /.*/, block
         codes = codes.flat_map(&method(:Array))
         codes << Exception if codes.empty?
         codes << Sinatra::NotFound if codes.include?(404)
@@ -1292,7 +1347,7 @@ module Sinatra
       # Load embedded templates from the file; uses the caller's __FILE__
       # when no file is specified.
       def inline_templates=(file = nil)
-        file = (file.nil? || file == true) ? (caller_files.first || File.expand_path($0)) : file
+        file = file.nil? || file == true ? (caller_files.first || File.expand_path($0)) : file
 
         begin
           io = ::IO.respond_to?(:binread) ? ::IO.binread(file) : ::IO.read(file)
@@ -1301,23 +1356,24 @@ module Sinatra
           app, data = nil
         end
 
-        if data
-          if app and app =~ /([^\n]*\n)?#[^\n]*coding: *(\S+)/m
-            encoding = $2
-          else
-            encoding = settings.default_encoding
-          end
-          lines = app.count("\n") + 1
-          template = nil
-          force_encoding data, encoding
-          data.each_line do |line|
-            lines += 1
-            if line =~ /^@@\s*(.*\S)\s*$/
-              template = force_encoding(String.new, encoding)
-              templates[$1.to_sym] = [template, file, lines]
-            elsif template
-              template << line
-            end
+        return unless data
+
+        encoding = if app && app =~ /([^\n]*\n)?#[^\n]*coding: *(\S+)/m
+                     $2
+                   else
+                     settings.default_encoding
+                   end
+
+        lines = app.count("\n") + 1
+        template = nil
+        force_encoding data, encoding
+        data.each_line do |line|
+          lines += 1
+          if line =~ /^@@\s*(.*\S)\s*$/
+            template = force_encoding(String.new, encoding)
+            templates[$1.to_sym] = [template, file, lines]
+          elsif template
+            template << line
           end
         end
       end
@@ -1326,8 +1382,10 @@ module Sinatra
       def mime_type(type, value = nil)
         return type      if type.nil?
         return type.to_s if type.to_s.include?('/')
-        type = ".#{type}" unless type.to_s[0] == ?.
+
+        type = ".#{type}" unless type.to_s[0] == '.'
         return Rack::Mime.mime_type(type, nil) unless value
+
         Rack::Mime::MIME_TYPES[type] = value
       end
 
@@ -1336,7 +1394,7 @@ module Sinatra
       #   mime_types :js   # => ['application/javascript', 'text/javascript']
       def mime_types(type)
         type = mime_type type
-        type =~ /^application\/(xml|javascript)$/ ? [type, "text/#$1"] : [type]
+        type =~ %r{^application/(xml|javascript)$} ? [type, "text/#{$1}"] : [type]
       end
 
       # Define a before filter; runs before all requests within the same
@@ -1365,7 +1423,7 @@ module Sinatra
       end
 
       def public=(value)
-        warn ":public is no longer used to avoid overloading Module#public, use :public_folder or :public_dir instead"
+        warn ':public is no longer used to avoid overloading Module#public, use :public_folder or :public_dir instead'
         set(:public_folder, value)
       end
 
@@ -1387,14 +1445,21 @@ module Sinatra
         route('HEAD', path, opts, &block)
       end
 
-      def put(path, opts = {}, &bk)     route 'PUT',     path, opts, &bk end
-      def post(path, opts = {}, &bk)    route 'POST',    path, opts, &bk end
-      def delete(path, opts = {}, &bk)  route 'DELETE',  path, opts, &bk end
-      def head(path, opts = {}, &bk)    route 'HEAD',    path, opts, &bk end
-      def options(path, opts = {}, &bk) route 'OPTIONS', path, opts, &bk end
-      def patch(path, opts = {}, &bk)   route 'PATCH',   path, opts, &bk end
-      def link(path, opts = {}, &bk)    route 'LINK',    path, opts, &bk end
-      def unlink(path, opts = {}, &bk)  route 'UNLINK',  path, opts, &bk end
+      def put(path, opts = {}, &block)     route 'PUT',     path, opts, &block end
+
+      def post(path, opts = {}, &block)    route 'POST',    path, opts, &block end
+
+      def delete(path, opts = {}, &block)  route 'DELETE',  path, opts, &block end
+
+      def head(path, opts = {}, &block)    route 'HEAD',    path, opts, &block end
+
+      def options(path, opts = {}, &block) route 'OPTIONS', path, opts, &block end
+
+      def patch(path, opts = {}, &block)   route 'PATCH',   path, opts, &block end
+
+      def link(path, opts = {}, &block)    route 'LINK',    path, opts, &block end
+
+      def unlink(path, opts = {}, &block)  route 'UNLINK',  path, opts, &block end
 
       # Makes the methods defined in the block and in the Modules given
       # in `extensions` available to the handlers and templates
@@ -1415,7 +1480,9 @@ module Sinatra
       end
 
       def development?; environment == :development end
+
       def production?;  environment == :production  end
+
       def test?;        environment == :test        end
 
       # Set configuration options for Sinatra and/or the app.
@@ -1433,37 +1500,39 @@ module Sinatra
       # Stop the self-hosted server if running.
       def quit!
         return unless running?
+
         # Use Thin's hard #stop! if available, otherwise just #stop.
         running_server.respond_to?(:stop!) ? running_server.stop! : running_server.stop
-        $stderr.puts "== Sinatra has ended his set (crowd applauds)" unless suppress_messages?
+        warn '== Sinatra has ended his set (crowd applauds)' unless suppress_messages?
         set :running_server, nil
         set :handler_name, nil
       end
 
-      alias_method :stop!, :quit!
+      alias stop! quit!
 
       # Run the Sinatra app as a self-hosted server using
       # Thin, Puma, Mongrel, or WEBrick (in that order). If given a block, will call
       # with the constructed handler once we have taken the stage.
       def run!(options = {}, &block)
         return if running?
+
         set options
         handler         = detect_rack_handler
         handler_name    = handler.name.gsub(/.*::/, '')
         server_settings = settings.respond_to?(:server_settings) ? settings.server_settings : {}
-        server_settings.merge!(:Port => port, :Host => bind)
+        server_settings.merge!(Port: port, Host: bind)
 
         begin
           start_server(handler, server_settings, handler_name, &block)
         rescue Errno::EADDRINUSE
-          $stderr.puts "== Someone is already performing on port #{port}!"
+          warn "== Someone is already performing on port #{port}!"
           raise
         ensure
           quit!
         end
       end
 
-      alias_method :start!, :run!
+      alias start! run!
 
       # Check whether the self-hosted server is running or not.
       def running?
@@ -1481,8 +1550,8 @@ module Sinatra
       # Create a new instance of the class fronted by its middleware
       # pipeline. The object is guaranteed to respond to #call but may not be
       # an instance of the class new was called on.
-      def new(*args, &bk)
-        instance = new!(*args, &bk)
+      def new(*args, &block)
+        instance = new!(*args, &block)
         Wrapper.new(build(instance).to_app, instance)
       end
 
@@ -1522,7 +1591,7 @@ module Sinatra
         # Run the instance we created:
         handler.run(self, server_settings) do |server|
           unless suppress_messages?
-            $stderr.puts "== Sinatra (v#{Sinatra::VERSION}) has taken the stage on #{port} for #{environment} with backup from #{handler_name}"
+            warn "== Sinatra (v#{Sinatra::VERSION}) has taken the stage on #{port} for #{environment} with backup from #{handler_name}"
           end
 
           setup_traps
@@ -1539,18 +1608,18 @@ module Sinatra
       end
 
       def setup_traps
-        if traps?
-          at_exit { quit! }
+        return unless traps?
 
-          [:INT, :TERM].each do |signal|
-            old_handler = trap(signal) do
-              quit!
-              old_handler.call if old_handler.respond_to?(:call)
-            end
+        at_exit { quit! }
+
+        %i[INT TERM].each do |signal|
+          old_handler = trap(signal) do
+            quit!
+            old_handler.call if old_handler.respond_to?(:call)
           end
-
-          set :traps, false
         end
+
+        set :traps, false
       end
 
       # Dynamically defines a method on settings.
@@ -1578,18 +1647,21 @@ module Sinatra
           end
         end
       end
-      alias_method :agent, :user_agent
+      alias agent user_agent
 
       # Condition for matching mimetypes. Accepts file extensions.
       def provides(*types)
         types.map! { |t| mime_types(t) }
         types.flatten!
         condition do
-          if type = response['Content-Type']
-            types.include? type or types.include? type[/^[^;]+/]
-          elsif type = request.preferred_type(types)
-            params = (type.respond_to?(:params) ? type.params : {})
-            content_type(type, params)
+          response_content_type = response['Content-Type']
+          preferred_type = request.preferred_type(types)
+
+          if response_content_type
+            types.include?(response_content_type) || types.include?(response_content_type[/^[^;]+/])
+          elsif preferred_type
+            params = (preferred_type.respond_to?(:params) ? preferred_type.params : {})
+            content_type(preferred_type, params)
             true
           else
             false
@@ -1598,7 +1670,7 @@ module Sinatra
       end
 
       def route(verb, path, options = {}, &block)
-        enable :empty_path_info if path == "" and empty_path_info.nil?
+        enable :empty_path_info if (path == '') && empty_path_info.nil?
         signature = compile!(verb, path, block, options)
         (@routes[verb] ||= []) << signature
         invoke_hook(:route_added, verb, path, block)
@@ -1624,15 +1696,18 @@ module Sinatra
 
         options.each_pair { |option, args| send(option, *args) }
 
-        pattern                 = compile(path, route_mustermann_opts)
-        method_name             = "#{verb} #{path}"
-        unbound_method          = generate_method(method_name, &block)
-        conditions, @conditions = @conditions, []
-        wrapper                 = block.arity != 0 ?
-          proc { |a, p| unbound_method.bind(a).call(*p) } :
-          proc { |a, p| unbound_method.bind(a).call }
+        pattern = compile(path, route_mustermann_opts)
+        method_name = "#{verb} #{path}"
+        unbound_method = generate_method(method_name, &block)
 
-        [ pattern, conditions, wrapper ]
+        conditions = @conditions
+        @conditions = []
+
+        wrapper = block.arity != 0 ?
+          proc { |a, p| unbound_method.bind(a).call(*p) } :
+          proc { |a, _p| unbound_method.bind(a).call }
+
+        [pattern, conditions, wrapper]
       end
 
       def compile(path, route_mustermann_opts = {})
@@ -1650,7 +1725,7 @@ module Sinatra
       end
 
       def setup_middleware(builder)
-        middleware.each { |c,a,b| builder.use(c, *a, &b) }
+        middleware.each { |c, a, b| builder.use(c, *a, &b) }
       end
 
       def setup_logging(builder)
@@ -1680,9 +1755,10 @@ module Sinatra
 
       def setup_protection(builder)
         return unless protection?
+
         options = Hash === protection ? protection.dup : {}
         options = {
-          img_src:  "'self' data:",
+          img_src: "'self' data:",
           font_src: "'self'"
         }.merge options
 
@@ -1696,6 +1772,7 @@ module Sinatra
 
       def setup_sessions(builder)
         return unless sessions?
+
         options = {}
         options[:secret] = session_secret if session_secret?
         options.merge! sessions.to_hash if sessions.respond_to? :to_hash
@@ -1710,7 +1787,7 @@ module Sinatra
           rescue LoadError, NameError
           end
         end
-        fail "Server handler (#{servers.join(',')}) not found."
+        raise "Server handler (#{servers.join(',')}) not found."
       end
 
       def inherited(subclass)
@@ -1735,9 +1812,9 @@ module Sinatra
 
       # Like Kernel#caller but excluding certain magic entries
       def cleaned_caller(keep = 3)
-        caller(1).
-          map!    { |line| line.split(/:(?=\d|in )/, 3)[0,keep] }.
-          reject { |file, *_| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
+        caller(1)
+          .map! { |line| line.split(/:(?=\d|in )/, 3)[0, keep] }
+          .reject { |file, *_| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
       end
     end
 
@@ -1745,6 +1822,7 @@ module Sinatra
     # which is UTF-8 by default
     def self.force_encoding(data, encoding = default_encoding)
       return if data == settings || data.is_a?(Tempfile)
+
       if data.respond_to? :force_encoding
         data.force_encoding(encoding).encode!
       elsif data.respond_to? :each_value
@@ -1755,24 +1833,26 @@ module Sinatra
       data
     end
 
-    def force_encoding(*args) settings.force_encoding(*args) end
+    def force_encoding(*args)
+      settings.force_encoding(*args)
+    end
 
     reset!
 
     set :environment, (ENV['APP_ENV'] || ENV['RACK_ENV'] || :development).to_sym
-    set :raise_errors, Proc.new { test? }
-    set :dump_errors, Proc.new { !test? }
-    set :show_exceptions, Proc.new { development? }
+    set :raise_errors, proc { test? }
+    set :dump_errors, proc { !test? }
+    set :show_exceptions, proc { development? }
     set :sessions, false
     set :session_store, Rack::Session::Cookie
     set :logging, false
     set :protection, true
     set :method_override, false
     set :use_code, false
-    set :default_encoding, "utf-8"
+    set :default_encoding, 'utf-8'
     set :x_cascade, true
     set :add_charset, %w[javascript xml xhtml+xml].map { |t| "application/#{t}" }
-    settings.add_charset << /^text\//
+    settings.add_charset << %r{^text/}
     set :mustermann_opts, {}
 
     # explicitly generating a session secret eagerly to play nice with preforking
@@ -1781,12 +1861,12 @@ module Sinatra
       set :session_secret, SecureRandom.hex(64)
     rescue LoadError, NotImplementedError
       # SecureRandom raises a NotImplementedError if no random device is available
-      set :session_secret, "%064x" % Kernel.rand(2**256-1)
+      set :session_secret, format('%064x', Kernel.rand(2**256 - 1))
     end
 
     class << self
-      alias_method :methodoverride?, :method_override?
-      alias_method :methodoverride=, :method_override=
+      alias methodoverride? method_override?
+      alias methodoverride= method_override=
     end
 
     set :run, false                       # start server via at-exit hook?
@@ -1794,7 +1874,7 @@ module Sinatra
     set :handler_name, nil
     set :traps, true
     set :server, %w[HTTP webrick]
-    set :bind, Proc.new { development? ? 'localhost' : '0.0.0.0' }
+    set :bind, proc { development? ? 'localhost' : '0.0.0.0' }
     set :port, Integer(ENV['PORT'] && !ENV['PORT'].empty? ? ENV['PORT'] : 4567)
     set :quiet, false
 
@@ -1816,14 +1896,14 @@ module Sinatra
     set :strict_paths, true
 
     set :app_file, nil
-    set :root, Proc.new { app_file && File.expand_path(File.dirname(app_file)) }
-    set :views, Proc.new { root && File.join(root, 'views') }
-    set :reload_templates, Proc.new { development? }
+    set :root, proc { app_file && File.expand_path(File.dirname(app_file)) }
+    set :views, proc { root && File.join(root, 'views') }
+    set :reload_templates, proc { development? }
     set :lock, false
     set :threaded, true
 
-    set :public_folder, Proc.new { root && File.join(root, 'public') }
-    set :static, Proc.new { public_folder && File.exist?(public_folder) }
+    set :public_folder, proc { root && File.join(root, 'public') }
+    set :static, proc { public_folder && File.exist?(public_folder) }
     set :static_cache_control, false
 
     error ::Exception do
@@ -1857,11 +1937,11 @@ module Sinatra
             end
           RUBY
 
-          file = settings.app_file.to_s.sub(settings.root.to_s, '').sub(/^\//, '')
+          file = settings.app_file.to_s.sub(settings.root.to_s, '').sub(%r{^/}, '')
           code = "# in #{file}\n#{code}" unless file.empty?
         end
 
-        (<<-HTML).gsub(/^ {10}/, '')
+        <<-HTML.gsub(/^ {10}/, '')
           <!DOCTYPE html>
           <html>
           <head>
@@ -1873,7 +1953,7 @@ module Sinatra
           </head>
           <body>
             <h2>Sinatra doesn’t know this ditty.</h2>
-            <img src='#{uri "/__sinatra__/404.png"}'>
+            <img src='#{uri '/__sinatra__/404.png'}'>
             <div id="c">
               Try this:
               <pre>#{Rack::Utils.escape_html(code)}</pre>
@@ -1893,9 +1973,9 @@ module Sinatra
   # top-level. Subclassing Sinatra::Base is highly recommended for
   # modular applications.
   class Application < Base
-    set :logging, Proc.new { !test? }
+    set :logging, proc { !test? }
     set :method_override, true
-    set :run, Proc.new { !test? }
+    set :run, proc { !test? }
     set :app_file, nil
 
     def self.register(*extensions, &block) #:nodoc:
@@ -1913,6 +1993,7 @@ module Sinatra
       methods.each do |method_name|
         define_method(method_name) do |*args, &block|
           return super(*args, &block) if respond_to? method_name
+
           Delegator.target.send(method_name, *args, &block)
         end
         private method_name
@@ -1933,7 +2014,8 @@ module Sinatra
 
   class Wrapper
     def initialize(stack, instance)
-      @stack, @instance = stack, instance
+      @stack = stack
+      @instance = instance
     end
 
     def settings

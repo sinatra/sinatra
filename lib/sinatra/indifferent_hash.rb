@@ -1,11 +1,12 @@
 # frozen_string_literal: true
-$stderr.puts <<EOF if !Hash.method_defined?(:slice) && !$LOAD_PATH.grep(%r{gems/activesupport}).empty? && ENV['SINATRA_ACTIVESUPPORT_WARNING'] != 'false'
+
+warn <<WARN if !Hash.method_defined?(:slice) && !$LOAD_PATH.grep(%r{gems/activesupport}).empty? && ENV['SINATRA_ACTIVESUPPORT_WARNING'] != 'false'
 WARNING: If you plan to load any of ActiveSupport's core extensions to Hash, be
 sure to do so *before* loading Sinatra::Application or Sinatra::Base. If not,
 you may disregard this warning.
 
 Set SINATRA_ACTIVESUPPORT_WARNING=false in the environment to hide this warning.
-EOF
+WARN
 
 module Sinatra
   # A poor man's ActiveSupport::HashWithIndifferentAccess, with all the Rails-y
@@ -86,7 +87,7 @@ module Sinatra
       super(convert_key(key), convert_value(value))
     end
 
-    alias_method :store, :[]=
+    alias store []=
 
     def key(value)
       super(convert_value(value))
@@ -96,35 +97,44 @@ module Sinatra
       super(convert_key(key))
     end
 
-    alias_method :has_key?, :key?
-    alias_method :include?, :key?
-    alias_method :member?, :key?
+    alias has_key? key?
+    alias include? key?
+    alias member? key?
 
     def value?(value)
       super(convert_value(value))
     end
 
-    alias_method :has_value?, :value?
+    alias has_value? value?
 
     def delete(key)
       super(convert_key(key))
     end
 
-    def dig(key, *other_keys)
-      super(convert_key(key), *other_keys)
-    end if method_defined?(:dig) # Added in Ruby 2.3
+    # Added in Ruby 2.3
+    if method_defined?(:dig)
+      def dig(key, *other_keys)
+        super(convert_key(key), *other_keys)
+      end
+    end
 
-    def fetch_values(*keys)
-      keys.map!(&method(:convert_key))
+    # Added in Ruby 2.3
+    if method_defined?(:fetch_values)
+      def fetch_values(*keys)
+        keys.map!(&method(:convert_key))
 
-      super(*keys)
-    end if method_defined?(:fetch_values) # Added in Ruby 2.3
+        super(*keys)
+      end
+    end
 
-    def slice(*keys)
-      keys.map!(&method(:convert_key))
+    # Added in Ruby 2.5
+    if method_defined?(:slice)
+      def slice(*keys)
+        keys.map!(&method(:convert_key))
 
-      self.class[super(*keys)]
-    end if method_defined?(:slice) # Added in Ruby 2.5
+        self.class[super(*keys)]
+      end
+    end
 
     def values_at(*keys)
       keys.map!(&method(:convert_key))
@@ -144,7 +154,7 @@ module Sinatra
       self
     end
 
-    alias_method :update, :merge!
+    alias update merge!
 
     def merge(other_hash, &block)
       dup.merge!(other_hash, &block)

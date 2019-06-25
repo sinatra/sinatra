@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # this example does *not* work properly with WEBrick
 #
 # run *one* of these:
