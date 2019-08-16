@@ -26,7 +26,7 @@ rvm:
   - 2.6.3
   - ruby-head
   - rbx-3
-  - jruby-9.2.7.0
+  - jruby-9.2.8.0
   - jruby-head
 
 script: ./.travis.sh
@@ -35,7 +35,7 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
-    - rvm: jruby-9.2.7.0
+    - rvm: jruby-9.2.8.0
     - rvm: rbx-3
 
 notifications:
