@@ -722,6 +722,7 @@ module Sinatra
     end
 
     def markdown(template, options = {}, locals = {})
+      options[:exclude_outvar] = true
       render :markdown, template, options, locals
     end
 
@@ -818,10 +819,11 @@ module Sinatra
       content_type    = options.delete(:content_type)   || content_type
       layout_engine   = options.delete(:layout_engine)  || engine
       scope           = options.delete(:scope)          || self
+      exclude_outvar  = options.delete(:exclude_outvar)
       options.delete(:layout)
 
       # set some defaults
-      options[:outvar]           ||= '@_out_buf'
+      options[:outvar] ||= '@_out_buf' unless exclude_outvar
       options[:default_encoding] ||= settings.default_encoding
 
       # compile and render template

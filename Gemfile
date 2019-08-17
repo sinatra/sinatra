@@ -60,6 +60,7 @@ if RUBY_ENGINE == "ruby"
   gem 'reel-rack'
   gem 'celluloid', '~> 0.16.0'
   gem 'commonmarker', '~> 0.20.0'
+  gem 'pandoc-ruby', '~> 2.0.2'
   gem 'simplecov', require: false
 end
 
