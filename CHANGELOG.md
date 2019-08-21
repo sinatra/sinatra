@@ -1,3 +1,21 @@
+## 2.0.6 / 2019-08-21
+
+* Fix an issue setting environment from command line option [#1547](https://github.com/sinatra/sinatra/pull/1547), [#1554](https://github.com/sinatra/sinatra/pull/1554) by Jordan Owens, Kunpei Sakai
+
+* Support pandoc as a new markdown renderer [#1533](https://github.com/sinatra/sinatra/pull/1533) by Vasiliy
+
+* Remove outdated code for tilt 1.x [#1532](https://github.com/sinatra/sinatra/pull/1532) by Vasiliy
+
+* Remove an extra logic for `force_encoding` [#1527](https://github.com/sinatra/sinatra/pull/1527) by Jordan Owens
+
+* Avoid multiple errors even if `params` contains special values [#1526](https://github.com/sinatra/sinatra/pull/1527) by Kunpei Sakai
+
+* Support `bundler/inline` with `require 'sinatra'` integration [#1520](https://github.com/sinatra/sinatra/pull/1520) by Kunpei Sakai
+
+* Avoid `TypeError` when params contain a key without a value on Ruby < 2.4 [#1516](https://github.com/sinatra/sinatra/pull/1516) by Samuel Giddins
+
+* Improve development support and documentation and source code by  Olle Jonsson, Basavanagowda Kanur, Yuki MINAMIYA
+
 ## 2.0.5 / 2018-12-22
 
 * Avoid FrozenError when params contains frozen value [#1506](https://github.com/sinatra/sinatra/pull/1506) by Kunpei Sakai
