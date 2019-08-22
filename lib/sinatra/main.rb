@@ -3,7 +3,7 @@ module Sinatra
 
   if ARGV.any?
     require 'optparse'
-    OptionParser.new { |op|
+    parser = OptionParser.new { |op|
       op.on('-p port',   'set the port (default is 4567)')                { |val| ParamsConfig[:port] = Integer(val) }
       op.on('-s server', 'specify rack server/handler (default is thin)') { |val| ParamsConfig[:server] = val }
       op.on('-q',        'turn on quiet mode (default is off)')           {       ParamsConfig[:quiet] = true }
@@ -15,7 +15,12 @@ module Sinatra
       op.on('-o addr', "set the host (default is (env == 'development' ? 'localhost' : '0.0.0.0'))") do |val|
         ParamsConfig[:bind] = val
       end
-    }.parse!(ARGV.dup)
+    }
+    begin
+      parser.parse!(ARGV.dup)
+    rescue => evar
+      ParamsConfig[:optparse_error] = evar
+    end
   end
 
   require 'sinatra/base'
@@ -29,7 +34,11 @@ module Sinatra
 
     set :run, Proc.new { File.expand_path($0) == File.expand_path(app_file) }
 
-    ParamsConfig.each { |k, v| set k, v } if run? && ARGV.any?
+    if run? && ARGV.any?
+      error = ParamsConfig.delete(:optparse_error)
+      raise error if error
+      ParamsConfig.each { |k, v| set k, v }
+    end
   end
 
   remove_const(:ParamsConfig)
