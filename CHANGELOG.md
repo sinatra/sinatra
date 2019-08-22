@@ -1,3 +1,7 @@
+## 2.0.7 / 2019-08-22
+
+* Fix a regression [#1560](https://github.com/sinatra/sinatra/pull/1560) by Kunpei Sakai
+
 ## 2.0.6 / 2019-08-21
 
 * Fix an issue setting environment from command line option [#1547](https://github.com/sinatra/sinatra/pull/1547), [#1554](https://github.com/sinatra/sinatra/pull/1554) by Jordan Owens, Kunpei Sakai
