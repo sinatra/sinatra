@@ -42,7 +42,17 @@ describe Sinatra::ConfigFile do
     expect(settings.nested[:b]).to eq(2)
   end
 
-  it 'should raise error if config file extension is not .yml or .erb' do
+  it 'should render options in ERB tags when using .yaml files' do
+    config_file 'key_value.yaml'
+    expect(settings.foo).to eq("bar")
+    expect(settings.something).to eq(42)
+    expect(settings.nested['a']).to eq(1)
+    expect(settings.nested[:a]).to eq(1)
+    expect(settings.nested['b']).to eq(2)
+    expect(settings.nested[:b]).to eq(2)
+  end
+
+  it 'should raise error if config file extension is not .yml, .yaml or .erb' do
     expect{ config_file 'config.txt' }.to raise_error(Sinatra::ConfigFile::UnsupportedConfigType)
   end
 
