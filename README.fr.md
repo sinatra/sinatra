@@ -862,7 +862,28 @@ pas utiliser de layouts écrits en RDoc. Toutefois, il est
 possible d’utiliser un moteur de rendu différent pour le template et
 pour le layout en utilisant l’option `:layout_engine`.
 
+#### Templates Asciidoc
+
+<table>
+  <tr>
+    <td>Dépendances</td>
+    <td><a href="http://asciidoctor.org/" title="Asciidoctor">Asciidoctor</a></td>
+  </tr>
+  <tr>
+    <td>Extensions de fichier</td>
+    <td><tt>.asciidoc</tt>, <tt>.adoc</tt> and <tt>.ad</tt></td>
+  </tr>
+  <tr>
+    <td>Exemple</td>
+    <td><tt>asciidoc :README, :layout_engine => :erb</tt></td>
+  </tr>
+</table>
+
+Comme vous ne pouvez pas appeler de méthodes Ruby depuis un template
+AsciiDoc, vous aurez sûrement à lui passer des variables locales.
+
 #### Templates Radius
+
 <table>
   <tr>
     <td>Dépendances</td>
