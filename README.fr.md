@@ -2563,6 +2563,9 @@ class MonTest < Minitest::Test
 end
 ```
 
+Note : si vous utilisez le style modulaire de Sinatra, remplacez
+`Sinatra::Application` par le nom de la classe de votre application.
+
 ## Sinatra::Base - Les Middlewares, Bibliothèques, et Applications Modulaires
 
 Définir votre application au niveau supérieur fonctionne bien dans le cas des
