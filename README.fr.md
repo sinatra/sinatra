@@ -259,6 +259,20 @@ end
 "path transversal" (voir plus loin), l'URL demandée peut avoir été modifiée
 avant d'être comparée à vos routes.
 
+Vous pouvez personnaliser les options [Mustermann](https://github.com/sinatra/mustermann#readme)
+utilisées pour une route donnée en fournissant un hash `:mustermann_opts` :
+
+```ruby
+get '\A/articles\z', :mustermann_opts => { :type => :regexp, :check_anchors => false } do
+  # répond exactement à /articles, avec un ancrage explicite
+  "Si tu réponds à un pattern ancré tape dans tes mains !
+end
+```
+
+Cela ressemble à une [condition](#conditions), mais ce n'en est pas une !
+Ces options seront mergées dans le hash global `:mustermann_opts` décrit
+[plus bas](#paramètres-disponibles).
+
 ## Conditions
 
 Les routes peuvent définir toutes sortes de conditions, comme par exemple le
