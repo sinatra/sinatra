@@ -1082,7 +1082,7 @@ get '/:id' do
 end
 ```
 
-Ceci est généralement nécessaire lorsque l'on veut utiliser un template depuis un autre template (partiel) et qu'il faut donc adapter le nom des variables.  
+Ceci est généralement nécessaire lorsque l'on veut utiliser un template depuis un autre template (partiel) et qu'il faut donc adapter le nom des variables.
 
 ### Templates avec `yield` et layouts imbriqués
 
@@ -1546,7 +1546,7 @@ post '/message' do
     # prévient le client qu'un nouveau message est arrivé
     out << params['message'] << "\n"
 
-    # indique au client de se connecter à nouveau
+    # indique au client de se connecter à nouveau
     out.close
   end
 
@@ -2822,9 +2822,9 @@ multi-threaded:
 require 'sinatra/base'
 
 classe App < Sinatra::Base
-  get '/' do
+  get '/' do
     'Bonjour le monde !'
-  end
+  end
 end
 
 App.run!
