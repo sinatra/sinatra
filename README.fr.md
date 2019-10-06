@@ -2436,7 +2436,7 @@ error do
 end
 ```
 
-Erreur sur mesure :
+Erreur personnalisée :
 
 ```ruby
 error MonErreurSurMesure do
