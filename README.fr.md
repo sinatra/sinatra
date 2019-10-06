@@ -59,6 +59,7 @@ Sinatra utilise le server Thin quand il est disponible.
             * [Templates Markdown](#templates-markdown)
             * [Templates Textile](#templates-textile)
             * [Templates RDoc](#templates-rdoc)
+            * [Templates Asciidoc](#templates-asciidoc)
             * [Templates Radius](#templates-radius)
             * [Templates Markaby](#templates-markaby)
             * [Templates RABL](#templates-rabl)
