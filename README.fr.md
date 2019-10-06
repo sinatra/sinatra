@@ -161,7 +161,7 @@ unlink '/' do
 end
 ```
 
-Les routes sont évaluées  dans l'ordre où elles ont été définies. La première
+Les routes sont évaluées dans l'ordre où elles ont été définies. La première
 route qui correspond à la requête est appelée.
 
 Les routes se terminant par un slash sont différentes de celles qui n'en
@@ -1096,7 +1096,7 @@ Ceci est généralement nécessaire lorsque l'on veut utiliser un template depui
 ### Templates avec `yield` et layouts imbriqués
 
 En général, un layout est un simple template qui appelle `yield`. Ce genre de
-template peut s'utiliser via l'option `:template`  comme décrit précédemment ou
+template peut s'utiliser via l'option `:template` comme décrit précédemment ou
 peut être rendu depuis un bloc :
 
 ```ruby
