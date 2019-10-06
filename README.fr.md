@@ -26,8 +26,12 @@ Puis lancez votre programme :
 ruby mon_application.rb
 ```
 
-Le résultat est visible sur :
-[http://localhost:4567](http://localhost:4567)
+Le résultat est visible sur : [http://localhost:4567](http://localhost:4567)
+
+Le code que vous avez modifié ne sera pas pris en compte tant que vous ne
+redémarrerez pas le serveur. Pensez à redémarrer le serveur à chaque
+modification ou utilisez
+[sinatra/reloader](http://www.sinatrarb.com/contrib/reloader).
 
 Il est recommandé d'exécuter également `gem install thin`, pour que
 Sinatra utilise le server Thin quand il est disponible.
