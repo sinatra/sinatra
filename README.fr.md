@@ -568,6 +568,15 @@ end
 ```
 
 Utilisera la chaine de caractères comme template pour générer la réponse.
+Vous pouvez spécifier un `:path` et `:line` optionnels pour une trace plus
+claire s'il existe un chemin dans le système de fichiers ou une ligne
+associés à cette chaîne de caractères :
+
+```ruby
+get '/' do
+  haml '%div.title Bonjour le monde', :path => 'exemples/fichier.haml', :line => 3
+end
+```
 
 ### Langages de template disponibles
 
