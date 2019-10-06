@@ -2254,6 +2254,12 @@ set :protection, :session => true
   <dt>port</dt>
   <dd>port à écouter. Utiliser seulement pour le serveur intégré.</dd>
 
+  <dt>mustermann_opts</dt>
+  <dd>
+    Un hash d'options à passer à Mustermann.new lors de la compilation
+    des chemins de routes
+  </dd>
+
   <dt>prefixed_redirects</dt>
   <dd>si oui ou non <tt>request.script_name</tt> doit être inséré dans les
   redirections si un chemin non absolu est utilisé. Ainsi, <tt>redirect
@@ -2272,6 +2278,12 @@ set :protection, :session => true
   Utilisé seulement si les fichiers statiques doivent être servis (voir le
   paramètre <tt>static</tt>). Si non défini, il découle du paramètre
   <tt>app_file</tt>.</dd>
+
+  <dt>quiet</dt>
+  <dd>
+    Désactive les journaux (logs) générés par les commandes start et stop
+    de Sinatra. <tt>false</tt> par défaut.
+  </dd>
 
   <dt>reload_templates</dt>
   <dd>si oui ou non les templates doivent être rechargés entre les requêtes.
@@ -2299,10 +2311,26 @@ set :protection, :session => true
   défaut [‘thin’, ‘mongrel’, ‘webrick’], l’ordre indiquant la
   priorité.</dd>
 
+  <dt>server_settings</dt>
+  <dd>
+    Si vous utilisez un serveur Webrick, sans doute pour votre environnement de
+    développement, vous pouvez passer des options à <tt>server_settings</tt>,
+    comme <tt>SSLEnable</tt> ou <tt>SSLVerifyClient</tt>. Cependant, les
+    serveurs comme Puma et Thin ne le permettent pas, et vous pouvez donc
+    définir <tt>server_settings</tt> en tant que méthode lorsque vous appelez
+    <tt>configure</tt>.
+  </dd>
+
   <dt>sessions</dt>
   <dd>active le support des sessions basées sur les cookies, en utilisant
   <tt>Rack::Session::Cookie</tt>. Reportez-vous à la section ‘Utiliser les
   sessions’ pour plus d’informations.</dd>
+
+  <dt>session_store</dt>
+  <dd>
+    Le middleware Rack utilisé pour les sessions. <tt>Rack::Session::Cookie</tt>
+    par défaut. Voir la section 'Utiliser les sessions' pour plus de détails.
+  </dd>
 
   <dt>show_exceptions</dt>
   <dd>affiche la trace de l’erreur dans le navigateur lorsqu’une exception se
@@ -2325,6 +2353,9 @@ set :protection, :session => true
   <dt>threaded</dt>
   <dd>à définir à <tt>true</tt> pour indiquer à Thin d’utiliser
   <tt>EventMachine.defer</tt> pour traiter la requête.</dd>
+
+  <dt>traps</dt>
+  <dd>Indique si Sinatra doit gérer les signaux système.</dd>
 
   <dt>views</dt>
   <dd>chemin pour le dossier des vues. Si non défini, il découle du paramètre
