@@ -164,6 +164,15 @@ end
 Les routes sont évaluées  dans l'ordre où elles ont été définies. La première
 route qui correspond à la requête est appelée.
 
+Les routes se terminant par un slash sont différentes de celles qui n'en
+comportent pas :
+
+```ruby
+get '/foo' do
+  # Ne correspond pas à "GET /foo/"
+end
+```
+
 Les masques peuvent inclure des paramètres nommés, accessibles par
 l'intermédiaire du hash `params` :
 
