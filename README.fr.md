@@ -1666,6 +1666,10 @@ post '/message' do
 end
 ```
 
+Il est aussi possible pour le client de fermer la connexion en essayant
+d'écrire sur le socket. Pour cette raison, il est recommandé de vérifier
+`out.closed?` avant d'essayer d'y écrire.
+
 ### Journalisation (Logging)
 
 Dans le contexte de la requête, la méthode utilitaire `logger` expose une
