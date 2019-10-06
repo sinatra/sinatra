@@ -1301,6 +1301,23 @@ end
 
 Utilisera `./views/index.monmoteur`. Voir [le projet Github](https://github.com/rtomayko/tilt) pour en savoir plus sur Tilt.
 
+### Utiliser des règles personnalisées pour la recherche de templates
+
+Pour implémenter votre propre mécanisme de recherche de templates, vous
+pouvez écrire votre propre méthode `#find_template` :
+
+```ruby
+configure do
+  set :views, [ './vues/a', './vues/b' ]
+end
+
+def find_template(vues, nom, moteur, &block)
+  Array(vues).each do |v|
+    super(v, nom, moteur, &block)
+  end
+end
+```
+
 ## Filtres
 
 Les filtres `before` sont exécutés avant chaque requête, dans le même contexte
