@@ -1911,12 +1911,6 @@ Les options sont :
     le nom du fichier dans la réponse, par défaut le nom du fichier envoyé.
   </dd>
 
-  <dt>last_modified</dt>
-  <dd>
-    valeur pour l’en-tête Last-Modified, par défaut la date de modification du
-    fichier.
-  </dd>
-
   <dt>type</dt>
   <dd>
     type de contenu à utiliser, deviné à partir de l’extension de fichier si
@@ -1935,7 +1929,6 @@ Les options sont :
   <dt>status</dt>
   <dd>
     code état à renvoyer. Utile quand un fichier statique sert de page d’erreur.
-
     Si le gestionnaire Rack le supporte, d'autres moyens que le streaming via le
     processus Ruby seront utilisés. Si vous utilisez cette méthode, Sinatra gérera
     automatiquement les requêtes de type range.
