@@ -1311,9 +1311,9 @@ configure do
   set :views, [ './vues/a', './vues/b' ]
 end
 
-def find_template(vues, nom, moteur, &block)
+def find_template(vues, nom, moteur, &bloc)
   Array(vues).each do |v|
-    super(v, nom, moteur, &block)
+    super(v, nom, moteur, &bloc)
   end
 end
 ```
@@ -2074,8 +2074,8 @@ vous pouvez utiliser plus d'un répertoire de vues :
 set :views, ['views', 'templates']
 
 helpers do
-  def find_template(views, name, engine, &block)
-    Array(views).each { |v| super(v, name, engine, &block) }
+  def find_template(vues, nom, moteur, &bloc)
+    Array(vues).each { |v| super(v, nom, moteur, &bloc) }
   end
 end
 ```
