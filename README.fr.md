@@ -2993,31 +2993,9 @@ thin --threaded start
 Les versions suivantes de Ruby sont officiellement supportées :
 
 <dl>
-  <dt>Ruby 1.8.7</dt>
+  <dt>Ruby 2.2</dt>
   <dd>
-    1.8.7 est complètement supporté, toutefois si rien ne vous en empêche,
-    nous vous recommandons de faire une mise à jour ou bien de passer à JRuby
-    ou Rubinius. Le support de Ruby 1.8.7 ne sera pas supprimé avant la sortie
-    de Sinatra 2.0. Ruby 1.8.6 n’est plus supporté.
-  </dd>
-
-  <dt>Ruby 1.9.2</dt>
-  <dd>
-    1.9.2 est totalement supporté. N’utilisez pas 1.9.2p0 car il provoque des
-    erreurs de segmentation à l’exécution de Sinatra. Son support continuera
-    au minimum jusqu’à la sortie de Sinatra 1.5.
-  </dd>
-
-  <dt>Ruby 1.9.3</dt>
-  <dd>
-    1.9.3 est totalement supporté et recommandé. Nous vous rappelons que passer
-    à 1.9.3 depuis une version précédente annulera toutes les sessions. 1.9.3
-    sera supporté jusqu'à la sortie de Sinatra 2.0.
-  </dd>
-
-  <dt>Ruby 2.0.0</dt>
-  <dd>
-    2.0.0 est totalement supporté et recommandé. L'abandon de son support
+    2.2 est totalement supporté et recommandé. L'abandon de son support
     officiel n'est pas à l'ordre du jour.
   </dd>
 
@@ -3034,6 +3012,8 @@ Les versions suivantes de Ruby sont officiellement supportées :
     trinidad</tt> est recommandé.
   </dd>
 </dl>
+
+Les versions antérieures à 2.2.2 ne sont plus supportées depuis Sinatra 2.0.
 
 Nous gardons également un oeil sur les versions Ruby à venir.
 
