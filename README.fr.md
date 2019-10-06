@@ -76,6 +76,7 @@ Sinatra utilise le server Thin quand il est disponible.
         * [Templates nommés](#templates-nommés)
         * [Associer des extensions de fichier](#associer-des-extensions-de-fichier)
         * [Ajouter son propre moteur de rendu](#ajouter-son-propre-moteur-de-rendu)
+        * [Utiliser des règles personnalisées pour la recherche de templates](#utiliser-des-règles-personnalisées-pour-la-recherche-de-templates)
     * [Filtres](#filtres)
     * [Helpers](#helpers)
         * [Utiliser les sessions](#utiliser-les-sessions)
