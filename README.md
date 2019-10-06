@@ -1293,7 +1293,7 @@ own `#find_template` method:
 
 ```ruby
 configure do
-  set :views [ './views/a', './views/b' ]
+  set :views, [ './views/a', './views/b' ]
 end
 
 def find_template(views, name, engine, &block)
