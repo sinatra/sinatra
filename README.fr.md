@@ -98,7 +98,7 @@ Sinatra utilise le server Thin quand il est disponible.
     * [Configuration](#configuration)
         * [Se protéger des attaques](#se-protéger-des-attaques)
         * [Paramètres disponibles](#paramètres-disponibles)
-    * [Environements](#environements)
+    * [Environnements](#environnements)
     * [Gérer les erreurs](#gérer-les-erreurs)
         * [NotFound](#notfound)
         * [Error](#error)
@@ -2368,10 +2368,10 @@ set :protection, :session => true
   </dd>
 </dl>
 
-## Environements
+## Environnements
 
 Il existe trois environnements prédéfinis : `"development"`,
-`"production"` et `"test"`. Les environements peuvent être
+`"production"` et `"test"`. Les environnements peuvent être
 sélectionné via la variable d'environnement `APP_ENV`. Sa valeur par défaut
 est `"development"`. Dans ce mode, tous les templates sont rechargés à
 chaque requête. Des handlers spécifiques pour `not_found` et
