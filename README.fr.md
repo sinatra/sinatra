@@ -65,6 +65,7 @@ Sinatra utilise le server Thin quand il est disponible.
             * [Templates RABL](#templates-rabl)
             * [Templates Slim](#templates-slim)
             * [Templates Creole](#templates-creole)
+            * [Templates MediaWiki](#templates-mediawiki)
             * [Templates CoffeeScript](#templates-coffeescript)
             * [Templates Stylus](#templates-stylus)
             * [Templates Yajl](#templates-yajl)
