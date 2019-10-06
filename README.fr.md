@@ -3087,43 +3087,6 @@ Vous pouvez alors lancer votre application de la façon suivante :
 bundle exec ruby myapp.rb
 ```
 
-### Faire un clone local
-
-Si vous ne souhaitez pas employer Bundler, vous pouvez cloner Sinatra en local
-dans votre projet et démarrez votre application avec le dossier `sinatra/lib`
-dans le `$LOAD_PATH` :
-
-```shell
-cd myapp
-git clone git://github.com/sinatra/sinatra.git
-ruby -I sinatra/lib myapp.rb
-```
-
-Et de temps en temps, vous devrez récupérer la dernière version du code source
-de Sinatra :
-
-```shell
-cd myapp/sinatra
-git pull
-```
-
-### Installer globalement
-
-Une dernière méthode consiste à construire la gem vous-même :
-
-```shell
-git clone git://github.com/sinatra/sinatra.git
-cd sinatra
-rake sinatra.gemspec
-rake install
-```
-
-Si vous installez les gems en tant que root, vous devez encore faire un :
-
-```shell
-sudo rake install
-```
-
 ## Versions
 
 Sinatra se conforme aux [versions sémantiques](http://semver.org/), aussi bien
