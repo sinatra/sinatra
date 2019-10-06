@@ -2419,7 +2419,15 @@ end
 ### Error
 
 Le gestionnaire `error` est invoqué à chaque fois qu'une exception est
-soulevée dans une route ou un filtre. L'objet exception est accessible via la
+soulevée dans une route ou un filtre. Notez qu'en développement, il ne
+sera exécuté que si vous définissez l'option show exceptions à
+`:after_handler` :
+
+```ruby
+set :show_exceptions, :after_handler
+```
+
+L'objet exception est accessible via la
 variable Rack `sinatra.error` :
 
 ```ruby
