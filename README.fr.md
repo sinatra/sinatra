@@ -255,7 +255,7 @@ get '/articles' do
 end
 ```
 
-A ce propos, à moins d'avoir désactivé la protection contre les attaques par
+À ce propos, à moins d'avoir désactivé la protection contre les attaques par
 "path transversal" (voir plus loin), l'URL demandée peut avoir été modifiée
 avant d'être comparée à vos routes.
 
