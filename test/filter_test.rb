@@ -409,6 +409,27 @@ class AfterFilterTest < Minitest::Test
     assert_body 'bar'
   end
 
+  it 'can add params on a single path' do
+    mock_app do
+      before('/hi'){ params['foo'] = 'bar' }
+      get('/hi') { params['foo'] }
+    end
+
+    get '/hi'
+    assert_body 'bar'
+  end
+
+  # ref: issue #1567
+  it 'can add params on named parameters path' do
+    mock_app do
+      before('/:id/hi'){ params['foo'] = 'bar' }
+      get('/:id/hi') { params['foo'] }
+    end
+
+    get '/:id/hi'
+    assert_body 'bar'
+  end
+
   it 'can remove params' do
     mock_app do
       before { params.delete('foo') }
