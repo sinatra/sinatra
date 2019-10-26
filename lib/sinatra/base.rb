@@ -1019,7 +1019,7 @@ module Sinatra
 
       params.delete("ignore") # TODO: better params handling, maybe turn it into "smart" object or detect changes
       force_encoding(params)
-      original, @params = @params, @params.merge(params) if params.any?
+      @params = @params.merge(params) if params.any?
 
       regexp_exists = pattern.is_a?(Mustermann::Regular) || (pattern.respond_to?(:patterns) && pattern.patterns.any? {|subpattern| subpattern.is_a?(Mustermann::Regular)} )
       if regexp_exists
@@ -1038,7 +1038,8 @@ module Sinatra
       @env['sinatra.error.params'] = @params
       raise
     ensure
-      @params = original if original
+      params ||= {}
+      params.each { |k, _| @params.delete(k) } unless @env['sinatra.error.params']
     end
 
     # No matching route was found or all routes passed. The default
