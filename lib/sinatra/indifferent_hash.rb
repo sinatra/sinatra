@@ -135,7 +135,7 @@ module Sinatra
     def merge!(*other_hashes)
       other_hashes.each do |other_hash|
         if other_hash.is_a?(self.class)
-          super
+          super(other_hash)
         else
           other_hash.each_pair do |key, value|
             key = convert_key(key)
