@@ -1,0 +1,3 @@
+- content_for :foo do |a, b|
+  %i= a
+  =b
