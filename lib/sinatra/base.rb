@@ -1601,7 +1601,7 @@ module Sinatra
 
       def route(verb, path, options = {}, &block)
         enable :empty_path_info if path == "" and empty_path_info.nil?
-        signature = compile!(verb, path, block, options)
+        signature = compile!(verb, path, block, **options)
         (@routes[verb] ||= []) << signature
         invoke_hook(:route_added, verb, path, block)
         signature
@@ -1638,7 +1638,7 @@ module Sinatra
       end
 
       def compile(path, route_mustermann_opts = {})
-        Mustermann.new(path, mustermann_opts.merge(route_mustermann_opts))
+        Mustermann.new(path, **mustermann_opts.merge(route_mustermann_opts))
       end
 
       def setup_default_middleware(builder)
