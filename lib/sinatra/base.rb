@@ -1345,19 +1345,19 @@ module Sinatra
       # context as route handlers and may access/modify the request and
       # response.
       def before(path = /.*/, **options, &block)
-        add_filter(:before, path, options, &block)
+        add_filter(:before, path, **options, &block)
       end
 
       # Define an after filter; runs after all requests within the same
       # context as route handlers and may access/modify the request and
       # response.
       def after(path = /.*/, **options, &block)
-        add_filter(:after, path, options, &block)
+        add_filter(:after, path, **options, &block)
       end
 
       # add a filter
       def add_filter(type, path = /.*/, **options, &block)
-        filters[type] << compile!(type, path, block, options)
+        filters[type] << compile!(type, path, block, **options)
       end
 
       # Add a route condition. The route is considered non-matching when the
