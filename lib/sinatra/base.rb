@@ -1346,19 +1346,19 @@ module Sinatra
       # context as route handlers and may access/modify the request and
       # response.
       def before(path = /.*/, **options, &block)
-        add_filter(:before, path, options, &block)
+        add_filter(:before, path, **options, &block)
       end
 
       # Define an after filter; runs after all requests within the same
       # context as route handlers and may access/modify the request and
       # response.
       def after(path = /.*/, **options, &block)
-        add_filter(:after, path, options, &block)
+        add_filter(:after, path, **options, &block)
       end
 
       # add a filter
       def add_filter(type, path = /.*/, **options, &block)
-        filters[type] << compile!(type, path, block, options)
+        filters[type] << compile!(type, path, block, **options)
       end
 
       # Add a route condition. The route is considered non-matching when the
@@ -1602,7 +1602,7 @@ module Sinatra
 
       def route(verb, path, options = {}, &block)
         enable :empty_path_info if path == "" and empty_path_info.nil?
-        signature = compile!(verb, path, block, options)
+        signature = compile!(verb, path, block, **options)
         (@routes[verb] ||= []) << signature
         invoke_hook(:route_added, verb, path, block)
         signature
@@ -1639,7 +1639,7 @@ module Sinatra
       end
 
       def compile(path, route_mustermann_opts = {})
-        Mustermann.new(path, mustermann_opts.merge(route_mustermann_opts))
+        Mustermann.new(path, **mustermann_opts.merge(route_mustermann_opts))
       end
 
       def setup_default_middleware(builder)
