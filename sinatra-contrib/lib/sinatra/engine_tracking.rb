@@ -29,10 +29,9 @@ module Sinatra
       erb? && Tilt[:erb] == Tilt::ErubisTemplate
     end
 
-    # @return [Boolean] Returns true if current engine is `:haml` and
-    # `Tilt[:haml]` is set to `Tilt::HamlTemplate`.
+    # @return [Boolean] Returns true if current engine is `:haml`.
     def haml?
-      @current_engine == :haml && Tilt[:haml] == Tilt::HamlTemplate
+      @current_engine == :haml
     end
 
     # @return [Boolean] Returns true if current engine is `:sass`.
