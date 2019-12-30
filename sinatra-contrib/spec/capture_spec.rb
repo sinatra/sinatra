@@ -23,6 +23,9 @@ describe Sinatra::Capture do
     if engine == :erubi || engine == :erubis
       lang = :erb
     end
+    if engine == :hamlit
+      lang = :haml
+    end
     require "#{engine}"
 
     it "captures content" do
@@ -35,6 +38,7 @@ describe Sinatra::Capture do
   end
 
   describe('haml')   { it_behaves_like "a template language", :haml   }
+  describe('hamlit') { it_behaves_like "a template language", :hamlit }
   describe('slim')   { it_behaves_like "a template language", :slim   }
   describe('erubi')  { it_behaves_like "a template language", :erubi  }
   describe('erubis') { it_behaves_like "a template language", :erubis }

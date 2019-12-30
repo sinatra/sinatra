@@ -9,6 +9,8 @@ describe Sinatra::ContentFor do
   end
 
   Tilt.prefer Tilt::ERBTemplate
+  require 'hamlit/block'
+  Tilt.register Tilt::HamlTemplate, :haml
 
   extend Forwardable
   def_delegators :subject, :content_for, :clear_content_for, :yield_content
@@ -89,7 +91,7 @@ describe Sinatra::ContentFor do
   end
 
   # TODO: liquid radius markaby builder nokogiri
-  engines = %w[erb erubi erubis haml slim]
+  engines = %w[erb erubi erubis haml hamlit slim]
 
   engines.each do |inner|
     describe inner.capitalize do
