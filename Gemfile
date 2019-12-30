@@ -26,6 +26,10 @@ if RUBY_ENGINE == 'jruby'
   gem 'trinidad'
 end
 
+if RUBY_ENGINE == 'jruby' || RUBY_ENGINE == 'ruby'
+  gem "activesupport", "~> 5.1.6"
+end
+
 if RUBY_ENGINE == "ruby"
   gem 'less', '~> 2.0'
   gem 'therubyracer'
@@ -34,7 +38,6 @@ if RUBY_ENGINE == "ruby"
   gem 'bluecloth'
   gem 'rdiscount'
   gem 'RedCloth'
-  gem "activesupport", "~> 5.1.6"
   gem 'puma'
   gem 'yajl-ruby'
   gem 'nokogiri'
