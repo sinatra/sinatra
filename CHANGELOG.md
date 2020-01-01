@@ -1,3 +1,19 @@
+## 2.0.8 / 2020-01-01
+
+* Lookup Tilt class for template engine without loading files [#1558](https://github.com/sinatra/sinatra/pull/1558). Fixes [#1172](https://github.com/sinatra/sinatra/issues/1172) by Jordan Owens
+
+* Add request info in NotFound exception [#1566](https://github.com/sinatra/sinatra/pull/1566) by Stefan Sundin
+
+* Add `.yaml` support in `Sinatra::Contrib::ConfigFile` [#1564](https://github.com/sinatra/sinatra/issues/1564). Fixes [#1563](https://github.com/sinatra/sinatra/issues/1563) by Emerson Manabu Araki
+
+* Allow multiple hashes to be passed in `merge` and `merge!` for `Sinatra::IndifferentHash` [#1572](https://github.com/sinatra/sinatra/pull/1572) by Shota Iguchi
+
+* Remove only routing parameters from @params hash [#1569](https://github.com/sinatra/sinatra/pull/1569). Fixes [#1567](https://github.com/sinatra/sinatra/issues/1567) by Jordan Owens, Horacio
+
+* Support `capture` and `content_for` with Hamlit [#1580](https://github.com/sinatra/sinatra/pull/1580) by Takashi Kokubun
+
+* Eliminate warnings of keyword parameter for Ruby 2.7.0 [#1581](https://github.com/sinatra/sinatra/pull/1581) by Osamtimizer
+
 ## 2.0.7 / 2019-08-22
 
 * Fix a regression [#1560](https://github.com/sinatra/sinatra/pull/1560) by Kunpei Sakai
