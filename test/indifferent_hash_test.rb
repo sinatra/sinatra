@@ -205,6 +205,20 @@ class TestIndifferentHash < Minitest::Test
     assert_equal 2, hash2[?q]
   end
 
+  def test_merge_with_multiple_argument
+    hash = Sinatra::IndifferentHash.new.merge({a: 1}, {b: 2}, {c: 3})
+    assert_equal 1, hash[?a]
+    assert_equal 2, hash[?b]
+    assert_equal 3, hash[?c]
+
+    hash2 = Sinatra::IndifferentHash[d: 4]
+    hash3 = {e: 5}
+    hash.merge!(hash2, hash3)
+
+    assert_equal 4, hash[?d]
+    assert_equal 5, hash[?e]
+  end
+
   def test_replace
     @hash.replace(?a=>1, :q=>2)
     assert_equal({ ?a=>1, ?q=>2 }, @hash)
