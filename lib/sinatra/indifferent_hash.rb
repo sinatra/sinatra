@@ -180,6 +180,10 @@ module Sinatra
       end
     end
 
+    def keys
+      super.map(&:to_s)
+    end
+
     private
 
     def convert_key(key)

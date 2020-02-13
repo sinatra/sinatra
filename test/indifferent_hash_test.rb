@@ -270,4 +270,8 @@ class TestIndifferentHash < Minitest::Test
   def test_keyword_args
     KeywordModule.test(@hash) # should not raise
   end
+
+  def test_keys_are_strings
+    assert_equal "a", @hash.keys.first
+  end
 end
