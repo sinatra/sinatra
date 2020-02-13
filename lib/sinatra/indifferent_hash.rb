@@ -183,7 +183,7 @@ module Sinatra
     private
 
     def convert_key(key)
-      key.is_a?(Symbol) ? key.to_s : key
+      key.to_s.to_sym
     end
 
     def convert_value(value)

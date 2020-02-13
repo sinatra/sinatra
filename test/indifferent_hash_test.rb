@@ -26,20 +26,20 @@ class TestIndifferentHashBasics < Minitest::Test
   def test_default_block
     hash = Sinatra::IndifferentHash.new { |h, k| h[k] = k.upcase }
     assert_nil hash.default
-    assert_equal ?A, hash.default(:a)
+    assert_equal :A, hash.default(:a)
   end
 
   def test_default_object
     hash = Sinatra::IndifferentHash.new(:a=>1, ?b=>2)
-    assert_equal({ ?a=>1, ?b=>2 }, hash.default)
-    assert_equal({ ?a=>1, ?b=>2 }, hash[:a])
+    assert_equal({ :a=>1, :b=>2 }, hash.default)
+    assert_equal({ :a=>1, :b=>2 }, hash[:a])
   end
 
   def test_default_assignment
     hash = Sinatra::IndifferentHash.new
     hash.default = { :a=>1, ?b=>2 }
-    assert_equal({ ?a=>1, ?b=>2 }, hash.default)
-    assert_equal({ ?a=>1, ?b=>2 }, hash[:a])
+    assert_equal({ :a=>1, :b=>2 }, hash.default)
+    assert_equal({ :a=>1, :b=>2 }, hash[:a])
   end
 
   def test_assignment
@@ -52,7 +52,7 @@ class TestIndifferentHashBasics < Minitest::Test
     assert_equal :a, hash[?a]
     assert_equal :b, hash[?b]
     assert_equal 3, hash[3]
-    assert_equal({ ?a=>:a, ?b=>:b }, hash['simple_nested'])
+    assert_equal({ :a=>:a, :b=>:b }, hash['simple_nested'])
     assert_nil hash[?d]
   end
 
@@ -64,7 +64,7 @@ class TestIndifferentHashBasics < Minitest::Test
       "#{oldval}*#{key}*#{newval}"
     end
 
-    assert_equal({ ?a=>'a*a*A', ?b=>'b*b*B', 3=>3, ?d=>'D' }, hash)
+    assert_equal({ :a=>'a*a*A', :b=>'b*b*B', :'3'=>3, :d=>'D' }, hash)
   end
 end
 
@@ -84,7 +84,7 @@ class TestIndifferentHash < Minitest::Test
     assert_equal :a, @hash[?a]
     assert_equal :b, @hash[?b]
     assert_equal 3, @hash[3]
-    assert_equal({ ?a=>:a, ?b=>:b }, @hash['nested'][?a][0])
+    assert_equal({ a: :a, b: :b }, @hash['nested'][?a][0])
     assert_equal :c, @hash['nested'][?a][1]
     assert_equal 4, @hash['nested'][?a][2]
     assert_equal :f, @hash['nested'][?f]
@@ -96,22 +96,22 @@ class TestIndifferentHash < Minitest::Test
 
   def test_assoc
     assert_nil @hash.assoc(:d)
-    assert_equal [?a, :a], @hash.assoc(:a)
-    assert_equal [?b, :b], @hash.assoc(:b)
+    assert_equal [:a, :a], @hash.assoc(:a)
+    assert_equal [:b, :b], @hash.assoc(:b)
   end
 
   def test_rassoc
     assert_nil @hash.rassoc(:d)
-    assert_equal [?a, :a], @hash.rassoc(:a)
-    assert_equal [?b, :b], @hash.rassoc(:b)
-    assert_equal ['simple_nested', { ?a=>:a, ?b=>:b }], @hash.rassoc(:a=>:a, ?b=>:b)
+    assert_equal [:a, :a], @hash.rassoc(:a)
+    assert_equal [:b, :b], @hash.rassoc(:b)
+    assert_equal [:simple_nested, { :a=>:a, :b=>:b }], @hash.rassoc(:a=>:a, ?b=>:b)
   end
 
   def test_fetch
     assert_raises(KeyError) { @hash.fetch(:d) }
     assert_equal 1, @hash.fetch(:d, 1)
     assert_equal 2, @hash.fetch(:d) { 2 }
-    assert_equal ?d, @hash.fetch(:d) { |k| k }
+    assert_equal :d, @hash.fetch(:d) { |k| k }
     assert_equal :a, @hash.fetch(:a, 1)
     assert_equal :a, @hash.fetch(:a) { 2 }
   end
@@ -119,7 +119,7 @@ class TestIndifferentHash < Minitest::Test
   def test_symbolic_retrieval
     assert_equal :a, @hash[:a]
     assert_equal :b, @hash[:b]
-    assert_equal({ ?a=>:a, ?b=>:b }, @hash[:nested][:a][0])
+    assert_equal({ :a=>:a, :b=>:b }, @hash[:nested][:a][0])
     assert_equal :c, @hash[:nested][:a][1]
     assert_equal 4, @hash[:nested][:a][2]
     assert_equal :f, @hash[:nested][:f]
@@ -131,8 +131,8 @@ class TestIndifferentHash < Minitest::Test
 
   def test_key
     assert_nil @hash.key(:d)
-    assert_equal ?a, @hash.key(:a)
-    assert_equal 'simple_nested', @hash.key(:a=>:a, ?b=>:b)
+    assert_equal :a, @hash.key(:a)
+    assert_equal :simple_nested, @hash.key(:a=>:a, ?b=>:b)
   end
 
   def test_key?
@@ -189,7 +189,7 @@ class TestIndifferentHash < Minitest::Test
     skip_if_lacking :fetch_values
 
     assert_raises(KeyError) { @hash.fetch_values(3, :d) }
-    assert_equal [:a, :b, 3, ?D], @hash.fetch_values(:a, ?b, 3, :d) { |k| k.upcase }
+    assert_equal [:a, :b, 3, :D], @hash.fetch_values(:a, ?b, 3, :d) { |k| k.upcase }
   end
 
   def test_values_at
@@ -221,7 +221,7 @@ class TestIndifferentHash < Minitest::Test
 
   def test_replace
     @hash.replace(?a=>1, :q=>2)
-    assert_equal({ ?a=>1, ?q=>2 }, @hash)
+    assert_equal({ :a=>1, :q=>2 }, @hash)
   end
 
   def test_transform_values!
@@ -261,5 +261,13 @@ class TestIndifferentHash < Minitest::Test
     refute_operator hash2, :key?, ?a
     assert_equal :a, hash2[:A]
     assert_equal :a, hash2[?A]
+  end
+
+  module KeywordModule
+    def self.test(a:, b:, **); end
+  end
+
+  def test_keyword_args
+    KeywordModule.test(@hash) # should not raise
   end
 end
