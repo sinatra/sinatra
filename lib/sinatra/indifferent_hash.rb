@@ -24,7 +24,7 @@ module Sinatra
   #   rgb[:white]  # => '#FFFFFF' # symbol retrieval
   #   rgb['white'] # => '#FFFFFF' # string retrieval
   #
-  # Internally, symbols are mapped to strings when used as keys in the entire
+  # Internally, strings are mapped to symbols when used as keys in the entire
   # writing interface (calling e.g. <tt>[]=</tt>, <tt>merge</tt>). This mapping
   # belongs to the public interface. For example, given:
   #
