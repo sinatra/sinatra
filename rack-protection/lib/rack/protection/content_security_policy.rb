@@ -62,7 +62,7 @@ module Rack
         # Set these key values to boolean 'true' to include in policy
         NO_ARG_DIRECTIVES.each do |d|
           if options.key?(d) && options[d].is_a?(TrueClass)
-            directives << d.to_s.gsub(/_/, '-')
+            directives << d.to_s.tr('_', '-')
           end
         end
 
