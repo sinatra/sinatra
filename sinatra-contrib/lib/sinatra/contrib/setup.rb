@@ -1,6 +1,5 @@
 require 'sinatra/base'
 require 'sinatra/contrib/version'
-require 'backports/rails/string' # for String#underscore
 
 module Sinatra
   module Contrib
@@ -18,7 +17,7 @@ module Sinatra
       end
 
       def autoload(name, path = nil, method = nil)
-        path ||= "sinatra/#{name.to_s.underscore}"
+        path ||= "sinatra/#{underscore(name.to_s)}"
         extensions[method] << name if method
         Sinatra.autoload(name, path)
       end
@@ -28,6 +27,18 @@ module Sinatra
           list = list.map { |name| Sinatra.const_get name }
           base.send(method, *list) unless base == ::Sinatra::Application
         end
+      end
+
+      private
+
+      # https://github.com/marcandre/backports/blob/e01f4dfbf0cc5bf76151e408905b3be31948f2fe/lib/backports/rails/string.rb#L37-L44
+      # Standard in rails. See official documentation[http://api.rubyonrails.org/classes/ActiveSupport/CoreExtensions/String/Inflections.html]
+      def underscore(s)
+        s.gsub(/::/, '/').
+          gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
+          gsub(/([a-z\d])([A-Z])/,'\1_\2').
+          tr("-", "_").
+          downcase
       end
     end
 
