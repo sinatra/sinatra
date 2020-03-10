@@ -4,11 +4,7 @@ language: ruby
 dist: trusty
 
 before_install:
-  - if [ "$TRAVIS_RUBY_VERSION" = "2.2.10" ]; then
-      gem install bundler -v '< 2.0';
-    else
-      gem install bundler;
-    fi
+  - gem install bundler
   - export CXX="g++-4.8"
 
 addons:
@@ -19,7 +15,6 @@ addons:
   - g++-4.8
   - pandoc
 rvm:
-  - 2.2.10
   - 2.3.8
   - 2.4.9
   - 2.5.7
