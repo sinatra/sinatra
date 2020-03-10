@@ -152,8 +152,7 @@ class StaticTest < Minitest::Test
   end
 
   it 'correctly ignores syntactically invalid range requests' do
-    # ...and also ignores multi-range requests, which aren't supported yet
-    ["bytes=45-40", "bytes=IV-LXVI", "octets=10-20", "bytes=-", "bytes=1-2,3-4"].each do |http_range|
+    ["bytes=45-40", "bytes=IV-LXVI", "octets=10-20", "bytes=", "bytes=3-1,4-5"].each do |http_range|
       request = Rack::MockRequest.new(@app)
       response = request.get("/#{File.basename(__FILE__)}", 'HTTP_RANGE' => http_range)
 
