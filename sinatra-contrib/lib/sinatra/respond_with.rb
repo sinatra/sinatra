@@ -169,20 +169,15 @@ module Sinatra
         settings.template_engines[:all].each do |engine|
           exts.each { |ext| possible << [engine, "#{name}.#{ext}"] }
         end
+
         exts.each do |ext|
           settings.template_engines[ext].each { |e| possible << [e, name] }
         end
+
         possible.each do |engine, template|
-          # not exactly like Tilt[engine], but does not trigger a require
-          if Tilt.respond_to?(:mappings)
-            klass = Tilt.mappings[Tilt.normalize(engine)].first
-          else
-            begin
-              klass = Tilt[engine]
-            rescue LoadError
-              next
-            end
-          end
+          klass = Tilt.default_mapping.template_map[engine.to_s] ||
+            Tilt.lazy_map[engine.to_s].fetch(0, [])[0]
+
           find_template(settings.views, template, klass) do |file|
             next unless File.exist? file
             return settings.rendering_method(engine) << template.to_sym
@@ -245,8 +240,8 @@ module Sinatra
         :css  => [:less,  :sass, :scss],
         :xml  => [:builder, :nokogiri],
         :js   => [:coffee],
-        :html => [:erb, :erubis, :haml, :slim, :liquid, :radius, :mab,
-          :markdown, :textile, :rdoc],
+        :html => [:erb, :erubi, :erubis, :haml, :halmit, :slim, :liquid, :radius,
+          :mab, :markdown, :textile, :rdoc],
         :all =>  (Sinatra::Templates.instance_methods.map(&:to_sym) +
           [:mab] - [:find_template, :markaby]),
         :json => [:yajl],

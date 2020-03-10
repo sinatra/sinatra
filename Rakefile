@@ -30,7 +30,7 @@ end
 
 Rake::TestTask.new(:test) do |t|
   t.test_files = FileList['test/*_test.rb']
-  t.ruby_opts = ['-rubygems'] if defined? Gem
+  t.ruby_opts = ['-r rubygems'] if defined? Gem
   t.ruby_opts << '-I.'
   t.warning = true
 end
@@ -41,7 +41,7 @@ Rake::TestTask.new(:"test:core") do |t|
      readme request response result route_added_hook
      routing server settings sinatra static templates]
   t.test_files = core_tests.map {|n| "test/#{n}_test.rb"}
-  t.ruby_opts = ["-rubygems"] if defined? Gem
+  t.ruby_opts = ["-r rubygems"] if defined? Gem
   t.ruby_opts << "-I."
   t.warning = true
 end
@@ -202,11 +202,14 @@ if defined?(Gem)
 
     desc "Commits the version to github repository"
     task :commit_version do
-      sh <<-SH
-        sed -i "s/.*VERSION.*/  VERSION = '#{source_version}'/" lib/sinatra/version.rb
-        sed -i "s/.*VERSION.*/    VERSION = '#{source_version}'/" sinatra-contrib/lib/sinatra/contrib/version.rb
-        sed -i "s/.*VERSION.*/    VERSION = '#{source_version}'/" rack-protection/lib/rack/protection/version.rb
-      SH
+      %w[
+        lib/sinatra
+        sinatra-contrib/lib/sinatra/contrib
+        rack-protection/lib/rack/protection
+      ].each do |path|
+        path = File.join(path, 'version.rb')
+        File.write(path, File.read(path).sub(/VERSION = '(.+?)'/, "VERSION = '#{source_version}'"))
+      end
 
       sh <<-SH
         git commit --allow-empty -a -m '#{source_version} release'  &&

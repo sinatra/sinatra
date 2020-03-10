@@ -1,6 +1,8 @@
 # Sinatra
 
+[![Gem Version](https://badge.fury.io/rb/sinatra.svg)](http://badge.fury.io/rb/sinatra)
 [![Build Status](https://secure.travis-ci.org/sinatra/sinatra.svg)](https://travis-ci.org/sinatra/sinatra)
+[![SemVer](https://api.dependabot.com/badges/compatibility_score?dependency-name=sinatra&package-manager=bundler&version-scheme=semver)](https://dependabot.com/compatibility-score.html?dependency-name=sinatra&package-manager=bundler&version-scheme=semver)
 
 Sinatra is a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) for
 quickly creating web applications in Ruby with minimal effort:
@@ -349,13 +351,13 @@ But other values are also accepted.
 You can return any object that would either be a valid Rack response, Rack
 body object or HTTP status code:
 
-* An Array with three elements: `[status (Fixnum), headers (Hash), response
+* An Array with three elements: `[status (Integer), headers (Hash), response
   body (responds to #each)]`
-* An Array with two elements: `[status (Fixnum), response body (responds to
+* An Array with two elements: `[status (Integer), response body (responds to
   #each)]`
 * An object that responds to `#each` and passes nothing but strings to
   the given block
-* A Fixnum representing the status code
+* A Integer representing the status code
 
 That way we can, for instance, easily implement a streaming example:
 
@@ -609,13 +611,15 @@ get('/') { markdown :index }
   <tr>
     <td>Dependency</td>
     <td>
-      <a href="http://www.kuwata-lab.com/erubis/" title="erubis">erubis</a>
+      <a href="https://github.com/jeremyevans/erubi" title="erubi">erubi</a>
+      or <a href="http://www.kuwata-lab.com/erubis/" title="erubis">erubis</a>
       or erb (included in Ruby)
     </td>
   </tr>
   <tr>
     <td>File Extensions</td>
-    <td><tt>.erb</tt>, <tt>.rhtml</tt> or <tt>.erubis</tt> (Erubis only)</td>
+    <td><tt>.erb</tt>, <tt>.rhtml</tt> or <tt>.erubi</tt> (Erubi only)
+ or <tt>.erubis</tt> (Erubis only)</td>
   </tr>
   <tr>
     <td>Example</td>
@@ -746,6 +750,8 @@ template, you almost always want to pass locals to it.
         <a href="https://github.com/ged/bluecloth" title="BlueCloth">BlueCloth</a>,
         <a href="https://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
         <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
+        <a href="https://github.com/gjtorikian/commonmarker" title="commonmarker">commonmarker</a>
+        <a href="https://github.com/alphabetum/pandoc-ruby" title="pandoc">pandoc</a>
     </td>
   </tr>
   <tr>
@@ -2191,7 +2197,7 @@ end
 ### Configuring attack protection
 
 Sinatra is using
-[Rack::Protection](https://github.com/sinatra/rack-protection#readme) to
+[Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme) to
 defend your application against common, opportunistic attacks. You can
 easily disable this behavior (which will open up your application to tons
 of common vulnerabilities):

@@ -66,7 +66,7 @@ class ResultTest < Minitest::Test
     assert_raises(ArgumentError) { get '/' }
   end
 
-  it "sets status when result is a Fixnum status code" do
+  it "sets status when result is a Integer status code" do
     mock_app { get('/') { 205 } }
 
     get '/'

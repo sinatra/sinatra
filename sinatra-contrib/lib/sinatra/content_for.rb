@@ -9,7 +9,7 @@ module Sinatra
   # blocks inside views to be rendered later during the request. The most
   # common use is to populate different parts of your layout from your view.
   #
-  # The currently supported engines are: Erb, Erubis, Haml and Slim.
+  # The currently supported engines are: Erb, Erubi, Erubis, Haml and Slim.
   #
   # == Usage
   #
@@ -32,7 +32,7 @@ module Sinatra
   # to yield_content.
   #
   #     # layout.erb
-  #     <%= yield_content :some_key_with_no_content do %>
+  #     <% yield_content :some_key_with_no_content do %>
   #       <chunk of="default html">...</chunk>
   #     <% end %>
   #
@@ -128,8 +128,9 @@ module Sinatra
     #
     # Your blocks can also receive values, which are passed to them
     # by <tt>yield_content</tt>
-    def content_for(key, value = nil, &block)
+    def content_for(key, value = nil, options = {}, &block)
       block ||= proc { |*| value }
+      clear_content_for(key) if options[:flush]
       content_blocks[key.to_sym] << capture_later(&block)
     end
 
@@ -171,9 +172,17 @@ module Sinatra
     #
     # Would pass <tt>1</tt> and <tt>2</tt> to all the blocks registered
     # for <tt>:head</tt>.
-    def yield_content(key, *args)
-      return yield(*args) if block_given? && content_blocks[key.to_sym].empty?
-      content_blocks[key.to_sym].map { |b| capture(*args, &b) }.join
+    def yield_content(key, *args, &block)
+      if block_given? && !content_for?(key)
+        (haml? && Tilt[:haml] == Tilt::HamlTemplate) ? capture_haml(*args, &block) : yield(*args)
+      else
+        content = content_blocks[key.to_sym].map { |b| capture(*args, &b) }
+        content.join.tap do |c|
+          if block_given? && (erb? || erubi? || erubis?)
+            @_out_buf << c
+          end
+        end
+      end
     end
 
     private

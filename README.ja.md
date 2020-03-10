@@ -315,12 +315,12 @@ end
 Rackレスポンス、Rackボディオブジェクト、HTTPステータスコードのいずれかとして妥当なオブジェクトであればどのようなオブジェクトでも返すことができます。
 
 * 3つの要素を含む配列:
-  `[ステータス(Fixnum), ヘッダ(Hash), レスポンスボディ(#eachに応答する)]`
+  `[ステータス(Integer), ヘッダ(Hash), レスポンスボディ(#eachに応答する)]`
 * 2つの要素を含む配列:
-  `[ステータス(Fixnum), レスポンスボディ(#eachに応答する)]`
+  `[ステータス(Integer), レスポンスボディ(#eachに応答する)]`
 * `#each`に応答するオブジェクト。通常はそのまま何も返さないが、
 与えられたブロックに文字列を渡す。
-* ステータスコードを表現する整数(Fixnum)
+* ステータスコードを表現する整数(Integer)
 
 これにより、例えばストリーミングを簡単に実装することができます。
 
@@ -551,13 +551,14 @@ get('/') { markdown :index }
   <tr>
     <td>依存</td>
     <td>
-      <a href="http://www.kuwata-lab.com/erubis/" title="erubis">erubis</a>
+      <a href="https://github.com/jeremyevans/erubi" title="erubi">erubi</a>
+      または <a href="http://www.kuwata-lab.com/erubis/" title="erubis">erubis</a>
       または erb (Rubyに同梱)
     </td>
   </tr>
   <tr>
     <td>ファイル拡張子</td>
-    <td><tt>.erb</tt>, <tt>.rhtml</tt> or <tt>.erubis</tt> (Erubisだけ)</td>
+    <td><tt>.erb</tt>, <tt>.rhtml</tt> または <tt>.erubi</tt> (Erubiだけ) または<tt>.erubis</tt> (Erubisだけ)</td>
   </tr>
   <tr>
     <td>例</td>
@@ -1951,7 +1952,7 @@ end
 
 ### 攻撃防御に対する設定
 
-Sinatraは[Rack::Protection](https://github.com/sinatra/rack-protection#readme)を使用することで、アプリケーションを一般的な日和見的攻撃から守っています。これは簡単に無効化できます（が、アプリケーションに大量の一般的な脆弱性を埋め込むことになってしまいます）。
+Sinatraは[Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme)を使用することで、アプリケーションを一般的な日和見的攻撃から守っています。これは簡単に無効化できます（が、アプリケーションに大量の一般的な脆弱性を埋め込むことになってしまいます）。
 
 ```ruby
 disable :protection

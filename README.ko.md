@@ -315,10 +315,10 @@ end
 
 유효한 Rack 응답, Rack 본문 객체 또는 HTTP 상태 코드가 되는 어떠한 객체라도 반환할 수 있습니다.
 
-* 세 요소를 가진 배열: `[상태 (Fixnum), 헤더 (Hash), 응답 본문 (#each에 반응)]`
-* 두 요소를 가진 배열: `[상태 (Fixnum), 응답 본문 (#each에 반응)]`
+* 세 요소를 가진 배열: `[상태 (Integer), 헤더 (Hash), 응답 본문 (#each에 반응)]`
+* 두 요소를 가진 배열: `[상태 (Integer), 응답 본문 (#each에 반응)]`
 * `#each`에 반응하고 주어진 블록으로 문자열만을 전달하는 객체
-* 상태 코드를 의미하는 Fixnum
+* 상태 코드를 의미하는 Integer
 
 이것을 이용한 예를 들자면, 스트리밍(streaming) 예제를 쉽게 구현할 수 있습니다.
 
@@ -2023,7 +2023,7 @@ end
 
 ### 공격 방어 설정하기(Configuring attack protection)
 
-Sinatra는 [Rack::Protection](https://github.com/sinatra/rack-protection#readme)을 사용하여
+Sinatra는 [Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme)을 사용하여
 일반적이고 일어날 수 있는 공격에 대비합니다. 이 모듈은 간단하게 비활성시킬 수 있습니다.
 (하지만 애플리케이션에 엄청나게 많은 취약성을 야기합니다.)
 
