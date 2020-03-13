@@ -6,7 +6,7 @@ require 'yajl'
 class YajlTest < Minitest::Test
   def yajl_app(&block)
     mock_app do
-      set :views, File.dirname(__FILE__) + '/views'
+      set :views, __dir__ + '/views'
       get('/', &block)
     end
     get '/'

@@ -434,7 +434,7 @@ Statische Dateien werden im `./public`-Ordner erwartet. Es ist möglich,
 einen anderen Ort zu definieren, indem man die `:public_folder`-Option setzt:
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/static'
+set :public_folder, __dir__ + '/static'
 ```
 
 Zu beachten ist, dass der Ordnername `public` nicht Teil der URL ist.

@@ -123,7 +123,7 @@ class BeforeFilterTest < Minitest::Test
     mock_app do
       before { ran_filter = true }
       set :static, true
-      set :public_folder, File.dirname(__FILE__)
+      set :public_folder, __dir__
     end
     get "/#{File.basename(__FILE__)}"
     assert ok?
@@ -267,7 +267,7 @@ class AfterFilterTest < Minitest::Test
     mock_app do
       after { ran_filter = true }
       set :static, true
-      set :public_folder, File.dirname(__FILE__)
+      set :public_folder, __dir__
     end
     get "/#{File.basename(__FILE__)}"
     assert ok?

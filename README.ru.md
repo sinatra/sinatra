@@ -431,7 +431,7 @@ end
 месторасположение при помощи опции `:public_folder`:
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/static'
+set :public_folder, __dir__ + '/static'
 ```
 
 Учтите, что имя директории со статическими файлами не включено в URL.

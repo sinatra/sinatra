@@ -4,7 +4,7 @@ class StaticTest < Minitest::Test
   setup do
     mock_app do
       set :static, true
-      set :public_folder, File.dirname(__FILE__)
+      set :public_folder, __dir__
     end
   end
 
@@ -90,7 +90,7 @@ class StaticTest < Minitest::Test
   it '404s when .. path traverses outside of public directory' do
     mock_app do
       set :static, true
-      set :public_folder, File.dirname(__FILE__) + '/data'
+      set :public_folder, __dir__ + '/data'
     end
     get "/../#{File.basename(__FILE__)}"
     assert not_found?
@@ -131,7 +131,7 @@ class StaticTest < Minitest::Test
 
   it 'handles valid byte ranges correctly' do
     # Use the biggest file in this dir so we can test ranges > 8k bytes. (StaticFile sends in 8k chunks.)
-    path = File.dirname(__FILE__) + '/helpers_test.rb'  # currently 16k bytes
+    path = __dir__ + '/helpers_test.rb'  # currently 16k bytes
     file = File.read(path)
     length = file.length
     assert length > 9000, "The test file #{path} is too short (#{length} bytes) to run these tests"
@@ -222,7 +222,7 @@ class StaticTest < Minitest::Test
   it 'renders static assets with custom status via options' do
     mock_app do
       set :static, true
-      set :public_folder, File.dirname(__FILE__)
+      set :public_folder, __dir__
 
       post '/*' do
         static!(:status => params[:status])
@@ -239,12 +239,12 @@ class StaticTest < Minitest::Test
   it 'serves files with a + sign in the path' do
     mock_app do
       set :static, true
-      set :public_folder, File.join(File.dirname(__FILE__), 'public')
+      set :public_folder, File.join(__dir__, 'public')
     end
 
     get "/hello+world.txt"
 
-    real_path = File.join(File.dirname(__FILE__), 'public', 'hello+world.txt')
+    real_path = File.join(__dir__, 'public', 'hello+world.txt')
     assert ok?
     assert_equal File.read(real_path), body
     assert_equal File.size(real_path).to_s, response['Content-Length']
@@ -254,12 +254,12 @@ class StaticTest < Minitest::Test
   it 'serves files with a URL encoded + sign (%2B) in the path' do
     mock_app do
       set :static, true
-      set :public_folder, File.join(File.dirname(__FILE__), 'public')
+      set :public_folder, File.join(__dir__, 'public')
     end
 
     get "/hello%2bworld.txt"
 
-    real_path = File.join(File.dirname(__FILE__), 'public', 'hello+world.txt')
+    real_path = File.join(__dir__, 'public', 'hello+world.txt')
     assert ok?
     assert_equal File.read(real_path), body
     assert_equal File.size(real_path).to_s, response['Content-Length']

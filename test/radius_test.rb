@@ -6,7 +6,7 @@ require 'radius'
 class RadiusTest < Minitest::Test
   def radius_app(&block)
     mock_app do
-      set :views, File.dirname(__FILE__) + '/views'
+      set :views, __dir__ + '/views'
       get('/', &block)
     end
     get '/'

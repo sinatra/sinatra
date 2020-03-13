@@ -430,7 +430,7 @@ Los archivos estáticos son servidos desde el directorio público
 opción `:public_folder`:
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/static'
+set :public_folder, __dir__ + '/static'
 ```
 
 Note que el nombre del directorio público no está incluido en la URL. Por

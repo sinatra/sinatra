@@ -427,7 +427,7 @@ Static files are served from the `./public` directory. You can specify
 a different location by setting the `:public_folder` option:
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/static'
+set :public_folder, __dir__ + '/static'
 ```
 
 Note that the public directory name is not included in the URL. A file

@@ -400,7 +400,7 @@ end
 Les fichiers du dossier `./public` sont servis de façon statique. Vous pouvez spécifier un autre dossier avec le paramètre `:public_folder` :
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/statique'
+set :public_folder, __dir__ + '/statique'
 ```
 
 Notez que le nom du dossier public n'apparait pas dans l'URL. Le fichier

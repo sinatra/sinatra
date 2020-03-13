@@ -3,7 +3,7 @@ require File.expand_path('../helper', __FILE__)
 MarkdownTest = proc do
   def markdown_app(&block)
     mock_app do
-      set :views, File.dirname(__FILE__) + '/views'
+      set :views, __dir__ + '/views'
       get('/', &block)
     end
     get '/'

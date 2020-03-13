@@ -386,7 +386,7 @@ end
 `:public_folder`オプションを指定することで別の場所を指定することができます。
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/static'
+set :public_folder, __dir__ + '/static'
 ```
 
 ノート: この静的ファイル用のディレクトリ名はURL中に含まれません。

@@ -444,7 +444,7 @@ Arquivos estáticos são disponibilizados a partir do diretório
 `:public_folder`
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/estatico'
+set :public_folder, __dir__ + '/estatico'
 ```
 
 Note que o nome do diretório público não é incluido na URL. Um arquivo
