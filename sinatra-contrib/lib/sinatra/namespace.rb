@@ -332,7 +332,7 @@ module Sinatra
       def prefixed(method, pattern = nil, conditions = {}, &block)
         default = %r{(?:/.*)?} if method == :before or method == :after
         pattern, conditions = compile pattern, conditions, default
-        result = base.send(method, pattern, conditions, &block)
+        result = base.send(method, pattern, **conditions, &block)
         invoke_hook :route_added, method.to_s.upcase, pattern, block
         result
       end
