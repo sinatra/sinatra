@@ -1058,8 +1058,11 @@ module Sinatra
     # Attempt to serve static files from public directory. Throws :halt when
     # a matching file is found, returns nil otherwise.
     def static!(options = {})
-      return if (public_dir = settings.public_folder).nil?
-      path = File.expand_path("#{public_dir}#{URI_INSTANCE.unescape(request.path_info)}" )
+      return if (public_dir = settings.public_folder).nil?      
+      path = "#{public_dir}#{URI_INSTANCE.unescape(request.path_info)}"
+      return unless valid_path?(path)
+      
+      path = File.expand_path(path)
       return unless File.file?(path)
 
       env['sinatra.static_file'] = path

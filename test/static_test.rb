@@ -59,6 +59,11 @@ class StaticTest < Minitest::Test
     assert not_found?
   end
 
+  it 'passes to the next handler when the path contains null bytes' do
+    get "/foo%00"
+    assert not_found?
+  end
+
   it 'passes to the next handler when the static option is disabled' do
     @app.set :static, false
     get "/#{File.basename(__FILE__)}"
