@@ -221,7 +221,7 @@ module Sinatra
 
     private
 
-    def compile!(verb, path, block, options = {})
+    def compile!(verb, path, block, **options)
       options[:provides] ||= respond_to if respond_to
       super
     end
