@@ -80,8 +80,6 @@ module Sinatra
       raise BadRequest, "Invalid query parameters: #{Rack::Utils.escape_html(e.message)}"
     end
 
-    private
-
     class AcceptEntry
       attr_accessor :params
       attr_reader :entry
@@ -674,8 +672,6 @@ module Sinatra
       @params = original if original
     end
   end
-
-  private
 
   # Template rendering methods. Each method takes the name of a template
   # to render as a Symbol and returns a String with the rendered output,
