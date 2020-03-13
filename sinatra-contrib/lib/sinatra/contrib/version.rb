@@ -1,6 +1,6 @@
 module Sinatra
   module Contrib
-    VERSION = '2.0.8.1'
+    VERSION = '2.1.0'
   end
 end
 
