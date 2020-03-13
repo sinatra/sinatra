@@ -186,6 +186,12 @@ class SettingsTest < Minitest::Test
       @base.enable :methodoverride
       assert @base.methodoverride?
     end
+
+    it 'ignores bundler/inline from callers' do
+      @application.stub(:caller, ->(_){ ['/path/to/bundler/inline.rb', $0] }) do
+        assert_equal File.expand_path($0), File.expand_path(@application.send(:caller_files).first)
+      end
+    end
   end
 
   describe 'run' do

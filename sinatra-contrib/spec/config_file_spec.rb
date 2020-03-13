@@ -42,7 +42,17 @@ describe Sinatra::ConfigFile do
     expect(settings.nested[:b]).to eq(2)
   end
 
-  it 'should raise error if config file extension is not .yml or .erb' do
+  it 'should render options in ERB tags when using .yaml files' do
+    config_file 'key_value.yaml'
+    expect(settings.foo).to eq("bar")
+    expect(settings.something).to eq(42)
+    expect(settings.nested['a']).to eq(1)
+    expect(settings.nested[:a]).to eq(1)
+    expect(settings.nested['b']).to eq(2)
+    expect(settings.nested[:b]).to eq(2)
+  end
+
+  it 'should raise error if config file extension is not .yml, .yaml or .erb' do
     expect{ config_file 'config.txt' }.to raise_error(Sinatra::ConfigFile::UnsupportedConfigType)
   end
 
@@ -72,5 +82,25 @@ describe Sinatra::ConfigFile do
     # now test it
     config_file 'key_value_override.yml'
     expect(settings.foo).to eq('foo')
+  end
+
+  context 'when file contains superfluous environments' do
+    before { config_file 'with_env_defaults.yml' }
+
+    it 'loads settings for the current environment anyway' do
+      expect { settings.foo }.not_to raise_error
+    end
+  end
+
+  context 'when file contains defaults' do
+    before { config_file 'with_env_defaults.yml' }
+
+    it 'uses the overridden value' do
+      expect(settings.foo).to eq('test')
+    end
+
+    it 'uses the default value' do
+      expect(settings.bar).to eq('baz')
+    end
   end
 end

@@ -357,13 +357,13 @@ auch andere Werte akzeptiert.
 Es kann jedes gültige Objekt zurückgegeben werden, bei dem es sich entweder um
 einen Rack-Rückgabewert, einen Rack-Body oder einen HTTP-Status-Code handelt:
 
-*   Ein Array mit drei Elementen: `[Status (Fixnum), Headers (Hash),
+*   Ein Array mit drei Elementen: `[Status (Integer), Headers (Hash),
     Response-Body (antwortet auf #each)]`.
-*   Ein Array mit zwei Elementen: `[Status (Fixnum), Response-Body (antwortet
+*   Ein Array mit zwei Elementen: `[Status (Integer), Response-Body (antwortet
     auf #each)]`.
 *   Ein Objekt, das auf `#each` antwortet und den an diese Methode übergebenen
     Block nur mit Strings als Übergabewerte aufruft.
-*   Ein Fixnum, das den Status-Code festlegt.
+*   Ein Integer, das den Status-Code festlegt.
 
 Damit lässt sich relativ einfach Streaming implementieren:
 
@@ -728,7 +728,7 @@ Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 <table>
   <tr>
     <td>Abhängigkeit</td>
-    <td><a href="http://liquidmarkup.org/">liquid</a></td>
+    <td><a href="https://shopify.github.io/liquid/">liquid</a></td>
   </tr>
   <tr>
     <td>Dateierweiterung</td>
@@ -752,7 +752,7 @@ denen man Variablen weitergibt.
     <td>Eine der folgenden Bibliotheken:
         <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-        <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
+        <a href="https://github.com/ged/bluecloth" title="bluecloth">BlueCloth</a>,
         <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a> oder
         <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
     </td>
@@ -2236,7 +2236,7 @@ end
 #### Einstellung des Angriffsschutzes
 
 Sinatra verwendet
-[Rack::Protection](https://github.com/sinatra/rack-protection#readme), um die
+[Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme), um die
 Anwendung vor häufig vorkommenden Angriffen zu schützen. Diese Voreinstellung
 lässt sich selbstverständlich deaktivieren, der damit verbundene
 Geschwindigkeitszuwachs steht aber in keinem Verhätnis zu den möglichen
@@ -3120,9 +3120,9 @@ thin --threaded start
 Die folgenden Versionen werden offiziell unterstützt:
 
 <dl>
-  <dt>Ruby 2.2</dt>
+  <dt>Ruby 2.3</dt>
   <dd>
-    2.2 wird vollständig unterstützt. Es gibt derzeit keine Pläne die
+    2.3 wird vollständig unterstützt. Es gibt derzeit keine Pläne die
     offizielle Unterstützung zu beenden
   </dd>
 

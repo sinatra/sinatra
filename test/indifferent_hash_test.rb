@@ -4,6 +4,10 @@
 #
 require 'minitest/autorun' unless defined?(Minitest)
 
+# Suppress the ActiveSupport warning when this test is executed independently,
+# outside of the full suite, on older Rubies.
+ENV['SINATRA_ACTIVESUPPORT_WARNING'] = 'false'
+
 require_relative '../lib/sinatra/indifferent_hash'
 
 class TestIndifferentHashBasics < Minitest::Test
@@ -169,6 +173,18 @@ class TestIndifferentHash < Minitest::Test
     assert_nil @hash.dig('nested', ?a, 0, :d)
   end
 
+  def test_slice
+    skip_if_lacking :slice
+
+    assert_equal Sinatra::IndifferentHash[a: :a], @hash.slice(:a)
+    assert_equal Sinatra::IndifferentHash[b: :b], @hash.slice(?b)
+    assert_equal Sinatra::IndifferentHash[3 => 3], @hash.slice(3)
+    assert_equal Sinatra::IndifferentHash.new, @hash.slice(:d)
+    assert_equal Sinatra::IndifferentHash[a: :a, b: :b, 3 => 3], @hash.slice(:a, :b, 3)
+    assert_equal Sinatra::IndifferentHash[simple_nested: { a: :a, ?b => :b }], @hash.slice(:simple_nested)
+    assert_equal Sinatra::IndifferentHash[nested: { a: [{ a: :a, ?b => :b }, :c, 4], ?f => :f, 7 => 7 }], @hash.slice(:nested)
+  end
+
   def test_fetch_values
     skip_if_lacking :fetch_values
 
@@ -189,8 +205,61 @@ class TestIndifferentHash < Minitest::Test
     assert_equal 2, hash2[?q]
   end
 
+  def test_merge_with_multiple_argument
+    hash = Sinatra::IndifferentHash.new.merge({a: 1}, {b: 2}, {c: 3})
+    assert_equal 1, hash[?a]
+    assert_equal 2, hash[?b]
+    assert_equal 3, hash[?c]
+
+    hash2 = Sinatra::IndifferentHash[d: 4]
+    hash3 = {e: 5}
+    hash.merge!(hash2, hash3)
+
+    assert_equal 4, hash[?d]
+    assert_equal 5, hash[?e]
+  end
+
   def test_replace
     @hash.replace(?a=>1, :q=>2)
     assert_equal({ ?a=>1, ?q=>2 }, @hash)
+  end
+
+  def test_transform_values!
+    skip_if_lacking :transform_values!
+
+    @hash.transform_values! { |v| v.is_a?(Hash) ? Hash[v.to_a] : v }
+
+    assert_instance_of Sinatra::IndifferentHash, @hash[:simple_nested]
+  end
+
+  def test_transform_values
+    skip_if_lacking :transform_values
+
+    hash2 = @hash.transform_values { |v| v.respond_to?(:upcase) ? v.upcase : v }
+
+    refute_equal @hash, hash2
+    assert_equal :A, hash2[:a]
+    assert_equal :A, hash2[?a]
+  end
+
+  def test_transform_keys!
+    skip_if_lacking :transform_keys!
+
+    @hash.transform_keys! { |k| k.respond_to?(:to_sym) ? k.to_sym : k }
+
+    assert_equal :a, @hash[:a]
+    assert_equal :a, @hash[?a]
+  end
+
+  def test_transform_keys
+    skip_if_lacking :transform_keys
+
+    hash2 = @hash.transform_keys { |k| k.respond_to?(:upcase) ? k.upcase : k }
+
+    refute_equal @hash, hash2
+    refute_operator hash2, :key?, :a
+    refute_operator hash2, :key?, ?a
+    assert_equal :a, hash2[:A]
+    assert_equal :a, hash2[?A]
   end
 end

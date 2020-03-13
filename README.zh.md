@@ -324,8 +324,8 @@ Rack 堆栈中的下一个中间件。大多数情况下，返回值是一个字
 
 你可以返回任何对象，该对象要么是一个合理的 Rack 响应，要么是一个 Rack body 对象，要么是 HTTP 状态码：
 
-* 一个包含三个元素的数组: `[状态 (Fixnum), 响应首部 (Hash), 响应主体 (可以响应 #each 方法)]`
-* 一个包含两个元素的数组: `[状态 (Fixnum), 响应主体 (可以响应 #each 方法)]`
+* 一个包含三个元素的数组: `[状态 (Integer), 响应首部 (Hash), 响应主体 (可以响应 #each 方法)]`
+* 一个包含两个元素的数组: `[状态 (Integer), 响应主体 (可以响应 #each 方法)]`
 * 一个响应 `#each` 方法，只传回字符串的对象
 * 一个代表状态码的数字
 
@@ -660,7 +660,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>依赖项</td>
-    <td><a href="http://liquidmarkup.org/" title="liquid">liquid</a></td>
+    <td><a href="https://shopify.github.io/liquid/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>文件扩展名</td>
@@ -683,7 +683,7 @@ get('/') { markdown :index }
       下列任一:
         <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-        <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
+        <a href="https://github.com/ged/bluecloth" title="bluecloth">BlueCloth</a>,
         <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
         <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
     </td>
@@ -2027,7 +2027,7 @@ end
 
 ### 配置攻击防护
 
-Sinatra 使用 [Rack::Protection](https://github.com/sinatra/rack-protection#readme)
+Sinatra 使用 [Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme)
 来抵御常见的攻击。你可以轻易地禁用该行为（但这会大大增加应用被攻击的概率）。
 
 ```ruby

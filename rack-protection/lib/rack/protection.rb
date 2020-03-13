@@ -14,6 +14,7 @@ module Rack
     autoload :IPSpoofing,            'rack/protection/ip_spoofing'
     autoload :JsonCsrf,              'rack/protection/json_csrf'
     autoload :PathTraversal,         'rack/protection/path_traversal'
+    autoload :ReferrerPolicy,        'rack/protection/referrer_policy'
     autoload :RemoteReferrer,        'rack/protection/remote_referrer'
     autoload :RemoteToken,           'rack/protection/remote_token'
     autoload :SessionHijacking,      'rack/protection/session_hijacking'
@@ -35,6 +36,7 @@ module Rack
         use ::Rack::Protection::CookieTossing,         options if use_these.include? :cookie_tossing
         use ::Rack::Protection::ContentSecurityPolicy, options if use_these.include? :content_security_policy
         use ::Rack::Protection::FormToken,             options if use_these.include? :form_token
+        use ::Rack::Protection::ReferrerPolicy,        options if use_these.include? :referrer_policy
         use ::Rack::Protection::RemoteReferrer,        options if use_these.include? :remote_referrer
         use ::Rack::Protection::StrictTransport,       options if use_these.include? :strict_transport
 

@@ -69,17 +69,18 @@ MarkdownTest = proc do
 end
 
 # Will generate RDiscountTest, KramdownTest, etc.
-map = Tilt.respond_to?(:lazy_map) ? Tilt.lazy_map['md'].map(&:first) : Tilt.mappings['md']
+markdown_templates = Tilt.lazy_map['md'].map { |klass, _require_path| klass }
 
-map.each do |t|
+markdown_templates.each do |template_name|
   begin
-    t = eval(t) if t.is_a? String
-    t.new { "" }
-    klass = Class.new(Minitest::Test) { define_method(:engine) { t }}
+    template = Object.const_get(template_name)
+
+    klass = Class.new(Minitest::Test) { define_method(:engine) { template } }
     klass.class_eval(&MarkdownTest)
-    name = t.name[/[^:]+$/].sub(/Template$/, '') << "Test"
+
+    name = template_name.split('::').last.sub(/Template$/, 'Test')
     Object.const_set name, klass
   rescue LoadError, NameError
-    warn "#{$!}: skipping markdown tests with #{t}"
+    warn "#{$!}: skipping markdown tests with #{template_name}"
   end
 end
