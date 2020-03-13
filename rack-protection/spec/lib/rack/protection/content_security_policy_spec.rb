@@ -33,7 +33,7 @@ describe Rack::Protection::ContentSecurityPolicy do
     end
 
     headers = get('/', {}, 'wants' => 'text/html').headers
-    expect(headers["Content-Security-Policy"]).to eq("block-all_mixed_content; default-src 'self'; disown-opener; upgrade-insecure_requests")
+    expect(headers["Content-Security-Policy"]).to eq("block-all-mixed-content; default-src 'self'; disown-opener; upgrade-insecure-requests")
   end
 
   it 'should ignore CSP3 no arg directives unless they are set to true' do

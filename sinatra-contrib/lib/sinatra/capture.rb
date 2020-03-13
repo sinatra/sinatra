@@ -1,6 +1,5 @@
 require 'sinatra/base'
 require 'sinatra/engine_tracking'
-require 'active_support/core_ext/object/try.rb'
 
 module Sinatra
   #
@@ -85,38 +84,26 @@ module Sinatra
   module Capture
     include Sinatra::EngineTracking
 
-    DUMMIES = {
-      :haml   => "!= capture_haml(*args, &block)",
-      :erubis => "<% @capture = yield(*args) %>",
-      :slim   => "== yield(*args)"
-    }
-
     def capture(*args, &block)
-      @capture = nil
-      if current_engine == :ruby
-        result = block[*args]
-      elsif current_engine == :erb || current_engine == :slim
-        @_out_buf, _buf_was = '', @_out_buf
-        block[*args]
-        result = eval('@_out_buf', block.binding)
-        @_out_buf = _buf_was
+      return block[*args] if ruby?
+      if haml? && Tilt[:haml] == Tilt::HamlTemplate
+        buffer = Haml::Buffer.new(nil, Haml::Options.new.for_buffer)
+        with_haml_buffer(buffer) { capture_haml(*args, &block) }
       else
-        buffer     = eval '_buf if defined?(_buf)', block.binding
-        old_buffer = buffer.dup if buffer
-        dummy      = DUMMIES.fetch(current_engine)
-        options    = { :layout => false, :locals => {:args => args, :block => block }}
-
-        buffer.try :clear
-        result = render(current_engine, dummy, options, &block)
+        @_out_buf, _buf_was = '', @_out_buf
+        begin
+          raw = block[*args]
+          captured = block.binding.eval('@_out_buf')
+          captured.empty? ? raw : captured
+        ensure
+          @_out_buf = _buf_was
+        end
       end
-      result.strip.empty? && @capture ? @capture : result
-    ensure
-      buffer.try :replace, old_buffer
     end
 
     def capture_later(&block)
       engine = current_engine
-      proc { |*a| with_engine(engine) { @capture = capture(*a, &block) }}
+      proc { |*a| with_engine(engine) { @capture = capture(*a, &block) } }
     end
   end
 

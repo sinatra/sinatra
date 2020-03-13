@@ -4,6 +4,10 @@
 #
 require 'minitest/autorun' unless defined?(Minitest)
 
+# Suppress the ActiveSupport warning when this test is executed independently,
+# outside of the full suite, on older Rubies.
+ENV['SINATRA_ACTIVESUPPORT_WARNING'] = 'false'
+
 require_relative '../lib/sinatra/indifferent_hash'
 
 class TestIndifferentHashBasics < Minitest::Test
@@ -199,6 +203,20 @@ class TestIndifferentHash < Minitest::Test
     refute_equal @hash, hash2
     assert_equal 'a*a*1', hash2[:a]
     assert_equal 2, hash2[?q]
+  end
+
+  def test_merge_with_multiple_argument
+    hash = Sinatra::IndifferentHash.new.merge({a: 1}, {b: 2}, {c: 3})
+    assert_equal 1, hash[?a]
+    assert_equal 2, hash[?b]
+    assert_equal 3, hash[?c]
+
+    hash2 = Sinatra::IndifferentHash[d: 4]
+    hash3 = {e: 5}
+    hash.merge!(hash2, hash3)
+
+    assert_equal 4, hash[?d]
+    assert_equal 5, hash[?e]
   end
 
   def test_replace

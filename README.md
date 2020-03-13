@@ -351,13 +351,13 @@ But other values are also accepted.
 You can return any object that would either be a valid Rack response, Rack
 body object or HTTP status code:
 
-* An Array with three elements: `[status (Fixnum), headers (Hash), response
+* An Array with three elements: `[status (Integer), headers (Hash), response
   body (responds to #each)]`
-* An Array with two elements: `[status (Fixnum), response body (responds to
+* An Array with two elements: `[status (Integer), response body (responds to
   #each)]`
 * An object that responds to `#each` and passes nothing but strings to
   the given block
-* A Fixnum representing the status code
+* A Integer representing the status code
 
 That way we can, for instance, easily implement a streaming example:
 
@@ -611,13 +611,15 @@ get('/') { markdown :index }
   <tr>
     <td>Dependency</td>
     <td>
-      <a href="http://www.kuwata-lab.com/erubis/" title="erubis">erubis</a>
+      <a href="https://github.com/jeremyevans/erubi" title="erubi">erubi</a>
+      or <a href="http://www.kuwata-lab.com/erubis/" title="erubis">erubis</a>
       or erb (included in Ruby)
     </td>
   </tr>
   <tr>
     <td>File Extensions</td>
-    <td><tt>.erb</tt>, <tt>.rhtml</tt> or <tt>.erubis</tt> (Erubis only)</td>
+    <td><tt>.erb</tt>, <tt>.rhtml</tt> or <tt>.erubi</tt> (Erubi only)
+ or <tt>.erubis</tt> (Erubis only)</td>
   </tr>
   <tr>
     <td>Example</td>
@@ -748,6 +750,8 @@ template, you almost always want to pass locals to it.
         <a href="https://github.com/ged/bluecloth" title="BlueCloth">BlueCloth</a>,
         <a href="https://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
         <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
+        <a href="https://github.com/gjtorikian/commonmarker" title="commonmarker">commonmarker</a>
+        <a href="https://github.com/alphabetum/pandoc-ruby" title="pandoc">pandoc</a>
     </td>
   </tr>
   <tr>
@@ -3048,9 +3052,9 @@ thin --threaded start
 
 The following Ruby versions are officially supported:
 <dl>
-  <dt>Ruby 2.2</dt>
+  <dt>Ruby 2.3</dt>
   <dd>
-    2.2 is fully supported and recommended. There are currently no plans to
+    2.3 is fully supported and recommended. There are currently no plans to
     drop official support for it.
   </dd>
 
@@ -3068,7 +3072,7 @@ The following Ruby versions are officially supported:
   </dd>
 </dl>
 
-Versions of Ruby prior to 2.2.2 are no longer supported as of Sinatra 2.0.
+Versions of Ruby prior to 2.3 are no longer supported as of Sinatra 2.1.0.
 
 We also keep an eye on upcoming Ruby versions.
 

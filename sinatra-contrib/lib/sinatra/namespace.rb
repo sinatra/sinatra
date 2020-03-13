@@ -146,7 +146,7 @@ module Sinatra
   #     module Zomg # Keep everything under "Zomg" namespace for sanity
   #       module Routes # Define a new "Routes" module
   #
-  #         self.registered(app)
+  #         def self.registered(app)
   #           # First, register the Namespace extension
   #           app.register Sinatra::Namespace
   #
@@ -332,7 +332,7 @@ module Sinatra
       def prefixed(method, pattern = nil, conditions = {}, &block)
         default = %r{(?:/.*)?} if method == :before or method == :after
         pattern, conditions = compile pattern, conditions, default
-        result = base.send(method, pattern, conditions, &block)
+        result = base.send(method, pattern, **conditions, &block)
         invoke_hook :route_added, method.to_s.upcase, pattern, block
         result
       end

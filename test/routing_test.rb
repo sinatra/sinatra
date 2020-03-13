@@ -311,6 +311,17 @@ class RoutingTest < Minitest::Test
     assert_equal 'well, alright', body
   end
 
+  it "handles params without a value" do
+    mock_app {
+      get '/' do
+        assert_nil params.fetch('foo')
+        "Given: #{params.keys.sort.join(',')}"
+      end
+    }
+    get '/?foo'
+    assert_equal 'Given: foo', body
+  end
+
   it "merges named params and query string params in params" do
     mock_app {
       get '/:foo' do

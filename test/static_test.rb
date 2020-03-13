@@ -59,6 +59,11 @@ class StaticTest < Minitest::Test
     assert not_found?
   end
 
+  it 'passes to the next handler when the path contains null bytes' do
+    get "/foo%00"
+    assert not_found?
+  end
+
   it 'passes to the next handler when the static option is disabled' do
     @app.set :static, false
     get "/#{File.basename(__FILE__)}"
@@ -152,8 +157,7 @@ class StaticTest < Minitest::Test
   end
 
   it 'correctly ignores syntactically invalid range requests' do
-    # ...and also ignores multi-range requests, which aren't supported yet
-    ["bytes=45-40", "bytes=IV-LXVI", "octets=10-20", "bytes=-", "bytes=1-2,3-4"].each do |http_range|
+    ["bytes=45-40", "bytes=IV-LXVI", "octets=10-20", "bytes=", "bytes=3-1,4-5"].each do |http_range|
       request = Rack::MockRequest.new(@app)
       response = request.get("/#{File.basename(__FILE__)}", 'HTTP_RANGE' => http_range)
 
@@ -198,7 +202,7 @@ class StaticTest < Minitest::Test
   it 'sets cache control headers on static files if set' do
     @app.set :static_cache_control, :public
     env = Rack::MockRequest.env_for("/#{File.basename(__FILE__)}")
-    status, headers, body = @app.call(env)
+    _, headers, _ = @app.call(env)
     assert headers.has_key?('Cache-Control')
     assert_equal headers['Cache-Control'], 'public'
 
@@ -207,7 +211,7 @@ class StaticTest < Minitest::Test
       [:public, :must_revalidate, {:max_age => 300}]
     )
     env = Rack::MockRequest.env_for("/#{File.basename(__FILE__)}")
-    status, headers, body = @app.call(env)
+    _, headers, _ = @app.call(env)
     assert headers.has_key?('Cache-Control')
     assert_equal(
       headers['Cache-Control'],

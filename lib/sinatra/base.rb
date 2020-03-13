@@ -722,6 +722,7 @@ module Sinatra
     end
 
     def markdown(template, options = {}, locals = {})
+      options[:exclude_outvar] = true
       render :markdown, template, options, locals
     end
 
@@ -786,15 +787,8 @@ module Sinatra
     def find_template(views, name, engine)
       yield ::File.join(views, "#{name}.#{@preferred_extension}")
 
-      if Tilt.respond_to?(:mappings)
-        Tilt.mappings.each do |ext, engines|
-          next unless ext != @preferred_extension and engines.include? engine
-          yield ::File.join(views, "#{name}.#{ext}")
-        end
-      else
-        Tilt.default_mapping.extensions_for(engine).each do |ext|
-          yield ::File.join(views, "#{name}.#{ext}") unless ext == @preferred_extension
-        end
+      Tilt.default_mapping.extensions_for(engine).each do |ext|
+        yield ::File.join(views, "#{name}.#{ext}") unless ext == @preferred_extension
       end
     end
 
@@ -825,10 +819,11 @@ module Sinatra
       content_type    = options.delete(:content_type)   || content_type
       layout_engine   = options.delete(:layout_engine)  || engine
       scope           = options.delete(:scope)          || self
+      exclude_outvar  = options.delete(:exclude_outvar)
       options.delete(:layout)
 
       # set some defaults
-      options[:outvar]           ||= '@_out_buf'
+      options[:outvar] ||= '@_out_buf' unless exclude_outvar
       options[:default_encoding] ||= settings.default_encoding
 
       # compile and render template
@@ -1024,7 +1019,7 @@ module Sinatra
 
       params.delete("ignore") # TODO: better params handling, maybe turn it into "smart" object or detect changes
       force_encoding(params)
-      original, @params = @params, @params.merge(params) if params.any?
+      @params = @params.merge(params) if params.any?
 
       regexp_exists = pattern.is_a?(Mustermann::Regular) || (pattern.respond_to?(:patterns) && pattern.patterns.any? {|subpattern| subpattern.is_a?(Mustermann::Regular)} )
       if regexp_exists
@@ -1043,7 +1038,8 @@ module Sinatra
       @env['sinatra.error.params'] = @params
       raise
     ensure
-      @params = original if original
+      params ||= {}
+      params.each { |k, _| @params.delete(k) } unless @env['sinatra.error.params']
     end
 
     # No matching route was found or all routes passed. The default
@@ -1055,15 +1051,18 @@ module Sinatra
       if @app
         forward
       else
-        raise NotFound
+        raise NotFound, "#{request.request_method} #{request.path_info}"
       end
     end
 
     # Attempt to serve static files from public directory. Throws :halt when
     # a matching file is found, returns nil otherwise.
     def static!(options = {})
-      return if (public_dir = settings.public_folder).nil?
-      path = File.expand_path("#{public_dir}#{URI_INSTANCE.unescape(request.path_info)}" )
+      return if (public_dir = settings.public_folder).nil?      
+      path = "#{public_dir}#{URI_INSTANCE.unescape(request.path_info)}"
+      return unless valid_path?(path)
+      
+      path = File.expand_path(path)
       return unless File.file?(path)
 
       env['sinatra.static_file'] = path
@@ -1089,7 +1088,12 @@ module Sinatra
 
     # Dispatch a request with error handling.
     def dispatch!
-      force_encoding(@params.merge!(@request.params))
+      # Avoid passing frozen string in force_encoding
+      @params.merge!(@request.params).each do |key, val|
+        next unless val.respond_to?(:force_encoding)
+        val = val.dup if val.frozen?
+        @params[key] = force_encoding(val)
+      end
 
       invoke do
         static! if settings.static? && (request.get? || request.head?)
@@ -1168,7 +1172,7 @@ module Sinatra
         /^\(.*\)$/,                                         # generated code
         /rubygems\/(custom|core_ext\/kernel)_require\.rb$/, # rubygems require hacks
         /active_support/,                                   # active_support require hacks
-        /bundler(\/runtime)?\.rb/,                          # bundler require hacks
+        /bundler(\/(?:runtime|inline))?\.rb/,               # bundler require hacks
         /<internal:/,                                       # internal in ruby >= 1.9.2
         /src\/kernel\/bootstrap\/[A-Z]/                     # maglev kernel files
       ]
@@ -1345,19 +1349,19 @@ module Sinatra
       # context as route handlers and may access/modify the request and
       # response.
       def before(path = /.*/, **options, &block)
-        add_filter(:before, path, options, &block)
+        add_filter(:before, path, **options, &block)
       end
 
       # Define an after filter; runs after all requests within the same
       # context as route handlers and may access/modify the request and
       # response.
       def after(path = /.*/, **options, &block)
-        add_filter(:after, path, options, &block)
+        add_filter(:after, path, **options, &block)
       end
 
       # add a filter
       def add_filter(type, path = /.*/, **options, &block)
-        filters[type] << compile!(type, path, block, options)
+        filters[type] << compile!(type, path, block, **options)
       end
 
       # Add a route condition. The route is considered non-matching when the
@@ -1601,7 +1605,7 @@ module Sinatra
 
       def route(verb, path, options = {}, &block)
         enable :empty_path_info if path == "" and empty_path_info.nil?
-        signature = compile!(verb, path, block, options)
+        signature = compile!(verb, path, block, **options)
         (@routes[verb] ||= []) << signature
         invoke_hook(:route_added, verb, path, block)
         signature
@@ -1638,7 +1642,7 @@ module Sinatra
       end
 
       def compile(path, route_mustermann_opts = {})
-        Mustermann.new(path, mustermann_opts.merge(route_mustermann_opts))
+        Mustermann.new(path, **mustermann_opts.merge(route_mustermann_opts))
       end
 
       def setup_default_middleware(builder)
@@ -1743,28 +1747,21 @@ module Sinatra
       end
     end
 
-    # Fixes encoding issues by
-    # * defaulting to UTF-8
-    # * casting params to Encoding.default_external
-    #
-    # The latter might not be necessary if Rack handles it one day.
-    # Keep an eye on Rack's LH #100.
-    def force_encoding(*args) settings.force_encoding(*args) end
-    if defined? Encoding
-      def self.force_encoding(data, encoding = default_encoding)
-        return if data == settings || data.is_a?(Tempfile)
-        if data.respond_to? :force_encoding
-          data.force_encoding(encoding).encode!
-        elsif data.respond_to? :each_value
-          data.each_value { |v| force_encoding(v, encoding) }
-        elsif data.respond_to? :each
-          data.each { |v| force_encoding(v, encoding) }
-        end
-        data
+    # Force data to specified encoding. It defaults to settings.default_encoding
+    # which is UTF-8 by default
+    def self.force_encoding(data, encoding = default_encoding)
+      return if data == settings || data.is_a?(Tempfile)
+      if data.respond_to? :force_encoding
+        data.force_encoding(encoding).encode!
+      elsif data.respond_to? :each_value
+        data.each_value { |v| force_encoding(v, encoding) }
+      elsif data.respond_to? :each
+        data.each { |v| force_encoding(v, encoding) }
       end
-    else
-      def self.force_encoding(data, *) data end
+      data
     end
+
+    def force_encoding(*args) settings.force_encoding(*args) end
 
     reset!
 

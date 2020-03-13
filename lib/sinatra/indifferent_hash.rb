@@ -1,22 +1,11 @@
 # frozen_string_literal: true
-if !$LOAD_PATH.grep(%r{gems/activesupport}).empty? && $LOADED_FEATURES.grep(%r{active_support/core_ext/hash}).empty?
-  puts <<-EOF
+$stderr.puts <<EOF if !Hash.method_defined?(:slice) && !$LOAD_PATH.grep(%r{gems/activesupport}).empty? && ENV['SINATRA_ACTIVESUPPORT_WARNING'] != 'false'
 WARNING: If you plan to load any of ActiveSupport's core extensions to Hash, be
 sure to do so *before* loading Sinatra::Application or Sinatra::Base. If not,
 you may disregard this warning.
-  EOF
-end
 
-if ENV['APP_ENV'] == 'test' && !Hash.method_defined?(:slice)
-  # Some extensions get loaded during testing (e.g. by RABL and our RABL test)
-  # that we have no control over, but we need it to load *before*
-  # IndifferentHash, so we'll do it preemptively here.
-  #
-  # Newer Rubies have these methods built-in, so the extensions are no-ops.
-  require 'active_support/core_ext/hash/conversions'
-  require 'active_support/core_ext/hash/slice'
-  require 'active_support/core_ext/hash/keys'
-end
+Set SINATRA_ACTIVESUPPORT_WARNING=false in the environment to hide this warning.
+EOF
 
 module Sinatra
   # A poor man's ActiveSupport::HashWithIndifferentAccess, with all the Rails-y
@@ -143,13 +132,17 @@ module Sinatra
       super(*keys)
     end
 
-    def merge!(other_hash)
-      return super if other_hash.is_a?(self.class)
-
-      other_hash.each_pair do |key, value|
-        key = convert_key(key)
-        value = yield(key, self[key], value) if block_given? && key?(key)
-        self[key] = convert_value(value)
+    def merge!(*other_hashes)
+      other_hashes.each do |other_hash|
+        if other_hash.is_a?(self.class)
+          super(other_hash)
+        else
+          other_hash.each_pair do |key, value|
+            key = convert_key(key)
+            value = yield(key, self[key], value) if block_given? && key?(key)
+            self[key] = convert_value(value)
+          end
+        end
       end
 
       self
@@ -157,8 +150,8 @@ module Sinatra
 
     alias_method :update, :merge!
 
-    def merge(other_hash, &block)
-      dup.merge!(other_hash, &block)
+    def merge(*other_hashes, &block)
+      dup.merge!(*other_hashes, &block)
     end
 
     def replace(other_hash)

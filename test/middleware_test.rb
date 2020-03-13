@@ -65,4 +65,36 @@ class MiddlewareTest < Minitest::Test
     assert_equal "/FOO", body
     assert_equal "UpcaseMiddleware", response['X-Tests']
   end
+
+  class FreezeMiddleware < MockMiddleware
+    def call(env)
+      req = Rack::Request.new(env)
+      req.update_param('bar', 'baz'.freeze)
+      super
+    end
+  end
+
+  it "works when middleware adds a frozen param" do
+    @app.use FreezeMiddleware
+    get '/Foo'
+  end
+
+  class SpecialConstsMiddleware < MockMiddleware
+    def call(env)
+      req = Rack::Request.new(env)
+      req.update_param('s', :s)
+      req.update_param('i', 1)
+      req.update_param('c', 3.to_c)
+      req.update_param('t', true)
+      req.update_param('f', false)
+      req.update_param('n', nil)
+      super
+    end
+  end
+
+  it "handles params when the params contains true/false values" do
+    @app.use SpecialConstsMiddleware
+    get '/'
+  end
+
 end

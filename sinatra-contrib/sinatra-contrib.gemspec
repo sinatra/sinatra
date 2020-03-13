@@ -34,18 +34,18 @@ RubyGems 2.0 or newer is required to protect against public gem pushes. You can 
 EOF
   end
 
-  s.required_ruby_version = '>= 2.2.0'
+  s.required_ruby_version = '>= 2.3.0'
 
   s.add_dependency "sinatra", version
   s.add_dependency "mustermann", "~> 1.0"
   s.add_dependency "backports", ">= 2.8.2"
-  s.add_dependency "activesupport", ">= 4.0.0"
-  s.add_dependency "tilt",      ">= 1.3", "< 3"
+  s.add_dependency "tilt", "~> 2.0"
   s.add_dependency "rack-protection", version
   s.add_dependency "multi_json"
 
   s.add_development_dependency "rspec", "~> 3.4"
   s.add_development_dependency "haml"
+  s.add_development_dependency "erubi"
   s.add_development_dependency "erubis"
   s.add_development_dependency "slim"
   s.add_development_dependency "less"
