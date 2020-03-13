@@ -3070,7 +3070,7 @@ The following Ruby versions are officially supported:
   </dd>
 </dl>
 
-Versions of Ruby prior to 2.3 are no longer supported as of Sinatra 2.0.3.
+Versions of Ruby prior to 2.3 are no longer supported as of Sinatra 2.1.0.
 
 We also keep an eye on upcoming Ruby versions.
 
