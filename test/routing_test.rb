@@ -1347,6 +1347,29 @@ class RoutingTest < Minitest::Test
     assert_body 'text/xml;charset=utf-8'
   end
 
+  it 'matches content-type to mime_type' do
+    mime_type = 'application/rss+xml;version="http://purl.org/rss/1.0/"'
+    mock_app do
+      configure { mime_type(:rss10, mime_type) }
+      get('/', :provides => [:rss10]) { content_type }
+    end
+
+    get '/', {}, { 'HTTP_ACCEPT' => 'application/rss+xml' }
+    assert ok?
+    assert_body mime_type
+  end
+
+  it 'handles missing mime_types with 404' do
+    mock_app do
+      configure { mime_type(:rss10, 'application/rss+xml') }
+      get('/', :provides => [:jpg]) { content_type }
+    end
+
+    get '/', {}, { 'HTTP_ACCEPT' => 'application/rss+xml' }
+    assert_equal 404, status
+    assert_equal 'text/html;charset=utf-8', response['Content-Type']
+  end
+
   it 'passes a single url param as block parameters when one param is specified' do
     mock_app {
       get '/:foo' do |foo|

@@ -43,12 +43,11 @@ module Sinatra
     end
 
     def preferred_type(*types)
-      accepts = accept # just evaluate once
-      return accepts.first if types.empty?
+      return accept.first if types.empty?
       types.flatten!
-      return types.first if accepts.empty?
-      accepts.detect do |pattern|
-        type = types.detect { |t| File.fnmatch(pattern, t) }
+      return types.first if accept.empty?
+      accept.detect do |accept_header|
+        type = types.detect { |t| MimeTypeEntry.new(t).accepts?(accept_header) }
         return type if type
       end
     end
@@ -123,6 +122,35 @@ module Sinatra
 
       def method_missing(*args, &block)
         to_str.send(*args, &block)
+      end
+    end
+
+    class MimeTypeEntry
+      attr_reader :params
+
+      def initialize(entry)
+        params = entry.scan(HEADER_PARAM).map! do |s|
+          key, value = s.strip.split('=', 2)
+          value = value[1..-2].gsub(/\\(.)/, '\1') if value.start_with?('"')
+          [key, value]
+        end
+
+        @type   = entry[/[^;]+/].delete(' ')
+        @params = Hash[params]
+      end
+
+      def accepts?(entry)
+        File.fnmatch(entry, self) && matches_params?(entry.params)
+      end
+
+      def to_str
+        @type
+      end
+
+      def matches_params?(params)
+        return true if @params.empty?
+
+        params.all? { |k,v| !@params.has_key?(k) || @params[k] == v }
       end
     end
   end
