@@ -1212,6 +1212,28 @@ class RoutingTest < Minitest::Test
     assert_body 'html'
   end
 
+  it "doesn't allow provides of passed routes to interfere with provides of other routes" do
+    mock_app do
+      get('/:foo', :provides => :txt) do
+        pass if params[:foo] != 'foo'
+
+        'foo'
+      end
+
+      get('/bar', :provides => :html) { 'bar' }
+    end
+
+    get '/foo', {}, { 'HTTP_ACCEPT' => '*/*' }
+    assert ok?
+    assert_equal 'text/plain;charset=utf-8', response.headers['Content-Type']
+    assert_body 'foo'
+
+    get '/bar', {}, { 'HTTP_ACCEPT' => '*/*' }
+    assert ok?
+    assert_equal 'text/html;charset=utf-8', response.headers['Content-Type']
+    assert_body 'bar'
+  end
+
   it "allows multiple mime types for accept header" do
     types = ['image/jpeg', 'image/pjpeg']
 
