@@ -1559,7 +1559,7 @@ module Sinatra
         # behavior, by ensuring an instance exists:
         prototype
         # Run the instance we created:
-        handler.run(self, server_settings) do |server|
+        handler.run(self, **server_settings) do |server|
           unless suppress_messages?
             $stderr.puts "== Sinatra (v#{Sinatra::VERSION}) has taken the stage on #{port} for #{environment} with backup from #{handler_name}"
           end
