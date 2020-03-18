@@ -30,7 +30,6 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
-    - rvm: jruby-9.2.11.0
     - rvm: rbx-3
 
 notifications:
