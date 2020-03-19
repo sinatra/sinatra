@@ -240,7 +240,7 @@ module Sinatra
         :css  => [:less,  :sass, :scss],
         :xml  => [:builder, :nokogiri],
         :js   => [:coffee],
-        :html => [:erb, :erubi, :erubis, :haml, :halmit, :slim, :liquid, :radius,
+        :html => [:erb, :erubi, :erubis, :haml, :hamlit, :slim, :liquid, :radius,
           :mab, :markdown, :textile, :rdoc],
         :all =>  (Sinatra::Templates.instance_methods.map(&:to_sym) +
           [:mab] - [:find_template, :markaby]),
