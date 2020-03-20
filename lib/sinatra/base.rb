@@ -172,8 +172,6 @@ module Sinatra
     def finish
       result = body
 
-      headers.delete "Content-Type" if headers["Content-Type"].nil?
-
       if drop_content_info?
         headers.delete "Content-Length"
         headers.delete "Content-Type"
@@ -1008,7 +1006,7 @@ module Sinatra
     def route!(base = settings, pass_block = nil)
       if routes = base.routes[@request.request_method]
         routes.each do |pattern, conditions, block|
-          @response['Content-Type'] = nil unless @pinned_response
+          @response.delete_header('Content-Type') unless @pinned_response
 
           returned_pass_block = process_route(pattern, conditions) do |*args|
             env['sinatra.route'] = "#{@request.request_method} #{pattern}"
