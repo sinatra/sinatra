@@ -770,6 +770,20 @@ describe Sinatra::Namespace do
       expect(last_response.body).to eq('ok')
     end
 
+    it 'sets hashes correctly' do
+      mock_app do
+        namespace '/foo' do
+          set erb: 'o', sass: 'k'
+          get '/bar' do
+            settings.erb + settings.sass
+          end
+        end
+      end
+
+      expect(get('/foo/bar').status).to eq(200)
+      expect(last_response.body).to eq('ok')
+    end
+
     it 'uses some repro' do
       mock_app do
         set :foo, 42
