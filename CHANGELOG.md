@@ -1,8 +1,36 @@
-## 2.1.0 / Unreleased
+## 2.1.0 / 2020-09-04
 
 * Fix additional Ruby 2.7 keyword warnings [#1586](https://github.com/sinatra/sinatra/pull/1586) by Stefan Sundin
+
 * Drop Ruby 2.2 support [#1455](https://github.com/sinatra/sinatra/pull/1455) by Eloy Pérez
+
 * Add Rack::Protection::ReferrerPolicy [#1291](https://github.com/sinatra/sinatra/pull/1291) by Stefan Sundin
+
+* Add `default_content_type` setting. Fixes [#1238](https://github.com/sinatra/sinatra/pull/1238) [#1239](https://github.com/sinatra/sinatra/pull/1239) by Mike Pastore
+
+* Allow `set :<engine>` in sinatra-namespace [#1255](https://github.com/sinatra/sinatra/pull/1255) by Christian Höppner
+
+* Use prepend instead of include for helpers. Fixes [#1213](https://github.com/sinatra/sinatra/pull/1213) [#1214](https://github.com/sinatra/sinatra/pull/1214) by Mike Pastore
+
+* Fix issue with passed routes and provides Fixes [#1095](https://github.com/sinatra/sinatra/pull/1095) [#1606](https://github.com/sinatra/sinatra/pull/1606) by Mike Pastore, Jordan Owens
+
+* Add QuietLogger that excludes pathes from Rack::CommonLogger [1250](https://github.com/sinatra/sinatra/pull/1250) by Christoph Wagner
+
+* Sinatra::Contrib dependency updates. Fixes [#1207](https://github.com/sinatra/sinatra/pull/1207) [#1411](https://github.com/sinatra/sinatra/pull/1411) by Mike Pastore
+
+* Allow CSP to fallback to default-src. Fixes [#1484](https://github.com/sinatra/sinatra/pull/1484) [#1490](https://github.com/sinatra/sinatra/pull/1490) by Jordan Owens
+
+* Replace `origin_whitelist` with `permitted_origins`. Closes [#1620](https://github.com/sinatra/sinatra/issues/1620) [#1625](https://github.com/sinatra/sinatra/pull/1625) by rhymes
+
+* Use Rainbows instead of thin for async/stream features. Closes [#1624](https://github.com/sinatra/sinatra/issues/1624) [#1627](https://github.com/sinatra/sinatra/pull/1627) by Ryuichi KAWAMATA
+
+* Enable EscapedParams if passed via settings. Closes [#1615](https://github.com/sinatra/sinatra/issues/1615) [#1632](https://github.com/sinatra/sinatra/issues/1632) by Anders Bälter
+
+* Support for parameters in mime types. Fixes [#1141](https://github.com/sinatra/sinatra/issues/1141) by John Hope
+
+* Handle null byte when serving static files [#1574](https://github.com/sinatra/sinatra/issues/1574) by Kush Fanikiso
+
+* Improve development support and documentation and source code by Olle Jonsson, Pierre-Adrien Buisson, Shota Iguchi
 
 ## 2.0.8.1 / 2020-01-02
 
