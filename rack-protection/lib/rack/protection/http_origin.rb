@@ -35,7 +35,7 @@ module Rack
 
         if options.key? :origin_whitelist
           warn "Rack::Protection origin_whitelist option is deprecated and will be removed, " \
-            "use origin_whitelist instead.\n"
+            "use permitted_origins instead.\n"
         end
 
         permitted_origins = options[:permitted_origins] || options[:origin_whitelist]
