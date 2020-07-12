@@ -41,7 +41,7 @@ if RUBY_ENGINE == "ruby"
   gem 'puma'
   gem 'yajl-ruby'
   gem 'nokogiri'
-  gem 'thin'
+  gem 'puma'
   gem 'slim', '~> 2.0'
   gem 'coffee-script', '>= 2.0'
   gem 'rdoc'
