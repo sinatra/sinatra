@@ -34,7 +34,7 @@ The code you changed will not take effect until you restart the server.
 Please restart the server every time you change or use
 [sinatra/reloader](http://www.sinatrarb.com/contrib/reloader).
 
-It is recommended to also run `gem install thin`, which Sinatra will
+It is recommended to also run `gem install puma`, which Sinatra will
 pick up if available.
 
 ## Table of Contents
@@ -1685,36 +1685,53 @@ to `stream` finishes executing. Streaming does not work at all with Shotgun.
 
 If the optional parameter is set to `keep_open`, it will not call `close` on
 the stream object, allowing you to close it at any later point in the
-execution flow. This only works on evented servers, like Thin and Rainbows.
+execution flow. This only works on evented servers, like Rainbows.
 Other servers will still close the stream:
 
 ```ruby
-# long polling
+# config.ru
+require 'sinatra/base'
 
-set :server, :thin
-connections = []
+class App < Sinatra::Base
+  connections = []
 
-get '/subscribe' do
-  # register a client's interest in server events
-  stream(:keep_open) do |out|
-    connections << out
-    # purge dead connections
-    connections.reject!(&:closed?)
+  get '/subscribe' do
+    # register a client's interest in server events
+    stream(:keep_open) do |out|
+      connections << out
+      # purge dead connections
+      connections.reject!(&:closed?)
+    end
+  end
+
+  post '/:message' do
+    connections.each do |out|
+      # notify client that a new message has arrived
+      out << params['message'] << "\n"
+
+      # indicate client to connect again
+      out.close
+    end
+
+    # acknowledge
+    "message received"
   end
 end
 
-post '/:message' do
-  connections.each do |out|
-    # notify client that a new message has arrived
-    out << params['message'] << "\n"
+run App
+```
 
-    # indicate client to connect again
-    out.close
-  end
-
-  # acknowledge
-  "message received"
+```ruby
+# rainbows.conf
+Rainbows! do
+  use :EventMachine
 end
+````
+
+Run:
+
+```shell
+rainbows -c rainbows.conf
 ```
 
 It's also possible for the client to close the connection when trying to
@@ -2377,7 +2394,7 @@ set :protection, :session => true
       If you are using a WEBrick web server, presumably for your development
       environment, you can pass a hash of options to <tt>server_settings</tt>,
       such as <tt>SSLEnable</tt> or <tt>SSLVerifyClient</tt>. However, web
-      servers such as Puma and Thin do not support this, so you can set
+      servers such as Puma do not support this, so you can set
       <tt>server_settings</tt> by defining it as a method when you call
       <tt>configure</tt>.
     </dd>
@@ -2428,7 +2445,7 @@ set :protection, :session => true
 
   <dt>threaded</dt>
     <dd>
-      If set to <tt>true</tt>, will tell Thin to use
+      If set to <tt>true</tt>, will tell server to use
       <tt>EventMachine.defer</tt> for processing the request.
     </dd>
 
@@ -3017,7 +3034,7 @@ Options are:
 -p # set the port (default is 4567)
 -o # set the host (default is 0.0.0.0)
 -e # set the environment (default is development)
--s # specify rack server/handler (default is thin)
+-s # specify rack server/handler (default is puma)
 -q # turn on quiet mode for server (default is off)
 -x # turn on the mutex lock (default is off)
 ```
@@ -3029,15 +3046,15 @@ _Paraphrasing from
 by Konstantin_
 
 Sinatra doesn't impose any concurrency model, but leaves that to the
-underlying Rack handler (server) like Thin, Puma or WEBrick. Sinatra
+underlying Rack handler (server) like Puma or WEBrick. Sinatra
 itself is thread-safe, so there won't be any problem if the Rack handler
 uses a threaded model of concurrency. This would mean that when starting
 the server, you'd have to specify the correct invocation method for the
 specific Rack handler. The following example is a demonstration of how
-to start a multi-threaded Thin server:
+to start a multi-threaded Rainbows server:
 
 ```ruby
-# app.rb
+# config.ru
 
 require 'sinatra/base'
 
@@ -3047,14 +3064,22 @@ class App < Sinatra::Base
   end
 end
 
-App.run!
+run App
+```
 
+```ruby
+# rainbows.conf
+
+# Rainbows configurator is based on Unicorn.
+Rainbows! do
+  use :ThreadSpawn
+end
 ```
 
 To start the server, the command would be:
 
 ```shell
-thin --threaded start
+rainbows -c rainbows.conf
 ```
 
 ## Requirement
