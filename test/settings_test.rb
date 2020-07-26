@@ -488,12 +488,6 @@ class SettingsTest < Minitest::Test
       assert @base.server.include?('puma')
       assert @application.server.include?('puma')
     end
-
-    it 'includes thin' do
-      next if RUBY_ENGINE == 'jruby'
-      assert @base.server.include?('thin')
-      assert @application.server.include?('thin')
-    end
   end
 
   describe 'app_file' do
