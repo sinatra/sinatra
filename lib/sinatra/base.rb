@@ -206,7 +206,7 @@ module Sinatra
     end
   end
 
-  # Some Rack handlers (Thin, Rainbows!) implement an extended body object protocol, however,
+  # Some Rack handlers (Rainbows!) implement an extended body object protocol, however,
   # some middleware (namely Rack::Lint) will break it by not mirroring the methods in question.
   # This middleware will detect an extended body object and will make sure it reaches the
   # handler directly. We do this here, so our middleware and middleware set up by the app will
@@ -473,7 +473,7 @@ module Sinatra
     #
     # The close parameter specifies whether Stream#close should be called
     # after the block has been executed. This is only relevant for evented
-    # servers like Thin or Rainbows.
+    # servers like Rainbows.
     def stream(keep_open = false)
       scheduler = env['async.callback'] ? EventMachine : Stream
       current   = @params.dup
@@ -1475,8 +1475,7 @@ module Sinatra
       # Stop the self-hosted server if running.
       def quit!
         return unless running?
-        # Use Thin's hard #stop! if available, otherwise just #stop.
-        running_server.respond_to?(:stop!) ? running_server.stop! : running_server.stop
+        running_server.stop
         $stderr.puts "== Sinatra has ended his set (crowd applauds)" unless suppress_messages?
         set :running_server, nil
         set :handler_name, nil
@@ -1485,7 +1484,7 @@ module Sinatra
       alias_method :stop!, :quit!
 
       # Run the Sinatra app as a self-hosted server using
-      # Thin, Puma, Mongrel, or WEBrick (in that order). If given a block, will call
+      # Puma, Mongrel, or WEBrick (in that order). If given a block, will call
       # with the constructed handler once we have taken the stage.
       def run!(options = {}, &block)
         return if running?
@@ -1849,7 +1848,6 @@ module Sinatra
       server.unshift 'reel'
       server.unshift 'puma'
       server.unshift 'mongrel'  if ruby_engine.nil?
-      server.unshift 'thin'     if ruby_engine != 'jruby'
       server.unshift 'trinidad' if ruby_engine == 'jruby'
     end
 
