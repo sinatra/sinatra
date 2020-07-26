@@ -40,7 +40,7 @@ class IntegrationTest < Minitest::Test
   end
 
   it 'streams async' do
-    next unless server.thin?
+    next unless server.rainbows?
 
     Timeout.timeout(3) do
       chunks = []
@@ -58,7 +58,7 @@ class IntegrationTest < Minitest::Test
   end
 
   it 'streams async from subclass' do
-    next unless server.thin?
+    next unless server.rainbows?
 
     Timeout.timeout(3) do
       chunks = []
