@@ -1,6 +1,8 @@
 $stderr.puts "loading"
 require 'sinatra'
 
+require_relative 'rainbows' if RUBY_ENGINE == 'ruby'
+
 configure do
   set :foo, :bar
 end
