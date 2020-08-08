@@ -61,7 +61,7 @@ module IntegrationHelper
           file, dir = RbConfig::CONFIG.values_at('ruby_install_name', 'bindir')
           cmd << File.expand_path(file, dir).inspect
         end
-        cmd << "-w" unless thin? || net_http_server?
+        cmd << "-w" unless net_http_server?
         cmd << "-I" << File.expand_path('../../lib', __FILE__).inspect
         cmd << app_file.inspect << '-s' << server << '-o' << '127.0.0.1' << '-p' << port
         cmd << "-e" << environment.to_s << '2>&1'
@@ -73,8 +73,8 @@ module IntegrationHelper
       name.to_s == "webrick"
     end
 
-    def thin?
-      name.to_s == "thin"
+    def rainbows?
+      name.to_s == "rainbows"
     end
 
     def puma?

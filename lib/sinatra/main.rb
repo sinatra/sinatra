@@ -5,7 +5,7 @@ module Sinatra
     require 'optparse'
     parser = OptionParser.new { |op|
       op.on('-p port',   'set the port (default is 4567)')                { |val| ParamsConfig[:port] = Integer(val) }
-      op.on('-s server', 'specify rack server/handler (default is thin)') { |val| ParamsConfig[:server] = val }
+      op.on('-s server', 'specify rack server/handler (default is puma)') { |val| ParamsConfig[:server] = val }
       op.on('-q',        'turn on quiet mode (default is off)')           {       ParamsConfig[:quiet] = true }
       op.on('-x',        'turn on the mutex lock (default is off)')       {       ParamsConfig[:lock] = true }
       op.on('-e env',    'set the environment (default is development)')  do |val|

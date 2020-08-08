@@ -13,7 +13,7 @@ class IntegrationTest < Minitest::Test
   it('only extends main') { assert_equal "true", server.get("/mainonly") }
 
   it 'logs once in development mode' do
-    next if server.puma? or RUBY_ENGINE == 'jruby'
+    next if server.puma? or server.rainbows? or RUBY_ENGINE == 'jruby'
     random = "%064x" % Kernel.rand(2**256-1)
     server.get "/ping?x=#{random}"
     count = server.log.scan("GET /ping?x=#{random}").count
@@ -39,42 +39,6 @@ class IntegrationTest < Minitest::Test
     assert times[2] - times[1] > 1
   end
 
-  it 'streams async' do
-    next unless server.thin?
-
-    Timeout.timeout(3) do
-      chunks = []
-      server.get_stream '/async' do |chunk|
-        next if chunk.empty?
-        chunks << chunk
-        case chunk
-        when "hi!"   then server.get "/send?msg=hello"
-        when "hello" then server.get "/send?close=1"
-        end
-      end
-
-      assert_equal ['hi!', 'hello'], chunks
-    end
-  end
-
-  it 'streams async from subclass' do
-    next unless server.thin?
-
-    Timeout.timeout(3) do
-      chunks = []
-      server.get_stream '/subclass/async' do |chunk|
-        next if chunk.empty?
-        chunks << chunk
-        case chunk
-        when "hi!"   then server.get "/subclass/send?msg=hello"
-        when "hello" then server.get "/subclass/send?close=1"
-        end
-      end
-
-      assert_equal ['hi!', 'hello'], chunks
-    end
-  end
-
   it 'starts the correct server' do
     exp = %r{
       ==\sSinatra\s\(v#{Sinatra::VERSION}\)\s
@@ -83,7 +47,7 @@ class IntegrationTest < Minitest::Test
     }ix
 
     # because Net HTTP Server logs to $stderr by default
-    assert_match exp, server.log unless server.net_http_server? || server.reel?
+    assert_match exp, server.log unless server.net_http_server? || server.reel? || server.rainbows?
   end
 
   it 'does not generate warnings' do
