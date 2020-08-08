@@ -28,7 +28,10 @@ ruby myapp.rb
 
 [http://localhost:4567](http://localhost:4567) を開きます。
 
-ThinがあればSinatraはこれを利用するので、`gem install thin`することをお薦めします。
+コードを変更しても、サーバを再起動しないと変更が有効になりません。
+コードを変更するたびにサーバを再起動するか、[sinatra/reloader](http://www.sinatrarb.com/contrib/reloader)を使ってください。
+
+PumaがあればSinatraはこれを利用するので、`gem install puma`することをお薦めします。
 
 ## 目次
 
@@ -1484,35 +1487,53 @@ end
 
 ノート: ストリーミングの挙動、特に並行リクエスト(concurrent requests)の数は、アプリケーションを提供するのに使われるWebサーバに強く依存します。いくつかのサーバは、ストリーミングを全くサポートしません。サーバがストリーミングをサポートしない場合、ボディは`stream`に渡されたブロックの実行が終了した後、一度に全部送られることになります。ストリーミングは、Shotgunを使った場合は全く動作しません。
 
-オプション引数が`keep_open`にセットされている場合、ストリームオブジェクト上で`close`は呼ばれず、実行フローの任意の遅れたタイミングでユーザがこれを閉じることを可能にします。これはThinやRainbowsのようなイベント型サーバ上でしか機能しません。他のサーバでは依然ストリームは閉じられます。
+オプション引数が`keep_open`にセットされている場合、ストリームオブジェクト上で`close`は呼ばれず、実行フローの任意の遅れたタイミングでユーザがこれを閉じることを可能にします。これはRainbowsのようなイベント型サーバ上でしか機能しません。他のサーバでは依然ストリームは閉じられます。
 
 ```ruby
-# ロングポーリング
+# config.ru
+require 'sinatra/base'
 
-set :server, :thin
-connections = []
+class App < Sinatra::Base
+  connections = []
 
-get '/subscribe' do
-  # サーバイベントにおけるクライアントの関心を登録
-  stream(:keep_open) do |out|
-    connections << out
-    # 死んでいるコネクションを排除
-    connections.reject!(&:closed?)
+  get '/subscribe' do
+    # register a client's interest in server events
+    # サーバイベントにおけるクライアントの関心を登録
+    stream(:keep_open) do |out|
+      connections << out
+      # 死んでいるコネクションを排除
+      connections.reject!(&:closed?)
+    end
+  end
+
+  post '/:message' do
+    connections.each do |out|
+      # クライアントへ新規メッセージ到着の通知
+      out << params['message'] << "\n"
+
+      # クライアントへの再接続の指示
+      out.close
+    end
+
+    # 肯定応答
+    "message received"
   end
 end
 
-post '/message' do
-  connections.each do |out|
-    # クライアントへ新規メッセージ到着の通知
-    out << params['message'] << "\n"
+run App
+```
 
-    # クライアントへの再接続の指示
-    out.close
-  end
-
-  # 肯定応答
-  "message received"
+```ruby
+# rainbows.conf
+Rainbows! do
+  use :EventMachine
 end
+````
+
+次のように起動します。
+
+```shell
+rainbows -c rainbows.conf
 ```
 
 クライアントはソケットに書き込もうとしている接続を閉じることも可能です。そのため、記述しようとする前に`out.closed?`をチェックすることを勧めます。
@@ -2107,7 +2128,7 @@ set :protection, :session => true
 
   <dt>threaded</dt>
   <dd>
-    <tt>true</tt>に設定されているときは、Thinにリクエストを処理するために<tt>EventMachine.defer</tt>を使うことを通知する。
+    <tt>true</tt>に設定されているときは、サーバにリクエストを処理するために<tt>EventMachine.defer</tt>を使うことを通知する。
   </dd>
 
   <dt>views</dt>
@@ -2631,7 +2652,7 @@ ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
 -p # ポート指定(デフォルトは4567)
 -o # ホスト指定(デフォルトは0.0.0.0)
 -e # 環境を指定 (デフォルトはdevelopment)
--s # rackserver/handlerを指定 (デフォルトはthin)
+-s # rackserver/handlerを指定 (デフォルトはpuma)
 -x # mutex lockを付ける (デフォルトはoff)
 ```
 
@@ -2640,13 +2661,13 @@ ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
 _この[StackOverflow](https://stackoverflow.com/a/6282999/5245129)
 のKonstantinによる回答を言い換えています。_
 
-Sinatraでは同時実行モデルを負わせることはできませんが、根本的な部分であるThinやPuma、WebrickのようなRackハンドラ(サーバー)部分に委ねることができます。
+Sinatraでは同時実行モデルを負わせることはできませんが、根本的な部分であるやPuma、WEBrickのようなRackハンドラ(サーバー)部分に委ねることができます。
 Sinatra自身はスレッドセーフであり、もしRackハンドラが同時実行モデルのスレッドを使用していても問題はありません。
 つまり、これはサーバーを起動させる時、特定のRackハンドラに対して正しい起動処理を特定することが出来ます。
-この例はThinサーバーをマルチスレッドで起動する方法のデモです。
+この例はRainbowsサーバーをマルチスレッドで起動する方法のデモです。
 
 ```ruby
-# app.rb
+# config.ru
 
 require 'sinatra/base'
 
@@ -2656,13 +2677,22 @@ class App < Sinatra::Base
   end
 end
 
-App.run!
+run App
 ```
 
-サーバーを開始するコマンドです。
+```ruby
+# rainbows.conf
+
+# RainbowsのコンフィギュレータはUnicornのものをベースにしています。
+Rainbows! do
+  use :ThreadSpawn
+end
+```
+
+次のようなコマンドでサーバを起動します。
 
 ```
-thin --threaded start
+rainbows -c rainbows.conf
 ```
 
 ## 必要環境
