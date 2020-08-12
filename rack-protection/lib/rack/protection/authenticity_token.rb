@@ -189,7 +189,14 @@ module Rack
       end
 
       def xor_byte_strings(s1, s2)
-        s1.bytes.zip(s2.bytes).map { |(c1,c2)| c1 ^ c2 }.pack('c*')
+        s2 = s2.dup
+        size = s1.bytesize
+        i = 0
+        while i < size
+          s2.setbyte(i, s1.getbyte(i) ^ s2.getbyte(i))
+          i += 1
+        end
+        s2
       end
     end
   end
