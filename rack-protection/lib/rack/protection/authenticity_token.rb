@@ -63,7 +63,7 @@ module Rack
     #             <h1>With Authenticity Token</h1>
     #             <p>This successfully takes you to back to this form.</p>
     #             <form action="" method="post">
-    #               <input type="hidden" name="authenticity_token" value="#{env['rack.session'][:csrf]}" />
+    #               <input type="hidden" name="authenticity_token" value="#{Rack::Protection::AuthenticityToken.token(env['rack.session'])}" />
     #               <input type="text" name="foo" />
     #               <input type="submit" />
     #             </form>
