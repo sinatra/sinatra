@@ -33,8 +33,9 @@ module Rack
       Rack::Builder.new do
         # Off by default, unless added
         use ::Rack::Protection::AuthenticityToken,     options if use_these.include? :authenticity_token
-        use ::Rack::Protection::CookieTossing,         options if use_these.include? :cookie_tossing
         use ::Rack::Protection::ContentSecurityPolicy, options if use_these.include? :content_security_policy
+        use ::Rack::Protection::CookieTossing,         options if use_these.include? :cookie_tossing
+        use ::Rack::Protection::EscapedParams,         options if use_these.include? :escaped_params
         use ::Rack::Protection::FormToken,             options if use_these.include? :form_token
         use ::Rack::Protection::ReferrerPolicy,        options if use_these.include? :referrer_policy
         use ::Rack::Protection::RemoteReferrer,        options if use_these.include? :remote_referrer
