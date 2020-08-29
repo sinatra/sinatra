@@ -1475,7 +1475,8 @@ module Sinatra
       # Stop the self-hosted server if running.
       def quit!
         return unless running?
-        running_server.stop
+        # Use Thin's hard #stop! if available, otherwise just #stop.
+        running_server.respond_to?(:stop!) ? running_server.stop! : running_server.stop
         $stderr.puts "== Sinatra has ended his set (crowd applauds)" unless suppress_messages?
         set :running_server, nil
         set :handler_name, nil
