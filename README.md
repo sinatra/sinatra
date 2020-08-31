@@ -1695,7 +1695,7 @@ require 'sinatra/base'
 class App < Sinatra::Base
   connections = []
 
-  get '/subscribe' do
+  get '/subscribe', provides: 'text/event-stream'  do
     # register a client's interest in server events
     stream(:keep_open) do |out|
       connections << out
@@ -1704,17 +1704,16 @@ class App < Sinatra::Base
     end
   end
 
-  post '/:message' do
+  post '/' do
     connections.each do |out|
       # notify client that a new message has arrived
-      out << params['message'] << "\n"
+      out << "data: #{params[:msg]}\n\n"
 
       # indicate client to connect again
       out.close
     end
 
-    # acknowledge
-    "message received"
+    204 # response without entity body
   end
 end
 
