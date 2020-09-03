@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby -I ../lib -I lib
 # coding: utf-8
+require_relative 'rainbows'
 require 'sinatra'
-set :server, 'puma'
+set :server, :rainbows
 connections = []
 
 get '/' do
