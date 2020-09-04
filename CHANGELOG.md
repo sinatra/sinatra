@@ -1,4 +1,4 @@
-## 2.1.0 / 2020-09-04
+## 2.1.0 / 2020-09-05
 
 * Fix additional Ruby 2.7 keyword warnings [#1586](https://github.com/sinatra/sinatra/pull/1586) by Stefan Sundin
 
