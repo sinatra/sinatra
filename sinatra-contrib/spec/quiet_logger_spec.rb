@@ -4,7 +4,7 @@ require 'logger'
 
 describe Sinatra::QuietLogger do
 
-  it 'logs just pathes not excluded' do
+  it 'logs just paths not excluded' do
     log = StringIO.new
     logger = Logger.new(log)
     mock_app do
@@ -28,7 +28,7 @@ describe Sinatra::QuietLogger do
       mock_app do
         register Sinatra::QuietLogger
       end
-    }.to output("You need to specify the pathes you wish to exclude from logging via `set :quiet_logger_prefixes, %w(images css fonts)`\n").to_stderr
+    }.to output("You need to specify the paths you wish to exclude from logging via `set :quiet_logger_prefixes, %w(images css fonts)`\n").to_stderr
   end
 
 end
