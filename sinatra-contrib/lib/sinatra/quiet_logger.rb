@@ -7,8 +7,20 @@ module Sinatra
   #
   # == Usage
   #
-  # You have to require the quiet_logger, set the setting
+  # === Classic Application
+  #
+  # You have to require the quiet_logger, set the prefixes
   # and register the extension in your application.
+  #
+  #     require 'sinatra'
+  #     require 'sinatra/quiet_logger'
+  #
+  #     set :quiet_logger_prefixes, %w(css js images fonts)
+  #     register Sinatra::QuietLogger
+  #
+  # === Modular Application
+  #
+  # The same for modular application:
   #
   #     require 'sinatra/base'
   #     require 'sinatra/quiet_logger'
@@ -18,6 +30,7 @@ module Sinatra
   #     class App < Sinatra::Base
   #       register Sinatra::QuietLogger
   #     end
+  #
   module QuietLogger
 
     def self.registered(app)
