@@ -1,9 +1,9 @@
 module Sinatra
   # = Sinatra::QuietLogger
   #
-  # QuietLogger extension allows you to define pathes excluded
+  # QuietLogger extension allows you to define paths excluded
   # from logging using the +quiet_logger_prefixes+ setting.
-  # It is inspired from rails quiet_logger, but handles multiple pathes.
+  # It is inspired from rails quiet_logger, but handles multiple paths.
   #
   # == Usage
   #
@@ -22,7 +22,7 @@ module Sinatra
 
     def self.registered(app)
       quiet_logger_prefixes = app.settings.quiet_logger_prefixes.join('|') rescue ''
-      return warn('You need to specify the pathes you wish to exclude from logging via `set :quiet_logger_prefixes, %w(images css fonts)`') if quiet_logger_prefixes.empty?
+      return warn('You need to specify the paths you wish to exclude from logging via `set :quiet_logger_prefixes, %w(images css fonts)`') if quiet_logger_prefixes.empty?
       const_set('QUIET_LOGGER_REGEX', %r(\A/{0,2}(?:#{quiet_logger_prefixes})))
       ::Rack::CommonLogger.prepend(
         ::Module.new do
