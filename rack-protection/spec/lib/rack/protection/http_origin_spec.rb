@@ -35,9 +35,17 @@ describe Rack::Protection::HttpOrigin do
       expect(send(method.downcase, '/', {}, 'HTTP_ORIGIN' => 'http://malicious.com')).not_to be_ok
     end
 
-    it "accepts #{method} requests with whitelisted Origin" do
+    it "accepts #{method} requests with permitted Origin" do
       mock_app do
         use Rack::Protection::HttpOrigin, permitted_origins: ['http://www.friend.com']
+        run DummyApp
+      end
+      expect(send(method.downcase, '/', {}, 'HTTP_ORIGIN' => 'http://www.friend.com')).to be_ok
+    end
+
+    it "accepts #{method} requests with whitelisted Origin" do
+      mock_app do
+        use Rack::Protection::HttpOrigin, origin_whitelist: ['http://www.friend.com']
         run DummyApp
       end
       expect(send(method.downcase, '/', {}, 'HTTP_ORIGIN' => 'http://www.friend.com')).to be_ok
