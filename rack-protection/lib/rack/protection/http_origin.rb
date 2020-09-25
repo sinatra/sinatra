@@ -34,7 +34,7 @@ module Rack
         return true if options[:allow_if] && options[:allow_if].call(env)
 
         if options.key? :origin_whitelist
-          warn "Rack::Protection origin_whitelist option is deprecated and will be removed, " \
+          warn env, "Rack::Protection origin_whitelist option is deprecated and will be removed, " \
             "use permitted_origins instead.\n"
         end
 
