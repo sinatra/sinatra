@@ -15,12 +15,7 @@ addons:
   - g++-4.8
   - pandoc
 rvm:
-  - 2.3.8
-  - 2.4.10
-  - 2.5.8
-  - 2.6.6
-  - 2.7.1
-  - jruby-9.2.12.0
+  - truffleruby-head
 
 script: ./.travis.sh
 
@@ -28,6 +23,7 @@ matrix:
   allow_failures:
     - rvm: 2.6.6
     - rvm: jruby-9.2.12.0
+    - rvm: truffleruby-head
 
 notifications:
   slack:
