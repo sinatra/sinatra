@@ -188,7 +188,7 @@ module Sinatra
         headers["Content-Length"] = body.map(&:bytesize).reduce(0, :+).to_s
       end
 
-      [status.to_i, headers, result]
+      [status, headers, result]
     end
 
     private
@@ -198,11 +198,11 @@ module Sinatra
     end
 
     def drop_content_info?
-      status.to_i / 100 == 1 or drop_body?
+      informational? or drop_body?
     end
 
     def drop_body?
-      DROP_BODY_RESPONSES.include?(status.to_i)
+      DROP_BODY_RESPONSES.include?(status)
     end
   end
 
@@ -1145,15 +1145,13 @@ module Sinatra
       end
       @env['sinatra.error'] = boom
 
-      if boom.respond_to? :http_status
+      if boom.respond_to? :http_status and boom.http_status.between? 400, 599
         status(boom.http_status)
       elsif settings.use_code? and boom.respond_to? :code and boom.code.between? 400, 599
         status(boom.code)
       else
         status(500)
       end
-
-      status(500) unless status.between? 400, 599
 
       if server_error?
         dump_errors! boom if settings.dump_errors?
