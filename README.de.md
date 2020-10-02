@@ -35,7 +35,7 @@ ruby myapp.rb
 Die Seite kann nun unter [http://localhost:4567](http://localhost:4567)
 aufgerufen werden.
 
-Es wird empfohlen `gem install thin` auszuführen, Sinatra wird dann
+Es wird empfohlen `gem installl thin` auszuführen, Sinatra wird dann
 diesen Server verwenden.
 
 ## Inhalt
@@ -362,7 +362,7 @@ einen Rack-Rückgabewert, einen Rack-Body oder einen HTTP-Status-Code handelt:
 *   Ein Array mit zwei Elementen: `[Status (Integer), Response-Body (antwortet
     auf #each)]`.
 *   Ein Objekt, das auf `#each` antwortet und den an diese Methode übergebenen
-    Block nur mit Strings als Übergabewerten aufruft.
+    Block nur mit Strings als Übergabewerte aufruft.
 *   Ein Integer, das den Status-Code festlegt.
 
 Damit lässt sich relativ einfach Streaming implementieren:
@@ -467,7 +467,7 @@ get '/' do
 end
 ```
 
-Templates nehmen ein zweites Argument an, den Options-Hash:
+Templates nehmen ein zweite Argument an, den Options-Hash:
 
 ```ruby
 get '/' do
@@ -1114,7 +1114,7 @@ end
 </table>
 
 Die Template-Quelle wird als Ruby-String evaluiert. Die daraus resultierende
-Json-Variable wird mit Hilfe von `#to_json` umgewandelt:
+json Variable wird mit Hilfe von `#to_json` umgewandelt:
 
 ```ruby
 json = { :foo => 'bar' }
@@ -1438,16 +1438,16 @@ keinen Schlüssel zu verwenden, dessen Zufälligkeit weniger als 32 Bytes
 entspricht (also 256 Bits, 64 Hex-Zeichen). Es ist deshalb **wirklich
 wichtig**, dass nicht einfach irgendetwas als Schlüssel verwendet wird,
 sondern ein sicherer Zufallsgenerator die Zeichenkette erstellt. Menschen sind
-nicht besonders gut darin, zufällige Zeichenfolgen zu erstellen.
+nicht besonders gut, zufällige Zeichenfolgen zu erstellen.
 
-Sinatra generiert automatisch einen zufälligen, 32 Byte langen
+Sinatra generiert automatisch einen zufälligen 32 Byte langen zufälligen
 Schlüssel. Da jedoch bei jedem Neustart der Schlüssel ebenfalls neu generiert
 wird, ist es sinnvoll einen eigenen Schlüssel festzulegen, damit er über alle
 Anwendungsinstanzen hinweg geteilt werden kann.
 
 Aus praktikablen und Sicherheitsgründen wird
 [empfohlen](https://12factor.net/config), dass ein sicherer Zufallswert
-erzeugt und in einer Umgebungsvariable abgelegt wird, damit alle
+erzeugt und in einer Umgebungsvariable abgelgegt wird, damit alle
 Anwendungsinstanzen darauf zugreifen können. Dieser Sitzungsschlüssel
 sollte in regelmäßigen Abständen erneuert werden. Zum Erzeugen von 64
 Byte starken Schlüsseln sind hier ein paar Beispiele vorgestellt:
@@ -1850,7 +1850,7 @@ get '/bar' do
 end
 ```
 
-Um Argumente an einen Redirect weiterzugeben, können sie entweder dem Query
+Um Argumente an ein Redirect weiterzugeben, können sie entweder dem Query
 übergeben:
 
 ```ruby
@@ -2083,7 +2083,7 @@ get '/' do
 end
 ```
 
-Ebenso kann eine Dateiname als Parameter hinzugefügt werden:
+Ebenso kann ein Dateiname als Parameter hinzugefügt werden:
 
 ```ruby
 get '/' do
@@ -2153,7 +2153,7 @@ helpers do
 end
 ```
 
-Ein anderes Beispiel wäre, verschiedene Vereichnisse für verschiedene Engines
+Ein anderes Beispiel wäre, verschiedene Verzeichnisse für verschiedene Engines
 zu verwenden:
 
 ```ruby
@@ -2175,7 +2175,7 @@ Beachte, dass `find_template` nicht prüft, ob eine Datei tatsächlich
 existiert. Es wird lediglich der angegebene Block aufgerufen und nach allen
 möglichen Pfaden gesucht. Das ergibt kein Performance-Problem, da `render`
 `block` verwendet, sobald eine Datei gefunden wurde. Ebenso werden
-Template-Pfade samt Inhalt gecached, solange nicht im Entwicklungsmodus
+Template-Pfade samt Inhalten gecached, solange nicht im Entwicklungsmodus
 gearbeitet wird. Das sollte im Hinterkopf behalten werden, wenn irgendwelche
 verrückten Methoden zusammengebastelt werden.
 
@@ -2306,7 +2306,7 @@ set :protection, session => true
 
   <dt>bind</dt>
     <dd>
-      IP-Address, an die gebunden wird (Standardwert: <tt>0.0.0.0</tt>
+      IP-Adresse, an die gebunden wird (Standardwert: <tt>0.0.0.0</tt>
       <em>oder</em> <tt>localhost</tt>). Wird nur für den eingebauten Server
       verwendet.
     </dd>
@@ -2439,7 +2439,7 @@ set :protection, session => true
 
   <dt>show_exceptions</dt>
     <dd>
-      Bei Fehlern einen Stacktrace im Browseranzeigen. Ist automatisch
+      Bei Fehlern einen Stacktrace im Browser anzeigen. Ist automatisch
       aktiviert, wenn die Umgebung auf <tt>"development"</tt>
       eingestellt ist. Ansonsten ist diese Option deaktiviert.
     </dd>
