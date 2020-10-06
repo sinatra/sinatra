@@ -1166,7 +1166,7 @@ module Sinatra
 
       if not_found? || bad_request?
         if boom.message && boom.message != boom.class.name
-          body boom.message
+          body Rack::Utils.escape_html(boom.message)
         else
           content_type 'text/html'
           body '<h1>' + (not_found? ? 'Not Found' : 'Bad Request') + '</h1>'
