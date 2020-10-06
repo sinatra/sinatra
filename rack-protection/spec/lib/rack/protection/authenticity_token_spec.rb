@@ -59,6 +59,17 @@ describe Rack::Protection::AuthenticityToken do
     expect(env['rack.session'][:csrf]).not_to be_nil
   end
 
+  it "allows for a custom token session key" do
+    mock_app do
+      use Rack::Session::Cookie, :key => 'rack.session'
+      use Rack::Protection::AuthenticityToken, :key => :_csrf
+      run DummyApp
+    end
+
+    get '/'
+    expect(env['rack.session'][:_csrf]).not_to be_nil
+  end
+
   describe ".token" do
     it "returns a unique masked version of the authenticity token" do
       expect(Rack::Protection::AuthenticityToken.token(session)).not_to eq(masked_token)

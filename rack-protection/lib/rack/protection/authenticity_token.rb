@@ -24,6 +24,13 @@ module Rack
     #                                the token on a request. Default value:
     #                                <tt>"authenticity_token"</tt>
     #
+    # [<tt>:key</tt>] the name of the param that should contain
+    #                                the token in the session. Default value:
+    #                                <tt>:csrf</tt>
+    #
+    # [<tt>:allow_if</tt>] a proc for custom allow/deny logic. Default value:
+    #                                <tt>nil</tt>
+    #
     # == Example: Forms application
     #
     # To show what the AuthenticityToken does, this section includes a sample
@@ -85,6 +92,7 @@ module Rack
       TOKEN_LENGTH = 32
 
       default_options :authenticity_param => 'authenticity_token',
+                      :key => :csrf,
                       :allow_if => nil
 
       def self.token(session)
@@ -113,7 +121,7 @@ module Rack
       private
 
       def set_token(session)
-        session[:csrf] ||= self.class.random_token
+        session[options[:key]] ||= self.class.random_token
       end
 
       # Checks the client's masked token to see if it matches the
@@ -177,7 +185,7 @@ module Rack
       end
 
       def real_token(session)
-        decode_token(session[:csrf])
+        decode_token(session[options[:key]])
       end
 
       def encode_token(token)
