@@ -2003,6 +2003,15 @@ set :protection, :session => true
   <dt>bind</dt>
   <dd>バインドするIPアドレス(デフォルト: `environment`がdevelopmentにセットされているときは、<tt>0.0.0.0</tt> <em>または</em> <tt>localhost</tt>)。ビルトインサーバでのみ使われる。</dd>
 
+  <dt>default_content_type</dt>
+  <dd>
+    不明なときに仮定される Content-Type (デフォルトは<tt>"text/html"</tt>)。
+    <tt>nil</tt> を設定するとすべてのレスポンスでデフォルトの Content-Type が設定されなくなる。
+    このように設定した場合、コンテンツを出力するときに Content-Type を手動で設定する必要がある。
+    そうしないと、user-agenet はコンテンツを盗み見る必要がある。
+    (または、もし Rack::Protection::XSSHeader の <tt>nosniff</tt> が有効な場合、<tt>application/octet-stream</tt> と仮定される。)
+  </dd>
+
   <dt>default_encoding</dt>
   <dd>不明なときに仮定されるエンコーディング(デフォルトは<tt>"utf-8"</tt>)。</dd>
 
