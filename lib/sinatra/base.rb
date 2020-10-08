@@ -1488,7 +1488,7 @@ module Sinatra
       def run!(options = {}, &block)
         return if running?
         set options
-        handler         = detect_rack_handler
+        handler         = Rack::Handler.pick(server)
         handler_name    = handler.name.gsub(/.*::/, '')
         server_settings = settings.respond_to?(:server_settings) ? settings.server_settings : {}
         server_settings.merge!(:Port => port, :Host => bind)
@@ -1740,17 +1740,6 @@ module Sinatra
         options[:secret] = session_secret if session_secret?
         options.merge! sessions.to_hash if sessions.respond_to? :to_hash
         builder.use session_store, options
-      end
-
-      def detect_rack_handler
-        servers = Array(server)
-        servers.each do |server_name|
-          begin
-            return Rack::Handler.get(server_name.to_s)
-          rescue LoadError, NameError
-          end
-        end
-        fail "Server handler (#{servers.join(',')}) not found."
       end
 
       def inherited(subclass)
