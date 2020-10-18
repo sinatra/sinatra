@@ -934,6 +934,7 @@ module Sinatra
       @params   = IndifferentHash.new
       @request  = Request.new(env)
       @response = Response.new
+      @pinned_response = nil
       template_cache.clear if settings.reload_templates
 
       invoke { dispatch! }
@@ -994,11 +995,11 @@ module Sinatra
 
     # Run filters defined on the class and all superclasses.
     # Accepts an optional block to call after each filter is applied.
-    def filter!(type, base = settings)
-      filter! type, base.superclass if base.superclass.respond_to?(:filters)
+    def filter!(type, base = settings, &block)
+      filter!(type, base.superclass, &block) if base.superclass.respond_to?(:filters)
       base.filters[type].each do |args|
         result = process_route(*args)
-        yield result if block_given?
+        block.call(result) if block_given?
       end
     end
 
@@ -1006,7 +1007,7 @@ module Sinatra
     def route!(base = settings, pass_block = nil)
       if routes = base.routes[@request.request_method]
         routes.each do |pattern, conditions, block|
-          @response.delete_header('Content-Type') unless @pinned_response
+          response.delete_header('Content-Type') unless @pinned_response
 
           returned_pass_block = process_route(pattern, conditions) do |*args|
             env['sinatra.route'] = "#{@request.request_method} #{pattern}"
@@ -1124,7 +1125,7 @@ module Sinatra
       invoke do
         static! if settings.static? && (request.get? || request.head?)
         filter! :before do
-          @pinned_response = !@response['Content-Type'].nil?
+          @pinned_response = !response['Content-Type'].nil?
         end
         route!
       end

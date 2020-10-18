@@ -262,6 +262,17 @@ class AfterFilterTest < Minitest::Test
     assert_equal 8, count
   end
 
+  it "respects content type set in superclass filter" do
+    base = Class.new(Sinatra::Base)
+    base.before { content_type :json }
+    mock_app(base) do
+      get('/foo'){ {foo: :bar}.to_json }
+    end
+
+    get '/foo'
+    assert_equal 'application/json', response.headers['Content-Type']
+  end
+
   it 'does not run after filter when serving static files' do
     ran_filter = false
     mock_app do
