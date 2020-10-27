@@ -2000,5 +2000,26 @@ class HelpersTest < Minitest::Test
       assert ok?
       assert_equal 'InlineHelper#test', body
     end
+
+    module HelperWithIncluded
+      def self.included(base)
+        base.extend(ClassMethods)
+      end
+
+      module ClassMethods
+        def nickname(name)
+          # do something.
+        end
+      end
+    end
+
+    class ServerApp < Sinatra::Base
+      helpers HelperWithIncluded
+      # `nickname` method should be available.
+    end
+
+    it 'calls included method of helpers' do
+      assert ServerApp.respond_to?(:nickname)
+    end
   end
 end
