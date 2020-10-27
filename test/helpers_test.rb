@@ -1904,6 +1904,24 @@ class HelpersTest < Minitest::Test
   module ::HelperOne; def one; '1'; end; end
   module ::HelperTwo; def two; '2'; end; end
 
+  module HelperWithIncluded
+    def self.included(base)
+      base.extend(ClassMethods)
+    end
+
+    module ClassMethods
+      def nickname(name)
+        # do something.
+      end
+    end
+  end
+
+  class ServerApp < Sinatra::Base
+      helpers HelperWithIncluded
+      # `nickname` method should be available.
+      # nickname "Icarus"    
+  end
+
   describe 'Adding new helpers' do
     it 'takes a list of modules to mix into the app' do
       mock_app do
@@ -1969,5 +1987,10 @@ class HelpersTest < Minitest::Test
       get '/two'
       assert_equal '2', body
     end
+
+    it 'calls included method of helpers' do
+      assert ServerApp.respond_to?(:nickname)
+    end
+
   end
 end
