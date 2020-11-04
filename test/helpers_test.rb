@@ -1947,5 +1947,31 @@ class HelpersTest < Minitest::Test
       assert ok?
       assert_equal '42 &lt; 43', body
     end
+
+    it 'prepends modules so previously-defined methods can be overridden consistently' do
+      skip <<-EOS
+        This test will be helpful after switching #helpers's code from Module#include to Module#prepend
+        See more details: https://github.com/sinatra/sinatra/pull/1214
+      EOS
+      mock_app do
+        helpers do
+          def one; nil end
+          def two; nil end
+        end
+
+        helpers ::HelperOne do
+          def two; '2' end
+        end
+
+        get('/one') { one }
+        get('/two') { two }
+      end
+
+      get '/one'
+      assert_equal '1', body
+
+      get '/two'
+      assert_equal '2', body
+    end
   end
 end
