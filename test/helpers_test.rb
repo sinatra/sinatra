@@ -1973,5 +1973,32 @@ class HelpersTest < Minitest::Test
       get '/two'
       assert_equal '2', body
     end
+
+    module HelpersOverloadingBaseHelper
+      def my_test
+        'BaseHelper#test'
+      end
+    end
+
+    class HelpersOverloadingIncludeAndOverride < Sinatra::Base
+      helpers HelpersOverloadingBaseHelper
+
+      get '/' do
+        my_test
+      end
+
+      helpers do
+        def my_test
+          'InlineHelper#test'
+        end
+      end
+    end
+
+    it 'uses overloaded inline helper' do
+      mock_app(HelpersOverloadingIncludeAndOverride)
+      get '/'
+      assert ok?
+      assert_equal 'InlineHelper#test', body
+    end
   end
 end
