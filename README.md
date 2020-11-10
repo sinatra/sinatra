@@ -2293,7 +2293,7 @@ set :protection, :session => true
     <dd>Encoding to assume if unknown (defaults to <tt>"utf-8"</tt>).</dd>
 
   <dt>dump_errors</dt>
-    <dd>Display errors in the log.</dd>
+    <dd>Display errors in the log. Enabled by default unless environment is "test".</dd>
 
   <dt>environment</dt>
     <dd>
