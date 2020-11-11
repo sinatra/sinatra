@@ -1949,6 +1949,10 @@ class HelpersTest < Minitest::Test
     end
 
     it 'prepends modules so previously-defined methods can be overridden consistently' do
+      skip <<-EOS
+        This test will be helpful after switching #helpers's code from Module#include to Module#prepend
+        See more details: https://github.com/sinatra/sinatra/pull/1214
+      EOS
       mock_app do
         helpers do
           def one; nil end
@@ -1968,6 +1972,54 @@ class HelpersTest < Minitest::Test
 
       get '/two'
       assert_equal '2', body
+    end
+
+    module HelpersOverloadingBaseHelper
+      def my_test
+        'BaseHelper#test'
+      end
+    end
+
+    class HelpersOverloadingIncludeAndOverride < Sinatra::Base
+      helpers HelpersOverloadingBaseHelper
+
+      get '/' do
+        my_test
+      end
+
+      helpers do
+        def my_test
+          'InlineHelper#test'
+        end
+      end
+    end
+
+    it 'uses overloaded inline helper' do
+      mock_app(HelpersOverloadingIncludeAndOverride)
+      get '/'
+      assert ok?
+      assert_equal 'InlineHelper#test', body
+    end
+
+    module HelperWithIncluded
+      def self.included(base)
+        base.extend(ClassMethods)
+      end
+
+      module ClassMethods
+        def nickname(name)
+          # do something.
+        end
+      end
+    end
+
+    class ServerApp < Sinatra::Base
+      helpers HelperWithIncluded
+      # `nickname` method should be available.
+    end
+
+    it 'calls included method of helpers' do
+      assert ServerApp.respond_to?(:nickname)
     end
   end
 end
