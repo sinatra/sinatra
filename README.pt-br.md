@@ -606,7 +606,7 @@ end
 
 Algumas linguagens possuem múltiplas implementações. Para especificar qual
 implementação deverá ser utilizada (e para ser *thread-safe*), você deve
-requere-la primeiro:
+requerê-la primeiro:
 
 ```ruby
 require 'rdiscount' # ou require 'bluecloth'
@@ -654,7 +654,7 @@ get('/') { markdown :index }
 
 <table>
   <tr>
-    <td>Dependêcia</td>
+    <td>Dependência</td>
     <td>
       <a href="https://github.com/jimweirich/builder" title="builder">
         builder
@@ -806,7 +806,7 @@ mesmo. Portanto normalmente é utilizado junto a outra engine de renderização:
 erb :overview, :locals => { :text => markdown(:introducao) }
 ```
 
-Note que vcoê também pode chamar o método `markdown` dentro de outros templates:
+Note que você também pode chamar o método `markdown` dentro de outros templates:
 
 ```ruby
 %h1 Olá do Haml!
@@ -876,7 +876,7 @@ mesmo. Portanto normalmente é utilizado junto a outra engine de renderização:
 erb :overview, :locals => { :text => rdoc(:introducao) }
 ```
 
-Note que vcoê também pode chamar o método `rdoc` dentro de outros templates:
+Note que você também pode chamar o método `rdoc` dentro de outros templates:
 
 ```ruby
 %h1 Olá do Haml!
@@ -1761,17 +1761,17 @@ get '/assinar' do
   end
 end
 
-post '/:messagem' do
+post '/:mensagem' do
   conexoes.each do |saida|
     # notifica o cliente que uma nova mensagem chegou
-    saida << params['messagem'] << "\n"
+    saida << params['mensagem'] << "\n"
 
     # indica ao cliente para se conectar novamente
     saida.close
   end
 
   # confirma
-  "messagem recebida"
+  "mensagem recebida"
 end
 ```
 
@@ -2070,9 +2070,9 @@ get '/foo' do
   request.content_length      # tamanho do request.body
   request.media_type          # tipo de mídia of request.body
   request.host                # "exemplo.com"
-  request.get?                # true (metodo similar para outros tipos de requisição)
+  request.get?                # true (método similar para outros tipos de requisição)
   request.form_data?          # false
-  request["algum_ param"]     # valor do paramêtro 'algum_param'. [] é um atalho para o hash de parametros
+  request["algum_ param"]     # valor do parâmetro 'algum_param'. [] é um atalho para o hash de parâmetros
   request.referrer            # a referência do cliente ou '/'
   request.user_agent          # agente de usuário (usado por :agent condition)
   request.cookies             # hash dos cookies do browser
@@ -2095,7 +2095,7 @@ get "/" do
   "todas requisições acabam aqui"
 end
 ```
-`request.body` é uma ES ou um objeo StringIO:
+`request.body` é uma ES ou um objeto StringIO:
 
 ```ruby
 post "/api" do
@@ -2604,7 +2604,7 @@ get '/foo' do
   request.host                # "exemplo.com"
   request.get?                # true (metodo similar para outros tipos de requisição)
   request.form_data?          # false
-  request["algum_ param"]     # valor do paramêtro 'algum_param'. [] é um atalho para o hash de parametros
+  request["algum_ param"]     # valor do parâmetro 'algum_param'. [] é um atalho para o hash de parâmetros
   request.referrer            # a referência do cliente ou '/'
   request.user_agent          # agente de usuário (usado por :agent condition)
   request.cookies             # hash dos cookies do browser
@@ -3238,7 +3238,7 @@ class MinhaAplicacaoTeste < Minitest::Test
     assert_equal 'Ola Mundo!', last_response.body
   end
 
-  def teste_com_parametros
+  def teste_com_parâmetros
     get '/atender', :name => 'Frank'
     assert_equal 'Olá Frank!', last_response.bodymeet
   end
