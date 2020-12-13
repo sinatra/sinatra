@@ -120,7 +120,7 @@ A statikus fájlok kiszolgálása a `./public` könyvtárból
 történik, de természetesen más könyvtárat is megadhatsz erre a célra,
 mégpedig a :public_folder kapcsoló beállításával:
 
-  set :public_folder, File.dirname(__FILE__) + '/static'
+  set :public_folder, __dir__ + '/static'
 
 Fontos megjegyezni, hogy a nyilvános könyvtár neve nem szerepel az URL-ben.
 A ./public/css/style.css fájl az
@@ -131,7 +131,7 @@ A ./public/css/style.css fájl az
 A sablonfájlokat rendszerint a  `./views` könyvtárba helyezzük, de
 itt is lehetőség nyílik egyéb könyvtár használatára:
 
-  set :views, File.dirname(__FILE__) + '/templates'
+  set :views, __dir__ + '/templates'
 
 Nagyon fontos észben tartani, hogy a sablononkra mindig szimbólumokkal
 hivatkozunk, még akkor is, ha egyéb (ebben az esetben a
@@ -700,7 +700,7 @@ De hozzá is adhatod a <tt>sinatra/lib</tt> könyvtárat a <tt>LOAD_PATH</tt>-ho
 az alkalmazásodban:
 
 ```ruby
-  $LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
+  $LOAD_PATH.unshift __dir__ + '/sinatra/lib'
   require 'rubygems'
   require 'sinatra'
 

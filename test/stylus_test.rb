@@ -13,7 +13,7 @@ begin
   class StylusTest < Minitest::Test
     def stylus_app(options = {}, &block)
       mock_app do
-        set :views, File.dirname(__FILE__) + '/views'
+        set :views, __dir__ + '/views'
         set(options)
         get('/', &block)
       end

@@ -163,6 +163,41 @@ class SettingsTest < Minitest::Test
     assert_equal :foo, @base.settings.environment
   end
 
+  describe 'default_content_type' do
+    it 'defaults to html' do
+      assert_equal 'text/html', @base.default_content_type
+    end
+
+    it 'can be changed' do
+      @base.set :default_content_type, 'application/json'
+      @base.get('/') { '{"a":1}' }
+      @app = @base
+      get '/'
+      assert_equal 200, status
+      assert_equal 'application/json', response.content_type
+    end
+
+    it 'can be disabled' do
+      @base.set :default_content_type, nil
+      @base.error(404) { "" }
+      @app = @base
+      get '/'
+      assert_equal 404, status
+      assert_nil response.content_type
+      assert_empty body
+    end
+
+    it 'may emit content without a content-type (to be sniffed)' do
+      @base.set :default_content_type, nil
+      @base.get('/') { raise Sinatra::BadRequest, "This is a drill" }
+      @app = @base
+      get '/'
+      assert_equal 400, status
+      assert_nil response.content_type
+      assert_body "This is a drill"
+    end
+  end
+
   describe 'methodoverride' do
     it 'is disabled on Base' do
       assert ! @base.method_override?
@@ -383,13 +418,13 @@ class SettingsTest < Minitest::Test
 
     it 'is enabled on Base when public_folder is set and exists' do
       @base.set :environment, :development
-      @base.set :public_folder, File.dirname(__FILE__)
+      @base.set :public_folder, __dir__
       assert @base.static?
     end
 
     it 'is enabled on Base when root is set and root/public_folder exists' do
       @base.set :environment, :development
-      @base.set :root, File.dirname(__FILE__)
+      @base.set :root, __dir__
       assert @base.static?
     end
 
@@ -399,13 +434,13 @@ class SettingsTest < Minitest::Test
 
     it 'is enabled on Application when public_folder is set and exists' do
       @application.set :environment, :development
-      @application.set :public_folder, File.dirname(__FILE__)
+      @application.set :public_folder, __dir__
       assert @application.static?
     end
 
     it 'is enabled on Application when root is set and root/public_folder exists' do
       @application.set :environment, :development
-      @application.set :root, File.dirname(__FILE__)
+      @application.set :root, __dir__
       assert @application.static?
     end
 
@@ -453,12 +488,6 @@ class SettingsTest < Minitest::Test
       assert @base.server.include?('puma')
       assert @application.server.include?('puma')
     end
-
-    it 'includes thin' do
-      next if RUBY_ENGINE == 'jruby'
-      assert @base.server.include?('thin')
-      assert @application.server.include?('thin')
-    end
   end
 
   describe 'app_file' do
@@ -480,10 +509,10 @@ class SettingsTest < Minitest::Test
 
     it 'is equal to the expanded basename of app_file' do
       @base.app_file = __FILE__
-      assert_equal File.expand_path(File.dirname(__FILE__)), @base.root
+      assert_equal File.expand_path(__dir__), @base.root
 
       @application.app_file = __FILE__
-      assert_equal File.expand_path(File.dirname(__FILE__)), @application.root
+      assert_equal File.expand_path(__dir__), @application.root
     end
   end
 
@@ -494,11 +523,11 @@ class SettingsTest < Minitest::Test
     end
 
     it 'is set to root joined with views/' do
-      @base.root = File.dirname(__FILE__)
-      assert_equal File.dirname(__FILE__) + "/views", @base.views
+      @base.root = __dir__
+      assert_equal __dir__ + "/views", @base.views
 
-      @application.root = File.dirname(__FILE__)
-      assert_equal File.dirname(__FILE__) + "/views", @application.views
+      @application.root = __dir__
+      assert_equal __dir__ + "/views", @application.views
     end
   end
 
@@ -509,22 +538,22 @@ class SettingsTest < Minitest::Test
     end
 
     it 'is set to root joined with public/' do
-      @base.root = File.dirname(__FILE__)
-      assert_equal File.dirname(__FILE__) + "/public", @base.public_folder
+      @base.root = __dir__
+      assert_equal __dir__ + "/public", @base.public_folder
 
-      @application.root = File.dirname(__FILE__)
-      assert_equal File.dirname(__FILE__) + "/public", @application.public_folder
+      @application.root = __dir__
+      assert_equal __dir__ + "/public", @application.public_folder
     end
   end
 
   describe 'public_dir' do
     it 'is an alias for public_folder' do
-      @base.public_dir = File.dirname(__FILE__)
-      assert_equal File.dirname(__FILE__), @base.public_dir
+      @base.public_dir = __dir__
+      assert_equal __dir__, @base.public_dir
       assert_equal @base.public_folder, @base.public_dir
 
-      @application.public_dir = File.dirname(__FILE__)
-      assert_equal File.dirname(__FILE__), @application.public_dir
+      @application.public_dir = __dir__
+      assert_equal __dir__, @application.public_dir
       assert_equal @application.public_folder, @application.public_dir
     end
   end

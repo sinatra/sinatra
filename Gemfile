@@ -26,6 +26,10 @@ if RUBY_ENGINE == 'jruby'
   gem 'trinidad'
 end
 
+if RUBY_ENGINE == 'jruby' || RUBY_ENGINE == 'ruby'
+  gem "activesupport", "~> 5.1.6"
+end
+
 if RUBY_ENGINE == "ruby"
   gem 'less', '~> 2.0'
   gem 'therubyracer'
@@ -34,11 +38,11 @@ if RUBY_ENGINE == "ruby"
   gem 'bluecloth'
   gem 'rdiscount'
   gem 'RedCloth'
-  gem "activesupport", "~> 5.1.6"
   gem 'puma'
   gem 'yajl-ruby'
   gem 'nokogiri'
-  gem 'thin'
+  gem 'rainbows'
+  gem 'eventmachine'
   gem 'slim', '~> 2.0'
   gem 'coffee-script', '>= 2.0'
   gem 'rdoc'
@@ -59,6 +63,8 @@ if RUBY_ENGINE == "ruby"
   gem 'sass'
   gem 'reel-rack'
   gem 'celluloid', '~> 0.16.0'
+  gem 'commonmarker', '~> 0.20.0'
+  gem 'pandoc-ruby', '~> 2.0.2'
   gem 'simplecov', require: false
 end
 

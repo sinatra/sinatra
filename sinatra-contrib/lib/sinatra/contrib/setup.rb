@@ -1,6 +1,5 @@
 require 'sinatra/base'
 require 'sinatra/contrib/version'
-require 'backports/rails/string' # for String#underscore
 
 module Sinatra
   module Contrib
@@ -9,16 +8,15 @@ module Sinatra
         @extensions ||= {:helpers => [], :register => []}
       end
 
-      def register(name, path = nil)
+      def register(name, path)
         autoload name, path, :register
       end
 
-      def helpers(name, path = nil)
+      def helpers(name, path)
         autoload name, path, :helpers
       end
 
-      def autoload(name, path = nil, method = nil)
-        path ||= "sinatra/#{name.to_s.underscore}"
+      def autoload(name, path, method = nil)
         extensions[method] << name if method
         Sinatra.autoload(name, path)
       end

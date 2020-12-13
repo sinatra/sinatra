@@ -63,7 +63,7 @@ module Rack
     #             <h1>With Authenticity Token</h1>
     #             <p>This successfully takes you to back to this form.</p>
     #             <form action="" method="post">
-    #               <input type="hidden" name="authenticity_token" value="#{env['rack.session'][:csrf]}" />
+    #               <input type="hidden" name="authenticity_token" value="#{Rack::Protection::AuthenticityToken.token(env['rack.session'])}" />
     #               <input type="text" name="foo" />
     #               <input type="submit" />
     #             </form>
@@ -189,7 +189,14 @@ module Rack
       end
 
       def xor_byte_strings(s1, s2)
-        s1.bytes.zip(s2.bytes).map { |(c1,c2)| c1 ^ c2 }.pack('c*')
+        s2 = s2.dup
+        size = s1.bytesize
+        i = 0
+        while i < size
+          s2.setbyte(i, s1.getbyte(i) ^ s2.getbyte(i))
+          i += 1
+        end
+        s2
       end
     end
   end

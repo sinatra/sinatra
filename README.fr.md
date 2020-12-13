@@ -26,8 +26,12 @@ Puis lancez votre programme :
 ruby mon_application.rb
 ```
 
-Le résultat est visible sur :
-[http://localhost:4567](http://localhost:4567)
+Le résultat est visible sur : [http://localhost:4567](http://localhost:4567)
+
+Le code que vous avez modifié ne sera pas pris en compte tant que vous ne
+redémarrerez pas le serveur. Pensez à redémarrer le serveur à chaque
+modification ou utilisez
+[sinatra/reloader](http://www.sinatrarb.com/contrib/reloader).
 
 Il est recommandé d'exécuter également `gem install thin`, pour que
 Sinatra utilise le server Thin quand il est disponible.
@@ -55,11 +59,13 @@ Sinatra utilise le server Thin quand il est disponible.
             * [Templates Markdown](#templates-markdown)
             * [Templates Textile](#templates-textile)
             * [Templates RDoc](#templates-rdoc)
+            * [Templates Asciidoc](#templates-asciidoc)
             * [Templates Radius](#templates-radius)
             * [Templates Markaby](#templates-markaby)
             * [Templates RABL](#templates-rabl)
             * [Templates Slim](#templates-slim)
             * [Templates Creole](#templates-creole)
+            * [Templates MediaWiki](#templates-mediawiki)
             * [Templates CoffeeScript](#templates-coffeescript)
             * [Templates Stylus](#templates-stylus)
             * [Templates Yajl](#templates-yajl)
@@ -70,6 +76,7 @@ Sinatra utilise le server Thin quand il est disponible.
         * [Templates nommés](#templates-nommés)
         * [Associer des extensions de fichier](#associer-des-extensions-de-fichier)
         * [Ajouter son propre moteur de rendu](#ajouter-son-propre-moteur-de-rendu)
+        * [Utiliser des règles personnalisées pour la recherche de templates](#utiliser-des-règles-personnalisées-pour-la-recherche-de-templates)
     * [Filtres](#filtres)
     * [Helpers](#helpers)
         * [Utiliser les sessions](#utiliser-les-sessions)
@@ -91,7 +98,7 @@ Sinatra utilise le server Thin quand il est disponible.
     * [Configuration](#configuration)
         * [Se protéger des attaques](#se-protéger-des-attaques)
         * [Paramètres disponibles](#paramètres-disponibles)
-    * [Environements](#environements)
+    * [Environnements](#environnements)
     * [Gérer les erreurs](#gérer-les-erreurs)
         * [NotFound](#notfound)
         * [Error](#error)
@@ -157,8 +164,17 @@ unlink '/' do
 end
 ```
 
-Les routes sont évaluées  dans l'ordre où elles ont été définies. La première
+Les routes sont évaluées dans l'ordre où elles ont été définies. La première
 route qui correspond à la requête est appelée.
+
+Les routes se terminant par un slash sont différentes de celles qui n'en
+comportent pas :
+
+```ruby
+get '/foo' do
+  # Ne correspond pas à "GET /foo/"
+end
+```
 
 Les masques peuvent inclure des paramètres nommés, accessibles par
 l'intermédiaire du hash `params` :
@@ -242,9 +258,23 @@ get '/articles' do
 end
 ```
 
-A ce propos, à moins d'avoir désactivé la protection contre les attaques par
+À ce propos, à moins d'avoir désactivé la protection contre les attaques par
 "path transversal" (voir plus loin), l'URL demandée peut avoir été modifiée
 avant d'être comparée à vos routes.
+
+Vous pouvez personnaliser les options [Mustermann](https://github.com/sinatra/mustermann#readme)
+utilisées pour une route donnée en fournissant un hash `:mustermann_opts` :
+
+```ruby
+get '\A/articles\z', :mustermann_opts => { :type => :regexp, :check_anchors => false } do
+  # répond exactement à /articles, avec un ancrage explicite
+  "Si tu réponds à un pattern ancré tape dans tes mains !
+end
+```
+
+Cela ressemble à une [condition](#conditions), mais ce n'en est pas une !
+Ces options seront mergées dans le hash global `:mustermann_opts` décrit
+[plus bas](#paramètres-disponibles).
 
 ## Conditions
 
@@ -400,7 +430,7 @@ end
 Les fichiers du dossier `./public` sont servis de façon statique. Vous pouvez spécifier un autre dossier avec le paramètre `:public_folder` :
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/statique'
+set :public_folder, __dir__ + '/statique'
 ```
 
 Notez que le nom du dossier public n'apparait pas dans l'URL. Le fichier
@@ -541,6 +571,15 @@ end
 ```
 
 Utilisera la chaine de caractères comme template pour générer la réponse.
+Vous pouvez spécifier un `:path` et `:line` optionnels pour une trace plus
+claire s'il existe un chemin dans le système de fichiers ou une ligne
+associés à cette chaîne de caractères :
+
+```ruby
+get '/' do
+  haml '%div.title Bonjour le monde', :path => 'exemples/fichier.haml', :line => 3
+end
+```
 
 ### Langages de template disponibles
 
@@ -826,7 +865,28 @@ pas utiliser de layouts écrits en RDoc. Toutefois, il est
 possible d’utiliser un moteur de rendu différent pour le template et
 pour le layout en utilisant l’option `:layout_engine`.
 
+#### Templates Asciidoc
+
+<table>
+  <tr>
+    <td>Dépendances</td>
+    <td><a href="http://asciidoctor.org/" title="Asciidoctor">Asciidoctor</a></td>
+  </tr>
+  <tr>
+    <td>Extensions de fichier</td>
+    <td><tt>.asciidoc</tt>, <tt>.adoc</tt> and <tt>.ad</tt></td>
+  </tr>
+  <tr>
+    <td>Exemple</td>
+    <td><tt>asciidoc :README, :layout_engine => :erb</tt></td>
+  </tr>
+</table>
+
+Comme vous ne pouvez pas appeler de méthodes Ruby depuis un template
+AsciiDoc, vous aurez sûrement à lui passer des variables locales.
+
 #### Templates Radius
+
 <table>
   <tr>
     <td>Dépendances</td>
@@ -935,6 +995,44 @@ Comme vous ne pouvez pas appeler de méthodes Ruby depuis Creole, vous ne pouvez
 pas utiliser de layouts écrits en Creole. Toutefois, il est possible
 d'utiliser un moteur de rendu différent pour le template et pour le layout
 en utilisant l'option `:layout_engine`.
+
+#### Templates MediaWiki
+
+<table>
+  <tr>
+    <td>Dépendances</td>
+    <td><a href="https://github.com/nricciar/wikicloth" title="WikiCloth">WikiCloth</a></td>
+  </tr>
+  <tr>
+    <td>Extensions de fichier</td>
+    <td><tt>.mediawiki</tt> and <tt>.mw</tt></td>
+  </tr>
+  <tr>
+    <td>Exemple</td>
+    <td><tt>mediawiki :wiki, :layout_engine => :erb</tt></td>
+  </tr>
+</table>
+
+Il n’est pas possible d’appeler de méthodes Ruby depuis Mediawiki, ni de lui
+passer de variables locales. Par conséquent, il sera souvent utilisé en
+combinaison avec un autre moteur de rendu :
+
+```ruby
+erb :overview, :locals => { :text => mediawiki(:introduction) }
+```
+
+Notez que vous pouvez également appeler la méthode `mediawiki` depuis un
+autre template :
+
+```ruby
+%h1 Bonjour depuis Haml !
+%p= mediawiki(:bienvenue)
+```
+
+Comme vous ne pouvez pas appeler de méthodes Ruby depuis MediaWiki, vous ne pouvez
+pas utiliser de layouts écrits en MediaWiki. Toutefois, il est
+possible d’utiliser un moteur de rendu différent pour le template et
+pour le layout en utilisant l’option `:layout_engine`.
 
 #### Templates CoffeeScript
 
@@ -1078,12 +1176,12 @@ get '/:id' do
 end
 ```
 
-Ceci est généralement nécessaire lorsque l'on veut utiliser un template depuis un autre template (partiel) et qu'il faut donc adapter le nom des variables.  
+Ceci est généralement nécessaire lorsque l'on veut utiliser un template depuis un autre template (partiel) et qu'il faut donc adapter le nom des variables.
 
 ### Templates avec `yield` et layouts imbriqués
 
 En général, un layout est un simple template qui appelle `yield`. Ce genre de
-template peut s'utiliser via l'option `:template`  comme décrit précédemment ou
+template peut s'utiliser via l'option `:template` comme décrit précédemment ou
 peut être rendu depuis un bloc :
 
 ```ruby
@@ -1202,6 +1300,23 @@ end
 ```
 
 Utilisera `./views/index.monmoteur`. Voir [le projet Github](https://github.com/rtomayko/tilt) pour en savoir plus sur Tilt.
+
+### Utiliser des règles personnalisées pour la recherche de templates
+
+Pour implémenter votre propre mécanisme de recherche de templates, vous
+pouvez écrire votre propre méthode `#find_template` :
+
+```ruby
+configure do
+  set :views, [ './vues/a', './vues/b' ]
+end
+
+def find_template(vues, nom, moteur, &bloc)
+  Array(vues).each do |v|
+    super(v, nom, moteur, &bloc)
+  end
+end
+```
 
 ## Filtres
 
@@ -1542,7 +1657,7 @@ post '/message' do
     # prévient le client qu'un nouveau message est arrivé
     out << params['message'] << "\n"
 
-    # indique au client de se connecter à nouveau
+    # indique au client de se connecter à nouveau
     out.close
   end
 
@@ -1550,6 +1665,10 @@ post '/message' do
   "message reçu"
 end
 ```
+
+Il est aussi possible pour le client de fermer la connexion en essayant
+d'écrire sur le socket. Pour cette raison, il est recommandé de vérifier
+`out.closed?` avant d'essayer d'y écrire.
 
 ### Journalisation (Logging)
 
@@ -1792,12 +1911,6 @@ Les options sont :
     le nom du fichier dans la réponse, par défaut le nom du fichier envoyé.
   </dd>
 
-  <dt>last_modified</dt>
-  <dd>
-    valeur pour l’en-tête Last-Modified, par défaut la date de modification du
-    fichier.
-  </dd>
-
   <dt>type</dt>
   <dd>
     type de contenu à utiliser, deviné à partir de l’extension de fichier si
@@ -1816,7 +1929,6 @@ Les options sont :
   <dt>status</dt>
   <dd>
     code état à renvoyer. Utile quand un fichier statique sert de page d’erreur.
-
     Si le gestionnaire Rack le supporte, d'autres moyens que le streaming via le
     processus Ruby seront utilisés. Si vous utilisez cette méthode, Sinatra gérera
     automatiquement les requêtes de type range.
@@ -1962,8 +2074,8 @@ vous pouvez utiliser plus d'un répertoire de vues :
 set :views, ['views', 'templates']
 
 helpers do
-  def find_template(views, name, engine, &block)
-    Array(views).each { |v| super(v, name, engine, &block) }
+  def find_template(vues, nom, moteur, &bloc)
+    Array(vues).each { |v| super(v, nom, moteur, &bloc) }
   end
 end
 ```
@@ -2142,6 +2254,12 @@ set :protection, :session => true
   <dt>port</dt>
   <dd>port à écouter. Utiliser seulement pour le serveur intégré.</dd>
 
+  <dt>mustermann_opts</dt>
+  <dd>
+    Un hash d'options à passer à Mustermann.new lors de la compilation
+    des chemins de routes
+  </dd>
+
   <dt>prefixed_redirects</dt>
   <dd>si oui ou non <tt>request.script_name</tt> doit être inséré dans les
   redirections si un chemin non absolu est utilisé. Ainsi, <tt>redirect
@@ -2160,6 +2278,12 @@ set :protection, :session => true
   Utilisé seulement si les fichiers statiques doivent être servis (voir le
   paramètre <tt>static</tt>). Si non défini, il découle du paramètre
   <tt>app_file</tt>.</dd>
+
+  <dt>quiet</dt>
+  <dd>
+    Désactive les journaux (logs) générés par les commandes start et stop
+    de Sinatra. <tt>false</tt> par défaut.
+  </dd>
 
   <dt>reload_templates</dt>
   <dd>si oui ou non les templates doivent être rechargés entre les requêtes.
@@ -2187,10 +2311,26 @@ set :protection, :session => true
   défaut [‘thin’, ‘mongrel’, ‘webrick’], l’ordre indiquant la
   priorité.</dd>
 
+  <dt>server_settings</dt>
+  <dd>
+    Si vous utilisez un serveur Webrick, sans doute pour votre environnement de
+    développement, vous pouvez passer des options à <tt>server_settings</tt>,
+    comme <tt>SSLEnable</tt> ou <tt>SSLVerifyClient</tt>. Cependant, les
+    serveurs comme Puma et Thin ne le permettent pas, et vous pouvez donc
+    définir <tt>server_settings</tt> en tant que méthode lorsque vous appelez
+    <tt>configure</tt>.
+  </dd>
+
   <dt>sessions</dt>
   <dd>active le support des sessions basées sur les cookies, en utilisant
   <tt>Rack::Session::Cookie</tt>. Reportez-vous à la section ‘Utiliser les
   sessions’ pour plus d’informations.</dd>
+
+  <dt>session_store</dt>
+  <dd>
+    Le middleware Rack utilisé pour les sessions. <tt>Rack::Session::Cookie</tt>
+    par défaut. Voir la section 'Utiliser les sessions' pour plus de détails.
+  </dd>
 
   <dt>show_exceptions</dt>
   <dd>affiche la trace de l’erreur dans le navigateur lorsqu’une exception se
@@ -2214,6 +2354,9 @@ set :protection, :session => true
   <dd>à définir à <tt>true</tt> pour indiquer à Thin d’utiliser
   <tt>EventMachine.defer</tt> pour traiter la requête.</dd>
 
+  <dt>traps</dt>
+  <dd>Indique si Sinatra doit gérer les signaux système.</dd>
+
   <dt>views</dt>
   <dd>chemin pour le dossier des vues. Si non défini, il découle du paramètre
   <tt>app_file</tt>.</dd>
@@ -2225,10 +2368,10 @@ set :protection, :session => true
   </dd>
 </dl>
 
-## Environements
+## Environnements
 
 Il existe trois environnements prédéfinis : `"development"`,
-`"production"` et `"test"`. Les environements peuvent être
+`"production"` et `"test"`. Les environnements peuvent être
 sélectionné via la variable d'environnement `APP_ENV`. Sa valeur par défaut
 est `"development"`. Dans ce mode, tous les templates sont rechargés à
 chaque requête. Des handlers spécifiques pour `not_found` et
@@ -2276,7 +2419,15 @@ end
 ### Error
 
 Le gestionnaire `error` est invoqué à chaque fois qu'une exception est
-soulevée dans une route ou un filtre. L'objet exception est accessible via la
+soulevée dans une route ou un filtre. Notez qu'en développement, il ne
+sera exécuté que si vous définissez l'option show exceptions à
+`:after_handler` :
+
+```ruby
+set :show_exceptions, :after_handler
+```
+
+L'objet exception est accessible via la
 variable Rack `sinatra.error` :
 
 ```ruby
@@ -2285,7 +2436,7 @@ error do
 end
 ```
 
-Erreur sur mesure :
+Erreur personnalisée :
 
 ```ruby
 error MonErreurSurMesure do
@@ -2411,6 +2562,9 @@ class MonTest < Minitest::Test
   end
 end
 ```
+
+Note : si vous utilisez le style modulaire de Sinatra, remplacez
+`Sinatra::Application` par le nom de la classe de votre application.
 
 ## Sinatra::Base - Les Middlewares, Bibliothèques, et Applications Modulaires
 
@@ -2818,9 +2972,9 @@ multi-threaded:
 require 'sinatra/base'
 
 classe App < Sinatra::Base
-  get '/' do
+  get '/' do
     'Bonjour le monde !'
-  end
+  end
 end
 
 App.run!
@@ -2839,31 +2993,9 @@ thin --threaded start
 Les versions suivantes de Ruby sont officiellement supportées :
 
 <dl>
-  <dt>Ruby 1.8.7</dt>
+  <dt>Ruby 2.2</dt>
   <dd>
-    1.8.7 est complètement supporté, toutefois si rien ne vous en empêche,
-    nous vous recommandons de faire une mise à jour ou bien de passer à JRuby
-    ou Rubinius. Le support de Ruby 1.8.7 ne sera pas supprimé avant la sortie
-    de Sinatra 2.0. Ruby 1.8.6 n’est plus supporté.
-  </dd>
-
-  <dt>Ruby 1.9.2</dt>
-  <dd>
-    1.9.2 est totalement supporté. N’utilisez pas 1.9.2p0 car il provoque des
-    erreurs de segmentation à l’exécution de Sinatra. Son support continuera
-    au minimum jusqu’à la sortie de Sinatra 1.5.
-  </dd>
-
-  <dt>Ruby 1.9.3</dt>
-  <dd>
-    1.9.3 est totalement supporté et recommandé. Nous vous rappelons que passer
-    à 1.9.3 depuis une version précédente annulera toutes les sessions. 1.9.3
-    sera supporté jusqu'à la sortie de Sinatra 2.0.
-  </dd>
-
-  <dt>Ruby 2.0.0</dt>
-  <dd>
-    2.0.0 est totalement supporté et recommandé. L'abandon de son support
+    2.2 est totalement supporté et recommandé. L'abandon de son support
     officiel n'est pas à l'ordre du jour.
   </dd>
 
@@ -2880,6 +3012,8 @@ Les versions suivantes de Ruby sont officiellement supportées :
     trinidad</tt> est recommandé.
   </dd>
 </dl>
+
+Les versions antérieures à 2.2.2 ne sont plus supportées depuis Sinatra 2.0.
 
 Nous gardons également un oeil sur les versions Ruby à venir.
 
@@ -2951,43 +3085,6 @@ Vous pouvez alors lancer votre application de la façon suivante :
 
 ```shell
 bundle exec ruby myapp.rb
-```
-
-### Faire un clone local
-
-Si vous ne souhaitez pas employer Bundler, vous pouvez cloner Sinatra en local
-dans votre projet et démarrez votre application avec le dossier `sinatra/lib`
-dans le `$LOAD_PATH` :
-
-```shell
-cd myapp
-git clone git://github.com/sinatra/sinatra.git
-ruby -I sinatra/lib myapp.rb
-```
-
-Et de temps en temps, vous devrez récupérer la dernière version du code source
-de Sinatra :
-
-```shell
-cd myapp/sinatra
-git pull
-```
-
-### Installer globalement
-
-Une dernière méthode consiste à construire la gem vous-même :
-
-```shell
-git clone git://github.com/sinatra/sinatra.git
-cd sinatra
-rake sinatra.gemspec
-rake install
-```
-
-Si vous installez les gems en tant que root, vous devez encore faire un :
-
-```shell
-sudo rake install
 ```
 
 ## Versions

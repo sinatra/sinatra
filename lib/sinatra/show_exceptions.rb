@@ -43,43 +43,8 @@ module Sinatra
       ]
     end
 
-    # Pulled from Rack::ShowExceptions in order to override TEMPLATE.
-    # If Rack provides another way to override, this could be removed
-    # in the future.
-    def pretty(env, exception)
-      req = Rack::Request.new(env)
-
-      # This double assignment is to prevent an "unused variable" warning on
-      # Ruby 1.9.3.  Yes, it is dumb, but I don't like Ruby yelling at me.
-      path = path = (req.script_name + req.path_info).squeeze("/")
-
-      # This double assignment is to prevent an "unused variable" warning on
-      # Ruby 1.9.3.  Yes, it is dumb, but I don't like Ruby yelling at me.
-      frames = frames = exception.backtrace.map { |line|
-        frame = OpenStruct.new
-        if line =~ /(.*?):(\d+)(:in `(.*)')?/
-          frame.filename = $1
-          frame.lineno = $2.to_i
-          frame.function = $4
-
-          begin
-            lineno = frame.lineno-1
-            lines = ::File.readlines(frame.filename)
-            frame.pre_context_lineno = [lineno-CONTEXT, 0].max
-            frame.pre_context = lines[frame.pre_context_lineno...lineno]
-            frame.context_line = lines[lineno].chomp
-            frame.post_context_lineno = [lineno+CONTEXT, lines.size].min
-            frame.post_context = lines[lineno+1..frame.post_context_lineno]
-          rescue
-          end
-
-          frame
-        else
-          nil
-        end
-      }.compact
-
-      TEMPLATE.result(binding)
+    def template
+      TEMPLATE
     end
 
     private

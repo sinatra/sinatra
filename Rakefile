@@ -202,11 +202,14 @@ if defined?(Gem)
 
     desc "Commits the version to github repository"
     task :commit_version do
-      sh <<-SH
-        sed -i "s/.*VERSION.*/  VERSION = '#{source_version}'/" lib/sinatra/version.rb
-        sed -i "s/.*VERSION.*/    VERSION = '#{source_version}'/" sinatra-contrib/lib/sinatra/contrib/version.rb
-        sed -i "s/.*VERSION.*/    VERSION = '#{source_version}'/" rack-protection/lib/rack/protection/version.rb
-      SH
+      %w[
+        lib/sinatra
+        sinatra-contrib/lib/sinatra/contrib
+        rack-protection/lib/rack/protection
+      ].each do |path|
+        path = File.join(path, 'version.rb')
+        File.write(path, File.read(path).sub(/VERSION = '(.+?)'/, "VERSION = '#{source_version}'"))
+      end
 
       sh <<-SH
         git commit --allow-empty -a -m '#{source_version} release'  &&

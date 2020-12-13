@@ -9,11 +9,11 @@ module Rack
     #                      http://tools.ietf.org/html/draft-abarth-origin
     #
     # Does not accept unsafe HTTP requests when value of Origin HTTP request header
-    # does not match default or whitelisted URIs.
+    # does not match default or permitted URIs.
     #
-    # If you want to whitelist a specific domain, you can pass in as the `:origin_whitelist` option:
+    # If you want to permit a specific domain, you can pass in as the `:permitted_origins` option:
     #
-    #     use Rack::Protection, origin_whitelist: ["http://localhost:3000", "http://127.0.01:3000"]
+    #     use Rack::Protection, permitted_origins: ["http://localhost:3000", "http://127.0.01:3000"]
     #
     # The `:allow_if` option can also be set to a proc to use custom allow/deny logic.
     class HttpOrigin < Base
@@ -32,7 +32,14 @@ module Rack
         return true unless origin = env['HTTP_ORIGIN']
         return true if base_url(env) == origin
         return true if options[:allow_if] && options[:allow_if].call(env)
-        Array(options[:origin_whitelist]).include? origin
+
+        if options.key? :origin_whitelist
+          warn env, "Rack::Protection origin_whitelist option is deprecated and will be removed, " \
+            "use permitted_origins instead.\n"
+        end
+
+        permitted_origins = options[:permitted_origins] || options[:origin_whitelist]
+        Array(permitted_origins).include? origin
       end
 
     end

@@ -19,18 +19,10 @@ module Rack
       end
 
       def cleanup(path)
-        if path.respond_to?(:encoding)
-          # Ruby 1.9+ M17N
-          encoding = path.encoding
-          dot   = '.'.encode(encoding)
-          slash = '/'.encode(encoding)
-          backslash = '\\'.encode(encoding)
-        else
-          # Ruby 1.8
-          dot   = '.'
-          slash = '/'
-          backslash = '\\'
-        end
+        encoding = path.encoding
+        dot   = '.'.encode(encoding)
+        slash = '/'.encode(encoding)
+        backslash = '\\'.encode(encoding)
 
         parts     = []
         unescaped = path.gsub(/%2e/i, dot).gsub(/%2f/i, slash).gsub(/%5c/i, backslash)

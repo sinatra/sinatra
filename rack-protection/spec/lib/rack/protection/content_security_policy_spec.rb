@@ -4,7 +4,7 @@ describe Rack::Protection::ContentSecurityPolicy do
   it 'should set the Content Security Policy' do
     expect(
       get('/', {}, 'wants' => 'text/html').headers["Content-Security-Policy"]
-    ).to eq("connect-src 'self'; default-src none; img-src 'self'; script-src 'self'; style-src 'self'")
+    ).to eq("default-src 'self'")
   end
 
   it 'should not set the Content Security Policy for other content types' do
@@ -33,7 +33,7 @@ describe Rack::Protection::ContentSecurityPolicy do
     end
 
     headers = get('/', {}, 'wants' => 'text/html').headers
-    expect(headers["Content-Security-Policy"]).to eq("block-all_mixed_content; connect-src 'self'; default-src none; disown-opener; img-src 'self'; script-src 'self'; style-src 'self'; upgrade-insecure_requests")
+    expect(headers["Content-Security-Policy"]).to eq("block-all-mixed-content; default-src 'self'; disown-opener; upgrade-insecure-requests")
   end
 
   it 'should ignore CSP3 no arg directives unless they are set to true' do
@@ -44,7 +44,7 @@ describe Rack::Protection::ContentSecurityPolicy do
     end
 
     headers = get('/', {}, 'wants' => 'text/html').headers
-    expect(headers["Content-Security-Policy"]).to eq("connect-src 'self'; default-src none; img-src 'self'; script-src 'self'; style-src 'self'")
+    expect(headers["Content-Security-Policy"]).to eq("default-src 'self'")
   end
 
   it 'should allow changing report only' do
@@ -56,7 +56,7 @@ describe Rack::Protection::ContentSecurityPolicy do
 
     headers = get('/', {}, 'wants' => 'text/html').headers
     expect(headers["Content-Security-Policy"]).to be_nil
-    expect(headers["Content-Security-Policy-Report-Only"]).to eq("connect-src 'self'; default-src none; img-src 'self'; report-uri /my_amazing_csp_report_parser; script-src 'self'; style-src 'self'")
+    expect(headers["Content-Security-Policy-Report-Only"]).to eq("default-src 'self'; report-uri /my_amazing_csp_report_parser")
   end
 
   it 'should not override the header if already set' do

@@ -1,3 +1,77 @@
+## 2.1.0 / 2020-09-05
+
+* Fix additional Ruby 2.7 keyword warnings [#1586](https://github.com/sinatra/sinatra/pull/1586) by Stefan Sundin
+
+* Drop Ruby 2.2 support [#1455](https://github.com/sinatra/sinatra/pull/1455) by Eloy Pérez
+
+* Add Rack::Protection::ReferrerPolicy [#1291](https://github.com/sinatra/sinatra/pull/1291) by Stefan Sundin
+
+* Add `default_content_type` setting. Fixes [#1238](https://github.com/sinatra/sinatra/pull/1238) [#1239](https://github.com/sinatra/sinatra/pull/1239) by Mike Pastore
+
+* Allow `set :<engine>` in sinatra-namespace [#1255](https://github.com/sinatra/sinatra/pull/1255) by Christian Höppner
+
+* Use prepend instead of include for helpers. Fixes [#1213](https://github.com/sinatra/sinatra/pull/1213) [#1214](https://github.com/sinatra/sinatra/pull/1214) by Mike Pastore
+
+* Fix issue with passed routes and provides Fixes [#1095](https://github.com/sinatra/sinatra/pull/1095) [#1606](https://github.com/sinatra/sinatra/pull/1606) by Mike Pastore, Jordan Owens
+
+* Add QuietLogger that excludes pathes from Rack::CommonLogger [1250](https://github.com/sinatra/sinatra/pull/1250) by Christoph Wagner
+
+* Sinatra::Contrib dependency updates. Fixes [#1207](https://github.com/sinatra/sinatra/pull/1207) [#1411](https://github.com/sinatra/sinatra/pull/1411) by Mike Pastore
+
+* Allow CSP to fallback to default-src. Fixes [#1484](https://github.com/sinatra/sinatra/pull/1484) [#1490](https://github.com/sinatra/sinatra/pull/1490) by Jordan Owens
+
+* Replace `origin_whitelist` with `permitted_origins`. Closes [#1620](https://github.com/sinatra/sinatra/issues/1620) [#1625](https://github.com/sinatra/sinatra/pull/1625) by rhymes
+
+* Use Rainbows instead of thin for async/stream features. Closes [#1624](https://github.com/sinatra/sinatra/issues/1624) [#1627](https://github.com/sinatra/sinatra/pull/1627) by Ryuichi KAWAMATA
+
+* Enable EscapedParams if passed via settings. Closes [#1615](https://github.com/sinatra/sinatra/issues/1615) [#1632](https://github.com/sinatra/sinatra/issues/1632) by Anders Bälter
+
+* Support for parameters in mime types. Fixes [#1141](https://github.com/sinatra/sinatra/issues/1141) by John Hope
+
+* Handle null byte when serving static files [#1574](https://github.com/sinatra/sinatra/issues/1574) by Kush Fanikiso
+
+* Improve development support and documentation and source code by Olle Jonsson, Pierre-Adrien Buisson, Shota Iguchi
+
+## 2.0.8.1 / 2020-01-02
+
+* Allow multiple hashes to be passed in `merge` and `merge!` for `Sinatra::IndifferentHash` [#1572](https://github.com/sinatra/sinatra/pull/1572) by Shota Iguchi
+
+## 2.0.8 / 2020-01-01
+
+* Lookup Tilt class for template engine without loading files [#1558](https://github.com/sinatra/sinatra/pull/1558). Fixes [#1172](https://github.com/sinatra/sinatra/issues/1172) by Jordan Owens
+
+* Add request info in NotFound exception [#1566](https://github.com/sinatra/sinatra/pull/1566) by Stefan Sundin
+
+* Add `.yaml` support in `Sinatra::Contrib::ConfigFile` [#1564](https://github.com/sinatra/sinatra/issues/1564). Fixes [#1563](https://github.com/sinatra/sinatra/issues/1563) by Emerson Manabu Araki
+
+* Remove only routing parameters from @params hash [#1569](https://github.com/sinatra/sinatra/pull/1569). Fixes [#1567](https://github.com/sinatra/sinatra/issues/1567) by Jordan Owens, Horacio
+
+* Support `capture` and `content_for` with Hamlit [#1580](https://github.com/sinatra/sinatra/pull/1580) by Takashi Kokubun
+
+* Eliminate warnings of keyword parameter for Ruby 2.7.0 [#1581](https://github.com/sinatra/sinatra/pull/1581) by Osamtimizer
+
+## 2.0.7 / 2019-08-22
+
+* Fix a regression [#1560](https://github.com/sinatra/sinatra/pull/1560) by Kunpei Sakai
+
+## 2.0.6 / 2019-08-21
+
+* Fix an issue setting environment from command line option [#1547](https://github.com/sinatra/sinatra/pull/1547), [#1554](https://github.com/sinatra/sinatra/pull/1554) by Jordan Owens, Kunpei Sakai
+
+* Support pandoc as a new markdown renderer [#1533](https://github.com/sinatra/sinatra/pull/1533) by Vasiliy
+
+* Remove outdated code for tilt 1.x [#1532](https://github.com/sinatra/sinatra/pull/1532) by Vasiliy
+
+* Remove an extra logic for `force_encoding` [#1527](https://github.com/sinatra/sinatra/pull/1527) by Jordan Owens
+
+* Avoid multiple errors even if `params` contains special values [#1526](https://github.com/sinatra/sinatra/pull/1527) by Kunpei Sakai
+
+* Support `bundler/inline` with `require 'sinatra'` integration [#1520](https://github.com/sinatra/sinatra/pull/1520) by Kunpei Sakai
+
+* Avoid `TypeError` when params contain a key without a value on Ruby < 2.4 [#1516](https://github.com/sinatra/sinatra/pull/1516) by Samuel Giddins
+
+* Improve development support and documentation and source code by  Olle Jonsson, Basavanagowda Kanur, Yuki MINAMIYA
+
 ## 2.0.5 / 2018-12-22
 
 * Avoid FrozenError when params contains frozen value [#1506](https://github.com/sinatra/sinatra/pull/1506) by Kunpei Sakai

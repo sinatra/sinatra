@@ -393,7 +393,7 @@ end
 静态文件从 `./public` 目录提供服务。可以通过设置`:public_folder` 选项设定一个不同的位置：
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/static'
+set :public_folder, __dir__ + '/static'
 ```
 
 请注意 public 目录名并没有包含在 URL 中。文件 `./public/css/style.css` 可以通过

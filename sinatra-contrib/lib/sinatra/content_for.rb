@@ -174,7 +174,7 @@ module Sinatra
     # for <tt>:head</tt>.
     def yield_content(key, *args, &block)
       if block_given? && !content_for?(key)
-        haml? ? capture_haml(*args, &block) : yield(*args)
+        (haml? && Tilt[:haml] == Tilt::HamlTemplate) ? capture_haml(*args, &block) : yield(*args)
       else
         content = content_blocks[key.to_sym].map { |b| capture(*args, &b) }
         content.join.tap do |c|

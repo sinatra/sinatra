@@ -16,8 +16,10 @@ group :development, :test do
   end
 
   platform :jruby, :ruby do
-    gem 'slim', '2.1.0'
+    gem 'hamlit'
+    gem 'hamlit-block', '>= 0.7.1'
     gem 'liquid', '~> 2.6.x'
+    gem 'slim'
   end
 
   platform :ruby do

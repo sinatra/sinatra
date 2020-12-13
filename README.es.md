@@ -33,7 +33,7 @@ Ver en [http://localhost:4567](http://localhost:4567).
 El código que cambiaste no tendra efecto hasta que reinicies el servidor.
 Por favor reinicia el servidor cada vez que cambies tu código o usa [sinatra/reloader](http://www.sinatrarb.com/contrib/reloader).
 
-Se recomienda ejecutar `gem install thin`, porque Sinatra lo utilizará si está disponible.
+Se recomienda ejecutar `gem install puma`, porque Sinatra lo utilizará si está disponible.
 
 
 ## Tabla de Contenidos
@@ -430,7 +430,7 @@ Los archivos estáticos son servidos desde el directorio público
 opción `:public_folder`:
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/static'
+set :public_folder, __dir__ + '/static'
 ```
 
 Note que el nombre del directorio público no está incluido en la URL. Por
@@ -1692,36 +1692,55 @@ Shotgun, el streaming no va a funcionar.
 Cuando se pasa `keep_open` como parámetro, no se va a enviar el mensaje
 `close` al objeto de stream. Permite que tu lo cierres en el punto de ejecución
 que quieras. Nuevamente, hay que tener en cuenta que este comportamiento es
-posible solo en servidores que soporten eventos, como Thin o Rainbows. El
+posible sólo en servidores que soporten eventos, como Rainbows. El
 resto de los servidores van a cerrar el stream de todos modos:
 
 ```ruby
-# long polling
 
-set :server, :thin
-connections = []
+# config.ru
+require 'sinatra/base'
 
-get '/subscribe' do
-  # registrar a un cliente interesado en los eventos del servidor
-  stream(:keep_open) do |out|
-    connections << out
-    # purgar conexiones muertas
-    connections.reject!(&:closed?)
+class App < Sinatra::Base
+  connections = []
+
+  get '/subscribe' do
+    # registrar a un cliente interesado en los eventos del servidor
+    stream(:keep_open) do |out|
+      connections << out
+      # purgar conexiones muertas
+      connections.reject!(&:closed?)
+    end
+  end
+
+  post '/:message' do
+    connections.each do |out|
+      # notificar al cliente que ha llegado un nuevo mensaje
+      out << params['message'] << "\n"
+
+      # indicar al cliente para conectarse de nuevo
+      out.close
+    end
+
+    # reconocer
+    "message received"
   end
 end
 
-post '/:message' do
-  connections.each do |out|
-    # notificar al cliente que ha llegado un nuevo mensaje
-    out << params['message'] << "\n"
+run App
+```
 
-    # indicar al cliente para conectarse de nuevo
-    out.close
-  end
+```ruby
+# rainbows.conf
 
-  # reconocer
-  "message received"
+Rainbows! do
+  use :EventMachine
 end
+```
+
+Ejecute:
+
+```shell
+rainbows -c rainbows.conf
 ```
 
 También es posible que el cliente cierre la conexión cuando intenta
@@ -2394,13 +2413,13 @@ set :protection, :except => [:path_traversal, :session_hijacking]
   <dt>server</dt>
   <dd>
     Servidor, o lista de servidores, para usar como servidor
-    integrado. Por defecto: <tt>['thin', 'mongrel', 'webrick']</tt>,
-    el orden establece la prioridad.
+    integrado. El orden indica su prioridad, por defecto depende
+    de la implementación de Ruby.
   </dd>
   
   <dt>server_settings</dt>
   <dd>
-    Si está utilizando un servidor web WEBrick, presumiblemente para su entorno de desarrollo, puede pasar un hash de opciones a <tt> server_settings </tt>, como <tt> SSLEnable </tt> o <tt> SSLVerifyClient </tt>. Sin embargo, los servidores web como Puma y Thin no son compatibles, por lo que puede establecer <tt> server_settings </tt> definiéndolo como un método cuando llame a <tt> configure </tt>.
+    Si está utilizando un servidor web WEBrick, presumiblemente para su entorno de desarrollo, puede pasar un hash de opciones a <tt> server_settings </tt>, como <tt> SSLEnable </tt> o <tt> SSLVerifyClient </tt>. Sin embargo, los servidores web como Puma no son compatibles, por lo que puede establecer <tt> server_settings </tt> definiéndolo como un método cuando llame a <tt> configure </tt>.
   </dd>
 
   <dt>sessions</dt>
@@ -2452,7 +2471,7 @@ información.
   
 <dt>threaded</dt>
 <dd>
-Si se establece en <tt> true </tt>, le dirá a Thin que use
+Si se establece en <tt> true </tt>, le dirá al servidor que use
 <tt> EventMachine.defer </tt> para procesar la solicitud.
 </dd>
 
@@ -3040,7 +3059,7 @@ Las opciones son:
 -p # asigna el puerto (4567 es usado por defecto)
 -o # asigna el host (0.0.0.0 es usado por defecto)
 -e # asigna el entorno (development es usado por defecto)
--s # especifica el servidor/manejador rack (thin es usado por defecto)
+-s # especifica el servidor/manejador rack (puma es usado por defecto)
 -q # activar el modo silecioso para el servidor (está desactivado por defecto)
 -x # activa el mutex lock (está desactivado por defecto)
 ```
@@ -3050,16 +3069,16 @@ Las opciones son:
 _Basado en [esta respuesta en StackOverflow](http://stackoverflow.com/questions/6278817/is-sinatra-multi-threaded/6282999#6282999) escrita por Konstantin_
 
 Sinatra no impone ningún modelo de concurrencia, sino que lo deja en manos del
-handler Rack que se esté usando (Thin, Puma, WEBrick). Sinatra en sí mismo es
+handler Rack que se esté usando (Puma o WEBrick). Sinatra en sí mismo es
 thread-safe, así que no hay problema en que el Rack handler use un modelo de
 concurrencia basado en hilos.
 
 Esto significa que, cuando estemos arrancando el servidor, tendríamos que
 especificar la opción adecuada para el handler Rack específico. En este ejemplo
-vemos cómo arrancar un servidor Thin multihilo:
+vemos cómo arrancar un servidor Rainbows multihilo:
 
 ```ruby
-# app.rb
+# config.ru
 
 require 'sinatra/base'
 
@@ -3069,13 +3088,23 @@ class App < Sinatra::Base
   end
 end
 
-App.run!
+run App
+```
+
+```ruby
+# rainbows.conf
+
+# El configurador de Rainbows está basado en Unicorn.
+
+Rainbows! do
+  use :ThreadSpawn
+end
 ```
 
 Para arrancar el servidor, el comando sería:
 
 ```shell
-thin --threaded start
+rainbows -c rainbows.conf
 ```
 
 ## Requerimientos
@@ -3083,9 +3112,9 @@ thin --threaded start
 Las siguientes versiones de Ruby son soportadas oficialmente:
 
 <dl>
-  <dt>Ruby 2.2</dt>
+  <dt>Ruby 2.3</dt>
     <dd>
-      2.2 Es totalmente compatible y recomendado. Actualmente no hay planes
+      2.3 Es totalmente compatible y recomendado. Actualmente no hay planes
       soltar el apoyo oficial para ello.
     </dd>
 

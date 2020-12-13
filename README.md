@@ -34,7 +34,7 @@ The code you changed will not take effect until you restart the server.
 Please restart the server every time you change or use
 [sinatra/reloader](http://www.sinatrarb.com/contrib/reloader).
 
-It is recommended to also run `gem install thin`, which Sinatra will
+It is recommended to also run `gem install puma`, which Sinatra will
 pick up if available.
 
 ## Table of Contents
@@ -344,11 +344,11 @@ end
 ## Return Values
 
 The return value of a route block determines at least the response body
-passed on to the HTTP client, or at least the next middleware in the
+passed on to the HTTP client or at least the next middleware in the
 Rack stack. Most commonly, this is a string, as in the above examples.
 But other values are also accepted.
 
-You can return any object that would either be a valid Rack response, Rack
+You can return an object that would either be a valid Rack response, Rack
 body object or HTTP status code:
 
 * An Array with three elements: `[status (Integer), headers (Hash), response
@@ -372,7 +372,7 @@ get('/') { Stream.new }
 ```
 
 You can also use the `stream` helper method ([described below](#streaming-responses)) to reduce
-boiler plate and embed the streaming logic in the route.
+boilerplate and embed the streaming logic in the route.
 
 ## Custom Route Matchers
 
@@ -427,7 +427,7 @@ Static files are served from the `./public` directory. You can specify
 a different location by setting the `:public_folder` option:
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/static'
+set :public_folder, __dir__ + '/static'
 ```
 
 Note that the public directory name is not included in the URL. A file
@@ -750,6 +750,8 @@ template, you almost always want to pass locals to it.
         <a href="https://github.com/ged/bluecloth" title="BlueCloth">BlueCloth</a>,
         <a href="https://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
         <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
+        <a href="https://github.com/gjtorikian/commonmarker" title="commonmarker">commonmarker</a>
+        <a href="https://github.com/alphabetum/pandoc-ruby" title="pandoc">pandoc</a>
     </td>
   </tr>
   <tr>
@@ -1199,7 +1201,7 @@ end
 ```
 
 Currently, the following rendering methods accept a block: `erb`, `haml`,
-`liquid`, `slim `, `wlang`. Also the general `render` method accepts a block.
+`liquid`, `slim `, `wlang`. Also, the general `render` method accepts a block.
 
 ### Inline Templates
 
@@ -1222,7 +1224,7 @@ __END__
 %div.title Hello world.
 ```
 
-NOTE: Inline templates defined in the source file that requires sinatra are
+NOTE: Inline templates defined in the source file that requires Sinatra are
 automatically loaded. Call `enable :inline_templates` explicitly if you
 have inline templates in other source files.
 
@@ -1291,7 +1293,7 @@ own `#find_template` method:
 
 ```ruby
 configure do
-  set :views [ './views/a', './views/b' ]
+  set :views, [ './views/a', './views/b' ]
 end
 
 def find_template(views, name, engine, &block)
@@ -1432,7 +1434,7 @@ For better security and usability it's
 secret and store it in an environment variable on each host running your
 application so that all of your application instances will share the same
 secret. You should periodically rotate this session secret to a new value.
-Here are some examples of how you might create a 64 byte secret and set it:
+Here are some examples of how you might create a 64-byte secret and set it:
 
 **Session Secret Generation**
 
@@ -1444,7 +1446,7 @@ $ ruby -e "require 'securerandom'; puts SecureRandom.hex(64)"
 **Session Secret Generation (Bonus Points)**
 
 Use the [sysrandom gem](https://github.com/cryptosphere/sysrandom#readme) to
-prefer use of system RNG facilities to generate random values instead of
+use the system RNG facilities to generate random values instead of
 userspace `OpenSSL` which MRI Ruby currently defaults to:
 
 ```text
@@ -1470,7 +1472,7 @@ purposes only:
 
 **Session Secret App Config**
 
-Setup your app config to fail-safe to a secure random secret
+Set up your app config to fail-safe to a secure random secret
 if the `SESSION_SECRET` environment variable is not available.
 
 For bonus points use the [sysrandom
@@ -1591,7 +1593,7 @@ matching route. If no matching route is found, a 404 is returned.
 
 ### Triggering Another Route
 
-Sometimes `pass` is not what you want, instead you would like to get the
+Sometimes `pass` is not what you want, instead, you would like to get the
 result of calling another route. Simply use `call` to achieve this:
 
 ```ruby
@@ -1614,13 +1616,13 @@ than a duplicate, use `call!` instead of `call`.
 
 Check out the Rack specification if you want to learn more about `call`.
 
-### Setting Body, Status Code and Headers
+### Setting Body, Status Code, and Headers
 
 It is possible and recommended to set the status code and response body with
-the return value of the route block. However, in some scenarios you might
+the return value of the route block. However, in some scenarios, you might
 want to set the body at an arbitrary point in the execution flow. You can do
 so with the `body` helper method. If you do so, you can use that method from
-there on to access the body:
+thereon to access the body:
 
 ```ruby
 get '/foo' do
@@ -1643,7 +1645,7 @@ get '/foo' do
   headers \
     "Allow"   => "BREW, POST, GET, PROPFIND, WHEN",
     "Refresh" => "Refresh: 20; https://ietf.org/rfc/rfc2324.txt"
-  body "I'm a tea pot!"
+  body "I'm a teapot!"
 end
 ```
 
@@ -1676,43 +1678,59 @@ also be used to increase throughput if some but not all content depends on a
 slow resource.
 
 Note that the streaming behavior, especially the number of concurrent
-requests, highly depends on the web server used to serve the application.
+requests, highly depends on the webserver used to serve the application.
 Some servers might not even support streaming at all. If the server does not
 support streaming, the body will be sent all at once after the block passed
 to `stream` finishes executing. Streaming does not work at all with Shotgun.
 
 If the optional parameter is set to `keep_open`, it will not call `close` on
 the stream object, allowing you to close it at any later point in the
-execution flow. This only works on evented servers, like Thin and Rainbows.
+execution flow. This only works on evented servers, like Rainbows.
 Other servers will still close the stream:
 
 ```ruby
-# long polling
+# config.ru
+require 'sinatra/base'
 
-set :server, :thin
-connections = []
+class App < Sinatra::Base
+  connections = []
 
-get '/subscribe' do
-  # register a client's interest in server events
-  stream(:keep_open) do |out|
-    connections << out
-    # purge dead connections
-    connections.reject!(&:closed?)
+  get '/subscribe', provides: 'text/event-stream'  do
+    # register a client's interest in server events
+    stream(:keep_open) do |out|
+      connections << out
+      # purge dead connections
+      connections.reject!(&:closed?)
+    end
+  end
+
+  post '/' do
+    connections.each do |out|
+      # notify client that a new message has arrived
+      out << "data: #{params[:msg]}\n\n"
+
+      # indicate client to connect again
+      out.close
+    end
+
+    204 # response without entity body
   end
 end
 
-post '/:message' do
-  connections.each do |out|
-    # notify client that a new message has arrived
-    out << params['message'] << "\n"
+run App
+```
 
-    # indicate client to connect again
-    out.close
-  end
-
-  # acknowledge
-  "message received"
+```ruby
+# rainbows.conf
+Rainbows! do
+  use :EventMachine
 end
+````
+
+Run:
+
+```shell
+rainbows -c rainbows.conf
 ```
 
 It's also possible for the client to close the connection when trying to
@@ -1745,7 +1763,7 @@ class MyApp < Sinatra::Base
 end
 ```
 
-To avoid any logging middleware to be set up, set the `logging` setting to
+To avoid any logging middleware to be set up, set the `logging` option to
 `nil`. However, keep in mind that `logger` will in that case return `nil`. A
 common use case is when you want to set your own logger. Sinatra will use
 whatever it will find in `env['rack.logger']`.
@@ -1779,7 +1797,7 @@ Haml:
 %a{:href => url('/foo')} foo
 ```
 
-It takes reverse proxies and Rack routers into account, if present.
+It takes reverse proxies and Rack routers into account - if present.
 
 This method is also aliased to `to` (see [below](#browser-redirect) for an example).
 
@@ -2129,7 +2147,7 @@ helpers do
 end
 ```
 
-You can also easily wrap this up in an extension and share with others!
+You can also easily wrap this up in an extension and share it with others!
 
 Note that `find_template` does not check if the file really exists but
 rather calls the given block for all possible paths. This is not a
@@ -2218,7 +2236,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
 By default, Sinatra will only set up session based protection if `:sessions`
 have been enabled. See '[Using Sessions](#using-sessions)'. Sometimes you may want to set up
 sessions "outside" of the Sinatra app, such as in the config.ru or with a
-separate `Rack::Builder` instance. In that case you can still set up session
+separate `Rack::Builder` instance. In that case, you can still set up session
 based protection by passing the `:session` option:
 
 ```ruby
@@ -2262,11 +2280,20 @@ set :protection, :session => true
       used for built-in server.
     </dd>
 
+  <dt>default_content_type</dt>
+  <dd>
+    Content-Type to assume if unknown (defaults to <tt>"text/html"</tt>). Set
+    to <tt>nil</tt> to not set a default Content-Type on every response; when
+    configured so, you must set the Content-Type manually when emitting content
+    or the user-agent will have to sniff it (or, if <tt>nosniff</tt> is enabled
+    in Rack::Protection::XSSHeader, assume <tt>application/octet-stream</tt>).
+  </dd>
+
   <dt>default_encoding</dt>
     <dd>Encoding to assume if unknown (defaults to <tt>"utf-8"</tt>).</dd>
 
   <dt>dump_errors</dt>
-    <dd>Display errors in the log.</dd>
+    <dd>Display errors in the log. Enabled by default unless environment is "test".</dd>
 
   <dt>environment</dt>
     <dd>
@@ -2366,7 +2393,7 @@ set :protection, :session => true
       If you are using a WEBrick web server, presumably for your development
       environment, you can pass a hash of options to <tt>server_settings</tt>,
       such as <tt>SSLEnable</tt> or <tt>SSLVerifyClient</tt>. However, web
-      servers such as Puma and Thin do not support this, so you can set
+      servers such as Puma do not support this, so you can set
       <tt>server_settings</tt> by defining it as a method when you call
       <tt>configure</tt>.
     </dd>
@@ -2417,7 +2444,7 @@ set :protection, :session => true
 
   <dt>threaded</dt>
     <dd>
-      If set to <tt>true</tt>, will tell Thin to use
+      If set to <tt>true</tt>, will tell server to use
       <tt>EventMachine.defer</tt> for processing the request.
     </dd>
 
@@ -2690,7 +2717,7 @@ modular application.
 The main disadvantage of using the classic style rather than the modular
 style is that you will only have one Sinatra application per Ruby
 process. If you plan to use more than one, switch to the modular style.
-There is no reason you cannot mix the modular and the classic styles.
+There is no reason you cannot mix the modular and classic styles.
 
 If switching from one style to the other, you should be aware of
 slightly different default settings:
@@ -2819,7 +2846,7 @@ style for running with a `config.ru`.**
 ### Using Sinatra as Middleware
 
 Not only is Sinatra able to use other Rack middleware, any Sinatra
-application can in turn be added in front of any Rack endpoint as
+application can, in turn, be added in front of any Rack endpoint as
 middleware itself. This endpoint could be another Sinatra application,
 or any other Rack-based application (Rails/Hanami/Roda/...):
 
@@ -2910,7 +2937,7 @@ available.
 Every Sinatra application corresponds to a subclass of `Sinatra::Base`.
 If you are using the top-level DSL (`require 'sinatra'`), then this
 class is `Sinatra::Application`, otherwise it is the subclass you
-created explicitly. At class level you have methods like `get` or
+created explicitly. At the class level, you have methods like `get` or
 `before`, but you cannot access the `request` or `session` objects, as
 there is only a single application class for all requests.
 
@@ -2933,7 +2960,7 @@ You have the application scope binding inside:
 * Your application class body
 * Methods defined by extensions
 * The block passed to `helpers`
-* Procs/blocks used as value for `set`
+* Procs/blocks used as a value for `set`
 * The block passed to `Sinatra.new`
 
 You can reach the scope object (the class) like this:
@@ -2984,7 +3011,7 @@ do not share variables/state with the class scope (read: you have a different
 
 You have the delegate scope binding inside:
 
-* The top level binding, if you did `require "sinatra"`
+* The top-level binding, if you did `require "sinatra"`
 * An object extended with the `Sinatra::Delegator` mixin
 
 Have a look at the code for yourself: here's the
@@ -3006,7 +3033,7 @@ Options are:
 -p # set the port (default is 4567)
 -o # set the host (default is 0.0.0.0)
 -e # set the environment (default is development)
--s # specify rack server/handler (default is thin)
+-s # specify rack server/handler (default is puma)
 -q # turn on quiet mode for server (default is off)
 -x # turn on the mutex lock (default is off)
 ```
@@ -3017,16 +3044,16 @@ _Paraphrasing from
 [this StackOverflow answer](https://stackoverflow.com/a/6282999/5245129)
 by Konstantin_
 
-Sinatra doesn't impose any concurrency model, but leaves that to the
-underlying Rack handler (server) like Thin, Puma or WEBrick. Sinatra
+Sinatra doesn't impose any concurrency model but leaves that to the
+underlying Rack handler (server) like Puma or WEBrick. Sinatra
 itself is thread-safe, so there won't be any problem if the Rack handler
 uses a threaded model of concurrency. This would mean that when starting
 the server, you'd have to specify the correct invocation method for the
 specific Rack handler. The following example is a demonstration of how
-to start a multi-threaded Thin server:
+to start a multi-threaded Rainbows server:
 
 ```ruby
-# app.rb
+# config.ru
 
 require 'sinatra/base'
 
@@ -3036,23 +3063,31 @@ class App < Sinatra::Base
   end
 end
 
-App.run!
+run App
+```
 
+```ruby
+# rainbows.conf
+
+# Rainbows configurator is based on Unicorn.
+Rainbows! do
+  use :ThreadSpawn
+end
 ```
 
 To start the server, the command would be:
 
 ```shell
-thin --threaded start
+rainbows -c rainbows.conf
 ```
 
 ## Requirement
 
 The following Ruby versions are officially supported:
 <dl>
-  <dt>Ruby 2.2</dt>
+  <dt>Ruby 2.3</dt>
   <dd>
-    2.2 is fully supported and recommended. There are currently no plans to
+    2.3 is fully supported and recommended. There are currently no plans to
     drop official support for it.
   </dd>
 
@@ -3070,7 +3105,7 @@ The following Ruby versions are officially supported:
   </dd>
 </dl>
 
-Versions of Ruby prior to 2.2.2 are no longer supported as of Sinatra 2.0.
+Versions of Ruby before 2.3 are no longer supported as of Sinatra 2.1.0.
 
 We also keep an eye on upcoming Ruby versions.
 
