@@ -2108,7 +2108,7 @@ end
 ### Anexos
 
 Você pode usar o método auxiliar `attachment` para dizer ao navegador que a
-reposta deve ser armazenada no disco no lugar de ser exibida no browser:
+resposta deve ser armazenada no disco no lugar de ser exibida no browser:
 
 ```ruby
 get '/' do
@@ -2851,7 +2851,7 @@ set :protection, :session => true
   <dt>add_charset</dt>
     <dd>
       Para tipos Mime o método auxiliar <tt>content_type</tt> irá
-      automaticamente adicionar a informção de codificação. Você deve adicionar
+      automaticamente adicionar a informação de codificação. Você deve adicionar
       isto no lugar de sobrescrever essa opção:
       <tt>settings.add_charset << "application/foobar"</tt>
     </dd>
@@ -3205,7 +3205,7 @@ use Rack::Auth::Basic do |usuario, senha|
 end
 ```
 
-O Rack é distríbuido com uma variedade de middleware padrões para logs,
+O Rack é distribuído com uma variedade de middleware padrões para logs,
 debugs, rotas de URL, autenticação, e manipuladores de sessão. Sinatra
 utilizada muitos desses componentes automaticamente baseando sobre
 configuração, então, tipicamente você não tem `use` explicitamente.
@@ -3293,7 +3293,7 @@ numa subclasse de `Sinatra::Base`.
 padrão, incluindo o servidor embutido. Veja [Opções e
 Configurações](http://www.sinatrarb.com/configuration.html) para
 detalhes de opções disponíveis e seus comportamentos. Se você quer
-comportamento mais similiar à quando você definiu sua aplicação em nível mais
+comportamento mais similar à quando você definiu sua aplicação em nível mais
 alto (também conhecido como estilo Clássico), você pode usar subclasses de
 `Sinatra::Application`:
 
@@ -3682,7 +3682,7 @@ As seguintes versões do Ruby são oficialmente suportadas:
 
   <dt>JRuby</dt>
   <dd>
-    A útlima versão estável lançada do JRuby é oficialmente suportada. Não é
+    A última versão estável lançada do JRuby é oficialmente suportada. Não é
     recomendado usar extensões em C com o JRuby. É recomendado rodar
     <tt>gem install trinidad</tt>.
   </dd>
