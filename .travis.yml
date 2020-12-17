@@ -4,6 +4,7 @@ language: ruby
 dist: trusty
 
 before_install:
+  - command curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
   - gem install bundler
   - export CXX="g++-4.8"
 
