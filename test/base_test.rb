@@ -6,6 +6,14 @@ class BaseTest < Minitest::Test
       get('/') { 'Hello World' }
     end
 
+    class TestKeywordArgumentInitializerApp < Sinatra::Base
+      def initialize(argument:)
+        @argument = argument
+      end
+
+      get('/') { "Hello World with Keyword Arguments: #{@argument}" }
+    end
+
     it 'include Rack::Utils' do
       assert TestApp.included_modules.include?(Rack::Utils)
     end
@@ -47,6 +55,16 @@ class BaseTest < Minitest::Test
       context = nil
       TestApp.configure { context = self }
       assert_equal self, context
+    end
+
+    it "allows constructor to receive keyword arguments" do
+      app = TestKeywordArgumentInitializerApp.new(argument: "some argument")
+      request = Rack::MockRequest.new(app)
+
+      response = request.get('/')
+
+      assert response.ok?
+      assert_equal 'Hello World with Keyword Arguments: some argument', response.body
     end
   end
 
