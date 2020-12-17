@@ -1,10 +1,10 @@
 ---
 language: ruby
 
-dist: trusty
+os: linux
+sudo: false
 
 before_install:
-  - command curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
   - gem install bundler
   - export CXX="g++-4.8"
 
@@ -21,7 +21,7 @@ rvm:
   - 2.5.8
   - 2.6.6
   - 2.7.1
-  - 3.0.0-preview1
+  - ruby-head
   - jruby-9.2.12.0
 
 script: ./.travis.sh
