@@ -1522,8 +1522,8 @@ module Sinatra
       # Create a new instance of the class fronted by its middleware
       # pipeline. The object is guaranteed to respond to #call but may not be
       # an instance of the class new was called on.
-      def new(*args, &bk)
-        instance = new!(*args, &bk)
+      def new(*args, **kwargs, &bk)
+        instance = kwargs.length > 0 ? new!(**kwargs, &bk) : new!(*args, &bk)
         Wrapper.new(build(instance).to_app, instance)
       end
 
