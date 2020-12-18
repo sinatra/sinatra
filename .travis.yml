@@ -1,8 +1,7 @@
 ---
 language: ruby
 
-os: linux
-sudo: false
+dist: xenial
 
 before_install:
   - gem install bundler
