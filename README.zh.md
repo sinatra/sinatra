@@ -2783,23 +2783,12 @@ thin --threaded start
 
 我们也在时刻关注新的 Ruby 版本。
 
-以下 Ruby 实现不受 Sinatra 官方支持，但可以运行 Sinatra：
-
-* 老版本 JRuby 和 Rubinius
-* Ruby 企业版
-* MacRuby、Maglev、IronRuby
-* Ruby 1.9.0 和 1.9.1 （不推荐使用）
-
 不受官方支持的意思是，如果仅在不受支持的 Ruby 实现上发生错误，我们认为不是我们的问题，而是该实现的问题。
 
 我们同时也针对 ruby-head （MRI 的未来版本）运行 CI，但由于 ruby-head 一直处在变化之中，
-我们不能作任何保证。我们期望完全支持未来的 2.x 版本。
+我们不能作任何保证。我们期望完全支持未来的 3.x 版本。
 
 Sinatra 应该会运行在任何支持上述 Ruby 实现的操作系统上。
-
-如果你使用 MacRuby，你应该 `gem install control_tower`。
-
-Sinatra 目前不支持 Cardinal、SmallRuby、BlueRuby 或其它 1.8.7 之前的 Ruby 版本。
 
 ## 紧跟前沿
 

@@ -2698,22 +2698,11 @@ rainbows -c rainbows.conf
 
 開発チームは常に最新となるRubyバージョンに注視しています。
 
-次のRuby実装は公式にはサポートされていませんが、Sinatraが起動すると報告されています。
-
-* JRubyとRubiniusの古いバージョン
-* Ruby Enterprise Edition
-* MacRuby, Maglev, IronRuby
-* Ruby 1.9.0と1.9.1 (これらの使用はお薦めしません)
-
 公式サポートをしないという意味は、問題がそこだけで起こり、サポートされているプラットフォーム上では起きない場合に、開発チームはそれはこちら側の問題ではないとみなすということです。
 
 開発チームはまた、ruby-head(最新となる2.1.0)に対しCIを実行していますが、それが一貫して動くようになるまで何も保証しません。2.1.0が完全にサポートされればその限りではありません。
 
 Sinatraは、利用するRuby実装がサポートしているオペレーティングシステム上なら動作するはずです。
-
-MacRubyを使う場合は、`gem install control_tower`してください。
-
-Sinatraは現在、Cardinal、SmallRuby、BlueRubyまたは1.8.7以前のバージョンのRuby上では動作しません。
 
 ## 最新開発版
 
