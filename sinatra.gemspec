@@ -33,11 +33,6 @@ Gem::Specification.new 'sinatra', version do |s|
       'documentation_uri' => 'https://www.rubydoc.info/gems/sinatra'
     }
   else
-    msg = "RubyGems 2.0 or newer is required to protect against public "\
-          "gem pushes. You can update your rubygems version by running:\n\n"\
-          "gem install rubygems-update\n"\
-          "update_rubygems\n"\
-          "gem update --system"
     raise <<-EOF
 RubyGems 2.0 or newer is required to protect against public gem pushes. You can update your rubygems version by running:
   gem install rubygems-update
