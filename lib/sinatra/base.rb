@@ -1219,8 +1219,7 @@ module Sinatra
         /rubygems\/(custom|core_ext\/kernel)_require\.rb$/, # rubygems require hacks
         /active_support/,                                   # active_support require hacks
         /bundler(\/(?:runtime|inline))?\.rb/,               # bundler require hacks
-        /<internal:/,                                       # internal in ruby >= 1.9.2
-        /src\/kernel\/bootstrap\/[A-Z]/                     # maglev kernel files
+        /<internal:/                                        # internal in ruby >= 1.9.2
       ]
 
       # contrary to what the comment said previously, rubinius never supported this
@@ -1843,15 +1842,11 @@ module Sinatra
 
     ruby_engine = defined?(RUBY_ENGINE) && RUBY_ENGINE
 
-    if ruby_engine == 'macruby'
-      server.unshift 'control_tower'
-    else
-      server.unshift 'reel'
-      server.unshift 'puma'
-      server.unshift 'mongrel'  if ruby_engine.nil?
-      server.unshift 'thin'     if ruby_engine != 'jruby'
-      server.unshift 'trinidad' if ruby_engine == 'jruby'
-    end
+    server.unshift 'reel'
+    server.unshift 'puma'
+    server.unshift 'mongrel'  if ruby_engine.nil?
+    server.unshift 'thin'     if ruby_engine != 'jruby'
+    server.unshift 'trinidad' if ruby_engine == 'jruby'
 
     set :absolute_redirects, true
     set :prefixed_redirects, false
