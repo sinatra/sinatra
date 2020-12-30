@@ -916,7 +916,7 @@ module Sinatra
     attr_accessor :app, :env, :request, :response, :params
     attr_reader   :template_cache
 
-    def initialize(app = nil)
+    def initialize(app = nil, **kwargs)
       super()
       @app = app
       @template_cache = Tilt::Cache.new
