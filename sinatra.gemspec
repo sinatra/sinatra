@@ -20,8 +20,8 @@ Gem::Specification.new 'sinatra', version do |s|
     "sinatra.gemspec",
     "VERSION"]
   s.test_files        = s.files.select { |p| p =~ /^test\/.*_test.rb/ }
-  s.extra_rdoc_files  = s.files.select { |p| p =~ /^README/ } << 'LICENSE'
-  s.rdoc_options      = %w[--line-numbers --inline-source --title Sinatra --main README.rdoc --encoding=UTF-8]
+  s.extra_rdoc_files  = %w[README.md LICENSE]
+  s.rdoc_options      = %w[--line-numbers --title Sinatra --main README.rdoc --encoding=UTF-8]
 
   if s.respond_to?(:metadata)
     s.metadata = {
@@ -33,11 +33,6 @@ Gem::Specification.new 'sinatra', version do |s|
       'documentation_uri' => 'https://www.rubydoc.info/gems/sinatra'
     }
   else
-    msg = "RubyGems 2.0 or newer is required to protect against public "\
-          "gem pushes. You can update your rubygems version by running:\n\n"\
-          "gem install rubygems-update\n"\
-          "update_rubygems\n"\
-          "gem update --system"
     raise <<-EOF
 RubyGems 2.0 or newer is required to protect against public gem pushes. You can update your rubygems version by running:
   gem install rubygems-update
