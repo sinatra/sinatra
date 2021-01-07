@@ -263,7 +263,7 @@ get '/posts' do
   # corresponde a "GET /posts?titulo=foo&autor=bar"
   titulo = params['titulo']
   autor = params['autor']
-  # utiliza as variaveis titulo e autor; a query é opicional para a rota /posts
+  # utiliza as variáveis titulo e autor; a query é opcional para a rota /posts
 end
 ```
 
@@ -362,10 +362,10 @@ Você pode retornar uma resposta válida ou um objeto para o Rack, sendo
 eles de qualquer tipo de objeto que queira. Além disso, é possível
 retornar um código de status HTTP.
 
-* Um array com três elementros: `[status (Integer), cabecalho (Hash),
+* Um array com três elementos: `[status (Integer), cabeçalho (Hash),
     corpo da resposta (responde à #each)]`
 
-* Um array com dois elementros: `[status (Integer), corpo da resposta
+* Um array com dois elementos: `[status (Integer), corpo da resposta
     (responde à #each)]`
 
 * Um objeto que responda à `#each` sem passar nada, mas, sim, `strings`
@@ -447,7 +447,7 @@ Arquivos estáticos são disponibilizados a partir do diretório
 set :public_folder, __dir__ + '/estatico'
 ```
 
-Note que o nome do diretório público não é incluido na URL. Um arquivo
+Note que o nome do diretório público não é incluído na URL. Um arquivo
 `./public/css/style.css` é disponibilizado como
 `http://exemplo.com/css/style.css`.
 
@@ -541,7 +541,7 @@ Opções disponíveis:
 
   <dt>content_type</dt>
   <dd>
-    O *Content-Type* que o template produz. O padrão depente
+    O *Content-Type* que o template produz. O padrão depende
     da linguagem de template utilizada.
   </dd>
 
@@ -604,9 +604,9 @@ end
 
 ### Linguagens de template disponíveis
 
-Algumas linguagens possuem multiplas implementações. Para especificar qual
+Algumas linguagens possuem múltiplas implementações. Para especificar qual
 implementação deverá ser utilizada (e para ser *thread-safe*), você deve
-requere-la primeiro:
+requerê-la primeiro:
 
 ```ruby
 require 'rdiscount' # ou require 'bluecloth'
@@ -654,7 +654,7 @@ get('/') { markdown :index }
 
 <table>
   <tr>
-    <td>Dependêcia</td>
+    <td>Dependência</td>
     <td>
       <a href="https://github.com/jimweirich/builder" title="builder">
         builder
@@ -806,7 +806,7 @@ mesmo. Portanto normalmente é utilizado junto a outra engine de renderização:
 erb :overview, :locals => { :text => markdown(:introducao) }
 ```
 
-Note que vcoê também pode chamar o método `markdown` dentro de outros templates:
+Note que você também pode chamar o método `markdown` dentro de outros templates:
 
 ```ruby
 %h1 Olá do Haml!
@@ -840,7 +840,7 @@ mesmo. Portanto normalmente é utilizado junto a outra engine de renderização:
 erb :overview, :locals => { :text => textile(:introducao) }
 ```
 
-Note que vcoê também pode chamar o método `textile` dentro de outros templates:
+Note que você também pode chamar o método `textile` dentro de outros templates:
 
 ```ruby
 %h1 Olá do Haml!
@@ -876,7 +876,7 @@ mesmo. Portanto normalmente é utilizado junto a outra engine de renderização:
 erb :overview, :locals => { :text => rdoc(:introducao) }
 ```
 
-Note que vcoê também pode chamar o método `rdoc` dentro de outros templates:
+Note que você também pode chamar o método `rdoc` dentro de outros templates:
 
 ```ruby
 %h1 Olá do Haml!
@@ -1108,7 +1108,7 @@ deve-se passar a `:layout_engine` como opção.
   </tr>
 </table>
 
-Antes que vcoê possa utilizar o template Stylus primeiro você deve carregar
+Antes que você possa utilizar o template Stylus primeiro você deve carregar
 `stylus` e `stylus/tilt`:
 
 ```ruby
@@ -1381,7 +1381,7 @@ after do
 end
 ```
 
-Nota: A não ser que você use o metódo `body` ao invés de apenas retornar uma
+Nota: A não ser que você use o método `body` ao invés de apenas retornar uma
 String das rotas, o corpo ainda não estará disponível no filtro after, uma vez
 que é gerado depois.
 
@@ -1466,7 +1466,7 @@ Para melhorar a segurança, os dados da sessão no cookie são assinado com uma
 segredo de sessão usando `HMAC-SHA1`. Esse segredo de sessão deve ser, de
 preferência, um valor criptograficamente randômico, seguro, de um comprimento
 apropriado no qual `HMAC-SHA1` é maior ou igual a 64 bytes (512 bits, 128
-carecteres hexadecimais). Você será avisado para não usar uma chave secreta
+caracteres hexadecimais). Você será avisado para não usar uma chave secreta
 menor que 32 bytes de randomicidade (256 bits, 64 caracteres hexadecimais).
 Portanto, é **muito importante** que você não invente o segredo, mas use um
 gerador de números aleatórios seguro para cria-lo. Humanos são extremamente
@@ -1676,8 +1676,8 @@ Veja a especificação do Rack se você quer aprender mais sobre o `call`.
 É possível e recomendado definir o código de status e o corpo da resposta com o
 valor retornado do bloco da rota. Entretanto, em alguns cenários você pode
 querer definir o corpo em um ponto arbitrário do fluxo de execução. Você pode
-fazer isso com o metódo auxiliar `body`. Se você fizer isso, poderá usar esse
-metódo de agora em diante para acessar o body:
+fazer isso com o método auxiliar `body`. Se você fizer isso, poderá usar esse
+método de agora em diante para acessar o body:
 
 ```ruby
 get '/foo' do
@@ -1689,7 +1689,7 @@ after do
 end
 ```
 
-Também é possivel passar um bloco para `body`, que será executado pelo
+Também é possível passar um bloco para `body`, que será executado pelo
 manipulador Rack (isso pode ser usado para implementar transmissão,
 [veja "Retorno de Valores"](#retorno-de-valores)).
 
@@ -1761,21 +1761,21 @@ get '/assinar' do
   end
 end
 
-post '/:messagem' do
+post '/:mensagem' do
   conexoes.each do |saida|
     # notifica o cliente que uma nova mensagem chegou
-    saida << params['messagem'] << "\n"
+    saida << params['mensagem'] << "\n"
 
     # indica ao cliente para se conectar novamente
     saida.close
   end
 
   # confirma
-  "messagem recebida"
+  "mensagem recebida"
 end
 ```
 
-Também é possivel para o cliente fechar a conexão quando está tentando escrever
+Também é possível para o cliente fechar a conexão quando está tentando escrever
 para o socket. Devido a isso, é recomendado checar `out.closed?` antes de
 tentar escrever.
 
@@ -1792,7 +1792,7 @@ end
 ```
 
 Esse logger irá automaticamente botar as configurações de log do manipulador
-Rack na sua conta. Se a produção de logs estiver desabilitads, esse método
+Rack na sua conta. Se a produção de logs estiver desabilitada, esse método
 retornará um objeto dummy, então você não terá que se preocupar com suas rotas
 e filtros.
 
@@ -1837,7 +1837,7 @@ end
 
 ### Gerando URLs
 
-Para gerar URLs você deve usar o metódo auxiliar `url` no Haml:
+Para gerar URLs você deve usar o método auxiliar `url` no Haml:
 
 ```ruby
 %a{:href => url('/foo')} foo
@@ -1850,7 +1850,7 @@ Esse método é também apelidado para `to` (veja
 
 ### Redirecionamento do Browser
 
-Você pode lançar um redirecionamento no browser com o metódo auxiliar
+Você pode lançar um redirecionamento no browser com o método auxiliar
 `redirect`:
 
 ```ruby
@@ -1859,7 +1859,7 @@ get '/foo' do
 end
 ```
 
-Quaisquer paramêtros adicionais são interpretados como argumentos passados
+Quaisquer parâmetros adicionais são interpretados como argumentos passados
 ao `halt`:
 
 ```ruby
@@ -2000,7 +2000,7 @@ etag '', :new_resource => true, :kind => :weak
 ### Enviando Arquivos
 
 Para retornar os conteúdos de um arquivo como as resposta, você pode usar o
-metódo auxiliar `send_file`:
+método auxiliar `send_file`:
 
 ```ruby
 get '/' do
@@ -2043,14 +2043,14 @@ As opções são:
       Código de status a ser enviado. Útil quando está se enviando um arquivo
       estático como uma página de erro. Se suportado pelo handler do Rack,
       outros meios além de transmissão do processo do Ruby serão usados.
-      So você usar esse metódo auxiliar, o Sinatra irá automaticamente lidar com
+      So você usar esse método auxiliar, o Sinatra irá automaticamente lidar com
       requisições de alcance.
     </dd>
 </dl>
 
-### Acessando o Objeto da Requisção
+### Acessando o Objeto da Requisição
 
-O objeto vindo da requisição pode ser acessado do nível de requsição (filtros,
+O objeto vindo da requisição pode ser acessado do nível de requisição (filtros,
 rotas, manipuladores de erro) através do método `request`:
 
 ```ruby
@@ -2070,9 +2070,9 @@ get '/foo' do
   request.content_length      # tamanho do request.body
   request.media_type          # tipo de mídia of request.body
   request.host                # "exemplo.com"
-  request.get?                # true (metodo similar para outros tipos de requisição)
+  request.get?                # true (método similar para outros tipos de requisição)
   request.form_data?          # false
-  request["algum_ param"]     # valor do paramêtro 'algum_param'. [] é um atalho para o hash de parametros
+  request["algum_ param"]     # valor do parâmetro 'algum_param'. [] é um atalho para o hash de parâmetros
   request.referrer            # a referência do cliente ou '/'
   request.user_agent          # agente de usuário (usado por :agent condition)
   request.cookies             # hash dos cookies do browser
@@ -2095,7 +2095,7 @@ get "/" do
   "todas requisições acabam aqui"
 end
 ```
-`request.body` é uma ES ou um objeo StringIO:
+`request.body` é uma ES ou um objeto StringIO:
 
 ```ruby
 post "/api" do
@@ -2108,7 +2108,7 @@ end
 ### Anexos
 
 Você pode usar o método auxiliar `attachment` para dizer ao navegador que a
-reposta deve ser armazenada no disco no lugar de ser exibida no browser:
+resposta deve ser armazenada no disco no lugar de ser exibida no browser:
 
 ```ruby
 get '/' do
@@ -2208,8 +2208,8 @@ realmente maluco.
 É possível e recomendado definir o código de status e o corpo da resposta com o
 valor retornado do bloco da rota. Entretanto, em alguns cenários você pode
 querer definir o corpo em um ponto arbitrário do fluxo de execução. Você pode
-fazer isso com o metódo auxiliar `body`. Se você fizer isso, poderá usar esse
-metódo de agora em diante para acessar o body:
+fazer isso com o método auxiliar `body`. Se você fizer isso, poderá usar esse
+método de agora em diante para acessar o body:
 
 ```ruby
 get '/foo' do
@@ -2221,7 +2221,7 @@ after do
 end
 ```
 
-Também é possivel passar um bloco para `body`, que será executado pelo
+Também é possível passar um bloco para `body`, que será executado pelo
 manipulador Rack (isso pode ser usado para implementar transmissão,
 [veja "Retorno de Valores"](#retorno-de-valores)).
 
@@ -2307,7 +2307,7 @@ post '/:messagem' do
 end
 ```
 
-Também é possivel para o cliente fechar a conexão quando está tentando escrever
+Também é possível para o cliente fechar a conexão quando está tentando escrever
 para o socket. Devido a isso, é recomendado checar `out.closed?` antes de
 tentar escrever.
 
@@ -2324,7 +2324,7 @@ end
 ```
 
 Esse logger irá automaticamente botar as configurações de log do manipulador
-Rack na sua conta. Se a produção de logs estiver desabilitads, esse método
+Rack na sua conta. Se a produção de logs estiver desabilitada, esse método
 retornará um objeto dummy, então você não terá que se preocupar com suas rotas
 e filtros.
 
@@ -2369,7 +2369,7 @@ end
 
 ### Gerando URLs
 
-Para gerar URLs você deve usar o metódo auxiliar `url` no Haml:
+Para gerar URLs você deve usar o método auxiliar `url` no Haml:
 
 ```ruby
 %a{:href => url('/foo')} foo
@@ -2382,7 +2382,7 @@ Esse método é também apelidado para `to` (veja
 
 ### Redirecionamento do Browser
 
-Você pode lançar um redirecionamento no browser com o metódo auxiliar
+Você pode lançar um redirecionamento no browser com o método auxiliar
 `redirect`:
 
 ```ruby
@@ -2391,7 +2391,7 @@ get '/foo' do
 end
 ```
 
-Quaisquer paramêtros adicionais são interpretados como argumentos passados ao
+Quaisquer parâmetros adicionais são interpretados como argumentos passados ao
 `halt`:
 
 ```ruby
@@ -2532,7 +2532,7 @@ etag '', :new_resource => true, :kind => :weak
 ### Enviando Arquivos
 
 Para retornar os conteúdos de um arquivo como as resposta, você pode usar o
-metódo auxiliar `send_file`:
+método auxiliar `send_file`:
 
 ```ruby
 get '/' do
@@ -2575,14 +2575,14 @@ As opções são:
       Código de status a ser enviado. Útil quando está se enviando um arquivo
       estático como uma página de erro. Se suportado pelo handler do Rack,
       outros meios além de transmissão do processo do Ruby serão usados.
-      So você usar esse metódo auxiliar, o Sinatra irá automaticamente lidar
+      So você usar esse método auxiliar, o Sinatra irá automaticamente lidar
       com requisições de alcance.
     </dd>
 </dl>
 
 ### Acessando o Objeto da Requisção
 
-O objeto vindo da requisição pode ser acessado do nível de requsição (filtros,
+O objeto vindo da requisição pode ser acessado do nível de requisição (filtros,
 rotas, manipuladores de erro) através do método `request`:
 
 ```ruby
@@ -2604,7 +2604,7 @@ get '/foo' do
   request.host                # "exemplo.com"
   request.get?                # true (metodo similar para outros tipos de requisição)
   request.form_data?          # false
-  request["algum_ param"]     # valor do paramêtro 'algum_param'. [] é um atalho para o hash de parametros
+  request["algum_ param"]     # valor do parâmetro 'algum_param'. [] é um atalho para o hash de parâmetros
   request.referrer            # a referência do cliente ou '/'
   request.user_agent          # agente de usuário (usado por :agent condition)
   request.cookies             # hash dos cookies do browser
@@ -2627,7 +2627,7 @@ get "/" do
   "todas requisições acabam aqui"
 end
 ```
-`request.body` é uma ES ou um objeo StringIO:
+`request.body` é uma ES ou um objeto StringIO:
 
 ```ruby
 post "/api" do
@@ -2851,7 +2851,7 @@ set :protection, :session => true
   <dt>add_charset</dt>
     <dd>
       Para tipos Mime o método auxiliar <tt>content_type</tt> irá
-      automaticamente adicionar a informção de codificação. Você deve adcionar
+      automaticamente adicionar a informação de codificação. Você deve adicionar
       isto no lugar de sobrescrever essa opção:
       <tt>settings.add_charset << "application/foobar"</tt>
     </dd>
@@ -2980,7 +2980,7 @@ set :protection, :session => true
       <tt>server_settings</tt>, tais como <tt>SSLEnable</tt> ou
       <tt>SSLVerifyClient</tt>. Entretanto, servidores web como Puma e Thin não
       suportam isso, então você pode definir <tt>server_settings</tt> como um
-      metódo quando chamar <tt>configure</tt>.
+      método quando chamar <tt>configure</tt>.
     </dd>
 
   <dt>sessions</dt>
@@ -3065,7 +3065,7 @@ podem ser definidos através da variável de ambiente `APP_ENV`. O valor padrão
 `"development"`. No ambiente `"development"` todos os templates são
 recarregados entre as requisições e manipuladores especiais como `not_found` e
 `error` exibem relatórios de erros no seu navegador. Nos ambientes de
-`"production"` e `"test"`, os templates são guardos em cache por padrão.
+`"production"` e `"test"`, os templates são guardados em cache por padrão.
 
 Para rodar diferentes ambientes, defina a variável de ambiente `APP_ENV`:
 
@@ -3205,12 +3205,12 @@ use Rack::Auth::Basic do |usuario, senha|
 end
 ```
 
-O Rack é distribuido com uma variedade de middleware padrões para logs,
+O Rack é distribuído com uma variedade de middleware padrões para logs,
 debugs, rotas de URL, autenticação, e manipuladores de sessão. Sinatra
 utilizada muitos desses componentes automaticamente baseando sobre
 configuração, então, tipicamente você não tem `use` explicitamente.
 
-Você pode achar middlwares utéis em
+Você pode achar middlewares utéis em
 [rack](https://github.com/rack/rack/tree/master/lib/rack),
 [rack-contrib](https://github.com/rack/rack-contrib#readme),
 ou em [Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
@@ -3238,7 +3238,7 @@ class MinhaAplicacaoTeste < Minitest::Test
     assert_equal 'Ola Mundo!', last_response.body
   end
 
-  def teste_com_parametros
+  def teste_com_parâmetros
     get '/atender', :name => 'Frank'
     assert_equal 'Olá Frank!', last_response.bodymeet
   end
@@ -3256,7 +3256,7 @@ NOTA: Se você está usando o Sinatra no estilo modular, substitua
 ## Sinatra::Base - Middleware, Bibliotecas e aplicativos modulares
 
 Definir sua aplicação em um nível superior de trabalho funciona bem para
-micro aplicativos, mas tem consideráveis incovenientes na construção de
+micro aplicativos, mas tem consideráveis inconvenientes na construção de
 componentes reutilizáveis como um middleware Rack, metal Rails,
 bibliotecas simples como um componente de servidor, ou mesmo extensões
 Sinatra. A DSL de nível superior polui o espaço do objeto e assume um
@@ -3293,7 +3293,7 @@ numa subclasse de `Sinatra::Base`.
 padrão, incluindo o servidor embutido. Veja [Opções e
 Configurações](http://www.sinatrarb.com/configuration.html) para
 detalhes de opções disponíveis e seus comportamentos. Se você quer
-comportamento mais similiar à quando você definiu sua aplicação em nível mais
+comportamento mais similar à quando você definiu sua aplicação em nível mais
 alto (também conhecido como estilo Clássico), você pode usar subclasses de
 `Sinatra::Application`:
 
@@ -3567,7 +3567,7 @@ Você pode atingir o escopo do objeto (a classe) de duas maneiras:
 
 ### Escopo de Instância/Requisição
 
-Para toda requsição que chega, uma nova instância da classe da sua aplicação é
+Para toda requisição que chega, uma nova instância da classe da sua aplicação é
 criada e todos blocos de manipulação rodam nesse escopo. Dentro desse escopo
 você pode acessar os objetos `request` e `session` ou chamar métodos de
 renderização como `erb` ou `haml`. Você pode acessar o escopo da aplicação de
@@ -3599,8 +3599,8 @@ Você tem a ligação ao escopo da requisição dentro dos:
 
 ### Escopo de Delegação
 
-O escopo de delegação apenas encaminha métodos ao escopo da classe. Entretando,
-ele não se comporta exatamente como o escopo da classse já que você não tem a
+O escopo de delegação apenas encaminha métodos ao escopo da classe. Entretanto,
+ele não se comporta exatamente como o escopo da classe já que você não tem a
 ligação da classe. Apenas métodos marcados explicitamente para delegação
 estarão disponíveis e você não compartilha variáveis/estado com o escopo da
 classe (leia: você tem um `self` diferente). Você pode explicitamente adicionar
@@ -3636,11 +3636,11 @@ As opções são:
 
 _Parafraseando [esta resposta no StackOverflow](resposta-so) por Konstantin_
 
-Sinatra não impõe nenhum modelo de concorrencia, mas deixa isso como
+Sinatra não impõe nenhum modelo de concorrência, mas deixa isso como
 responsabilidade do Rack (servidor) subjacente como o Thin, Puma ou WEBrick.
 Sinatra por si só é thread-safe, então não há nenhum problema se um Rack
 handler usar um modelo de thread de concorrência. Isso significaria que ao
-iniciar o servidor, você teria que espeficiar o método de invocação correto
+iniciar o servidor, você teria que especificar o método de invocação correto
 para o Rack handler específico. Os seguintes exemplos é uma demonstração de
 como iniciar um servidor Thin multi-thread:
 
@@ -3682,7 +3682,7 @@ As seguintes versões do Ruby são oficialmente suportadas:
 
   <dt>JRuby</dt>
   <dd>
-    A útlima versão estável lançada do JRuby é oficialmente suportada. Não é
+    A última versão estável lançada do JRuby é oficialmente suportada. Não é
     recomendado usar extensões em C com o JRuby. É recomendado rodar
     <tt>gem install trinidad</tt>.
   </dd>
