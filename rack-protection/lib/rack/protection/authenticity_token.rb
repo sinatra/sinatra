@@ -97,7 +97,7 @@ module Rack
                       :allow_if => nil
 
       def self.token(session, path: nil, method: :post)
-        self.new(nil).mask_authenticity_token(session, path, method)
+        self.new(nil).mask_authenticity_token(session, path: path, method: method)
       end
 
       def self.random_token
@@ -114,7 +114,7 @@ module Rack
           ( options[:allow_if] && options[:allow_if].call(env) )
       end
 
-      def mask_authenticity_token(session, path, method)
+      def mask_authenticity_token(session, path: nil, method: :post)
         set_token(session)
 
         token = if path && method
@@ -132,8 +132,7 @@ module Rack
       private
 
       def set_token(session)
-        token = session[options[:key]] ||= self.class.random_token
-        decode_token(token)
+        session[options[:key]] ||= self.class.random_token
       end
 
       # Checks the client's masked token to see if it matches the
