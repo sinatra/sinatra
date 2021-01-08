@@ -358,6 +358,10 @@ class RoutingTest < Minitest::Test
     assert ok?
     assert_equal "foo=hello;bar=", body
 
+    get '/hello?bar=baz'
+    assert ok?
+    assert_equal "foo=hello;bar=baz", body
+
     get '/'
     assert ok?
     assert_equal "foo=;bar=", body
