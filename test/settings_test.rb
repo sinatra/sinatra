@@ -489,9 +489,14 @@ class SettingsTest < Minitest::Test
       assert @application.server.include?('puma')
     end
 
-    it 'includes falcon' do
-      assert @base.server.include?('falcon')
-      assert @application.server.include?('falcon')
+    it 'includes falcon on mruby' do
+      if RUBY_ENGINE == 'ruby'
+        assert @base.server.include?('falcon')
+        assert @application.server.include?('falcon')
+      else
+        assert !@base.server.include?('falcon')
+        assert !@application.server.include?('falcon')
+      end
     end
   end
 
