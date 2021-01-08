@@ -81,6 +81,10 @@ module IntegrationHelper
       name.to_s == "puma"
     end
 
+    def falcon?
+      name.to_s == "falcon"
+    end
+
     def reel?
       name.to_s == "reel"
     end

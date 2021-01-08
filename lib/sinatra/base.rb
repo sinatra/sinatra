@@ -1835,6 +1835,7 @@ module Sinatra
       server.unshift 'control_tower'
     else
       server.unshift 'reel'
+      server.unshift 'falcon'
       server.unshift 'puma'
       server.unshift 'mongrel'  if ruby_engine.nil?
       server.unshift 'thin'     if ruby_engine != 'jruby'
