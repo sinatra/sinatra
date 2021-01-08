@@ -24,6 +24,7 @@ gem "activesupport", "~> 6.1"
 gem 'redcarpet', platforms: [ :ruby ]
 gem 'rdiscount', platforms: [ :ruby ]
 gem 'puma'
+gem 'falcon', '~> 0.40', platforms: [ :ruby ]
 gem 'yajl-ruby', platforms: [ :ruby ]
 gem 'nokogiri', '> 1.5.0'
 gem 'rainbows', platforms: [ :ruby ]
@@ -40,7 +41,6 @@ gem 'rabl'
 gem 'builder'
 gem 'erubi'
 gem 'haml', '~> 5'
-gem 'celluloid', '~> 0.16.0'
 gem 'commonmarker', '~> 0.20.0', platforms: [ :ruby ]
 gem 'pandoc-ruby', '~> 2.0.2'
 gem 'simplecov', require: false
