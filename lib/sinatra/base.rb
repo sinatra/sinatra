@@ -1484,7 +1484,7 @@ module Sinatra
       alias_method :stop!, :quit!
 
       # Run the Sinatra app as a self-hosted server using
-      # Puma, Mongrel, or WEBrick (in that order). If given a block, will call
+      # Puma, Falcon, Mongrel, or WEBrick (in that order). If given a block, will call
       # with the constructed handler once we have taken the stage.
       def run!(options = {}, &block)
         return if running?
