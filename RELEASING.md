@@ -8,7 +8,7 @@ have one rake task to cut a release.
 (Please refer to [Mustermann](https://github.com/sinatra/mustermann) if that also needs a release.)
 
 ### Releasing
-For relesing new version of [`sinatra`, `sinatra-contrib`, `rack-protection`], this is the procedure:
+For releasing new version of [`sinatra`, `sinatra-contrib`, `rack-protection`], this is the procedure:
 
 1. Update `VERSION` file with target version
 2. Run `bundle exec rake release:all`
