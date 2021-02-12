@@ -284,8 +284,8 @@ module Sinatra
       end
 
       def set(key, value = self, &block)
+        return key.each { |k,v| set(k, v) } if key.respond_to?(:each) and block.nil? and value == self
         raise ArgumentError, "may not set #{key}" unless ([:views] + ALLOWED_ENGINES).include?(key)
-        return key.each { |k,v| set(k, v) } if block.nil? and value == self
         block ||= proc { value }
         singleton_class.send(:define_method, key, &block)
       end
