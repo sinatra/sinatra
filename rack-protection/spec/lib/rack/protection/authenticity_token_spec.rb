@@ -40,6 +40,18 @@ describe Rack::Protection::AuthenticityToken do
     expect(last_response).not_to be_ok
   end
 
+  it "accepts post form requests with a valid per form token" do
+    token = Rack::Protection::AuthenticityToken.token(session, path: '/foo')
+    post('/foo', {"authenticity_token" => token}, 'rack.session' => session)
+    expect(last_response).to be_ok
+  end
+
+  it "denies post form requests with an invalid per form token" do
+    token = Rack::Protection::AuthenticityToken.token(session, path: '/foo')
+    post('/bar', {"authenticity_token" => token}, 'rack.session' => session)
+    expect(last_response).not_to be_ok
+  end
+
   it "prevents ajax requests without a valid token" do
     expect(post('/', {}, "HTTP_X_REQUESTED_WITH" => "XMLHttpRequest")).not_to be_ok
   end
@@ -86,7 +98,7 @@ describe Rack::Protection::AuthenticityToken do
 
   describe ".random_token" do
     it "generates a base64 encoded 32 character string" do
-      expect(Base64.strict_decode64(token).length).to eq(32)
+      expect(Base64.urlsafe_decode64(token).length).to eq(32)
     end
   end
 end
