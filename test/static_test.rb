@@ -97,6 +97,7 @@ class StaticTest < Minitest::Test
     mock_app do
       set :static, true
       set :public_folder, __dir__ + '/data'
+      disable :protection
     end
     get "/../#{File.basename(__FILE__)}"
     assert not_found?
