@@ -21,13 +21,13 @@ rvm:
   - 2.6.6
   - 2.7.1
   - 3.0.0
-  - jruby-9.2.14.0
+  - jruby-9.2.16.0
 
 script: ./.travis.sh
 
 matrix:
   allow_failures:
-    - rvm: jruby-9.2.14.0
+    - rvm: jruby-9.2.16.0
 
 notifications:
   slack:
