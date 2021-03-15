@@ -1090,6 +1090,7 @@ module Sinatra
       return unless valid_path?(path)
 
       path = File.expand_path(path)
+      return unless path.start_with?(File.expand_path(public_dir) + '/')
       return unless File.file?(path)
 
       env['sinatra.static_file'] = path
