@@ -1943,10 +1943,12 @@ module Sinatra
   module Delegator #:nodoc:
     def self.delegate(*methods)
       methods.each do |method_name|
-        define_method(method_name) do |*args, **options, &block|
-          return super(*args, **options, &block) if respond_to? method_name
-          Delegator.target.send(method_name, *args, **options, &block)
+        define_method(method_name) do |*args, &block|
+          return super(*args, &block) if respond_to? method_name
+          Delegator.target.send(method_name, *args, &block)
         end
+        # ensure keyword argument passing is compatible with ruby >= 2.7
+        ruby2_keywords(method_name) if respond_to?(:ruby2_keywords, true)
         private method_name
       end
     end
