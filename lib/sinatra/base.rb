@@ -1947,6 +1947,8 @@ module Sinatra
           return super(*args, &block) if respond_to? method_name
           Delegator.target.send(method_name, *args, &block)
         end
+        # ensure keyword argument passing is compatible with ruby >= 2.7
+        ruby2_keywords(method_name) if respond_to?(:ruby2_keywords, true)
         private method_name
       end
     end
