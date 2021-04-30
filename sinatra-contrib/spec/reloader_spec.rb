@@ -434,12 +434,13 @@ describe Sinatra::Reloader do
       end
       expect($reloaded).to eq(nil)
       expect(get('/foo').body.strip).to eq('foo')
+      expect($reloaded).to eq(nil) # after_reload was not called
       update_file(@foo_path) do |f|
         f.write 'class Foo; def self.foo() "bar" end end'
       end
       expect(get("/foo").body.strip).to eq("bar") # Makes the reload happen
       expect($reloaded.size).to eq(1)
-      expect(File.basename($reloaded[0])).to eq("foo.rb")
+      expect(File.basename($reloaded[0])).to eq(File.basename(@foo_path))
     end
   end
 
