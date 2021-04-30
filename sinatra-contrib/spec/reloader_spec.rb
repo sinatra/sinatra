@@ -429,15 +429,17 @@ describe Sinatra::Reloader do
     end
 
     it "allows block execution after reloading files" do
-      app_const.after_reload do
-        $reloaded = true
+      app_const.after_reload do |files|
+        $reloaded = files
       end
       expect($reloaded).to eq(nil)
       expect(get('/foo').body.strip).to eq('foo')
       update_file(@foo_path) do |f|
         f.write 'class Foo; def self.foo() "bar" end end'
       end
-      expect($reloaded).to eq(true)
+      expect(get("/foo").body.strip).to eq("bar") # Makes the reload happen
+      expect($reloaded.size).to eq(1)
+      expect(File.basename($reloaded[0])).to eq("foo.rb")
     end
   end
 
