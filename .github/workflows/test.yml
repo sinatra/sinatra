@@ -32,5 +32,9 @@ jobs:
       run: sudo apt-get install -y pandoc nodejs pkg-config libxml2-dev libxslt-dev
     - name: Run tests
       run: ./.actions.sh
-
-# TODO(zzak, rkh): Add slack notification.
+    - uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
