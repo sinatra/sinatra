@@ -418,6 +418,7 @@ describe Sinatra::Reloader do
 
   describe ".after_reload" do
     before(:each) do
+      $reloaded = nil
       setup_example_app(:routes => ['get("/foo") { Foo.foo }'])
       @foo_path = File.join(tmp_dir, 'foo.rb')
       update_file(@foo_path) do |f|
@@ -441,6 +442,20 @@ describe Sinatra::Reloader do
       expect(get("/foo").body.strip).to eq("bar") # Makes the reload happen
       expect($reloaded.size).to eq(1)
       expect(File.basename($reloaded[0])).to eq(File.basename(@foo_path))
+    end
+
+    it "does not break block without input param" do
+      app_const.after_reload do
+        $reloaded = "worked without param"
+      end
+      expect($reloaded).to eq(nil)
+      expect(get('/foo').body.strip).to eq('foo')
+      expect($reloaded).to eq(nil) # after_reload was not called
+      update_file(@foo_path) do |f|
+        f.write 'class Foo; def self.foo() "bar" end end'
+      end
+      expect { get("/foo") }.to_not raise_error # Makes the reload happen
+      expect($reloaded).to eq("worked without param")
     end
   end
 
