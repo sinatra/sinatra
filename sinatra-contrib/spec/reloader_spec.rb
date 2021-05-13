@@ -457,6 +457,20 @@ describe Sinatra::Reloader do
       expect { get("/foo") }.to_not raise_error # Makes the reload happen
       expect($reloaded).to eq("worked without param")
     end
+
+    it "handles lambdas with arity 0" do
+      user_proc = -> { $reloaded = "lambda?=true arity=0" }
+      expect { user_proc.call(1) }.to raise_error(ArgumentError) # What we avoid
+      app_const.after_reload(&user_proc)
+      expect($reloaded).to eq(nil)
+      expect(get('/foo').body.strip).to eq('foo')
+      expect($reloaded).to eq(nil) # after_reload was not called
+      update_file(@foo_path) do |f|
+        f.write 'class Foo; def self.foo() "bar" end end'
+      end
+      expect { get("/foo") }.to_not raise_error # Makes the reload happen
+      expect($reloaded).to eq("lambda?=true arity=0")
+    end
   end
 
   it "automatically registers the reloader in the subclasses" do

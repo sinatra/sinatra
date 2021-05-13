@@ -251,7 +251,11 @@ module Sinatra
         watcher.update
         reloaded_paths << watcher.path
       end
-      @@after_reload.each { |block| block.call(reloaded_paths) } if reloaded_paths.any?
+      return if reloaded_paths.empty?
+      @@after_reload.each do |block|
+        args = (block.lambda? && block.arity != 1) ? [] : [reloaded_paths]
+        block.call(*args)
+      end
     end
 
     # Contains the methods defined in Sinatra::Base that are overridden.
