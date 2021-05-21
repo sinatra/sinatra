@@ -193,7 +193,7 @@ get '/hello/:name' do |n|
   "Hello #{n}!"
 end
 ```
-റൂട്ട് പാട്ടേഴ്സിൽ പേരുള്ള splat ഉണ്ടാകാറുണ്ട് അതിനെ 'params['splat']' array ഉപയോഗിച്ച ഉപയോഗപ്പെടുത്താവുന്നത് ആണ്  
+റൂട്ട് പാട്ടേഴ്സിൽ പേരുള്ള splat ഉണ്ടാകാറുണ്ട് അതിനെ 'params['splat']' array ഉപയോഗിച്ച ഉപയോഗപ്പെടുത്താവുന്നത് ആണ്
 
 
 
@@ -293,7 +293,7 @@ get '/', :provides => ['rss', 'atom', 'xml'] do
   builder :feed
 end
 ```
-`provides ` ആക്‌സെപ്റ് ഹെൽഡർസ് നെ അന്വഷിക്കുന്നു   
+`provides ` ആക്‌സെപ്റ് ഹെൽഡർസ് നെ അന്വഷിക്കുന്നു
 
  നിങ്ങളുടെ കണ്ടിഷൻസ് ഇനി എളുപ്പത്തിൽ ഉണ്ടാക്കാൻ സഹായിക്കുന്നു
 ```ruby
@@ -3047,28 +3047,15 @@ Versions of Ruby prior to 2.2.2 are no longer supported as of Sinatra 2.0.
 
 We also keep an eye on upcoming Ruby versions.
 
-The following Ruby implementations are not officially supported but still are
-known to run Sinatra:
-
-* Older versions of JRuby and Rubinius
-* Ruby Enterprise Edition
-* MacRuby, Maglev, IronRuby
-* Ruby 1.9.0 and 1.9.1 (but we do recommend against using those)
-
 Not being officially supported means if things only break there and not on a
 supported platform, we assume it's not our issue but theirs.
 
 We also run our CI against ruby-head (future releases of MRI), but we
 can't guarantee anything, since it is constantly moving. Expect upcoming
-2.x releases to be fully supported.
+3.x releases to be fully supported.
 
 Sinatra should work on any operating system supported by the chosen Ruby
 implementation.
-
-If you run MacRuby, you should `gem install control_tower`.
-
-Sinatra currently doesn't run on Cardinal, SmallRuby, BlueRuby or any
-Ruby version prior to 2.2.
 
 ## The Bleeding Edge
 

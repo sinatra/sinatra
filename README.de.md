@@ -3141,17 +3141,9 @@ Die folgenden Versionen werden offiziell unterstützt:
   </dd>
 </dl>
 
-Versionen vor Ruby 2.2.2 werden ab Sinatra 2.0 nicht länger unterstützt.
+Versionen vor Ruby 2.3 werden ab Sinatra 2.1 nicht länger unterstützt.
 
 Nachfolgende Ruby-Versionen werden regelmäßig auf Unterstützung geprüft.
-
-Die nachfolgend aufgeführten Ruby-Implementierungen werden offiziell nicht von
-Sinatra unterstützt, funktionieren aber normalerweise:
-
-*   Ruby Enterprise Edition
-*   Ältere Versionen von JRuby und Rubinius
-*   MacRuby, Maglev, IronRuby
-*   Ruby 1.9.0 und 1.9.1 (wird aber nicht empfohlen)
 
 Nicht offiziell unterstützt bedeutet, dass wenn Sachen nicht funktionieren,
 wir davon ausgehen, dass es nicht an Sinatra sondern an der jeweiligen
@@ -3163,9 +3155,6 @@ werden, dass Sinatra MRI auch weiterhin vollständig unterstützen wird.
 
 Sinatra sollte auf jedem Betriebssystem laufen, das einen funktionierenden
 Ruby-Interpreter aufweist.
-
-Sinatra läuft aktuell nicht unter Cardinal, SmallRuby, BlueRuby oder Ruby <=
-2.2.
 
 ## Der neuste Stand (The Bleeding Edge)
 
