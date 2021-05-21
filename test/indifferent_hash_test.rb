@@ -4,10 +4,6 @@
 #
 require 'minitest/autorun' unless defined?(Minitest)
 
-# Suppress the ActiveSupport warning when this test is executed independently,
-# outside of the full suite, on older Rubies.
-ENV['SINATRA_ACTIVESUPPORT_WARNING'] = 'false'
-
 require_relative '../lib/sinatra/indifferent_hash'
 
 class TestIndifferentHashBasics < Minitest::Test
@@ -69,10 +65,6 @@ class TestIndifferentHashBasics < Minitest::Test
 end
 
 class TestIndifferentHash < Minitest::Test
-  def skip_if_lacking(meth)
-    skip "Hash##{meth} not supported on this Ruby" unless Hash.method_defined?(meth)
-  end
-
   def setup
     @hash = Sinatra::IndifferentHash[:a=>:a, ?b=>:b, 3=>3,
       :simple_nested=>{ :a=>:a, ?b=>:b },
@@ -158,8 +150,6 @@ class TestIndifferentHash < Minitest::Test
   end
 
   def test_dig
-    skip_if_lacking :dig
-
     assert_equal :a, @hash.dig(:a)
     assert_equal :b, @hash.dig(?b)
     assert_nil @hash.dig(:d)
@@ -174,8 +164,6 @@ class TestIndifferentHash < Minitest::Test
   end
 
   def test_slice
-    skip_if_lacking :slice
-
     assert_equal Sinatra::IndifferentHash[a: :a], @hash.slice(:a)
     assert_equal Sinatra::IndifferentHash[b: :b], @hash.slice(?b)
     assert_equal Sinatra::IndifferentHash[3 => 3], @hash.slice(3)
@@ -186,8 +174,6 @@ class TestIndifferentHash < Minitest::Test
   end
 
   def test_fetch_values
-    skip_if_lacking :fetch_values
-
     assert_raises(KeyError) { @hash.fetch_values(3, :d) }
     assert_equal [:a, :b, 3, ?D], @hash.fetch_values(:a, ?b, 3, :d) { |k| k.upcase }
   end
@@ -225,16 +211,12 @@ class TestIndifferentHash < Minitest::Test
   end
 
   def test_transform_values!
-    skip_if_lacking :transform_values!
-
     @hash.transform_values! { |v| v.is_a?(Hash) ? Hash[v.to_a] : v }
 
     assert_instance_of Sinatra::IndifferentHash, @hash[:simple_nested]
   end
 
   def test_transform_values
-    skip_if_lacking :transform_values
-
     hash2 = @hash.transform_values { |v| v.respond_to?(:upcase) ? v.upcase : v }
 
     refute_equal @hash, hash2
@@ -243,8 +225,6 @@ class TestIndifferentHash < Minitest::Test
   end
 
   def test_transform_keys!
-    skip_if_lacking :transform_keys!
-
     @hash.transform_keys! { |k| k.respond_to?(:to_sym) ? k.to_sym : k }
 
     assert_equal :a, @hash[:a]
@@ -252,8 +232,6 @@ class TestIndifferentHash < Minitest::Test
   end
 
   def test_transform_keys
-    skip_if_lacking :transform_keys
-
     hash2 = @hash.transform_keys { |k| k.respond_to?(:upcase) ? k.upcase : k }
 
     refute_equal @hash, hash2
