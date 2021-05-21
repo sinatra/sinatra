@@ -54,7 +54,6 @@ if RUBY_ENGINE == "ruby"
   gem 'radius'
   gem 'asciidoctor'
   gem 'liquid'
-  gem 'stylus'
   gem 'rabl'
   gem 'builder'
   gem 'erubi'

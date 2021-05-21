@@ -62,7 +62,6 @@ thin이 설치되어 있을 경우 Sinatra는 thin을 통해 실행합니다.
             * [Creole 템플릿](#creole-템플릿)
             * [MediaWiki 템플릿](#mediawiki-템플릿)
             * [CoffeeScript 템플릿](#coffeescript-템플릿)
-            * [Stylus 템플릿](#stylus-템플릿)
             * [Yajl 템플릿](#yajl-템플릿)
             * [WLang 템플릿](#wlang-템플릿)
         * [템플릿에서 변수에 접근하기](#템플릿에서-변수에-접근하기)
@@ -966,43 +965,6 @@ MediaWiki에서 루비를 호출할 수 없기 때문에, MediaWiki으로 작성
     <td><tt>coffee :index</tt></td>
   </tr>
 </table>
-
-#### Stylus 템플릿
-
-<table>
-  <tr>
-    <td>의존성</td>
-    <td>
-      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
-        Stylus
-      </a> 와
-      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
-        자바스크립트 실행법
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>파일 확장자</td>
-    <td><tt>.styl</tt></td>
-  </tr>
-  <tr>
-    <td>예제</td>
-    <td><tt>stylus :index</tt></td>
-  </tr>
-</table>
-
-Stylus 템플릿을 사용가능하게 하려면, 먼저 `stylus`와 `stylus/tilt`를 로드
-해야합니다.
-
-```ruby
-require 'sinatra'
-require 'stylus'
-require 'stylus/tilt'
-
-get '/' do
-  stylus :example
-end
-```
 
 #### Yajl 템플릿
 

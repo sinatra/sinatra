@@ -61,7 +61,6 @@ ruby myapp.rb
             * [Creole 模板](#creole-模板)
             * [MediaWiki 模板](#mediawiki-模板)
             * [CoffeeScript 模板](#coffeescript-模板)
-            * [Stylus 模板](#stylus-模板)
             * [Yajl 模板](#yajl-模板)
             * [WLang 模板](#wlang-模板)
         * [在模板中访问变量](#在模板中访问变量)
@@ -221,7 +220,7 @@ end
 
 路由范式可以包含可选参数：
 
-```ruby  
+```ruby
 get '/posts/:format?' do
   # 匹配 "GET /posts/" 和任意扩展 "GET /posts/json"、"GET /posts/xml" 等
 end
@@ -965,42 +964,6 @@ erb :overview, :locals => { :text => mediawiki(:introduction) }
     <td><tt>coffee :index</tt></td>
   </tr>
 </table>
-
-#### Stylus 模板
-
-<table>
-  <tr>
-    <td>依赖项</td>
-    <td>
-      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
-        Stylus
-      </a> 以及一种
-      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
-        执行 JavaScript 的方式
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>文件扩展名</td>
-    <td><tt>.styl</tt></td>
-  </tr>
-  <tr>
-    <td>例子</td>
-    <td><tt>stylus :index</tt></td>
-  </tr>
-</table>
-
-在使用 Stylus 模板之前，你需要先加载 `stylus` 和 `stylus/tilt`：
-
-```ruby
-require 'sinatra'
-require 'stylus'
-require 'stylus/tilt'
-
-get '/' do
-  stylus :example
-end
-```
 
 #### Yajl 模板
 
@@ -2823,7 +2786,7 @@ thin --threaded start
 以下 Ruby 实现不受 Sinatra 官方支持，但可以运行 Sinatra：
 
 * 老版本 JRuby 和 Rubinius
-* Ruby 企业版   
+* Ruby 企业版
 * MacRuby、Maglev、IronRuby
 * Ruby 1.9.0 和 1.9.1 （不推荐使用）
 

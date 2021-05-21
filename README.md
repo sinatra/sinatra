@@ -68,7 +68,6 @@ pick up if available.
             * [Creole Templates](#creole-templates)
             * [MediaWiki Templates](#mediawiki-templates)
             * [CoffeeScript Templates](#coffeescript-templates)
-            * [Stylus Templates](#stylus-templates)
             * [Yajl Templates](#yajl-templates)
             * [WLang Templates](#wlang-templates)
         * [Accessing Variables in Templates](#accessing-variables-in-templates)
@@ -1043,43 +1042,6 @@ template than for the layout by passing the `:layout_engine` option.
     <td><tt>coffee :index</tt></td>
   </tr>
 </table>
-
-#### Stylus Templates
-
-<table>
-  <tr>
-    <td>Dependency</td>
-    <td>
-      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
-        Stylus
-      </a> and a
-      <a href="https://github.com/sstephenson/execjs" title="ExecJS">
-        way to execute javascript
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>File Extension</td>
-    <td><tt>.styl</tt></td>
-  </tr>
-  <tr>
-    <td>Example</td>
-    <td><tt>stylus :index</tt></td>
-  </tr>
-</table>
-
-Before being able to use Stylus templates, you need to load `stylus` and
-`stylus/tilt` first:
-
-```ruby
-require 'sinatra'
-require 'stylus'
-require 'stylus/tilt'
-
-get '/' do
-  stylus :example
-end
-```
 
 #### Yajl Templates
 

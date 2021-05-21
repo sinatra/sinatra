@@ -67,7 +67,6 @@ Se recomienda ejecutar `gem install puma`, porque Sinatra lo utilizará si está
             * [Plantillas Creole](#plantillas-creole)
             * [Plantillas MediaWiki](#mediawiki-templates)
             * [Plantillas CofeeScript](#plantillas-coffeescript)
-            * [Plantillas Stylus](#plantillas-stylus)
             * [Plantillas Yajl](#plantillas-yajl)
             * [Plantillas Wlang](#plantillas-wlang)
         * [Accediendo Variables en Plantillas](#accediendo-a-variables-en-plantillas)
@@ -549,7 +548,7 @@ Opciones disponibles:
     del motor usado para renderizar la plantilla.
     Ejemplo: <tt>set :rdoc, :layout_engine => :erb</tt>
   </dd>
-  
+
   <dt>layout_options</dt>
   <dd>
     Opciones especiales usadas únicamente para renderizar el layout. Ejemplo:
@@ -578,7 +577,7 @@ get '/' do
 end
 ```
 
-Renderiza el string de la plantilla. Opcionalmente puedes especificar 
+Renderiza el string de la plantilla. Opcionalmente puedes especificar
 `:path` y `:line` para un backtrace más claro si hay una ruta del sistema
 de archivos o una línea asociada con ese string
 
@@ -1048,42 +1047,6 @@ De todas maneras, es posible usar otro motor de renderizado para esa plantilla p
   </tr>
 </table>
 
-#### Plantillas Stylus
-
-<table>
-  <tr>
-    <td>Dependencias</td>
-    <td>
-      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
-        Stylus
-      </a> y un
-      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
-        mecanismo para ejecutar javascript
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>Extensiones de Archivo</td>
-    <td><tt>.styl</tt></td>
-  </tr>
-  <tr>
-    <td>Ejemplo</td>
-    <td><tt>stylus :index</tt></td>
-  </tr>
-</table>
-
-Antes de poder usar las plantillas de Stylus, necesitas cargar `stylus` y `stylus/tilt`:
-
-```ruby
-require 'sinatra'
-require 'stylus'
-require 'stylus/tilt'
-
-get '/' do
-  stylus :example
-end
-```
-
 #### Plantillas Yajl
 
 <table>
@@ -1419,7 +1382,7 @@ end
 #### Secreto de Sesión
 
 Para mejorar la seguridad, los datos de la sesión en la cookie se firman con un secreto usando `HMAC-SHA1`. El secreto de esta sesión debería ser de manera óptima
-un valor aleatorio criptográficamente seguro de una longitud adecuada para 
+un valor aleatorio criptográficamente seguro de una longitud adecuada para
 `HMAC-SHA1` que es mayor o igual que 64 bytes (512 bits, 128 hex caracteres).
 Se le aconsejará que no use un secreto que sea inferior a 32
 bytes de aleatoriedad (256 bits, 64 caracteres hexadecimales).
@@ -1428,11 +1391,11 @@ sino que use un generador de números aleatorios para crearlo.
 Los humanos somos extremadamente malos generando valores aleatorios
 
 De forma predeterminada, un secreto de sesión aleatorio seguro de 32 bytes se genera para usted por
-Sinatra, pero cambiará con cada reinicio de su aplicación. Si tienes varias 
+Sinatra, pero cambiará con cada reinicio de su aplicación. Si tienes varias
 instancias de tu aplicación y dejas que Sinatra genere la clave, cada instancia
 tendría una clave de sesión diferente y probablemente no es lo que quieres.
 
-Para una mejor seguridad y usabilidad es 
+Para una mejor seguridad y usabilidad es
 [recomendado](https://12factor.net/config) que genere un secreto de sesión
 aleatorio seguro y se guarde en las variables de entorno en cada host que ejecuta
 su aplicación para que todas las instancias de su aplicación compartan el mismo
@@ -1869,7 +1832,7 @@ get '/bar' do
 end
 ```
 
-### Control del Cache 
+### Control del Cache
 
 Asignar tus encabezados correctamente es el cimiento para realizar un cacheo
 HTTP correcto.
@@ -1985,7 +1948,7 @@ Estas opciones son:
 <dl>
   <dt>filename</dt>
     <dd>Nombre del archivo devuelto, por defecto es el nombre real del archivo.</dd>
-  
+
   <dt>last_modified</dt>
     <dd>Valor para el encabezado Last-Modified, por defecto toma el mtime del archivo.</dd>
 
@@ -2333,13 +2296,13 @@ set :protection, :except => [:path_traversal, :session_hijacking]
     formularios put/delete en navegadores que no los
     soportan.
   </dd>
-  
+
   <dt>mustermann_opts</dt>
   <dd>
     Un hash predeterminado de opciones para pasar a Mustermann.new
     al compilar las rutas.
   </dd>
-  
+
   <dt>port</dt>
   <dd>
     Puerto en el que escuchará el servidor integrado.
@@ -2357,7 +2320,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
 
   <dt>protection</dt>
   <dd>
-    Define si se habilitan o no las protecciones de ataques web. 
+    Define si se habilitan o no las protecciones de ataques web.
     Ver la sección de protección encima.
   </dd>
 
@@ -2369,7 +2332,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
     está presente, se infiere del valor de la opción
     <tt>app_file</tt>.
   </dd>
-  
+
   <dt>quiet</dt>
   <dd>
     Inhabilita los logs generados por los comandos de inicio y detención de Sinatra.
@@ -2416,7 +2379,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
     integrado. El orden indica su prioridad, por defecto depende
     de la implementación de Ruby.
   </dd>
-  
+
   <dt>server_settings</dt>
   <dd>
     Si está utilizando un servidor web WEBrick, presumiblemente para su entorno de desarrollo, puede pasar un hash de opciones a <tt> server_settings </tt>, como <tt> SSLEnable </tt> o <tt> SSLVerifyClient </tt>. Sin embargo, los servidores web como Puma no son compatibles, por lo que puede establecer <tt> server_settings </tt> definiéndolo como un método cuando llame a <tt> configure </tt>.
@@ -2428,7 +2391,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
     través de <tt>Rack::Session::Cookie</tt>. Ver la
     sección 'Usando Sesiones' para más información.
   </dd>
-  
+
 <dt>session_store</dt>
 <dd>
 Define el middleware de sesión Rack utilizado. Predeterminado a
@@ -2468,7 +2431,7 @@ información.
     utilizar un array cuando se asignan múltiples valores:
     <tt>set :static_cache_control, [:public, :max_age => 300]</tt>.
   </dd>
-  
+
 <dt>threaded</dt>
 <dd>
 Si se establece en <tt> true </tt>, le dirá al servidor que use
@@ -3120,7 +3083,7 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
 
   <dt>Rubinius</dt>
   <dd>
-    Rubinius es oficialmente compatible (Rubinius> = 2.x). Se recomienda instalar la gema puma 
+    Rubinius es oficialmente compatible (Rubinius> = 2.x). Se recomienda instalar la gema puma
     <tt>gem install puma</tt>.
   </dd>
 
@@ -3132,7 +3095,7 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
   </dd>
 </dl>
 
-Las versiones de Ruby anteriores a 2.2.2 ya no son compatibles con Sinatra 2.0 . 
+Las versiones de Ruby anteriores a 2.2.2 ya no son compatibles con Sinatra 2.0 .
 
 Siempre le prestamos atención a las nuevas versiones de Ruby.
 

@@ -76,7 +76,6 @@ disponível, o Sinatra irá utilizá-la.
             * [Creole Templates](#creole-templates)
             * [MediaWiki Templates](#mediawiki-templates)
             * [CoffeeScript Templates](#coffeescript-templates)
-            * [Stylus Templates](#stylus-templates)
             * [Yajl Templates](#yajl-templates)
             * [WLang Templates](#wlang-templates)
         * [Acessando Variáveis nos Templates](#acessando-variáveis-nos-templates)
@@ -1083,43 +1082,6 @@ deve-se passar a `:layout_engine` como opção.
     <td><tt>coffee :index</tt></td>
   </tr>
 </table>
-
-#### Stylus Templates
-
-<table>
-  <tr>
-    <td>Dependência</td>
-    <td>
-      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
-        Stylus
-      </a> and a
-      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
-        way to execute javascript
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>Extensão do Arquivo</td>
-    <td><tt>.styl</tt></td>
-  </tr>
-  <tr>
-    <td>Exemplo</td>
-    <td><tt>stylus :index</tt></td>
-  </tr>
-</table>
-
-Antes que você possa utilizar o template Stylus primeiro você deve carregar
-`stylus` e `stylus/tilt`:
-
-```ruby
-require 'sinatra'
-require 'stylus'
-require 'stylus/tilt'
-
-get '/' do
-  stylus :exemplo
-end
-```
 
 #### Yajl Templates
 

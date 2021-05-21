@@ -67,7 +67,6 @@ Sinatra utilise le server Thin quand il est disponible.
             * [Templates Creole](#templates-creole)
             * [Templates MediaWiki](#templates-mediawiki)
             * [Templates CoffeeScript](#templates-coffeescript)
-            * [Templates Stylus](#templates-stylus)
             * [Templates Yajl](#templates-yajl)
             * [Templates WLang](#templates-wlang)
         * [Accéder aux variables dans un Template](#accéder-aux-variables-dans-un-template)
@@ -1058,44 +1057,6 @@ pour le layout en utilisant l’option `:layout_engine`.
     <td><tt>coffee :index</tt></td>
   </tr>
 </table>
-
-#### Templates Stylus
-
-<table>
-  <tr>
-    <td>Dépendances</td>
-    <td>
-      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
-        Stylus
-      </a>
-      et un
-      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
-        moyen d'exécuter javascript
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>Extensions de fichier</td>
-    <td><tt>.styl</tt></td>
-  </tr>
-  <tr>
-    <td>Exemple</td>
-    <td><tt>stylus :index</tt></td>
-  </tr>
-</table>
-
-Avant de pouvoir utiliser des templates Stylus, vous devez auparavant charger
-`stylus` et `stylus/tilt` :
-
-```ruby
-require 'sinatra'
-require 'stylus'
-require 'stylus/tilt'
-
-get '/' do
-  stylus :exemple
-end
-```
 
 #### Templates Yajl
 
