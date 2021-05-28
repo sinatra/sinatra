@@ -97,4 +97,14 @@ class MiddlewareTest < Minitest::Test
     get '/'
   end
 
+  class KeywordArgumentIntializationMiddleware < MockMiddleware
+    def initialize(app, **)
+      super app
+    end
+  end
+
+  it "handles keyword arguments" do
+    @app.use KeywordArgumentIntializationMiddleware, argument: "argument"
+    get '/'
+  end
 end

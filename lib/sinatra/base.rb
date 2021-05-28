@@ -1471,6 +1471,7 @@ module Sinatra
         @prototype = nil
         @middleware << [middleware, args, block]
       end
+      ruby2_keywords(:use) if respond_to?(:ruby2_keywords, true)
 
       # Stop the self-hosted server if running.
       def quit!
