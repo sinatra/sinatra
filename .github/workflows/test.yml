@@ -18,6 +18,7 @@ jobs:
     name: Test with Ruby-${{ matrix.ruby }}
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
         # TODO: Add jruby if something like allow_failures will be implemented on Actions.
