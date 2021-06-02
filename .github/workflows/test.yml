@@ -39,4 +39,4 @@ jobs:
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
         MATRIX_CONTEXT: ${{ toJson(matrix) }} # required
-      if: failure()
+      if: failure() && env.SLACK_WEBHOOK_URL
