@@ -81,7 +81,6 @@ pick up if available.
     * [Filters](#filters)
     * [Helpers](#helpers)
         * [Using Sessions](#using-sessions)
-            * [Session Secret Security](#session-secret-security)
             * [Session Config](#session-config)
             * [Choosing Your Own Session Middleware](#choosing-your-own-session-middleware)
         * [Halting](#halting)
@@ -100,7 +99,6 @@ pick up if available.
         * [Dealing with Date and Time](#dealing-with-date-and-time)
         * [Looking Up Template Files](#looking-up-template-files)
     * [Configuration](#configuration)
-        * [Configuring attack protection](#configuring-attack-protection)
         * [Available Settings](#available-settings)
     * [Environments](#environments)
     * [Error Handling](#error-handling)
@@ -108,6 +106,9 @@ pick up if available.
         * [Error](#error)
     * [Rack Middleware](#rack-middleware)
     * [Testing](#testing)
+    * [Security](#security)
+        * [Session Secret Security](#session-secret-security)
+        * [Attack Protection](#attack-protection)
     * [Sinatra::Base - Middleware, Libraries, and Modular Apps](#sinatrabase---middleware-libraries-and-modular-apps)
         * [Modular vs. Classic Style](#modular-vs-classic-style)
         * [Serving a Modular Application](#serving-a-modular-application)
@@ -259,7 +260,7 @@ end
 ```
 
 By the way, unless you disable the path traversal attack protection (see
-[below](#configuring-attack-protection)), the request path might be modified before
+[below](#attack-protection)), the request path might be modified before
 matching against your routes.
 
 You may customize the [Mustermann](https://github.com/sinatra/mustermann#readme)
@@ -1411,79 +1412,6 @@ get '/:value' do
 end
 ```
 
-#### Session Secret Security
-
-To improve security, the session data in the cookie is signed with a session
-secret using `HMAC-SHA1`. This session secret should optimally be a
-cryptographically secure random value of an appropriate length which for
-`HMAC-SHA1` is greater than or equal to 64 bytes (512 bits, 128 hex
-characters). You would be advised not to use a secret that is less than 32
-bytes of randomness (256 bits, 64 hex characters). It is therefore **very
-important** that you don't just make the secret up, but instead use a secure
-random number generator to create it. Humans are extremely bad at generating
-random values.
-
-By default, a 32 byte secure random session secret is generated for you by
-Sinatra, but it will change with every restart of your application. If you
-have multiple instances of your application, and you let Sinatra generate the
-key, each instance would then have a different session key which is probably
-not what you want.
-
-For better security and usability it's
-[recommended](https://12factor.net/config) that you generate a secure random
-secret and store it in an environment variable on each host running your
-application so that all of your application instances will share the same
-secret. You should periodically rotate this session secret to a new value.
-Here are some examples of how you might create a 64-byte secret and set it:
-
-**Session Secret Generation**
-
-```text
-$ ruby -e "require 'securerandom'; puts SecureRandom.hex(64)"
-99ae8af...snip...ec0f262ac
-```
-
-**Session Secret Generation (Bonus Points)**
-
-Use the [sysrandom gem](https://github.com/cryptosphere/sysrandom#readme) to
-use the system RNG facilities to generate random values instead of
-userspace `OpenSSL` which MRI Ruby currently defaults to:
-
-```text
-$ gem install sysrandom
-Building native extensions.  This could take a while...
-Successfully installed sysrandom-1.x
-1 gem installed
-
-$ ruby -e "require 'sysrandom/securerandom'; puts SecureRandom.hex(64)"
-99ae8af...snip...ec0f262ac
-```
-
-**Session Secret Environment Variable**
-
-Set a `SESSION_SECRET` environment variable for Sinatra to the value you
-generated. Make this value persistent across reboots of your host. Since the
-method for doing this will vary across systems this is for illustrative
-purposes only:
-
-```bash
-# echo "export SESSION_SECRET=99ae8af...snip...ec0f262ac" >> ~/.bashrc
-```
-
-**Session Secret App Config**
-
-Set up your app config to fail-safe to a secure random secret
-if the `SESSION_SECRET` environment variable is not available.
-
-For bonus points use the [sysrandom
-gem](https://github.com/cryptosphere/sysrandom#readme) here as well:
-
-```ruby
-require 'securerandom'
-# -or- require 'sysrandom/securerandom'
-set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
-```
-
 #### Session Config
 
 If you want to configure it further, you may also store a hash with options
@@ -1499,6 +1427,9 @@ domain with a *.* like this instead:
 ```ruby
 set :sessions, :domain => '.foo.com'
 ```
+
+Also, consider reviewing the [Session Secret Security](#session-secret-security)
+section and additionally setting `session_secret`.
 
 #### Choosing Your Own Session Middleware
 
@@ -1533,7 +1464,7 @@ use Rack::Protection::RemoteToken
 use Rack::Protection::SessionHijacking
 ```
 
-See '[Configuring attack protection](#configuring-attack-protection)' for more information.
+See '[attack protection](#attack-protection)' for more information.
 
 ### Halting
 
@@ -2210,39 +2141,6 @@ get '/' do
 end
 ```
 
-### Configuring attack protection
-
-Sinatra is using
-[Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme) to
-defend your application against common, opportunistic attacks. You can
-easily disable this behavior (which will open up your application to tons
-of common vulnerabilities):
-
-```ruby
-disable :protection
-```
-
-To skip a single defense layer, set `protection` to an options hash:
-
-```ruby
-set :protection, :except => :path_traversal
-```
-You can also hand in an array in order to disable a list of protections:
-
-```ruby
-set :protection, :except => [:path_traversal, :session_hijacking]
-```
-
-By default, Sinatra will only set up session based protection if `:sessions`
-have been enabled. See '[Using Sessions](#using-sessions)'. Sometimes you may want to set up
-sessions "outside" of the Sinatra app, such as in the config.ru or with a
-separate `Rack::Builder` instance. In that case, you can still set up session
-based protection by passing the `:session` option:
-
-```ruby
-set :protection, :session => true
-```
-
 ### Available Settings
 
 <dl>
@@ -2335,8 +2233,8 @@ set :protection, :session => true
 
   <dt>protection</dt>
     <dd>
-      Whether or not to enable web attack protections. See protection section
-      above.
+      Whether or not to enable web attack protections. See 
+      [Attack Protection](#attack-protection) section.
     </dd>
 
   <dt>public_dir</dt>
@@ -2657,6 +2555,114 @@ end
 
 Note: If you are using Sinatra in the modular style, replace
 `Sinatra::Application` above with the class name of your app.
+
+## Security
+
+#### Session Secret Security
+
+To improve security, the session data in the cookie is signed with a session
+secret using `HMAC-SHA1`. This session secret should optimally be a
+cryptographically secure random value of an appropriate length which for
+`HMAC-SHA1` is greater than or equal to 64 bytes (512 bits, 128 hex
+characters). You would be advised not to use a secret that is less than 32
+bytes of randomness (256 bits, 64 hex characters). It is therefore **very
+important** that you don't just make the secret up, but instead use a secure
+random number generator to create it. Humans are extremely bad at generating
+random values.
+
+By default, a 32 byte secure random session secret is generated for you by
+Sinatra, but it will change with every restart of your application. If you
+have multiple instances of your application, and you let Sinatra generate the
+key, each instance would then have a different session key which is probably
+not what you want.
+
+For better security and usability it's
+[recommended](https://12factor.net/config) that you generate a secure random
+secret and store it in an environment variable on each host running your
+application so that all of your application instances will share the same
+secret. You should periodically rotate this session secret to a new value.
+Here are some examples of how you might create a 64-byte secret and set it:
+
+**Session Secret Generation**
+
+```text
+$ ruby -e "require 'securerandom'; puts SecureRandom.hex(64)"
+99ae8af...snip...ec0f262ac
+```
+
+**Session Secret Generation (Bonus Points)**
+
+Use the [sysrandom gem](https://github.com/cryptosphere/sysrandom#readme) to
+use the system RNG facilities to generate random values instead of
+userspace `OpenSSL` which MRI Ruby currently defaults to:
+
+```text
+$ gem install sysrandom
+Building native extensions.  This could take a while...
+Successfully installed sysrandom-1.x
+1 gem installed
+
+$ ruby -e "require 'sysrandom/securerandom'; puts SecureRandom.hex(64)"
+99ae8af...snip...ec0f262ac
+```
+
+**Session Secret Environment Variable**
+
+Set a `SESSION_SECRET` environment variable for Sinatra to the value you
+generated. Make this value persistent across reboots of your host. Since the
+method for doing this will vary across systems this is for illustrative
+purposes only:
+
+```bash
+# echo "export SESSION_SECRET=99ae8af...snip...ec0f262ac" >> ~/.bashrc
+```
+
+**Session Secret App Config**
+
+Set up your app config to fail-safe to a secure random secret
+if the `SESSION_SECRET` environment variable is not available.
+
+For bonus points use the [sysrandom
+gem](https://github.com/cryptosphere/sysrandom#readme) here as well:
+
+```ruby
+require 'securerandom'
+# -or- require 'sysrandom/securerandom'
+set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
+```
+
+## Attack Protection
+
+Sinatra is using
+[Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme) to
+defend your application against common, opportunistic attacks. You can
+easily disable this behavior (which will open up your application to tons
+of common vulnerabilities):
+
+```ruby
+disable :protection
+```
+
+To skip a single defense layer, set `protection` to an options hash:
+
+```ruby
+set :protection, :except => :path_traversal
+```
+You can also hand in an array in order to disable a list of protections:
+
+```ruby
+set :protection, :except => [:path_traversal, :session_hijacking]
+```
+
+By default, Sinatra will only set up session based protection if `:sessions`
+have been enabled. See '[Using Sessions](#using-sessions)'. Sometimes you may want to set up
+sessions "outside" of the Sinatra app, such as in the config.ru or with a
+separate `Rack::Builder` instance. In that case, you can still set up session
+based protection by passing the `:session` option:
+
+```ruby
+set :protection, :session => true
+```
 
 ## Sinatra::Base - Middleware, Libraries, and Modular Apps
 
