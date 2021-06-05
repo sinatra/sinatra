@@ -242,14 +242,20 @@ module Sinatra
     # Reloads the modified files, adding, updating and removing the
     # needed elements.
     def self.perform(klass)
+      reloaded_paths = []
       Watcher::List.for(klass).updated.each do |watcher|
         klass.set(:inline_templates, watcher.path) if watcher.inline_templates?
         watcher.elements.each { |element| klass.deactivate(element) }
         $LOADED_FEATURES.delete(watcher.path)
         require watcher.path
         watcher.update
+        reloaded_paths << watcher.path
       end
-      @@after_reload.each(&:call)
+      return if reloaded_paths.empty?
+      @@after_reload.each do |block|
+        args = (block.lambda? && block.arity != 1) ? [] : [reloaded_paths]
+        block.call(*args)
+      end
     end
 
     # Contains the methods defined in Sinatra::Base that are overridden.
