@@ -299,8 +299,9 @@ module Sinatra
       end
 
       def template(name, &block)
-        filename, line = caller_locations.first
-        templates[name] = [block, filename, line.to_i]
+        first_location = caller_locations.first
+        filename, line = first_location.path, first_location.lineno
+        templates[name] = [block, filename, line]
       end
 
       def layout(name=:layout, &block)
