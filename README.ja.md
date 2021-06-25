@@ -2005,11 +2005,11 @@ set :protection, :session => true
 
   <dt>default_content_type</dt>
   <dd>
-    不明なときに仮定される Content-Type (デフォルトは<tt>"text/html"</tt>)。
-    <tt>nil</tt> を設定するとすべてのレスポンスでデフォルトの Content-Type が設定されなくなる。
+    Content-Type がセットされていない場合に適用される (デフォルトは<tt>"text/html"</tt>)。
+    <tt>default_content_type</tt> に <tt>nil</tt> を設定すると、すべてのレスポンスにデフォルトの Content-Type が設定されなくなる。
     このように設定した場合、コンテンツを出力するときに Content-Type を手動で設定する必要がある。
-    そうしないと、user-agenet はコンテンツを盗み見る必要がある。
-    (または、もし Rack::Protection::XSSHeader の <tt>nosniff</tt> が有効な場合、<tt>application/octet-stream</tt> と仮定される。)
+    そうしなければ、user-agent がそれを推測しなければならなくなります。
+    (または、もし Rack::Protection::XSSHeader の <tt>nosniff</tt> が有効な場合、<tt>application/octet-stream</tt> と仮定します。)
   </dd>
 
   <dt>default_encoding</dt>
