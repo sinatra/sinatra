@@ -1,16 +1,5 @@
 # Sinatra
 
-*Atenção: Este documento é apenas uma tradução da versão em inglês e
-pode estar desatualizado.*
-
-Alguns dos trechos de código a seguir utilizam caracteres UTF-8. Então, caso
-esteja utilizando uma versão de ruby inferior à `2.0.0`, adicione o encoding
-no início de seus arquivos:
-
-```ruby
-# encoding: utf-8
-```
-
 Sinatra é uma
 [DSL](https://pt.wikipedia.org/wiki/Linguagem_de_domínio_específico) para
 criar aplicações web em Ruby com o mínimo de esforço e rapidez:
@@ -36,9 +25,9 @@ Em seguida execute:
 ruby minha_app.rb
 ```
 
-Acesse em: [http://localhost:4567](http://localhost:4567)
+Abra o navegador e digite: [http://localhost:4567](http://localhost:4567)
 
-Códigos alterados só terão efeito após você reiniciar o servidor.
+O código que você alterou não terá efeito até que você reinicie o servidor.
 Por favor, reinicie o servidor após qualquer mudança ou use
 [sinatra/reloader](http://www.sinatrarb.com/contrib/reloader).
 
@@ -137,7 +126,7 @@ disponível, o Sinatra irá utilizá-la.
 
 ## Rotas
 
-No Sinatra, uma rota é um método HTTP emparelhado com um padrão de URL.
+No Sinatra, uma rota é um método HTTP emparelhado com um padrão de correspondência de URL.
 Cada rota possui um bloco de execução:
 
 ```ruby
@@ -146,31 +135,31 @@ get '/' do
 end
 
 post '/' do
-  .. criando alguma coisa ..
+  .. criando algo ..
 end
 
 put '/' do
-  .. atualizando alguma coisa ..
+  .. atualizando algo ..
 end
 
 patch '/' do
-  .. modificando alguma coisa ..
+  .. modificando algo ..
 end
 
 delete '/' do
-  .. removendo alguma coisa ..
+  .. removendo algo ..
 end
 
 options '/' do
-  .. estabelecendo alguma coisa ..
+  .. estabelecendo algo ..
 end
 
 link '/' do
-  .. associando alguma coisa ..
+  .. associando algo ..
 end
 
 unlink '/' do
-  .. separando alguma coisa ..
+  .. separando algo..
 end
 ```
 
@@ -208,7 +197,7 @@ get '/ola/:nome' do |n|
 end
 ```
 
-Padrões de rota também podem conter parâmetros splat (curinga),
+Os padrões de rota também podem conter parâmetros splat (curinga),
 acessível por meio do array `params['splat']`:
 
 ```ruby
@@ -288,7 +277,7 @@ misturadas no hash global `:mustermann_opts` descrito
 
 ## Condições
 
-Rotas podem incluir uma variedade de condições, tal como o `user agent`:
+As rotas podem incluir uma variedade de condições, tal como o `user agent`:
 
 ```ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
@@ -355,7 +344,7 @@ end
 
 O valor de retorno do bloco de uma rota determina pelo menos o corpo da
 resposta passado para o cliente HTTP, ou pelo menos o próximo middleware
-na pilha Rack. Frequentemente, isto é uma `string`, tal como nos
+na pilha Rack. Frequentemente, isto é uma `string`, como nos
 exemplos acima. Entretanto, outros valores também são aceitos.
 
 Você pode retornar uma resposta válida ou um objeto para o Rack, sendo
@@ -371,7 +360,7 @@ retornar um código de status HTTP.
 * Um objeto que responda à `#each` sem passar nada, mas, sim, `strings`
     para um dado bloco
 
-* Um objeto `Integer` representando o código de status
+* Um número `Integer` representando o código de status
 
 Dessa forma, podemos implementar facilmente um exemplo de streaming:
 
