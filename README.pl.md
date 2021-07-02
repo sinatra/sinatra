@@ -4,86 +4,87 @@
 [![Build Status](https://secure.travis-ci.org/sinatra/sinatra.svg)](https://travis-ci.org/sinatra/sinatra)
 [![SemVer](https://api.dependabot.com/badges/compatibility_score?dependency-name=sinatra&package-manager=bundler&version-scheme=semver)](https://dependabot.com/compatibility-score.html?dependency-name=sinatra&package-manager=bundler&version-scheme=semver)
 
-Sinatra is a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) for
+Sinatra jest [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) for
 quickly creating web applications in Ruby with minimal effort:
+do szybkiego tworzenia aplikacji webowych w Ruby'im przy małym wysiłku:
 
 ```ruby
 # myapp.rb
 require 'sinatra'
 
 get '/' do
-  'Hello world!'
+  'Witaj świecie!'
 end
 ```
 
-Install the gem:
+Zainstaluj gem'a:
 
 ```shell
 gem install sinatra
 ```
 
-And run with:
+I uruchom komendę:
 
 ```shell
 ruby myapp.rb
 ```
 
-View at: [http://localhost:4567](http://localhost:4567)
+Zobacz rezultat na: [http://localhost:4567](http://localhost:4567)
 
-The code you changed will not take effect until you restart the server.
-Please restart the server every time you change or use
+Jeżeli zmienisz kod, to musisz zrestartować serwer, aby zobaczyć zmiany.
+Restartuj serwer za każdym razem, gdy coś zmieniasz, albo użyjwaj
 [sinatra/reloader](http://www.sinatrarb.com/contrib/reloader).
 
-It is recommended to also run `gem install puma`, which Sinatra will
-pick up if available.
+Zalecane jest również zainstalowanie gem'a puma `gem install puma`, 
+którego Sinatra użyje jeżeli będzie dostępny.
 
-## Table of Contents
+## Spis treści
 
 * [Sinatra](#sinatra)
-    * [Table of Contents](#table-of-contents)
-    * [Routes](#routes)
-    * [Conditions](#conditions)
-    * [Return Values](#return-values)
-    * [Custom Route Matchers](#custom-route-matchers)
-    * [Static Files](#static-files)
-    * [Views / Templates](#views--templates)
-        * [Literal Templates](#literal-templates)
-        * [Available Template Languages](#available-template-languages)
-            * [Haml Templates](#haml-templates)
-            * [Erb Templates](#erb-templates)
-            * [Builder Templates](#builder-templates)
-            * [Nokogiri Templates](#nokogiri-templates)
-            * [Sass Templates](#sass-templates)
-            * [SCSS Templates](#scss-templates)
-            * [Less Templates](#less-templates)
-            * [Liquid Templates](#liquid-templates)
-            * [Markdown Templates](#markdown-templates)
-            * [Textile Templates](#textile-templates)
-            * [RDoc Templates](#rdoc-templates)
-            * [AsciiDoc Templates](#asciidoc-templates)
-            * [Radius Templates](#radius-templates)
-            * [Markaby Templates](#markaby-templates)
-            * [RABL Templates](#rabl-templates)
-            * [Slim Templates](#slim-templates)
-            * [Creole Templates](#creole-templates)
-            * [MediaWiki Templates](#mediawiki-templates)
-            * [CoffeeScript Templates](#coffeescript-templates)
-            * [Stylus Templates](#stylus-templates)
-            * [Yajl Templates](#yajl-templates)
-            * [WLang Templates](#wlang-templates)
-        * [Accessing Variables in Templates](#accessing-variables-in-templates)
-        * [Templates with `yield` and nested layouts](#templates-with-yield-and-nested-layouts)
-        * [Inline Templates](#inline-templates)
-        * [Named Templates](#named-templates)
-        * [Associating File Extensions](#associating-file-extensions)
-        * [Adding Your Own Template Engine](#adding-your-own-template-engine)
-        * [Using Custom Logic for Template Lookup](#using-custom-logic-for-template-lookup)
-    * [Filters](#filters)
-    * [Helpers](#helpers)
-        * [Using Sessions](#using-sessions)
-            * [Session Secret Security](#session-secret-security)
-            * [Session Config](#session-config)
-            * [Choosing Your Own Session Middleware](#choosing-your-own-session-middleware)
+    * [Spis treści](#table-of-contents)
+    * [Scieżki](#routes)
+    * [Warunki](#conditions)
+    * [Zwracane wartości](#return-values)
+    * [Niestandardowe dopasowanie scieżki](#custom-route-matchers)
+    * [Pliki statyczne](#static-files)
+    * [Widoki / Szablony](#views--templates)
+        * [Szablony](#literal-templates)
+        * [Dostępne języki szablonu](#available-template-languages)
+            * [Szablony Haml](#haml-templates)
+            * [Szblony Erb](#erb-templates)
+            * [Szblony Builder](#builder-templates)
+            * [Szablony Nokogiri](#nokogiri-templates)
+            * [Szablony Sass](#sass-templates)
+            * [Szablony SCSS](#scss-templates)
+            * [Szablony Less](#less-templates)
+            * [Szablony Liquid](#liquid-templates)
+            * [Szablony Markdown](#markdown-templates)
+            * [Szablony Textile](#textile-templates)
+            * [Szablony RDoc](#rdoc-templates)
+            * [Szablony AsciiDoc](#asciidoc-templates)
+            * [Szablony Radius](#radius-templates)
+            * [Szablony Markaby](#markaby-templates)
+            * [Szablony RABL](#rabl-templates)
+            * [Szablony Slim](#slim-templates)
+            * [Szablony Creole](#creole-templates)
+            * [Szablony MediaWiki](#mediawiki-templates)
+            * [Szablony CoffeeScript](#coffeescript-templates)
+            * [Szablony Stylus](#stylus-templates)
+            * [Szablony Yajl](#yajl-templates)
+            * [Szablony WLang](#wlang-templates)
+        * [Dostępność zmiennych w szblonach](#accessing-variables-in-templates)
+        * [Szablony z `yield` i szablony zagnieżdżone](#templates-with-yield-and-nested-layouts)
+        * [Szablony liniowe](#inline-templates)
+        * [Szablony nazwane](#named-templates)
+        * [Kojarzenie rozszerzen plików](#associating-file-extensions)
+        * [Dodawnie własngo silnika szablonu](#adding-your-own-template-engine)
+        * [Korzystanie z niestandardowej logiki do wyszukiwania szablonu](#using-custom-logic-for-template-lookup)
+    * [Filtry](#filters)
+    * [Pomocnicy](#helpers)
+        * [Używanie sesji](#using-sessions)
+            * [Sekretne zabezpieczenia sesji](#session-secret-security)
+            * [Konfiguracja sesji](#session-config)
+            * [Wybór własnego oprogramowania Middleware](#choosing-your-own-session-middleware)
         * [Halting](#halting)
         * [Passing](#passing)
         * [Triggering Another Route](#triggering-another-route)
@@ -127,74 +128,75 @@ pick up if available.
     * [Versioning](#versioning)
     * [Further Reading](#further-reading)
 
-## Routes
+## Scieżki
 
-In Sinatra, a route is an HTTP method paired with a URL-matching pattern.
-Each route is associated with a block:
+W Sinatrze, scieżki są metodami HTTP 
+In Sinatra, a route is an HTTP method połączone ze wzorcem dopasowywania adresu URL.
+Każda scieżka jest powiązana z blokiem: 
 
 ```ruby
 get '/' do
-  .. show something ..
+  .. pokaż coś ..
 end
 
 post '/' do
-  .. create something ..
+  .. stwórz coś ..
 end
 
 put '/' do
-  .. replace something ..
+  .. zastąp/zedytuj coś ..
 end
 
 patch '/' do
-  .. modify something ..
+  .. zmodyfikuj coś ..
 end
 
 delete '/' do
-  .. annihilate something ..
+  .. usuń coś ..
 end
 
 options '/' do
-  .. appease something ..
+  .. uspokuj coś ..
 end
 
 link '/' do
-  .. affiliate something ..
+  .. stwierdzić coś ..
 end
 
 unlink '/' do
-  .. separate something ..
+  .. oddziel coś ..
 end
 ```
 
-Routes are matched in the order they are defined. The first route that
-matches the request is invoked.
+Scieżki są dopasowane w kolejności, w jakiej są zdefiniowane. Pierwsza ścieżka
+która będzie pasować, zostanie wywołana.
 
-Routes with trailing slashes are different from the ones without:
+Sćieżki z ukośnikami różnią się od tych bez:
 
 ```ruby
 get '/foo' do
-  # Does not match "GET /foo/"
+  # Różni się od "GET /foo/"
 end
 ```
 
-Route patterns may include named parameters, accessible via the
-`params` hash:
+Wzory ścieżek mogą zawierać nazwane parametry, dostępne za pośrednictwem
+hash `params`:
 
 ```ruby
-get '/hello/:name' do
-  # matches "GET /hello/foo" and "GET /hello/bar"
-  # params['name'] is 'foo' or 'bar'
-  "Hello #{params['name']}!"
+get '/hello/:imie' do
+  # odpowiada "GET /hello/foo" i "GET /hello/bar"
+  # params['imie'] będzie miało wartość 'foo' albo 'bar'
+  "Hello #{params['imie']}!"
 end
 ```
 
-You can also access named parameters via block parameters:
+Możesz także uzyskać dostęp do nazwanych parametrów za pomocą parametrów bloków:
 
 ```ruby
-get '/hello/:name' do |n|
-  # matches "GET /hello/foo" and "GET /hello/bar"
-  # params['name'] is 'foo' or 'bar'
-  # n stores params['name']
+get '/hello/:imie' do |n|
+  # odpowiada "GET /hello/foo" i "GET /hello/bar"
+  # params['imie'] przyjmuje wartość 'foo' albo 'bar'
+  # n przechowuje params['imie']
   "Hello #{n}!"
 end
 ```
