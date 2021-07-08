@@ -15,7 +15,8 @@ module Rack
       default_options :xss_mode => :block, :nosniff => true
 
       def call(env)
-        status, headers, body = @app.call(env)
+        result = @app.call(env)
+        status, headers, body = result.respond_to?(:to_ary) ? result : result.finish
         headers['X-XSS-Protection']       ||= "1; mode=#{options[:xss_mode]}" if html? headers
         headers['X-Content-Type-Options'] ||= 'nosniff'                       if options[:nosniff]
         [status, headers, body]
