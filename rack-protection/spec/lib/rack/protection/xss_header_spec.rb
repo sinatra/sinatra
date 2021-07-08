@@ -17,7 +17,7 @@ describe Rack::Protection::XSSHeader do
     # I have no clue what other modes are available
     mock_app do
       use Rack::Protection::XSSHeader, :xss_mode => :foo
-      run DummyApp
+      run DummyAppWithRackResponse
     end
 
     expect(get('/', {}, 'wants' => 'application/xhtml').headers["X-XSS-Protection"]).to eq("1; mode=foo")
@@ -41,7 +41,7 @@ describe Rack::Protection::XSSHeader do
   it 'should allow changing the nosniff-mode off' do
     mock_app do
       use Rack::Protection::XSSHeader, :nosniff => false
-      run DummyApp
+      run DummyAppWithRackResponse
     end
 
     expect(get('/').headers["X-Content-Type-Options"]).to be_nil
