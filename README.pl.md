@@ -4,8 +4,7 @@
 [![Build Status](https://secure.travis-ci.org/sinatra/sinatra.svg)](https://travis-ci.org/sinatra/sinatra)
 [![SemVer](https://api.dependabot.com/badges/compatibility_score?dependency-name=sinatra&package-manager=bundler&version-scheme=semver)](https://dependabot.com/compatibility-score.html?dependency-name=sinatra&package-manager=bundler&version-scheme=semver)
 
-Sinatra jest [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) for
-quickly creating web applications in Ruby with minimal effort:
+Sinatra jest [DSL](https://en.wikipedia.org/wiki/Domain-specific_language)
 do szybkiego tworzenia aplikacji webowych w Ruby'im przy małym wysiłku:
 
 ```ruby
