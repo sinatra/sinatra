@@ -262,4 +262,57 @@ class TestIndifferentHash < Minitest::Test
     assert_equal :a, hash2[:A]
     assert_equal :a, hash2[?A]
   end
+
+  def test_select
+    hash = @hash.select { |k, v| v == :a }
+    assert_equal Sinatra::IndifferentHash[a: :a], hash
+    assert_instance_of Sinatra::IndifferentHash, hash
+
+    hash2 = @hash.select { |k, v| true }
+    assert_equal @hash, hash2
+    assert_instance_of Sinatra::IndifferentHash, hash2
+
+    enum = @hash.select
+    assert_instance_of Enumerator, enum
+  end
+
+  def test_select!
+    @hash.select! { |k, v| v == :a }
+    assert_equal Sinatra::IndifferentHash[a: :a], @hash
+  end
+
+  def test_reject
+    hash = @hash.reject { |k, v| v != :a }
+    assert_equal Sinatra::IndifferentHash[a: :a], hash
+    assert_instance_of Sinatra::IndifferentHash, hash
+
+    hash2 = @hash.reject { |k, v| false }
+    assert_equal @hash, hash2
+    assert_instance_of Sinatra::IndifferentHash, hash2
+
+    enum = @hash.reject
+    assert_instance_of Enumerator, enum
+  end
+
+  def test_reject!
+    @hash.reject! { |k, v| v != :a }
+    assert_equal Sinatra::IndifferentHash[a: :a], @hash
+  end
+
+  def test_compact
+    skip_if_lacking :compact
+
+    hash_with_nil_values = @hash.merge({?z => nil})
+    compacted_hash = hash_with_nil_values.compact
+    assert_equal @hash, compacted_hash
+    assert_instance_of Sinatra::IndifferentHash, compacted_hash
+
+    empty_hash = Sinatra::IndifferentHash.new
+    compacted_hash = empty_hash.compact
+    assert_equal empty_hash, compacted_hash
+
+    non_empty_hash = Sinatra::IndifferentHash[a: :a]
+    compacted_hash = non_empty_hash.compact
+    assert_equal non_empty_hash, compacted_hash
+  end
 end
