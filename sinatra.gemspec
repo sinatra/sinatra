@@ -19,7 +19,6 @@ Gem::Specification.new 'sinatra', version do |s|
     "SECURITY.md",
     "sinatra.gemspec",
     "VERSION"]
-  s.test_files        = s.files.select { |p| p =~ /^test\/.*_test.rb/ }
   s.extra_rdoc_files  = %w[README.md LICENSE]
   s.rdoc_options      = %w[--line-numbers --title Sinatra --main README.rdoc --encoding=UTF-8]
 
