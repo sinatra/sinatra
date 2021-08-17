@@ -180,6 +180,20 @@ module Sinatra
       end
     end
 
+    def select(*args, &block)
+      return to_enum(:select) unless block_given?
+      dup.tap { |hash| hash.select!(*args, &block) }
+    end
+
+    def reject(*args, &block)
+      return to_enum(:reject) unless block_given?
+      dup.tap { |hash| hash.reject!(*args, &block) }
+    end
+
+    def compact
+      dup.tap(&:compact!)
+    end if method_defined?(:compact) # Added in Ruby 2.4
+
     private
 
     def convert_key(key)
