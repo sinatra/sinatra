@@ -32,7 +32,7 @@ end
 
 if RUBY_ENGINE == "ruby"
   gem 'less', '~> 2.0'
-  gem 'therubyracer'
+  gem 'therubyracer' if RUBY_VERSION < '3.1.0'
   gem 'redcarpet'
   gem 'wlang', '>= 3.0.1'
   gem 'bluecloth'
