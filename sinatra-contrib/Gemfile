@@ -27,9 +27,6 @@ group :development, :test do
     gem 'nokogiri', '1.5.10'
     gem 'redcarpet', '2.3.0'
     gem 'yajl-ruby'
-    # ref is a dependency of therubyracer
-    gem 'ref'
-    gem 'therubyracer'
   end
 
   gem 'multi_json'

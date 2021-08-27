@@ -237,7 +237,7 @@ module Sinatra
 
     def self.engines
       engines = {
-        :css  => [:less,  :sass, :scss],
+        :css  => [:sass, :scss],
         :xml  => [:builder, :nokogiri],
         :js   => [:coffee],
         :html => [:erb, :erubi, :erubis, :haml, :hamlit, :slim, :liquid, :radius,

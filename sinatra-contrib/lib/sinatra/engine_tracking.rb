@@ -44,11 +44,6 @@ module Sinatra
       @current_engine == :scss
     end
 
-    # @return [Boolean] Returns true if current engine is `:less`.
-    def less?
-      @current_engine == :less
-    end
-
     # @return [Boolean] Returns true if current engine is `:builder`.
     def builder?
       @current_engine == :builder

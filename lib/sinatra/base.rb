@@ -683,7 +683,7 @@ module Sinatra
   # Possible options are:
   #   :content_type   The content type to use, same arguments as content_type.
   #   :layout         If set to something falsy, no layout is rendered, otherwise
-  #                   the specified layout is used (Ignored for `sass` and `less`)
+  #                   the specified layout is used (Ignored for `sass`)
   #   :layout_engine  Engine to use for rendering the layout.
   #   :locals         A hash with local variables that should be available
   #                   in the template
@@ -723,11 +723,6 @@ module Sinatra
     def scss(template, options = {}, locals = {})
       options.merge! :layout => false, :default_content_type => :css
       render :scss, template, options, locals
-    end
-
-    def less(template, options = {}, locals = {})
-      options.merge! :layout => false, :default_content_type => :css
-      render :less, template, options, locals
     end
 
     def builder(template = nil, options = {}, locals = {}, &block)
