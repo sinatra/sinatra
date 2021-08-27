@@ -248,22 +248,6 @@ get '/stylesheet.css' do
 end
 ```
 
-### Less Templates
-
-A gem/biblioteca less é necessária para renderizar templates Less:
-
-```ruby
-# É necessário requerir 'less' na aplicação.
-require 'less'
-
-get '/stylesheet.css' do
-  content_type 'text/css', :charset => 'utf-8'
-  less :stylesheet
-end
-```
-
-Renderiza `./views/stylesheet.less`.
-
 ### Templates Inline
 
 ```ruby
