@@ -54,7 +54,6 @@ Sinatra utilise le server Thin quand il est disponible.
             * [Templates Nokogiri](#templates-nokogiri)
             * [Templates Sass](#templates-sass)
             * [Templates SCSS](#templates-scss)
-            * [Templates Less](#templates-less)
             * [Templates Liquid](#templates-liquid)
             * [Templates Markdown](#templates-markdown)
             * [Templates Textile](#templates-textile)
@@ -702,24 +701,6 @@ exemple).
   <tr>
     <td>Exemple</td>
     <td><tt>scss :stylesheet, :style => :expanded</tt></p>
-    </td>
-  </tr>
-</table>
-
-#### Templates Less
-
-<table>
-  <tr>
-    <td>Dépendances</td>
-    <td><a href="http://lesscss.org/" title="less">less</a></td>
-  </tr>
-  <tr>
-    <td>Extensions de fichier</td>
-    <td><tt>.less</tt></td>
-  </tr>
-  <tr>
-    <td>Exemple</td>
-    <td><tt>less :stylesheet</tt>
     </td>
   </tr>
 </table>

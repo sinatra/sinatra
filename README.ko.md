@@ -49,7 +49,6 @@ thin이 설치되어 있을 경우 Sinatra는 thin을 통해 실행합니다.
             * [Nokogiri 템플릿](#nokogiri-템플릿)
             * [Sass 템플릿](#sass-템플릿)
             * [SCSS 템플릿](#scss-템플릿)
-            * [Less 템플릿](#less-템플릿)
             * [Liquid 템플릿](#liquid-템플릿)
             * [Markdown 템플릿](#markdown-템플릿)
             * [Textile 템플릿](#textile-템플릿)
@@ -627,23 +626,6 @@ get('/') { markdown :index }
   <tr>
     <td>예제</td>
     <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### Less 템플릿
-
-<table>
-  <tr>
-    <td>의존성</td>
-    <td><a href="http://lesscss.org/">less</a></td>
-  </tr>
-  <tr>
-    <td>파일 확장자</td>
-    <td><tt>.less</tt></td>
-  </tr>
-  <tr>
-    <td>예제</td>
-    <td><tt>less :stylesheet</tt></td>
   </tr>
 </table>
 

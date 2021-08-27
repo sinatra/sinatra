@@ -54,7 +54,6 @@ Se recomienda ejecutar `gem install puma`, porque Sinatra lo utilizará si está
             * [Plantillas Nokogiri](#plantillas-nokogiri)
             * [Plantillas Sass](#plantillas-sass)
             * [Plantillas SCSS](#plantillas-scss)
-            * [Plantillas Less](#plantillas-less)
             * [Plantillas Liquid](#plantillas-liquid)
             * [Plantillas Markdown](#plantillas-markdown)
             * [Plantillas Textile](#plantillas-textile)
@@ -706,23 +705,6 @@ También toma un bloque para plantillas inline (ver [ejemplo](#plantillas-inline
   <tr>
     <td>Ejemplo</td>
     <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### Plantillas Less
-
-<table>
-  <tr>
-    <td>Dependencias</td>
-    <td><a href="http://lesscss.org/" title="less">less</a></td>
-  </tr>
-  <tr>
-    <td>Extensiones de Archivo</td>
-    <td><tt>.less</tt></td>
-  </tr>
-  <tr>
-    <td>Ejemplo</td>
-    <td><tt>less :stylesheet</tt></td>
   </tr>
 </table>
 

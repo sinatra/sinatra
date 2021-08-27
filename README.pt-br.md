@@ -63,7 +63,6 @@ disponível, o Sinatra irá utilizá-la.
             * [Nokogiri Templates](#nokogiri-templates)
             * [Sass Templates](#sass-templates)
             * [SCSS Templates](#scss-templates)
-            * [Less Templates](#less-templates)
             * [Liquid Templates](#liquid-templates)
             * [Markdown Templates](#markdown-templates)
             * [Textile Templates](#textile-templates)
@@ -722,23 +721,6 @@ It also takes a block for inline templates (see exemplo).
   <tr>
     <td>Exemplo</td>
     <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### Less Templates
-
-<table>
-  <tr>
-    <td>Dependência</td>
-    <td><a href="http://lesscss.org/" title="less">less</a></td>
-  </tr>
-  <tr>
-    <td>Extensão do Arquivo</td>
-    <td><tt>.less</tt></td>
-  </tr>
-  <tr>
-    <td>Exemplo</td>
-    <td><tt>less :stylesheet</tt></td>
   </tr>
 </table>
 

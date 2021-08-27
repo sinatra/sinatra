@@ -56,7 +56,6 @@ diesen Server verwenden.
       - [Nokogiri Templates](#nokogiri-templates)
       - [Sass Templates](#sass-templates)
       - [SCSS Templates](#scss-templates)
-      - [Less Templates](#less-templates)
       - [Liquid Templates](#liquid-templates)
       - [Markdown Templates](#markdown-templates)
       - [Textile Templates](#textile-templates)
@@ -700,24 +699,6 @@ Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
   <tr>
     <td>Beispiel</td>
     <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-
-#### Less Templates
-
-<table>
-  <tr>
-    <td>Abhängigkeit</td>
-    <td><a href="http://lesscss.org/">less</a></td>
-  </tr>
-  <tr>
-    <td>Dateierweiterung</td>
-    <td><tt>.less</tt></td>
-  </tr>
-  <tr>
-    <td>Beispiel</td>
-    <td><tt>less :stylesheet</tt></td>
   </tr>
 </table>
 

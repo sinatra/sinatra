@@ -57,7 +57,6 @@ ruby myapp.rb
             * [Nokogiri шаблоны](#nokogiri-шаблоны)
             * [Sass шаблоны](#sass-шаблоны)
             * [SCSS шаблоны](#scss-шаблоны)
-            * [Less шаблоны](#less-шаблоны)
             * [Liquid шаблоны](#liquid-шаблоны)
             * [Markdown шаблоны](#markdown-шаблоны)
             * [Textile шаблоны](#textile-шаблоны)
@@ -700,23 +699,6 @@ get('/') { markdown :index }
   <tr>
     <td>Пример</td>
     <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### Less шаблоны
-
-<table>
-  <tr>
-    <td>Зависимости</td>
-    <td><a href="http://lesscss.org/" title="less">less</a></td>
-  </tr>
-  <tr>
-    <td>Расширения файлов</td>
-    <td><tt>.less</tt></td>
-  </tr>
-  <tr>
-    <td>Пример</td>
-    <td><tt>less :stylesheet</tt></td>
   </tr>
 </table>
 

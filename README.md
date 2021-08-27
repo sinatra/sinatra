@@ -55,7 +55,6 @@ pick up if available.
             * [Nokogiri Templates](#nokogiri-templates)
             * [Sass Templates](#sass-templates)
             * [SCSS Templates](#scss-templates)
-            * [Less Templates](#less-templates)
             * [Liquid Templates](#liquid-templates)
             * [Markdown Templates](#markdown-templates)
             * [Textile Templates](#textile-templates)
@@ -697,23 +696,6 @@ It also takes a block for inline templates (see [example](#inline-templates)).
   <tr>
     <td>Example</td>
     <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### Less Templates
-
-<table>
-  <tr>
-    <td>Dependency</td>
-    <td><a href="http://lesscss.org/" title="less">less</a></td>
-  </tr>
-  <tr>
-    <td>File Extension</td>
-    <td><tt>.less</tt></td>
-  </tr>
-  <tr>
-    <td>Example</td>
-    <td><tt>less :stylesheet</tt></td>
   </tr>
 </table>
 
