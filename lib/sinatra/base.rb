@@ -904,8 +904,6 @@ module Sinatra
       end
     end
 
-    private
-
     def compile_block_template(template, options, &body)
       caller = settings.caller_locations.first
       path = options[:path] || caller[0]
