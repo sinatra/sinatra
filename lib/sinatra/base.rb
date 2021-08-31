@@ -869,12 +869,12 @@ module Sinatra
 
     def compile_template(engine, data, options, views)
       eat_errors = options.delete :eat_errors
-      template_cache.fetch engine, data, options, views do
-        template = Tilt[engine]
-        raise "Template engine not found: #{engine}" if template.nil?
+      template = Tilt[engine]
+      raise "Template engine not found: #{engine}" if template.nil?
 
-        case data
-        when Symbol
+      case data
+      when Symbol
+        template_cache.fetch engine, data, options, views do
           body, path, line = settings.templates[data]
           if body
             body = body.call if body.respond_to?(:call)
@@ -892,16 +892,23 @@ module Sinatra
             throw :layout_missing if eat_errors and not found
             template.new(path, 1, options)
           end
-        when Proc, String
-          body = data.is_a?(String) ? Proc.new { data } : data
-          caller = settings.caller_locations.first
-          path = options[:path] || caller[0]
-          line = options[:line] || caller[1]
-          template.new(path, line.to_i, options, &body)
-        else
-          raise ArgumentError, "Sorry, don't know how to render #{data.inspect}."
         end
+      when Proc
+        compile_block_template(template, options, &data)
+      when String
+        template_cache.fetch engine, data, options, views do
+          compile_block_template(template, options) { data }
+        end
+      else
+        raise ArgumentError, "Sorry, don't know how to render #{data.inspect}."
       end
+    end
+
+    def compile_block_template(template, options, &body)
+      caller = settings.caller_locations.first
+      path = options[:path] || caller[0]
+      line = options[:line] || caller[1]
+      template.new(path, line.to_i, options, &body)
     end
   end
 
