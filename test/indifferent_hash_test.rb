@@ -255,12 +255,15 @@ class TestIndifferentHash < Minitest::Test
     skip_if_lacking :transform_keys
 
     hash2 = @hash.transform_keys { |k| k.respond_to?(:upcase) ? k.upcase : k }
+    symbol_hash = @hash.transform_keys { |k| k.respond_to?(:to_sym) ? k.to_sym : k }
 
     refute_equal @hash, hash2
     refute_operator hash2, :key?, :a
     refute_operator hash2, :key?, ?a
     assert_equal :a, hash2[:A]
     assert_equal :a, hash2[?A]
+    assert_equal symbol_hash.keys.first, :a
+    assert_equal @hash.keys.first, 'a'
   end
 
   def test_select

@@ -171,13 +171,14 @@ module Sinatra
 
     if method_defined?(:transform_keys!) # Added in Ruby 2.5
       def transform_keys(&block)
-        dup.transform_keys!(&block)
-      end
-
-      def transform_keys!
         transformed_keys = super.dup
         super(&method(:convert_key))
         transformed_keys
+      end
+
+      def transform_keys!
+        super
+        super(&method(:convert_key))
       end
     end
 
