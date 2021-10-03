@@ -64,7 +64,6 @@ PumaがあればSinatraはこれを利用するので、`gem install puma`する
             * [Creole テンプレート](#creole-テンプレート)
             * [MediaWiki テンプレート](#mediawiki-テンプレート)
             * [CoffeeScript テンプレート](#coffeescript-テンプレート)
-            * [Stylus テンプレート](#stylus-テンプレート)
             * [Yajl テンプレート](#yajl-テンプレート)
             * [WLang テンプレート](#wlang-テンプレート)
         * [テンプレート内での変数へのアクセス](#テンプレート内での変数へのアクセス)
@@ -957,42 +956,6 @@ erb :overview, :locals => { :text => mediawiki(:introduction) }
     <td><tt>coffee :index</tt></td>
   </tr>
 </table>
-
-#### Stylus テンプレート
-
-<table>
-  <tr>
-    <td>依存</td>
-    <td>
-      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
-        Stylus
-      </a> および
-      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
-        JavaScriptの起動方法
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>ファイル拡張子</td>
-    <td><tt>.styl</tt></td>
-  </tr>
-  <tr>
-    <td>例</td>
-    <td><tt>stylus :index</tt></td>
-  </tr>
-</table>
-
-Stylusテンプレートを使えるようにする前に、まず`stylus`と`stylus/tilt`を読み込む必要があります。
-
-```ruby
-require 'sinatra'
-require 'stylus'
-require 'stylus/tilt'
-
-get '/' do
-  stylus :example
-end
-```
 
 #### Yajl テンプレート
 
