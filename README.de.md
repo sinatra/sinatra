@@ -3082,9 +3082,9 @@ thin --threaded start
 Die folgenden Versionen werden offiziell unterstützt:
 
 <dl>
-  <dt>Ruby 2.3</dt>
+  <dt>Ruby 2.6</dt>
   <dd>
-    2.3 wird vollständig unterstützt. Es gibt derzeit keine Pläne die
+    2.6 wird vollständig unterstützt. Es gibt derzeit keine Pläne die
     offizielle Unterstützung zu beenden
   </dd>
 
@@ -3103,7 +3103,7 @@ Die folgenden Versionen werden offiziell unterstützt:
   </dd>
 </dl>
 
-Versionen vor Ruby 2.2.2 werden ab Sinatra 2.0 nicht länger unterstützt.
+Versionen vor Ruby 2.6 werden ab Sinatra 3.0 nicht länger unterstützt.
 
 Nachfolgende Ruby-Versionen werden regelmäßig auf Unterstützung geprüft.
 
