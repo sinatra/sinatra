@@ -69,7 +69,6 @@ diesen Server verwenden.
       - [Creole Templates](#creole-templates)
       - [MediaWiki Templates](#mediawiki-templates)
       - [CoffeeScript Templates](#coffeescript-templates)
-      - [Stylus Templates](#stylus-templates)
       - [Yajl Templates](#yajl-templates)
       - [WLang Templates](#wlang-templates)
     + [Auf Variablen in Templates zugreifen](#auf-variablen-in-templates-zugreifen)
@@ -1051,43 +1050,6 @@ Layout, indem die `:layout_engine`-Option verwendet wird.
     <td><tt>coffee :index</tt></td>
   </tr>
 </table>
-
-#### Stylus Templates
-
-<table>
-  <tr>
-    <td>Abhängigkeit</td>
-    <td>
-      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
-        Stylus
-      </a> und eine Möglichkeit
-      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
-        JavaScript auszuführen
-      </a>.
-    </td>
-  </tr>
-  <tr>
-    <td>Dateierweiterung</td>
-    <td><tt>.styl</tt></td>
-  </tr>
-  <tr>
-    <td>Beispiel</td>
-    <td><tt>stylus :index</tt></td>
-  </tr>
-</table>
-
-Um Stylus-Templates ausführen zu können, müssen `stylus` und `stylus/tilt`
-zuerst geladen werden:
-
-```ruby
-require 'sinatra'
-require 'stylus'
-require 'stylus/tilt'
-
-get '/' do
-  stylus :example
-end
-```
 
 #### Yajl Templates
 

@@ -66,7 +66,6 @@ View at: [http://localhost:4567](http://localhost:4567)
             * [Creole ടെംപ്ലേറ്റ്സ്](#creole-templates)
             * [MediaWiki ടെംപ്ലേറ്റ്സ്](#mediawiki-templates)
             * [CoffeeScript ടെംപ്ലേറ്റ്സ്](#coffeescript-templates)
-            * [Stylus ടെംപ്ലേറ്റ്സ്](#stylus-templates)
             * [Yajl ടെംപ്ലേറ്റ്സ്](#yajl-templates)
             * [WLang ടെംപ്ലേറ്റ്സ്](#wlang-templates)
         * [വാരിയബിൾസിനെ എടുക്കാൻ സഹായിക്കുന്ന  ടെംപ്ലേറ്റ്സ്](#accessing-variables-in-templates)
@@ -193,7 +192,7 @@ get '/hello/:name' do |n|
   "Hello #{n}!"
 end
 ```
-റൂട്ട് പാട്ടേഴ്സിൽ പേരുള്ള splat ഉണ്ടാകാറുണ്ട് അതിനെ 'params['splat']' array ഉപയോഗിച്ച ഉപയോഗപ്പെടുത്താവുന്നത് ആണ്  
+റൂട്ട് പാട്ടേഴ്സിൽ പേരുള്ള splat ഉണ്ടാകാറുണ്ട് അതിനെ 'params['splat']' array ഉപയോഗിച്ച ഉപയോഗപ്പെടുത്താവുന്നത് ആണ്
 
 
 
@@ -293,7 +292,7 @@ get '/', :provides => ['rss', 'atom', 'xml'] do
   builder :feed
 end
 ```
-`provides ` ആക്‌സെപ്റ് ഹെൽഡർസ് നെ അന്വഷിക്കുന്നു   
+`provides ` ആക്‌സെപ്റ് ഹെൽഡർസ് നെ അന്വഷിക്കുന്നു
 
  നിങ്ങളുടെ കണ്ടിഷൻസ് ഇനി എളുപ്പത്തിൽ ഉണ്ടാക്കാൻ സഹായിക്കുന്നു
 ```ruby
@@ -1014,43 +1013,6 @@ template than for the layout by passing the `:layout_engine` option.
     <td><tt>coffee :index</tt></td>
   </tr>
 </table>
-
-#### Stylus Templates
-
-<table>
-  <tr>
-    <td>Dependency</td>
-    <td>
-      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
-        Stylus
-      </a> and a
-      <a href="https://github.com/sstephenson/execjs" title="ExecJS">
-        way to execute javascript
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>File Extension</td>
-    <td><tt>.styl</tt></td>
-  </tr>
-  <tr>
-    <td>Example</td>
-    <td><tt>stylus :index</tt></td>
-  </tr>
-</table>
-
-Before being able to use Stylus templates, you need to load `stylus` and
-`stylus/tilt` first:
-
-```ruby
-require 'sinatra'
-require 'stylus'
-require 'stylus/tilt'
-
-get '/' do
-  stylus :example
-end
-```
 
 #### Yajl Templates
 

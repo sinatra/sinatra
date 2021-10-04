@@ -67,7 +67,6 @@ Se recomienda ejecutar `gem install puma`, porque Sinatra lo utilizará si está
             * [Plantillas Creole](#plantillas-creole)
             * [Plantillas MediaWiki](#mediawiki-templates)
             * [Plantillas CofeeScript](#plantillas-coffeescript)
-            * [Plantillas Stylus](#plantillas-stylus)
             * [Plantillas Yajl](#plantillas-yajl)
             * [Plantillas Wlang](#plantillas-wlang)
         * [Accediendo Variables en Plantillas](#accediendo-a-variables-en-plantillas)
@@ -1047,42 +1046,6 @@ De todas maneras, es posible usar otro motor de renderizado para esa plantilla p
     <td><tt>coffee :index</tt></td>
   </tr>
 </table>
-
-#### Plantillas Stylus
-
-<table>
-  <tr>
-    <td>Dependencias</td>
-    <td>
-      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
-        Stylus
-      </a> y un
-      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
-        mecanismo para ejecutar javascript
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>Extensiones de Archivo</td>
-    <td><tt>.styl</tt></td>
-  </tr>
-  <tr>
-    <td>Ejemplo</td>
-    <td><tt>stylus :index</tt></td>
-  </tr>
-</table>
-
-Antes de poder usar las plantillas de Stylus, necesitas cargar `stylus` y `stylus/tilt`:
-
-```ruby
-require 'sinatra'
-require 'stylus'
-require 'stylus/tilt'
-
-get '/' do
-  stylus :example
-end
-```
 
 #### Plantillas Yajl
 

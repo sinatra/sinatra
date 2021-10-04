@@ -70,7 +70,6 @@ ruby myapp.rb
             * [Creole шаблоны](#creole-шаблоны)
             * [MediaWiki шаблоны](#mediawiki-шаблоны)
             * [CoffeeScript шаблоны](#coffeescript-шаблоны)
-            * [Stylus шаблоны](#stylus-шаблоны)
             * [Yajl шаблоны](#yajl-шаблоны)
             * [WLang шаблоны](#wlang-шаблоны)
         * [Доступ к переменным в шаблонах](#Доступ-к-переменным-в-шаблонах)
@@ -1050,43 +1049,6 @@ erb :overview, :locals => { :text => mediawiki(:introduction) }
     <td><tt>coffee :index</tt></td>
   </tr>
 </table>
-
-#### Stylus шаблоны
-
-<table>
-  <tr>
-    <td>Зависимости</td>
-    <td>
-      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
-        Stylus
-      </a> и
-      <a href="https://github.com/sstephenson/execjs" title="ExecJS">
-        способ запускать JavaScript
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>Расширение файла</td>
-    <td><tt>.styl</tt></td>
-  </tr>
-  <tr>
-    <td>Пример</td>
-    <td><tt>stylus :index</tt></td>
-  </tr>
-</table>
-
-Перед тем, как использовать шаблоны Stylus, необходимо сперва подключить
-`stylus` и `stylus/tilt`:
-
-```ruby
-require 'sinatra'
-require 'stylus'
-require 'stylus/tilt'
-
-get '/' do
-  stylus :example
-end
-```
 
 #### Yajl шаблоны
 
