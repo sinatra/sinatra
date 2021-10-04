@@ -2801,14 +2801,6 @@ thin --threaded start
 
 새로 나오는 루비 버전도 주시하고 있습니다.
 
-다음 루비 구현체들은 공식적으로 지원하지 않지만
-여전히 Sinatra를 실행할 수 있는 것으로 알려져 있습니다.
-
-* JRuby와 Rubinius 예전 버전
-* Ruby Enterprise Edition
-* MacRuby, Maglev, IronRuby
-* Ruby 1.9.0 및 1.9.1 (이 버전들은 사용하지 말 것을 권합니다)
-
 공식적으로 지원하지 않는다는 것의 의미는 무언가가 그 플랫폼에서만 잘못 동작하고,
 지원되는 플랫폼에서는 정상적으로 동작할 경우, 우리의 문제가 아니라 그 플랫폼의 문제로
 간주한다는 뜻입니다.
@@ -2819,11 +2811,6 @@ thin --threaded start
 
 Sinatra는 선택한 루비 구현체가 지원하는 어떠한 운영체제에서도 작동해야
 합니다.
-
-MacRuby를 사용한다면, gem install control_tower 를 실행해 주세요.
-
-현재 Cardinal, SmallRuby, BlueRuby 또는 1.8.7 이전의 루비 버전에서는
-Sinatra를 실행할 수 없을 것입니다.
 
 ## 최신(The Bleeding Edge)
 

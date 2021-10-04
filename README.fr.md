@@ -2974,17 +2974,9 @@ Les versions suivantes de Ruby sont officiellement supportées :
   </dd>
 </dl>
 
-Les versions antérieures à 2.2.2 ne sont plus supportées depuis Sinatra 2.0.
+Les versions antérieures à 2.6 ne sont plus supportées depuis Sinatra 2.1.
 
 Nous gardons également un oeil sur les versions Ruby à venir.
-
-Les implémentations Ruby suivantes ne sont pas officiellement supportées mais
-sont malgré tout connues pour permettre de faire fonctionner Sinatra :
-
-* Versions plus anciennes de JRuby et Rubinius
-* Ruby Enterprise Edition
-* MacRuby, Maglev, IronRuby
-* Ruby 1.9.0 et 1.9.1 (mais nous déconseillons leur utilisation)
 
 Le fait de ne pas être officiellement supporté signifie que si quelque chose
 ne fonctionne pas sur cette plateforme uniquement alors c'est un problème de la
@@ -2996,11 +2988,6 @@ continuelles. La version 2.1.0 devrait être totalement supportée.
 
 Sinatra devrait fonctionner sur n'importe quel système d'exploitation
 supporté par l'implémentation Ruby choisie.
-
-Si vous utilisez MacRuby, vous devriez `gem install control_tower`.
-
-Il n'est pas possible d'utiliser Sinatra sur Cardinal, SmallRuby, BlueRuby ou
-toute version de Ruby antérieure à 1.8.7 à l'heure actuelle.
 
 ## Essuyer les plâtres
 

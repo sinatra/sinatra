@@ -3078,7 +3078,7 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
   <dt>Ruby 2.6</dt>
     <dd>
       2.6 Es totalmente compatible y recomendado. Actualmente no hay planes
-      soltar el apoyo oficial para ello.
+      de abandonar el apoyo oficial.
     </dd>
 
   <dt>Rubinius</dt>
@@ -3095,33 +3095,15 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
   </dd>
 </dl>
 
-Las versiones de Ruby anteriores a 2.6 ya no son compatibles con Sinatra 3.0 .
+Las versiones de Ruby anteriores a 2.6 ya no son compatibles con Sinatra 3.0. Las próximas
+versiones 3.x serán totalmente compatibles.
 
-Siempre le prestamos atención a las nuevas versiones de Ruby.
-
-Las siguientes implementaciones de Ruby no se encuentran soportadas
-oficialmente. De cualquier manera, pueden ejecutar Sinatra:
-
-* Versiones anteriores de JRuby y Rubinius
-* Ruby Enterprise Edition
-* MacRuby, Maglev e IronRuby
-* Ruby 1.9.0 y 1.9.1 (pero no te recomendamos que los uses)
-
-No ser soportada oficialmente, significa que si las cosas se rompen
+Usar Sinatra en una implementación de Ruby distinta a las soportadas significa que si las cosas se rompen
 ahí y no en una plataforma soportada, asumimos que no es nuestro problema sino
 el suyo.
 
-También ejecutamos nuestro CI contra ruby-head (futuras versiones de MRI), pero
-no puede garantizar nada, ya que se mueve constantemente. Esperar próxima
-2.x versiones para ser totalmente compatibles.
-
-Sinatra debería trabajar en cualquier sistema operativo compatible la implementación de Ruby
-elegida
-
-Si ejecuta MacRuby, debe `gem install control_tower`.
-
-Sinatra actualmente no funciona con Cardinal, SmallRuby, BlueRuby o cualquier
-versión de Ruby anterior a 2.2.
+Sinatra debería trabajar en cualquier sistema operativo compatible con la implementación de Ruby
+elegida.
 
 ## A la Vanguardia
 
