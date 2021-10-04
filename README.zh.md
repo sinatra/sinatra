@@ -48,7 +48,6 @@ ruby myapp.rb
             * [Nokogiri 模板](#nokogiri-模板)
             * [Sass 模板](#sass-模板)
             * [SCSS 模板](#scss-模板)
-            * [Less 模板](#less-模板)
             * [Liquid 模板](#liquid-模板)
             * [Markdown 模板](#markdown-模板)
             * [Textile 模板](#textile-模板)
@@ -634,23 +633,6 @@ get('/') { markdown :index }
   <tr>
     <td>例子</td>
     <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### Less 模板
-
-<table>
-  <tr>
-    <td>依赖项</td>
-    <td><a href="http://lesscss.org/" title="less">less</a></td>
-  </tr>
-  <tr>
-    <td>文件扩展名</td>
-    <td><tt>.less</tt></td>
-  </tr>
-  <tr>
-    <td>例子</td>
-    <td><tt>less :stylesheet</tt></td>
   </tr>
 </table>
 

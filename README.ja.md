@@ -51,7 +51,6 @@ PumaがあればSinatraはこれを利用するので、`gem install puma`する
             * [Nokogiri テンプレート](#nokogiri-テンプレート)
             * [Sass テンプレート](#sass-テンプレート)
             * [SCSS テンプレート](#scss-テンプレート)
-            * [Less テンプレート](#less-テンプレート)
             * [Liquid テンプレート](#liquid-テンプレート)
             * [Markdown テンプレート](#markdown-テンプレート)
             * [Textile テンプレート](#textile-テンプレート)
@@ -639,23 +638,6 @@ get('/') { markdown :index }
   <tr>
     <td>例</td>
     <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### Less テンプレート
-
-<table>
-  <tr>
-    <td>依存</td>
-    <td><a href="http://lesscss.org/" title="less">less</a></td>
-  </tr>
-  <tr>
-    <td>ファイル拡張子</td>
-    <td><tt>.less</tt></td>
-  </tr>
-  <tr>
-    <td>例</td>
-    <td><tt>less :stylesheet</tt></td>
   </tr>
 </table>
 

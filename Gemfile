@@ -31,8 +31,6 @@ if RUBY_ENGINE == 'jruby' || RUBY_ENGINE == 'ruby'
 end
 
 if RUBY_ENGINE == "ruby"
-  gem 'less', '~> 2.0'
-  gem 'therubyracer'
   gem 'redcarpet'
   gem 'wlang', '>= 3.0.1'
   gem 'bluecloth'
