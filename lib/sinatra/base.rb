@@ -903,9 +903,10 @@ module Sinatra
     end
 
     def compile_block_template(template, options, &body)
-      caller = settings.caller_locations.first
-      path = options[:path] || caller[0]
-      line = options[:line] || caller[1]
+      first_location = caller_locations.first
+      path, line = first_location.path, first_location.lineno
+      path = options[:path] || path
+      line = options[:line] || line
       template.new(path, line.to_i, options, &body)
     end
   end
