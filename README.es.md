@@ -3075,9 +3075,9 @@ rainbows -c rainbows.conf
 Las siguientes versiones de Ruby son soportadas oficialmente:
 
 <dl>
-  <dt>Ruby 2.3</dt>
+  <dt>Ruby 2.6</dt>
     <dd>
-      2.3 Es totalmente compatible y recomendado. Actualmente no hay planes
+      2.6 Es totalmente compatible y recomendado. Actualmente no hay planes
       soltar el apoyo oficial para ello.
     </dd>
 
@@ -3095,7 +3095,7 @@ Las siguientes versiones de Ruby son soportadas oficialmente:
   </dd>
 </dl>
 
-Las versiones de Ruby anteriores a 2.2.2 ya no son compatibles con Sinatra 2.0 .
+Las versiones de Ruby anteriores a 2.6 ya no son compatibles con Sinatra 3.0 .
 
 Siempre le prestamos atención a las nuevas versiones de Ruby.
 

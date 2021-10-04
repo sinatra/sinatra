@@ -1,11 +1,4 @@
 # frozen_string_literal: true
-$stderr.puts <<EOF if !Hash.method_defined?(:slice) && !$LOAD_PATH.grep(%r{gems/activesupport}).empty? && ENV['SINATRA_ACTIVESUPPORT_WARNING'] != 'false'
-WARNING: If you plan to load any of ActiveSupport's core extensions to Hash, be
-sure to do so *before* loading Sinatra::Application or Sinatra::Base. If not,
-you may disregard this warning.
-
-Set SINATRA_ACTIVESUPPORT_WARNING=false in the environment to hide this warning.
-EOF
 
 module Sinatra
   # A poor man's ActiveSupport::HashWithIndifferentAccess, with all the Rails-y
@@ -112,19 +105,19 @@ module Sinatra
 
     def dig(key, *other_keys)
       super(convert_key(key), *other_keys)
-    end if method_defined?(:dig) # Added in Ruby 2.3
+    end
 
     def fetch_values(*keys)
       keys.map!(&method(:convert_key))
 
       super(*keys)
-    end if method_defined?(:fetch_values) # Added in Ruby 2.3
+    end
 
     def slice(*keys)
       keys.map!(&method(:convert_key))
 
       self.class[super(*keys)]
-    end if method_defined?(:slice) # Added in Ruby 2.5
+    end
 
     def values_at(*keys)
       keys.map!(&method(:convert_key))
@@ -158,26 +151,22 @@ module Sinatra
       super(other_hash.is_a?(self.class) ? other_hash : self.class[other_hash])
     end
 
-    if method_defined?(:transform_values!) # Added in Ruby 2.4
-      def transform_values(&block)
-        dup.transform_values!(&block)
-      end
-
-      def transform_values!
-        super
-        super(&method(:convert_value))
-      end
+    def transform_values(&block)
+      dup.transform_values!(&block)
     end
 
-    if method_defined?(:transform_keys!) # Added in Ruby 2.5
-      def transform_keys(&block)
-        dup.transform_keys!(&block)
-      end
+    def transform_values!
+      super
+      super(&method(:convert_value))
+    end
 
-      def transform_keys!
-        super
-        super(&method(:convert_key))
-      end
+    def transform_keys(&block)
+      dup.transform_keys!(&block)
+    end
+
+    def transform_keys!
+      super
+      super(&method(:convert_key))
     end
 
     def select(*args, &block)
