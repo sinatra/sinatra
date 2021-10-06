@@ -900,9 +900,10 @@ module Sinatra
     end
 
     def compile_block_template(template, options, &body)
-      caller = settings.caller_locations.first
-      path = options[:path] || caller[0]
-      line = options[:line] || caller[1]
+      first_location = caller_locations.first
+      path, line = first_location.path, first_location.lineno
+      path = options[:path] || path
+      line = options[:line] || line
       template.new(path, line.to_i, options, &body)
     end
   end
@@ -1551,12 +1552,6 @@ module Sinatra
       # line / method information; the resulting array contains filenames only.
       def caller_files
         cleaned_caller(1).flatten
-      end
-
-      # Like caller_files, but containing Arrays rather than strings with the
-      # first element being the file, and the second being the line.
-      def caller_locations
-        cleaned_caller 2
       end
 
       private
