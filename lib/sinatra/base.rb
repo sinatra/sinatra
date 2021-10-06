@@ -1558,10 +1558,6 @@ module Sinatra
         cleaned_caller(1).flatten
       end
 
-      # In Ruby 2.x+ a built-in implementation is provided for caller_locations,
-      # which is used to tag templates
-      public :caller_locations
-
       private
 
       # Starts the server by running the Rack Handler.
