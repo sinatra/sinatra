@@ -1,5 +1,5 @@
-require File.expand_path('../helper', __FILE__)
-require File.expand_path('../integration_async_helper', __FILE__)
+require File.expand_path('helper', __dir__)
+require File.expand_path('integration_async_helper', __dir__)
 
 # These tests are like integration_test, but they test asynchronous streaming.
 class IntegrationAsyncTest < Minitest::Test

@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require File.expand_path('../helper', __FILE__)
+require File.expand_path('helper', __dir__)
 
 class ResponseTest < Minitest::Test
   setup { @response = Sinatra::Response.new([], 200, { 'Content-Type' => 'text/html' }) }

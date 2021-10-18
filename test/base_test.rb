@@ -1,4 +1,4 @@
-require File.expand_path('../helper', __FILE__)
+require File.expand_path('helper', __dir__)
 
 class BaseTest < Minitest::Test
   describe 'Sinatra::Base subclasses' do

@@ -4,7 +4,7 @@ require 'fileutils'
 describe Sinatra::Reloader do
   # Returns the temporary directory.
   def tmp_dir
-    File.expand_path('../../tmp', __FILE__)
+    File.expand_path('../tmp', __dir__)
   end
 
   # Returns the path of the Sinatra application file created by
@@ -48,7 +48,7 @@ describe Sinatra::Reloader do
     options[:parent] ||= 'Sinatra::Base'
 
     update_file(app_file_path) do |f|
-      template_path = File.expand_path('../reloader/app.rb.erb', __FILE__)
+      template_path = File.expand_path('reloader/app.rb.erb', __dir__)
       template = Tilt.new(template_path, nil, :trim => '<>')
       f.write template.render(Object.new, options)
     end

@@ -1,4 +1,4 @@
-require File.expand_path('../integration_helper', __FILE__)
+require File.expand_path('integration_helper', __dir__)
 
 module IntegrationAsyncHelper
   def it(message, &block)

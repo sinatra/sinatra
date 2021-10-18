@@ -1,4 +1,4 @@
-require File.expand_path('../helper', __FILE__)
+require File.expand_path('helper', __dir__)
 
 class StreamingTest < Minitest::Test
   Stream = Sinatra::Helpers::Stream

@@ -661,10 +661,10 @@ describe Sinatra::Namespace do
 
           specify 'can use a custom views directory' do
             mock_app do
-              set :views, File.expand_path('../namespace', __FILE__)
+              set :views, File.expand_path('namespace', __dir__)
               send(verb, '/') { erb :foo }
               namespace('/foo') do
-                set :views, File.expand_path('../namespace/nested', __FILE__)
+                set :views, File.expand_path('namespace/nested', __dir__)
                 send(verb) { erb :foo }
               end
             end
