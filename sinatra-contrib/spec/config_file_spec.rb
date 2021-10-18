@@ -4,7 +4,7 @@ describe Sinatra::ConfigFile do
   def config_file(*args, &block)
     mock_app do
       register Sinatra::ConfigFile
-      set :root, File.expand_path('../config_file', __FILE__)
+      set :root, File.expand_path('config_file', __dir__)
       instance_eval(&block) if block
       config_file(*args)
     end

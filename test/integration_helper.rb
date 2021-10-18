@@ -22,7 +22,7 @@ module IntegrationHelper
     end
 
     def app_file
-      File.expand_path('../integration/app.rb', __FILE__)
+      File.expand_path('integration/app.rb', __dir__)
     end
 
     def environment
@@ -62,7 +62,7 @@ module IntegrationHelper
           cmd << File.expand_path(file, dir).inspect
         end
         cmd << "-w" unless net_http_server?
-        cmd << "-I" << File.expand_path('../../lib', __FILE__).inspect
+        cmd << "-I" << File.expand_path('../lib', __dir__).inspect
         cmd << app_file.inspect << '-s' << server << '-o' << '127.0.0.1' << '-p' << port
         cmd << "-e" << environment.to_s << '2>&1'
         cmd.join " "
@@ -116,7 +116,7 @@ module IntegrationHelper
         # Create a new container, set load paths and env
         # SINGLETHREAD means create a new runtime
         vm = org.jruby.embed.ScriptingContainer.new(org.jruby.embed.LocalContextScope::SINGLETHREAD)
-        vm.load_paths = [File.expand_path('../../lib', __FILE__)]
+        vm.load_paths = [File.expand_path('../lib', __dir__)]
         vm.environment = ENV.merge('APP_ENV' => environment.to_s)
 
         # This ensures processing of RUBYOPT which activates Bundler

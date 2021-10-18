@@ -1,4 +1,4 @@
-require File.expand_path('../helper', __FILE__)
+require File.expand_path('helper', __dir__)
 
 class BeforeFilterTest < Minitest::Test
   it "executes filters in the order defined" do
