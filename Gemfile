@@ -58,7 +58,6 @@ if RUBY_ENGINE == "ruby"
   gem 'erubis'
   gem 'haml', '>= 3.0'
   gem 'sass'
-  gem 'reel-rack'
   gem 'celluloid', '~> 0.16.0'
   gem 'commonmarker', '~> 0.20.0'
   gem 'pandoc-ruby', '~> 2.0.2'
