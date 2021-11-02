@@ -17,7 +17,7 @@ class IntegrationTest < Minitest::Test
     random = "%064x" % Kernel.rand(2**256-1)
     server.get "/ping?x=#{random}"
     count = server.log.scan("GET /ping?x=#{random}").count
-    if server.net_http_server? || server.reel?
+    if server.net_http_server?
       assert_equal 0, count
     elsif server.webrick?
       assert(count > 0)
@@ -47,13 +47,13 @@ class IntegrationTest < Minitest::Test
     }ix
 
     # because Net HTTP Server logs to $stderr by default
-    assert_match exp, server.log unless server.net_http_server? || server.reel? || server.rainbows?
+    assert_match exp, server.log unless server.net_http_server? || server.rainbows?
   end
 
   it 'does not generate warnings' do
     assert_raises(OpenURI::HTTPError) { server.get '/' }
     server.get '/app_file'
-    assert_equal [], server.warnings unless server.reel?
+    assert_equal [], server.warnings
   end
 
   it 'sets the Content-Length response header when sending files' do
