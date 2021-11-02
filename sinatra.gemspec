@@ -1,4 +1,4 @@
-version = File.read(File.expand_path("../VERSION", __FILE__)).strip
+version = File.read(File.expand_path("VERSION", __dir__)).strip
 
 Gem::Specification.new 'sinatra', version do |s|
   s.description       = "Sinatra is a DSL for quickly creating web applications in Ruby with minimal effort."

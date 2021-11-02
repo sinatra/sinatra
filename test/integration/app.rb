@@ -47,7 +47,7 @@ get '/send' do
 end
 
 get '/send_file' do
-  file = File.expand_path '../../views/a/in_a.str', __FILE__
+  file = File.expand_path '../views/a/in_a.str', __dir__
   send_file file
 end
 

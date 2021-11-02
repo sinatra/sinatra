@@ -9,7 +9,7 @@ task :spec => :test
 CLEAN.include "**/*.rbc"
 
 def source_version
-  @source_version ||= File.read(File.expand_path("../VERSION", __FILE__)).strip
+  @source_version ||= File.read(File.expand_path("VERSION", __dir__)).strip
 end
 
 def prev_feature

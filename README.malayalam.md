@@ -404,7 +404,7 @@ end
 
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/static'
+set :public_folder, __dir__ + '/static'
 ```
 
 URL ഇളിൽ ഡയറക്ടറി പാത ഉണ്ടാകില്ല .  A file

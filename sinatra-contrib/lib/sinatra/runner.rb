@@ -28,7 +28,7 @@ module Sinatra
   #
   #   class Runner < Sinatra::Runner
   #     def app_file
-  #       File.expand_path("../server.rb", __FILE__)
+  #       File.expand_path("server.rb", __dir__)
   #     end
   #   end
   #
@@ -49,7 +49,7 @@ module Sinatra
   # For an example, check https://github.com/apotonick/roar/blob/master/test/integration/runner.rb
   class Runner
     def app_file
-      File.expand_path("../server.rb", __FILE__)
+      File.expand_path("server.rb", __dir__)
     end
 
     def run

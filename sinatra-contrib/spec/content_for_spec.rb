@@ -4,7 +4,7 @@ describe Sinatra::ContentFor do
   subject do
     Sinatra.new do
       helpers Sinatra::ContentFor
-      set :views, File.expand_path("../content_for", __FILE__)
+      set :views, File.expand_path("content_for", __dir__)
     end.new!
   end
 
@@ -215,7 +215,7 @@ describe Sinatra::ContentFor do
             mock_app do
               helpers Sinatra::ContentFor
               set inner, :layout_engine => outer
-              set :views, File.expand_path("../content_for", __FILE__)
+              set :views, File.expand_path("content_for", __dir__)
               get('/:view') { render(inner, params[:view].to_sym) }
               get('/:layout/:view') do
                 render inner, params[:view].to_sym, :layout => params[:layout].to_sym

@@ -1,5 +1,5 @@
 # I like coding: UTF-8
-require File.expand_path('../helper', __FILE__)
+require File.expand_path('helper', __dir__)
 
 # Helper method for easy route pattern matching testing
 def route_def(pattern)
