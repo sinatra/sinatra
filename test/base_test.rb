@@ -182,4 +182,27 @@ class BaseTest < Minitest::Test
       assert_equal '28', response['Content-Length']
     end
   end
+
+  describe "#caller_locations" do
+    class TestApp < Sinatra::Base
+      get('/') { 'Hello World' }
+    end
+
+    it "can call caller_locations" do
+      assert_operator TestApp.caller_locations.size, :>, 1
+    end
+
+    it "can call caller_locations with start and length" do
+      assert_equal 1, TestApp.caller_locations(1, 1).size
+      assert_equal 2, TestApp.caller_locations(1, 2).size
+      assert_equal 3, TestApp.caller_locations(2, 3).size
+    end
+
+    it "can call caller_locations with range" do
+      assert_equal 1, TestApp.caller_locations(1..1).size
+      assert_equal 2, TestApp.caller_locations(1..2).size
+      assert_equal 3, TestApp.caller_locations(2..4).size
+      assert_equal 3, TestApp.caller_locations(2...5).size
+    end
+  end
 end

@@ -1558,8 +1558,8 @@ module Sinatra
 
       # Like caller_files, but containing Arrays rather than strings with the
       # first element being the file, and the second being the line.
-      def caller_locations
-        cleaned_caller 2
+      def caller_locations(start_or_range = 1, length = nil)
+        cleaned_caller 2, start_or_range, length
       end
 
       private
@@ -1773,10 +1773,13 @@ module Sinatra
       end
 
       # Like Kernel#caller but excluding certain magic entries
-      def cleaned_caller(keep = 3)
-        caller(1).
-          map!    { |line| line.split(/:(?=\d|in )/, 3)[0,keep] }.
-          reject { |file, *_| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
+      def cleaned_caller(keep = 3, start_or_range = 1, length = nil)
+        Array(
+          caller(1)
+            .map! { |line| line.split(/:(?=\d|in )/, 3)[0,keep] }
+            .reject! { |file, *_| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
+            .slice(*[start_or_range, length].compact)
+        )
       end
     end
 
