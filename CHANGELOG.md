@@ -1,3 +1,68 @@
+## 2.2.0 / Unrealased
+
+* Update README.es.md with removal of Thin. [#1630](https://github.com/sinatra/sinatra/pull/1630) by Espartaco Palma
+
+* Minor refactors in `base.rb`. [#1640](https://github.com/sinatra/sinatra/pull/1640) by ceclinux
+
+* Fixed typos in german README.md. [#1648](https://github.com/sinatra/sinatra/pull/1648) by Juri
+
+* Add escaping to the static 404 page. [#1645](https://github.com/sinatra/sinatra/pull/1645) by Chris Gavin
+
+* Remove `detect_rack_handler` method. [#1652](https://github.com/sinatra/sinatra/pull/1652) by ceclinux
+
+* Respect content type set in superclass before filter. Fixes [#1647](https://github.com/sinatra/sinatra/issues/1647) [#1649](https://github.com/sinatra/sinatra/pull/1649) by Jordan Owens
+
+* Update README.ja.md with removal of Thin. [#1629](https://github.com/sinatra/sinatra/pull/1629) by Ryuichi KAWAMATA
+
+* *Revert "Use prepend instead of include for helpers.* [#1662](https://github.com/sinatra/sinatra/pull/1662) by namusyaka
+
+* Various minor fixes to README.md. [#1663](https://github.com/sinatra/sinatra/pull/1663) by Yanis Zafirópulos
+
+* Document when `dump_errors` is enabled. Fixes [#1664](https://github.com/sinatra/sinatra/issues/1664) [#1665](https://github.com/sinatra/sinatra/pull/1665) by Patrik Ragnarsson
+
+* Update README.pt-br.md. [#1668](https://github.com/sinatra/sinatra/pull/1668) by Vitor Oliveira
+
+* Fix usage of inherited `Sinatra::Base` classes keyword arguments. Fixes [#1669](https://github.com/sinatra/sinatra/issues/1669) [#1670](https://github.com/sinatra/sinatra/pull/1670) by Cadu Ribeiro
+
+* Reduce RDoc generation time by not including every README. Fixes [#1578](https://github.com/sinatra/sinatra/issues/1578) [#1671](https://github.com/sinatra/sinatra/pull/1671) by Eloy Pérez
+
+* Add support for per form csrf tokens. Fixes [#1616](https://github.com/sinatra/sinatra/issues/1616) [#1653](https://github.com/sinatra/sinatra/pull/1653) by Jordan Owens
+
+* Update MAINTENANCE.md with the `stable` branch status. [#1681](https://github.com/sinatra/sinatra/pull/1681) by Fredrik Rubensson
+
+* Validate expanded path matches `public_dir` when serving static files. [#1683](https://github.com/sinatra/sinatra/pull/1683) by cji-stripe
+
+* Fix Delegator to pass keyword arguments for Ruby 3.0. [#1684](https://github.com/sinatra/sinatra/pull/1684) by andrewtblake
+
+* Fix use with keyword arguments for Ruby 3.0. [#1701](https://github.com/sinatra/sinatra/pull/1701) by Robin Wallin 
+
+* Fix memory leaks for proc template. Fixes [#1704](https://github.com/sinatra/sinatra/issues/1714) [#1719](https://github.com/sinatra/sinatra/pull/1719) by Slevin
+
+* Remove unnecessary `test_files` from the gemspec. [#1712](https://github.com/sinatra/sinatra/pull/1712) by Masataka Pocke Kuwabara
+
+* Add `#select`, `#reject` and `#compact` methods to `Sinatra::IndifferentHash`. [#1711](https://github.com/sinatra/sinatra/pull/1711) by Olivier Bellone
+
+
+### CI
+
+* Use latest JRuby 9.2.16.0 on CI. [#1682](https://github.com/sinatra/sinatra/pull/1682) by Olle Jonsson
+
+* Switch CI from travis to Github actions. [#1691](https://github.com/sinatra/sinatra/pull/1691) by namusyaka
+
+* Skip the Slack action if `secrets.SLACK_WEBHOOK` is not set. [#1705](https://github.com/sinatra/sinatra/pull/1705) by Robin Wallin
+
+* Small CI improvements. [#1703](https://github.com/sinatra/sinatra/pull/1703) by Robin Wallin
+
+* Drop auto-generated boilerplate comments from CI configuration file. [#1728](https://github.com/sinatra/sinatra/pull/1728) by Olle Jonsson
+
+### sinatra-contrib
+
+* Do not raise when key is an enumerable. [#1619](https://github.com/sinatra/sinatra/pull/1619) by Ulysse Buonomo
+
+### Rack protection
+
+* Fix broken `origin_whitelist` option. Fixes [#1641](https://github.com/sinatra/sinatra/issues/1641) [#1642](https://github.com/sinatra/sinatra/pull/1642) by Takeshi YASHIRO
+
 ## 2.1.0 / 2020-09-05
 
 * Fix additional Ruby 2.7 keyword warnings [#1586](https://github.com/sinatra/sinatra/pull/1586) by Stefan Sundin
