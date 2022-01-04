@@ -22,7 +22,7 @@ jobs:
       matrix:
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
         # TODO: Add jruby if something like allow_failures will be implemented on Actions.
-        ruby: [2.6, 2.7, '3.0']
+        ruby: [2.6, 2.7, '3.0', 3.1]
     steps:
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
