@@ -17,6 +17,15 @@ class RequestTest < Minitest::Test
     assert_equal 'bar', request.params['foo']
   end
 
+  it 'raises Sinatra::BadRequest when multipart/form-data request has no content' do
+    request = Sinatra::Request.new(
+      'REQUEST_METHOD' => 'POST',
+      'CONTENT_TYPE' => 'multipart/form-data; boundary=dummy',
+      'rack.input' => StringIO.new('')
+    )
+    assert_raises(Sinatra::BadRequest) { request.params }
+  end
+
   it 'is secure when the url scheme is https' do
     request = Sinatra::Request.new('rack.url_scheme' => 'https')
     assert request.secure?
