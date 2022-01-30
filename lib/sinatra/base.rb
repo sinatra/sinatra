@@ -78,6 +78,8 @@ module Sinatra
       super
     rescue Rack::Utils::ParameterTypeError, Rack::Utils::InvalidParameterError => e
       raise BadRequest, "Invalid query parameters: #{Rack::Utils.escape_html(e.message)}"
+    rescue EOFError => e
+      raise BadRequest, "Invalid multipart/form-data: #{Rack::Utils.escape_html(e.message)}"
     end
 
     class AcceptEntry
