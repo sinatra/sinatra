@@ -112,6 +112,8 @@ module Rack
           valid_token?(env, env['HTTP_X_CSRF_TOKEN']) ||
           valid_token?(env, Request.new(env).params[options[:authenticity_param]]) ||
           ( options[:allow_if] && options[:allow_if].call(env) )
+      rescue
+        false
       end
 
       def mask_authenticity_token(session, path: nil, method: :post)
