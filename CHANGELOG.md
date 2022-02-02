@@ -1,4 +1,6 @@
-## 2.2.0 / Unrealased
+## 3.0.0 / Unreleased
+
+## 2.2.0 / Unreleased
 
 * Handle EOFError raised by Rack and return Bad Request 400 status. [#1743](https://github.com/sinatra/sinatra/pull/1743) by tamazon
 
