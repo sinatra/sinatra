@@ -1,5 +1,7 @@
 ## 2.2.0 / Unrealased
 
+* Handle EOFError raised by Rack and return Bad Request 400 status. [#1743](https://github.com/sinatra/sinatra/pull/1743) by tamazon
+
 * Update README.es.md with removal of Thin. [#1630](https://github.com/sinatra/sinatra/pull/1630) by Espartaco Palma
 
 * Minor refactors in `base.rb`. [#1640](https://github.com/sinatra/sinatra/pull/1640) by ceclinux
