@@ -1,4 +1,4 @@
-describe Rack::Protection::AuthenticityToken do
+RSpec.describe Rack::Protection::AuthenticityToken do
   let(:token) { described_class.random_token }
   let(:masked_token) { described_class.token(session) }
   let(:bad_token) { Base64.strict_encode64("badtoken") }

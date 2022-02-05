@@ -1,4 +1,4 @@
-describe Rack::Protection::PathTraversal do
+RSpec.describe Rack::Protection::PathTraversal do
   it_behaves_like "any rack application"
 
   context 'escaping' do

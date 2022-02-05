@@ -1,4 +1,4 @@
-describe Rack::Protection::StrictTransport do
+RSpec.describe Rack::Protection::StrictTransport do
   it_behaves_like "any rack application"
 
   it 'should set the Strict-Transport-Security header' do

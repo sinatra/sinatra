@@ -1,4 +1,4 @@
-describe Rack::Protection::RemoteReferrer do
+RSpec.describe Rack::Protection::RemoteReferrer do
   it_behaves_like "any rack application"
 
   it "accepts post requests with no referrer" do

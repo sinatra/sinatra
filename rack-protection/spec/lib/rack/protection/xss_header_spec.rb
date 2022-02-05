@@ -1,4 +1,4 @@
-describe Rack::Protection::XSSHeader do
+RSpec.describe Rack::Protection::XSSHeader do
   it_behaves_like "any rack application"
 
   it 'should set the X-XSS-Protection' do

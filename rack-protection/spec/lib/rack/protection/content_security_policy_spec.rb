@@ -1,4 +1,4 @@
-describe Rack::Protection::ContentSecurityPolicy do
+RSpec.describe Rack::Protection::ContentSecurityPolicy do
   it_behaves_like "any rack application"
 
   it 'should set the Content Security Policy' do

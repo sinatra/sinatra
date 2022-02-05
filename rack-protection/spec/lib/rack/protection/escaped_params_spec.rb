@@ -1,4 +1,4 @@
-describe Rack::Protection::EscapedParams do
+RSpec.describe Rack::Protection::EscapedParams do
   it_behaves_like "any rack application"
 
   context 'escaping' do

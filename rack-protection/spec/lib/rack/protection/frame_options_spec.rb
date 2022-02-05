@@ -1,4 +1,4 @@
-describe Rack::Protection::FrameOptions do
+RSpec.describe Rack::Protection::FrameOptions do
   it_behaves_like "any rack application"
 
   it 'should set the X-Frame-Options' do
