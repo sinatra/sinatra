@@ -42,7 +42,7 @@ EOF
   s.add_dependency "rack-protection", version
   s.add_dependency "multi_json"
 
-  s.add_development_dependency "rspec", "~> 3.4"
+  s.add_development_dependency "rspec", "~> 3"
   s.add_development_dependency "haml"
   s.add_development_dependency "erubi"
   s.add_development_dependency "erubis"
