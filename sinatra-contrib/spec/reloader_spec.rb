@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'fileutils'
 
-describe Sinatra::Reloader do
+RSpec.describe Sinatra::Reloader do
   # Returns the temporary directory.
   def tmp_dir
     File.expand_path('../tmp', __dir__)

@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe Sinatra::RequiredParams do
+RSpec.describe Sinatra::RequiredParams do
   context "#required_params" do
     context "simple keys" do
       before do

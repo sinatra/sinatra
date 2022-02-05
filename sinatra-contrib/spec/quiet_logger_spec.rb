@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'sinatra/quiet_logger'
 require 'logger'
 
-describe Sinatra::QuietLogger do
+RSpec.describe Sinatra::QuietLogger do
 
   it 'logs just paths not excluded' do
     log = StringIO.new

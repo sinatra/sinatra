@@ -2,7 +2,7 @@
 require 'slim'
 require 'spec_helper'
 
-describe Sinatra::Capture do
+RSpec.describe Sinatra::Capture do
   subject do
     Sinatra.new do
       enable :inline_templates

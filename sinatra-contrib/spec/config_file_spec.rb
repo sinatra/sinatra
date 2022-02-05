@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Sinatra::ConfigFile do
+RSpec.describe Sinatra::ConfigFile do
   def config_file(*args, &block)
     mock_app do
       register Sinatra::ConfigFile

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Sinatra::LinkHeader do
+RSpec.describe Sinatra::LinkHeader do
   before do
     mock_app do
       helpers Sinatra::LinkHeader

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Sinatra::Streaming do
+RSpec.describe Sinatra::Streaming do
   def stream(&block)
     rack_middleware = @use
     out = nil
