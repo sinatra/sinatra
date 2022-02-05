@@ -1,4 +1,4 @@
-describe Rack::Protection::CookieTossing do
+RSpec.describe Rack::Protection::CookieTossing do
   it_behaves_like "any rack application"
 
   context 'with default reaction' do

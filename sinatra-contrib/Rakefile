@@ -4,7 +4,7 @@ require 'yaml'
 require 'sinatra/contrib/version'
 
 desc "run specs"
-task(:spec) { ruby '-S rspec spec -cw' }
+task(:spec) { ruby '-S rspec' }
 task(:test => :spec)
 task(:default => :spec)
 

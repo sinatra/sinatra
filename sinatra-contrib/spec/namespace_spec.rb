@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Sinatra::Namespace do
+RSpec.describe Sinatra::Namespace do
   verbs = [:get, :head, :post, :put, :delete, :options, :patch]
 
   def mock_app(&block)

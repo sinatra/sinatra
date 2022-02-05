@@ -3,7 +3,7 @@ require 'multi_json'
 require 'spec_helper'
 require 'okjson'
 
-shared_examples_for "a json encoder" do |lib, const|
+RSpec.shared_examples_for "a json encoder" do |lib, const|
   before do
     begin
       require lib if lib
@@ -29,7 +29,7 @@ shared_examples_for "a json encoder" do |lib, const|
   end
 end
 
-describe Sinatra::JSON do
+RSpec.describe Sinatra::JSON do
   def mock_app(&block)
     super do
       class_eval(&block)

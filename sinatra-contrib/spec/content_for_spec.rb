@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Sinatra::ContentFor do
+RSpec.describe Sinatra::ContentFor do
   subject do
     Sinatra.new do
       helpers Sinatra::ContentFor

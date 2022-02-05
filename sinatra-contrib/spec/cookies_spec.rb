@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Sinatra::Cookies do
+RSpec.describe Sinatra::Cookies do
   def cookie_route(*cookies, &block)
     result = nil
     set_cookie(cookies)

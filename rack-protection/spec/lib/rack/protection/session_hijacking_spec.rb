@@ -1,4 +1,4 @@
-describe Rack::Protection::SessionHijacking do
+RSpec.describe Rack::Protection::SessionHijacking do
   it_behaves_like "any rack application"
 
   it "accepts a session without changes to tracked parameters" do

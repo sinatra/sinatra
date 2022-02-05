@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Sinatra::MultiRoute do
+RSpec.describe Sinatra::MultiRoute do
 
   it 'does not break normal routing' do
     mock_app do

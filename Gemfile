@@ -7,7 +7,7 @@
 # If you have issues with a gem: `bundle install --without-coffee-script`.
 
 RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
-source 'https://rubygems.org' unless ENV['QUICK']
+source 'https://rubygems.org'
 gemspec
 
 gem 'rake'

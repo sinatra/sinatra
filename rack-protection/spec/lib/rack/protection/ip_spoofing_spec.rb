@@ -1,4 +1,4 @@
-describe Rack::Protection::IPSpoofing do
+RSpec.describe Rack::Protection::IPSpoofing do
   it_behaves_like "any rack application"
 
   it 'accepts requests without X-Forward-For header' do

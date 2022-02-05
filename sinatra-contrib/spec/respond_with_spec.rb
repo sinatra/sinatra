@@ -3,7 +3,7 @@ require 'multi_json'
 require 'spec_helper'
 require 'okjson'
 
-describe Sinatra::RespondWith do
+RSpec.describe Sinatra::RespondWith do
   def respond_app(&block)
     mock_app do
       set :app_file, __FILE__

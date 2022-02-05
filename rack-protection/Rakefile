@@ -9,7 +9,7 @@ rescue LoadError => e
 end
 
 desc "run specs"
-task(:spec) { ruby '-S rspec spec' }
+task(:spec) { ruby '-S rspec' }
 
 namespace :doc do
   task :readmes do

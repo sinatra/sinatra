@@ -1,4 +1,4 @@
-describe Rack::Protection::HttpOrigin do
+RSpec.describe Rack::Protection::HttpOrigin do
   it_behaves_like "any rack application"
 
   before(:each) do

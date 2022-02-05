@@ -1,4 +1,4 @@
-describe Rack::Protection::Base do
+RSpec.describe Rack::Protection::Base do
 
   subject { described_class.new(lambda {}) }
 

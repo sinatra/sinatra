@@ -1,4 +1,4 @@
-shared_examples_for 'any rack application' do
+RSpec.shared_examples_for 'any rack application' do
   it "should not interfere with normal get requests" do
     expect(get('/')).to be_ok
     expect(body).to eq('ok')

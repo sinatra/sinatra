@@ -1,4 +1,4 @@
-describe Rack::Protection do
+RSpec.describe Rack::Protection do
   it_behaves_like "any rack application"
 
   it 'passes on options' do

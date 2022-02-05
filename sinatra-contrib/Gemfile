@@ -1,4 +1,4 @@
-source "https://rubygems.org" unless ENV['QUICK']
+source "https://rubygems.org"
 gemspec
 
 gem 'sinatra', path: '..'
@@ -9,9 +9,6 @@ group :development, :test do
   platform :jruby do
     gem 'json'
     gem 'rdoc'
-  end
-
-  platform :jruby do
     gem 'therubyrhino'
   end
 
