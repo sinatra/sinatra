@@ -75,7 +75,9 @@ PumaがあればSinatraはこれを利用するので、`gem install puma`する
     * [フィルタ(Filters)](#フィルタfilters)
     * [ヘルパー(Helpers)](#ヘルパーhelpers)
         * [セッションの使用](#セッションの使用)
-        * [セッションミドルウェアの選択](#セッションミドルウェアの選択)
+            * [セッション秘密鍵のセキュリティ](#セッション秘密鍵のセキュリティ)
+            * [セッションコンフィグ](#セッションコンフィグ)
+            * [自分で選んだセッションミドルウェアを使う](#自分で選んだセッションミドルウェアを使う)
         * [停止(Halting)](#停止halting)
         * [パッシング(Passing)](#パッシングpassing)
         * [別ルーティングの誘発](#別ルーティングの誘発)
@@ -1241,41 +1243,82 @@ get '/:value' do
 end
 ```
 
-ノート: `enable :sessions`は実際にはすべてのデータをクッキーに保持します。これは必ずしも期待通りのものにならないかもしれません（例えば、大量のデータを保持することでトラフィックが増大するなど）。Rackセッションミドルウェアの利用が可能であり、その場合は`enable :sessions`を呼ばずに、選択したミドルウェアを他のミドルウェアのときと同じようにして取り込んでください。
+#### セッション秘密鍵のセキュリティ
 
-```ruby
-use Rack::Session::Pool, :expire_after => 2592000
+セキュリティ向上のために、Cookie内のセッションデータは`HMAC-SHA1`を使ったセッション秘密鍵(session secret)で署名されています。
+このセッション秘密鍵は、暗号論的に安全な乱数値とするために、十分な長さであることが好ましいです。
+`HMAC-SHA1`ならば、64バイト（512ビット、16進文字(hex charactor)128文字）以上です。32バイト（256ビット、16進文字64文字）より短いものは、使うべきではないでしょう。
+したがって、自分の手で秘密鍵を作るのではなく、安全な乱数生成器を使って秘密鍵を生成することが**とても重要**です。人間は、乱数の生成が著しく苦手ですからね。
 
-get '/' do
-  "value = " << session[:value].inspect
-end
+Sinatraは、デフォルトで32バイトの安全なセッション秘密鍵を生成しますが、これはアプリケーションを再起動するたびに変更されます。
+アプリケーションが複数のインスタンスにまたがる場合、鍵生成をSinatraに任せると、インスタンスごとに別々のセッション秘密鍵を持つことになります。
+おそらくこれでは不便でしょう。
 
-get '/:value' do
-  session[:value] = params['value']
-end
+より良いセキュリティと取り回しのために、生成した安全な秘密鍵を、
+アプリケーションの動作するそれぞれのインスタンスの環境変数に保存する方法が[推奨されて](https://12factor.net/config)います。
+これにより、すべてのインスタンス間で同じ鍵を共有することができます。
+このセッション秘密鍵は、定期的に新しい値に更新しましょう。64バイトの秘密鍵を生成してセットする例です：
+
+**セッション秘密鍵の生成**
+
+```text
+$ ruby -e "require 'securerandom'; puts SecureRandom.hex(64)"
+99ae8af...snip...ec0f262ac
 ```
 
-セキュリティ向上のため、クッキー内のセッションデータはセッション秘密鍵(session secret)で署名されます。Sinatraによりランダムな秘密鍵が個別に生成されます。しかし、この秘密鍵はアプリケーションの立ち上げごとに変わってしまうので、すべてのアプリケーションのインスタンスで共有できる秘密鍵をセットしたくなるかもしれません。
+**セッション秘密鍵の生成（ボーナスポイント）**
 
-```ruby
-set :session_secret, 'super secret'
+[sysrandom gem](https://github.com/cryptosphere/sysrandom#readme)を使えば、MRI Rubyが現在デフォルトで利用するユーザ空間の`OpenSSL`ではなく、
+OSの乱数生成器を利用して乱数を生成することができます：
+
+```text
+$ gem install sysrandom
+Building native extensions.  This could take a while...
+Successfully installed sysrandom-1.x
+1 gem installed
+
+$ ruby -e "require 'sysrandom/securerandom'; puts SecureRandom.hex(64)"
+99ae8af...snip...ec0f262ac
 ```
 
-更に、設定変更をしたい場合は、`sessions`の設定においてオプションハッシュを保持することもできます。
+**セッション秘密鍵の環境変数**
+
+環境変数`SESSION_SECRET`に生成した値をセットすれば、Sinatraで使うことができます。
+この値は、ホストを再起動しても失われないように、永続化しましょう。
+OSによってやり方が様々ですから、この例はあくまでイメージです：
+
+```bash
+# echo "export SESSION_SECRET=99ae8af...snip...ec0f262ac" >> ~/.bashrc
+```
+
+**セッション秘密鍵のアプリケーションコンフィグ**
+
+安全な秘密鍵に環境変数`SESSION_SECRET`が使えなかった場合のフェイルセーフを、アプリケーションコンフィグに設定しておきましょう。
+ここでもやはり、[sysrandom gem](https://github.com/cryptosphere/sysrandom#readme)を使うのがボーナスポイントです：
+
+```ruby
+require 'securerandom'
+# -or- require 'sysrandom/securerandom'
+set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
+```
+
+#### セッションコンフィグ
+
+もっと進んだ設定をするならば、次のようなハッシュを`sessions`のオプションに指定するとよいでしょう：
 
 ```ruby
 set :sessions, :domain => 'foo.com'
 ```
 
-foo.comのサブドメイン上のアプリ間でセッションを共有化したいときは、代わりにドメインの前に *.* を付けます。
+foo.comのサブドメイン上のアプリケーション間でセッションを共有したい場合は、かわりにドメインの頭に*.*をつけてください：
 
 ```ruby
 set :sessions, :domain => '.foo.com'
 ```
 
-#### セッションミドルウェアの選択
+#### 自分で選んだセッションミドルウェアを使う
 
-`enable :sessions`とすることで、クッキー内の全てのデータを実際に保存してしまうことに注意してください。
+`enable :sessions`とすることで、Cookie内の全てのデータを実際に保存してしまうことに注意してください。
 これは、あなたが望む挙動ではない（例えば、大量のデータを保存することでトラフィックが増大してしまう）かもしれません。
 あなたは、次のいずれかの方法によって、任意のRackセッションミドルウェアを使用することができます。
 
@@ -1303,7 +1346,7 @@ use Rack::Protection::RemoteToken
 use Rack::Protection::SessionHijacking
 ```
 
-より詳しい情報は、「攻撃防御に対する設定」の項を参照してください。
+より詳しい情報は、[「攻撃防御に対する設定」の項](#攻撃防御に対する設定)を参照してください。
 
 ### 停止(Halting)
 
@@ -1740,7 +1783,7 @@ get '/foo' do
   request["some_param"]       # some_param変数の値。[]はパラメータハッシュのショートカット
   request.referrer            # クライアントのリファラまたは'/'
   request.user_agent          # ユーザエージェント (:agent 条件によって使用される)
-  request.cookies             # ブラウザクッキーのハッシュ
+  request.cookies             # ブラウザCookieのハッシュ
   request.xhr?                # Ajaxリクエストかどうか
   request.url                 # "http://example.com/example/foo"
   request.path                # "/example/foo"
@@ -2043,7 +2086,7 @@ set :protection, :session => true
 
   <dt>sessions</dt>
   <dd>
-    <tt>Rack::Session::Cookie</tt>を使ったクッキーベースのセッションサポートの有効化。詳しくは、'セッションの使用'の項を参照のこと。
+    <tt>Rack::Session::Cookie</tt>を使ったCookieベースのセッションサポートの有効化。詳しくは、'セッションの使用'の項を参照のこと。
   </dd>
 
   <dt>show_exceptions</dt>
