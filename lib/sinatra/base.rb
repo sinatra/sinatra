@@ -1049,7 +1049,7 @@ module Sinatra
 
       params.delete("ignore") # TODO: better params handling, maybe turn it into "smart" object or detect changes
       force_encoding(params)
-      @params = @params.merge(params) if params.any?
+      @params = @params.merge(params) { |k, v1, v2| v2 || v1 } if params.any?
 
       regexp_exists = pattern.is_a?(Mustermann::Regular) || (pattern.respond_to?(:patterns) && pattern.patterns.any? {|subpattern| subpattern.is_a?(Mustermann::Regular)} )
       if regexp_exists
