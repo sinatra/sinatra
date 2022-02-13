@@ -1,7 +1,5 @@
 # Sinatra
 
-[![Build Status](https://secure.travis-ci.org/sinatra/sinatra.svg)](https://travis-ci.org/sinatra/sinatra)
-
 *Внимание: Этот документ является переводом английской версии и может быть
 устаревшим*
 
