@@ -1,5 +1,25 @@
 ## 3.0.0 / Unreleased
 
+* Fix: Internal Sinatra errors now extend `Sinatra::Error`. This fixes [#1204](https://github.com/sinatra/sinatra/issues/1204) and [#1518](https://github.com/sinatra/sinatra/issues/1518). [bda8c29d](https://github.com/sinatra/sinatra/commit/bda8c29d70619d53f5b1c181140638d340695514) by Jordan Owens
+
+* Require Ruby 2.6 as minimum Ruby version. [#1699](https://github.com/sinatra/sinatra/pull/1699) by Eloy Pérez
+
+* Breaking change: Remove support for the Stylus template engine. [#1697](https://github.com/sinatra/sinatra/pull/1697) by Eloy Pérez
+
+* Breaking change: Remove support for the defunct Less templating library. See [#1716](https://github.com/sinatra/sinatra/issues/1716), [#1715](https://github.com/sinatra/sinatra/issues/1715) for more discussion and background. [d1af2f1e](https://github.com/sinatra/sinatra/commit/d1af2f1e6c8710419dfe3102a660f7a32f0e67e3) by Olle Jonsson
+
+* Breaking change: Remove Reel integration. [54597502](https://github.com/sinatra/sinatra/commit/545975025927a27a1daca790598620038979f1c5) by Olle Jonsson
+
+* CI: Start testing on Ruby 3.1. [60e221940](https://github.com/sinatra/sinatra/commit/60e2219407e6ae067bf3e53eb060ee4860c60c8d) and [b0fa4bef](https://github.com/sinatra/sinatra/commit/b0fa4beffaa3b10bf02947d0a35e137403296c6b) by Johannes Würbach
+
+* Use `Kernel#caller_locations`. [#1491](https://github.com/sinatra/sinatra/pull/1491) by Julik Tarkhanov
+
+* Docs: Japanese documentation: Add notes about the `default_content_type` setting. [#1650](https://github.com/sinatra/sinatra/pull/1650)  by Akifumi Tominaga
+
+* Docs: Polish documentation: Add section about Multithreaded modes and Routes. [#1708](https://github.com/sinatra/sinatra/pull/1708) by Patrick Gramatowski
+
+* Docs: Japanese documentation: Make Session section reflect changes done to README.md. [#1731](https://github.com/sinatra/sinatra/pull/1731) by @shu-i-chi
+
 ## 2.2.0 / Unreleased
 
 * Handle EOFError raised by Rack and return Bad Request 400 status. [#1743](https://github.com/sinatra/sinatra/pull/1743) by tamazon
