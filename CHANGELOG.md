@@ -20,7 +20,7 @@
 
 * Docs: Japanese documentation: Make Session section reflect changes done to README.md. [#1731](https://github.com/sinatra/sinatra/pull/1731) by @shu-i-chi
 
-## 2.2.0 / Unreleased
+## 2.2.0 / 2022-02-15
 
 * Handle EOFError raised by Rack and return Bad Request 400 status. [#1743](https://github.com/sinatra/sinatra/pull/1743) by tamazon
 
