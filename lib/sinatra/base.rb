@@ -1533,10 +1533,11 @@ module Sinatra
       # Create a new instance of the class fronted by its middleware
       # pipeline. The object is guaranteed to respond to #call but may not be
       # an instance of the class new was called on.
-      def new(*args, **kwargs, &bk)
-        instance = new!(*args, **kwargs, &bk)
+      def new(*args, &bk)
+        instance = new!(*args, &bk)
         Wrapper.new(build(instance).to_app, instance)
       end
+      ruby2_keywords :new if respond_to?(:ruby2_keywords, true)
 
       # Creates a Rack::Builder instance with all the middleware set up and
       # the given +app+ as end point.
