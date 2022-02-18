@@ -26,11 +26,7 @@
 
 * Handle EOFError raised by Rack and return Bad Request 400 status. [#1743](https://github.com/sinatra/sinatra/pull/1743) by tamazon
 
-* Update README.es.md with removal of Thin. [#1630](https://github.com/sinatra/sinatra/pull/1630) by Espartaco Palma
-
 * Minor refactors in `base.rb`. [#1640](https://github.com/sinatra/sinatra/pull/1640) by ceclinux
-
-* Fixed typos in german README.md. [#1648](https://github.com/sinatra/sinatra/pull/1648) by Juri
 
 * Add escaping to the static 404 page. [#1645](https://github.com/sinatra/sinatra/pull/1645) by Chris Gavin
 
@@ -38,15 +34,7 @@
 
 * Respect content type set in superclass before filter. Fixes [#1647](https://github.com/sinatra/sinatra/issues/1647) [#1649](https://github.com/sinatra/sinatra/pull/1649) by Jordan Owens
 
-* Update README.ja.md with removal of Thin. [#1629](https://github.com/sinatra/sinatra/pull/1629) by Ryuichi KAWAMATA
-
 * *Revert "Use prepend instead of include for helpers.* [#1662](https://github.com/sinatra/sinatra/pull/1662) by namusyaka
-
-* Various minor fixes to README.md. [#1663](https://github.com/sinatra/sinatra/pull/1663) by Yanis Zafirópulos
-
-* Document when `dump_errors` is enabled. Fixes [#1664](https://github.com/sinatra/sinatra/issues/1664) [#1665](https://github.com/sinatra/sinatra/pull/1665) by Patrik Ragnarsson
-
-* Update README.pt-br.md. [#1668](https://github.com/sinatra/sinatra/pull/1668) by Vitor Oliveira
 
 * Fix usage of inherited `Sinatra::Base` classes keyword arguments. Fixes [#1669](https://github.com/sinatra/sinatra/issues/1669) [#1670](https://github.com/sinatra/sinatra/pull/1670) by Cadu Ribeiro
 
@@ -68,12 +56,23 @@
 
 * Add `#select`, `#reject` and `#compact` methods to `Sinatra::IndifferentHash`. [#1711](https://github.com/sinatra/sinatra/pull/1711) by Olivier Bellone
 
+* Docs: Spanish documentation: Update README.es.md with removal of Thin. [#1630](https://github.com/sinatra/sinatra/pull/1630) by Espartaco Palma
+
+* Docs: German documentation: Fixed typos in German README.md. [#1648](https://github.com/sinatra/sinatra/pull/1648) by Juri
+
+* Docs: Japanese documentation: Update README.ja.md with removal of Thin. [#1629](https://github.com/sinatra/sinatra/pull/1629) by Ryuichi KAWAMATA
+
+* Docs: English documentation: Various minor fixes to README.md. [#1663](https://github.com/sinatra/sinatra/pull/1663) by Yanis Zafirópulos
+
+* Docs: English documentation: Document when `dump_errors` is enabled. Fixes [#1664](https://github.com/sinatra/sinatra/issues/1664) [#1665](https://github.com/sinatra/sinatra/pull/1665) by Patrik Ragnarsson
+
+* Docs: Brazilian Portuguese documentation: Update README.pt-br.md with translation fixes. [#1668](https://github.com/sinatra/sinatra/pull/1668) by Vitor Oliveira
 
 ### CI
 
 * Use latest JRuby 9.2.16.0 on CI. [#1682](https://github.com/sinatra/sinatra/pull/1682) by Olle Jonsson
 
-* Switch CI from travis to Github actions. [#1691](https://github.com/sinatra/sinatra/pull/1691) by namusyaka
+* Switch CI from travis to GitHub Actions. [#1691](https://github.com/sinatra/sinatra/pull/1691) by namusyaka
 
 * Skip the Slack action if `secrets.SLACK_WEBHOOK` is not set. [#1705](https://github.com/sinatra/sinatra/pull/1705) by Robin Wallin
 
