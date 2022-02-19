@@ -27,13 +27,13 @@ jobs:
     - name: Run sinatra tests
       run: bundle exec rake
     - name: Run sinatra-contrib tests
+      working-directory: sinatra-contrib
       run: |
-        cd $GITHUB_WORKSPACE/sinatra-contrib
         bundle install --jobs=3 --retry=3
         bundle exec rake
     - name: Run rack-protection tests
+      working-directory: rack-protection
       run: |
-        cd $GITHUB_WORKSPACE/rack-protection
         bundle install --jobs=3 --retry=3
         bundle exec rake
     - uses: 8398a7/action-slack@v3
