@@ -158,7 +158,7 @@ module IntegrationHelper
         @thread = nil
       end
     end
-    Server = JRubyServer
+    Server = BaseServer
   else
     Server = BaseServer
   end
