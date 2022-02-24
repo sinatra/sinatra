@@ -64,13 +64,6 @@ if RUBY_ENGINE == "ruby"
   gem 'simplecov', require: false
 end
 
-if RUBY_ENGINE == "rbx"
-  gem 'json'
-  gem 'rubysl'
-  gem 'rubysl-test-unit'
-  gem 'erubi'
-end
-
 platforms :jruby do
   gem 'json'
 end
