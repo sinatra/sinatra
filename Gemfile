@@ -6,7 +6,6 @@
 #
 # If you have issues with a gem: `bundle install --without-coffee-script`.
 
-RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
 source 'https://rubygems.org'
 gemspec
 
@@ -21,49 +20,39 @@ gem "sinatra-contrib", path: "sinatra-contrib"
 
 gem "twitter-text", "1.14.7"
 
-if RUBY_ENGINE == 'jruby'
-  gem 'nokogiri', '!= 1.5.0'
-  gem 'puma'
-end
 
-if RUBY_ENGINE == 'jruby' || RUBY_ENGINE == 'ruby'
-  gem "activesupport", "~> 5.1.6"
-end
+gem "activesupport", "~> 5.1.6", platforms: [ :jruby, :mri ]
 
-if RUBY_ENGINE == "ruby"
-  gem 'redcarpet'
-  gem 'wlang', '>= 3.0.1'
-  gem 'bluecloth'
-  gem 'rdiscount'
-  gem 'RedCloth'
-  gem 'puma'
-  gem 'yajl-ruby'
-  gem 'nokogiri'
-  gem 'rainbows'
-  gem 'eventmachine'
-  gem 'slim', '~> 2.0'
-  gem 'coffee-script', '>= 2.0'
-  gem 'rdoc'
-  gem 'kramdown'
-  gem 'maruku'
-  gem 'creole'
-  gem 'wikicloth'
-  gem 'markaby'
-  gem 'radius'
-  gem 'asciidoctor'
-  gem 'liquid'
-  gem 'rabl'
-  gem 'builder'
-  gem 'erubi'
-  gem 'erubis'
-  gem 'haml', '>= 3.0'
-  gem 'sass'
-  gem 'celluloid', '~> 0.16.0'
-  gem 'commonmarker', '~> 0.20.0'
-  gem 'pandoc-ruby', '~> 2.0.2'
-  gem 'simplecov', require: false
-end
+gem 'redcarpet', platforms: [ :mri ]
+gem 'wlang', '>= 3.0.1'
+gem 'bluecloth', platforms: [ :mri ]
+gem 'rdiscount', platforms: [ :mri ]
+gem 'RedCloth', platforms: [ :mri ]
+gem 'puma', platforms: [ :jruby, :mri ]
+gem 'yajl-ruby', platforms: [ :mri ]
+gem 'nokogiri', '> 1.5.0', platforms: [ :jruby, :mri ]
+gem 'rainbows', platforms: [ :mri ]
+gem 'eventmachine'
+gem 'slim', '~> 2.0'
+gem 'coffee-script', '>= 2.0'
+gem 'rdoc'
+gem 'kramdown'
+gem 'maruku'
+gem 'creole'
+gem 'wikicloth'
+gem 'markaby'
+gem 'radius'
+gem 'asciidoctor'
+gem 'liquid'
+gem 'rabl'
+gem 'builder'
+gem 'erubi'
+gem 'erubis'
+gem 'haml', '>= 3.0'
+gem 'sass'
+gem 'celluloid', '~> 0.16.0'
+gem 'commonmarker', '~> 0.20.0', platforms: [ :mri ]
+gem 'pandoc-ruby', '~> 2.0.2'
+gem 'simplecov', require: false
 
-platforms :jruby do
-  gem 'json'
-end
+gem 'json', platforms: [ :jruby, :mri ]
