@@ -21,7 +21,7 @@ gem "sinatra-contrib", path: "sinatra-contrib"
 gem "twitter-text", "1.14.7"
 
 
-gem "activesupport", "~> 5.1.6"
+gem "activesupport", "~> 6.1"
 
 gem 'redcarpet', platforms: [ :ruby ]
 gem 'wlang', '>= 3.0.1'
