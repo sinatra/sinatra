@@ -4,6 +4,7 @@ begin
 require 'rabl'
 require 'ostruct'
 require 'json'
+require 'active_support/core_ext/array/extract_options'
 require 'active_support/core_ext/hash/conversions'
 
 class RablTest < Minitest::Test

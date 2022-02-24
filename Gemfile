@@ -21,17 +21,17 @@ gem "sinatra-contrib", path: "sinatra-contrib"
 gem "twitter-text", "1.14.7"
 
 
-gem "activesupport", "~> 5.1.6", platforms: [ :jruby, :mri ]
+gem "activesupport", "~> 6.1"
 
-gem 'redcarpet', platforms: [ :mri ]
+gem 'redcarpet', platforms: [ :ruby ]
 gem 'wlang', '>= 3.0.1'
-gem 'bluecloth', platforms: [ :mri ]
-gem 'rdiscount', platforms: [ :mri ]
-gem 'RedCloth', platforms: [ :mri ]
-gem 'puma', platforms: [ :jruby, :mri ]
-gem 'yajl-ruby', platforms: [ :mri ]
-gem 'nokogiri', '> 1.5.0', platforms: [ :jruby, :mri ]
-gem 'rainbows', platforms: [ :mri ]
+gem 'bluecloth', platforms: [ :ruby ]
+gem 'rdiscount', platforms: [ :ruby ]
+gem 'RedCloth', platforms: [ :ruby ]
+gem 'puma'
+gem 'yajl-ruby', platforms: [ :ruby ]
+gem 'nokogiri', '> 1.5.0'
+gem 'rainbows', platforms: [ :ruby ]
 gem 'eventmachine'
 gem 'slim', '~> 2.0'
 gem 'coffee-script', '>= 2.0'
@@ -51,7 +51,7 @@ gem 'erubis'
 gem 'haml', '>= 3.0'
 gem 'sass'
 gem 'celluloid', '~> 0.16.0'
-gem 'commonmarker', '~> 0.20.0', platforms: [ :mri ]
+gem 'commonmarker', '~> 0.20.0', platforms: [ :ruby ]
 gem 'pandoc-ruby', '~> 2.0.2'
 gem 'simplecov', require: false
 
