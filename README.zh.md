@@ -548,13 +548,13 @@ get('/') { markdown :index }
   <tr>
     <td>依赖项</td>
     <td>
-      <a href="http://www.kuwata-lab.com/erubis/" title="erubis">erubis</a>
+      <a href="http://www.kuwata-lab.com/erubi/" title="erubi">erubi</a>
       或 erb (Ruby 标准库中已经包含)
     </td>
   </tr>
   <tr>
     <td>文件扩展名</td>
-    <td><tt>.erb</tt>, <tt>.rhtml</tt> or <tt>.erubis</tt> (仅用于 Erubis)</td>
+    <td><tt>.erb</tt>, <tt>.rhtml</tt> or <tt>.erubi</tt> (仅用于 Erubi)</td>
   </tr>
   <tr>
     <td>例子</td>

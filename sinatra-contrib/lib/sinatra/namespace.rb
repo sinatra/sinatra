@@ -225,7 +225,7 @@ module Sinatra
       attr_reader :base, :templates
 
       ALLOWED_ENGINES = [
-        :erb, :erubi, :erubis, :haml, :hamlit, :builder, :nokogiri, :sass, :scss,
+        :erb, :erubi, :haml, :hamlit, :builder, :nokogiri, :sass, :scss,
         :liquid, :markdown, :textile, :rdoc, :asciidoc, :radius, :markaby,
         :rabl, :slim, :creole, :mediawiki, :coffee, :yajl, :wlang
       ]

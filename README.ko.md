@@ -545,11 +545,11 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>의존성</td>
-    <td><a href="http://www.kuwata-lab.com/erubis/">erubis</a> 또는 erb (루비 속에 포함)</td>
+    <td><a href="https://github.com/jeremyevans/erubi">erubi</a> 또는 erb (루비 속에 포함)</td>
   </tr>
   <tr>
     <td>파일 확장자</td>
-    <td><tt>.erb</tt>, <tt>.rhtml</tt>, <tt>.erubis</tt> (Erubis만 해당)</td>
+    <td><tt>.erb</tt>, <tt>.rhtml</tt>, <tt>.erubi</tt> (Erubi만 해당)</td>
   </tr>
   <tr>
     <td>예제</td>

@@ -9,7 +9,7 @@ module Sinatra
   # blocks inside views to be rendered later during the request. The most
   # common use is to populate different parts of your layout from your view.
   #
-  # The currently supported engines are: Erb, Erubi, Erubis, Haml and Slim.
+  # The currently supported engines are: Erb, Erubi, Haml and Slim.
   #
   # == Usage
   #
@@ -178,7 +178,7 @@ module Sinatra
       else
         content = content_blocks[key.to_sym].map { |b| capture(*args, &b) }
         content.join.tap do |c|
-          if block_given? && (erb? || erubi? || erubis?)
+          if block_given? && (erb? || erubi?)
             @_out_buf << c
           end
         end
