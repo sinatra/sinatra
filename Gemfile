@@ -33,7 +33,7 @@ gem 'yajl-ruby', platforms: [ :ruby ]
 gem 'nokogiri', '> 1.5.0'
 gem 'rainbows', platforms: [ :ruby ]
 gem 'eventmachine'
-gem 'slim', '~> 2.0'
+gem 'slim', '~> 4'
 gem 'coffee-script', '>= 2.0'
 gem 'rdoc'
 gem 'kramdown'
@@ -47,7 +47,7 @@ gem 'liquid'
 gem 'rabl'
 gem 'builder'
 gem 'erubi'
-gem 'haml', '>= 3.0'
+gem 'haml', '~> 5'
 gem 'sass'
 gem 'celluloid', '~> 0.16.0'
 gem 'commonmarker', '~> 0.20.0', platforms: [ :ruby ]
