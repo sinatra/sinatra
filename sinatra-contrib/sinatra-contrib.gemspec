@@ -45,7 +45,6 @@ EOF
   s.add_development_dependency "rspec", "~> 3"
   s.add_development_dependency "haml"
   s.add_development_dependency "erubi"
-  s.add_development_dependency "erubis"
   s.add_development_dependency "slim"
   s.add_development_dependency "sass"
   s.add_development_dependency "builder"

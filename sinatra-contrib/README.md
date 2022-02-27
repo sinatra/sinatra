@@ -22,8 +22,8 @@ Currently included:
 
 * [`sinatra/config_file`][sinatra-config-file]: Allows loading configuration from yaml files.
 
-* [`sinatra/content_for`][sinatra-content-for]: Adds Rails-style `content_for` helpers to Haml, Erb, Erubi,
-  Erubis and Slim.
+* [`sinatra/content_for`][sinatra-content-for]: Adds Rails-style `content_for` helpers to Haml, Erb, Erubi
+  and Slim.
 
 * [`sinatra/cookies`][sinatra-cookies]: A `cookies` helper for reading and writing cookies.
 

@@ -707,12 +707,6 @@ module Sinatra
       render(:erb, template, options, locals, &block)
     end
 
-    def erubis(template, options = {}, locals = {})
-      warn "Sinatra::Templates#erubis is deprecated and will be removed, use #erb instead.\n" \
-        "If you have Erubis installed, it will be used automatically."
-      render :erubis, template, options, locals
-    end
-
     def haml(template, options = {}, locals = {}, &block)
       render(:haml, template, options, locals, &block)
     end

@@ -20,7 +20,7 @@ RSpec.describe Sinatra::Capture do
 
   shared_examples_for "a template language" do |engine|
     lang = engine
-    if engine == :erubi || engine == :erubis
+    if engine == :erubi
       lang = :erb
     end
     if engine == :hamlit
@@ -41,7 +41,6 @@ RSpec.describe Sinatra::Capture do
   describe('hamlit') { it_behaves_like "a template language", :hamlit }
   describe('slim')   { it_behaves_like "a template language", :slim   }
   describe('erubi')  { it_behaves_like "a template language", :erubi  }
-  describe('erubis') { it_behaves_like "a template language", :erubis }
 
   describe 'erb' do
     it_behaves_like "a template language", :erb

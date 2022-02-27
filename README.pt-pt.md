@@ -185,21 +185,6 @@ end
 
 Renderiza `./views/index.erb`
 
-### Erubis
-
-A gem/biblioteca erubis é necessária para renderizar templates erubis:
-
-```ruby
-# É necessário requerir 'erubis' na aplicação.
-require 'erubis'
-
-get '/' do
-  erubis :index
-end
-```
-
-Renderiza `./views/index.erubis`
-
 ### Builder Templates
 
 A gem/biblioteca builder é necessária para renderizar templates builder:

@@ -618,13 +618,13 @@ get('/') { markdown :index }
   <tr>
     <td>Dependencias</td>
     <td>
-      <a href="http://www.kuwata-lab.com/erubis/" title="erubis">erubis</a>
-      o erb (incluida en Ruby)
+      <a href="https://github.com/jeremyevans/erubi" title="erubi">erubi</a>
+      or erb (incluida in Ruby)
     </td>
   </tr>
   <tr>
     <td>Extensiones de Archivo</td>
-    <td><tt>.erb</tt>, <tt>.rhtml</tt> o <tt>.erubis</tt> (solamente con Erubis)</td>
+    <td><tt>.erb</tt>, <tt>.rhtml</tt> o <tt>.erubi</tt> (solamente con Erubi)</td>
   </tr>
   <tr>
     <td>Ejemplo</td>

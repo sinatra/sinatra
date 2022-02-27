@@ -113,12 +113,3 @@ begin
 rescue LoadError
   warn "#{$!}: skipping erubi tests"
 end
-
-begin
-  require 'erubis'
-  class ErubisTest < ERBTest
-    def engine; Tilt::ErubisTemplate end
-  end
-rescue LoadError
-  warn "#{$!}: skipping erubis tests"
-end
