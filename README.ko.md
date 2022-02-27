@@ -519,7 +519,7 @@ end
 사용할지 저정하려면, 먼저 require 하기만 하면 됩니다.
 
 ```ruby
-require 'rdiscount' # or require 'bluecloth'
+require 'rdiscount'
 get('/') { markdown :index }
 ```
 
@@ -657,7 +657,6 @@ Liquid 템플릿에서는 루비 메서드(`yield` 제외)를 호출할 수 없�
     <td>
       <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
       <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-      <a href="https://github.com/ged/bluecloth" title="bluecloth">BlueCloth</a>,
       <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
       <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
       중 아무거나

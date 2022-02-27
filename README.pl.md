@@ -30,7 +30,7 @@ Jeżeli zmienisz kod, to musisz zrestartować serwer, aby zobaczyć zmiany.
 Restartuj serwer za każdym razem, gdy coś zmieniasz, albo użyjwaj
 [sinatra/reloader](http://www.sinatrarb.com/contrib/reloader).
 
-Zalecane jest również zainstalowanie gem'a puma `gem install puma`, 
+Zalecane jest również zainstalowanie gem'a puma `gem install puma`,
 którego Sinatra użyje jeżeli będzie dostępny.
 
 ## Spis treści
@@ -125,9 +125,9 @@ którego Sinatra użyje jeżeli będzie dostępny.
 
 ## Scieżki
 
-W Sinatrze, scieżki są metodami HTTP 
+W Sinatrze, scieżki są metodami HTTP
 In Sinatra, a route is an HTTP method połączone ze wzorcem dopasowywania adresu URL.
-Każda scieżka jest powiązana z blokiem: 
+Każda scieżka jest powiązana z blokiem:
 
 ```ruby
 get '/' do
@@ -581,7 +581,7 @@ Some languages have multiple implementations. To specify what implementation
 to use (and to be thread-safe), you should simply require it first:
 
 ```ruby
-require 'rdiscount' # or require 'bluecloth'
+require 'rdiscount'
 get('/') { markdown :index }
 ```
 
@@ -742,7 +742,6 @@ template, you almost always want to pass locals to it.
       Anyone of:
         <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-        <a href="https://github.com/ged/bluecloth" title="BlueCloth">BlueCloth</a>,
         <a href="https://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
         <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
         <a href="https://github.com/gjtorikian/commonmarker" title="commonmarker">commonmarker</a>

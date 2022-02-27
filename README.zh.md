@@ -521,7 +521,7 @@ end
 一些语言有多种实现。为了确定使用哪种实现（以及保证线程安全），你应该首先引入该实现：
 
 ```ruby
-require 'rdiscount' # 或 require 'bluecloth'
+require 'rdiscount'
 get('/') { markdown :index }
 ```
 
@@ -664,7 +664,6 @@ get('/') { markdown :index }
       下列任一:
         <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-        <a href="https://github.com/ged/bluecloth" title="bluecloth">BlueCloth</a>,
         <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
         <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
     </td>
