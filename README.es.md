@@ -734,8 +734,7 @@ plantilla Liquid, casi siempre va a querer pasarle locales.
     <td>
       <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
       <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-      <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a> o
-      <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
+      <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>
     </td>
   </tr>
   <tr>

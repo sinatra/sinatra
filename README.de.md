@@ -730,8 +730,7 @@ denen man Variablen weitergibt.
     <td>Eine der folgenden Bibliotheken:
         <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-        <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a> oder
-        <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
+        <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>
     </td>
   </tr>
   <tr>

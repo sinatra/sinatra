@@ -761,9 +761,6 @@ Liquid, você quase sempre precisará passar o `locals` para ele.
         </a>,
         <a href="http://kramdown.gettalong.org/" title="kramdown">
           kramdown
-        </a>,
-        <a href="https://github.com/bhollis/maruku" title="maruku">
-          maruku
         </a>
     </td>
   </tr>

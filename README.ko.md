@@ -657,8 +657,7 @@ Liquid 템플릿에서는 루비 메서드(`yield` 제외)를 호출할 수 없�
     <td>
       <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
       <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-      <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
-      <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
+      <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>
       중 아무거나
     </td>
   </tr>

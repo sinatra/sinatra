@@ -73,8 +73,7 @@ end
   "Tilt::CommonMarkerTemplate",
   "Tilt::KramdownTemplate",
   "Tilt::RedcarpetTemplate",
-  "Tilt::RDiscountTemplate",
-  "Tilt::MarukuTemplate"
+  "Tilt::RDiscountTemplate"
 ].each do |template_name|
   begin
     template = Object.const_get(template_name)
