@@ -25,7 +25,6 @@ gem "activesupport", "~> 6.1"
 
 gem 'redcarpet', platforms: [ :ruby ]
 gem 'wlang', '>= 3.0.1'
-gem 'bluecloth', platforms: [ :ruby ]
 gem 'rdiscount', platforms: [ :ruby ]
 gem 'RedCloth', platforms: [ :ruby ]
 gem 'puma'
@@ -37,7 +36,6 @@ gem 'slim', '~> 4'
 gem 'coffee-script', '>= 2.0'
 gem 'rdoc'
 gem 'kramdown'
-gem 'maruku'
 gem 'creole'
 gem 'wikicloth'
 gem 'markaby'

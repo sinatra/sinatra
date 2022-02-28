@@ -607,7 +607,7 @@ implementação deverá ser utilizada (e para ser *thread-safe*), você deve
 requerê-la primeiro:
 
 ```ruby
-require 'rdiscount' # ou require 'bluecloth'
+require 'rdiscount'
 get('/') { markdown :index }
 ```
 
@@ -759,14 +759,8 @@ Liquid, você quase sempre precisará passar o `locals` para ele.
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">
           RedCarpet
         </a>,
-        <a href="https://github.com/ged/bluecloth" title="bluecloth">
-          BlueCloth
-        </a>,
         <a href="http://kramdown.gettalong.org/" title="kramdown">
           kramdown
-        </a>,
-        <a href="https://github.com/bhollis/maruku" title="maruku">
-          maruku
         </a>
     </td>
   </tr>
