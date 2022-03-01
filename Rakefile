@@ -26,7 +26,6 @@ end
 Rake::TestTask.new(:test) do |t|
   t.test_files = FileList['test/*_test.rb']
   t.ruby_opts = ['-r rubygems'] if defined? Gem
-  t.ruby_opts << '-I.'
   t.warning = true
 end
 
@@ -37,7 +36,6 @@ Rake::TestTask.new(:"test:core") do |t|
      routing server settings sinatra static templates]
   t.test_files = core_tests.map {|n| "test/#{n}_test.rb"}
   t.ruby_opts = ["-r rubygems"] if defined? Gem
-  t.ruby_opts << "-I."
   t.warning = true
 end
 
