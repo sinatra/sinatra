@@ -18,6 +18,7 @@ end
 
 ```shell
 gem install sinatra
+gem install puma # 或任何其他服务器
 ```
 
 然后运行 myapp.rb 中的代码：

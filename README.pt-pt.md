@@ -19,7 +19,8 @@ end
 Instale a gem e execute com:
 
 ```shell
-sudo gem install sinatra
+gem install sinatra
+gem install puma # ou qualquer outro servidor
 ruby minhaapp.rb
 ```
 

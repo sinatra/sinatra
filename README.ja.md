@@ -18,6 +18,7 @@ gemをインストールし、
 
 ```shell
 gem install sinatra
+gem install puma # または他のサーバー
 ```
 
 次のように実行します。

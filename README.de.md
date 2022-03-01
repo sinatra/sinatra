@@ -22,6 +22,7 @@ Sinatra-Gem installieren:
 
 ```shell
 gem install sinatra
+gem install puma # oder irgendein anderer Server
 ```
 
 und im gleichen Verzeichnis ausführen:

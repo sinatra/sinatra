@@ -17,7 +17,8 @@ energiabefektetéssel:
 Telepítsd a gem-et és indítsd el az alkalmazást a következőképpen:
 
 ```ruby
-  sudo gem install sinatra
+  gem install sinatra
+  gem install puma # vagy bármely más szerver
   ruby myapp.rb
 ```
 

@@ -17,12 +17,14 @@ Instala la gema:
 
 ```shell
 gem install sinatra
+gem install puma # o cualquier otro servidor
 ruby miapp.rb
 ```
 
 Y corre la aplicación:
 ```shell
 gem install sinatra
+gem install puma # o cualquier otro servidor
 ruby miapp.rb
 ```
 
