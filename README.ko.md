@@ -18,6 +18,7 @@ end
 
 ```shell
 gem install sinatra
+gem install puma # 또는 다른 서버
 ```
 
 아래의 명령어로 실행합니다.

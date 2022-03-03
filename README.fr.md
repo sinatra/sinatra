@@ -18,6 +18,7 @@ Installez la gem Sinatra :
 
 ```shell
 gem install sinatra
+gem install puma # ou tout autre serveur
 ```
 
 Puis lancez votre programme :

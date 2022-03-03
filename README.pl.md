@@ -16,6 +16,7 @@ Zainstaluj gem'a:
 
 ```shell
 gem install sinatra
+gem install puma # lub jakikolwiek inny serwer
 ```
 
 I uruchom komendę:

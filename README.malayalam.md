@@ -19,6 +19,7 @@ gem ഇൻസ്റ്റാൾ ചെയ്യുവാൻ:
 
 ```shell
 gem install sinatra
+gem install puma # അല്ലെങ്കിൽ മറ്റേതെങ്കിലും സെർവർ
 ```
 
 റൺ ചെയ്യുവാൻ  :

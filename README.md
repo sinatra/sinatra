@@ -20,6 +20,7 @@ Install the gem:
 
 ```shell
 gem install sinatra
+gem install puma # or any other server
 ```
 
 And run with:

@@ -20,6 +20,7 @@ end
 
 ```shell
 gem install sinatra
+gem install puma # или любой другой сервер
 ```
 
 и запустите приложение при помощи:
