@@ -56,7 +56,6 @@ Se recomienda ejecutar `gem install puma`, porque Sinatra lo utilizará si está
             * [Plantillas SCSS](#plantillas-scss)
             * [Plantillas Liquid](#plantillas-liquid)
             * [Plantillas Markdown](#plantillas-markdown)
-            * [Plantillas Textile](#plantillas-textile)
             * [Plantillas RDoc](#plantillas-rdoc)
             * [Plantillas AsciiDoc](#plantillas-asciidoc)
             * [Plantillas Radius](#plantillas-radius)
@@ -768,42 +767,6 @@ Como no puede utilizar Ruby desde Markdown, no puede usar layouts escritos en
 Markdown. De todos modos, es posible usar un motor de renderizado para el
 layout distinto al de la plantilla pasando la opción `:layout_engine`.
 
-#### Plantillas Textile
-
-<table>
-  <tr>
-    <td>Dependencias</td>
-    <td><a href="http://redcloth.org/" title="RedCloth">RedCloth</a></td>
-  </tr>
-  <tr>
-    <td>Extensiones de Archivo</td>
-    <td><tt>.textile</tt></td>
-  </tr>
-  <tr>
-    <td>Ejemplo</td>
-    <td><tt>textile :index, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-No es posible llamar métodos desde textile, ni pasarle locales. Por lo tanto,
-generalmente vas a usarlo en combinación con otro motor de renderizado:
-
-```ruby
-erb :resumen, :locals => { :texto => textile(:introduccion) }
-```
-
-Ten en cuenta que también puedes llamar al método `textile` desde otras
-plantillas:
-
-```ruby
-%h1 Hola Desde Haml!
-%p= textile(:saludos)
-```
-
-Como no puedes utilizar Ruby desde Textile, no puedes usar layouts escritos en
-Textile. De todos modos, es posible usar un motor de renderizado para el
-layout distinto al de la plantilla pasando la opción `:layout_engine`.
-
 #### Plantillas RDoc
 
 <table>
@@ -1205,10 +1168,10 @@ end
 
 Para asociar una extensión de archivo con un motor de renderizado, usa
 `Tilt.register`. Por ejemplo, si quieres usar la extensión `tt` para
-las plantillas Textile, puedes hacer lo siguiente:
+las plantillas Haml, puedes hacer lo siguiente:
 
 ```ruby
-Tilt.register :tt, Tilt[:textile]
+Tilt.register :tt, Tilt[:haml]
 ```
 
 ### Añadiendo Tu Propio Motor de Plantillas

@@ -52,7 +52,6 @@ thin이 설치되어 있을 경우 Sinatra는 thin을 통해 실행합니다.
             * [SCSS 템플릿](#scss-템플릿)
             * [Liquid 템플릿](#liquid-템플릿)
             * [Markdown 템플릿](#markdown-템플릿)
-            * [Textile 템플릿](#textile-템플릿)
             * [RDoc 템플릿](#rdoc-템플릿)
             * [AsciiDoc 템플릿](#asciidoc-템플릿)
             * [Radius 템플릿](#radius-템플릿)
@@ -690,41 +689,6 @@ Markdown에서 루비를 호출할 수 없기 때문에, Markdown으로 작성�
 사용할 수 없습니다. 하지만, `:layout_engine` 옵션으로 레이아웃의 템플릿을
 다른 렌더링 엔진으로 렌더링 할 수는 있습니다.
 
-#### Textile 템플릿
-
-<table>
-  <tr>
-    <td>의존성</td>
-    <td><a href="http://redcloth.org/">RedCloth</a></td>
-  </tr>
-  <tr>
-    <td>파일 확장자</td>
-    <td><tt>.textile</tt></td>
-  </tr>
-  <tr>
-    <td>예제</td>
-    <td><tt>textile :index, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-Textile에서는 메서드 호출 뿐 아니라 locals 전달도 안됩니다.
-따라서 일반적으로는 다른 렌더링 엔진과 함께 사용하게 됩니다.
-
-```ruby
-erb :overview, :locals => { :text => textile(:introduction) }
-```
-
-다른 템플릿 속에서 `textile` 메서드를 호출할 수도 있습니다.
-
-```ruby
-%h1 안녕 Haml!
-%p= textile(:greetings)
-```
-
-Textile에서 루비를 호출할 수 없기 때문에, Textile으로 작성된 레이아웃은
-사용할 수 없습니다. 하지만, `:layout_engine` 옵션으로 레이아웃의 템플릿을
-다른 렌더링 엔진으로 렌더링 할 수는 있습니다.
-
 #### RDoc 템플릿
 
 <table>
@@ -1122,11 +1086,11 @@ end
 ### 파일 확장자 연결하기
 
 어떤 파일 확장자를 특정 템플릿 엔진과 연결하려면, `Tilt.register`를 사용하면
-됩니다. 예를 들어, `tt`라는 파일 확장자를 Textile 템플릿과 연결하고 싶다면,
+됩니다. 예를 들어, `tt`라는 파일 확장자를 Haml 템플릿과 연결하고 싶다면,
 다음과 같이 하면 됩니다.
 
 ```ruby
-Tilt.register :tt, Tilt[:textile]
+Tilt.register :tt, Tilt[:haml]
 ```
 
 ### 나만의 고유한 템플릿 엔진 추가하기

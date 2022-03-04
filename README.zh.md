@@ -51,7 +51,6 @@ ruby myapp.rb
             * [SCSS 模板](#scss-模板)
             * [Liquid 模板](#liquid-模板)
             * [Markdown 模板](#markdown-模板)
-            * [Textile 模板](#textile-模板)
             * [RDoc 模板](#rdoc-模板)
             * [AsciiDoc 模板](#asciidoc-模板)
             * [Radius 模板](#radius-模板)
@@ -695,40 +694,6 @@ erb :overview, :locals => { :text => markdown(:introduction) }
 因为不能在 Markdown 中使用 Ruby 语言，你不能使用 Markdown 书写的布局。
 不过，使用其它渲染引擎作为模板的布局是可能的，这需要通过传入 `:layout_engine` 选项。
 
-#### Textile 模板
-
-<table>
-  <tr>
-    <td>依赖项</td>
-    <td><a href="http://redcloth.org/" title="RedCloth">RedCloth</a></td>
-  </tr>
-  <tr>
-    <td>文件扩展名</td>
-    <td><tt>.textile</tt></td>
-  </tr>
-  <tr>
-    <td>例子</td>
-    <td><tt>textile :index, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-不能在 textile 中调用 Ruby 方法，也不能传递 locals 给它。
-因此，你一般会结合其它的渲染引擎来使用它：
-
-```ruby
-erb :overview, :locals => { :text => textile(:introduction) }
-```
-
-请注意你也可以在其他模板中调用 `textile` 方法：
-
-```ruby
-%h1 Hello From Haml!
-%p= textile(:greetings)
-```
-
-因为不能在 Textile 中调用 Ruby 方法，你不能用 Textile 书写布局。
-不过，使用其它渲染引擎作为模版的布局是可能的，这需要通过传递 `:layout_engine` 选项。
-
 #### RDoc 模板
 
 <table>
@@ -1115,10 +1080,10 @@ end
 ### 关联文件扩展名
 
 为了将一个文件扩展名到对应的模版引擎，要使用 `Tilt.register`。
-比如，如果你喜欢使用 `tt` 作为 Textile 模版的扩展名，你可以这样做:
+比如，如果你喜欢使用 `tt` 作为 Haml 模版的扩展名，你可以这样做:
 
 ```ruby
-Tilt.register :tt, Tilt[:textile]
+Tilt.register :tt, Tilt[:haml]
 ```
 
 ### 添加自定义模板引擎

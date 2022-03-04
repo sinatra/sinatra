@@ -54,7 +54,6 @@ PumaがあればSinatraはこれを利用するので、`gem install puma`する
             * [SCSS テンプレート](#scss-テンプレート)
             * [Liquid テンプレート](#liquid-テンプレート)
             * [Markdown テンプレート](#markdown-テンプレート)
-            * [Textile テンプレート](#textile-テンプレート)
             * [RDoc テンプレート](#rdoc-テンプレート)
             * [AsciiDoc テンプレート](#asciidoc-テンプレート)
             * [Radius テンプレート](#radius-テンプレート)
@@ -700,39 +699,6 @@ erb :overview, :locals => { :text => markdown(:introduction) }
 
 MarkdownからはRubyを呼ぶことができないので、Markdownで書かれたレイアウトを使うことはできません。しかしながら、`:layout_engine`オプションを渡すことでテンプレートのものとは異なるレンダリングエンジンをレイアウトのために使うことができます。
 
-#### Textile テンプレート
-
-<table>
-  <tr>
-    <td>依存</td>
-    <td><a href="http://redcloth.org/" title="RedCloth">RedCloth</a></td>
-  </tr>
-  <tr>
-    <td>ファイル拡張子</td>
-    <td><tt>.textile</tt></td>
-  </tr>
-  <tr>
-    <td>例</td>
-    <td><tt>textile :index, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-Textileからメソッドを呼び出すことも、localsに変数を渡すこともできません。
-それゆえ、他のレンダリングエンジンとの組み合わせで使うのが普通です。
-
-```ruby
-erb :overview, :locals => { :text => textile(:introduction) }
-```
-
-ノート: 他のテンプレート内で`textile`メソッドを呼び出せます。
-
-```ruby
-%h1 Hello From Haml!
-%p= textile(:greetings)
-```
-
-TextileからはRubyを呼ぶことができないので、Textileで書かれたレイアウトを使うことはできません。しかしながら、`:layout_engine`オプションを渡すことでテンプレートのものとは異なるレンダリングエンジンをレイアウトのために使うことができます。
-
 #### RDoc テンプレート
 
 <table>
@@ -1103,10 +1069,10 @@ end
 
 ### ファイル拡張子の関連付け
 
-任意のテンプレートエンジンにファイル拡張子を関連付ける場合は、`Tilt.register`を使います。例えば、Textileテンプレートに`tt`というファイル拡張子を使いたい場合は、以下のようにします。
+任意のテンプレートエンジンにファイル拡張子を関連付ける場合は、`Tilt.register`を使います。例えば、Hamlテンプレートに`tt`というファイル拡張子を使いたい場合は、以下のようにします。
 
 ```ruby
-Tilt.register :tt, Tilt[:textile]
+Tilt.register :tt, Tilt[:haml]
 ```
 
 ### オリジナルテンプレートエンジンの追加
