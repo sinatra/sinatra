@@ -26,7 +26,6 @@ gem "activesupport", "~> 6.1"
 gem 'redcarpet', platforms: [ :ruby ]
 gem 'wlang', '>= 3.0.1'
 gem 'rdiscount', platforms: [ :ruby ]
-gem 'RedCloth', platforms: [ :ruby ]
 gem 'puma'
 gem 'yajl-ruby', platforms: [ :ruby ]
 gem 'nokogiri', '> 1.5.0'
