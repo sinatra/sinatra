@@ -241,7 +241,7 @@ module Sinatra
         :xml  => [:builder, :nokogiri],
         :js   => [:coffee],
         :html => [:erb, :erubi, :haml, :hamlit, :slim, :liquid, :radius,
-          :mab, :markdown, :textile, :rdoc],
+          :mab, :markdown, :rdoc],
         :all =>  (Sinatra::Templates.instance_methods.map(&:to_sym) +
           [:mab] - [:find_template, :markaby]),
         :json => [:yajl],

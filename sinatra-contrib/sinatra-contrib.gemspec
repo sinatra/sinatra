@@ -50,7 +50,6 @@ EOF
   s.add_development_dependency "builder"
   s.add_development_dependency "liquid"
   s.add_development_dependency "redcarpet"
-  s.add_development_dependency "RedCloth", "~> 4.2.9"
   s.add_development_dependency "asciidoctor"
   s.add_development_dependency "radius"
   s.add_development_dependency "coffee-script"

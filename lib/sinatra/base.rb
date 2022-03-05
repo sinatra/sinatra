@@ -735,10 +735,6 @@ module Sinatra
       render :markdown, template, options, locals
     end
 
-    def textile(template, options = {}, locals = {})
-      render :textile, template, options, locals
-    end
-
     def rdoc(template, options = {}, locals = {})
       render :rdoc, template, options, locals
     end

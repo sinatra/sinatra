@@ -57,7 +57,6 @@ diesen Server verwenden.
       - [SCSS Templates](#scss-templates)
       - [Liquid Templates](#liquid-templates)
       - [Markdown Templates](#markdown-templates)
-      - [Textile Templates](#textile-templates)
       - [RDoc Templates](#rdoc-templates)
       - [AsciiDoc Templates](#asciidoc-templates)
       - [Radius Templates](#radius-templates)
@@ -765,44 +764,6 @@ in Markdown geschrieben werden. Es ist aber möglich, einen Renderer für die
 Templates zu verwenden und einen anderen für das Layout, indem die
 `:layout_engine`-Option verwendet wird.
 
-#### Textile Templates
-
-<table>
-  <tr>
-    <td>Abhängigkeit</td>
-    <td><a href="http://redcloth.org/">RedCloth</a></td>
-  </tr>
-  <tr>
-    <td>Dateierweiterung</td>
-    <td><tt>.textile</tt></td>
-  </tr>
-  <tr>
-    <td>Beispiel</td>
-    <td><tt>textile :index, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-Da man aus dem Textile-Template heraus keine Ruby-Methoden aufrufen und auch
-keine locals verwenden kann, wird man Textile üblicherweise in Kombination mit
-anderen Renderern verwenden wollen:
-
-```ruby
-erb :overview, :locals => { :text => textile(:einfuehrung) }
-```
-
-Beachte, dass man die `textile`-Methode auch aus anderen Templates heraus
-aufrufen kann:
-
-```ruby
-%h1 Gruß von Haml!
-%p= textile(:Grüße)
-```
-
-Da man Ruby nicht von Textile heraus aufrufen kann, können auch Layouts nicht
-in Textile geschrieben werden. Es ist aber möglich, einen Renderer für die
-Templates zu verwenden und einen anderen für das Layout, indem die
-`:layout_engine`-Option verwendet wird.
-
 #### RDoc Templates
 
 <table>
@@ -813,10 +774,6 @@ Templates zu verwenden und einen anderen für das Layout, indem die
   <tr>
     <td>Dateierweiterung</td>
     <td><tt>.rdoc</tt></td>
-  </tr>
-  <tr>
-    <td>Beispiel</td>
-    <td><tt>textile :README, :layout_engine => :erb</tt></td>
   </tr>
 </table>
 
@@ -1214,11 +1171,11 @@ end
 ### Dateiendungen zuordnen
 
 Um eine Dateiendung einer Template-Engine zuzuordnen, kann `Tilt.register`
-genutzt werden. Wenn etwa die Dateiendung `tt` für Textile-Templates genutzt
+genutzt werden. Wenn etwa die Dateiendung `tt` für Haml-Templates genutzt
 werden soll, lässt sich dies wie folgt bewerkstelligen:
 
 ```ruby
-Tilt.register :tt, Tilt[:textile]
+Tilt.register :tt, Tilt[:haml]
 ```
 
 ### Eine eigene Template-Engine hinzufügen

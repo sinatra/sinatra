@@ -55,7 +55,6 @@ którego Sinatra użyje jeżeli będzie dostępny.
             * [Szablony Less](#less-templates)
             * [Szablony Liquid](#liquid-templates)
             * [Szablony Markdown](#markdown-templates)
-            * [Szablony Textile](#textile-templates)
             * [Szablony RDoc](#rdoc-templates)
             * [Szablony AsciiDoc](#asciidoc-templates)
             * [Szablony Radius](#radius-templates)
@@ -778,42 +777,6 @@ Since you cannot call Ruby from Markdown, you cannot use layouts written in
 Markdown. However, it is possible to use another rendering engine for the
 template than for the layout by passing the `:layout_engine` option.
 
-#### Textile Templates
-
-<table>
-  <tr>
-    <td>Dependency</td>
-    <td><a href="http://redcloth.org/" title="RedCloth">RedCloth</a></td>
-  </tr>
-  <tr>
-    <td>File Extension</td>
-    <td><tt>.textile</tt></td>
-  </tr>
-  <tr>
-    <td>Example</td>
-    <td><tt>textile :index, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-It is not possible to call methods from Textile, nor to pass locals to
-it. You therefore will usually use it in combination with another
-rendering engine:
-
-```ruby
-erb :overview, :locals => { :text => textile(:introduction) }
-```
-
-Note that you may also call the `textile` method from within other templates:
-
-```ruby
-%h1 Hello From Haml!
-%p= textile(:greetings)
-```
-
-Since you cannot call Ruby from Textile, you cannot use layouts written in
-Textile. However, it is possible to use another rendering engine for the
-template than for the layout by passing the `:layout_engine` option.
-
 #### RDoc Templates
 
 <table>
@@ -1255,10 +1218,10 @@ end
 
 To associate a file extension with a template engine, use
 `Tilt.register`. For instance, if you like to use the file extension
-`tt` for Textile templates, you can do the following:
+`tt` for Haml templates, you can do the following:
 
 ```ruby
-Tilt.register :tt, Tilt[:textile]
+Tilt.register :tt, Tilt[:haml]
 ```
 
 ### Adding Your Own Template Engine

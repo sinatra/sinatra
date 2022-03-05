@@ -66,7 +66,6 @@ disponível, o Sinatra irá utilizá-la.
             * [SCSS Templates](#scss-templates)
             * [Liquid Templates](#liquid-templates)
             * [Markdown Templates](#markdown-templates)
-            * [Textile Templates](#textile-templates)
             * [RDoc Templates](#rdoc-templates)
             * [AsciiDoc Templates](#asciidoc-templates)
             * [Radius Templates](#radius-templates)
@@ -794,40 +793,6 @@ pode utilizar um layout escrito em Markdown. Contudo é
 possível utilizar outra engine de renderização como template,
 deve-se passar a `:layout_engine` como opção.
 
-<table>
-  <tr>
-    <td>Dependência</td>
-    <td><a href="http://redcloth.org/" title="RedCloth">RedCloth</a></td>
-  </tr>
-  <tr>
-    <td>Extensão do Arquivo</td>
-    <td><tt>.textile</tt></td>
-  </tr>
-  <tr>
-    <td>Exemplo</td>
-    <td><tt>textile :index, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-Não é possível chamar métodos por este template, nem passar *locals* para o
-mesmo. Portanto normalmente é utilizado junto a outra engine de renderização:
-
-```ruby
-erb :overview, :locals => { :text => textile(:introducao) }
-```
-
-Note que você também pode chamar o método `textile` dentro de outros templates:
-
-```ruby
-%h1 Olá do Haml!
-%p= textile(:saudacoes)
-```
-
-Já que você não pode chamar o Ruby pelo Textile, você não
-pode utilizar um layout escrito em Textile. Contudo é
-possível utilizar outra engine de renderização como template,
-deve-se passar a `:layout_engine` como opção.
-
 #### RDoc Templates
 
 <table>
@@ -1247,10 +1212,10 @@ end
 
 Para associar uma extensão de arquivo com um engine de template use o método
 `Tilt.register`. Por exemplo, se você quiser usar a extensão `tt` para os
-templates Textile você pode fazer o seguinte:
+templates Haml você pode fazer o seguinte:
 
 ```ruby
-Tilt.register :tt, Tilt[:textile]
+Tilt.register :tt, Tilt[:haml]
 ```
 
 ### Adicionando seu Próprio Engine de Template

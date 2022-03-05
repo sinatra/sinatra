@@ -50,11 +50,6 @@ module Sinatra
       @current_engine == :markdown
     end
 
-    # @return [Boolean] Returns true if current engine is `:textile.
-    def textile?
-      @current_engine == :textile
-    end
-
     # @return [Boolean] Returns true if current engine is `:rdoc`.
     def rdoc?
       @current_engine == :rdoc

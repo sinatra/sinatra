@@ -57,7 +57,6 @@ Sinatra utilise le server Thin quand il est disponible.
             * [Templates SCSS](#templates-scss)
             * [Templates Liquid](#templates-liquid)
             * [Templates Markdown](#templates-markdown)
-            * [Templates Textile](#templates-textile)
             * [Templates RDoc](#templates-rdoc)
             * [Templates Asciidoc](#templates-asciidoc)
             * [Templates Radius](#templates-radius)
@@ -770,43 +769,6 @@ pouvez pas utiliser de layouts écrits en Markdown. Toutefois, il
 est possible d’utiliser un moteur de rendu différent pour le template et
 pour le layout en utilisant l’option `:layout_engine`.
 
-#### Templates Textile
-
-<table>
-  <tr>
-    <td>Dépendances</td>
-    <td><a href="http://redcloth.org/" title="RedCloth">RedCloth</a></td>
-  </tr>
-  <tr>
-    <td>Extensions de fichier</td>
-    <td><tt>.textile</tt></td>
-  </tr>
-  <tr>
-    <td>Exemple</td>
-    <td><tt>textile :index, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-Il n’est pas possible d’appeler de méthodes depuis textile, ni de lui
-passer de variables locales. Par conséquent, il sera souvent utilisé en
-combinaison avec un autre moteur de rendu :
-
-```ruby
-erb :accueil, :locals => { :text => textile(:introduction) }
-```
-
-Notez que vous pouvez également appeler la méthode `textile` depuis un autre template :
-
-```ruby
-%h1 Bonjour depuis Haml !
-%p= textile(:bienvenue)
-```
-
-Comme vous ne pouvez pas appeler de méthode Ruby depuis Textile, vous ne pouvez
-pas utiliser de layouts écrits en Textile. Toutefois, il est
-possible d’utiliser un moteur de rendu différent pour le template et
-pour le layout en utilisant l’option `:layout_engine`.
-
 #### Templates RDoc
 
 <table>
@@ -1217,10 +1179,10 @@ end
 
 Pour associer une extension de fichier avec un moteur de rendu, utilisez
 `Tilt.register`. Par exemple, si vous désirez utiliser l'extension
-de fichier `tt` pour les templates Textile, vous pouvez faire comme suit :
+de fichier `tt` pour les templates Haml, vous pouvez faire comme suit :
 
 ```ruby
-Tilt.register :tt, Tilt[:textile]
+Tilt.register :tt, Tilt[:haml]
 ```
 
 ### Ajouter son propre moteur de rendu

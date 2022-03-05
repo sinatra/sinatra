@@ -226,7 +226,7 @@ module Sinatra
 
       ALLOWED_ENGINES = [
         :erb, :erubi, :haml, :hamlit, :builder, :nokogiri, :sass, :scss,
-        :liquid, :markdown, :textile, :rdoc, :asciidoc, :radius, :markaby,
+        :liquid, :markdown, :rdoc, :asciidoc, :radius, :markaby,
         :rabl, :slim, :creole, :mediawiki, :coffee, :yajl, :wlang
       ]
 
