@@ -54,8 +54,6 @@ ruby myapp.rb
       - [Erb шаблоны](#erb-шаблоны)
       - [Builder шаблоны](#builder-шаблоны)
       - [Nokogiri шаблоны](#nokogiri-шаблоны)
-      - [Sass шаблоны](#sass-шаблоны)
-      - [SCSS шаблоны](#scss-шаблоны)
       - [Liquid шаблоны](#liquid-шаблоны)
       - [Markdown шаблоны](#markdown-шаблоны)
       - [RDoc шаблоны](#rdoc-шаблоны)
@@ -666,39 +664,6 @@ get('/') { markdown :index }
 
 Шаблонизатор также принимает блоки для включённых шаблонов ([см. пример](#Включённые-шаблоны)).
 
-#### Sass шаблоны
-
-<table>
-  <tr>
-    <td>Зависимости</td>
-    <td><a href="https://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>Расширения файлов</td>
-    <td><tt>.sass</tt></td>
-  </tr>
-  <tr>
-    <td>Пример</td>
-    <td><tt>sass :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### SCSS шаблоны
-
-<table>
-  <tr>
-    <td>Зависимости</td>
-    <td><a href="https://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>Расширения файлов</td>
-    <td><tt>.scss</tt></td>
-  </tr>
-  <tr>
-    <td>Пример</td>
-    <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
 
 #### Liquid шаблоны
 
@@ -2050,7 +2015,7 @@ end
 рендеринга:
 
 ```ruby
-set :views, :sass => 'views/sass', :haml => 'templates', :default => 'views'
+set :views, :haml => 'templates', :default => 'views'
 
 helpers do
   def find_template(views, name, engine, &block)

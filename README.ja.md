@@ -50,8 +50,6 @@ PumaがあればSinatraはこれを利用するので、`gem install puma`する
             * [Erb テンプレート](#erb-テンプレート)
             * [Builder テンプレート](#builder-テンプレート)
             * [Nokogiri テンプレート](#nokogiri-テンプレート)
-            * [Sass テンプレート](#sass-テンプレート)
-            * [SCSS テンプレート](#scss-テンプレート)
             * [Liquid テンプレート](#liquid-テンプレート)
             * [Markdown テンプレート](#markdown-テンプレート)
             * [RDoc テンプレート](#rdoc-テンプレート)
@@ -608,39 +606,6 @@ get('/') { markdown :index }
 
 インラインテンプレート用にブロックを取ることもできます（例を参照）。
 
-#### Sass テンプレート
-
-<table>
-  <tr>
-    <td>依存</td>
-    <td><a href="https://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>ファイル拡張子</td>
-    <td><tt>.sass</tt></td>
-  </tr>
-  <tr>
-    <td>例</td>
-    <td><tt>sass :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### Scss テンプレート
-
-<table>
-  <tr>
-    <td>依存</td>
-    <td><a href="https://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>ファイル拡張子</td>
-    <td><tt>.scss</tt></td>
-  </tr>
-  <tr>
-    <td>例</td>
-    <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
 
 #### Liquid テンプレート
 
@@ -1855,7 +1820,7 @@ end
 他の例としては、異なるエンジン用の異なるディレクトリを使う場合です。
 
 ```ruby
-set :views, :sass => 'views/sass', :haml => 'templates', :default => 'views'
+set :views, :haml => 'templates', :default => 'views'
 
 helpers do
   def find_template(views, name, engine, &block)

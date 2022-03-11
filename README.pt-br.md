@@ -62,8 +62,6 @@ disponível, o Sinatra irá utilizá-la.
             * [Erb Templates](#erb-templates)
             * [Builder Templates](#builder-templates)
             * [Nokogiri Templates](#nokogiri-templates)
-            * [Sass Templates](#sass-templates)
-            * [SCSS Templates](#scss-templates)
             * [Liquid Templates](#liquid-templates)
             * [Markdown Templates](#markdown-templates)
             * [RDoc Templates](#rdoc-templates)
@@ -690,39 +688,6 @@ It also takes a block for inline templates (see exemplo).
 
 It also takes a block for inline templates (see exemplo).
 
-#### Sass Templates
-
-<table>
-  <tr>
-    <td>Dependência</td>
-    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>Extensão do Arquivo</td>
-    <td><tt>.sass</tt></td>
-  </tr>
-  <tr>
-    <td>Exemplo</td>
-    <td><tt>sass :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### SCSS Templates
-
-<table>
-  <tr>
-    <td>Dependência</td>
-    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>Extensão do Arquivo</td>
-    <td><tt>.scss</tt></td>
-  </tr>
-  <tr>
-    <td>Exemplo</td>
-    <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
 
 #### Liquid Templates
 
@@ -2085,7 +2050,7 @@ Outro exemplo seria utilizando diretórios diferentes para motores (engines)
 diferentes:
 
 ```ruby
-set :views, :sass => 'views/sass', :haml => 'templates', :default => 'views'
+set :views, :haml => 'templates', :default => 'views'
 
 helpers do
   def find_template(views, name, engine, &block)
@@ -2617,7 +2582,7 @@ Outro exemplo seria utilizando diretórios diferentes para motores (engines)
 diferentes:
 
 ```ruby
-set :views, :sass => 'views/sass', :haml => 'templates', :default => 'views'
+set :views, :haml => 'templates', :default => 'views'
 
 helpers do
   def find_template(views, name, engine, &block)

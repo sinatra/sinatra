@@ -50,8 +50,6 @@ którego Sinatra użyje jeżeli będzie dostępny.
             * [Szblony Erb](#erb-templates)
             * [Szblony Builder](#builder-templates)
             * [Szablony Nokogiri](#nokogiri-templates)
-            * [Szablony Sass](#sass-templates)
-            * [Szablony SCSS](#scss-templates)
             * [Szablony Less](#less-templates)
             * [Szablony Liquid](#liquid-templates)
             * [Szablony Markdown](#markdown-templates)
@@ -662,56 +660,6 @@ It also takes a block for inline templates (see [example](#inline-templates)).
 
 It also takes a block for inline templates (see [example](#inline-templates)).
 
-#### Sass Templates
-
-<table>
-  <tr>
-    <td>Dependency</td>
-    <td><a href="https://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>File Extension</td>
-    <td><tt>.sass</tt></td>
-  </tr>
-  <tr>
-    <td>Example</td>
-    <td><tt>sass :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### SCSS Templates
-
-<table>
-  <tr>
-    <td>Dependency</td>
-    <td><a href="https://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>File Extension</td>
-    <td><tt>.scss</tt></td>
-  </tr>
-  <tr>
-    <td>Example</td>
-    <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### Less Templates
-
-<table>
-  <tr>
-    <td>Dependency</td>
-    <td><a href="http://lesscss.org/" title="less">less</a></td>
-  </tr>
-  <tr>
-    <td>File Extension</td>
-    <td><tt>.less</tt></td>
-  </tr>
-  <tr>
-    <td>Example</td>
-    <td><tt>less :stylesheet</tt></td>
-  </tr>
-</table>
 
 #### Liquid Templates
 
@@ -2093,7 +2041,7 @@ end
 Another example would be using different directories for different engines:
 
 ```ruby
-set :views, :sass => 'views/sass', :haml => 'templates', :default => 'views'
+set :views, :haml => 'templates', :default => 'views'
 
 helpers do
   def find_template(views, name, engine, &block)

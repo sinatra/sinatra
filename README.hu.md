@@ -198,34 +198,6 @@ rendereléséhez:
 
 Ez pedig a `./views/index.builder` állományt fogja renderelni.
 
-### Sass sablonok
-
-Sass sablonok használatához szükség lesz a haml gem-re vagy könyvtárra:
-
-  # Be kell importálni a haml, vagy a sass könyvtárat
-
-```ruby
-  require 'sass'
-
-  get '/stylesheet.css' do
-    sass :stylesheet
-  end
-```
-
-Így a `./views/stylesheet.sass` fájl máris renderelhető.
-
-A [Sass kapcsolói](http://haml.hamptoncatlin.com/docs/rdoc/classes/Sass.html)
-globálisan is beállíthatók a Sinatra konfigurációi között, lásd az
-[Options and Configurations](http://www.sinatrarb.com/configuration.html) lapot.
-A globális beállításokat lehetőségünk van felülírni metódus szinten is.
-
-```ruby
-  set :sass, {:style => :compact } # az alapértelmezett Sass stílus a :nested
-
-  get '/stylesheet.css' do
-    sass :stylesheet, :sass_options => {:style => :expanded } # felülírva
-  end
-```
 
 ### Beágyazott sablonok
 
