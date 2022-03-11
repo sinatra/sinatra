@@ -46,7 +46,6 @@ EOF
   s.add_development_dependency "haml"
   s.add_development_dependency "erubi"
   s.add_development_dependency "slim"
-  s.add_development_dependency "sass"
   s.add_development_dependency "builder"
   s.add_development_dependency "liquid"
   s.add_development_dependency "redcarpet"

@@ -45,7 +45,6 @@ gem 'rabl'
 gem 'builder'
 gem 'erubi'
 gem 'haml', '~> 5'
-gem 'sass'
 gem 'celluloid', '~> 0.16.0'
 gem 'commonmarker', '~> 0.20.0', platforms: [ :ruby ]
 gem 'pandoc-ruby', '~> 2.0.2'

@@ -3,7 +3,6 @@
 .DS_STORE
 *.swp
 *.rbc
-*.sass-cache
 /pkg
 /Gemfile.lock
 /coverage

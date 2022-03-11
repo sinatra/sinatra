@@ -11,7 +11,7 @@
 
 * `sinatra-smart-cache`: update cache header only if arguments are more
   restrictive than curent value, set caching headers that way for most helper
-  methods (i.e. `sass` or `send_file`)
+  methods (i.e. `send_file`)
 
 * Some verbose logging extension: Log what filters, routes, error handlers,
   templates, and so on is used.

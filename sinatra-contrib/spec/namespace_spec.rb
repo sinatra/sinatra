@@ -773,9 +773,9 @@ RSpec.describe Sinatra::Namespace do
     it 'sets hashes correctly' do
       mock_app do
         namespace '/foo' do
-          set erb: 'o', sass: 'k'
+          set erb: 'o', haml: 'k'
           get '/bar' do
-            settings.erb + settings.sass
+            settings.erb + settings.haml
           end
         end
       end
