@@ -345,15 +345,16 @@ get('/') { Stream.new }
 
 ```ruby
 class AllButPattern
-  Match = Struct.new(:captures)
-
   def initialize(except)
-    @except   = except
-    @captures = Match.new([])
+    @except = except
   end
 
-  def match(str)
-    @captures unless @except === str
+  def to_pattern(options)
+    return self
+  end
+
+  def params(route)
+    return {} unless @except === route
   end
 end
 
@@ -369,16 +370,8 @@ end
 ノート: この例はオーバースペックであり、以下のようにも書くことができます。
 
 ```ruby
-get // do
+get /.*/ do
   pass if request.path_info == "/index"
-  # ...
-end
-```
-
-または、否定先読みを使って:
-
-```ruby
-get %r{(?!/index)} do
   # ...
 end
 ```

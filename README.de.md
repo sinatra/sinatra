@@ -385,15 +385,16 @@ Routen-Muster erstellt werden:
 
 ```ruby
 class AllButPattern
-  Match = Struct.new(:captures)
-
   def initialize(except)
-    @except   = except
-    @captures = Match.new([])
+    @except = except
   end
 
-  def match(str)
-    @captures unless @except === str
+  def to_pattern(options)
+    return self
+  end
+
+  def params(route)
+    return {} unless @except === route
   end
 end
 
@@ -410,16 +411,8 @@ Beachte, dass das obige Beispiel etwas übertrieben wirkt. Es geht auch
 einfacher:
 
 ```ruby
-get // do
+get /.*/ do
   pass if request.path_info == "/index"
-  # ...
-end
-```
-
-Oder unter Verwendung eines negativen look ahead:
-
-```ruby
-get %r{(?!/index)} do
   # ...
 end
 ```

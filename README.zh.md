@@ -347,16 +347,18 @@ get('/') { Stream.new }
 本身支持使用字符串和正则表达式作为路由匹配。但不限于此，你可以轻松地定义自己的匹配器：
 
 ```ruby
-class AllButPattern
-  Match = Struct.new(:captures)
 
+class AllButPattern
   def initialize(except)
-    @except   = except
-    @captures = Match.new([])
+    @except = except
   end
 
-  def match(str)
-    @captures unless @except === str
+  def to_pattern(options)
+    return self
+  end
+
+  def params(route)
+    return {} unless @except === route
   end
 end
 
@@ -372,16 +374,8 @@ end
 上面的例子可能太繁琐了， 因为它也可以用更简单的方式表述：
 
 ```ruby
-get // do
+get /.*/ do
   pass if request.path_info == "/index"
-  # ...
-end
-```
-
-或者，使用消极向前查找:
-
-```ruby
-get %r{(?!/index)} do
   # ...
 end
 ```

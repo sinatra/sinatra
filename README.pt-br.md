@@ -396,15 +396,16 @@ facilmente definir os seus próprios validadores:
 
 ```ruby
 class AllButPattern
-  Match = Struct.new(:captures)
-
   def initialize(except)
-    @except   = except
-    @captures = Match.new([])
+    @except = except
   end
 
-  def match(str)
-    @captures unless @except === str
+  def to_pattern(options)
+    return self
+  end
+
+  def params(route)
+    return {} unless @except === route
   end
 end
 
@@ -421,16 +422,8 @@ Note que o exemplo acima pode ser robusto e complicado em excesso. Pode
 também ser implementado como:
 
 ```ruby
-get // do
+get /.*/ do
   pass if request.path_info == "/index"
-  # ...
-end
-```
-
-Ou, usando algo mais denso à frente:
-
-```ruby
-get %r{(?!/index)} do
   # ...
 end
 ```
