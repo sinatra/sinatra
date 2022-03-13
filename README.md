@@ -2570,7 +2570,7 @@ important** that you don't just make the secret up, but instead use a secure
 random number generator to create it. Humans are extremely bad at generating
 random values.
 
-By default, a 32 byte secure random session secret is generated for you by
+By default, a 32-byte secure random session secret is generated for you by
 Sinatra, but it will change with every restart of your application. If you
 have multiple instances of your application, and you let Sinatra generate the
 key, each instance would then have a different session key which is probably
@@ -2654,11 +2654,11 @@ You can also hand in an array in order to disable a list of protections:
 set :protection, :except => [:path_traversal, :session_hijacking]
 ```
 
-By default, Sinatra will only set up session based protection if `:sessions`
+By default, Sinatra will only set up session-based protection if `:sessions`
 have been enabled. See '[Using Sessions](#using-sessions)'. Sometimes you may want to set up
 sessions "outside" of the Sinatra app, such as in the config.ru or with a
-separate `Rack::Builder` instance. In that case, you can still set up session
-based protection by passing the `:session` option:
+separate `Rack::Builder` instance. In that case, you can still set up session-based
+protection by passing the `:session` option:
 
 ```ruby
 set :protection, :session => true
