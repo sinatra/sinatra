@@ -2590,22 +2590,6 @@ $ ruby -e "require 'securerandom'; puts SecureRandom.hex(64)"
 99ae8af...snip...ec0f262ac
 ```
 
-**Session Secret Generation (Bonus Points)**
-
-Use the [sysrandom gem](https://github.com/cryptosphere/sysrandom#readme) to
-use the system RNG facilities to generate random values instead of
-userspace `OpenSSL` which MRI Ruby currently defaults to:
-
-```text
-$ gem install sysrandom
-Building native extensions.  This could take a while...
-Successfully installed sysrandom-1.x
-1 gem installed
-
-$ ruby -e "require 'sysrandom/securerandom'; puts SecureRandom.hex(64)"
-99ae8af...snip...ec0f262ac
-```
-
 **Session Secret Environment Variable**
 
 Set a `SESSION_SECRET` environment variable for Sinatra to the value you
