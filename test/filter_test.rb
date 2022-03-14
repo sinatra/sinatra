@@ -516,4 +516,37 @@ class AfterFilterTest < Minitest::Test
     assert_equal 'Error handled after', body
     assert_equal 'Been now and after', doodle
   end
+
+  it 'handles after-filter exceptions in an error block with no status code or exception class specified' do
+    mock_app do
+      after do
+        raise RuntimeError, "after"
+      end
+      get "/" do
+      end
+      error do
+        "Unspecified error handled #{env['sinatra.error'].message}"
+      end
+    end
+
+    get '/'
+    assert_equal 'Unspecified error handled after', body
+  end
+
+  it 'handles before-filter exceptions in an error block with no status code or exception class specified' do
+    mock_app do
+      before do
+        raise RuntimeError, "before"
+      end
+      get "/" do
+      end
+      error do
+        "Unspecified error handled #{env['sinatra.error'].message}"
+      end
+    end
+
+    get '/'
+    assert_equal 'Unspecified error handled before', body
+  end
+
 end

@@ -1305,7 +1305,10 @@ module Sinatra
       def error(*codes, &block)
         args  = compile! "ERROR", /.*/, block
         codes = codes.flat_map(&method(:Array))
-        codes << Exception if codes.empty?
+        if codes.empty?
+          codes << Exception
+          codes << 500
+        end
         codes << Sinatra::NotFound if codes.include?(404)
         codes.each { |c| (@errors[c] ||= []) << args }
       end
