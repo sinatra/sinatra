@@ -53,8 +53,6 @@ Sinatra utilise le server Thin quand il est disponible.
             * [Templates Erb](#templates-erb)
             * [Templates Builder](#templates-builder)
             * [Templates Nokogiri](#templates-nokogiri)
-            * [Templates Sass](#templates-sass)
-            * [Templates SCSS](#templates-scss)
             * [Templates Liquid](#templates-liquid)
             * [Templates Markdown](#templates-markdown)
             * [Templates RDoc](#templates-rdoc)
@@ -670,40 +668,6 @@ exemple).
 Ce moteur accepte également un bloc pour des templates en ligne (voir
 exemple).
 
-#### Templates Sass
-
-<table>
-  <tr>
-    <td>Dépendances</td>
-    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>Extensions de fichier</td>
-    <td><tt>.sass</tt></td>
-  </tr>
-  <tr>
-    <td>Exemple</td>
-    <td><tt>sass :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### Templates SCSS
-
-<table>
-  <tr>
-    <td>Dépendances</td>
-    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>Extensions de fichier</td>
-    <td><tt>.scss</tt></td>
-  </tr>
-  <tr>
-    <td>Exemple</td>
-    <td><tt>scss :stylesheet, :style => :expanded</tt></p>
-    </td>
-  </tr>
-</table>
 
 #### Templates Liquid
 
@@ -1987,7 +1951,7 @@ Un autre exemple est d'utiliser des répertoires différents pour des moteurs
 de rendu différents :
 
 ```ruby
-set :views, :sass => 'views/sass', :haml => 'templates', :default => 'views'
+set :views, :haml => 'templates', :default => 'views'
 
 helpers do
   def find_template(vues, nom, moteur, &bloc)

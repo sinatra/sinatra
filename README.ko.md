@@ -48,8 +48,6 @@ thin이 설치되어 있을 경우 Sinatra는 thin을 통해 실행합니다.
             * [Erb 템플릿](#erb-템플릿)
             * [Builder 템플릿](#builder-템플릿)
             * [Nokogiri 템플릿](#nokogiri-템플릿)
-            * [Sass 템플릿](#sass-템플릿)
-            * [SCSS 템플릿](#scss-템플릿)
             * [Liquid 템플릿](#liquid-템플릿)
             * [Markdown 템플릿](#markdown-템플릿)
             * [RDoc 템플릿](#rdoc-템플릿)
@@ -595,39 +593,6 @@ get('/') { markdown :index }
 
 인라인 템플릿으로 블록을 받을 수도 있습니다(예제 참조).
 
-#### Sass 템플릿
-
-<table>
-  <tr>
-    <td>의존성</td>
-    <td><a href="http://sass-lang.com/">sass</a></td>
-  </tr>
-  <tr>
-    <td>파일 확장자</td>
-    <td><tt>.sass</tt></td>
-  </tr>
-  <tr>
-    <td>예제</td>
-    <td><tt>sass :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### SCSS 템플릿
-
-<table>
-  <tr>
-    <td>의존성</td>
-    <td><a href="http://sass-lang.com/">sass</a></td>
-  </tr>
-  <tr>
-    <td>파일 확장자</td>
-    <td><tt>.scss</tt></td>
-  </tr>
-  <tr>
-    <td>예제</td>
-    <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
 
 #### Liquid 템플릿
 
@@ -1856,7 +1821,7 @@ end
 다른 예제는 각 엔진마다 다른 디렉터리를 사용할 경우입니다.
 
 ```ruby
-set :views, :sass => 'views/sass', :haml => 'templates', :default => 'views'
+set :views, :haml => 'templates', :default => 'views'
 
 helpers do
   def find_template(views, name, engine, &block)

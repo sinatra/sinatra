@@ -52,8 +52,6 @@ View at: [http://localhost:4567](http://localhost:4567)
             * [Erb ടെംപ്ലേറ്റ്സ്](#erb-templates)
             * [Builder ടെംപ്ലേറ്റ്സ്](#builder-templates)
             * [nokogiri ടെംപ്ലേറ്റ്സ്](#nokogiri-templates)
-            * [Sass ടെംപ്ലേറ്റ്സ്](#sass-templates)
-            * [SCSS ടെംപ്ലേറ്റ്സ്](#scss-templates)
             * [Liquid ടെംപ്ലേറ്റ്സ്](#liquid-templates)
             * [Markdown ടെംപ്ലേറ്റ്സ്](#markdown-templates)
             * [RDoc ടെംപ്ലേറ്റ്സ്](#rdoc-templates)
@@ -638,39 +636,6 @@ It also takes a block for inline templates (see [example](#inline-templates)).
 
 It also takes a block for inline templates (see [example](#inline-templates)).
 
-#### Sass Templates
-
-<table>
-  <tr>
-    <td>Dependency</td>
-    <td><a href="https://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>File Extension</td>
-    <td><tt>.sass</tt></td>
-  </tr>
-  <tr>
-    <td>Example</td>
-    <td><tt>sass :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### SCSS Templates
-
-<table>
-  <tr>
-    <td>Dependency</td>
-    <td><a href="https://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>File Extension</td>
-    <td><tt>.scss</tt></td>
-  </tr>
-  <tr>
-    <td>Example</td>
-    <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
 
 #### Liquid Templates
 
@@ -1997,7 +1962,7 @@ end
 Another example would be using different directories for different engines:
 
 ```ruby
-set :views, :sass => 'views/sass', :haml => 'templates', :default => 'views'
+set :views, :haml => 'templates', :default => 'views'
 
 helpers do
   def find_template(views, name, engine, &block)

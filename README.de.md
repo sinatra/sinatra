@@ -53,8 +53,6 @@ diesen Server verwenden.
       - [Erb Templates](#erb-templates)
       - [Builder Templates](#builder-templates)
       - [Nokogiri Templates](#nokogiri-templates)
-      - [Sass Templates](#sass-templates)
-      - [SCSS Templates](#scss-templates)
       - [Liquid Templates](#liquid-templates)
       - [Markdown Templates](#markdown-templates)
       - [RDoc Templates](#rdoc-templates)
@@ -664,41 +662,6 @@ Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 </table>
 
 Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
-
-#### Sass Templates
-
-<table>
-  <tr>
-    <td>Abhängigkeit</td>
-    <td><a href="http://sass-lang.com/">sass</a></td>
-  </tr>
-  <tr>
-    <td>Dateierweiterung</td>
-    <td><tt>.sass</tt></td>
-  </tr>
-  <tr>
-    <td>Beispiel</td>
-    <td><tt>sass :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-
-#### SCSS Templates
-
-<table>
-  <tr>
-    <td>Abhängigkeit</td>
-    <td><a href="http://sass-lang.com/">sass</a></td>
-  </tr>
-  <tr>
-    <td>Dateierweiterung</td>
-    <td><tt>.scss</tt></td>
-  </tr>
-  <tr>
-    <td>Beispiel</td>
-    <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
 
 
 #### Liquid Templates
@@ -2054,7 +2017,7 @@ Ein anderes Beispiel wäre, verschiedene Verzeichnisse für verschiedene Engines
 zu verwenden:
 
 ```ruby
-set :views, :sass => 'views/sass', :haml => 'templates', :default => 'views'
+set :views, :haml => 'templates', :default => 'views'
 
 helpers do
   def find_template(views, name, engine, &block)

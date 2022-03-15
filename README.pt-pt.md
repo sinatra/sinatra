@@ -202,37 +202,6 @@ end
 
 Renderiza `./views/index.builder`.
 
-### Sass Templates
-
-A gem/biblioteca sass é necessária para renderizar templates sass:
-
-```ruby
-# É necessário requerir 'haml' ou 'sass' na aplicação.
-require 'sass'
-
-get '/stylesheet.css' do
-  content_type 'text/css', :charset => 'utf-8'
-  sass :stylesheet
-end
-```
-
-Renderiza `./views/stylesheet.sass`.
-
-[Opções
-Sass](http://sass-lang.com/documentation/file.SASS_REFERENCE.html#options)
-podem ser definidas globalmente através das configurações do sinatra,
-veja [Opções e
-Configurações](http://www.sinatrarb.com/configuration.html), e substitua
-em uma requisição individual.
-
-```ruby
-set :sass, {:style => :compact } # o estilo padrão do Sass é :nested
-
-get '/stylesheet.css' do
-  content_type 'text/css', :charset => 'utf-8'
-  sass :stylesheet, :style => :expanded # substituido
-end
-```
 
 ### Templates Inline
 

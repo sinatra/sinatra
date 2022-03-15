@@ -47,8 +47,6 @@ ruby myapp.rb
             * [Erb 模板](#erb-模板)
             * [Builder 模板](#builder-模板)
             * [Nokogiri 模板](#nokogiri-模板)
-            * [Sass 模板](#sass-模板)
-            * [SCSS 模板](#scss-模板)
             * [Liquid 模板](#liquid-模板)
             * [Markdown 模板](#markdown-模板)
             * [RDoc 模板](#rdoc-模板)
@@ -601,40 +599,6 @@ get('/') { markdown :index }
 </table>
 
 `nokogiri` 渲染方法也接受一个代码块，用于内联模板（见例子）。
-
-#### Sass 模板
-
-<table>
-  <tr>
-    <td>依赖项</td>
-    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>文件扩展名</td>
-    <td><tt>.sass</tt></td>
-  </tr>
-  <tr>
-    <td>例子</td>
-    <td><tt>sass :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### SCSS 模板
-
-<table>
-  <tr>
-    <td>依赖项</td>
-    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>文件扩展名</td>
-    <td><tt>.scss</tt></td>
-  </tr>
-  <tr>
-    <td>例子</td>
-    <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
 
 #### Liquid 模板
 
@@ -1863,7 +1827,7 @@ end
 另一个例子是对不同的引擎使用不同的目录:
 
 ```ruby
-set :views, :sass => 'views/sass', :haml => 'templates', :default => 'views'
+set :views, :haml => 'templates', :default => 'views'
 
 helpers do
   def find_template(views, name, engine, &block)

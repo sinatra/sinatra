@@ -52,8 +52,6 @@ Se recomienda ejecutar `gem install puma`, porque Sinatra lo utilizará si está
             * [Plantillas Erb](#plantillas-erb)
             * [Plantillas Builder](#plantillas-builder)
             * [Plantillas Nokogiri](#plantillas-nokogiri)
-            * [Plantillas Sass](#plantillas-sass)
-            * [Plantillas SCSS](#plantillas-scss)
             * [Plantillas Liquid](#plantillas-liquid)
             * [Plantillas Markdown](#plantillas-markdown)
             * [Plantillas RDoc](#plantillas-rdoc)
@@ -673,39 +671,6 @@ También toma un bloque para plantillas inline (ver [ejemplo](#plantillas-inline
 
 También toma un bloque para plantillas inline (ver [ejemplo](#plantillas-inline)).
 
-#### Plantillas Sass
-
-<table>
-  <tr>
-    <td>Dependencias</td>
-    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>Extensiones de Archivo</td>
-    <td><tt>.sass</tt></td>
-  </tr>
-  <tr>
-    <td>Ejemplo</td>
-    <td><tt>sass :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### Plantillas SCSS
-
-<table>
-  <tr>
-    <td>Dependencias</td>
-    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>Extensiones de Archivo</td>
-    <td><tt>.scss</tt></td>
-  </tr>
-  <tr>
-    <td>Ejemplo</td>
-    <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
 
 #### Plantillas Liquid
 
@@ -2060,7 +2025,7 @@ Otro ejemplo consiste en usar directorios diferentes para los distintos motores
 de renderizado:
 
 ```ruby
-set :views, :sass => 'vistas/sass', :haml => 'plantillas', :defecto => 'vistas'
+set :views, :haml => 'plantillas', :defecto => 'vistas'
 
 helpers do
   def find_template(views, name, engine, &block)
