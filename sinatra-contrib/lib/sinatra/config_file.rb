@@ -124,7 +124,11 @@ module Sinatra
             raise UnsupportedConfigType unless ['.yml', '.yaml', '.erb'].include?(File.extname(file))
             logger.info "loading config file '#{file}'" if logging? && respond_to?(:logger)
             document = ERB.new(IO.read(file)).result
-            yaml = YAML.load(document)
+            yaml = begin
+              YAML.load(document, aliases: true)
+            rescue ArgumentError
+              YAML.load(document)
+            end
             config = config_for_env(yaml)
             config.each_pair { |key, value| set(key, value) }
           end
