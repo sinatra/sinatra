@@ -1,4 +1,10 @@
-## 2.2.0 / Unrealased
+## 2.2.1 / Unreleased
+
+* Fix JRuby regression by using ruby2_keywords for delegation. [#1750](https://github.com/sinatra/sinatra/pull/1750) by Patrik Ragnarsson
+
+* Add JRuby to CI. [#1755](https://github.com/sinatra/sinatra/pull/1755) by Karol Bucek
+
+## 2.2.0 / 2022-02-15
 
 * Handle EOFError raised by Rack and return Bad Request 400 status. [#1743](https://github.com/sinatra/sinatra/pull/1743) by tamazon
 
