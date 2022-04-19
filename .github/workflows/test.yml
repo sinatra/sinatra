@@ -10,7 +10,7 @@ jobs:
   test:
     name: Ruby ${{ matrix.ruby }} (Rack ${{ matrix.rack }})
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
