@@ -39,87 +39,84 @@ Sinatra utilise le server Thin quand il est disponible.
 
 ## Table des matières
 
-* [Sinatra](#sinatra)
-    * [Table des matières](#table-des-matières)
-    * [Routes](#routes)
-    * [Conditions](#conditions)
-    * [Valeurs de retour](#valeurs-de-retour)
-    * [Masques de route spécifiques](#masques-de-route-spécifiques)
-    * [Fichiers statiques](#fichiers-statiques)
-    * [Vues / Templates](#vues--templates)
-        * [Templates littéraux](#templates-littéraux)
-        * [Langages de template disponibles](#langages-de-template-disponibles)
-            * [Templates Haml](#templates-haml)
-            * [Templates Erb](#templates-erb)
-            * [Templates Builder](#templates-builder)
-            * [Templates Nokogiri](#templates-nokogiri)
-            * [Templates Liquid](#templates-liquid)
-            * [Templates Markdown](#templates-markdown)
-            * [Templates RDoc](#templates-rdoc)
-            * [Templates Asciidoc](#templates-asciidoc)
-            * [Templates Radius](#templates-radius)
-            * [Templates Markaby](#templates-markaby)
-            * [Templates RABL](#templates-rabl)
-            * [Templates Slim](#templates-slim)
-            * [Templates Creole](#templates-creole)
-            * [Templates MediaWiki](#templates-mediawiki)
-            * [Templates CoffeeScript](#templates-coffeescript)
-            * [Templates Yajl](#templates-yajl)
-            * [Templates WLang](#templates-wlang)
-        * [Accéder aux variables dans un Template](#accéder-aux-variables-dans-un-template)
-        * [Templates avec `yield` et layouts imbriqués](#templates-avec-yield-et-layouts-imbriqués)
-        * [Templates dans le fichier source](#templates-dans-le-fichier-source)
-        * [Templates nommés](#templates-nommés)
-        * [Associer des extensions de fichier](#associer-des-extensions-de-fichier)
-        * [Ajouter son propre moteur de rendu](#ajouter-son-propre-moteur-de-rendu)
-        * [Utiliser des règles personnalisées pour la recherche de templates](#utiliser-des-règles-personnalisées-pour-la-recherche-de-templates)
-    * [Filtres](#filtres)
-    * [Helpers](#helpers)
-        * [Utiliser les sessions](#utiliser-les-sessions)
-        * [Halt](#halt)
-        * [Passer](#passer)
-        * [Déclencher une autre route](#déclencher-une-autre-route)
-        * [Définir le corps, le code retour et les en-têtes](#définir-le-corps-le-code-retour-et-les-en-têtes)
-        * [Faire du streaming](#faire-du-streaming)
-        * [Journalisation (Logging)](#journalisation-logging)
-        * [Types Mime](#types-mime)
-        * [Former des URLs](#former-des-urls)
-        * [Redirection du navigateur](#redirection-du-navigateur)
-        * [Contrôle du cache](#contrôle-du-cache)
-        * [Envoyer des fichiers](#envoyer-des-fichiers)
-        * [Accéder à l'objet requête](#accéder-à-lobjet-requête)
-        * [Fichiers joints](#fichiers-joints)
-        * [Gérer Date et Time](#gérer-date-et-time)
-        * [Chercher les fichiers de templates](#chercher-les-fichiers-de-templates)
-    * [Configuration](#configuration)
-        * [Se protéger des attaques](#se-protéger-des-attaques)
-        * [Paramètres disponibles](#paramètres-disponibles)
-    * [Environnements](#environnements)
-    * [Gérer les erreurs](#gérer-les-erreurs)
-        * [NotFound](#notfound)
-        * [Error](#error)
-    * [Les Middlewares Rack](#les-middlewares-rack)
-    * [Tester](#tester)
-    * [Sinatra::Base - Les Middlewares, Bibliothèques, et Applications Modulaires](#sinatrabase---les-middlewares-bibliothèques-et-applications-modulaires)
-        * [Style modulaire vs. style classique](#style-modulaire-vs-style-classique)
-        * [Servir une application modulaire](#servir-une-application-modulaire)
-        * [Utiliser une application de style classique avec un fichier config.ru](#utiliser-une-application-de-style-classique-avec-un-fichier-configru)
-        * [Quand utiliser un fichier config.ru ?](#quand-utiliser-un-fichier-configru-)
-        * [Utiliser Sinatra comme Middleware](#utiliser-sinatra-comme-middleware)
-        * [Création dynamique d'applications](#création-dynamique-dapplications)
-    * [Contextes et Binding](#contextes-et-binding)
-        * [Contexte de l'application/classe](#contexte-de-lapplicationclasse)
-        * [Contexte de la requête/instance](#contexte-de-la-requêteinstance)
-        * [Le contexte de délégation](#le-contexte-de-délégation)
-    * [Ligne de commande](#ligne-de-commande)
-        * [Multi-threading](#multi-threading)
-    * [Configuration nécessaire](#configuration-nécessaire)
-    * [Essuyer les plâtres](#essuyer-les-plâtres)
-        * [Installer avec Bundler](#installer-avec-bundler)
-        * [Faire un clone local](#faire-un-clone-local)
-        * [Installer globalement](#installer-globalement)
-    * [Versions](#versions)
-    * [Mais encore](#mais-encore)
+- [Sinatra](#sinatra)
+  - [Table des matières](#table-des-matières)
+  - [Routes](#routes)
+  - [Conditions](#conditions)
+  - [Valeurs de retour](#valeurs-de-retour)
+  - [Masques de route spécifiques](#masques-de-route-spécifiques)
+  - [Fichiers statiques](#fichiers-statiques)
+  - [Vues / Templates](#vues--templates)
+    - [Templates littéraux](#templates-littéraux)
+    - [Langages de template disponibles](#langages-de-template-disponibles)
+      - [Templates Haml](#templates-haml)
+      - [Templates Erb](#templates-erb)
+      - [Templates Builder](#templates-builder)
+      - [Templates Nokogiri](#templates-nokogiri)
+      - [Templates Liquid](#templates-liquid)
+      - [Templates Markdown](#templates-markdown)
+      - [Templates RDoc](#templates-rdoc)
+      - [Templates Asciidoc](#templates-asciidoc)
+      - [Templates Radius](#templates-radius)
+      - [Templates Markaby](#templates-markaby)
+      - [Templates RABL](#templates-rabl)
+      - [Templates Slim](#templates-slim)
+      - [Templates Creole](#templates-creole)
+      - [Templates MediaWiki](#templates-mediawiki)
+      - [Templates CoffeeScript](#templates-coffeescript)
+      - [Templates Yajl](#templates-yajl)
+    - [Accéder aux variables dans un Template](#accéder-aux-variables-dans-un-template)
+    - [Templates avec `yield` et layouts imbriqués](#templates-avec-yield-et-layouts-imbriqués)
+    - [Templates dans le fichier source](#templates-dans-le-fichier-source)
+    - [Templates nommés](#templates-nommés)
+    - [Associer des extensions de fichier](#associer-des-extensions-de-fichier)
+    - [Ajouter son propre moteur de rendu](#ajouter-son-propre-moteur-de-rendu)
+    - [Utiliser des règles personnalisées pour la recherche de templates](#utiliser-des-règles-personnalisées-pour-la-recherche-de-templates)
+  - [Filtres](#filtres)
+  - [Helpers](#helpers)
+    - [Utiliser les sessions](#utiliser-les-sessions)
+    - [Halt](#halt)
+    - [Passer](#passer)
+    - [Déclencher une autre route](#déclencher-une-autre-route)
+    - [Définir le corps, le code retour et les en-têtes](#définir-le-corps-le-code-retour-et-les-en-têtes)
+    - [Faire du streaming](#faire-du-streaming)
+    - [Journalisation (Logging)](#journalisation-logging)
+    - [Types Mime](#types-mime)
+    - [Former des URLs](#former-des-urls)
+    - [Redirection du navigateur](#redirection-du-navigateur)
+    - [Contrôle du cache](#contrôle-du-cache)
+    - [Envoyer des fichiers](#envoyer-des-fichiers)
+    - [Accéder à l'objet requête](#accéder-à-lobjet-requête)
+    - [Fichiers joints](#fichiers-joints)
+    - [Gérer Date et Time](#gérer-date-et-time)
+    - [Chercher les fichiers de templates](#chercher-les-fichiers-de-templates)
+  - [Configuration](#configuration)
+    - [Se protéger des attaques](#se-protéger-des-attaques)
+    - [Paramètres disponibles](#paramètres-disponibles)
+  - [Environnements](#environnements)
+  - [Gérer les erreurs](#gérer-les-erreurs)
+    - [NotFound](#notfound)
+    - [Error](#error)
+  - [Les Middlewares Rack](#les-middlewares-rack)
+  - [Tester](#tester)
+  - [Sinatra::Base - Les Middlewares, Bibliothèques, et Applications Modulaires](#sinatrabase---les-middlewares-bibliothèques-et-applications-modulaires)
+    - [Style modulaire vs. style classique](#style-modulaire-vs-style-classique)
+    - [Servir une application modulaire](#servir-une-application-modulaire)
+    - [Utiliser une application de style classique avec un fichier config.ru](#utiliser-une-application-de-style-classique-avec-un-fichier-configru)
+    - [Quand utiliser un fichier config.ru ?](#quand-utiliser-un-fichier-configru-)
+    - [Utiliser Sinatra comme Middleware](#utiliser-sinatra-comme-middleware)
+    - [Création dynamique d'applications](#création-dynamique-dapplications)
+  - [Contextes et Binding](#contextes-et-binding)
+    - [Contexte de l'application/classe](#contexte-de-lapplicationclasse)
+    - [Contexte de la requête/instance](#contexte-de-la-requêteinstance)
+    - [Le contexte de délégation](#le-contexte-de-délégation)
+  - [Ligne de commande](#ligne-de-commande)
+    - [Multi-threading](#multi-threading)
+  - [Configuration nécessaire](#configuration-nécessaire)
+  - [Essuyer les plâtres](#essuyer-les-plâtres)
+    - [Installer avec Bundler](#installer-avec-bundler)
+  - [Versions](#versions)
+  - [Mais encore](#mais-encore)
 
 ## Routes
 
@@ -999,28 +996,6 @@ l’objet retourné.
 var ressource = {"foo":"bar","baz":"qux"}; present(ressource);</pre>
 ```
 
-#### Templates WLang
-
-<table>
-  <tr>
-    <td>Dépendances</td>
-    <td><a href="https://github.com/blambeau/wlang/" title="wlang">wlang</a></td>
-  </tr>
-  <tr>
-    <td>Extensions de fichier</td>
-    <td><tt>.wlang</tt></td>
-  </tr>
-  <tr>
-    <td>Exemple</td>
-    <td><tt>wlang :index, :locals => { :key => 'value' }</tt></td>
-  </tr>
-</table>
-
-L’appel de code ruby au sein des templates n’est pas idiomatique en wlang.
-L’écriture de templates sans logique est encouragée, via le passage de variables
-locales. Il est néanmoins possible d’écrire un layout en wlang et d’y utiliser
-`yield`.
-
 ### Accéder aux variables dans un Template
 
 Un template est évalué dans le même contexte que l'endroit d'où il a été
@@ -1079,7 +1054,7 @@ end
 ```
 
 Actuellement, les méthodes de rendu qui acceptent un bloc sont : `erb`, `haml`,
-`liquid`, `slim ` et `wlang`. La méthode générale `render` accepte elle aussi
+`liquid` et `slim `. La méthode générale `render` accepte elle aussi
 un bloc.
 
 

@@ -48,88 +48,99 @@ disponível, o Sinatra irá utilizá-la.
 
 ## Conteúdo
 
-* [Sinatra](#sinatra)
-    * [Conteúdo](#conteúdo)
-    * [Rotas](#rotas)
-    * [Condições](#condições)
-    * [Valores Retornados](#valores-retornados)
-    * [Validadores de rota personalizados](#validadores-de-rota-personalizados)
-    * [Arquivos estáticos](#arquivos-estáticos)
-    * [Views / Templates](#views--templates)
-        * [Literal Templates](#literal-templates)
-        * [Linguagens de template disponíveis](#linguagens-de-template-disponíveis)
-            * [Haml Templates](#haml-templates)
-            * [Erb Templates](#erb-templates)
-            * [Builder Templates](#builder-templates)
-            * [Nokogiri Templates](#nokogiri-templates)
-            * [Liquid Templates](#liquid-templates)
-            * [Markdown Templates](#markdown-templates)
-            * [RDoc Templates](#rdoc-templates)
-            * [AsciiDoc Templates](#asciidoc-templates)
-            * [Radius Templates](#radius-templates)
-            * [Markaby Templates](#markaby-templates)
-            * [RABL Templates](#rabl-templates)
-            * [Slim Templates](#slim-templates)
-            * [Creole Templates](#creole-templates)
-            * [MediaWiki Templates](#mediawiki-templates)
-            * [CoffeeScript Templates](#coffeescript-templates)
-            * [Yajl Templates](#yajl-templates)
-            * [WLang Templates](#wlang-templates)
-        * [Acessando Variáveis nos Templates](#acessando-variáveis-nos-templates)
-        * [Templates com `yield` e layouts aninhados](#templates-com-yield-e-layouts-aninhados)
-        * [Templates Inline](#templates-inline)
-        * [Templates Nomeados](#templates-nomeados)
-        * [Associando extensões de arquivos](#associando-extensões-de-arquivos)
-        * [Adicionando seu Próprio Engine de Template](#adicionando-seu-próprio-engine-de-template)
-        * [Customizando lógica para encontrar templates](#customizando-lógica-para-encontrar-templates)
-    * [Filtros](#filtros)
-    * [Helpers](#helpers)
-        * [Utilizando Sessões](#utilizando-sessões)
-          * [Segurança Secreta da Sessão](#segurança-secreta-da-sessão)
-          * [Configuração da Sessão](#configuração-da-sessão)
-          * [Escolhande Seu Próprio Middleware de Sessão](#escolhendo-middleware-de-sessão)
-        * [Halting](#halting)
-        * [Passing](#passing)
-        * [Desencadeando Outra Rota](#desencadeando-outra-rota)
-        * [Definindo Corpo, Código de Status e Cabeçalhos](#definindo-corpo-codigo-de-status-cabeçalhos)
-        * [Transmitindo Respostas](#transmitindo-respostas)
-        * [Usando Logs](#usando-logs)
-        * [Tipos Mime](#tipos-mime)
-        * [Gerando URLS](#gerando-urls)
-        * [Redirecionamento do Navegador](#redirecionamento-do-navagador)
-        * [Controle de Cache](#controle-de-cache)
-        * [Enviando Arquivos](#enviando-arquivos)
-        * [Acessando o Objeto de Requisição](#acessando-o-objeto-de-requisição)
-        * [Anexos](#anexos)
-        * [Trabalhando com Data e Hora](#trabalhando-com-data-e-hora)
-        * [Procurando Arquivos de Modelo](#procurando-arquivos-de-modelo)
-    * [Configuração](#configuração)
-        * [Configurando proteção a ataques](#configurando-proteção-a-ataques)
-        * [Configurações Disponíveis](#configurações-disponíveis)
-    * [Ambientes](#ambientes)
-    * [Tratamento de Erros](#tratamento-de-erros)
-        * [Não Encontrado](#não-encontrado)
-        * [Erro](#erro)
-    * [Rack Middleware](#rack-middleware)
-    * [Testando](#testando)
-    * [Sinatra::Base - Middleware, Bibliotecas e Aplicações Modulares](#sinatrabase-middleware-bibliotecas-e-aplicações-modulares)
-        * [Modular vs. Estilo Clássico](#modular-vs-estilo-clássico)
-        * [Servindo uma Aplicação Modular](#servindo-uma-aplicação-modular)
-        * [Usando uma Aplicação de Estilo Clássico com um config.ru](#usando-uma-aplicação-de-estilo-clássico-com-um-configru)
-        * [Quando usar um config.ru?](#quando-usar-um-configru)
-        * [Usando Sinatra como Middleware](#usando-sinatra-como-middleware)
-        * [Criação de Aplicações Dinâmicas](#criação-de-aplicações-dinamicas)
-    * [Escopos e Ligação](#escopos-e-ligação)
-        * [Escopo de Aplicação/Classe](#escopo-de-aplicação-classe)
-        * [Escopo de Instância/Requisição](#escopo-de-instância-requisição)
-        * [Escopo de Delegação](#escopo-de-delegação)
-    * [Linha de comando](#linha-de-comando)
-        * [Multi-threading](#multi-threading)
-    * [Requerimentos](#requerimentos)
-    * [A última versão](#a-última-versão)
-        * [Com Bundler](#com-bundler)
-    * [Versionando](#versionando)
-    * [Mais](#mais)
+- [Sinatra](#sinatra)
+  - [Conteúdo](#conteúdo)
+  - [Rotas](#rotas)
+  - [Condições](#condições)
+  - [Retorno de valores](#retorno-de-valores)
+  - [Validadores de Rota Personalizados](#validadores-de-rota-personalizados)
+  - [Arquivos estáticos](#arquivos-estáticos)
+  - [Views / Templates](#views--templates)
+    - [Literal Templates](#literal-templates)
+    - [Linguagens de template disponíveis](#linguagens-de-template-disponíveis)
+      - [Haml Templates](#haml-templates)
+      - [Erb Templates](#erb-templates)
+      - [Builder Templates](#builder-templates)
+      - [Nokogiri Templates](#nokogiri-templates)
+      - [Liquid Templates](#liquid-templates)
+      - [Markdown Templates](#markdown-templates)
+      - [RDoc Templates](#rdoc-templates)
+      - [AsciiDoc Templates](#asciidoc-templates)
+      - [Radius Templates](#radius-templates)
+      - [Markaby Templates](#markaby-templates)
+      - [RABL Templates](#rabl-templates)
+      - [Slim Templates](#slim-templates)
+      - [Creole Templates](#creole-templates)
+      - [MediaWiki Templates](#mediawiki-templates)
+      - [CoffeeScript Templates](#coffeescript-templates)
+      - [Yajl Templates](#yajl-templates)
+  - [Acessando Variáveis nos Templates](#acessando-variáveis-nos-templates)
+    - [Templates com `yield` e layouts aninhados](#templates-com-yield-e-layouts-aninhados)
+    - [Templates Inline](#templates-inline)
+    - [Templates Nomeados](#templates-nomeados)
+    - [Associando Extensões de Arquivos](#associando-extensões-de-arquivos)
+    - [Adicionando seu Próprio Engine de Template](#adicionando-seu-próprio-engine-de-template)
+    - [Customizando Lógica para Encontrar Templates](#customizando-lógica-para-encontrar-templates)
+  - [Filtros](#filtros)
+  - [Helpers](#helpers)
+    - [Utilizando Sessões](#utilizando-sessões)
+      - [Segredo Seguro da Sessão](#segredo-seguro-da-sessão)
+      - [Configuração de Sessão](#configuração-de-sessão)
+      - [Escolhendo Seu Próprio Middleware de Sessão](#escolhendo-seu-próprio-middleware-de-sessão)
+    - [Parando](#parando)
+    - [Passing](#passing)
+    - [Desencadeando Outra Rota](#desencadeando-outra-rota)
+    - [Definindo Corpo, Código de Status e Cabeçalhos](#definindo-corpo-código-de-status-e-cabeçalhos)
+    - [Transmitindo Respostas](#transmitindo-respostas)
+    - [Usando Logs](#usando-logs)
+    - [Tipos Mime](#tipos-mime)
+    - [Gerando URLs](#gerando-urls)
+    - [Redirecionamento do Browser](#redirecionamento-do-browser)
+    - [Controle de Cache](#controle-de-cache)
+    - [Enviando Arquivos](#enviando-arquivos)
+    - [Acessando o Objeto da Requisição](#acessando-o-objeto-da-requisição)
+    - [Anexos](#anexos)
+    - [Trabalhando com Data e Hora](#trabalhando-com-data-e-hora)
+    - [Pesquisando por Arquivos de Template](#pesquisando-por-arquivos-de-template)
+  - [Configuração](#configuração)
+    - [Transmitindo Respostas](#transmitindo-respostas-1)
+    - [Usando Logs](#usando-logs-1)
+    - [Tipos Mime](#tipos-mime-1)
+    - [Gerando URLs](#gerando-urls-1)
+    - [Redirecionamento do Browser](#redirecionamento-do-browser-1)
+    - [Controle de Cache](#controle-de-cache-1)
+    - [Enviando Arquivos](#enviando-arquivos-1)
+    - [Acessando o Objeto da Requisção](#acessando-o-objeto-da-requisção)
+    - [Anexos](#anexos-1)
+    - [Trabalhando com Data e Hora](#trabalhando-com-data-e-hora-1)
+    - [Pesquisando por Arquivos de Template](#pesquisando-por-arquivos-de-template-1)
+  - [Configuração](#configuração-1)
+    - [Configurando proteção a ataques](#configurando-proteção-a-ataques)
+    - [Configurações Disponíveis](#configurações-disponíveis)
+  - [Ambientes](#ambientes)
+  - [Tratamento de Erros](#tratamento-de-erros)
+    - [Não Encontrado](#não-encontrado)
+    - [Erro](#erro)
+  - [Rack Middleware](#rack-middleware)
+  - [Testando](#testando)
+  - [Sinatra::Base - Middleware, Bibliotecas e aplicativos modulares](#sinatrabase---middleware-bibliotecas-e-aplicativos-modulares)
+    - [Estilo Clássico vs. Modular](#estilo-clássico-vs-modular)
+    - [Servindo uma Aplicação Modular:](#servindo-uma-aplicação-modular)
+    - [Usando uma Aplicação de Estilo Clássico com um config.ru:](#usando-uma-aplicação-de-estilo-clássico-com-um-configru)
+    - [Quando usar um config.ru?](#quando-usar-um-configru)
+    - [Usando Sinatra como Middleware](#usando-sinatra-como-middleware)
+    - [Criação de Aplicações Dinâmicas](#criação-de-aplicações-dinâmicas)
+- [Escopos e Ligação](#escopos-e-ligação)
+    - [Escopo de Aplicação/Classe](#escopo-de-aplicaçãoclasse)
+    - [Escopo de Instância/Requisição](#escopo-de-instânciarequisição)
+    - [Escopo de Delegação](#escopo-de-delegação)
+  - [Linha de Comando](#linha-de-comando)
+    - [Multi-threading](#multi-threading)
+  - [Requerimentos](#requerimentos)
+  - [A última versão](#a-última-versão)
+    - [Com Bundler](#com-bundler)
+  - [Versionando](#versionando)
+  - [Mais](#mais)
 
 ## Rotas
 
@@ -1034,29 +1045,6 @@ var resource = {"foo":"bar","baz":"qux"};
 present(resource);
 ```
 
-#### WLang Templates
-
-<table>
-  <tr>
-    <td>Dependência</td>
-    <td>
-      <a href="https://github.com/blambeau/wlang/" title="WLang">WLang</a>
-    </td>
-  </tr>
-  <tr>
-    <td>Extensão do Arquivo</td>
-    <td><tt>.wlang</tt></td>
-  </tr>
-  <tr>
-    <td>Exemplo</td>
-    <td><tt>wlang :index, :locals => { :key => 'value' }</tt></td>
-  </tr>
-</table>
-
-Já que você não pode chamar o Ruby (exceto pelo método
-`yield`) pelo template WLang,
-você quase sempre precisará passar o `locals` para ele.
-
 ## Acessando Variáveis nos Templates
 
 Templates são avaliados dentro do mesmo contexto como manipuladores de
@@ -1116,7 +1104,7 @@ end
 ```
 
 Atualmente os métodos listados aceitam blocos: `erb`, `haml`,
-`liquid`, `slim `, `wlang`. E o método geral `render` também aceita blocos.
+`liquid`, `slim `. E o método geral `render` também aceita blocos.
 
 ### Templates Inline
 

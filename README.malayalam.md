@@ -38,88 +38,87 @@ View at: [http://localhost:4567](http://localhost:4567)
 
 ## ഉള്ളടക്കം
 
-* [സിനാട്ര](#sinatra)
-    * [ഉള്ളടക്കം](#table-of-contents)
-    * [റൂട്സ്](#routes)
-    * [കണ്ടിഷൻസ്](#conditions)
-    * [റിട്ടേൺ വാല്യൂസ്](#return-values)
-    * [കസ്റ്റമ് റൂട്ട് മടീച്ചേഴ്സ് ](#custom-route-matchers)
-    * [സ്റ്റാറ്റിക് files](#static-files)
-    * [വ്യൂസ് / ടെംപ്ലേറ്റ്സ്](#views--templates)
-        * [ലിറ്ററൽ ടെംപ്ലേറ്റ്സ്  ](#literal-templates)
-        * [ലഭ്യമായ ടെംപ്ലേറ്റ്സ് ഭാഷകൾ ](#available-template-languages)
-            * [Haml ടെംപ്ലേറ്റ്സ്](#haml-templates)
-            * [Erb ടെംപ്ലേറ്റ്സ്](#erb-templates)
-            * [Builder ടെംപ്ലേറ്റ്സ്](#builder-templates)
-            * [nokogiri ടെംപ്ലേറ്റ്സ്](#nokogiri-templates)
-            * [Liquid ടെംപ്ലേറ്റ്സ്](#liquid-templates)
-            * [Markdown ടെംപ്ലേറ്റ്സ്](#markdown-templates)
-            * [RDoc ടെംപ്ലേറ്റ്സ്](#rdoc-templates)
-            * [AsciiDoc ടെംപ്ലേറ്റ്സ്](#asciidoc-templates)
-            * [Radius ടെംപ്ലേറ്റ്സ്](#radius-templates)
-            * [Markaby ടെംപ്ലേറ്റ്സ്](#markaby-templates)
-            * [RABL ടെംപ്ലേറ്റ്സ്](#rabl-templates)
-            * [Slim ടെംപ്ലേറ്റ്സ്](#slim-templates)
-            * [Creole ടെംപ്ലേറ്റ്സ്](#creole-templates)
-            * [MediaWiki ടെംപ്ലേറ്റ്സ്](#mediawiki-templates)
-            * [CoffeeScript ടെംപ്ലേറ്റ്സ്](#coffeescript-templates)
-            * [Yajl ടെംപ്ലേറ്റ്സ്](#yajl-templates)
-            * [WLang ടെംപ്ലേറ്റ്സ്](#wlang-templates)
-        * [വാരിയബിൾസിനെ എടുക്കാൻ സഹായിക്കുന്ന  ടെംപ്ലേറ്റ്സ്](#accessing-variables-in-templates)
-        * [Templates with `yield` and nested layouts](#templates-with-yield-and-nested-layouts)
-        * [Inline ടെംപ്ലേറ്റ്സ്](#inline-templates)
-        * [പേരുള്ള ടെംപ്ലേറ്റ്സ്](#named-templates)
-        * [Associating File Extensions](#associating-file-extensions)
-        * [നിങ്ങളുടെ സ്വന്തം ടെമ്പ്ലേറ്റ് എങ്ങിനെ ഉണ്ടാക്കാൻ സഹായിക്കുന്നു ](#adding-your-own-template-engine)
-        * [Using Custom Logic for Template Lookup](#using-custom-logic-for-template-lookup)
-    * [Filters](#filters)
-    * [Helpers](#helpers)
-        * [സെഷൻസ് ഉപയോഗിക്കുന്നു ](#using-sessions)
-            * [രഹസ്യമായി സെഷൻസ് സംരക്ഷിക്കുക ](#session-secret-security)
-            * [Session Config](#session-config)
-            * [സെഷൻ middlewate തിരഞ്ഞെടുക്കുക](#choosing-your-own-session-middleware)
-        * [ഹാൾട് ചെയ്യുക ](#halting)
-        * [Passing](#passing)
-        * [മറ്റൊരു റൂട്ട് ട്രിഗർ ചെയ്യുക ](#triggering-another-route)
-        * [Setting Body, Status Code and Headers](#setting-body-status-code-and-headers)
-        * [Streaming Responses](#streaming-responses)
-        * [Logging](#logging)
-        * [Mime Types](#mime-types)
-        * [ URLs Generating](#generating-urls)
-        * [Browser റീഡിറക്ട് ചെയ്യുക  ](#browser-redirect)
-        * [Cache Control](#cache-control)
-        * [Sending Files](#sending-files)
-        * [Accessing the Request Object](#accessing-the-request-object)
-        * [അറ്റാച്മെന്റ്സ് ](#attachments)
-        * [ദിവസവും സമയവും ഡീൽ ചെയ്യക ](#dealing-with-date-and-time)
-        * [Template Files നോക്കുന്നു ](#looking-up-template-files)
-    * [Configuration](#configuration)
-        * [Configuring attack protection](#configuring-attack-protection)
-        * [Available Settings](#available-settings)
-    * [Environments](#environments)
-    * [ കൈകാര്യം ചെയ്യുക ](#error-handling)
-        * [കണ്ടെത്താൻ ആയില്ല ](#not-found)
-        * [തെറ്റ്](#error)
-    * [Rack Middleware](#rack-middleware)
-    * [ടെസ്റ്റ് ചെയ്യുക ](#testing)
-    * [Sinatra::Base - Middleware, Libraries, and Modular Apps](#sinatrabase---middleware-libraries-and-modular-apps)
-        * [Modular vs. Classic Style](#modular-vs-classic-style)
-        * [Serving a Modular Application](#serving-a-modular-application)
-        * [Using a Classic Style Application with a config.ru](#using-a-classic-style-application-with-a-configru)
-        * [When to use a config.ru?](#when-to-use-a-configru)
-        * [Using Sinatra as Middleware](#using-sinatra-as-middleware)
-        * [Dynamic Application Creation](#dynamic-application-creation)
-    * [Scopes and Binding](#scopes-and-binding)
-        * [Application/Class Scope](#applicationclass-scope)
-        * [Request/Instance Scope](#requestinstance-scope)
-        * [Delegation Scope](#delegation-scope)
-    * [Command Line](#command-line)
-        * [Multi-threading](#multi-threading)
-    * [ആവശ്യങ്ങൾ ](#requirement)
-    * [The Bleeding Edge](#the-bleeding-edge)
-        * [With Bundler](#with-bundler)
-    * [വേർഷൻ ചെയ്യുക ](#versioning)
-    * [Further Reading](#further-reading)
+- [സിനാട്ര](#സിനാട്ര)
+  - [ഉള്ളടക്കം](#ഉള്ളടക്കം)
+  - [Routes](#routes)
+  - [കണ്ടിഷൻസ്](#കണ്ടിഷൻസ്)
+  - [Return Values](#return-values)
+  - [Custom Route Matchers](#custom-route-matchers)
+  - [Static Files](#static-files)
+  - [Views / Templates](#views--templates)
+    - [Literal Templates](#literal-templates)
+    - [Available Template Languages](#available-template-languages)
+      - [Haml Templates](#haml-templates)
+      - [Erb Templates](#erb-templates)
+      - [Builder Templates](#builder-templates)
+      - [Nokogiri Templates](#nokogiri-templates)
+      - [Liquid Templates](#liquid-templates)
+      - [Markdown Templates](#markdown-templates)
+      - [RDoc Templates](#rdoc-templates)
+      - [AsciiDoc Templates](#asciidoc-templates)
+      - [Radius Templates](#radius-templates)
+      - [Markaby Templates](#markaby-templates)
+      - [RABL Templates](#rabl-templates)
+      - [Slim Templates](#slim-templates)
+      - [Creole Templates](#creole-templates)
+      - [MediaWiki Templates](#mediawiki-templates)
+      - [CoffeeScript Templates](#coffeescript-templates)
+      - [Yajl Templates](#yajl-templates)
+    - [Accessing Variables in Templates](#accessing-variables-in-templates)
+    - [Templates with `yield` and nested layouts](#templates-with-yield-and-nested-layouts)
+    - [Inline Templates](#inline-templates)
+    - [Named Templates](#named-templates)
+    - [Associating File Extensions](#associating-file-extensions)
+    - [Adding Your Own Template Engine](#adding-your-own-template-engine)
+    - [Using Custom Logic for Template Lookup](#using-custom-logic-for-template-lookup)
+  - [Filters](#filters)
+  - [Helpers](#helpers)
+    - [Using Sessions](#using-sessions)
+      - [Session Secret Security](#session-secret-security)
+      - [Session Config](#session-config)
+      - [Choosing Your Own Session Middleware](#choosing-your-own-session-middleware)
+    - [Halting](#halting)
+    - [Passing](#passing)
+    - [Triggering Another Route](#triggering-another-route)
+    - [Setting Body, Status Code and Headers](#setting-body-status-code-and-headers)
+    - [Streaming Responses](#streaming-responses)
+    - [Logging](#logging)
+    - [Mime Types](#mime-types)
+    - [Generating URLs](#generating-urls)
+    - [Browser Redirect](#browser-redirect)
+    - [Cache Control](#cache-control)
+    - [Sending Files](#sending-files)
+    - [Accessing the Request Object](#accessing-the-request-object)
+    - [Attachments](#attachments)
+    - [Dealing with Date and Time](#dealing-with-date-and-time)
+    - [Looking Up Template Files](#looking-up-template-files)
+  - [Configuration](#configuration)
+    - [Configuring attack protection](#configuring-attack-protection)
+    - [Available Settings](#available-settings)
+  - [Environments](#environments)
+  - [Error Handling](#error-handling)
+    - [Not Found](#not-found)
+    - [Error](#error)
+  - [Rack Middleware](#rack-middleware)
+  - [Testing](#testing)
+  - [Sinatra::Base - Middleware, Libraries, and Modular Apps](#sinatrabase---middleware-libraries-and-modular-apps)
+    - [Modular vs. Classic Style](#modular-vs-classic-style)
+    - [Serving a Modular Application](#serving-a-modular-application)
+    - [Using a Classic Style Application with a config.ru](#using-a-classic-style-application-with-a-configru)
+    - [When to use a config.ru?](#when-to-use-a-configru)
+    - [Using Sinatra as Middleware](#using-sinatra-as-middleware)
+    - [Dynamic Application Creation](#dynamic-application-creation)
+  - [Scopes and Binding](#scopes-and-binding)
+    - [Application/Class Scope](#applicationclass-scope)
+    - [Request/Instance Scope](#requestinstance-scope)
+    - [Delegation Scope](#delegation-scope)
+  - [Command Line](#command-line)
+    - [Multi-threading](#multi-threading)
+  - [Requirement](#requirement)
+  - [The Bleeding Edge](#the-bleeding-edge)
+    - [With Bundler](#with-bundler)
+  - [Versioning](#versioning)
+  - [Further Reading](#further-reading)
 
 ## Routes
 
@@ -964,27 +963,6 @@ var resource = {"foo":"bar","baz":"qux"};
 present(resource);
 ```
 
-#### WLang Templates
-
-<table>
-  <tr>
-    <td>Dependency</td>
-    <td><a href="https://github.com/blambeau/wlang" title="WLang">WLang</a></td>
-  </tr>
-  <tr>
-    <td>File Extension</td>
-    <td><tt>.wlang</tt></td>
-  </tr>
-  <tr>
-    <td>Example</td>
-    <td><tt>wlang :index, :locals => { :key => 'value' }</tt></td>
-  </tr>
-</table>
-
-Since calling ruby methods is not idiomatic in WLang, you almost always
-want to pass locals to it. Layouts written in WLang and `yield` are
-supported, though.
-
 ### Accessing Variables in Templates
 
 Templates are evaluated within the same context as route handlers. Instance
@@ -1043,7 +1021,7 @@ end
 ```
 
 Currently, the following rendering methods accept a block: `erb`, `haml`,
-`liquid`, `slim `, `wlang`. Also the general `render` method accepts a block.
+`liquid`, `slim `. Also the general `render` method accepts a block.
 
 ### Inline Templates
 

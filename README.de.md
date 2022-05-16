@@ -40,15 +40,15 @@ diesen Server verwenden.
 ## Inhalt
 
 - [Sinatra](#sinatra)
-  * [Inhalt](#inhalt)
-  * [Routen](#routen)
-    + [Bedingungen](#bedingungen)
-    + [Rückgabewerte](#rückgabewerte)
-    + [Eigene Routen-Muster](#eigene-routen-muster)
-  * [Statische Dateien](#statische-dateien)
-  * [Views/Templates](#views-templates)
-    + [Direkte Templates](#direkte-templates)
-    + [Verfügbare Templatesprachen](#verfügbare-templatesprachen)
+  - [Inhalt](#inhalt)
+  - [Routen](#routen)
+    - [Bedingungen](#bedingungen)
+    - [Rückgabewerte](#rückgabewerte)
+    - [Eigene Routen-Muster](#eigene-routen-muster)
+  - [Statische Dateien](#statische-dateien)
+  - [Views/Templates](#viewstemplates)
+    - [Direkte Templates](#direkte-templates)
+    - [Verfügbare Templatesprachen](#verfügbare-templatesprachen)
       - [Haml Templates](#haml-templates)
       - [Erb Templates](#erb-templates)
       - [Builder Templates](#builder-templates)
@@ -65,63 +65,60 @@ diesen Server verwenden.
       - [MediaWiki Templates](#mediawiki-templates)
       - [CoffeeScript Templates](#coffeescript-templates)
       - [Yajl Templates](#yajl-templates)
-      - [WLang Templates](#wlang-templates)
-    + [Auf Variablen in Templates zugreifen](#auf-variablen-in-templates-zugreifen)
-    + [Templates mit `yield` und verschachtelte Layouts](#templates-mit--yield--und-verschachtelte-layouts)
-    + [Inline-Templates](#inline-templates)
-    + [Benannte Templates](#benannte-templates)
-    + [Dateiendungen zuordnen](#dateiendungen-zuordnen)
-    + [Eine eigene Template-Engine hinzufügen](#eine-eigene-template-engine-hinzuf-gen)
-    + [Eigene Methoden zum Aufsuchen von Templates verwenden](#eigene-methoden-zum-aufsuchen-von-templates-verwenden)
-  * [Filter](#filter)
-  * [Helfer](#helfer)
-    + [Sessions verwenden](#sessions-verwenden)
+    - [Auf Variablen in Templates zugreifen](#auf-variablen-in-templates-zugreifen)
+    - [Templates mit `yield` und verschachtelte Layouts](#templates-mit-yield-und-verschachtelte-layouts)
+    - [Inline-Templates](#inline-templates)
+    - [Benannte Templates](#benannte-templates)
+    - [Dateiendungen zuordnen](#dateiendungen-zuordnen)
+    - [Eine eigene Template-Engine hinzufügen](#eine-eigene-template-engine-hinzufügen)
+    - [Eigene Methoden zum Aufsuchen von Templates verwenden](#eigene-methoden-zum-aufsuchen-von-templates-verwenden)
+  - [Filter](#filter)
+  - [Helfer](#helfer)
+    - [Sessions verwenden](#sessions-verwenden)
       - [Sitzungseinstellungen](#sitzungseinstellungen)
-      - [Eigene Sitzungs-Middleware auswählen](#eigene-sitzungs-middleware-ausw-hlen)
-    + [Anhalten](#anhalten)
-    + [Weiterspringen](#weiterspringen)
-    + [Eine andere Route ansteuern](#eine-andere-route-ansteuern)
-    + [Body, Status-Code und Header setzen](#body--status-code-und-header-setzen)
-    + [Response-Streams](#response-streams)
-    + [Logger](#logger)
-    + [Mime-Types](#mime-types)
-    + [URLs generieren](#urls-generieren)
-    + [Browser-Umleitung](#browser-umleitung)
-    + [Cache einsetzen](#cache-einsetzen)
-    + [Dateien versenden](#dateien-versenden)
-    + [Das Request-Objekt](#das-request-objekt)
-    + [Anhänge](#anhänge)
-    + [Umgang mit Datum und Zeit](#umgang-mit-datum-und-zeit)
-    + [Nachschlagen von Template-Dateien](#nachschlagen-von-template-dateien)
-    + [Konfiguration](#konfiguration)
+      - [Eigene Sitzungs-Middleware auswählen](#eigene-sitzungs-middleware-auswählen)
+    - [Anhalten](#anhalten)
+    - [Weiterspringen](#weiterspringen)
+    - [Eine andere Route ansteuern](#eine-andere-route-ansteuern)
+    - [Body, Status-Code und Header setzen](#body-status-code-und-header-setzen)
+    - [Response-Streams](#response-streams)
+    - [Logger](#logger)
+    - [Mime-Types](#mime-types)
+    - [URLs generieren](#urls-generieren)
+    - [Browser-Umleitung](#browser-umleitung)
+    - [Cache einsetzen](#cache-einsetzen)
+    - [Dateien versenden](#dateien-versenden)
+    - [Das Request-Objekt](#das-request-objekt)
+    - [Anhänge](#anhänge)
+    - [Umgang mit Datum und Zeit](#umgang-mit-datum-und-zeit)
+    - [Nachschlagen von Template-Dateien](#nachschlagen-von-template-dateien)
+    - [Konfiguration](#konfiguration)
       - [Einstellung des Angriffsschutzes](#einstellung-des-angriffsschutzes)
-      - [Mögliche Einstellungen](#m-gliche-einstellungen)
-  * [Umgebungen](#umgebungen)
-  * [Fehlerbehandlung](#fehlerbehandlung)
-    + [Nicht gefunden](#nicht-gefunden)
-    + [Fehler](#fehler)
-  * [Rack-Middleware](#rack-middleware)
-  * [Testen](#testen)
-  * [Sinatra::Base - Middleware, Bibliotheken und modulare Anwendungen](#sinatra--base---middleware--bibliotheken-und-modulare-anwendungen)
-    + [Modularer vs. klassischer Stil](#modularer-vs-klassischer-stil)
-    + [Eine modulare Applikation bereitstellen](#eine-modulare-applikation-bereitstellen)
-    + [Eine klassische Anwendung mit einer config.ru verwenden](#eine-klassische-anwendung-mit-einer-configru-verwenden)
-    + [Wann sollte eine config.ru-Datei verwendet werden?](#wann-sollte-eine-configru-datei-verwendet-werden-)
-    + [Sinatra als Middleware nutzen](#sinatra-als-middleware-nutzen)
-    + [Dynamische Applikationserstellung](#dynamische-applikationserstellung)
-  * [Geltungsbereich und Bindung](#geltungsbereich-und-bindung)
-    + [Anwendungs- oder Klassen-Scope](#anwendungs--oder-klassen-scope)
-    + [Anfrage- oder Instanz-Scope](#anfrage--oder-instanz-scope)
-    + [Delegation-Scope](#delegation-scope)
-  * [Kommandozeile](#kommandozeile)
-    + [Multi-threading](#multi-threading)
-  * [Systemanforderungen](#systemanforderungen)
-  * [Der neuste Stand (The Bleeding Edge)](#der-neuste-stand--the-bleeding-edge-)
-    + [Mit Bundler](#mit-bundler)
-    + [Eigenes Repository](#eigenes-repository)
-    + [Gem erstellen](#gem-erstellen)
-  * [Versions-Verfahren](#versions-verfahren)
-  * [Mehr](#mehr)
+      - [Mögliche Einstellungen](#mögliche-einstellungen)
+  - [Umgebungen](#umgebungen)
+  - [Fehlerbehandlung](#fehlerbehandlung)
+    - [Nicht gefunden](#nicht-gefunden)
+    - [Fehler](#fehler)
+  - [Rack-Middleware](#rack-middleware)
+  - [Testen](#testen)
+  - [Sinatra::Base - Middleware, Bibliotheken und modulare Anwendungen](#sinatrabase---middleware-bibliotheken-und-modulare-anwendungen)
+    - [Modularer vs. klassischer Stil](#modularer-vs-klassischer-stil)
+    - [Eine modulare Applikation bereitstellen](#eine-modulare-applikation-bereitstellen)
+    - [Eine klassische Anwendung mit einer config.ru verwenden](#eine-klassische-anwendung-mit-einer-configru-verwenden)
+    - [Wann sollte eine config.ru-Datei verwendet werden?](#wann-sollte-eine-configru-datei-verwendet-werden)
+    - [Sinatra als Middleware nutzen](#sinatra-als-middleware-nutzen)
+    - [Dynamische Applikationserstellung](#dynamische-applikationserstellung)
+  - [Geltungsbereich und Bindung](#geltungsbereich-und-bindung)
+    - [Anwendungs- oder Klassen-Scope](#anwendungs--oder-klassen-scope)
+    - [Anfrage- oder Instanz-Scope](#anfrage--oder-instanz-scope)
+    - [Delegation-Scope](#delegation-scope)
+  - [Kommandozeile](#kommandozeile)
+    - [Multi-threading](#multi-threading)
+  - [Systemanforderungen](#systemanforderungen)
+  - [Der neuste Stand (The Bleeding Edge)](#der-neuste-stand-the-bleeding-edge)
+    - [Mit Bundler](#mit-bundler)
+  - [Versions-Verfahren](#versions-verfahren)
+  - [Mehr](#mehr)
 
 ## Routen
 
@@ -989,29 +986,6 @@ var resource = {"foo":"bar","baz":"qux"};
 present(resource);
 ```
 
-#### WLang Templates
-
-<table>
-  <tr>
-    <td>Abhängigkeit</td>
-    <td><a href="https://github.com/blambeau/wlang/">wlang</a></td>
-  </tr>
-  <tr>
-    <td>Dateierweiterung</td>
-    <td><tt>.wlang</tt></td>
-  </tr>
-  <tr>
-    <td>Beispiel</td>
-    <td><tt>wlang :index, :locals => { :key => 'value' }</tt></td>
-  </tr>
-</table>
-
-Ruby-Methoden in Wlang aufzurufen entspricht nicht den idiomatischen Vorgaben
-von Wlang, es bietet sich deshalb an, `:locals` zu verwenden. Layouts, die
-Wlang und `yield` verwenden, werden aber trotzdem unterstützt.
-
-Rendert den eingebetteten Template-String.
-
 ### Auf Variablen in Templates zugreifen
 
 Templates werden in demselben Kontext ausgeführt wie Routen. Instanzvariablen
@@ -1069,8 +1043,7 @@ erb :admin_layout, :layout => :main_layout do
 end
 ```
 
-Zur Zeit nehmen folgende Renderer Blöcke an: `erb`, `haml`, `liquid`, `slim `
-und `wlang`.
+Zur Zeit nehmen folgende Renderer Blöcke an: `erb`, `haml`, `liquid` und `slim `
 
 Das gleich gilt auch für die allgemeine `render` Methode.
 
