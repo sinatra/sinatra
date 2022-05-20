@@ -20,7 +20,7 @@ module Rack
     # It is not OOTB-compatible with the {rack-csrf}[https://rubygems.org/gems/rack_csrf] gem.
     # For that, the following patch needs to be applied:
     # 
-    #   Rack::Protection::AuthenticityTokenProtection.default_options(key: "csrf.token", authenticity_param: "_csrf")
+    #   Rack::Protection::AuthenticityToken.default_options(key: "csrf.token", authenticity_param: "_csrf")
     #
     # == Options
     #
