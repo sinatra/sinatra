@@ -1061,7 +1061,7 @@ module Sinatra
       if @app
         forward
       else
-        raise NotFound, "#{request.request_method} #{request.path_info}"
+        raise NotFound
       end
     end
 
