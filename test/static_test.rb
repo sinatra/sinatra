@@ -81,10 +81,10 @@ class StaticTest < Minitest::Test
     assert not_found?
   end
 
-  it 'path is escaped in 404 error pages' do
+  it 'there is no path is 404 error pages' do
     env = Rack::MockRequest.env_for("/dummy").tap { |env| env["PATH_INFO"] = "/<script>" }
     _, _, body = @app.call(env)
-    assert_equal(["GET &#x2F;&lt;script&gt;"], body, "Unexpected response content.") 
+    assert_equal(["<h1>Not Found</h1>"], body, "Unexpected response content.")
   end
 
   it 'serves files when .. path traverses within public directory' do
