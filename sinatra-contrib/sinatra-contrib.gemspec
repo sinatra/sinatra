@@ -57,5 +57,5 @@ EOF
   s.add_development_dependency "wikicloth"
   s.add_development_dependency "markaby"
   s.add_development_dependency "rake", "< 11"
-  s.add_development_dependency "rack-test"
+  s.add_development_dependency "rack-test", "< 2"
 end
