@@ -7,6 +7,8 @@ module Rack
     autoload :Base,                  'rack/protection/base'
     autoload :CookieTossing,         'rack/protection/cookie_tossing'
     autoload :ContentSecurityPolicy, 'rack/protection/content_security_policy'
+    autoload :Encryptor,             'rack/protection/encryptor'
+    autoload :EncryptedCookie,       'rack/protection/encrypted_cookie'
     autoload :EscapedParams,         'rack/protection/escaped_params'
     autoload :FormToken,             'rack/protection/form_token'
     autoload :FrameOptions,          'rack/protection/frame_options'

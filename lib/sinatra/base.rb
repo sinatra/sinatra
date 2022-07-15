@@ -1772,7 +1772,7 @@ module Sinatra
     set :dump_errors, Proc.new { !test? }
     set :show_exceptions, Proc.new { development? }
     set :sessions, false
-    set :session_store, Rack::Session::Cookie
+    set :session_store, Rack::Protection::EncryptedCookie
     set :logging, false
     set :protection, true
     set :method_override, false
