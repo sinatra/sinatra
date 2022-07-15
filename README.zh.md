@@ -57,7 +57,6 @@ ruby myapp.rb
       - [Slim 模板](#slim-模板)
       - [Creole 模板](#creole-模板)
       - [MediaWiki 模板](#mediawiki-模板)
-      - [CoffeeScript 模板](#coffeescript-模板)
       - [Yajl 模板](#yajl-模板)
     - [在模板中访问变量](#在模板中访问变量)
     - [带 `yield` 的模板和嵌套布局](#带-yield-的模板和嵌套布局)
@@ -856,30 +855,6 @@ erb :overview, :locals => { :text => mediawiki(:introduction) }
 
 因为不能在 MediaWiki 文件内调用 Ruby 方法，你不能用 MediaWiki 书写布局文件。
 然而，使用其它渲染引擎作为模版的布局是可能的，这需要通过传递 `:layout_engine` 选项。
-
-#### CoffeeScript 模板
-
-<table>
-  <tr>
-    <td>依赖项</td>
-    <td>
-      <a href="https://github.com/josh/ruby-coffee-script" title="Ruby CoffeeScript">
-        CoffeeScript
-      </a> 以及一种
-      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
-        执行 JavaScript 的方式
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>文件扩展名</td>
-    <td><tt>.coffee</tt></td>
-  </tr>
-  <tr>
-    <td>例子</td>
-    <td><tt>coffee :index</tt></td>
-  </tr>
-</table>
 
 #### Yajl 模板
 

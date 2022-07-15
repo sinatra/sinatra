@@ -62,7 +62,6 @@ View at: [http://localhost:4567](http://localhost:4567)
       - [Slim Templates](#slim-templates)
       - [Creole Templates](#creole-templates)
       - [MediaWiki Templates](#mediawiki-templates)
-      - [CoffeeScript Templates](#coffeescript-templates)
       - [Yajl Templates](#yajl-templates)
     - [Accessing Variables in Templates](#accessing-variables-in-templates)
     - [Templates with `yield` and nested layouts](#templates-with-yield-and-nested-layouts)
@@ -897,30 +896,6 @@ templates:
 Since you cannot call Ruby from MediaWiki, you cannot use layouts written in
 MediaWiki. However, it is possible to use another rendering engine for the
 template than for the layout by passing the `:layout_engine` option.
-
-#### CoffeeScript Templates
-
-<table>
-  <tr>
-    <td>Dependency</td>
-    <td>
-      <a href="https://github.com/josh/ruby-coffee-script" title="Ruby CoffeeScript">
-        CoffeeScript
-      </a> and a
-      <a href="https://github.com/sstephenson/execjs" title="ExecJS">
-        way to execute javascript
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>File Extension</td>
-    <td><tt>.coffee</tt></td>
-  </tr>
-  <tr>
-    <td>Example</td>
-    <td><tt>coffee :index</tt></td>
-  </tr>
-</table>
 
 #### Yajl Templates
 

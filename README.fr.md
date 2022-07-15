@@ -63,7 +63,6 @@ Sinatra utilise le server Thin quand il est disponible.
       - [Templates Slim](#templates-slim)
       - [Templates Creole](#templates-creole)
       - [Templates MediaWiki](#templates-mediawiki)
-      - [Templates CoffeeScript](#templates-coffeescript)
       - [Templates Yajl](#templates-yajl)
     - [Accéder aux variables dans un Template](#accéder-aux-variables-dans-un-template)
     - [Templates avec `yield` et layouts imbriqués](#templates-avec-yield-et-layouts-imbriqués)
@@ -935,31 +934,6 @@ Comme vous ne pouvez pas appeler de méthodes Ruby depuis MediaWiki, vous ne pou
 pas utiliser de layouts écrits en MediaWiki. Toutefois, il est
 possible d’utiliser un moteur de rendu différent pour le template et
 pour le layout en utilisant l’option `:layout_engine`.
-
-#### Templates CoffeeScript
-
-<table>
-  <tr>
-    <td>Dépendances</td>
-    <td>
-      <a href="https://github.com/josh/ruby-coffee-script" title="Ruby CoffeeScript">
-        CoffeeScript
-      </a>
-      et un
-      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
-        moyen d'exécuter javascript
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>Extensions de fichier</td>
-    <td><tt>.coffee</tt></td>
-  </tr>
-  <tr>
-    <td>Exemple</td>
-    <td><tt>coffee :index</tt></td>
-  </tr>
-</table>
 
 #### Templates Yajl
 

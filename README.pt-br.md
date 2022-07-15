@@ -72,7 +72,6 @@ disponível, o Sinatra irá utilizá-la.
       - [Slim Templates](#slim-templates)
       - [Creole Templates](#creole-templates)
       - [MediaWiki Templates](#mediawiki-templates)
-      - [CoffeeScript Templates](#coffeescript-templates)
       - [Yajl Templates](#yajl-templates)
   - [Acessando Variáveis nos Templates](#acessando-variáveis-nos-templates)
     - [Templates com `yield` e layouts aninhados](#templates-com-yield-e-layouts-aninhados)
@@ -976,30 +975,6 @@ Já que você não pode chamar o Ruby pelo MediaWiki, você não
 pode utilizar um layout escrito em MediaWiki. Contudo é
 possível utilizar outra engine de renderização como template,
 deve-se passar a `:layout_engine` como opção.
-
-#### CoffeeScript Templates
-
-<table>
-  <tr>
-    <td>Dependência</td>
-    <td>
-      <a href="https://github.com/josh/ruby-coffee-script" title="Ruby CoffeeScript">
-        CoffeeScript
-      </a> and a
-      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
-        way to execute javascript
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>Extensão do Arquivo</td>
-    <td><tt>.coffee</tt></td>
-  </tr>
-  <tr>
-    <td>Exemplo</td>
-    <td><tt>coffee :index</tt></td>
-  </tr>
-</table>
 
 #### Yajl Templates
 

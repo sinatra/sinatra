@@ -64,7 +64,6 @@ ruby myapp.rb
       - [Slim шаблоны](#slim-шаблоны)
       - [Creole шаблоны](#creole-шаблоны)
       - [MediaWiki шаблоны](#mediawiki-шаблоны)
-      - [CoffeeScript шаблоны](#coffeescript-шаблоны)
       - [Yajl шаблоны](#yajl-шаблоны)
     - [Доступ к переменным в шаблонах](#доступ-к-переменным-в-шаблонах)
     - [Шаблоны с `yield` и вложенные лэйауты](#шаблоны-с-yield-и-вложенные-лэйауты)
@@ -930,30 +929,6 @@ erb :overview, :locals => { :text => mediawiki(:introduction) }
 использовать лэйауты на MediaWiki. Тем не менее, существует возможность использовать
 один шаблонизатор для отображения шаблона, а другой для лэйаута при помощи
 опции `:layout_engine`.
-
-#### CoffeeScript шаблоны
-
-<table>
-  <tr>
-    <td>Зависимости</td>
-    <td>
-      <a href="https://github.com/josh/ruby-coffee-script" title="Ruby CoffeeScript">
-        CoffeeScript
-      </a> и
-      <a href="https://github.com/sstephenson/execjs" title="ExecJS">
-        способ запускать JavaScript
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>Расширения файлов</td>
-    <td><tt>.coffee</tt></td>
-  </tr>
-  <tr>
-    <td>Пример</td>
-    <td><tt>coffee :index</tt></td>
-  </tr>
-</table>
 
 #### Yajl шаблоны
 
