@@ -143,7 +143,7 @@ module Rack
       # Checks the client's masked token to see if it matches the
       # session token.
       def valid_token?(env, token)
-        return false if token.nil? || token.empty?
+        return false if token.nil? || !token.is_a?(String) || token.empty?
 
         session = session(env)
 
