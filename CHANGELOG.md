@@ -1,8 +1,10 @@
 ## 3.0.0 / Unreleased
 
+* New: Add AES GCM encryption support for session cookies. [#1324] (https://github.com/sinatra/sinatra/pull/1324) by Michael Coyne
+
 * Fix: Internal Sinatra errors now extend `Sinatra::Error`. This fixes [#1204](https://github.com/sinatra/sinatra/issues/1204) and [#1518](https://github.com/sinatra/sinatra/issues/1518). [bda8c29d](https://github.com/sinatra/sinatra/commit/bda8c29d70619d53f5b1c181140638d340695514) by Jordan Owens
 
-* Preserve query param value if named route param nil. [#1676](https://github.com/sinatra/sinatra/pull/1676) by Jordan Owens
+* Fix: Preserve query param value if named route param nil. [#1676](https://github.com/sinatra/sinatra/pull/1676) by Jordan Owens
 
 * Require Ruby 2.6 as minimum Ruby version. [#1699](https://github.com/sinatra/sinatra/pull/1699) by Eloy Pérez
 
