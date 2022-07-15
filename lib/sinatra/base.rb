@@ -754,10 +754,6 @@ module Sinatra
       render :creole, template, options, locals
     end
 
-    def mediawiki(template, options = {}, locals = {})
-      render :mediawiki, template, options, locals
-    end
-
     def yajl(template, options = {}, locals = {})
       options[:default_content_type] = :json
       render :yajl, template, options, locals
