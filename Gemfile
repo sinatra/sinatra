@@ -18,8 +18,6 @@ gem 'yard'
 gem "rack-protection", path: "rack-protection"
 gem "sinatra-contrib", path: "sinatra-contrib"
 
-gem "twitter-text", "1.14.7"
-
 
 gem "activesupport", "~> 6.1"
 
@@ -34,7 +32,6 @@ gem 'slim', '~> 4'
 gem 'rdoc'
 gem 'kramdown'
 gem 'creole'
-gem 'wikicloth'
 gem 'markaby'
 gem 'radius'
 gem 'asciidoctor'
