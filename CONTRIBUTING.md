@@ -36,13 +36,7 @@ can be applied as quickly as possible:
    modify the `README.md` file to reflect that. Again, if you don't
    update the `README`, we have to, and this holds up acceptance.
 
-4. **Update the change log (`CHANGELOG.md`):** The change log helps give an
-   overview of the changes that go into each release, and gives credit
-   where credit is due. We make sure that the change log is up to date
-   before each release, and we always appreciate it when people make
-   it easier to get the release out the door.
-
-5. **Push it:** Once you're ready, push your changes to a topic branch
+4. **Push it:** Once you're ready, push your changes to a topic branch
    and add a note to the ticket with the URL to your branch. Or, say
    something like, "you can find the patch on johndoe/foobranch". We also
    gladly accept GitHub [pull requests](http://help.github.com/pull-requests/).
@@ -98,3 +92,9 @@ fine).
 
 [ghi]: http://github.com/sinatra/sinatra/issues
 [ml]: http://groups.google.com/group/sinatrarb/topics "Sinatra Mailing List"
+
+* ["Help Wanted"](https://github.com/sinatra/sinatra/labels/help%20wanted):  Anyone willing to pitch in is open to contribute to this ticket as they see fit (will try to add context / summarize or ask for requirements)
+
+* ["Good First Issue"](https://github.com/sinatra/sinatra/labels/good%20first%20issue): Potential first time contributors should start here
+
+* ["Wishlist"](https://github.com/sinatra/sinatra/labels/Wishlist): All the things I wish we had but have no time for

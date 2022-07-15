@@ -1,10 +1,10 @@
-require File.expand_path('../helper', __FILE__)
+require File.expand_path('helper', __dir__)
 
 class StaticTest < Minitest::Test
   setup do
     mock_app do
       set :static, true
-      set :public_folder, File.dirname(__FILE__)
+      set :public_folder, __dir__
     end
   end
 
@@ -59,6 +59,11 @@ class StaticTest < Minitest::Test
     assert not_found?
   end
 
+  it 'passes to the next handler when the path contains null bytes' do
+    get "/foo%00"
+    assert not_found?
+  end
+
   it 'passes to the next handler when the static option is disabled' do
     @app.set :static, false
     get "/#{File.basename(__FILE__)}"
@@ -76,6 +81,12 @@ class StaticTest < Minitest::Test
     assert not_found?
   end
 
+  it 'there is no path is 404 error pages' do
+    env = Rack::MockRequest.env_for("/dummy").tap { |env| env["PATH_INFO"] = "/<script>" }
+    _, _, body = @app.call(env)
+    assert_equal(["<h1>Not Found</h1>"], body, "Unexpected response content.")
+  end
+
   it 'serves files when .. path traverses within public directory' do
     get "/data/../#{File.basename(__FILE__)}"
     assert ok?
@@ -85,7 +96,8 @@ class StaticTest < Minitest::Test
   it '404s when .. path traverses outside of public directory' do
     mock_app do
       set :static, true
-      set :public_folder, File.dirname(__FILE__) + '/data'
+      set :public_folder, __dir__ + '/data'
+      disable :protection
     end
     get "/../#{File.basename(__FILE__)}"
     assert not_found?
@@ -126,7 +138,7 @@ class StaticTest < Minitest::Test
 
   it 'handles valid byte ranges correctly' do
     # Use the biggest file in this dir so we can test ranges > 8k bytes. (StaticFile sends in 8k chunks.)
-    path = File.dirname(__FILE__) + '/helpers_test.rb'  # currently 16k bytes
+    path = __dir__ + '/helpers_test.rb'  # currently 16k bytes
     file = File.read(path)
     length = file.length
     assert length > 9000, "The test file #{path} is too short (#{length} bytes) to run these tests"
@@ -152,8 +164,7 @@ class StaticTest < Minitest::Test
   end
 
   it 'correctly ignores syntactically invalid range requests' do
-    # ...and also ignores multi-range requests, which aren't supported yet
-    ["bytes=45-40", "bytes=IV-LXVI", "octets=10-20", "bytes=-", "bytes=1-2,3-4"].each do |http_range|
+    ["bytes=45-40", "bytes=IV-LXVI", "octets=10-20", "bytes=", "bytes=3-1,4-5"].each do |http_range|
       request = Rack::MockRequest.new(@app)
       response = request.get("/#{File.basename(__FILE__)}", 'HTTP_RANGE' => http_range)
 
@@ -198,7 +209,7 @@ class StaticTest < Minitest::Test
   it 'sets cache control headers on static files if set' do
     @app.set :static_cache_control, :public
     env = Rack::MockRequest.env_for("/#{File.basename(__FILE__)}")
-    status, headers, body = @app.call(env)
+    _, headers, _ = @app.call(env)
     assert headers.has_key?('Cache-Control')
     assert_equal headers['Cache-Control'], 'public'
 
@@ -207,7 +218,7 @@ class StaticTest < Minitest::Test
       [:public, :must_revalidate, {:max_age => 300}]
     )
     env = Rack::MockRequest.env_for("/#{File.basename(__FILE__)}")
-    status, headers, body = @app.call(env)
+    _, headers, _ = @app.call(env)
     assert headers.has_key?('Cache-Control')
     assert_equal(
       headers['Cache-Control'],
@@ -218,7 +229,7 @@ class StaticTest < Minitest::Test
   it 'renders static assets with custom status via options' do
     mock_app do
       set :static, true
-      set :public_folder, File.dirname(__FILE__)
+      set :public_folder, __dir__
 
       post '/*' do
         static!(:status => params[:status])
@@ -235,12 +246,12 @@ class StaticTest < Minitest::Test
   it 'serves files with a + sign in the path' do
     mock_app do
       set :static, true
-      set :public_folder, File.join(File.dirname(__FILE__), 'public')
+      set :public_folder, File.join(__dir__, 'public')
     end
 
     get "/hello+world.txt"
 
-    real_path = File.join(File.dirname(__FILE__), 'public', 'hello+world.txt')
+    real_path = File.join(__dir__, 'public', 'hello+world.txt')
     assert ok?
     assert_equal File.read(real_path), body
     assert_equal File.size(real_path).to_s, response['Content-Length']
@@ -250,12 +261,12 @@ class StaticTest < Minitest::Test
   it 'serves files with a URL encoded + sign (%2B) in the path' do
     mock_app do
       set :static, true
-      set :public_folder, File.join(File.dirname(__FILE__), 'public')
+      set :public_folder, File.join(__dir__, 'public')
     end
 
     get "/hello%2bworld.txt"
 
-    real_path = File.join(File.dirname(__FILE__), 'public', 'hello+world.txt')
+    real_path = File.join(__dir__, 'public', 'hello+world.txt')
     assert ok?
     assert_equal File.read(real_path), body
     assert_equal File.size(real_path).to_s, response['Content-Length']

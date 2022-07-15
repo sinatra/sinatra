@@ -1,4 +1,4 @@
-require File.expand_path('../helper', __FILE__)
+require File.expand_path('helper', __dir__)
 
 begin
 require 'builder'
@@ -6,7 +6,7 @@ require 'builder'
 class BuilderTest < Minitest::Test
   def builder_app(options = {}, &block)
     mock_app do
-      set :views, File.dirname(__FILE__) + '/views'
+      set :views, __dir__ + '/views'
       set options
       get('/', &block)
     end

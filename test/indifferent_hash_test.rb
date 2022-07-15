@@ -65,10 +65,6 @@ class TestIndifferentHashBasics < Minitest::Test
 end
 
 class TestIndifferentHash < Minitest::Test
-  def skip_if_lacking(meth)
-    skip "Hash##{meth} not supported on this Ruby" unless Hash.method_defined?(meth)
-  end
-
   def setup
     @hash = Sinatra::IndifferentHash[:a=>:a, ?b=>:b, 3=>3,
       :simple_nested=>{ :a=>:a, ?b=>:b },
@@ -154,8 +150,6 @@ class TestIndifferentHash < Minitest::Test
   end
 
   def test_dig
-    skip_if_lacking :dig
-
     assert_equal :a, @hash.dig(:a)
     assert_equal :b, @hash.dig(?b)
     assert_nil @hash.dig(:d)
@@ -169,9 +163,17 @@ class TestIndifferentHash < Minitest::Test
     assert_nil @hash.dig('nested', ?a, 0, :d)
   end
 
-  def test_fetch_values
-    skip_if_lacking :fetch_values
+  def test_slice
+    assert_equal Sinatra::IndifferentHash[a: :a], @hash.slice(:a)
+    assert_equal Sinatra::IndifferentHash[b: :b], @hash.slice(?b)
+    assert_equal Sinatra::IndifferentHash[3 => 3], @hash.slice(3)
+    assert_equal Sinatra::IndifferentHash.new, @hash.slice(:d)
+    assert_equal Sinatra::IndifferentHash[a: :a, b: :b, 3 => 3], @hash.slice(:a, :b, 3)
+    assert_equal Sinatra::IndifferentHash[simple_nested: { a: :a, ?b => :b }], @hash.slice(:simple_nested)
+    assert_equal Sinatra::IndifferentHash[nested: { a: [{ a: :a, ?b => :b }, :c, 4], ?f => :f, 7 => 7 }], @hash.slice(:nested)
+  end
 
+  def test_fetch_values
     assert_raises(KeyError) { @hash.fetch_values(3, :d) }
     assert_equal [:a, :b, 3, ?D], @hash.fetch_values(:a, ?b, 3, :d) { |k| k.upcase }
   end
@@ -189,8 +191,104 @@ class TestIndifferentHash < Minitest::Test
     assert_equal 2, hash2[?q]
   end
 
+  def test_merge_with_multiple_argument
+    hash = Sinatra::IndifferentHash.new.merge({a: 1}, {b: 2}, {c: 3})
+    assert_equal 1, hash[?a]
+    assert_equal 2, hash[?b]
+    assert_equal 3, hash[?c]
+
+    hash2 = Sinatra::IndifferentHash[d: 4]
+    hash3 = {e: 5}
+    hash.merge!(hash2, hash3)
+
+    assert_equal 4, hash[?d]
+    assert_equal 5, hash[?e]
+  end
+
   def test_replace
     @hash.replace(?a=>1, :q=>2)
     assert_equal({ ?a=>1, ?q=>2 }, @hash)
+  end
+
+  def test_transform_values!
+    @hash.transform_values! { |v| v.is_a?(Hash) ? Hash[v.to_a] : v }
+
+    assert_instance_of Sinatra::IndifferentHash, @hash[:simple_nested]
+  end
+
+  def test_transform_values
+    hash2 = @hash.transform_values { |v| v.respond_to?(:upcase) ? v.upcase : v }
+
+    refute_equal @hash, hash2
+    assert_equal :A, hash2[:a]
+    assert_equal :A, hash2[?a]
+  end
+
+  def test_transform_keys!
+    @hash.transform_keys! { |k| k.respond_to?(:to_sym) ? k.to_sym : k }
+
+    assert_equal :a, @hash[:a]
+    assert_equal :a, @hash[?a]
+  end
+
+  def test_transform_keys
+    hash2 = @hash.transform_keys { |k| k.respond_to?(:upcase) ? k.upcase : k }
+
+    refute_equal @hash, hash2
+    refute_operator hash2, :key?, :a
+    refute_operator hash2, :key?, ?a
+    assert_equal :a, hash2[:A]
+    assert_equal :a, hash2[?A]
+  end
+
+  def test_select
+    hash = @hash.select { |k, v| v == :a }
+    assert_equal Sinatra::IndifferentHash[a: :a], hash
+    assert_instance_of Sinatra::IndifferentHash, hash
+
+    hash2 = @hash.select { |k, v| true }
+    assert_equal @hash, hash2
+    assert_instance_of Sinatra::IndifferentHash, hash2
+
+    enum = @hash.select
+    assert_instance_of Enumerator, enum
+  end
+
+  def test_select!
+    @hash.select! { |k, v| v == :a }
+    assert_equal Sinatra::IndifferentHash[a: :a], @hash
+  end
+
+  def test_reject
+    hash = @hash.reject { |k, v| v != :a }
+    assert_equal Sinatra::IndifferentHash[a: :a], hash
+    assert_instance_of Sinatra::IndifferentHash, hash
+
+    hash2 = @hash.reject { |k, v| false }
+    assert_equal @hash, hash2
+    assert_instance_of Sinatra::IndifferentHash, hash2
+
+    enum = @hash.reject
+    assert_instance_of Enumerator, enum
+  end
+
+  def test_reject!
+    @hash.reject! { |k, v| v != :a }
+    assert_equal Sinatra::IndifferentHash[a: :a], @hash
+  end
+
+  def test_compact
+    hash_with_nil_values = @hash.merge({?z => nil})
+    compacted_hash = hash_with_nil_values.compact
+    assert_equal @hash, compacted_hash
+    assert_instance_of Sinatra::IndifferentHash, compacted_hash
+
+    empty_hash = Sinatra::IndifferentHash.new
+    compacted_hash = empty_hash.compact
+    assert_equal empty_hash, compacted_hash
+
+    non_empty_hash = Sinatra::IndifferentHash[a: :a]
+    compacted_hash = non_empty_hash.compact
+    assert_equal non_empty_hash, compacted_hash
   end
 end

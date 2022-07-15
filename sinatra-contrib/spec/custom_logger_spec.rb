@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'sinatra/custom_logger'
 
-describe Sinatra::CustomLogger do
+RSpec.describe Sinatra::CustomLogger do
   before do
     rack_logger = @rack_logger = double
     mock_app do

@@ -18,6 +18,7 @@ gemをインストールし、
 
 ```shell
 gem install sinatra
+gem install puma # または他のサーバー
 ```
 
 次のように実行します。
@@ -28,97 +29,96 @@ ruby myapp.rb
 
 [http://localhost:4567](http://localhost:4567) を開きます。
 
-ThinがあればSinatraはこれを利用するので、`gem install thin`することをお薦めします。
+コードを変更しても、サーバを再起動しないと変更が有効になりません。
+コードを変更するたびにサーバを再起動するか、[sinatra/reloader](http://www.sinatrarb.com/contrib/reloader)を使ってください。
+
+PumaがあればSinatraはこれを利用するので、`gem install puma`することをお薦めします。
 
 ## 目次
 
-* [Sinatra](#sinatra)
-    * [目次](#目次)
-    * [ルーティング(Routes)](#ルーティングroutes)
-    * [条件(Conditions)](#条件conditions)
-    * [戻り値(Return Values)](#戻り値return-values)
-    * [カスタムルーティングマッチャー(Custom Route Matchers)](#カスタムルーティングマッチャーcustom-route-matchers)
-    * [静的ファイル(Static Files)](#静的ファイルstatic-files)
-    * [ビュー / テンプレート(Views / Templates)](#ビュー--テンプレートviews--templates)
-        * [リテラルテンプレート(Literal Templates)](#リテラルテンプレートliteral-templates)
-        * [利用可能なテンプレート言語](#利用可能なテンプレート言語)
-            * [Haml テンプレート](#haml-テンプレート)
-            * [Erb テンプレート](#erb-テンプレート)
-            * [Builder テンプレート](#builder-テンプレート)
-            * [Nokogiri テンプレート](#nokogiri-テンプレート)
-            * [Sass テンプレート](#sass-テンプレート)
-            * [SCSS テンプレート](#scss-テンプレート)
-            * [Less テンプレート](#less-テンプレート)
-            * [Liquid テンプレート](#liquid-テンプレート)
-            * [Markdown テンプレート](#markdown-テンプレート)
-            * [Textile テンプレート](#textile-テンプレート)
-            * [RDoc テンプレート](#rdoc-テンプレート)
-            * [AsciiDoc テンプレート](#asciidoc-テンプレート)
-            * [Radius テンプレート](#radius-テンプレート)
-            * [Markaby テンプレート](#markaby-テンプレート)
-            * [RABL テンプレート](#rabl-テンプレート)
-            * [Slim テンプレート](#slim-テンプレート)
-            * [Creole テンプレート](#creole-テンプレート)
-            * [MediaWiki テンプレート](#mediawiki-テンプレート)
-            * [CoffeeScript テンプレート](#coffeescript-テンプレート)
-            * [Stylus テンプレート](#stylus-テンプレート)
-            * [Yajl テンプレート](#yajl-テンプレート)
-            * [WLang テンプレート](#wlang-テンプレート)
-        * [テンプレート内での変数へのアクセス](#テンプレート内での変数へのアクセス)
-        * [`yield`を伴うテンプレートとネストしたレイアウト](#yieldを伴うテンプレートとネストしたレイアウト)
-        * [インラインテンプレート(Inline Templates)](#インラインテンプレートinline-templates)
-        * [名前付きテンプレート(Named Templates)](#名前付きテンプレートnamed-templates)
-        * [ファイル拡張子の関連付け](#ファイル拡張子の関連付け)
-        * [オリジナルテンプレートエンジンの追加](#オリジナルテンプレートエンジンの追加)
-        * [カスタムロジックを使用したテンプレートの探索](#カスタムロジックを使用したテンプレートの探索)
-    * [フィルタ(Filters)](#フィルタfilters)
-    * [ヘルパー(Helpers)](#ヘルパーhelpers)
-        * [セッションの使用](#セッションの使用)
-        * [セッションミドルウェアの選択](#セッションミドルウェアの選択)
-        * [停止(Halting)](#停止halting)
-        * [パッシング(Passing)](#パッシングpassing)
-        * [別ルーティングの誘発](#別ルーティングの誘発)
-        * [ボディ、ステータスコードおよびヘッダの設定](#ボディステータスコードおよびヘッダの設定)
-        * [ストリーミングレスポンス(Streaming Responses)](#ストリーミングレスポンスstreaming-responses)
-        * [ロギング(Logging)](#ロギングlogging)
-        * [MIMEタイプ(Mime Types)](#mimeタイプmime-types)
-        * [URLの生成](#urlの生成)
-        * [ブラウザリダイレクト(Browser Redirect)](#ブラウザリダイレクトbrowser-redirect)
-        * [キャッシュ制御(Cache Control)](#キャッシュ制御cache-control)
-        * [ファイルの送信](#ファイルの送信)
-        * [リクエストオブジェクトへのアクセス](#リクエストオブジェクトへのアクセス)
-        * [アタッチメント(Attachments)](#アタッチメントattachments)
-        * [日付と時刻の取り扱い](#日付と時刻の取り扱い)
-        * [テンプレートファイルの探索](#テンプレートファイルの探索)
-    * [コンフィギュレーション(Configuration)](#コンフィギュレーションconfiguration)
-        * [攻撃防御に対する設定](#攻撃防御に対する設定)
-        * [利用可能な設定](#利用可能な設定)
-    * [環境設定(Environments)](#環境設定environments)
-    * [エラーハンドリング(Error Handling)](#エラーハンドリングerror-handling)
-        * [Not Found](#not-found)
-        * [エラー(Error)](#エラーerror)
-    * [Rackミドルウェア(Rack Middleware)](#rackミドルウェアrack-middleware)
-    * [テスト(Testing)](#テストtesting)
-    * [Sinatra::Base - ミドルウェア、ライブラリおよびモジュラーアプリ](#sinatrabase---ミドルウェアライブラリおよびモジュラーアプリ)
-        * [モジュラースタイル vs クラッシックスタイル](#モジュラースタイル-vs-クラッシックスタイル)
-        * [モジュラーアプリケーションの提供](#モジュラーアプリケーションの提供)
-        * [config.ruを用いたクラッシックスタイルアプリケーションの使用](#configruを用いたクラッシックスタイルアプリケーションの使用)
-        * [config.ruはいつ使うのか？](#configruはいつ使うのか)
-        * [Sinatraのミドルウェアとしての利用](#sinatraのミドルウェアとしての利用)
-        * [動的なアプリケーションの生成](#動的なアプリケーションの生成)
-    * [スコープとバインディング(Scopes and Binding)](#スコープとバインディングscopes-and-binding)
-        * [アプリケーション/クラスのスコープ](#アプリケーションクラスのスコープ)
-        * [リクエスト/インスタンスのスコープ](#リクエストインスタンスのスコープ)
-        * [デリゲートスコープ](#デリゲートスコープ)
-    * [コマンドライン](#コマンドライン)
-        * [マルチスレッド](#マルチスレッド)
-    * [必要環境](#必要環境)
-    * [最新開発版](#最新開発版)
-        * [Bundlerを使う場合](#bundlerを使う場合)
-        * [直接組み込む場合](#直接組み込む場合)
-        * [グローバル環境にインストールする場合](#グローバル環境にインストールする場合)
-    * [バージョニング(Versioning)](#バージョニングversioning)
-    * [参考文献](#参考文献)
+- [Sinatra](#sinatra)
+  - [目次](#目次)
+  - [ルーティング(Routes)](#ルーティングroutes)
+  - [条件(Conditions)](#条件conditions)
+  - [戻り値(Return Values)](#戻り値return-values)
+  - [カスタムルーティングマッチャー(Custom Route Matchers)](#カスタムルーティングマッチャーcustom-route-matchers)
+  - [静的ファイル(Static Files)](#静的ファイルstatic-files)
+  - [ビュー / テンプレート(Views / Templates)](#ビュー--テンプレートviews--templates)
+    - [リテラルテンプレート(Literal Templates)](#リテラルテンプレートliteral-templates)
+    - [利用可能なテンプレート言語](#利用可能なテンプレート言語)
+      - [Haml テンプレート](#haml-テンプレート)
+      - [Erb テンプレート](#erb-テンプレート)
+      - [Builder テンプレート](#builder-テンプレート)
+      - [Nokogiri テンプレート](#nokogiri-テンプレート)
+      - [Liquid テンプレート](#liquid-テンプレート)
+      - [Markdown テンプレート](#markdown-テンプレート)
+      - [RDoc テンプレート](#rdoc-テンプレート)
+      - [AsciiDoc テンプレート](#asciidoc-テンプレート)
+      - [Radius テンプレート](#radius-テンプレート)
+      - [Markaby テンプレート](#markaby-テンプレート)
+      - [RABL テンプレート](#rabl-テンプレート)
+      - [Slim テンプレート](#slim-テンプレート)
+      - [Creole テンプレート](#creole-テンプレート)
+      - [MediaWiki テンプレート](#mediawiki-テンプレート)
+      - [CoffeeScript テンプレート](#coffeescript-テンプレート)
+      - [Yajl テンプレート](#yajl-テンプレート)
+    - [テンプレート内での変数へのアクセス](#テンプレート内での変数へのアクセス)
+    - [`yield`を伴うテンプレートとネストしたレイアウト](#yieldを伴うテンプレートとネストしたレイアウト)
+    - [インラインテンプレート(Inline Templates)](#インラインテンプレートinline-templates)
+    - [名前付きテンプレート(Named Templates)](#名前付きテンプレートnamed-templates)
+    - [ファイル拡張子の関連付け](#ファイル拡張子の関連付け)
+    - [オリジナルテンプレートエンジンの追加](#オリジナルテンプレートエンジンの追加)
+    - [カスタムロジックを使用したテンプレートの探索](#カスタムロジックを使用したテンプレートの探索)
+  - [フィルタ(Filters)](#フィルタfilters)
+  - [ヘルパー(Helpers)](#ヘルパーhelpers)
+    - [セッションの使用](#セッションの使用)
+      - [セッション秘密鍵のセキュリティ](#セッション秘密鍵のセキュリティ)
+      - [セッションコンフィグ](#セッションコンフィグ)
+      - [自分で選んだセッションミドルウェアを使う](#自分で選んだセッションミドルウェアを使う)
+    - [停止(Halting)](#停止halting)
+    - [パッシング(Passing)](#パッシングpassing)
+    - [別ルーティングの誘発](#別ルーティングの誘発)
+    - [ボディ、ステータスコードおよびヘッダの設定](#ボディステータスコードおよびヘッダの設定)
+    - [ストリーミングレスポンス(Streaming Responses)](#ストリーミングレスポンスstreaming-responses)
+    - [ロギング(Logging)](#ロギングlogging)
+    - [MIMEタイプ(Mime Types)](#mimeタイプmime-types)
+    - [URLの生成](#urlの生成)
+    - [ブラウザリダイレクト(Browser Redirect)](#ブラウザリダイレクトbrowser-redirect)
+    - [キャッシュ制御(Cache Control)](#キャッシュ制御cache-control)
+    - [ファイルの送信](#ファイルの送信)
+    - [リクエストオブジェクトへのアクセス](#リクエストオブジェクトへのアクセス)
+    - [アタッチメント(Attachments)](#アタッチメントattachments)
+    - [日付と時刻の取り扱い](#日付と時刻の取り扱い)
+    - [テンプレートファイルの探索](#テンプレートファイルの探索)
+  - [コンフィギュレーション(Configuration)](#コンフィギュレーションconfiguration)
+    - [攻撃防御に対する設定](#攻撃防御に対する設定)
+    - [利用可能な設定](#利用可能な設定)
+  - [環境設定(Environments)](#環境設定environments)
+  - [エラーハンドリング(Error Handling)](#エラーハンドリングerror-handling)
+    - [未検出(Not Found)](#未検出not-found)
+    - [エラー(Error)](#エラーerror)
+  - [Rackミドルウェア(Rack Middleware)](#rackミドルウェアrack-middleware)
+  - [テスト(Testing)](#テストtesting)
+  - [Sinatra::Base - ミドルウェア、ライブラリおよびモジュラーアプリ](#sinatrabase---ミドルウェアライブラリおよびモジュラーアプリ)
+    - [モジュラースタイル vs クラッシックスタイル](#モジュラースタイル-vs-クラッシックスタイル)
+    - [モジュラーアプリケーションの提供](#モジュラーアプリケーションの提供)
+    - [config.ruを用いたクラッシックスタイルアプリケーションの使用](#configruを用いたクラッシックスタイルアプリケーションの使用)
+    - [config.ruはいつ使うのか？](#configruはいつ使うのか)
+    - [Sinatraのミドルウェアとしての利用](#sinatraのミドルウェアとしての利用)
+    - [動的なアプリケーションの生成](#動的なアプリケーションの生成)
+  - [スコープとバインディング(Scopes and Binding)](#スコープとバインディングscopes-and-binding)
+    - [アプリケーション/クラスのスコープ](#アプリケーションクラスのスコープ)
+    - [リクエスト/インスタンスのスコープ](#リクエストインスタンスのスコープ)
+    - [デリゲートスコープ](#デリゲートスコープ)
+  - [コマンドライン](#コマンドライン)
+    - [マルチスレッド](#マルチスレッド)
+  - [必要環境](#必要環境)
+  - [最新開発版](#最新開発版)
+    - [Bundlerを使う場合](#bundlerを使う場合)
+    - [直接組み込む場合](#直接組み込む場合)
+    - [グローバル環境にインストールする場合](#グローバル環境にインストールする場合)
+  - [バージョニング(Versioning)](#バージョニングversioning)
+  - [参考文献](#参考文献)
 
 ## ルーティング(Routes)
 
@@ -315,12 +315,12 @@ end
 Rackレスポンス、Rackボディオブジェクト、HTTPステータスコードのいずれかとして妥当なオブジェクトであればどのようなオブジェクトでも返すことができます。
 
 * 3つの要素を含む配列:
-  `[ステータス(Fixnum), ヘッダ(Hash), レスポンスボディ(#eachに応答する)]`
+  `[ステータス(Integer), ヘッダ(Hash), レスポンスボディ(#eachに応答する)]`
 * 2つの要素を含む配列:
-  `[ステータス(Fixnum), レスポンスボディ(#eachに応答する)]`
+  `[ステータス(Integer), レスポンスボディ(#eachに応答する)]`
 * `#each`に応答するオブジェクト。通常はそのまま何も返さないが、
 与えられたブロックに文字列を渡す。
-* ステータスコードを表現する整数(Fixnum)
+* ステータスコードを表現する整数(Integer)
 
 これにより、例えばストリーミングを簡単に実装することができます。
 
@@ -386,7 +386,7 @@ end
 `:public_folder`オプションを指定することで別の場所を指定することができます。
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/static'
+set :public_folder, __dir__ + '/static'
 ```
 
 ノート: この静的ファイル用のディレクトリ名はURL中に含まれません。
@@ -524,7 +524,7 @@ end
 いくつかの言語には複数の実装があります。使用する（そしてスレッドセーフにする）実装を指定するには、それを最初にrequireしてください。
 
 ```ruby
-require 'rdiscount' # または require 'bluecloth'
+require 'rdiscount'
 get('/') { markdown :index }
 ```
 
@@ -551,13 +551,13 @@ get('/') { markdown :index }
   <tr>
     <td>依存</td>
     <td>
-      <a href="http://www.kuwata-lab.com/erubis/" title="erubis">erubis</a>
+      <a href="https://github.com/jeremyevans/erubi" title="erubi">erubi</a>
       または erb (Rubyに同梱)
     </td>
   </tr>
   <tr>
     <td>ファイル拡張子</td>
-    <td><tt>.erb</tt>, <tt>.rhtml</tt> or <tt>.erubis</tt> (Erubisだけ)</td>
+    <td><tt>.erb</tt>, <tt>.rhtml</tt> または <tt>.erubi</tt> (Erubiだけ) または</td>
   </tr>
   <tr>
     <td>例</td>
@@ -605,63 +605,13 @@ get('/') { markdown :index }
 
 インラインテンプレート用にブロックを取ることもできます（例を参照）。
 
-#### Sass テンプレート
-
-<table>
-  <tr>
-    <td>依存</td>
-    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>ファイル拡張子</td>
-    <td><tt>.sass</tt></td>
-  </tr>
-  <tr>
-    <td>例</td>
-    <td><tt>sass :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### Scss テンプレート
-
-<table>
-  <tr>
-    <td>依存</td>
-    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>ファイル拡張子</td>
-    <td><tt>.scss</tt></td>
-  </tr>
-  <tr>
-    <td>例</td>
-    <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### Less テンプレート
-
-<table>
-  <tr>
-    <td>依存</td>
-    <td><a href="http://lesscss.org/" title="less">less</a></td>
-  </tr>
-  <tr>
-    <td>ファイル拡張子</td>
-    <td><tt>.less</tt></td>
-  </tr>
-  <tr>
-    <td>例</td>
-    <td><tt>less :stylesheet</tt></td>
-  </tr>
-</table>
 
 #### Liquid テンプレート
 
 <table>
   <tr>
     <td>依存</td>
-    <td><a href="http://liquidmarkup.org/" title="liquid">liquid</a></td>
+    <td><a href="https://shopify.github.io/liquid/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>ファイル拡張子</td>
@@ -684,9 +634,7 @@ LiquidテンプレートからRubyのメソッド(`yield`を除く)を呼び出�
       次の何れか:
         <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-        <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
-        <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
-        <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
+        <a href="https://kramdown.gettalong.org/" title="kramdown">kramdown</a>
     </td>
   </tr>
   <tr>
@@ -714,39 +662,6 @@ erb :overview, :locals => { :text => markdown(:introduction) }
 ```
 
 MarkdownからはRubyを呼ぶことができないので、Markdownで書かれたレイアウトを使うことはできません。しかしながら、`:layout_engine`オプションを渡すことでテンプレートのものとは異なるレンダリングエンジンをレイアウトのために使うことができます。
-
-#### Textile テンプレート
-
-<table>
-  <tr>
-    <td>依存</td>
-    <td><a href="http://redcloth.org/" title="RedCloth">RedCloth</a></td>
-  </tr>
-  <tr>
-    <td>ファイル拡張子</td>
-    <td><tt>.textile</tt></td>
-  </tr>
-  <tr>
-    <td>例</td>
-    <td><tt>textile :index, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-Textileからメソッドを呼び出すことも、localsに変数を渡すこともできません。
-それゆえ、他のレンダリングエンジンとの組み合わせで使うのが普通です。
-
-```ruby
-erb :overview, :locals => { :text => textile(:introduction) }
-```
-
-ノート: 他のテンプレート内で`textile`メソッドを呼び出せます。
-
-```ruby
-%h1 Hello From Haml!
-%p= textile(:greetings)
-```
-
-TexttileからはRubyを呼ぶことができないので、Textileで書かれたレイアウトを使うことはできません。しかしながら、`:layout_engine`オプションを渡すことでテンプレートのものとは異なるレンダリングエンジンをレイアウトのために使うことができます。
 
 #### RDoc テンプレート
 
@@ -786,7 +701,7 @@ RDocからはRubyを呼ぶことができないので、RDocで書かれたレ�
 <table>
  <tr>
    <td>依存</td>
-   <td><a href="http://asciidoctor.org/" title="Asciidoctor">Asciidoctor</a></td>
+   <td><a href="https://asciidoctor.org/" title="Asciidoctor">Asciidoctor</a></td>
  </tr>
  <tr>
    <td>ファイル拡張子</td>
@@ -824,7 +739,7 @@ RadiusテンプレートからRubyのメソッドを直接呼び出すことが�
 <table>
   <tr>
     <td>依存</td>
-    <td><a href="http://markaby.github.io/" title="Markaby">Markaby</a></td>
+    <td><a href="https://markaby.github.io/" title="Markaby">Markaby</a></td>
   </tr>
   <tr>
     <td>ファイル拡張子</td>
@@ -954,42 +869,6 @@ erb :overview, :locals => { :text => mediawiki(:introduction) }
   </tr>
 </table>
 
-#### Stylus テンプレート
-
-<table>
-  <tr>
-    <td>依存</td>
-    <td>
-      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
-        Stylus
-      </a> および
-      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
-        JavaScriptの起動方法
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>ファイル拡張子</td>
-    <td><tt>.styl</tt></td>
-  </tr>
-  <tr>
-    <td>例</td>
-    <td><tt>stylus :index</tt></td>
-  </tr>
-</table>
-
-Stylusテンプレートを使えるようにする前に、まず`stylus`と`stylus/tilt`を読み込む必要があります。
-
-```ruby
-require 'sinatra'
-require 'stylus'
-require 'stylus/tilt'
-
-get '/' do
-  stylus :example
-end
-```
-
 #### Yajl テンプレート
 
 <table>
@@ -1026,25 +905,6 @@ json[:baz] = key
 ```ruby
 var resource = {"foo":"bar","baz":"qux"}; present(resource);
 ```
-
-#### WLang テンプレート
-
-<table>
-  <tr>
-    <td>依存</td>
-    <td><a href="https://github.com/blambeau/wlang/" title="wlang">wlang</a></td>
-  </tr>
-  <tr>
-    <td>ファイル拡張子</td>
-    <td><tt>.wlang</tt></td>
-  </tr>
-  <tr>
-    <td>例</td>
-    <td><tt>wlang :index, :locals => { :key => 'value' }</tt></td>
-  </tr>
-</table>
-
-WLang内でのRubyメソッドの呼び出しは一般的ではないので、ほとんどの場合にlocalsを指定する必要があるでしょう。しかしながら、WLangで書かれたレイアウトは`yield`をサポートしています。
 
 ### テンプレート内での変数へのアクセス
 
@@ -1100,7 +960,7 @@ end
 ```
 
 現在、次のレンダリングメソッドがブロックを取れます: `erb`, `haml`,
-`liquid`, `slim `, `wlang`。
+`liquid`, `slim `。
 また汎用の`render`メソッドもブロックを取れます。
 
 ### インラインテンプレート(Inline Templates)
@@ -1154,10 +1014,10 @@ end
 
 ### ファイル拡張子の関連付け
 
-任意のテンプレートエンジンにファイル拡張子を関連付ける場合は、`Tilt.register`を使います。例えば、Textileテンプレートに`tt`というファイル拡張子を使いたい場合は、以下のようにします。
+任意のテンプレートエンジンにファイル拡張子を関連付ける場合は、`Tilt.register`を使います。例えば、Hamlテンプレートに`tt`というファイル拡張子を使いたい場合は、以下のようにします。
 
 ```ruby
-Tilt.register :tt, Tilt[:textile]
+Tilt.register :tt, Tilt[:haml]
 ```
 
 ### オリジナルテンプレートエンジンの追加
@@ -1292,41 +1152,82 @@ get '/:value' do
 end
 ```
 
-ノート: `enable :sessions`は実際にはすべてのデータをクッキーに保持します。これは必ずしも期待通りのものにならないかもしれません（例えば、大量のデータを保持することでトラフィックが増大するなど）。Rackセッションミドルウェアの利用が可能であり、その場合は`enable :sessions`を呼ばずに、選択したミドルウェアを他のミドルウェアのときと同じようにして取り込んでください。
+#### セッション秘密鍵のセキュリティ
 
-```ruby
-use Rack::Session::Pool, :expire_after => 2592000
+セキュリティ向上のために、Cookie内のセッションデータは`HMAC-SHA1`を使ったセッション秘密鍵(session secret)で署名されています。
+このセッション秘密鍵は、暗号論的に安全な乱数値とするために、十分な長さであることが好ましいです。
+`HMAC-SHA1`ならば、64バイト（512ビット、16進文字(hex charactor)128文字）以上です。32バイト（256ビット、16進文字64文字）より短いものは、使うべきではないでしょう。
+したがって、自分の手で秘密鍵を作るのではなく、安全な乱数生成器を使って秘密鍵を生成することが**とても重要**です。人間は、乱数の生成が著しく苦手ですからね。
 
-get '/' do
-  "value = " << session[:value].inspect
-end
+Sinatraは、デフォルトで32バイトの安全なセッション秘密鍵を生成しますが、これはアプリケーションを再起動するたびに変更されます。
+アプリケーションが複数のインスタンスにまたがる場合、鍵生成をSinatraに任せると、インスタンスごとに別々のセッション秘密鍵を持つことになります。
+おそらくこれでは不便でしょう。
 
-get '/:value' do
-  session[:value] = params['value']
-end
+より良いセキュリティと取り回しのために、生成した安全な秘密鍵を、
+アプリケーションの動作するそれぞれのインスタンスの環境変数に保存する方法が[推奨されて](https://12factor.net/config)います。
+これにより、すべてのインスタンス間で同じ鍵を共有することができます。
+このセッション秘密鍵は、定期的に新しい値に更新しましょう。64バイトの秘密鍵を生成してセットする例です：
+
+**セッション秘密鍵の生成**
+
+```text
+$ ruby -e "require 'securerandom'; puts SecureRandom.hex(64)"
+99ae8af...snip...ec0f262ac
 ```
 
-セキュリティ向上のため、クッキー内のセッションデータはセッション秘密鍵(session secret)で署名されます。Sinatraによりランダムな秘密鍵が個別に生成されます。しかし、この秘密鍵はアプリケーションの立ち上げごとに変わってしまうので、すべてのアプリケーションのインスタンスで共有できる秘密鍵をセットしたくなるかもしれません。
+**セッション秘密鍵の生成（ボーナスポイント）**
 
-```ruby
-set :session_secret, 'super secret'
+[sysrandom gem](https://github.com/cryptosphere/sysrandom#readme)を使えば、MRI Rubyが現在デフォルトで利用するユーザ空間の`OpenSSL`ではなく、
+OSの乱数生成器を利用して乱数を生成することができます：
+
+```text
+$ gem install sysrandom
+Building native extensions.  This could take a while...
+Successfully installed sysrandom-1.x
+1 gem installed
+
+$ ruby -e "require 'sysrandom/securerandom'; puts SecureRandom.hex(64)"
+99ae8af...snip...ec0f262ac
 ```
 
-更に、設定変更をしたい場合は、`sessions`の設定においてオプションハッシュを保持することもできます。
+**セッション秘密鍵の環境変数**
+
+環境変数`SESSION_SECRET`に生成した値をセットすれば、Sinatraで使うことができます。
+この値は、ホストを再起動しても失われないように、永続化しましょう。
+OSによってやり方が様々ですから、この例はあくまでイメージです：
+
+```bash
+# echo "export SESSION_SECRET=99ae8af...snip...ec0f262ac" >> ~/.bashrc
+```
+
+**セッション秘密鍵のアプリケーションコンフィグ**
+
+安全な秘密鍵に環境変数`SESSION_SECRET`が使えなかった場合のフェイルセーフを、アプリケーションコンフィグに設定しておきましょう。
+ここでもやはり、[sysrandom gem](https://github.com/cryptosphere/sysrandom#readme)を使うのがボーナスポイントです：
+
+```ruby
+require 'securerandom'
+# -or- require 'sysrandom/securerandom'
+set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
+```
+
+#### セッションコンフィグ
+
+もっと進んだ設定をするならば、次のようなハッシュを`sessions`のオプションに指定するとよいでしょう：
 
 ```ruby
 set :sessions, :domain => 'foo.com'
 ```
 
-foo.comのサブドメイン上のアプリ間でセッションを共有化したいときは、代わりにドメインの前に *.* を付けます。
+foo.comのサブドメイン上のアプリケーション間でセッションを共有したい場合は、かわりにドメインの頭に*.*をつけてください：
 
 ```ruby
 set :sessions, :domain => '.foo.com'
 ```
 
-#### セッションミドルウェアの選択
+#### 自分で選んだセッションミドルウェアを使う
 
-`enable :sessions`とすることで、クッキー内の全てのデータを実際に保存してしまうことに注意してください。
+`enable :sessions`とすることで、Cookie内の全てのデータを実際に保存してしまうことに注意してください。
 これは、あなたが望む挙動ではない（例えば、大量のデータを保存することでトラフィックが増大してしまう）かもしれません。
 あなたは、次のいずれかの方法によって、任意のRackセッションミドルウェアを使用することができます。
 
@@ -1354,7 +1255,7 @@ use Rack::Protection::RemoteToken
 use Rack::Protection::SessionHijacking
 ```
 
-より詳しい情報は、「攻撃防御に対する設定」の項を参照してください。
+より詳しい情報は、[「攻撃防御に対する設定」の項](#攻撃防御に対する設定)を参照してください。
 
 ### 停止(Halting)
 
@@ -1456,7 +1357,7 @@ get '/foo' do
   status 418
   headers \
     "Allow"   => "BREW, POST, GET, PROPFIND, WHEN",
-    "Refresh" => "Refresh: 20; http://www.ietf.org/rfc/rfc2324.txt"
+    "Refresh" => "Refresh: 20; https://www.ietf.org/rfc/rfc2324.txt"
   body "I'm a tea pot!"
 end
 ```
@@ -1481,37 +1382,55 @@ end
 
 これはストリーミングAPI、[Server Sent Events](https://w3c.github.io/eventsource/)の実装を可能にし、[WebSockets](https://en.wikipedia.org/wiki/WebSocket)の土台に使うことができます。また、一部のコンテンツが遅いリソースに依存しているときに、スループットを上げるために使うこともできます。
 
-ノート: ストリーミングの挙動、特に並行リクエスト(cuncurrent requests)の数は、アプリケーションを提供するのに使われるWebサーバに強く依存します。いくつかのサーバは、ストリーミングを全くサポートしません。サーバがストリーミングをサポートしない場合、ボディは`stream`に渡されたブロックの実行が終了した後、一度に全部送られることになります。ストリーミングは、Shotgunを使った場合は全く動作しません。
+ノート: ストリーミングの挙動、特に並行リクエスト(concurrent requests)の数は、アプリケーションを提供するのに使われるWebサーバに強く依存します。いくつかのサーバは、ストリーミングを全くサポートしません。サーバがストリーミングをサポートしない場合、ボディは`stream`に渡されたブロックの実行が終了した後、一度に全部送られることになります。ストリーミングは、Shotgunを使った場合は全く動作しません。
 
-オプション引数が`keep_open`にセットされている場合、ストリームオブジェクト上で`close`は呼ばれず、実行フローの任意の遅れたタイミングでユーザがこれを閉じることを可能にします。これはThinやRainbowsのようなイベント型サーバ上でしか機能しません。他のサーバでは依然ストリームは閉じられます。
+オプション引数が`keep_open`にセットされている場合、ストリームオブジェクト上で`close`は呼ばれず、実行フローの任意の遅れたタイミングでユーザがこれを閉じることを可能にします。これはRainbowsのようなイベント型サーバ上でしか機能しません。他のサーバでは依然ストリームは閉じられます。
 
 ```ruby
-# ロングポーリング
+# config.ru
+require 'sinatra/base'
 
-set :server, :thin
-connections = []
+class App < Sinatra::Base
+  connections = []
 
-get '/subscribe' do
-  # サーバイベントにおけるクライアントの関心を登録
-  stream(:keep_open) do |out|
-    connections << out
-    # 死んでいるコネクションを排除
-    connections.reject!(&:closed?)
+  get '/subscribe' do
+    # register a client's interest in server events
+    # サーバイベントにおけるクライアントの関心を登録
+    stream(:keep_open) do |out|
+      connections << out
+      # 死んでいるコネクションを排除
+      connections.reject!(&:closed?)
+    end
+  end
+
+  post '/:message' do
+    connections.each do |out|
+      # クライアントへ新規メッセージ到着の通知
+      out << params['message'] << "\n"
+
+      # クライアントへの再接続の指示
+      out.close
+    end
+
+    # 肯定応答
+    "message received"
   end
 end
 
-post '/message' do
-  connections.each do |out|
-    # クライアントへ新規メッセージ到着の通知
-    out << params['message'] << "\n"
+run App
+```
 
-    # クライアントへの再接続の指示
-    out.close
-  end
-
-  # 肯定応答
-  "message received"
+```ruby
+# rainbows.conf
+Rainbows! do
+  use :EventMachine
 end
+````
+
+次のように起動します。
+
+```shell
+rainbows -c rainbows.conf
 ```
 
 クライアントはソケットに書き込もうとしている接続を閉じることも可能です。そのため、記述しようとする前に`out.closed?`をチェックすることを勧めます。
@@ -1586,7 +1505,7 @@ end
 
 ```ruby
 redirect to('/bar'), 303
-redirect 'http://www.google.com/', 'wrong place, buddy'
+redirect 'https://www.google.com/', 'wrong place, buddy'
 ```
 
 また、`redirect back`を使えば、簡単にユーザが来たページへ戻るリダイレクトを作れます。
@@ -1773,7 +1692,7 @@ get '/foo' do
   request["some_param"]       # some_param変数の値。[]はパラメータハッシュのショートカット
   request.referrer            # クライアントのリファラまたは'/'
   request.user_agent          # ユーザエージェント (:agent 条件によって使用される)
-  request.cookies             # ブラウザクッキーのハッシュ
+  request.cookies             # ブラウザCookieのハッシュ
   request.xhr?                # Ajaxリクエストかどうか
   request.url                 # "http://example.com/example/foo"
   request.path                # "/example/foo"
@@ -1881,7 +1800,7 @@ end
 他の例としては、異なるエンジン用の異なるディレクトリを使う場合です。
 
 ```ruby
-set :views, :sass => 'views/sass', :haml => 'templates', :default => 'views'
+set :views, :haml => 'templates', :default => 'views'
 
 helpers do
   def find_template(views, name, engine, &block)
@@ -1951,7 +1870,7 @@ end
 
 ### 攻撃防御に対する設定
 
-Sinatraは[Rack::Protection](https://github.com/sinatra/rack-protection#readme)を使用することで、アプリケーションを一般的な日和見的攻撃から守っています。これは簡単に無効化できます（が、アプリケーションに大量の一般的な脆弱性を埋め込むことになってしまいます）。
+Sinatraは[Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme)を使用することで、アプリケーションを一般的な日和見的攻撃から守っています。これは簡単に無効化できます（が、アプリケーションに大量の一般的な脆弱性を埋め込むことになってしまいます）。
 
 ```ruby
 disable :protection
@@ -2001,6 +1920,15 @@ set :protection, :session => true
 
   <dt>bind</dt>
   <dd>バインドするIPアドレス(デフォルト: `environment`がdevelopmentにセットされているときは、<tt>0.0.0.0</tt> <em>または</em> <tt>localhost</tt>)。ビルトインサーバでのみ使われる。</dd>
+
+  <dt>default_content_type</dt>
+  <dd>
+    Content-Type がセットされていない場合に適用される (デフォルトは<tt>"text/html"</tt>)。
+    <tt>default_content_type</tt> に <tt>nil</tt> を設定すると、すべてのレスポンスにデフォルトの Content-Type が設定されなくなる。
+    このように設定した場合、コンテンツを出力するときに Content-Type を手動で設定する必要がある。
+    そうしなければ、user-agent がそれを推測しなければならなくなります。
+    (または、もし Rack::Protection::XSSHeader の <tt>nosniff</tt> が有効な場合、<tt>application/octet-stream</tt> と仮定します。)
+  </dd>
 
   <dt>default_encoding</dt>
   <dd>不明なときに仮定されるエンコーディング(デフォルトは<tt>"utf-8"</tt>)。</dd>
@@ -2076,7 +2004,7 @@ set :protection, :session => true
 
   <dt>sessions</dt>
   <dd>
-    <tt>Rack::Session::Cookie</tt>を使ったクッキーベースのセッションサポートの有効化。詳しくは、'セッションの使用'の項を参照のこと。
+    <tt>Rack::Session::Cookie</tt>を使ったCookieベースのセッションサポートの有効化。詳しくは、'セッションの使用'の項を参照のこと。
   </dd>
 
   <dt>show_exceptions</dt>
@@ -2106,7 +2034,7 @@ set :protection, :session => true
 
   <dt>threaded</dt>
   <dd>
-    <tt>true</tt>に設定されているときは、Thinにリクエストを処理するために<tt>EventMachine.defer</tt>を使うことを通知する。
+    <tt>true</tt>に設定されているときは、サーバにリクエストを処理するために<tt>EventMachine.defer</tt>を使うことを通知する。
   </dd>
 
   <dt>views</dt>
@@ -2219,7 +2147,7 @@ Sinatraを開発環境の下で実行している場合は、特別な`not_found
 
 ## Rackミドルウェア(Rack Middleware)
 
-SinatraはRuby製Webフレームワークのミニマルな標準的インタフェースである[Rack](http://rack.github.io/)上に構築されています。アプリケーションデベロッパーにとってRackにおける最も興味深い機能は、「ミドルウェア(middleware)」をサポートしていることであり、これは、サーバとアプリケーションとの間に置かれ、HTTPリクエスト/レスポンスを監視および/または操作することで、各種の汎用的機能を提供するコンポーネントです。
+SinatraはRuby製Webフレームワークのミニマルな標準的インタフェースである[Rack](https://rack.github.io/)上に構築されています。アプリケーションデベロッパーにとってRackにおける最も興味深い機能は、「ミドルウェア(middleware)」をサポートしていることであり、これは、サーバとアプリケーションとの間に置かれ、HTTPリクエスト/レスポンスを監視および/または操作することで、各種の汎用的機能を提供するコンポーネントです。
 
 Sinatraはトップレベルの`use`メソッドを通して、Rackミドルウェアパイプラインの構築を楽にします。
 
@@ -2630,21 +2558,22 @@ ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-o HOST] [-s HANDLER]
 -p # ポート指定(デフォルトは4567)
 -o # ホスト指定(デフォルトは0.0.0.0)
 -e # 環境を指定 (デフォルトはdevelopment)
--s # rackserver/handlerを指定 (デフォルトはthin)
+-s # rackserver/handlerを指定 (デフォルトはpuma)
 -x # mutex lockを付ける (デフォルトはoff)
 ```
 
 ### マルチスレッド
 
-_この[StackOverflow][so-answer]でのKonstantinによる回答を言い換えています。_
+_この[StackOverflow](https://stackoverflow.com/a/6282999/5245129)
+のKonstantinによる回答を言い換えています。_
 
-Sinatraでは同時実行モデルを負わせることはできませんが、根本的な部分であるThinやPuma、WebrickのようなRackハンドラ(サーバー)部分に委ねることができます。
+Sinatraでは同時実行モデルを負わせることはできませんが、根本的な部分であるやPuma、WEBrickのようなRackハンドラ(サーバー)部分に委ねることができます。
 Sinatra自身はスレッドセーフであり、もしRackハンドラが同時実行モデルのスレッドを使用していても問題はありません。
 つまり、これはサーバーを起動させる時、特定のRackハンドラに対して正しい起動処理を特定することが出来ます。
-この例はThinサーバーをマルチスレッドで起動する方法のデモです。
+この例はRainbowsサーバーをマルチスレッドで起動する方法のデモです。
 
 ```ruby
-# app.rb
+# config.ru
 
 require 'sinatra/base'
 
@@ -2654,16 +2583,23 @@ class App < Sinatra::Base
   end
 end
 
-App.run!
+run App
 ```
 
-サーバーを開始するコマンドです。
+```ruby
+# rainbows.conf
+
+# RainbowsのコンフィギュレータはUnicornのものをベースにしています。
+Rainbows! do
+  use :ThreadSpawn
+end
+```
+
+次のようなコマンドでサーバを起動します。
 
 ```
-thin --threaded start
+rainbows -c rainbows.conf
 ```
-
-[so-answer]: http://stackoverflow.com/questions/6278817/is-sinatra-multi-threaded/6282999#6282999)
 
 ## 必要環境
 
@@ -2705,22 +2641,11 @@ thin --threaded start
 
 開発チームは常に最新となるRubyバージョンに注視しています。
 
-次のRuby実装は公式にはサポートされていませんが、Sinatraが起動すると報告されています。
-
-* JRubyとRubiniusの古いバージョン
-* Ruby Enterprise Edition
-* MacRuby, Maglev, IronRuby
-* Ruby 1.9.0と1.9.1 (これらの使用はお薦めしません)
-
 公式サポートをしないという意味は、問題がそこだけで起こり、サポートされているプラットフォーム上では起きない場合に、開発チームはそれはこちら側の問題ではないとみなすということです。
 
 開発チームはまた、ruby-head(最新となる2.1.0)に対しCIを実行していますが、それが一貫して動くようになるまで何も保証しません。2.1.0が完全にサポートされればその限りではありません。
 
 Sinatraは、利用するRuby実装がサポートしているオペレーティングシステム上なら動作するはずです。
-
-MacRubyを使う場合は、`gem install control_tower`してください。
-
-Sinatraは現在、Cardinal、SmallRuby、BlueRubyまたは1.8.7以前のバージョンのRuby上では動作しません。
 
 ## 最新開発版
 
@@ -2734,7 +2659,7 @@ gem install sinatra --pre
 
 ### Bundlerを使う場合
 
-最新のSinatraでアプリケーションを動作させたい場合には、[Bundler](http://bundler.io)を使うのがお薦めのやり方です。
+最新のSinatraでアプリケーションを動作させたい場合には、[Bundler](https://bundler.io)を使うのがお薦めのやり方です。
 
 まず、Bundlerがなければそれをインストールします。
 
@@ -2797,7 +2722,7 @@ sudo rake install
 
 ## バージョニング(Versioning)
 
-Sinatraは、[Semantic Versioning](http://semver.org/)におけるSemVerおよびSemVerTagの両方に準拠しています。
+Sinatraは、[Semantic Versioning](https://semver.org/)におけるSemVerおよびSemVerTagの両方に準拠しています。
 
 ## 参考文献
 
@@ -2805,7 +2730,7 @@ Sinatraは、[Semantic Versioning](http://semver.org/)におけるSemVerおよ�
 * [プロジェクトに参加(貢献)する](http://www.sinatrarb.com/contributing.html) - バグレポート パッチの送信、サポートなど
 * [Issue tracker](https://github.com/sinatra/sinatra/issues)
 * [Twitter](https://twitter.com/sinatra)
-* [メーリングリスト](http://groups.google.com/group/sinatrarb/topics)
+* [メーリングリスト](https://groups.google.com/group/sinatrarb/topics)
 * http://freenode.net上のIRC: [#sinatra](irc://chat.freenode.net/#sinatra)
 * [Sinatra Book](https://github.com/sinatra/sinatra-book/) クックブック、チュートリアル
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) コミュニティによるレシピ集

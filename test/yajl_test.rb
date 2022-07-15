@@ -1,4 +1,4 @@
-require File.expand_path('../helper', __FILE__)
+require File.expand_path('helper', __dir__)
 
 begin
 require 'yajl'
@@ -6,7 +6,7 @@ require 'yajl'
 class YajlTest < Minitest::Test
   def yajl_app(&block)
     mock_app do
-      set :views, File.dirname(__FILE__) + '/views'
+      set :views, __dir__ + '/views'
       get('/', &block)
     end
     get '/'

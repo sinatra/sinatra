@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Sinatra::Cookies do
+RSpec.describe Sinatra::Cookies do
   def cookie_route(*cookies, &block)
     result = nil
     set_cookie(cookies)
@@ -412,7 +412,6 @@ describe Sinatra::Cookies do
     end
 
     it 'favors response over request cookies' do
-      seen = false
       value = nil
       cookie_route('foo=bar') do
         cookies[:foo] = 'baz'

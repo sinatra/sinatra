@@ -1,4 +1,4 @@
-describe Rack::Protection::JsonCsrf do
+RSpec.describe Rack::Protection::JsonCsrf do
   it_behaves_like "any rack application"
 
   module DummyAppWithBody

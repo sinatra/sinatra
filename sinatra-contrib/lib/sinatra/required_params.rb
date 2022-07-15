@@ -8,7 +8,7 @@ module Sinatra
   # == Usage
   #
   # Set required query parameter keys in the argument.
-  # It'll halt with 400 if requried keys don't exist.
+  # It'll halt with 400 if required keys don't exist.
   #
   #   get '/simple_keys' do
   #     required_params :p1, :p2
@@ -60,7 +60,7 @@ module Sinatra
         elsif key.is_a?(Array)
           _required_params(p, *key)
         else
-          halt 400 unless p.has_key?(key.to_s)
+          halt 400 unless p && p.respond_to?(:has_key?) && p.has_key?(key.to_s)
         end
       end
       true

@@ -1,4 +1,4 @@
-require File.expand_path('../helper', __FILE__)
+require File.expand_path('helper', __dir__)
 
 class DelegatorTest < Minitest::Test
   class Mirror
@@ -86,6 +86,17 @@ class DelegatorTest < Minitest::Test
     assert response.ok?
     assert_equal 'World!', response['X-Hello']
     assert_equal '', response.body
+  end
+
+  it "delegates before with keyword arguments correctly" do
+    delegation_app do
+      set(:foo) do |something|
+        something
+      end
+      before(foo: 'bar') do
+        :nothing
+      end
+    end
   end
 
   it "registers extensions with the delegation target" do

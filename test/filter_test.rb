@@ -1,4 +1,4 @@
-require File.expand_path('../helper', __FILE__)
+require File.expand_path('helper', __dir__)
 
 class BeforeFilterTest < Minitest::Test
   it "executes filters in the order defined" do
@@ -123,7 +123,7 @@ class BeforeFilterTest < Minitest::Test
     mock_app do
       before { ran_filter = true }
       set :static, true
-      set :public_folder, File.dirname(__FILE__)
+      set :public_folder, __dir__
     end
     get "/#{File.basename(__FILE__)}"
     assert ok?
@@ -262,12 +262,23 @@ class AfterFilterTest < Minitest::Test
     assert_equal 8, count
   end
 
+  it "respects content type set in superclass filter" do
+    base = Class.new(Sinatra::Base)
+    base.before { content_type :json }
+    mock_app(base) do
+      get('/foo'){ {foo: :bar}.to_json }
+    end
+
+    get '/foo'
+    assert_equal 'application/json', response.headers['Content-Type']
+  end
+
   it 'does not run after filter when serving static files' do
     ran_filter = false
     mock_app do
       after { ran_filter = true }
       set :static, true
-      set :public_folder, File.dirname(__FILE__)
+      set :public_folder, __dir__
     end
     get "/#{File.basename(__FILE__)}"
     assert ok?
@@ -406,6 +417,27 @@ class AfterFilterTest < Minitest::Test
     end
 
     get '/'
+    assert_body 'bar'
+  end
+
+  it 'can add params on a single path' do
+    mock_app do
+      before('/hi'){ params['foo'] = 'bar' }
+      get('/hi') { params['foo'] }
+    end
+
+    get '/hi'
+    assert_body 'bar'
+  end
+
+  # ref: issue #1567
+  it 'can add params on named parameters path' do
+    mock_app do
+      before('/:id/hi'){ params['foo'] = 'bar' }
+      get('/:id/hi') { params['foo'] }
+    end
+
+    get '/:id/hi'
     assert_body 'bar'
   end
 

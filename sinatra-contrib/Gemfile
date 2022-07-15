@@ -1,23 +1,22 @@
-source "https://rubygems.org" unless ENV['QUICK']
+source "https://rubygems.org"
 gemspec
 
 gem 'sinatra', path: '..'
 gem 'rack-protection', path: '../rack-protection'
-gem "twitter-text", "1.14.0"
+gem "twitter-text", "1.14.7"
 
 group :development, :test do
   platform :jruby do
     gem 'json'
     gem 'rdoc'
-  end
-
-  platform :jruby do
     gem 'therubyrhino'
   end
 
   platform :jruby, :ruby do
-    gem 'slim', '2.1.0'
+    gem 'hamlit'
+    gem 'hamlit-block', '>= 0.7.1'
     gem 'liquid', '~> 2.6.x'
+    gem 'slim'
   end
 
   platform :ruby do
@@ -25,9 +24,6 @@ group :development, :test do
     gem 'nokogiri', '1.5.10'
     gem 'redcarpet', '2.3.0'
     gem 'yajl-ruby'
-    # ref is a dependency of therubyracer
-    gem 'ref'
-    gem 'therubyracer'
   end
 
   gem 'multi_json'

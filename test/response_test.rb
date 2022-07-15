@@ -1,9 +1,9 @@
 # encoding: utf-8
 
-require File.expand_path('../helper', __FILE__)
+require File.expand_path('helper', __dir__)
 
 class ResponseTest < Minitest::Test
-  setup { @response = Sinatra::Response.new }
+  setup { @response = Sinatra::Response.new([], 200, { 'Content-Type' => 'text/html' }) }
 
   def assert_same_body(a, b)
     assert_equal a.to_enum(:each).to_a, b.to_enum(:each).to_a
@@ -27,7 +27,7 @@ class ResponseTest < Minitest::Test
     assert_equal 'Hello World', @response.body.join
   end
 
-  [204, 205, 304].each do |status_code|
+  [204, 304].each do |status_code|
     it "removes the Content-Type header and body when response status is #{status_code}" do
       @response.status = status_code
       @response.body = ['Hello World']

@@ -1,9 +1,9 @@
-require File.expand_path('../helper', __FILE__)
+require File.expand_path('helper', __dir__)
 
 MarkdownTest = proc do
   def markdown_app(&block)
     mock_app do
-      set :views, File.dirname(__FILE__) + '/views'
+      set :views, __dir__ + '/views'
       get('/', &block)
     end
     get '/'
@@ -68,18 +68,22 @@ MarkdownTest = proc do
   end
 end
 
-# Will generate RDiscountTest, KramdownTest, etc.
-map = Tilt.respond_to?(:lazy_map) ? Tilt.lazy_map['md'].map(&:first) : Tilt.mappings['md']
-
-map.each do |t|
+[
+  "Tilt::PandocTemplate",
+  "Tilt::CommonMarkerTemplate",
+  "Tilt::KramdownTemplate",
+  "Tilt::RedcarpetTemplate",
+  "Tilt::RDiscountTemplate"
+].each do |template_name|
   begin
-    t = eval(t) if t.is_a? String
-    t.new { "" }
-    klass = Class.new(Minitest::Test) { define_method(:engine) { t }}
+    template = Object.const_get(template_name)
+
+    klass = Class.new(Minitest::Test) { define_method(:engine) { template } }
     klass.class_eval(&MarkdownTest)
-    name = t.name[/[^:]+$/].sub(/Template$/, '') << "Test"
+
+    name = template_name.split('::').last.sub(/Template$/, 'Test')
     Object.const_set name, klass
   rescue LoadError, NameError
-    warn "#{$!}: skipping markdown tests with #{t}"
+    warn "#{$!}: skipping markdown tests with #{template_name}"
   end
 end

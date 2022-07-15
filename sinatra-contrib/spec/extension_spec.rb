@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Sinatra::Extension do
+RSpec.describe Sinatra::Extension do
   module ExampleExtension
     extend Sinatra::Extension
 

@@ -1,10 +1,10 @@
-$LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift File.expand_path('lib', __dir__)
 require 'open-uri'
 require 'yaml'
 require 'sinatra/contrib/version'
 
 desc "run specs"
-task(:spec) { ruby '-S rspec spec -cw' }
+task(:spec) { ruby '-S rspec' }
 task(:test => :spec)
 task(:default => :spec)
 

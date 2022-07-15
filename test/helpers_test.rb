@@ -1,4 +1,4 @@
-require File.expand_path('../helper', __FILE__)
+require File.expand_path('helper', __dir__)
 require 'date'
 require 'json'
 
@@ -8,7 +8,7 @@ class HelpersTest < Minitest::Test
   end
 
   def status_app(code, &block)
-    code += 2 if [204, 205, 304].include? code
+    code += 2 if [204, 304].include? code
     block ||= proc { }
     mock_app do
       get('/') do
@@ -785,7 +785,7 @@ class HelpersTest < Minitest::Test
 
   describe 'send_file' do
     setup do
-      @file = File.dirname(__FILE__) + '/file.txt'
+      @file = __dir__ + '/file.txt'
       File.open(@file, 'wb') { |io| io.write('Hello World') }
     end
 
@@ -879,6 +879,12 @@ class HelpersTest < Minitest::Test
       assert_equal 'inline; filename="file.txt"', response['Content-Disposition']
     end
 
+    it "does not raise an error when :disposition set to a frozen string" do
+      send_file_app :disposition => 'inline'.freeze
+      get '/file.txt'
+      assert_equal 'inline; filename="file.txt"', response['Content-Disposition']
+    end 
+    
     it "sets the Content-Disposition header when :filename provided" do
       send_file_app :filename => 'foo.txt'
       get '/file.txt'
@@ -892,7 +898,7 @@ class HelpersTest < Minitest::Test
     end
 
     it "is able to send files with unknown mime type" do
-      @file = File.dirname(__FILE__) + '/file.foobar'
+      @file = __dir__ + '/file.foobar'
       File.open(@file, 'wb') { |io| io.write('Hello World') }
       send_file_app
       get '/file.txt'
@@ -1940,6 +1946,80 @@ class HelpersTest < Minitest::Test
       get '/'
       assert ok?
       assert_equal '42 &lt; 43', body
+    end
+
+    it 'prepends modules so previously-defined methods can be overridden consistently' do
+      skip <<-EOS
+        This test will be helpful after switching #helpers's code from Module#include to Module#prepend
+        See more details: https://github.com/sinatra/sinatra/pull/1214
+      EOS
+      mock_app do
+        helpers do
+          def one; nil end
+          def two; nil end
+        end
+
+        helpers ::HelperOne do
+          def two; '2' end
+        end
+
+        get('/one') { one }
+        get('/two') { two }
+      end
+
+      get '/one'
+      assert_equal '1', body
+
+      get '/two'
+      assert_equal '2', body
+    end
+
+    module HelpersOverloadingBaseHelper
+      def my_test
+        'BaseHelper#test'
+      end
+    end
+
+    class HelpersOverloadingIncludeAndOverride < Sinatra::Base
+      helpers HelpersOverloadingBaseHelper
+
+      get '/' do
+        my_test
+      end
+
+      helpers do
+        def my_test
+          'InlineHelper#test'
+        end
+      end
+    end
+
+    it 'uses overloaded inline helper' do
+      mock_app(HelpersOverloadingIncludeAndOverride)
+      get '/'
+      assert ok?
+      assert_equal 'InlineHelper#test', body
+    end
+
+    module HelperWithIncluded
+      def self.included(base)
+        base.extend(ClassMethods)
+      end
+
+      module ClassMethods
+        def nickname(name)
+          # do something.
+        end
+      end
+    end
+
+    class ServerApp < Sinatra::Base
+      helpers HelperWithIncluded
+      # `nickname` method should be available.
+    end
+
+    it 'calls included method of helpers' do
+      assert ServerApp.respond_to?(:nickname)
     end
   end
 end

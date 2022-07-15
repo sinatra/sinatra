@@ -28,7 +28,7 @@ module Sinatra
   #
   #   class Runner < Sinatra::Runner
   #     def app_file
-  #       File.expand_path("../server.rb", __FILE__)
+  #       File.expand_path("server.rb", __dir__)
   #     end
   #   end
   #
@@ -36,7 +36,7 @@ module Sinatra
   #
   # **Don't forget to override #app_file specific to your application!**
   #
-  # Whereever you need this test backend, here's how you manage it. The following example assumes you
+  # Wherever you need this test backend, here's how you manage it. The following example assumes you
   # have a test in your app that needs to be run against your test backend.
   #
   #   runner = ServerRunner.new
@@ -49,7 +49,7 @@ module Sinatra
   # For an example, check https://github.com/apotonick/roar/blob/master/test/integration/runner.rb
   class Runner
     def app_file
-      File.expand_path("../server.rb", __FILE__)
+      File.expand_path("server.rb", __dir__)
     end
 
     def run

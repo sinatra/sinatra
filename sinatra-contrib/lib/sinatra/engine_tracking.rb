@@ -6,73 +6,78 @@ module Sinatra
   module EngineTracking
     attr_reader :current_engine
 
+    # @return [Boolean] Returns true if current engine is `:erb`.
     def erb?
       @current_engine == :erb
     end
 
-    def erubis?
-      @current_engine == :erubis or
-      erb? && Tilt[:erb] == Tilt::ErubisTemplate
+    # Returns true if the current engine is `:erubi`, or `Tilt[:erb]` is set
+    # to Tilt::ErubiTemplate.
+    #
+    # @return [Boolean] Returns true if current engine is `:erubi`.
+    def erubi?
+      @current_engine == :erubi or
+      erb? && Tilt[:erb] == Tilt::ErubiTemplate
     end
 
+    # @return [Boolean] Returns true if current engine is `:haml`.
     def haml?
       @current_engine == :haml
     end
 
-    def sass?
-      @current_engine == :sass
-    end
-
-    def scss?
-      @current_engine == :scss
-    end
-
-    def less?
-      @current_engine == :less
-    end
-
+    # @return [Boolean] Returns true if current engine is `:builder`.
     def builder?
       @current_engine == :builder
     end
 
+    # @return [Boolean] Returns true if current engine is `:liquid`.
     def liquid?
       @current_engine == :liquid
     end
 
+    # @return [Boolean] Returns true if current engine is `:markdown`.
     def markdown?
       @current_engine == :markdown
     end
 
-    def textile?
-      @current_engine == :textile
-    end
-
+    # @return [Boolean] Returns true if current engine is `:rdoc`.
     def rdoc?
       @current_engine == :rdoc
     end
 
+    # @return [Boolean] Returns true if current engine is `:radius.
     def radius?
       @current_engine == :radius
     end
 
+    # @return [Boolean] Returns true if current engine is `:markaby`.
     def markaby?
       @current_engine == :markaby
     end
 
+    # @return [Boolean] Returns true if current engine is `:coffee`.
     def coffee?
       @current_engine == :coffee
     end
 
+    # @return [Boolean] Returns true if current engine is `:nokogiri`.
     def nokogiri?
       @current_engine == :nokogiri
     end
 
+    # @return [Boolean] Returns true if current engine is `:slim`.
     def slim?
       @current_engine == :slim
     end
 
+    # @return [Boolean] Returns true if current engine is `:creole`.
     def creole?
       @current_engine == :creole
+    end
+
+    # @return [Boolean] Returns true if current engine is `:ruby`.
+    def ruby?
+      @current_engine == :ruby
     end
 
     def initialize(*)
@@ -80,6 +85,7 @@ module Sinatra
       super
     end
 
+    # @param engine [Symbol, String] Name of Engine to shift to.
     def with_engine(engine)
       @current_engine, engine_was = engine.to_sym, @current_engine
       yield

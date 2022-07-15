@@ -1,4 +1,4 @@
-describe Rack::Protection::EncryptedCookie do
+RSpec.describe Rack::Protection::EncryptedCookie do
   let(:incrementor) do
     lambda do |env|
       env["rack.session"]["counter"] ||= 0

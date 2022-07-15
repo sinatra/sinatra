@@ -18,6 +18,7 @@ end
 
 ```shell
 gem install sinatra
+gem install puma # 或任何其他服务器
 ```
 
 然后运行 myapp.rb 中的代码：
@@ -32,92 +33,93 @@ ruby myapp.rb
 
 ## 目录
 
-* [Sinatra](#sinatra)
-    * [目录](#目录)
-    * [路由](#路由)
-    * [条件](#条件)
-    * [返回值](#返回值)
-    * [自定义路由匹配器](#自定义路由匹配器)
-    * [静态文件](#静态文件)
-    * [视图 / 模板](#视图--模板)
-        * [字面量模板](#字面量模板)
-        * [可选的模板语言](#可选的模板语言)
-            * [Haml 模板](#haml-模板)
-            * [Erb 模板](#erb-模板)
-            * [Builder 模板](#builder-模板)
-            * [Nokogiri 模板](#nokogiri-模板)
-            * [Sass 模板](#sass-模板)
-            * [SCSS 模板](#scss-模板)
-            * [Less 模板](#less-模板)
-            * [Liquid 模板](#liquid-模板)
-            * [Markdown 模板](#markdown-模板)
-            * [Textile 模板](#textile-模板)
-            * [RDoc 模板](#rdoc-模板)
-            * [AsciiDoc 模板](#asciidoc-模板)
-            * [Radius 模板](#radius-模板)
-            * [Markaby 模板](#markaby-模板)
-            * [RABL 模板](#rabl-模板)
-            * [Slim 模板](#slim-模板)
-            * [Creole 模板](#creole-模板)
-            * [MediaWiki 模板](#mediawiki-模板)
-            * [CoffeeScript 模板](#coffeescript-模板)
-            * [Stylus 模板](#stylus-模板)
-            * [Yajl 模板](#yajl-模板)
-            * [WLang 模板](#wlang-模板)
-        * [在模板中访问变量](#在模板中访问变量)
-        * [带 `yield` 的模板和嵌套布局](#带-yield-的模板和嵌套布局)
-        * [内联模板](#内联模板)
-        * [具名模板](#具名模板)
-        * [关联文件扩展名](#关联文件扩展名)
-        * [添加自定义模板引擎](#添加自定义模板引擎)
-        * [自定义模板查找逻辑](#自定义模板查找逻辑)
-    * [过滤器](#过滤器)
-    * [辅助方法](#辅助方法)
-        * [使用会话](#使用会话)
-        * [中断请求](#中断请求)
-        * [传递请求](#传递请求)
-        * [触发另一个路由](#触发另一个路由)
-        * [设置响应主体、状态码和响应首部](#设置响应主体状态码和响应首部)
-        * [响应的流式传输](#响应的流式传输)
-        * [日志](#日志)
-        * [媒体类型](#媒体类型)
-        * [生成 URL](#生成-url)
-        * [浏览器重定向](#浏览器重定向)
-        * [缓存控制](#缓存控制)
-        * [发送文件](#发送文件)
-        * [访问请求对象](#访问请求对象)
-        * [附件](#附件)
-        * [处理日期和时间](#处理日期和时间)
-        * [查找模板文件](#查找模板文件)
-    * [配置](#配置)
-        * [配置攻击防护](#配置攻击防护)
-        * [可选的设置](#可选的设置)
-    * [环境](#环境)
-    * [错误处理](#错误处理)
-        * [未找到](#未找到)
-        * [错误](#错误)
-    * [Rack 中间件](#rack-中间件)
-    * [测试](#测试)
-    * [Sinatra::Base - 中间件、库和模块化应用](#sinatrabase---中间件库和模块化应用)
-        * [模块化风格 vs. 经典风格](#模块化风格-vs-经典风格)
-        * [运行一个模块化应用](#运行一个模块化应用)
-        * [使用 config.ru 运行经典风格的应用](#使用-configru-运行经典风格的应用)
-        * [何时使用 config.ru？](#何时使用-configru)
-        * [把 Sinatra 当作中间件使用](#把-sinatra-当作中间件使用)
-        * [创建动态应用](#创建动态应用)
-    * [作用域和绑定](#作用域和绑定)
-        * [应用/类作用域](#应用类作用域)
-        * [请求/实例作用域](#请求实例作用域)
-        * [代理作用域](#代理作用域)
-    * [命令行](#命令行)
-        * [多线程](#多线程)
-    * [必要条件](#必要条件)
-    * [紧跟前沿](#紧跟前沿)
-        * [通过 Bundler 使用 Sinatra](#通过-bundler-使用-sinatra)
-        * [使用自己本地的 Sinatra](#使用自己本地的-sinatra)
-        * [全局安装](#全局安装)
-    * [版本](#版本)
-    * [更多资料](#更多资料)
+- [Sinatra](#sinatra)
+  - [目录](#目录)
+  - [路由](#路由)
+    - [条件](#条件)
+    - [返回值](#返回值)
+    - [自定义路由匹配器](#自定义路由匹配器)
+  - [静态文件](#静态文件)
+  - [视图 / 模板](#视图--模板)
+    - [字面量模板](#字面量模板)
+    - [可选的模板语言](#可选的模板语言)
+      - [Haml 模板](#haml-模板)
+      - [Erb 模板](#erb-模板)
+      - [Builder 模板](#builder-模板)
+      - [Nokogiri 模板](#nokogiri-模板)
+      - [Liquid 模板](#liquid-模板)
+      - [Markdown 模板](#markdown-模板)
+      - [RDoc 模板](#rdoc-模板)
+      - [AsciiDoc 模板](#asciidoc-模板)
+      - [Radius 模板](#radius-模板)
+      - [Markaby 模板](#markaby-模板)
+      - [RABL 模板](#rabl-模板)
+      - [Slim 模板](#slim-模板)
+      - [Creole 模板](#creole-模板)
+      - [MediaWiki 模板](#mediawiki-模板)
+      - [CoffeeScript 模板](#coffeescript-模板)
+      - [Yajl 模板](#yajl-模板)
+    - [在模板中访问变量](#在模板中访问变量)
+    - [带 `yield` 的模板和嵌套布局](#带-yield-的模板和嵌套布局)
+    - [内联模板](#内联模板)
+    - [具名模板](#具名模板)
+    - [关联文件扩展名](#关联文件扩展名)
+    - [添加自定义模板引擎](#添加自定义模板引擎)
+    - [自定义模板查找逻辑](#自定义模板查找逻辑)
+  - [过滤器](#过滤器)
+  - [辅助方法](#辅助方法)
+    - [使用会话](#使用会话)
+      - [会话加密](#会话加密)
+      - [生成密钥](#生成密钥)
+      - [生成密钥(小贴士)](#生成密钥小贴士)
+      - [从环境变量使用密钥](#从环境变量使用密钥)
+      - [应用的密钥配置](#应用的密钥配置)
+      - [会话配置](#会话配置)
+      - [选择你自己的会话中间件](#选择你自己的会话中间件)
+    - [中断请求](#中断请求)
+    - [传递请求](#传递请求)
+    - [触发另一个路由](#触发另一个路由)
+    - [设置响应主体、状态码和响应首部](#设置响应主体状态码和响应首部)
+    - [响应的流式传输](#响应的流式传输)
+    - [日志](#日志)
+    - [媒体类型](#媒体类型)
+    - [生成 URL](#生成-url)
+    - [浏览器重定向](#浏览器重定向)
+    - [缓存控制](#缓存控制)
+    - [发送文件](#发送文件)
+    - [访问请求对象](#访问请求对象)
+    - [附件](#附件)
+    - [处理日期和时间](#处理日期和时间)
+    - [查找模板文件](#查找模板文件)
+  - [配置](#配置)
+    - [配置攻击防护](#配置攻击防护)
+    - [可选的设置](#可选的设置)
+  - [环境](#环境)
+  - [错误处理](#错误处理)
+    - [未找到](#未找到)
+    - [错误](#错误)
+  - [Rack 中间件](#rack-中间件)
+  - [测试](#测试)
+  - [Sinatra::Base - 中间件、库和模块化应用](#sinatrabase---中间件库和模块化应用)
+    - [模块化风格 vs. 经典风格](#模块化风格-vs-经典风格)
+    - [运行一个模块化应用](#运行一个模块化应用)
+    - [使用 config.ru 运行经典风格的应用](#使用-configru-运行经典风格的应用)
+    - [何时使用 config.ru？](#何时使用-configru)
+    - [把 Sinatra 当作中间件使用](#把-sinatra-当作中间件使用)
+    - [创建动态应用](#创建动态应用)
+  - [作用域和绑定](#作用域和绑定)
+    - [应用/类作用域](#应用类作用域)
+    - [请求/实例作用域](#请求实例作用域)
+    - [代理作用域](#代理作用域)
+  - [命令行](#命令行)
+    - [多线程](#多线程)
+  - [必要条件](#必要条件)
+  - [紧跟前沿](#紧跟前沿)
+    - [通过 Bundler 使用 Sinatra](#通过-bundler-使用-sinatra)
+    - [使用自己本地的 Sinatra](#使用自己本地的-sinatra)
+    - [全局安装](#全局安装)
+  - [版本](#版本)
+  - [更多资料](#更多资料)
 
 ## 路由
 
@@ -221,7 +223,7 @@ end
 
 路由范式可以包含可选参数：
 
-```ruby  
+```ruby
 get '/posts/:format?' do
   # 匹配 "GET /posts/" 和任意扩展 "GET /posts/json"、"GET /posts/xml" 等
 end
@@ -238,6 +240,17 @@ get '/posts' do
 end
 ```
 顺便一提，除非你禁用了路径遍历攻击防护（见下文），请求路径可能在匹配路由前发生改变。
+
+你也可以通过`:mustermann_opt`选项定义[Mustermann](https://github.com/sinatra/mustermann)来匹配路由。
+
+```ruby
+get '\A/posts\z', :mustermann_opts => { :type => :regexp, :check_anchors => false } do
+  # matches /posts exactly, with explicit anchoring
+  "If you match an anchored pattern clap your hands!"
+end
+```
+
+它看起来像一个[条件](https://github.com/sinatra/sinatra/blob/master/README.zh.md#%E6%9D%A1%E4%BB%B6)，但实际不是！这些选项将被合并到全局的`mustermann_opts`。
 
 ### 条件
 
@@ -313,8 +326,8 @@ Rack 堆栈中的下一个中间件。大多数情况下，返回值是一个字
 
 你可以返回任何对象，该对象要么是一个合理的 Rack 响应，要么是一个 Rack body 对象，要么是 HTTP 状态码：
 
-* 一个包含三个元素的数组: `[状态 (Fixnum), 响应首部 (Hash), 响应主体 (可以响应 #each 方法)]`
-* 一个包含两个元素的数组: `[状态 (Fixnum), 响应主体 (可以响应 #each 方法)]`
+* 一个包含三个元素的数组: `[状态 (Integer), 响应首部 (Hash), 响应主体 (可以响应 #each 方法)]`
+* 一个包含两个元素的数组: `[状态 (Integer), 响应主体 (可以响应 #each 方法)]`
 * 一个响应 `#each` 方法，只传回字符串的对象
 * 一个代表状态码的数字
 
@@ -382,7 +395,7 @@ end
 静态文件从 `./public` 目录提供服务。可以通过设置`:public_folder` 选项设定一个不同的位置：
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/static'
+set :public_folder, __dir__ + '/static'
 ```
 
 请注意 public 目录名并没有包含在 URL 中。文件 `./public/css/style.css` 可以通过
@@ -512,7 +525,7 @@ end
 一些语言有多种实现。为了确定使用哪种实现（以及保证线程安全），你应该首先引入该实现：
 
 ```ruby
-require 'rdiscount' # 或 require 'bluecloth'
+require 'rdiscount'
 get('/') { markdown :index }
 ```
 
@@ -539,13 +552,13 @@ get('/') { markdown :index }
   <tr>
     <td>依赖项</td>
     <td>
-      <a href="http://www.kuwata-lab.com/erubis/" title="erubis">erubis</a>
+      <a href="http://www.kuwata-lab.com/erubi/" title="erubi">erubi</a>
       或 erb (Ruby 标准库中已经包含)
     </td>
   </tr>
   <tr>
     <td>文件扩展名</td>
-    <td><tt>.erb</tt>, <tt>.rhtml</tt> or <tt>.erubis</tt> (仅用于 Erubis)</td>
+    <td><tt>.erb</tt>, <tt>.rhtml</tt> or <tt>.erubi</tt> (仅用于 Erubi)</td>
   </tr>
   <tr>
     <td>例子</td>
@@ -593,63 +606,12 @@ get('/') { markdown :index }
 
 `nokogiri` 渲染方法也接受一个代码块，用于内联模板（见例子）。
 
-#### Sass 模板
-
-<table>
-  <tr>
-    <td>依赖项</td>
-    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>文件扩展名</td>
-    <td><tt>.sass</tt></td>
-  </tr>
-  <tr>
-    <td>例子</td>
-    <td><tt>sass :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### SCSS 模板
-
-<table>
-  <tr>
-    <td>依赖项</td>
-    <td><a href="http://sass-lang.com/" title="sass">sass</a></td>
-  </tr>
-  <tr>
-    <td>文件扩展名</td>
-    <td><tt>.scss</tt></td>
-  </tr>
-  <tr>
-    <td>例子</td>
-    <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-#### Less 模板
-
-<table>
-  <tr>
-    <td>依赖项</td>
-    <td><a href="http://lesscss.org/" title="less">less</a></td>
-  </tr>
-  <tr>
-    <td>文件扩展名</td>
-    <td><tt>.less</tt></td>
-  </tr>
-  <tr>
-    <td>例子</td>
-    <td><tt>less :stylesheet</tt></td>
-  </tr>
-</table>
-
 #### Liquid 模板
 
 <table>
   <tr>
     <td>依赖项</td>
-    <td><a href="http://liquidmarkup.org/" title="liquid">liquid</a></td>
+    <td><a href="https://shopify.github.io/liquid/" title="liquid">liquid</a></td>
   </tr>
   <tr>
     <td>文件扩展名</td>
@@ -672,9 +634,7 @@ get('/') { markdown :index }
       下列任一:
         <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-        <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
-        <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
-        <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
+        <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>
     </td>
   </tr>
   <tr>
@@ -703,40 +663,6 @@ erb :overview, :locals => { :text => markdown(:introduction) }
 
 因为不能在 Markdown 中使用 Ruby 语言，你不能使用 Markdown 书写的布局。
 不过，使用其它渲染引擎作为模板的布局是可能的，这需要通过传入 `:layout_engine` 选项。
-
-#### Textile 模板
-
-<table>
-  <tr>
-    <td>依赖项</td>
-    <td><a href="http://redcloth.org/" title="RedCloth">RedCloth</a></td>
-  </tr>
-  <tr>
-    <td>文件扩展名</td>
-    <td><tt>.textile</tt></td>
-  </tr>
-  <tr>
-    <td>例子</td>
-    <td><tt>textile :index, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-不能在 textile 中调用 Ruby 方法，也不能传递 locals 给它。
-因此，你一般会结合其它的渲染引擎来使用它：
-
-```ruby
-erb :overview, :locals => { :text => textile(:introduction) }
-```
-
-请注意你也可以在其他模板中调用 `textile` 方法：
-
-```ruby
-%h1 Hello From Haml!
-%p= textile(:greetings)
-```
-
-因为不能在 Textile 中调用 Ruby 方法，你不能用 Textile 书写布局。
-不过，使用其它渲染引擎作为模版的布局是可能的，这需要通过传递 `:layout_engine` 选项。
 
 #### RDoc 模板
 
@@ -955,42 +881,6 @@ erb :overview, :locals => { :text => mediawiki(:introduction) }
   </tr>
 </table>
 
-#### Stylus 模板
-
-<table>
-  <tr>
-    <td>依赖项</td>
-    <td>
-      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
-        Stylus
-      </a> 以及一种
-      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
-        执行 JavaScript 的方式
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>文件扩展名</td>
-    <td><tt>.styl</tt></td>
-  </tr>
-  <tr>
-    <td>例子</td>
-    <td><tt>stylus :index</tt></td>
-  </tr>
-</table>
-
-在使用 Stylus 模板之前，你需要先加载 `stylus` 和 `stylus/tilt`：
-
-```ruby
-require 'sinatra'
-require 'stylus'
-require 'stylus/tilt'
-
-get '/' do
-  stylus :example
-end
-```
-
 #### Yajl 模板
 
 <table>
@@ -1028,26 +918,6 @@ json[:baz] = key
 var resource = {"foo":"bar","baz":"qux"};
 present(resource);
 ```
-
-#### WLang 模板
-
-<table>
-  <tr>
-    <td>依赖项</td>
-    <td><a href="https://github.com/blambeau/wlang/" title="WLang">WLang</a></td>
-  </tr>
-  <tr>
-    <td>文件扩展名</td>
-    <td><tt>.wlang</tt></td>
-  </tr>
-  <tr>
-    <td>例子</td>
-    <td><tt>wlang :index, :locals => { :key => 'value' }</tt></td>
-  </tr>
-</table>
-
-因为在 WLang 中调用 Ruby 方法不符合语言习惯，你几乎总是需要传递 locals 给 WLang 木板。
-然而，可以用 WLang 编写布局文件，也可以在 WLang 中使用 `yield` 方法。
 
 ### 在模板中访问变量
 
@@ -1102,7 +972,7 @@ erb :admin_layout, :layout => :main_layout do
 end
 ```
 
-当前，以下的渲染方法接受一个代码块：`erb`、`haml`、`liquid`、`slim ` 和 `wlang`。
+当前，以下的渲染方法接受一个代码块：`erb`、`haml`、`liquid` 和 `slim `。
 通用的 `render` 方法也接受。
 
 ### 内联模板
@@ -1160,10 +1030,10 @@ end
 ### 关联文件扩展名
 
 为了将一个文件扩展名到对应的模版引擎，要使用 `Tilt.register`。
-比如，如果你喜欢使用 `tt` 作为 Textile 模版的扩展名，你可以这样做:
+比如，如果你喜欢使用 `tt` 作为 Haml 模版的扩展名，你可以这样做:
 
 ```ruby
-Tilt.register :tt, Tilt[:textile]
+Tilt.register :tt, Tilt[:haml]
 ```
 
 ### 添加自定义模板引擎
@@ -1302,33 +1172,59 @@ get '/:value' do
 end
 ```
 
-请注意 `enable :sessions` 实际将所有的数据保存在一个 cookie 中。
-这可能并不总是你想要的（cookie 中存储大量的数据会增加你的流量）。
-你可以使用任何 Rack session 中间件：要达到此目的，**不要**使用 `enable :sessions`，
-而是按照自己的需要引入想使用的中间件：
+#### 会话加密
+
+为提高安全性，cookie 中的会话数据使用`HMAC-SHA1`进行加密。会话加密的最佳实践应当是像`HMAC-SHA1`这样生成大于或等于64字节 (512 bits, 128 hex characters)的随机值。应当避免使用少于32字节(256 bits, 64 hex characters)的随机值。应当使用生成器来创建安全的密钥，而不是拍脑袋决定。
+
+默认情况下，Sinatra会生成一个32字节的密钥，但随着应用程序的每次重新启动，它都会发生改变。如果有多个应用程序的实例，使用Sinatra生成密钥，每个实例将有不同的密钥，这可能不是您想要的。
+
+为了更好的安全性和可用性，[建议](https://12factor.net/config)生成安全的随机密钥，并将其存储在运行应用程序的每个主机上的环境变量中，以便所有应用程序实例都将共享相同的密钥。并且应该定期更新会话密钥。下面是一些创建64比特密钥的例子:
+
+#### 生成密钥
 
 ```ruby
-use Rack::Session::Pool, :expire_after => 2592000
-
-get '/' do
-  "value = " << session['value'].inspect
-end
-
-get '/:value' do
-  session['value'] = params['value']
-end
+$ ruby -e "require 'securerandom'; puts SecureRandom.hex(64)"
+99ae8af...snip...ec0f262ac
 ```
 
-为提高安全性，cookie 中的会话数据会被一个会话密码保护。Sinatra 会为你生成一个随机的密码。
-然而，每次启动应用时，该密码都会变化，你也可以自己设置该密码，以便所有的应用实例共享：
+#### 生成密钥(小贴士)
 
+MRI Ruby目前认为[sysrandom gem](https://github.com/cryptosphere/sysrandom)使用系统的随机数生成器要比用户态的`OpenSSL`好。
+
+```ruby
+$ gem install sysrandom
+Building native extensions.  This could take a while...
+Successfully installed sysrandom-1.x
+1 gem installed
+
+$ ruby -e "require 'sysrandom/securerandom'; puts SecureRandom.hex(64)"
+99ae8af...snip...ec0f262ac
 ```
-set :session_secret, 'super secret'
+
+#### 从环境变量使用密钥
+
+将Sinatra的SESSION_SECRET环境变量设置为生成的值。在主机的重新启动之间保存这个值。由于这样做的方法会因系统而异，仅供说明之用：
 ```
+# echo "export SESSION_SECRET=99ae8af...snip...ec0f262ac" >> ~/.bashrc
+```
+
+#### 应用的密钥配置
+
+如果SESSION SECRET环境变量不可用，将把应用的随机密钥设置为不安全的。
+
+关于[sysrandom gem](https://github.com/cryptosphere/sysrandom)的更多用法:
+
+```ruby
+require 'securerandom'
+# -or- require 'sysrandom/securerandom'
+set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
+```
+
+#### 会话配置
 
 如果你想进一步配置会话，可以在设置 `sessions` 时提供一个选项 hash 作为第二个参数：
 
-```
+```ruby
 set :sessions, :domain => 'foo.com'
 ```
 
@@ -1337,6 +1233,31 @@ set :sessions, :domain => 'foo.com'
 ```ruby
 set :sessions, :domain => '.foo.com'
 ```
+
+#### 选择你自己的会话中间件
+
+请注意 `enable :sessions` 实际将所有的数据保存在一个 cookie 中。
+这可能并不总是你想要的（cookie 中存储大量的数据会增加你的流量）。
+你可以使用任何 Rack session 中间件：要达到此目的，**不要**使用 `enable :sessions`，
+而是按照自己的需要引入想使用的中间件：
+
+```ruby
+enable :sessions
+set :session_store, Rack::Session::Pool
+```
+
+另一种选择是不要调用enable：sessions，而是像你想要的其他中间件一样加入你的中间件。
+
+重要的是要注意，使用此方法时，默认情况下不会启用基于会话的保护。
+
+还需要添加Rack中间件：
+
+```ruby
+use Rack::Session::Pool, :expire_after => 2592000
+use Rack::Protection::RemoteToken
+use Rack::Protection::SessionHijacking
+```
+更多[安全防护配置](https://github.com/sinatra/sinatra#configuring-attack-protection)的信息。
 
 ### 中断请求
 
@@ -1892,7 +1813,7 @@ end
 另一个例子是对不同的引擎使用不同的目录:
 
 ```ruby
-set :views, :sass => 'views/sass', :haml => 'templates', :default => 'views'
+set :views, :haml => 'templates', :default => 'views'
 
 helpers do
   def find_template(views, name, engine, &block)
@@ -1965,7 +1886,7 @@ end
 
 ### 配置攻击防护
 
-Sinatra 使用 [Rack::Protection](https://github.com/sinatra/rack-protection#readme)
+Sinatra 使用 [Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme)
 来抵御常见的攻击。你可以轻易地禁用该行为（但这会大大增加应用被攻击的概率）。
 
 ```ruby
@@ -2758,23 +2679,12 @@ thin --threaded start
 
 我们也在时刻关注新的 Ruby 版本。
 
-以下 Ruby 实现不受 Sinatra 官方支持，但可以运行 Sinatra：
-
-* 老版本 JRuby 和 Rubinius
-* Ruby 企业版   
-* MacRuby、Maglev、IronRuby
-* Ruby 1.9.0 和 1.9.1 （不推荐使用）
-
 不受官方支持的意思是，如果仅在不受支持的 Ruby 实现上发生错误，我们认为不是我们的问题，而是该实现的问题。
 
 我们同时也针对 ruby-head （MRI 的未来版本）运行 CI，但由于 ruby-head 一直处在变化之中，
-我们不能作任何保证。我们期望完全支持未来的 2.x 版本。
+我们不能作任何保证。我们期望完全支持未来的 3.x 版本。
 
 Sinatra 应该会运行在任何支持上述 Ruby 实现的操作系统上。
-
-如果你使用 MacRuby，你应该 `gem install control_tower`。
-
-Sinatra 目前不支持 Cardinal、SmallRuby、BlueRuby 或其它 1.8.7 之前的 Ruby 版本。
 
 ## 紧跟前沿
 

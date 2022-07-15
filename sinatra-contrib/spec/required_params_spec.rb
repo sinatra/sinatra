@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe Sinatra::RequiredParams do
+RSpec.describe Sinatra::RequiredParams do
   context "#required_params" do
     context "simple keys" do
       before do
@@ -40,6 +40,10 @@ describe Sinatra::RequiredParams do
       it 'return 200 if required params exist' do
         get('/', :p1 => 1, :p2 => {:p21 => 21})
         expect(last_response.status).to eq(200)
+      end
+      it 'return 400 if p2 is not a hash' do
+        get('/', :p1 => 1, :p2 => 2)
+        expect(last_response.status).to eq(400)
       end
     end
     context "complex keys" do

@@ -6,67 +6,47 @@
 #
 # If you have issues with a gem: `bundle install --without-coffee-script`.
 
-RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
-source 'https://rubygems.org' unless ENV['QUICK']
+source 'https://rubygems.org'
 gemspec
 
 gem 'rake'
-gem 'rack', git: 'https://github.com/rack/rack.git'
-gem 'rack-test', '>= 0.6.2'
+gem 'rack'
+gem 'rack-test', '>= 0.6.2', '< 2'
 gem "minitest", "~> 5.0"
 gem 'yard'
 
 gem "rack-protection", path: "rack-protection"
 gem "sinatra-contrib", path: "sinatra-contrib"
 
-gem "twitter-text", "1.14.0"
+gem "twitter-text", "1.14.7"
 
-if RUBY_ENGINE == 'jruby'
-  gem 'nokogiri', '!= 1.5.0'
-  gem 'trinidad'
-end
 
-if RUBY_ENGINE == "ruby"
-  gem 'less', '~> 2.0'
-  gem 'mini_racer'
-  gem 'redcarpet'
-  gem 'wlang', '>= 2.0.1'
-  gem 'bluecloth'
-  gem 'rdiscount'
-  gem 'RedCloth'
-  gem 'puma'
-  gem 'yajl-ruby'
-  gem 'nokogiri'
-  gem 'thin'
-  gem 'slim', '~> 2.0'
-  gem 'coffee-script', '>= 2.0'
-  gem 'rdoc'
-  gem 'kramdown'
-  gem 'maruku'
-  gem 'creole'
-  gem 'wikicloth'
-  gem 'markaby'
-  gem 'radius'
-  gem 'asciidoctor'
-  gem 'liquid'
-  gem 'stylus'
-  gem 'rabl'
-  gem 'builder'
-  gem 'erubis'
-  gem 'haml', '>= 3.0'
-  gem 'sass'
-  gem 'reel-rack'
-  gem 'celluloid', '~> 0.16.0'
-  gem 'simplecov', require: false
-end
+gem "activesupport", "~> 6.1"
 
-if RUBY_ENGINE == "rbx"
-  gem 'json'
-  gem 'rubysl'
-  gem 'rubysl-test-unit'
-  gem 'erubi'
-end
+gem 'redcarpet', platforms: [ :ruby ]
+gem 'rdiscount', platforms: [ :ruby ]
+gem 'puma'
+gem 'yajl-ruby', platforms: [ :ruby ]
+gem 'nokogiri', '> 1.5.0'
+gem 'rainbows', platforms: [ :ruby ]
+gem 'eventmachine'
+gem 'slim', '~> 4'
+gem 'coffee-script', '>= 2.0'
+gem 'rdoc'
+gem 'kramdown'
+gem 'creole'
+gem 'wikicloth'
+gem 'markaby'
+gem 'radius'
+gem 'asciidoctor'
+gem 'liquid'
+gem 'rabl'
+gem 'builder'
+gem 'erubi'
+gem 'haml', '~> 5'
+gem 'celluloid', '~> 0.16.0'
+gem 'commonmarker', '~> 0.20.0', platforms: [ :ruby ]
+gem 'pandoc-ruby', '~> 2.0.2'
+gem 'simplecov', require: false
 
-platforms :jruby do
-  gem 'json'
-end
+gem 'json', platforms: [ :jruby, :mri ]

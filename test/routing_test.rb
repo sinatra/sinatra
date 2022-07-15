@@ -1,5 +1,5 @@
 # I like coding: UTF-8
-require File.expand_path('../helper', __FILE__)
+require File.expand_path('helper', __dir__)
 
 # Helper method for easy route pattern matching testing
 def route_def(pattern)
@@ -201,6 +201,36 @@ class RoutingTest < Minitest::Test
     assert_equal "This is not a drill either", response.body
   end
 
+  it "captures the custom exception message of a BadRequest" do
+    mock_app {
+      get('/') {}
+
+      error Sinatra::BadRequest do
+        'This is not a drill either'
+      end
+    }
+
+    get "/", "foo" => "", "foo[]" => ""
+    assert_equal "26", response["Content-Length"]
+    assert_equal 400, status
+    assert_equal "This is not a drill either", response.body
+  end
+
+  it "returns empty when unmatched with any regex captures" do
+    mock_app do
+      before do
+        # noop
+      end
+
+      get '/hello' do
+        params.to_s
+      end
+    end
+
+    assert get('/hello').ok?
+    assert_body '{}'
+  end
+
   it "uses 404 error handler for not matching route" do
     mock_app {
       not_found do
@@ -281,6 +311,17 @@ class RoutingTest < Minitest::Test
     assert_equal 'well, alright', body
   end
 
+  it "handles params without a value" do
+    mock_app {
+      get '/' do
+        assert_nil params.fetch('foo')
+        "Given: #{params.keys.sort.join(',')}"
+      end
+    }
+    get '/?foo'
+    assert_equal 'Given: foo', body
+  end
+
   it "merges named params and query string params in params" do
     mock_app {
       get '/:foo' do
@@ -317,9 +358,26 @@ class RoutingTest < Minitest::Test
     assert ok?
     assert_equal "foo=hello;bar=", body
 
+    get '/hello?bar=baz'
+    assert ok?
+    assert_equal "foo=hello;bar=baz", body
+
     get '/'
     assert ok?
     assert_equal "foo=;bar=", body
+  end
+
+  it "uses the default encoding for named params" do
+    mock_app {
+      set :default_encoding ,'ISO-8859-1'
+
+      get '/:foo/:bar' do
+        "foo=#{params[:foo].encoding};bar=#{params[:bar].encoding}"
+      end
+    }
+    get '/f%C3%B6%C3%B6/b%C3%B6%C3%B6'
+    assert ok?
+    assert_equal 'foo=ISO-8859-1;bar=ISO-8859-1', body
   end
 
   it "supports named captures like %r{/hello/(?<person>[^/?#]+)}" do
@@ -350,6 +408,19 @@ class RoutingTest < Minitest::Test
     get '/page'
     assert ok?
     assert_equal "format=", body
+  end
+
+  it 'uses the default encoding for named captures' do
+    mock_app {
+      set :default_encoding ,'ISO-8859-1'
+
+      get Regexp.new('/page(?<format>.[^/?#]+)?') do
+        "format=#{params[:format].encoding};captures=#{params[:captures][0].encoding}"
+      end
+    }
+    get '/page.f%C3%B6'
+    assert ok?
+    assert_equal 'format=ISO-8859-1;captures=ISO-8859-1', body
   end
 
   it 'does not concatenate params with the same name' do
@@ -604,6 +675,20 @@ class RoutingTest < Minitest::Test
     assert ok?
   end
 
+  it 'unescapes named parameters and splats' do
+    mock_app {
+      get '/:foo/*' do |a, b|
+        assert_equal "foo\xE2\x80\x8Cbar", params['foo']
+        assert_predicate params['foo'], :valid_encoding?
+
+        assert_equal ["bar\xE2\x80\x8Cbaz"], params['splat']
+      end
+    }
+
+    get '/foo%e2%80%8cbar/bar%e2%80%8cbaz'
+    assert ok?
+  end
+
   it 'supports regular expressions' do
     mock_app {
       get(/\/foo...\/bar/) do
@@ -614,6 +699,19 @@ class RoutingTest < Minitest::Test
     get '/foooom/bar'
     assert ok?
     assert_equal 'Hello World', body
+  end
+
+  it 'unescapes regular expression captures' do
+    mock_app {
+      get(/\/foo\/(.+)/) do |path|
+        path
+      end
+    }
+
+    get '/foo/bar%e2%80%8cbaz'
+    assert ok?
+    assert_equal "bar\xE2\x80\x8Cbaz", body
+    assert_predicate body, :valid_encoding?
   end
 
   it 'makes regular expression captures available in params[:captures]' do
@@ -627,6 +725,29 @@ class RoutingTest < Minitest::Test
     get '/foorooomma/baf'
     assert ok?
     assert_equal 'right on', body
+  end
+
+  it 'makes regular expression captures available in params[:captures] for concatenated routes' do
+    with_regexp = Mustermann.new('/prefix') + Mustermann.new("/fo(.*)/ba(.*)", type: :regexp)
+    without_regexp = Mustermann.new('/prefix', type: :identity) + Mustermann.new('/baz')
+    mock_app {
+      get(with_regexp) do
+        assert_equal ['orooomma', 'f'], params[:captures]
+        'right on'
+      end
+      get(without_regexp) do
+        assert !params.keys.include?(:captures)
+        'no captures here'
+      end
+    }
+
+    get '/prefix/foorooomma/baf'
+    assert ok?
+    assert_equal 'right on', body
+
+    get '/prefix/baz'
+    assert ok?
+    assert_equal 'no captures here', body
   end
 
   it 'supports regular expression look-alike routes' do
@@ -1095,6 +1216,28 @@ class RoutingTest < Minitest::Test
     assert_body 'html'
   end
 
+  it "doesn't allow provides of passed routes to interfere with provides of other routes" do
+    mock_app do
+      get('/:foo', :provides => :txt) do
+        pass if params[:foo] != 'foo'
+
+        'foo'
+      end
+
+      get('/bar', :provides => :html) { 'bar' }
+    end
+
+    get '/foo', {}, { 'HTTP_ACCEPT' => '*/*' }
+    assert ok?
+    assert_equal 'text/plain;charset=utf-8', response.headers['Content-Type']
+    assert_body 'foo'
+
+    get '/bar', {}, { 'HTTP_ACCEPT' => '*/*' }
+    assert ok?
+    assert_equal 'text/html;charset=utf-8', response.headers['Content-Type']
+    assert_body 'bar'
+  end
+
   it "allows multiple mime types for accept header" do
     types = ['image/jpeg', 'image/pjpeg']
 
@@ -1230,6 +1373,29 @@ class RoutingTest < Minitest::Test
     assert_body 'text/xml;charset=utf-8'
   end
 
+  it 'matches content-type to mime_type' do
+    mime_type = 'application/rss+xml;version="http://purl.org/rss/1.0/"'
+    mock_app do
+      configure { mime_type(:rss10, mime_type) }
+      get('/', :provides => [:rss10]) { content_type }
+    end
+
+    get '/', {}, { 'HTTP_ACCEPT' => 'application/rss+xml' }
+    assert ok?
+    assert_body mime_type
+  end
+
+  it 'handles missing mime_types with 404' do
+    mock_app do
+      configure { mime_type(:rss10, 'application/rss+xml') }
+      get('/', :provides => [:jpg]) { content_type }
+    end
+
+    get '/', {}, { 'HTTP_ACCEPT' => 'application/rss+xml' }
+    assert_equal 404, status
+    assert_equal 'text/html;charset=utf-8', response['Content-Type']
+  end
+
   it 'passes a single url param as block parameters when one param is specified' do
     mock_app {
       get '/:foo' do |foo|
@@ -1281,6 +1447,19 @@ class RoutingTest < Minitest::Test
     get '/bar/foo/bling/baz/boom'
     assert ok?
     assert_equal 'looks good', body
+  end
+
+  it "uses the default encoding for block parameters" do
+    mock_app {
+      set :default_encoding ,'ISO-8859-1'
+
+      get '/:foo/:bar' do |foo, bar|
+        "foo=#{foo.encoding};bar=#{bar.encoding}"
+      end
+    }
+    get '/f%C3%B6%C3%B6/b%C3%B6%C3%B6'
+    assert ok?
+    assert_equal 'foo=ISO-8859-1;bar=ISO-8859-1', body
   end
 
   it 'raises an ArgumentError with block arity > 1 and too many values' do

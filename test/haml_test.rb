@@ -1,4 +1,4 @@
-require File.expand_path('../helper', __FILE__)
+require File.expand_path('helper', __dir__)
 
 begin
 require 'haml'
@@ -6,7 +6,7 @@ require 'haml'
 class HAMLTest < Minitest::Test
   def haml_app(&block)
     mock_app do
-      set :views, File.dirname(__FILE__) + '/views'
+      set :views, __dir__ + '/views'
       get('/', &block)
     end
     get '/'
@@ -31,13 +31,13 @@ class HAMLTest < Minitest::Test
     end
     get '/'
     assert ok?
-    assert_equal "<h1>THIS. IS. <EM>SPARTA</EM></h1>\n", body
+    assert_equal "<h1>THIS. IS. <EM>SPARTA</EM>\n</h1>\n", body
   end
 
   it "renders with file layouts" do
     haml_app { haml 'Hello World', :layout => :layout2 }
     assert ok?
-    assert_equal "<h1>HAML Layout!</h1>\n<p>Hello World</p>\n", body
+    assert_equal "<h1>HAML Layout!</h1>\n<p>Hello World\n</p>\n", body
   end
 
   it "raises error if template not found" do

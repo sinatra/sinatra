@@ -1,4 +1,4 @@
-require File.expand_path('../helper', __FILE__)
+require File.expand_path('helper', __dir__)
 
 class ERBTest < Minitest::Test
   def engine
@@ -12,7 +12,7 @@ class ERBTest < Minitest::Test
 
   def erb_app(&block)
     mock_app do
-      set :views, File.dirname(__FILE__) + '/views'
+      set :views, __dir__ + '/views'
       get('/', &block)
     end
     get '/'
@@ -105,12 +105,11 @@ class ERBTest < Minitest::Test
   end
 end
 
-
 begin
-  require 'erubis'
-  class ErubisTest < ERBTest
-    def engine; Tilt::ErubisTemplate end
+  require 'erubi'
+  class ErubiTest < ERBTest
+    def engine; Tilt::ErubiTemplate end
   end
 rescue LoadError
-  warn "#{$!}: skipping erubis tests"
+  warn "#{$!}: skipping erubi tests"
 end

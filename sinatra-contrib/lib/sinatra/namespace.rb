@@ -1,4 +1,3 @@
-require 'backports'
 require 'sinatra/base'
 require 'mustermann'
 
@@ -147,7 +146,7 @@ module Sinatra
   #     module Zomg # Keep everything under "Zomg" namespace for sanity
   #       module Routes # Define a new "Routes" module
   #
-  #         self.registered(app)
+  #         def self.registered(app)
   #           # First, register the Namespace extension
   #           app.register Sinatra::Namespace
   #
@@ -225,6 +224,12 @@ module Sinatra
       include SharedMethods
       attr_reader :base, :templates
 
+      ALLOWED_ENGINES = [
+        :erb, :erubi, :haml, :hamlit, :builder, :nokogiri,
+        :liquid, :markdown, :rdoc, :asciidoc, :radius, :markaby,
+        :rabl, :slim, :creole, :mediawiki, :coffee, :yajl
+      ]
+
       def self.prefixed(*names)
         names.each { |n| define_method(n) { |*a, &b| prefixed(n, *a, &b) }}
       end
@@ -279,8 +284,8 @@ module Sinatra
       end
 
       def set(key, value = self, &block)
-        raise ArgumentError, "may not set #{key}" if key != :views
-        return key.each { |k,v| set(k, v) } if block.nil? and value == self
+        return key.each { |k,v| set(k, v) } if key.respond_to?(:each) and block.nil? and value == self
+        raise ArgumentError, "may not set #{key}" unless ([:views] + ALLOWED_ENGINES).include?(key)
         block ||= proc { value }
         singleton_class.send(:define_method, key, &block)
       end
@@ -294,8 +299,9 @@ module Sinatra
       end
 
       def template(name, &block)
-        filename, line = caller_locations.first
-        templates[name] = [block, filename, line.to_i]
+        first_location = caller_locations.first
+        filename, line = first_location.path, first_location.lineno
+        templates[name] = [block, filename, line]
       end
 
       def layout(name=:layout, &block)
@@ -318,9 +324,7 @@ module Sinatra
           pattern = nil
         end
         base_pattern, base_conditions = @pattern, @conditions
-        pattern         ||= default_pattern
-        base_pattern    ||= base.pattern    if base.respond_to? :pattern
-        base_conditions ||= base.conditions if base.respond_to? :conditions
+        pattern ||= default_pattern
         [ prefixed_path(base_pattern, pattern),
           (base_conditions || {}).merge(conditions) ]
       end
@@ -335,7 +339,7 @@ module Sinatra
       def prefixed(method, pattern = nil, conditions = {}, &block)
         default = %r{(?:/.*)?} if method == :before or method == :after
         pattern, conditions = compile pattern, conditions, default
-        result = base.send(method, pattern, conditions, &block)
+        result = base.send(method, pattern, **conditions, &block)
         invoke_hook :route_added, method.to_s.upcase, pattern, block
         result
       end

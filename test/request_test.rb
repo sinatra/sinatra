@@ -1,4 +1,4 @@
-require File.expand_path('../helper', __FILE__)
+require File.expand_path('helper', __dir__)
 require 'stringio'
 
 class RequestTest < Minitest::Test
@@ -15,6 +15,15 @@ class RequestTest < Minitest::Test
       'rack.input' => StringIO.new('foo=bar')
     )
     assert_equal 'bar', request.params['foo']
+  end
+
+  it 'raises Sinatra::BadRequest when multipart/form-data request has no content' do
+    request = Sinatra::Request.new(
+      'REQUEST_METHOD' => 'POST',
+      'CONTENT_TYPE' => 'multipart/form-data; boundary=dummy',
+      'rack.input' => StringIO.new('')
+    )
+    assert_raises(Sinatra::BadRequest) { request.params }
   end
 
   it 'is secure when the url scheme is https' do
@@ -101,5 +110,25 @@ class RequestTest < Minitest::Test
   it 'will not accept types not specified in HTTP_ACCEPT when HTTP_ACCEPT is provided' do
     request = Sinatra::Request.new 'HTTP_ACCEPT' => 'application/json'
     assert !request.accept?('text/html')
+  end
+
+  it 'will accept types that fulfill HTTP_ACCEPT parameters' do
+    request = Sinatra::Request.new 'HTTP_ACCEPT' => 'application/rss+xml; version="http://purl.org/rss/1.0/"'
+
+    assert request.accept?('application/rss+xml; version="http://purl.org/rss/1.0/"')
+    assert request.accept?('application/rss+xml; version="http://purl.org/rss/1.0/"; charset=utf-8')
+    assert !request.accept?('application/rss+xml; version="https://cyber.harvard.edu/rss/rss.html"')
+  end
+
+  it 'will accept more generic types that include HTTP_ACCEPT parameters' do
+    request = Sinatra::Request.new 'HTTP_ACCEPT' => 'application/rss+xml; charset=utf-8; version="http://purl.org/rss/1.0/"'
+
+    assert request.accept?('application/rss+xml')
+    assert request.accept?('application/rss+xml; version="http://purl.org/rss/1.0/"')
+  end
+
+  it 'will accept types matching HTTP_ACCEPT when parameters in arbitrary order' do
+    request = Sinatra::Request.new 'HTTP_ACCEPT' => 'application/rss+xml; charset=utf-8; version="http://purl.org/rss/1.0/"'
+    assert request.accept?('application/rss+xml; version="http://purl.org/rss/1.0/"; charset=utf-8')
   end
 end

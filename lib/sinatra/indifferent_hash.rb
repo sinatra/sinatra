@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Sinatra
   # A poor man's ActiveSupport::HashWithIndifferentAccess, with all the Rails-y
   # stuff removed.
@@ -41,11 +42,15 @@ module Sinatra
     end
 
     def initialize(*args)
-      super(*args.map(&method(:convert_value)))
+      args.map!(&method(:convert_value))
+
+      super(*args)
     end
 
     def default(*args)
-      super(*args.map(&method(:convert_key)))
+      args.map!(&method(:convert_key))
+
+      super(*args)
     end
 
     def default=(value)
@@ -61,7 +66,9 @@ module Sinatra
     end
 
     def fetch(key, *args)
-      super(convert_key(key), *args.map(&method(:convert_value)))
+      args.map!(&method(:convert_value))
+
+      super(convert_key(key), *args)
     end
 
     def [](key)
@@ -98,23 +105,37 @@ module Sinatra
 
     def dig(key, *other_keys)
       super(convert_key(key), *other_keys)
-    end if method_defined?(:dig) # Added in Ruby 2.3
-
-    def fetch_values(*keys)
-      super(*keys.map(&method(:convert_key)))
-    end if method_defined?(:fetch_values) # Added in Ruby 2.3
-
-    def values_at(*keys)
-      super(*keys.map(&method(:convert_key)))
     end
 
-    def merge!(other_hash)
-      return super if other_hash.is_a?(self.class)
+    def fetch_values(*keys)
+      keys.map!(&method(:convert_key))
 
-      other_hash.each_pair do |key, value|
-        key = convert_key(key)
-        value = yield(key, self[key], value) if block_given? && key?(key)
-        self[key] = convert_value(value)
+      super(*keys)
+    end
+
+    def slice(*keys)
+      keys.map!(&method(:convert_key))
+
+      self.class[super(*keys)]
+    end
+
+    def values_at(*keys)
+      keys.map!(&method(:convert_key))
+
+      super(*keys)
+    end
+
+    def merge!(*other_hashes)
+      other_hashes.each do |other_hash|
+        if other_hash.is_a?(self.class)
+          super(other_hash)
+        else
+          other_hash.each_pair do |key, value|
+            key = convert_key(key)
+            value = yield(key, self[key], value) if block_given? && key?(key)
+            self[key] = convert_value(value)
+          end
+        end
       end
 
       self
@@ -122,13 +143,45 @@ module Sinatra
 
     alias_method :update, :merge!
 
-    def merge(other_hash, &block)
-      dup.merge!(other_hash, &block)
+    def merge(*other_hashes, &block)
+      dup.merge!(*other_hashes, &block)
     end
 
     def replace(other_hash)
       super(other_hash.is_a?(self.class) ? other_hash : self.class[other_hash])
     end
+
+    def transform_values(&block)
+      dup.transform_values!(&block)
+    end
+
+    def transform_values!
+      super
+      super(&method(:convert_value))
+    end
+
+    def transform_keys(&block)
+      dup.transform_keys!(&block)
+    end
+
+    def transform_keys!
+      super
+      super(&method(:convert_key))
+    end
+
+    def select(*args, &block)
+      return to_enum(:select) unless block_given?
+      dup.tap { |hash| hash.select!(*args, &block) }
+    end
+
+    def reject(*args, &block)
+      return to_enum(:reject) unless block_given?
+      dup.tap { |hash| hash.reject!(*args, &block) }
+    end
+
+    def compact
+      dup.tap(&:compact!)
+    end if method_defined?(:compact) # Added in Ruby 2.4
 
     private
 

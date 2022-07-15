@@ -36,16 +36,15 @@ module Rack
     #          to be used in a policy.
     #
     class ContentSecurityPolicy < Base
-      default_options default_src: :none, script_src: "'self'",
-                      img_src: "'self'", style_src: "'self'",
-                      connect_src: "'self'", report_only: false
+      default_options default_src: "'self'", report_only: false
 
       DIRECTIVES = %i(base_uri child_src connect_src default_src
                       font_src form_action frame_ancestors frame_src
                       img_src manifest_src media_src object_src
                       plugin_types referrer reflected_xss report_to
                       report_uri require_sri_for sandbox script_src
-                      style_src worker_src).freeze
+                      style_src worker_src webrtc_src navigate_to
+                      prefetch_src).freeze
 
       NO_ARG_DIRECTIVES = %i(block_all_mixed_content disown_opener
                              upgrade_insecure_requests).freeze
@@ -62,7 +61,7 @@ module Rack
         # Set these key values to boolean 'true' to include in policy
         NO_ARG_DIRECTIVES.each do |d|
           if options.key?(d) && options[d].is_a?(TrueClass)
-            directives << d.to_s.sub(/_/, '-')
+            directives << d.to_s.tr('_', '-')
           end
         end
 

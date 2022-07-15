@@ -1,4 +1,4 @@
-describe Rack::Protection do
+RSpec.describe Rack::Protection do
   it_behaves_like "any rack application"
 
   it 'passes on options' do
@@ -66,6 +66,16 @@ describe Rack::Protection do
   describe "#html?" do
     context "given an appropriate content-type header" do
       subject { Rack::Protection::Base.new(nil).html? 'content-type' => "text/html" }
+      it { is_expected.to be_truthy }
+    end
+
+    context "given an appropriate content-type header of text/xml" do
+      subject { Rack::Protection::Base.new(nil).html? 'content-type' => "text/xml" }
+      it { is_expected.to be_truthy }
+    end
+
+    context "given an appropriate content-type header of application/xml" do
+      subject { Rack::Protection::Base.new(nil).html? 'content-type' => "application/xml" }
       it { is_expected.to be_truthy }
     end
 

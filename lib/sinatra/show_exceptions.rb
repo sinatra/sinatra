@@ -25,26 +25,26 @@ module Sinatra
 
       if prefers_plain_text?(env)
         content_type = "text/plain"
-        exception = dump_exception(e)
+        body = dump_exception(e)
       else
         content_type = "text/html"
-        exception = pretty(env, e)
+        body = pretty(env, e)
       end
 
       env["rack.errors"] = errors
-
-      # Post 893a2c50 in rack/rack, the #pretty method above, implemented in
-      # Rack::ShowExceptions, returns a String instead of an array.
-      body = Array(exception)
 
       [
         500,
         {
           "Content-Type" => content_type,
-          "Content-Length" => body.join.bytesize.to_s
+          "Content-Length" => body.bytesize.to_s
         },
-        body
+        [body]
       ]
+    end
+
+    def template
+      TEMPLATE
     end
 
     private
@@ -360,6 +360,3 @@ enabled the <code>show_exceptions</code> setting.</p>
 HTML
   end
 end
-
-Rack::ShowExceptions.send :remove_const, "TEMPLATE"
-Rack::ShowExceptions.const_set "TEMPLATE", Sinatra::ShowExceptions::TEMPLATE

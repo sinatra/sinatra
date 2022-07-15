@@ -1,4 +1,4 @@
-describe Rack::Protection::Encryptor do
+RSpec.describe Rack::Protection::Encryptor do
   let(:secret) {
     OpenSSL::Cipher.new(Rack::Protection::Encryptor::CIPHER).random_key
   }

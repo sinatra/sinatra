@@ -17,7 +17,8 @@ energiabefektetéssel:
 Telepítsd a gem-et és indítsd el az alkalmazást a következőképpen:
 
 ```ruby
-  sudo gem install sinatra
+  gem install sinatra
+  gem install puma # vagy bármely más szerver
   ruby myapp.rb
 ```
 
@@ -120,7 +121,7 @@ A statikus fájlok kiszolgálása a `./public` könyvtárból
 történik, de természetesen más könyvtárat is megadhatsz erre a célra,
 mégpedig a :public_folder kapcsoló beállításával:
 
-  set :public_folder, File.dirname(__FILE__) + '/static'
+  set :public_folder, __dir__ + '/static'
 
 Fontos megjegyezni, hogy a nyilvános könyvtár neve nem szerepel az URL-ben.
 A ./public/css/style.css fájl az
@@ -131,7 +132,7 @@ A ./public/css/style.css fájl az
 A sablonfájlokat rendszerint a  `./views` könyvtárba helyezzük, de
 itt is lehetőség nyílik egyéb könyvtár használatára:
 
-  set :views, File.dirname(__FILE__) + '/templates'
+  set :views, __dir__ + '/templates'
 
 Nagyon fontos észben tartani, hogy a sablononkra mindig szimbólumokkal
 hivatkozunk, még akkor is, ha egyéb (ebben az esetben a
@@ -197,34 +198,6 @@ rendereléséhez:
 
 Ez pedig a `./views/index.builder` állományt fogja renderelni.
 
-### Sass sablonok
-
-Sass sablonok használatához szükség lesz a haml gem-re vagy könyvtárra:
-
-  # Be kell importálni a haml, vagy a sass könyvtárat
-
-```ruby
-  require 'sass'
-
-  get '/stylesheet.css' do
-    sass :stylesheet
-  end
-```
-
-Így a `./views/stylesheet.sass` fájl máris renderelhető.
-
-A [Sass kapcsolói](http://haml.hamptoncatlin.com/docs/rdoc/classes/Sass.html)
-globálisan is beállíthatók a Sinatra konfigurációi között, lásd az
-[Options and Configurations](http://www.sinatrarb.com/configuration.html) lapot.
-A globális beállításokat lehetőségünk van felülírni metódus szinten is.
-
-```ruby
-  set :sass, {:style => :compact } # az alapértelmezett Sass stílus a :nested
-
-  get '/stylesheet.css' do
-    sass :stylesheet, :sass_options => {:style => :expanded } # felülírva
-  end
-```
 
 ### Beágyazott sablonok
 
@@ -700,7 +673,7 @@ De hozzá is adhatod a <tt>sinatra/lib</tt> könyvtárat a <tt>LOAD_PATH</tt>-ho
 az alkalmazásodban:
 
 ```ruby
-  $LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
+  $LOAD_PATH.unshift __dir__ + '/sinatra/lib'
   require 'rubygems'
   require 'sinatra'
 

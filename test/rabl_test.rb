@@ -1,15 +1,16 @@
-require File.expand_path('../helper', __FILE__)
+require File.expand_path('helper', __dir__)
 
 begin
 require 'rabl'
 require 'ostruct'
 require 'json'
+require 'active_support/core_ext/array/extract_options'
 require 'active_support/core_ext/hash/conversions'
 
 class RablTest < Minitest::Test
   def rabl_app(&block)
     mock_app {
-      set :views, File.dirname(__FILE__) + '/views'
+      set :views, __dir__ + '/views'
       get '/', &block
     }
     get '/'

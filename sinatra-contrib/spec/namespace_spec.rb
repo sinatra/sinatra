@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Sinatra::Namespace do
+RSpec.describe Sinatra::Namespace do
   verbs = [:get, :head, :post, :put, :delete, :options, :patch]
 
   def mock_app(&block)
@@ -137,7 +137,7 @@ describe Sinatra::Namespace do
 
         describe 'helpers' do
           it 'are defined using the helpers method' do
-            namespace /\/foo\/([^\/&?]+)\/bar\/([^\/&?]+)\// do
+            namespace(/\/foo\/([^\/&?]+)\/bar\/([^\/&?]+)\//) do
               helpers do
                 def foo
                   'foo'
@@ -477,6 +477,19 @@ describe Sinatra::Namespace do
           expect(body).to eq('OKAY!!11!') unless verb == :head
         end
 
+        it 'works correctly if deep nesting' do
+          namespace '/a' do
+            namespace '/b' do
+              namespace '/c' do
+                send(verb, '') { 'hey' }
+              end
+            end
+          end
+
+          expect(send(verb, '/a/b/c')).to be_ok
+          expect(body).to eq('hey') unless verb == :head
+        end
+
         it 'exposes helpers to nested namespaces' do
           namespace '/foo' do
             helpers do
@@ -648,10 +661,10 @@ describe Sinatra::Namespace do
 
           specify 'can use a custom views directory' do
             mock_app do
-              set :views, File.expand_path('../namespace', __FILE__)
+              set :views, File.expand_path('namespace', __dir__)
               send(verb, '/') { erb :foo }
               namespace('/foo') do
-                set :views, File.expand_path('../namespace/nested', __FILE__)
+                set :views, File.expand_path('namespace/nested', __dir__)
                 send(verb) { erb :foo }
               end
             end
@@ -757,6 +770,20 @@ describe Sinatra::Namespace do
       expect(last_response.body).to eq('ok')
     end
 
+    it 'sets hashes correctly' do
+      mock_app do
+        namespace '/foo' do
+          set erb: 'o', haml: 'k'
+          get '/bar' do
+            settings.erb + settings.haml
+          end
+        end
+      end
+
+      expect(get('/foo/bar').status).to eq(200)
+      expect(last_response.body).to eq('ok')
+    end
+
     it 'uses some repro' do
       mock_app do
         set :foo, 42
@@ -818,5 +845,15 @@ describe Sinatra::Namespace do
       get '/foo-bar'
       expect(last_response.body).to eq('[:foo_bar]')
     end
+  end
+
+  it 'forbids unknown engine settings' do
+    expect {
+      mock_app do
+        namespace '/foo' do
+          set :unknownsetting
+        end
+      end
+    }.to raise_error(ArgumentError, 'may not set unknownsetting')
   end
 end

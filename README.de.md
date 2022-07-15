@@ -1,7 +1,5 @@
 # Sinatra
 
-[![Build Status](https://secure.travis-ci.org/sinatra/sinatra.svg)](http://travis-ci.org/sinatra/sinatra)
-
 *Wichtig: Dieses Dokument ist eine Übersetzung aus dem Englischen und unter
 Umständen nicht auf dem aktuellen Stand (aktuell Sinatra 2.0
 Vorabausgabe).*
@@ -24,6 +22,7 @@ Sinatra-Gem installieren:
 
 ```shell
 gem install sinatra
+gem install puma # oder irgendein anderer Server
 ```
 
 und im gleichen Verzeichnis ausführen:
@@ -35,31 +34,27 @@ ruby myapp.rb
 Die Seite kann nun unter [http://localhost:4567](http://localhost:4567)
 aufgerufen werden.
 
-Es wird empfohlen `gem installl thin` auszuführen, Sinatra wird dann
+Es wird empfohlen `gem install thin` auszuführen, Sinatra wird dann
 diesen Server verwenden.
 
 ## Inhalt
 
 - [Sinatra](#sinatra)
-  * [Inhalt](#inhalt)
-  * [Routen](#routen)
-    + [Bedingungen](#bedingungen)
-    + [Rückgabewerte](#rückgabewerte)
-    + [Eigene Routen-Muster](#eigene-routen-muster)
-  * [Statische Dateien](#statische-dateien)
-  * [Views/Templates](#views-templates)
-    + [Direkte Templates](#direkte-templates)
-    + [Verfügbare Templatesprachen](#verfügbare-templatesprachen)
+  - [Inhalt](#inhalt)
+  - [Routen](#routen)
+    - [Bedingungen](#bedingungen)
+    - [Rückgabewerte](#rückgabewerte)
+    - [Eigene Routen-Muster](#eigene-routen-muster)
+  - [Statische Dateien](#statische-dateien)
+  - [Views/Templates](#viewstemplates)
+    - [Direkte Templates](#direkte-templates)
+    - [Verfügbare Templatesprachen](#verfügbare-templatesprachen)
       - [Haml Templates](#haml-templates)
       - [Erb Templates](#erb-templates)
       - [Builder Templates](#builder-templates)
       - [Nokogiri Templates](#nokogiri-templates)
-      - [Sass Templates](#sass-templates)
-      - [SCSS Templates](#scss-templates)
-      - [Less Templates](#less-templates)
       - [Liquid Templates](#liquid-templates)
       - [Markdown Templates](#markdown-templates)
-      - [Textile Templates](#textile-templates)
       - [RDoc Templates](#rdoc-templates)
       - [AsciiDoc Templates](#asciidoc-templates)
       - [Radius Templates](#radius-templates)
@@ -69,65 +64,61 @@ diesen Server verwenden.
       - [Creole Templates](#creole-templates)
       - [MediaWiki Templates](#mediawiki-templates)
       - [CoffeeScript Templates](#coffeescript-templates)
-      - [Stylus Templates](#stylus-templates)
       - [Yajl Templates](#yajl-templates)
-      - [WLang Templates](#wlang-templates)
-    + [Auf Variablen in Templates zugreifen](#auf-variablen-in-templates-zugreifen)
-    + [Templates mit `yield` und verschachtelte Layouts](#templates-mit--yield--und-verschachtelte-layouts)
-    + [Inline-Templates](#inline-templates)
-    + [Benannte Templates](#benannte-templates)
-    + [Dateiendungen zuordnen](#dateiendungen-zuordnen)
-    + [Eine eigene Template-Engine hinzufügen](#eine-eigene-template-engine-hinzuf-gen)
-    + [Eigene Methoden zum Aufsuchen von Templates verwenden](#eigene-methoden-zum-aufsuchen-von-templates-verwenden)
-  * [Filter](#filter)
-  * [Helfer](#helfer)
-    + [Sessions verwenden](#sessions-verwenden)
+    - [Auf Variablen in Templates zugreifen](#auf-variablen-in-templates-zugreifen)
+    - [Templates mit `yield` und verschachtelte Layouts](#templates-mit-yield-und-verschachtelte-layouts)
+    - [Inline-Templates](#inline-templates)
+    - [Benannte Templates](#benannte-templates)
+    - [Dateiendungen zuordnen](#dateiendungen-zuordnen)
+    - [Eine eigene Template-Engine hinzufügen](#eine-eigene-template-engine-hinzufügen)
+    - [Eigene Methoden zum Aufsuchen von Templates verwenden](#eigene-methoden-zum-aufsuchen-von-templates-verwenden)
+  - [Filter](#filter)
+  - [Helfer](#helfer)
+    - [Sessions verwenden](#sessions-verwenden)
       - [Sitzungseinstellungen](#sitzungseinstellungen)
-      - [Eigene Sitzungs-Middleware auswählen](#eigene-sitzungs-middleware-ausw-hlen)
-    + [Anhalten](#anhalten)
-    + [Weiterspringen](#weiterspringen)
-    + [Eine andere Route ansteuern](#eine-andere-route-ansteuern)
-    + [Body, Status-Code und Header setzen](#body--status-code-und-header-setzen)
-    + [Response-Streams](#response-streams)
-    + [Logger](#logger)
-    + [Mime-Types](#mime-types)
-    + [URLs generieren](#urls-generieren)
-    + [Browser-Umleitung](#browser-umleitung)
-    + [Cache einsetzen](#cache-einsetzen)
-    + [Dateien versenden](#dateien-versenden)
-    + [Das Request-Objekt](#das-request-objekt)
-    + [Anhänge](#anhänge)
-    + [Umgang mit Datum und Zeit](#umgang-mit-datum-und-zeit)
-    + [Nachschlagen von Template-Dateien](#nachschlagen-von-template-dateien)
-    + [Konfiguration](#konfiguration)
+      - [Eigene Sitzungs-Middleware auswählen](#eigene-sitzungs-middleware-auswählen)
+    - [Anhalten](#anhalten)
+    - [Weiterspringen](#weiterspringen)
+    - [Eine andere Route ansteuern](#eine-andere-route-ansteuern)
+    - [Body, Status-Code und Header setzen](#body-status-code-und-header-setzen)
+    - [Response-Streams](#response-streams)
+    - [Logger](#logger)
+    - [Mime-Types](#mime-types)
+    - [URLs generieren](#urls-generieren)
+    - [Browser-Umleitung](#browser-umleitung)
+    - [Cache einsetzen](#cache-einsetzen)
+    - [Dateien versenden](#dateien-versenden)
+    - [Das Request-Objekt](#das-request-objekt)
+    - [Anhänge](#anhänge)
+    - [Umgang mit Datum und Zeit](#umgang-mit-datum-und-zeit)
+    - [Nachschlagen von Template-Dateien](#nachschlagen-von-template-dateien)
+    - [Konfiguration](#konfiguration)
       - [Einstellung des Angriffsschutzes](#einstellung-des-angriffsschutzes)
-      - [Mögliche Einstellungen](#m-gliche-einstellungen)
-  * [Umgebungen](#umgebungen)
-  * [Fehlerbehandlung](#fehlerbehandlung)
-    + [Nicht gefunden](#nicht-gefunden)
-    + [Fehler](#fehler)
-  * [Rack-Middleware](#rack-middleware)
-  * [Testen](#testen)
-  * [Sinatra::Base - Middleware, Bibliotheken und modulare Anwendungen](#sinatra--base---middleware--bibliotheken-und-modulare-anwendungen)
-    + [Modularer vs. klassischer Stil](#modularer-vs-klassischer-stil)
-    + [Eine modulare Applikation bereitstellen](#eine-modulare-applikation-bereitstellen)
-    + [Eine klassische Anwendung mit einer config.ru verwenden](#eine-klassische-anwendung-mit-einer-configru-verwenden)
-    + [Wann sollte eine config.ru-Datei verwendet werden?](#wann-sollte-eine-configru-datei-verwendet-werden-)
-    + [Sinatra als Middleware nutzen](#sinatra-als-middleware-nutzen)
-    + [Dynamische Applikationserstellung](#dynamische-applikationserstellung)
-  * [Geltungsbereich und Bindung](#geltungsbereich-und-bindung)
-    + [Anwendungs- oder Klassen-Scope](#anwendungs--oder-klassen-scope)
-    + [Anfrage- oder Instanz-Scope](#anfrage--oder-instanz-scope)
-    + [Delegation-Scope](#delegation-scope)
-  * [Kommandozeile](#kommandozeile)
-    + [Multi-threading](#multi-threading)
-  * [Systemanforderungen](#systemanforderungen)
-  * [Der neuste Stand (The Bleeding Edge)](#der-neuste-stand--the-bleeding-edge-)
-    + [Mit Bundler](#mit-bundler)
-    + [Eigenes Repository](#eigenes-repository)
-    + [Gem erstellen](#gem-erstellen)
-  * [Versions-Verfahren](#versions-verfahren)
-  * [Mehr](#mehr)
+      - [Mögliche Einstellungen](#mögliche-einstellungen)
+  - [Umgebungen](#umgebungen)
+  - [Fehlerbehandlung](#fehlerbehandlung)
+    - [Nicht gefunden](#nicht-gefunden)
+    - [Fehler](#fehler)
+  - [Rack-Middleware](#rack-middleware)
+  - [Testen](#testen)
+  - [Sinatra::Base - Middleware, Bibliotheken und modulare Anwendungen](#sinatrabase---middleware-bibliotheken-und-modulare-anwendungen)
+    - [Modularer vs. klassischer Stil](#modularer-vs-klassischer-stil)
+    - [Eine modulare Applikation bereitstellen](#eine-modulare-applikation-bereitstellen)
+    - [Eine klassische Anwendung mit einer config.ru verwenden](#eine-klassische-anwendung-mit-einer-configru-verwenden)
+    - [Wann sollte eine config.ru-Datei verwendet werden?](#wann-sollte-eine-configru-datei-verwendet-werden)
+    - [Sinatra als Middleware nutzen](#sinatra-als-middleware-nutzen)
+    - [Dynamische Applikationserstellung](#dynamische-applikationserstellung)
+  - [Geltungsbereich und Bindung](#geltungsbereich-und-bindung)
+    - [Anwendungs- oder Klassen-Scope](#anwendungs--oder-klassen-scope)
+    - [Anfrage- oder Instanz-Scope](#anfrage--oder-instanz-scope)
+    - [Delegation-Scope](#delegation-scope)
+  - [Kommandozeile](#kommandozeile)
+    - [Multi-threading](#multi-threading)
+  - [Systemanforderungen](#systemanforderungen)
+  - [Der neuste Stand (The Bleeding Edge)](#der-neuste-stand-the-bleeding-edge)
+    - [Mit Bundler](#mit-bundler)
+  - [Versions-Verfahren](#versions-verfahren)
+  - [Mehr](#mehr)
 
 ## Routen
 
@@ -357,13 +348,13 @@ auch andere Werte akzeptiert.
 Es kann jedes gültige Objekt zurückgegeben werden, bei dem es sich entweder um
 einen Rack-Rückgabewert, einen Rack-Body oder einen HTTP-Status-Code handelt:
 
-*   Ein Array mit drei Elementen: `[Status (Fixnum), Headers (Hash),
+*   Ein Array mit drei Elementen: `[Status (Integer), Headers (Hash),
     Response-Body (antwortet auf #each)]`.
-*   Ein Array mit zwei Elementen: `[Status (Fixnum), Response-Body (antwortet
+*   Ein Array mit zwei Elementen: `[Status (Integer), Response-Body (antwortet
     auf #each)]`.
 *   Ein Objekt, das auf `#each` antwortet und den an diese Methode übergebenen
-    Block nur mit Strings als Übergabewerte aufruft.
-*   Ein Fixnum, das den Status-Code festlegt.
+    Block nur mit Strings als Übergabewerten aufruft.
+*   Ein Integer, das den Status-Code festlegt.
 
 Damit lässt sich relativ einfach Streaming implementieren:
 
@@ -434,7 +425,7 @@ Statische Dateien werden im `./public`-Ordner erwartet. Es ist möglich,
 einen anderen Ort zu definieren, indem man die `:public_folder`-Option setzt:
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/static'
+set :public_folder, __dir__ + '/static'
 ```
 
 Zu beachten ist, dass der Ordnername `public` nicht Teil der URL ist.
@@ -467,7 +458,7 @@ get '/' do
 end
 ```
 
-Templates nehmen ein zweite Argument an, den Options-Hash:
+Templates nehmen ein zweites Argument an, den Options-Hash:
 
 ```ruby
 get '/' do
@@ -590,7 +581,7 @@ verwendet wird (und dann auch Thread-sicher ist), verwendet man am besten zu
 Beginn ein `'require'`:
 
 ```ruby
-require 'rdiscount' # oder require 'bluecloth'
+require 'rdiscount'
 get('/') { markdown :index }
 ```
 
@@ -617,12 +608,12 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>Abhängigkeit</td>
-    <td><a href="http://www.kuwata-lab.com/erubis/">erubis</a> oder erb
+    <td><a href="https://github.com/jeremyevans/erubi">erubi</a> oder erb
     (Standardbibliothek von Ruby)</td>
   </tr>
   <tr>
     <td>Dateierweiterungen</td>
-    <td><tt>.erb</tt>, <tt>.rhtml</tt> oder <tt>.erubis</tt> (nur Erubis)</td>
+    <td><tt>.erb</tt>, <tt>.rhtml</tt> oder <tt>.erubi</tt> (nur Erubi)</td>
   </tr>
   <tr>
     <td>Beispiel</td>
@@ -669,66 +660,13 @@ Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 
 Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
 
-#### Sass Templates
-
-<table>
-  <tr>
-    <td>Abhängigkeit</td>
-    <td><a href="http://sass-lang.com/">sass</a></td>
-  </tr>
-  <tr>
-    <td>Dateierweiterung</td>
-    <td><tt>.sass</tt></td>
-  </tr>
-  <tr>
-    <td>Beispiel</td>
-    <td><tt>sass :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-
-#### SCSS Templates
-
-<table>
-  <tr>
-    <td>Abhängigkeit</td>
-    <td><a href="http://sass-lang.com/">sass</a></td>
-  </tr>
-  <tr>
-    <td>Dateierweiterung</td>
-    <td><tt>.scss</tt></td>
-  </tr>
-  <tr>
-    <td>Beispiel</td>
-    <td><tt>scss :stylesheet, :style => :expanded</tt></td>
-  </tr>
-</table>
-
-
-#### Less Templates
-
-<table>
-  <tr>
-    <td>Abhängigkeit</td>
-    <td><a href="http://lesscss.org/">less</a></td>
-  </tr>
-  <tr>
-    <td>Dateierweiterung</td>
-    <td><tt>.less</tt></td>
-  </tr>
-  <tr>
-    <td>Beispiel</td>
-    <td><tt>less :stylesheet</tt></td>
-  </tr>
-</table>
-
 
 #### Liquid Templates
 
 <table>
   <tr>
     <td>Abhängigkeit</td>
-    <td><a href="http://liquidmarkup.org/">liquid</a></td>
+    <td><a href="https://shopify.github.io/liquid/">liquid</a></td>
   </tr>
   <tr>
     <td>Dateierweiterung</td>
@@ -752,9 +690,7 @@ denen man Variablen weitergibt.
     <td>Eine der folgenden Bibliotheken:
         <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
-        <a href="http://deveiate.org/projects/BlueCloth" title="BlueCloth">BlueCloth</a>,
-        <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a> oder
-        <a href="https://github.com/bhollis/maruku" title="maruku">maruku</a>
+        <a href="http://kramdown.gettalong.org/" title="kramdown">kramdown</a>
     </td>
   </tr>
   <tr>
@@ -788,44 +724,6 @@ in Markdown geschrieben werden. Es ist aber möglich, einen Renderer für die
 Templates zu verwenden und einen anderen für das Layout, indem die
 `:layout_engine`-Option verwendet wird.
 
-#### Textile Templates
-
-<table>
-  <tr>
-    <td>Abhängigkeit</td>
-    <td><a href="http://redcloth.org/">RedCloth</a></td>
-  </tr>
-  <tr>
-    <td>Dateierweiterung</td>
-    <td><tt>.textile</tt></td>
-  </tr>
-  <tr>
-    <td>Beispiel</td>
-    <td><tt>textile :index, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-Da man aus dem Textile-Template heraus keine Ruby-Methoden aufrufen und auch
-keine locals verwenden kann, wird man Textile üblicherweise in Kombination mit
-anderen Renderern verwenden wollen:
-
-```ruby
-erb :overview, :locals => { :text => textile(:einfuehrung) }
-```
-
-Beachte, dass man die `textile`-Methode auch aus anderen Templates heraus
-aufrufen kann:
-
-```ruby
-%h1 Gruß von Haml!
-%p= textile(:Grüße)
-```
-
-Da man Ruby nicht von Textile heraus aufrufen kann, können auch Layouts nicht
-in Textile geschrieben werden. Es ist aber möglich, einen Renderer für die
-Templates zu verwenden und einen anderen für das Layout, indem die
-`:layout_engine`-Option verwendet wird.
-
 #### RDoc Templates
 
 <table>
@@ -836,10 +734,6 @@ Templates zu verwenden und einen anderen für das Layout, indem die
   <tr>
     <td>Dateierweiterung</td>
     <td><tt>.rdoc</tt></td>
-  </tr>
-  <tr>
-    <td>Beispiel</td>
-    <td><tt>textile :README, :layout_engine => :erb</tt></td>
   </tr>
 </table>
 
@@ -1052,43 +946,6 @@ Layout, indem die `:layout_engine`-Option verwendet wird.
   </tr>
 </table>
 
-#### Stylus Templates
-
-<table>
-  <tr>
-    <td>Abhängigkeit</td>
-    <td>
-      <a href="https://github.com/forgecrafted/ruby-stylus" title="Ruby Stylus">
-        Stylus
-      </a> und eine Möglichkeit
-      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
-        JavaScript auszuführen
-      </a>.
-    </td>
-  </tr>
-  <tr>
-    <td>Dateierweiterung</td>
-    <td><tt>.styl</tt></td>
-  </tr>
-  <tr>
-    <td>Beispiel</td>
-    <td><tt>stylus :index</tt></td>
-  </tr>
-</table>
-
-Um Stylus-Templates ausführen zu können, müssen `stylus` und `stylus/tilt`
-zuerst geladen werden:
-
-```ruby
-require 'sinatra'
-require 'stylus'
-require 'stylus/tilt'
-
-get '/' do
-  stylus :example
-end
-```
-
 #### Yajl Templates
 
 <table>
@@ -1114,7 +971,7 @@ end
 </table>
 
 Die Template-Quelle wird als Ruby-String evaluiert. Die daraus resultierende
-json Variable wird mit Hilfe von `#to_json` umgewandelt:
+Json-Variable wird mit Hilfe von `#to_json` umgewandelt:
 
 ```ruby
 json = { :foo => 'bar' }
@@ -1128,29 +985,6 @@ verwendet werden:
 var resource = {"foo":"bar","baz":"qux"};
 present(resource);
 ```
-
-#### WLang Templates
-
-<table>
-  <tr>
-    <td>Abhängigkeit</td>
-    <td><a href="https://github.com/blambeau/wlang/">wlang</a></td>
-  </tr>
-  <tr>
-    <td>Dateierweiterung</td>
-    <td><tt>.wlang</tt></td>
-  </tr>
-  <tr>
-    <td>Beispiel</td>
-    <td><tt>wlang :index, :locals => { :key => 'value' }</tt></td>
-  </tr>
-</table>
-
-Ruby-Methoden in Wlang aufzurufen entspricht nicht den idiomatischen Vorgaben
-von Wlang, es bietet sich deshalb an, `:locals` zu verwenden. Layouts, die
-Wlang und `yield` verwenden, werden aber trotzdem unterstützt.
-
-Rendert den eingebetteten Template-String.
 
 ### Auf Variablen in Templates zugreifen
 
@@ -1209,8 +1043,7 @@ erb :admin_layout, :layout => :main_layout do
 end
 ```
 
-Zur Zeit nehmen folgende Renderer Blöcke an: `erb`, `haml`, `liquid`, `slim `
-und `wlang`.
+Zur Zeit nehmen folgende Renderer Blöcke an: `erb`, `haml`, `liquid` und `slim `
 
 Das gleich gilt auch für die allgemeine `render` Methode.
 
@@ -1274,11 +1107,11 @@ end
 ### Dateiendungen zuordnen
 
 Um eine Dateiendung einer Template-Engine zuzuordnen, kann `Tilt.register`
-genutzt werden. Wenn etwa die Dateiendung `tt` für Textile-Templates genutzt
+genutzt werden. Wenn etwa die Dateiendung `tt` für Haml-Templates genutzt
 werden soll, lässt sich dies wie folgt bewerkstelligen:
 
 ```ruby
-Tilt.register :tt, Tilt[:textile]
+Tilt.register :tt, Tilt[:haml]
 ```
 
 ### Eine eigene Template-Engine hinzufügen
@@ -1438,16 +1271,16 @@ keinen Schlüssel zu verwenden, dessen Zufälligkeit weniger als 32 Bytes
 entspricht (also 256 Bits, 64 Hex-Zeichen). Es ist deshalb **wirklich
 wichtig**, dass nicht einfach irgendetwas als Schlüssel verwendet wird,
 sondern ein sicherer Zufallsgenerator die Zeichenkette erstellt. Menschen sind
-nicht besonders gut, zufällige Zeichenfolgen zu erstellen.
+nicht besonders gut darin, zufällige Zeichenfolgen zu erstellen.
 
-Sinatra generiert automatisch einen zufälligen 32 Byte langen zufälligen
+Sinatra generiert automatisch einen zufälligen, 32 Byte langen
 Schlüssel. Da jedoch bei jedem Neustart der Schlüssel ebenfalls neu generiert
 wird, ist es sinnvoll einen eigenen Schlüssel festzulegen, damit er über alle
 Anwendungsinstanzen hinweg geteilt werden kann.
 
 Aus praktikablen und Sicherheitsgründen wird
 [empfohlen](https://12factor.net/config), dass ein sicherer Zufallswert
-erzeugt und in einer Umgebungsvariable abgelgegt wird, damit alle
+erzeugt und in einer Umgebungsvariable abgelegt wird, damit alle
 Anwendungsinstanzen darauf zugreifen können. Dieser Sitzungsschlüssel
 sollte in regelmäßigen Abständen erneuert werden. Zum Erzeugen von 64
 Byte starken Schlüsseln sind hier ein paar Beispiele vorgestellt:
@@ -1850,7 +1683,7 @@ get '/bar' do
 end
 ```
 
-Um Argumente an ein Redirect weiterzugeben, können sie entweder dem Query
+Um Argumente an einen Redirect weiterzugeben, können sie entweder dem Query
 übergeben:
 
 ```ruby
@@ -2083,7 +1916,7 @@ get '/' do
 end
 ```
 
-Ebenso kann eine Dateiname als Parameter hinzugefügt werden:
+Ebenso kann ein Dateiname als Parameter hinzugefügt werden:
 
 ```ruby
 get '/' do
@@ -2153,11 +1986,11 @@ helpers do
 end
 ```
 
-Ein anderes Beispiel wäre, verschiedene Vereichnisse für verschiedene Engines
+Ein anderes Beispiel wäre, verschiedene Verzeichnisse für verschiedene Engines
 zu verwenden:
 
 ```ruby
-set :views, :sass => 'views/sass', :haml => 'templates', :default => 'views'
+set :views, :haml => 'templates', :default => 'views'
 
 helpers do
   def find_template(views, name, engine, &block)
@@ -2175,7 +2008,7 @@ Beachte, dass `find_template` nicht prüft, ob eine Datei tatsächlich
 existiert. Es wird lediglich der angegebene Block aufgerufen und nach allen
 möglichen Pfaden gesucht. Das ergibt kein Performance-Problem, da `render`
 `block` verwendet, sobald eine Datei gefunden wurde. Ebenso werden
-Template-Pfade samt Inhalt gecached, solange nicht im Entwicklungsmodus
+Template-Pfade samt Inhalten gecached, solange nicht im Entwicklungsmodus
 gearbeitet wird. Das sollte im Hinterkopf behalten werden, wenn irgendwelche
 verrückten Methoden zusammengebastelt werden.
 
@@ -2236,7 +2069,7 @@ end
 #### Einstellung des Angriffsschutzes
 
 Sinatra verwendet
-[Rack::Protection](https://github.com/sinatra/rack-protection#readme), um die
+[Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme), um die
 Anwendung vor häufig vorkommenden Angriffen zu schützen. Diese Voreinstellung
 lässt sich selbstverständlich deaktivieren, der damit verbundene
 Geschwindigkeitszuwachs steht aber in keinem Verhätnis zu den möglichen
@@ -2306,7 +2139,7 @@ set :protection, session => true
 
   <dt>bind</dt>
     <dd>
-      IP-Address, an die gebunden wird (Standardwert: <tt>0.0.0.0</tt>
+      IP-Adresse, an die gebunden wird (Standardwert: <tt>0.0.0.0</tt>
       <em>oder</em> <tt>localhost</tt>). Wird nur für den eingebauten Server
       verwendet.
     </dd>
@@ -2439,7 +2272,7 @@ set :protection, session => true
 
   <dt>show_exceptions</dt>
     <dd>
-      Bei Fehlern einen Stacktrace im Browseranzeigen. Ist automatisch
+      Bei Fehlern einen Stacktrace im Browser anzeigen. Ist automatisch
       aktiviert, wenn die Umgebung auf <tt>"development"</tt>
       eingestellt ist. Ansonsten ist diese Option deaktiviert.
     </dd>
@@ -3120,9 +2953,9 @@ thin --threaded start
 Die folgenden Versionen werden offiziell unterstützt:
 
 <dl>
-  <dt>Ruby 2.2</dt>
+  <dt>Ruby 2.6</dt>
   <dd>
-    2.2 wird vollständig unterstützt. Es gibt derzeit keine Pläne die
+    2.6 wird vollständig unterstützt. Es gibt derzeit keine Pläne die
     offizielle Unterstützung zu beenden
   </dd>
 
@@ -3141,17 +2974,9 @@ Die folgenden Versionen werden offiziell unterstützt:
   </dd>
 </dl>
 
-Versionen vor Ruby 2.2.2 werden ab Sinatra 2.0 nicht länger unterstützt.
+Versionen vor Ruby 2.6 werden ab Sinatra 3.0 nicht länger unterstützt.
 
 Nachfolgende Ruby-Versionen werden regelmäßig auf Unterstützung geprüft.
-
-Die nachfolgend aufgeführten Ruby-Implementierungen werden offiziell nicht von
-Sinatra unterstützt, funktionieren aber normalerweise:
-
-*   Ruby Enterprise Edition
-*   Ältere Versionen von JRuby und Rubinius
-*   MacRuby, Maglev, IronRuby
-*   Ruby 1.9.0 und 1.9.1 (wird aber nicht empfohlen)
 
 Nicht offiziell unterstützt bedeutet, dass wenn Sachen nicht funktionieren,
 wir davon ausgehen, dass es nicht an Sinatra sondern an der jeweiligen
@@ -3163,9 +2988,6 @@ werden, dass Sinatra MRI auch weiterhin vollständig unterstützen wird.
 
 Sinatra sollte auf jedem Betriebssystem laufen, das einen funktionierenden
 Ruby-Interpreter aufweist.
-
-Sinatra läuft aktuell nicht unter Cardinal, SmallRuby, BlueRuby oder Ruby <=
-2.2.
 
 ## Der neuste Stand (The Bleeding Edge)
 

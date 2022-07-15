@@ -1,4 +1,4 @@
-describe Rack::Protection::SessionHijacking do
+RSpec.describe Rack::Protection::SessionHijacking do
   it_behaves_like "any rack application"
 
   it "accepts a session without changes to tracked parameters" do
@@ -20,27 +20,6 @@ describe Rack::Protection::SessionHijacking do
     session = {:foo => :bar}
     get '/', {}, 'rack.session' => session, 'HTTP_ACCEPT_ENCODING' => 'a'
     get '/', {}, 'rack.session' => session, 'HTTP_ACCEPT_ENCODING' => 'b'
-    expect(session).not_to be_empty
-  end
-
-  it "denies requests with a changing Accept-Language header" do
-    session = {:foo => :bar}
-    get '/', {}, 'rack.session' => session, 'HTTP_ACCEPT_LANGUAGE' => 'a'
-    get '/', {}, 'rack.session' => session, 'HTTP_ACCEPT_LANGUAGE' => 'b'
-    expect(session).to be_empty
-  end
-
-  it "accepts requests with the same Accept-Language header" do
-    session = {:foo => :bar}
-    get '/', {}, 'rack.session' => session, 'HTTP_ACCEPT_LANGUAGE' => 'a'
-    get '/', {}, 'rack.session' => session, 'HTTP_ACCEPT_LANGUAGE' => 'a'
-    expect(session).not_to be_empty
-  end
-
-  it "comparison of Accept-Language header is not case sensitive" do
-    session = {:foo => :bar}
-    get '/', {}, 'rack.session' => session, 'HTTP_ACCEPT_LANGUAGE' => 'a'
-    get '/', {}, 'rack.session' => session, 'HTTP_ACCEPT_LANGUAGE' => 'A'
     expect(session).not_to be_empty
   end
 

@@ -1,4 +1,4 @@
-describe Rack::Protection::CookieTossing do
+RSpec.describe Rack::Protection::CookieTossing do
   it_behaves_like "any rack application"
 
   context 'with default reaction' do
@@ -28,12 +28,12 @@ describe Rack::Protection::CookieTossing do
       get '/some/path', {}, 'HTTP_COOKIE' => 'rack.%73ession=EVIL_SESSION_TOKEN; rack.session=EVIL_SESSION_TOKEN; rack.session=SESSION_TOKEN'
 
       expected_header = <<-END.chomp
-rack.%2573ession=; domain=example.org; path=/; expires=Thu, 01 Jan 1970 00:00:00 -0000
-rack.%2573ession=; domain=example.org; path=/some; expires=Thu, 01 Jan 1970 00:00:00 -0000
-rack.%2573ession=; domain=example.org; path=/some/path; expires=Thu, 01 Jan 1970 00:00:00 -0000
-rack.session=; domain=example.org; path=/; expires=Thu, 01 Jan 1970 00:00:00 -0000
-rack.session=; domain=example.org; path=/some; expires=Thu, 01 Jan 1970 00:00:00 -0000
-rack.session=; domain=example.org; path=/some/path; expires=Thu, 01 Jan 1970 00:00:00 -0000
+rack.%2573ession=; domain=example.org; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT
+rack.%2573ession=; domain=example.org; path=/some; expires=Thu, 01 Jan 1970 00:00:00 GMT
+rack.%2573ession=; domain=example.org; path=/some/path; expires=Thu, 01 Jan 1970 00:00:00 GMT
+rack.session=; domain=example.org; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT
+rack.session=; domain=example.org; path=/some; expires=Thu, 01 Jan 1970 00:00:00 GMT
+rack.session=; domain=example.org; path=/some/path; expires=Thu, 01 Jan 1970 00:00:00 GMT
 END
       expect(last_response.headers['Set-Cookie']).to eq(expected_header)
     end

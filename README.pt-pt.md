@@ -19,7 +19,8 @@ end
 Instale a gem e execute com:
 
 ```shell
-sudo gem install sinatra
+gem install sinatra
+gem install puma # ou qualquer outro servidor
 ruby minhaapp.rb
 ```
 
@@ -121,7 +122,7 @@ Arquivos estáticos são disponibilizados a partir do directório
 `:public_folder`
 
 ```ruby
-set :public_folder, File.dirname(__FILE__) + '/estatico'
+set :public_folder, __dir__ + '/estatico'
 ```
 
 Note que o nome do directório público não é incluido no URL. Um arquivo
@@ -134,7 +135,7 @@ Templates presumem-se estar localizados sob o directório `./views`. Para
 utilizar um directório de views diferente:
 
 ```ruby
-set :views, File.dirname(__FILE__) + '/modelo'
+set :views, __dir__ + '/modelo'
 ```
 
 Uma coisa importante a ser lembrada é que você sempre tem as referências
@@ -185,21 +186,6 @@ end
 
 Renderiza `./views/index.erb`
 
-### Erubis
-
-A gem/biblioteca erubis é necessária para renderizar templates erubis:
-
-```ruby
-# É necessário requerir 'erubis' na aplicação.
-require 'erubis'
-
-get '/' do
-  erubis :index
-end
-```
-
-Renderiza `./views/index.erubis`
-
 ### Builder Templates
 
 A gem/biblioteca builder é necessária para renderizar templates builder:
@@ -216,53 +202,6 @@ end
 
 Renderiza `./views/index.builder`.
 
-### Sass Templates
-
-A gem/biblioteca sass é necessária para renderizar templates sass:
-
-```ruby
-# É necessário requerir 'haml' ou 'sass' na aplicação.
-require 'sass'
-
-get '/stylesheet.css' do
-  content_type 'text/css', :charset => 'utf-8'
-  sass :stylesheet
-end
-```
-
-Renderiza `./views/stylesheet.sass`.
-
-[Opções
-Sass](http://sass-lang.com/documentation/file.SASS_REFERENCE.html#options)
-podem ser definidas globalmente através das configurações do sinatra,
-veja [Opções e
-Configurações](http://www.sinatrarb.com/configuration.html), e substitua
-em uma requisição individual.
-
-```ruby
-set :sass, {:style => :compact } # o estilo padrão do Sass é :nested
-
-get '/stylesheet.css' do
-  content_type 'text/css', :charset => 'utf-8'
-  sass :stylesheet, :style => :expanded # substituido
-end
-```
-
-### Less Templates
-
-A gem/biblioteca less é necessária para renderizar templates Less:
-
-```ruby
-# É necessário requerir 'less' na aplicação.
-require 'less'
-
-get '/stylesheet.css' do
-  content_type 'text/css', :charset => 'utf-8'
-  less :stylesheet
-end
-```
-
-Renderiza `./views/stylesheet.less`.
 
 ### Templates Inline
 
@@ -757,7 +696,7 @@ Alternativamente, pode adicionar o directório do `sinatra/lib` no
 `LOAD_PATH` do seu aplicativo:
 
 ```ruby
-$LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
+$LOAD_PATH.unshift __dir__ + '/sinatra/lib'
 require 'rubygems'
 require 'sinatra'
 
