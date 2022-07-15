@@ -38,88 +38,87 @@ Se recomienda ejecutar `gem install puma`, porque Sinatra lo utilizará si está
 
 ## Tabla de Contenidos
 
-* [Sinatra](#sinatra)
-    * [Tabla de Contenidos](#tabla-de-contenidos)
-    * [Rutas](#rutas)
-    * [Condiciones](#condiciones)
-    * [Valores de Retorno](#valores-de-retorno)
-    * [Comparadores de Rutas Personalizados](#comparadores-de-rutas-personalizados)
-    * [Archivos Estáticos](#archivos-estáticos)
-    * [Vistas / Plantillas](#vistas--plantillas)
-        * [Plantillas Literales](#plantillas-literales)
-        * [Lenguajes de Plantillas Disponibles](#lenguajes-de-plantillas-disponibles)
-            * [Plantillas Haml](#plantillas-haml)
-            * [Plantillas Erb](#plantillas-erb)
-            * [Plantillas Builder](#plantillas-builder)
-            * [Plantillas Nokogiri](#plantillas-nokogiri)
-            * [Plantillas Liquid](#plantillas-liquid)
-            * [Plantillas Markdown](#plantillas-markdown)
-            * [Plantillas RDoc](#plantillas-rdoc)
-            * [Plantillas AsciiDoc](#plantillas-asciidoc)
-            * [Plantillas Radius](#plantillas-radius)
-            * [Plantillas Markaby](#plantillas-markaby)
-            * [Plantillas RABL](#plantillas-rabl)
-            * [Plantillas Slim](#plantillas-slim)
-            * [Plantillas Creole](#plantillas-creole)
-            * [Plantillas MediaWiki](#mediawiki-templates)
-            * [Plantillas CofeeScript](#plantillas-coffeescript)
-            * [Plantillas Yajl](#plantillas-yajl)
-            * [Plantillas Wlang](#plantillas-wlang)
-        * [Accediendo Variables en Plantillas](#accediendo-a-variables-en-plantillas)
-        * [Plantillas con `yield` y `layout` anidado](#plantillas-con-yield-y-layout-anidado)
-        * [Plantillas Inline](#plantillas-inline)
-        * [Plantillas Nombradas](#plantillas-nombradas)
-        * [Asociando Extensiones de Archivo](#asociando-extensiones-de-archivo)
-        * [Añadiendo Tu Propio Motor de Plantillas](#añadiendo-tu-propio-motor-de-plantillas)
-        * [Usando Lógica Personalizada para la Búsqueda en Plantillas](#usando-lógica-personalizada-para-la-búsqueda-en-plantillas)
-    * [Filtros](#filtros)
-    * [Helpers](#helpers)
-        * [Usando Sesiones](#usando-sesiones)
-          * [Secreto de Sesión](#secreto-de-sesión)
-          * [Configuración de Sesión](#configuración-de-sesión)
-          * [Escogiendo tu propio Middleware de Sesión](#escogiendo-tu-propio-middleware-de-sesión)
-        * [Interrupcion](#interrupción)
-        * [Paso](#paso)
-        * [Desencadenando Otra Ruta](#desencadenando-otra-ruta)
-        * [Configurando el Cuerpo, Código de Estado y los Encabezados](#configurando-el-cuerpo-código-de-estado-y-los-encabezados)
-        * [Streaming De Respuestas](#streaming-de-respuestas)
-        * [Logging](#logging)
-        * [Tipos Mime](#tipos-mime)
-        * [Generando URLs](#generando-urls)
-        * [Redirección del Navegador](#redirección-del-navegador)
-        * [Control del Cache](#control-del-cache)
-        * [Enviando Archivos](#enviando-archivos)
-        * [Accediendo al Objeto Request](#accediendo-al-objeto-request)
-        * [Archivos Adjuntos](#archivos-adjuntos)
-        * [Fecha y Hora](#fecha-y-hora)
-        * [Buscando los Archivos de las Plantillas](#buscando-los-archivos-de-las-plantillas)
-    * [Configuración](#configuración)
-        * [Configurando la Protección Contra Ataques](#configurando-la-protección-contra-ataques)
-        * [Configuraciones Disponibles](#configuraciones-disponibles)
-    * [Entornos](#entornos)
-    * [Manejo de Errores](#manejo-de-errores)
-        * [Not Found](#not-found)
-        * [Error](#error)
-    * [Rack Middleware](#rack-middleware)
-    * [Pruebas](#pruebas)
-    * [Sinatra::Base - Middleware, Librerías, y Aplicaciones Modulares](#sinatrabase---middleware-librerías-y-aplicaciones-modulares)
-        * [Estilo Modular vs Estilo Clásico](#estilo-modular-vs-clásico)
-        * [Sirviendo una Aplicación Modular](#sirviendo-una-aplicación-modular)
-        * [Usando una Aplicación de Estilo Clásico con config.ru](#usando-una-aplicación-clásica-con-un-archivo-configru)
-        * [¿Cuándo usar config.ru?](#cuándo-usar-configru)
-        * [Utilizando Sinatra como Middleware](#utilizando-sinatra-como-middleware)
-        * [Creación Dinámica de Aplicaciones](#creación-dinámica-de-aplicaciones)
-    * [Ámbitos y Ligaduras (Scopes and Binding)](#Ámbitos-y-ligaduras)
-        * [Alcance de una Aplicación/Clase](#Ámbito-de-aplicaciónclase)
-        * [Alcance de una Solicitud/Instancia](#Ámbito-de-peticióninstancia)
-        * [Alcance de Delegación](#Ámbito-de-delegación)
-    * [Línea de comandos](#línea-de-comandos)
-        * [Multi-threading](#multi-threading)
-    * [Requerimientos](#requerimientos)
-    * [A la Vanguardia](#a-la-vanguardia)
-        * [Usando bundler](#usando-bundler)
-    * [Versionado](#versionado)
-    * [Lecturas Recomendadas](#lecturas-recomendadas)
+- [Sinatra](#sinatra)
+  - [Tabla de Contenidos](#tabla-de-contenidos)
+  - [Rutas](#rutas)
+  - [Condiciones](#condiciones)
+  - [Valores de Retorno](#valores-de-retorno)
+  - [Comparadores de Rutas Personalizados](#comparadores-de-rutas-personalizados)
+  - [Archivos Estáticos](#archivos-estáticos)
+  - [Vistas / Plantillas](#vistas--plantillas)
+    - [Plantillas Literales](#plantillas-literales)
+    - [Lenguajes de Plantillas Disponibles](#lenguajes-de-plantillas-disponibles)
+      - [Plantillas Haml](#plantillas-haml)
+      - [Plantillas Erb](#plantillas-erb)
+      - [Plantillas Builder](#plantillas-builder)
+      - [Plantillas Nokogiri](#plantillas-nokogiri)
+      - [Plantillas Liquid](#plantillas-liquid)
+      - [Plantillas Markdown](#plantillas-markdown)
+      - [Plantillas RDoc](#plantillas-rdoc)
+      - [Plantillas AsciiDoc](#plantillas-asciidoc)
+      - [Plantillas Radius](#plantillas-radius)
+      - [Plantillas Markaby](#plantillas-markaby)
+      - [Plantillas RABL](#plantillas-rabl)
+      - [Plantillas Slim](#plantillas-slim)
+      - [Plantillas Creole](#plantillas-creole)
+      - [MediaWiki Templates](#mediawiki-templates)
+      - [Plantillas CoffeeScript](#plantillas-coffeescript)
+      - [Plantillas Yajl](#plantillas-yajl)
+    - [Accediendo a Variables en Plantillas](#accediendo-a-variables-en-plantillas)
+    - [Plantillas con `yield` y `layout` anidado](#plantillas-con-yield-y-layout-anidado)
+    - [Plantillas Inline](#plantillas-inline)
+    - [Plantillas Nombradas](#plantillas-nombradas)
+    - [Asociando Extensiones de Archivo](#asociando-extensiones-de-archivo)
+    - [Añadiendo Tu Propio Motor de Plantillas](#añadiendo-tu-propio-motor-de-plantillas)
+    - [Usando Lógica Personalizada para la Búsqueda en Plantillas](#usando-lógica-personalizada-para-la-búsqueda-en-plantillas)
+  - [Filtros](#filtros)
+  - [Helpers](#helpers)
+    - [Usando Sesiones](#usando-sesiones)
+      - [Secreto de Sesión](#secreto-de-sesión)
+      - [Configuración de Sesión](#configuración-de-sesión)
+      - [Escogiendo tu Propio Middleware de Sesión](#escogiendo-tu-propio-middleware-de-sesión)
+    - [Interrupción](#interrupción)
+    - [Paso](#paso)
+    - [Desencadenando Otra Ruta](#desencadenando-otra-ruta)
+    - [Configurando el Cuerpo, Código de Estado y los Encabezados](#configurando-el-cuerpo-código-de-estado-y-los-encabezados)
+    - [Streaming De Respuestas](#streaming-de-respuestas)
+    - [Logging](#logging)
+    - [Tipos Mime](#tipos-mime)
+    - [Generando URLs](#generando-urls)
+    - [Redirección del Navegador](#redirección-del-navegador)
+    - [Control del Cache](#control-del-cache)
+    - [Enviando Archivos](#enviando-archivos)
+    - [Accediendo al objeto Request](#accediendo-al-objeto-request)
+    - [Archivos Adjuntos](#archivos-adjuntos)
+    - [Fecha y Hora](#fecha-y-hora)
+    - [Buscando los Archivos de las Plantillas](#buscando-los-archivos-de-las-plantillas)
+  - [Configuración](#configuración)
+    - [Configurando la Protección Contra Ataques](#configurando-la-protección-contra-ataques)
+    - [Configuraciones Disponibles](#configuraciones-disponibles)
+  - [Entornos](#entornos)
+  - [Manejo de Errores](#manejo-de-errores)
+    - [Not Found](#not-found)
+    - [Error](#error)
+  - [Rack Middleware](#rack-middleware)
+  - [Pruebas](#pruebas)
+  - [Sinatra::Base - Middleware, Librerías, y Aplicaciones Modulares](#sinatrabase---middleware-librerías-y-aplicaciones-modulares)
+    - [Estilo Modular vs. Clásico](#estilo-modular-vs-clásico)
+    - [Sirviendo una Aplicación Modular](#sirviendo-una-aplicación-modular)
+    - [Usando una Aplicación Clásica con un Archivo config.ru](#usando-una-aplicación-clásica-con-un-archivo-configru)
+    - [¿Cuándo usar config.ru?](#cuándo-usar-configru)
+    - [Utilizando Sinatra como Middleware](#utilizando-sinatra-como-middleware)
+    - [Creación Dinámica de Aplicaciones](#creación-dinámica-de-aplicaciones)
+  - [Ámbitos y Ligaduras](#ámbitos-y-ligaduras)
+    - [Ámbito de Aplicación/Clase](#ámbito-de-aplicaciónclase)
+    - [Ámbito de Petición/Instancia](#ámbito-de-peticióninstancia)
+    - [Ámbito de Delegación](#ámbito-de-delegación)
+  - [Línea de Comandos](#línea-de-comandos)
+    - [Multi-threading](#multi-threading)
+  - [Requerimientos](#requerimientos)
+  - [A la Vanguardia](#a-la-vanguardia)
+    - [Usando Bundler](#usando-bundler)
+  - [Versionado](#versionado)
+  - [Lecturas Recomendadas](#lecturas-recomendadas)
 
 ## Rutas
 
@@ -993,26 +992,6 @@ var contenido = {"foo":"bar","baz":"qux"};
 present(contenido);
 ```
 
-#### Plantillas WLang
-
-<table>
-  <tr>
-    <td>Dependencias</td>
-    <td><a href="https://github.com/blambeau/wlang/" title="wlang">wlang</a></td>
-  </tr>
-  <tr>
-    <td>Extensiones de Archivo</td>
-    <td><tt>.wlang</tt></td>
-  </tr>
-  <tr>
-    <td>Ejemplo</td>
-    <td><tt>wlang :index, :locals => { :clave => 'valor' }</tt></td>
-  </tr>
-</table>
-
-Como no vas a poder llamar a métodos de Ruby (excepto por `yield`) desde una
-plantilla WLang, casi siempre vas a querer pasarle locales.
-
 ### Accediendo a Variables en Plantillas
 
 Las plantillas son evaluadas dentro del mismo contexto que los manejadores de
@@ -1071,7 +1050,7 @@ end
 ```
 
 Actualmente, los siguientes métodos de renderizado aceptan un bloque: `erb`, `haml`,
-`liquid`, `slim `, `wlang`. También el método general de `render` acepta un bloque.
+`liquid`, `slim `. También el método general de `render` acepta un bloque.
 
 ### Plantillas Inline
 

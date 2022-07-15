@@ -34,87 +34,86 @@ thin이 설치되어 있을 경우 Sinatra는 thin을 통해 실행합니다.
 
 ## 목차
 
-* [Sinatra](#sinatra)
-    * [목차](#목차)
-    * [라우터(Routes)](#라우터routes)
-        * [조건(Conditions)](#조건conditions)
-        * [반환값(Return Values)](#반환값return-values)
-        * [커스텀 라우터 매처(Custom Route Matchers)](#커스텀-라우터-매처custom-route-matchers)
-    * [정적 파일(Static Files)](#정적-파일static-files)
-    * [뷰 / 템플릿(Views / Templates)](#뷰--템플릿views--templates)
-        * [리터럴 템플릿(Literal Templates)](#리터럴-템플릿literal-templates)
-        * [가능한 템플릿 언어들(Available Template Languages)](#가능한-템플릿-언어들available-template-languages)
-            * [Haml 템플릿](#haml-템플릿)
-            * [Erb 템플릿](#erb-템플릿)
-            * [Builder 템플릿](#builder-템플릿)
-            * [Nokogiri 템플릿](#nokogiri-템플릿)
-            * [Liquid 템플릿](#liquid-템플릿)
-            * [Markdown 템플릿](#markdown-템플릿)
-            * [RDoc 템플릿](#rdoc-템플릿)
-            * [AsciiDoc 템플릿](#asciidoc-템플릿)
-            * [Radius 템플릿](#radius-템플릿)
-            * [Markaby 템플릿](#markaby-템플릿)
-            * [RABL 템플릿](#rabl-템플릿)
-            * [Slim 템플릿](#slim-템플릿)
-            * [Creole 템플릿](#creole-템플릿)
-            * [MediaWiki 템플릿](#mediawiki-템플릿)
-            * [CoffeeScript 템플릿](#coffeescript-템플릿)
-            * [Yajl 템플릿](#yajl-템플릿)
-            * [WLang 템플릿](#wlang-템플릿)
-        * [템플릿에서 변수에 접근하기](#템플릿에서-변수에-접근하기)
-        * [템플릿에서의 `yield` 와 중첩 레이아웃](#템플릿에서의-yield-와-중첩-레이아웃)
-        * [인라인 템플릿](#인라인-템플릿)
-        * [이름을 가지는 템플릿(Named Templates)](#이름을-가지는-템플릿named-templates)
-        * [파일 확장자 연결하기](#파일-확장자-연결하기)
-        * [나만의 고유한 템플릿 엔진 추가하기](#나만의-고유한-템플릿-엔진-추가하기)
-        * [템플릿 검사를 위한 커스텀 로직 사용하기](#템플릿-검사를-위한-커스텀-로직-사용하기)
-    * [필터(Filters)](#필터filters)
-    * [헬퍼(Helpers)](#헬퍼helpers)
-        * [세션(Sessions) 사용하기](#세션sessions-사용하기)
-        * [중단하기(Halting)](#중단하기halting)
-        * [넘기기(Passing)](#넘기기passing)
-        * [다른 라우터 부르기(Triggering Another Route)](#다른-라우터-부르기triggering-another-route)
-        * [본문, 상태 코드 및 헤더 설정하기](#본문-상태-코드-및-헤더-설정하기)
-        * [응답 스트리밍(Streaming Responses)](#응답-스트리밍streaming-responses)
-        * [로깅(Logging)](#로깅logging)
-        * [마임 타입(Mime Types)](#마임-타입mime-types)
-        * [URL 생성하기](#url-생성하기)
-        * [브라우저 재지정(Browser Redirect)](#브라우저-재지정browser-redirect)
-        * [캐시 컨트롤(Cache Control)](#캐시-컨트롤cache-control)
-        * [파일 전송하기(Sending Files)](#파일-전송하기sending-files)
-        * [요청 객체에 접근하기(Accessing the Request Object)](#요청-객체에-접근하기accessing-the-request-object)
-        * [첨부(Attachments)](#첨부attachments)
-        * [날짜와 시간 다루기](#날짜와-시간-다루기)
-        * [템플릿 파일 참조하기](#템플릿-파일-참조하기)
-    * [설정(Configuration)](#설정configuration)
-        * [공격 방어 설정하기(Configuring attack protection)](#공격-방어-설정하기configuring-attack-protection)
-        * [가능한 설정들(Available Settings)](#가능한-설정들available-settings)
-    * [환경(Environments)](#환경environments)
-    * [에러 처리(Error Handling)](#에러-처리error-handling)
-        * [찾을 수 없음(Not Found)](#찾을-수-없음not-found)
-        * [에러](#에러)
-    * [Rack 미들웨어(Rack Middleware)](#rack-미들웨어rack-middleware)
-    * [테스팅(Testing)](#테스팅testing)
-    * [Sinatra::Base - 미들웨어(Middleware), 라이브러리(Libraries), 그리고 모듈 앱(Modular Apps)](#sinatrabase---미들웨어middleware-라이브러리libraries-그리고-모듈-앱modular-apps)
-        * [모듈(Modular) vs. 전통적 방식(Classic Style)](#모듈modular-vs-전통적-방식classic-style)
-        * [모듈 애플리케이션(Modular Application) 제공하기](#모듈-애플리케이션modular-application-제공하기)
-        * [config.ru로 전통적 방식의 애플리케이션 사용하기](#configru로-전통적-방식의-애플리케이션-사용하기)
-        * [언제 config.ru를 사용할까?](#언제-configru를-사용할까)
-        * [Sinatra를 미들웨어로 사용하기](#sinatra를-미들웨어로-사용하기)
-        * [동적인 애플리케이션 생성(Dynamic Application Creation)](#동적인-애플리케이션-생성dynamic-application-creation)
-    * [범위(Scopes)와 바인딩(Binding)](#범위scopes와-바인딩binding)
-        * [애플리케이션/클래스 범위](#애플리케이션클래스-범위)
-        * [요청/인스턴스 범위](#요청인스턴스-범위)
-        * [위임 범위(Delegation Scope)](#위임-범위delegation-scope)
-    * [명령행(Command Line)](#명령행command-line)
-        * [다중 스레드(Multi-threading)](#다중-스레드multi-threading)
-    * [요구사항(Requirement)](#요구사항requirement)
-    * [최신(The Bleeding Edge)](#최신the-bleeding-edge)
-        * [Bundler를 사용하여](#bundler를-사용하여)
-        * [직접 하기(Roll Your Own)](#직접-하기roll-your-own)
-        * [전역으로 설치(Install Globally)](#전역으로-설치install-globally)
-    * [버저닝(Versioning)](#버저닝versioning)
-    * [더 읽을 거리(Further Reading)](#더-읽을-거리further-reading)
+- [Sinatra](#sinatra)
+  - [목차](#목차)
+  - [라우터(Routes)](#라우터routes)
+    - [조건(Conditions)](#조건conditions)
+    - [반환값(Return Values)](#반환값return-values)
+    - [커스텀 라우터 매처(Custom Route Matchers)](#커스텀-라우터-매처custom-route-matchers)
+  - [정적 파일(Static Files)](#정적-파일static-files)
+  - [뷰 / 템플릿(Views / Templates)](#뷰--템플릿views--templates)
+    - [리터럴 템플릿(Literal Templates)](#리터럴-템플릿literal-templates)
+    - [가능한 템플릿 언어들(Available Template Languages)](#가능한-템플릿-언어들available-template-languages)
+      - [Haml 템플릿](#haml-템플릿)
+      - [Erb 템플릿](#erb-템플릿)
+      - [Builder 템플릿](#builder-템플릿)
+      - [Nokogiri 템플릿](#nokogiri-템플릿)
+      - [Liquid 템플릿](#liquid-템플릿)
+      - [Markdown 템플릿](#markdown-템플릿)
+      - [RDoc 템플릿](#rdoc-템플릿)
+      - [AsciiDoc 템플릿](#asciidoc-템플릿)
+      - [Radius 템플릿](#radius-템플릿)
+      - [Markaby 템플릿](#markaby-템플릿)
+      - [RABL 템플릿](#rabl-템플릿)
+      - [Slim 템플릿](#slim-템플릿)
+      - [Creole 템플릿](#creole-템플릿)
+      - [MediaWiki 템플릿](#mediawiki-템플릿)
+      - [CoffeeScript 템플릿](#coffeescript-템플릿)
+      - [Yajl 템플릿](#yajl-템플릿)
+    - [템플릿에서 변수에 접근하기](#템플릿에서-변수에-접근하기)
+    - [템플릿에서의 `yield` 와 중첩 레이아웃](#템플릿에서의-yield-와-중첩-레이아웃)
+    - [인라인 템플릿](#인라인-템플릿)
+    - [이름을 가지는 템플릿(Named Templates)](#이름을-가지는-템플릿named-templates)
+    - [파일 확장자 연결하기](#파일-확장자-연결하기)
+    - [나만의 고유한 템플릿 엔진 추가하기](#나만의-고유한-템플릿-엔진-추가하기)
+    - [템플릿 검사를 위한 커스텀 로직 사용하기](#템플릿-검사를-위한-커스텀-로직-사용하기)
+  - [필터(Filters)](#필터filters)
+  - [헬퍼(Helpers)](#헬퍼helpers)
+    - [세션(Sessions) 사용하기](#세션sessions-사용하기)
+    - [중단하기(Halting)](#중단하기halting)
+    - [넘기기(Passing)](#넘기기passing)
+    - [다른 라우터 부르기(Triggering Another Route)](#다른-라우터-부르기triggering-another-route)
+    - [본문, 상태 코드 및 헤더 설정하기](#본문-상태-코드-및-헤더-설정하기)
+    - [응답 스트리밍(Streaming Responses)](#응답-스트리밍streaming-responses)
+    - [로깅(Logging)](#로깅logging)
+    - [마임 타입(Mime Types)](#마임-타입mime-types)
+    - [URL 생성하기](#url-생성하기)
+    - [브라우저 재지정(Browser Redirect)](#브라우저-재지정browser-redirect)
+    - [캐시 컨트롤(Cache Control)](#캐시-컨트롤cache-control)
+    - [파일 전송하기(Sending Files)](#파일-전송하기sending-files)
+    - [요청 객체에 접근하기(Accessing the Request Object)](#요청-객체에-접근하기accessing-the-request-object)
+    - [첨부(Attachments)](#첨부attachments)
+    - [날짜와 시간 다루기](#날짜와-시간-다루기)
+    - [템플릿 파일 참조하기](#템플릿-파일-참조하기)
+  - [설정(Configuration)](#설정configuration)
+    - [공격 방어 설정하기(Configuring attack protection)](#공격-방어-설정하기configuring-attack-protection)
+    - [가능한 설정들(Available Settings)](#가능한-설정들available-settings)
+  - [환경(Environments)](#환경environments)
+  - [에러 처리(Error Handling)](#에러-처리error-handling)
+    - [찾을 수 없음(Not Found)](#찾을-수-없음not-found)
+    - [에러](#에러)
+  - [Rack 미들웨어(Middleware)](#rack-미들웨어middleware)
+  - [테스팅(Testing)](#테스팅testing)
+  - [Sinatra::Base - 미들웨어(Middleware), 라이브러리(Libraries), 그리고 모듈 앱(Modular Apps)](#sinatrabase---미들웨어middleware-라이브러리libraries-그리고-모듈-앱modular-apps)
+    - [모듈(Modular) vs. 전통적 방식(Classic Style)](#모듈modular-vs-전통적-방식classic-style)
+    - [모듈 애플리케이션(Modular Application) 제공하기](#모듈-애플리케이션modular-application-제공하기)
+    - [config.ru로 전통적 방식의 애플리케이션 사용하기](#configru로-전통적-방식의-애플리케이션-사용하기)
+    - [언제 config.ru를 사용할까?](#언제-configru를-사용할까)
+    - [Sinatra를 미들웨어로 사용하기](#sinatra를-미들웨어로-사용하기)
+    - [동적인 애플리케이션 생성(Dynamic Application Creation)](#동적인-애플리케이션-생성dynamic-application-creation)
+  - [범위(Scopes)와 바인딩(Binding)](#범위scopes와-바인딩binding)
+    - [애플리케이션/클래스 범위](#애플리케이션클래스-범위)
+    - [요청/인스턴스 범위](#요청인스턴스-범위)
+    - [위임 범위(Delegation Scope)](#위임-범위delegation-scope)
+  - [명령행(Command Line)](#명령행command-line)
+    - [다중 스레드(Multi-threading)](#다중-스레드multi-threading)
+  - [요구사항(Requirement)](#요구사항requirement)
+  - [최신(The Bleeding Edge)](#최신the-bleeding-edge)
+    - [Bundler를 사용하여](#bundler를-사용하여)
+    - [직접 하기(Roll Your Own)](#직접-하기roll-your-own)
+    - [전역으로 설치(Install Globally)](#전역으로-설치install-globally)
+  - [버저닝(Versioning)](#버저닝versioning)
+  - [더 읽을 거리(Further Reading)](#더-읽을-거리further-reading)
 
 ## 라우터(Routes)
 
@@ -914,27 +913,6 @@ var resource = {"foo":"bar","baz":"qux"};
 present(resource);
 ```
 
-#### WLang 템플릿
-
-<table>
-  <tr>
-    <td>의존성</td>
-    <td><a href="https://github.com/blambeau/wlang/" title="WLang">WLang</a></td>
-  </tr>
-  <tr>
-    <td>파일 확장자</td>
-    <td><tt>.wlang</tt></td>
-  </tr>
-  <tr>
-    <td>예제</td>
-    <td><tt>wlang :index, :locals => { :key => 'value' }</tt></td>
-  </tr>
-</table>
-
-WLang 템플릿에서는 루비 메서드를 사용하는게 일반적이지 않기
-때문에, 거의 대부분의 경우 locals를 전달합니다. 그래도
-WLang으로 쓰여진 레이아웃과 `yield`는 지원합니다.
-
 ### 템플릿에서 변수에 접근하기
 
 템플릿은 라우터 핸들러와 같은 맥락(context)에서 평가됩니다. 라우터
@@ -991,7 +969,7 @@ erb :admin_layout, :layout => :main_layout do
 end
 ```
 
-현재, `erb`, `haml`, `liquid`, `slim `, `wlang`는 블럭을 지원합니다.
+현재, `erb`, `haml`, `liquid`, `slim `는 블럭을 지원합니다.
 일반적인 `render` 메소드도 블럭을 지원합니다.
 
 ### 인라인 템플릿

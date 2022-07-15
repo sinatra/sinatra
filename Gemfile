@@ -24,7 +24,6 @@ gem "twitter-text", "1.14.7"
 gem "activesupport", "~> 6.1"
 
 gem 'redcarpet', platforms: [ :ruby ]
-gem 'wlang', '>= 3.0.1'
 gem 'rdiscount', platforms: [ :ruby ]
 gem 'puma'
 gem 'yajl-ruby', platforms: [ :ruby ]
