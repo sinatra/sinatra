@@ -59,7 +59,6 @@ PumaがあればSinatraはこれを利用するので、`gem install puma`する
       - [RABL テンプレート](#rabl-テンプレート)
       - [Slim テンプレート](#slim-テンプレート)
       - [Creole テンプレート](#creole-テンプレート)
-      - [MediaWiki テンプレート](#mediawiki-テンプレート)
       - [Yajl テンプレート](#yajl-テンプレート)
     - [テンプレート内での変数へのアクセス](#テンプレート内での変数へのアクセス)
     - [`yield`を伴うテンプレートとネストしたレイアウト](#yieldを伴うテンプレートとネストしたレイアウト)
@@ -818,31 +817,6 @@ erb :overview, :locals => { :text => creole(:introduction) }
 ```
 
 CreoleからはRubyを呼ぶことができないので、Creoleで書かれたレイアウトを使うことはできません。しかしながら、`:layout_engine`オプションを渡すことでテンプレートのものとは異なるレンダリングエンジンをレイアウトのために使うことができます。
-
-#### MediaWiki テンプレート
-
-<table>
-  <tr>
-    <td>依存</td>
-    <td><a href="https://github.com/nricciar/wikicloth" title="WikiCloth">WikiCloth</a></td>
-  </tr>
-  <tr>
-    <td>ファイル拡張子</td>
-    <td><tt>.mediawiki</tt> および <tt>.mw</tt></td>
-  </tr>
-  <tr>
-    <td>例</td>
-    <td><tt>mediawiki :wiki, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-MediaWikiのテンプレートは直接メソッドから呼び出したり、ローカル変数を通すことはできません。それゆえに、通常は別のレンダリングエンジンと組み合わせて利用します。
-
-```ruby
-erb :overview, :locals => { :text => mediawiki(:introduction) }
-```
-
-ノート: 他のテンプレートから部分的に`mediawiki`メソッドを呼び出すことも可能です。
 
 #### Yajl テンプレート
 

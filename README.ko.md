@@ -57,7 +57,6 @@ thin이 설치되어 있을 경우 Sinatra는 thin을 통해 실행합니다.
       - [RABL 템플릿](#rabl-템플릿)
       - [Slim 템플릿](#slim-템플릿)
       - [Creole 템플릿](#creole-템플릿)
-      - [MediaWiki 템플릿](#mediawiki-템플릿)
       - [Yajl 템플릿](#yajl-템플릿)
     - [템플릿에서 변수에 접근하기](#템플릿에서-변수에-접근하기)
     - [템플릿에서의 `yield` 와 중첩 레이아웃](#템플릿에서의-yield-와-중첩-레이아웃)
@@ -812,41 +811,6 @@ erb :overview, :locals => { :text => creole(:introduction) }
 ```
 
 Creole에서 루비를 호출할 수 없기 때문에, Creole으로 작성된 레이아웃은
-사용할 수 없습니다. 하지만, `:layout_engine` 옵션으로 레이아웃의 템플릿을
-다른 렌더링 엔진으로 렌더링 할 수는 있습니다.
-
-#### MediaWiki 템플릿
-
-<table>
-  <tr>
-    <td>의존성</td>
-    <td><a href="https://github.com/nricciar/wikicloth" title="WikiCloth">WikiCloth</a></td>
-  </tr>
-  <tr>
-    <td>파일 확장자</td>
-    <td><tt>.mediawiki</tt> and <tt>.mw</tt></td>
-  </tr>
-  <tr>
-    <td>예제</td>
-    <td><tt>mediawiki :wiki, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-MediaWiki 마크업에서는 메서드 호출 뿐 아니라 locals 전달도 불가능합니다.
-따라서 일반적으로는 다른 렌더링 엔진과 함께 사용하게 됩니다.
-
-```ruby
-erb :overview, :locals => { :text => mediawiki(:introduction) }
-```
-
-다른 템플릿 속에서 `mediawiki` 메서드를 호출할 수도 있습니다.
-
-```ruby
-%h1 Hello From Haml!
-%p= mediawiki(:greetings)
-```
-
-MediaWiki에서 루비를 호출할 수 없기 때문에, MediaWiki으로 작성된 레이아웃은
 사용할 수 없습니다. 하지만, `:layout_engine` 옵션으로 레이아웃의 템플릿을
 다른 렌더링 엔진으로 렌더링 할 수는 있습니다.
 

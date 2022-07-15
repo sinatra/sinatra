@@ -62,7 +62,6 @@ Sinatra utilise le server Thin quand il est disponible.
       - [Templates RABL](#templates-rabl)
       - [Templates Slim](#templates-slim)
       - [Templates Creole](#templates-creole)
-      - [Templates MediaWiki](#templates-mediawiki)
       - [Templates Yajl](#templates-yajl)
     - [Accéder aux variables dans un Template](#accéder-aux-variables-dans-un-template)
     - [Templates avec `yield` et layouts imbriqués](#templates-avec-yield-et-layouts-imbriqués)
@@ -896,44 +895,6 @@ Comme vous ne pouvez pas appeler de méthodes Ruby depuis Creole, vous ne pouvez
 pas utiliser de layouts écrits en Creole. Toutefois, il est possible
 d'utiliser un moteur de rendu différent pour le template et pour le layout
 en utilisant l'option `:layout_engine`.
-
-#### Templates MediaWiki
-
-<table>
-  <tr>
-    <td>Dépendances</td>
-    <td><a href="https://github.com/nricciar/wikicloth" title="WikiCloth">WikiCloth</a></td>
-  </tr>
-  <tr>
-    <td>Extensions de fichier</td>
-    <td><tt>.mediawiki</tt> and <tt>.mw</tt></td>
-  </tr>
-  <tr>
-    <td>Exemple</td>
-    <td><tt>mediawiki :wiki, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-Il n’est pas possible d’appeler de méthodes Ruby depuis Mediawiki, ni de lui
-passer de variables locales. Par conséquent, il sera souvent utilisé en
-combinaison avec un autre moteur de rendu :
-
-```ruby
-erb :overview, :locals => { :text => mediawiki(:introduction) }
-```
-
-Notez que vous pouvez également appeler la méthode `mediawiki` depuis un
-autre template :
-
-```ruby
-%h1 Bonjour depuis Haml !
-%p= mediawiki(:bienvenue)
-```
-
-Comme vous ne pouvez pas appeler de méthodes Ruby depuis MediaWiki, vous ne pouvez
-pas utiliser de layouts écrits en MediaWiki. Toutefois, il est
-possible d’utiliser un moteur de rendu différent pour le template et
-pour le layout en utilisant l’option `:layout_engine`.
 
 #### Templates Yajl
 

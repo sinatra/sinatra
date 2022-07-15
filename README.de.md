@@ -62,7 +62,6 @@ diesen Server verwenden.
       - [RABL Templates](#rabl-templates)
       - [Slim Templates](#slim-templates)
       - [Creole Templates](#creole-templates)
-      - [MediaWiki Templates](#mediawiki-templates)
       - [Yajl Templates](#yajl-templates)
     - [Auf Variablen in Templates zugreifen](#auf-variablen-in-templates-zugreifen)
     - [Templates mit `yield` und verschachtelte Layouts](#templates-mit-yield-und-verschachtelte-layouts)
@@ -888,44 +887,6 @@ Da man Ruby nicht von Creole heraus aufrufen kann, können auch Layouts
 nicht in Creole geschrieben werden. Es ist aber möglich, einen Renderer
 für die Templates zu verwenden und einen anderen für das Layout, indem
 die `:layout_engine`-Option verwendet wird.
-
-#### MediaWiki Templates
-
-<table>
-  <tr>
-    <td>Abhängigkeit</td>
-    <td><a href="https://github.com/nricciar/wikicloth" title="WikiCloth">WikiCloth</a></td>
-  </tr>
-  <tr>
-    <td>Dateierweiterungen</td>
-    <td><tt>.mediawiki</tt> und <tt>.mw</tt></td>
-  </tr>
-  <tr>
-    <td>Beispiel</td>
-    <td><tt>mediawiki :wiki, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-Da man aus dem Mediawiki-Template heraus keine Ruby-Methoden aufrufen
-und auch keine locals verwenden kann, wird man Mediawiki üblicherweise
-in Kombination mit anderen Renderern verwenden wollen:
-
-```ruby
-erb :overview, :locals => { :text => mediawiki(:introduction) }
-```
-
-Beachte: Man kann die `mediawiki`-Methode auch aus anderen Templates
-heraus aufrufen:
-
-```ruby
-%h1 Grüße von Haml!
-%p= mediawiki(:greetings)
-```
-
-Da man Ruby nicht von MediaWiki heraus aufrufen kann, können auch
-Layouts nicht in MediaWiki geschrieben werden. Es ist aber möglich,
-einen Renderer für die Templates zu verwenden und einen anderen für das
-Layout, indem die `:layout_engine`-Option verwendet wird.
 
 #### Yajl Templates
 

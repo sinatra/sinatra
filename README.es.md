@@ -61,7 +61,6 @@ Se recomienda ejecutar `gem install puma`, porque Sinatra lo utilizará si está
       - [Plantillas RABL](#plantillas-rabl)
       - [Plantillas Slim](#plantillas-slim)
       - [Plantillas Creole](#plantillas-creole)
-      - [MediaWiki Templates](#mediawiki-templates)
       - [Plantillas Yajl](#plantillas-yajl)
     - [Accediendo a Variables en Plantillas](#accediendo-a-variables-en-plantillas)
     - [Plantillas con `yield` y `layout` anidado](#plantillas-con-yield-y-layout-anidado)
@@ -894,40 +893,6 @@ plantillas:
 Como no puedes utilizar Ruby desde Creole, no puedes usar layouts escritos en
 Creole. De todos modos, es posible usar un motor de renderizado para el layout
 distinto al de la plantilla pasando la opción `:layout_engine`.
-
-#### MediaWiki Templates
-
-<table>
-  <tr>
-    <td>Dependencia</td>
-    <td><a href="https://github.com/nricciar/wikicloth" title="WikiCloth">WikiCloth</a></td>
-  </tr>
-  <tr>
-    <td>Extension de Archivo</td>
-    <td><tt>.mediawiki</tt> and <tt>.mw</tt></td>
-  </tr>
-  <tr>
-    <td>Ejemplo</td>
-    <td><tt>mediawiki :wiki, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-No es posible llamar métodos desde el markup de MediaWiki, ni pasar locales al mismo.
-Por lo tanto usualmente lo usarás en combinación con otro motor de renderizado:
-
-```ruby
-erb :overview, :locals => { :text => mediawiki(:introduction) }
-```
-
-Nota que también puedes llamar al método `mediawiki` desde dentro de otras plantillas:
-
-```ruby
-%h1 Hello From Haml!
-%p= mediawiki(:greetings)
-```
-
-Debido a que no puedes llamar a Ruby desde MediaWiki, no puedes usar los diseños escritos en MediaWiki.
-De todas maneras, es posible usar otro motor de renderizado para esa plantilla pasando la opción :layout_engine.
 
 #### Plantillas Yajl
 
