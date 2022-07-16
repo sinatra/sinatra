@@ -238,7 +238,6 @@ module Sinatra
     def self.engines
       engines = {
         :xml  => [:builder, :nokogiri],
-        :js   => [:coffee],
         :html => [:erb, :erubi, :haml, :hamlit, :slim, :liquid, :radius,
           :mab, :markdown, :rdoc],
         :all =>  (Sinatra::Templates.instance_methods.map(&:to_sym) +

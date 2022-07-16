@@ -31,7 +31,6 @@ gem 'nokogiri', '> 1.5.0'
 gem 'rainbows', platforms: [ :ruby ]
 gem 'eventmachine'
 gem 'slim', '~> 4'
-gem 'coffee-script', '>= 2.0'
 gem 'rdoc'
 gem 'kramdown'
 gem 'creole'

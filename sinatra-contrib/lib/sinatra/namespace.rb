@@ -227,7 +227,7 @@ module Sinatra
       ALLOWED_ENGINES = [
         :erb, :erubi, :haml, :hamlit, :builder, :nokogiri,
         :liquid, :markdown, :rdoc, :asciidoc, :radius, :markaby,
-        :rabl, :slim, :creole, :mediawiki, :coffee, :yajl
+        :rabl, :slim, :creole, :mediawiki, :yajl
       ]
 
       def self.prefixed(*names)
