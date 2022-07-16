@@ -20,6 +20,8 @@
 
 * Breaking change: Remove support for CoffeeScript as a template engine. [#1790](https://github.com/sinatra/sinatra/pull/1790) by Eloy Pérez
 
+* Breaking change: Remove support for Mediawiki as a template engine. [#1791](https://github.com/sinatra/sinatra/pull/1791) by Eloy Pérez
+
 * Breaking change: Remove support for the defunct Less templating library. See [#1716](https://github.com/sinatra/sinatra/issues/1716), [#1715](https://github.com/sinatra/sinatra/issues/1715) for more discussion and background. [d1af2f1e](https://github.com/sinatra/sinatra/commit/d1af2f1e6c8710419dfe3102a660f7a32f0e67e3) by Olle Jonsson
 
 * Breaking change: Remove Reel integration. [54597502](https://github.com/sinatra/sinatra/commit/545975025927a27a1daca790598620038979f1c5) by Olle Jonsson
