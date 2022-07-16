@@ -741,11 +741,6 @@ module Sinatra
       render_ruby(:mab, template, options, locals, &block)
     end
 
-    def coffee(template, options = {}, locals = {})
-      options.merge! :layout => false, :default_content_type => :js
-      render :coffee, template, options, locals
-    end
-
     def nokogiri(template = nil, options = {}, locals = {}, &block)
       options[:default_content_type] = :xml
       render_ruby(:nokogiri, template, options, locals, &block)

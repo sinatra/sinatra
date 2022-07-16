@@ -60,7 +60,6 @@ PumaがあればSinatraはこれを利用するので、`gem install puma`する
       - [Slim テンプレート](#slim-テンプレート)
       - [Creole テンプレート](#creole-テンプレート)
       - [MediaWiki テンプレート](#mediawiki-テンプレート)
-      - [CoffeeScript テンプレート](#coffeescript-テンプレート)
       - [Yajl テンプレート](#yajl-テンプレート)
     - [テンプレート内での変数へのアクセス](#テンプレート内での変数へのアクセス)
     - [`yield`を伴うテンプレートとネストしたレイアウト](#yieldを伴うテンプレートとネストしたレイアウト)
@@ -844,30 +843,6 @@ erb :overview, :locals => { :text => mediawiki(:introduction) }
 ```
 
 ノート: 他のテンプレートから部分的に`mediawiki`メソッドを呼び出すことも可能です。
-
-#### CoffeeScript テンプレート
-
-<table>
-  <tr>
-    <td>依存</td>
-    <td>
-      <a href="https://github.com/josh/ruby-coffee-script" title="Ruby CoffeeScript">
-        CoffeeScript
-      </a> および
-      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
-        JavaScriptの起動方法
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>ファイル拡張子</td>
-    <td><tt>.coffee</tt></td>
-  </tr>
-  <tr>
-    <td>例</td>
-    <td><tt>coffee :index</tt></td>
-  </tr>
-</table>
 
 #### Yajl テンプレート
 

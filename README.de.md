@@ -63,7 +63,6 @@ diesen Server verwenden.
       - [Slim Templates](#slim-templates)
       - [Creole Templates](#creole-templates)
       - [MediaWiki Templates](#mediawiki-templates)
-      - [CoffeeScript Templates](#coffeescript-templates)
       - [Yajl Templates](#yajl-templates)
     - [Auf Variablen in Templates zugreifen](#auf-variablen-in-templates-zugreifen)
     - [Templates mit `yield` und verschachtelte Layouts](#templates-mit-yield-und-verschachtelte-layouts)
@@ -927,24 +926,6 @@ Da man Ruby nicht von MediaWiki heraus aufrufen kann, können auch
 Layouts nicht in MediaWiki geschrieben werden. Es ist aber möglich,
 einen Renderer für die Templates zu verwenden und einen anderen für das
 Layout, indem die `:layout_engine`-Option verwendet wird.
-
-#### CoffeeScript Templates
-
-<table>
-  <tr>
-    <td>Abhängigkeit</td>
-    <td><a href="https://github.com/josh/ruby-coffee-script">coffee-script</a>
-        und eine <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme">Möglichkeit JavaScript auszuführen</a>.
-    </td>
-  </tr>
-    <td>Dateierweiterung</td>
-    <td><tt>.coffee</tt></td>
-  </tr>
-  <tr>
-    <td>Beispiel</td>
-    <td><tt>coffee :index</tt></td>
-  </tr>
-</table>
 
 #### Yajl Templates
 

@@ -62,7 +62,6 @@ Se recomienda ejecutar `gem install puma`, porque Sinatra lo utilizará si está
       - [Plantillas Slim](#plantillas-slim)
       - [Plantillas Creole](#plantillas-creole)
       - [MediaWiki Templates](#mediawiki-templates)
-      - [Plantillas CoffeeScript](#plantillas-coffeescript)
       - [Plantillas Yajl](#plantillas-yajl)
     - [Accediendo a Variables en Plantillas](#accediendo-a-variables-en-plantillas)
     - [Plantillas con `yield` y `layout` anidado](#plantillas-con-yield-y-layout-anidado)
@@ -929,30 +928,6 @@ Nota que también puedes llamar al método `mediawiki` desde dentro de otras pla
 
 Debido a que no puedes llamar a Ruby desde MediaWiki, no puedes usar los diseños escritos en MediaWiki.
 De todas maneras, es posible usar otro motor de renderizado para esa plantilla pasando la opción :layout_engine.
-
-#### Plantillas CoffeeScript
-
-<table>
-  <tr>
-    <td>Dependencias</td>
-    <td>
-      <a href="https://github.com/josh/ruby-coffee-script" title="Ruby CoffeeScript">
-        CoffeeScript
-      </a> y un
-      <a href="https://github.com/sstephenson/execjs/blob/master/README.md#readme" title="ExecJS">
-        mecanismo para ejecutar javascript
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>Extensiones de Archivo</td>
-    <td><tt>.coffee</tt></td>
-  </tr>
-  <tr>
-    <td>Ejemplo</td>
-    <td><tt>coffee :index</tt></td>
-  </tr>
-</table>
 
 #### Plantillas Yajl
 

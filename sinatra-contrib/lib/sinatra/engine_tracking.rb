@@ -55,11 +55,6 @@ module Sinatra
       @current_engine == :markaby
     end
 
-    # @return [Boolean] Returns true if current engine is `:coffee`.
-    def coffee?
-      @current_engine == :coffee
-    end
-
     # @return [Boolean] Returns true if current engine is `:nokogiri`.
     def nokogiri?
       @current_engine == :nokogiri

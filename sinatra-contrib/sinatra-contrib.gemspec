@@ -51,7 +51,6 @@ EOF
   s.add_development_dependency "redcarpet"
   s.add_development_dependency "asciidoctor"
   s.add_development_dependency "radius"
-  s.add_development_dependency "coffee-script"
   s.add_development_dependency "nokogiri"
   s.add_development_dependency "creole"
   s.add_development_dependency "wikicloth"
