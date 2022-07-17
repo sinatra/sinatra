@@ -52,7 +52,6 @@ EOF
   s.add_development_dependency "asciidoctor"
   s.add_development_dependency "radius"
   s.add_development_dependency "nokogiri"
-  s.add_development_dependency "creole"
   s.add_development_dependency "markaby"
   s.add_development_dependency "rake", "< 11"
   s.add_development_dependency "rack-test", "< 2"

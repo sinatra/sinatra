@@ -65,11 +65,6 @@ module Sinatra
       @current_engine == :slim
     end
 
-    # @return [Boolean] Returns true if current engine is `:creole`.
-    def creole?
-      @current_engine == :creole
-    end
-
     # @return [Boolean] Returns true if current engine is `:ruby`.
     def ruby?
       @current_engine == :ruby
