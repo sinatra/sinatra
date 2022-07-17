@@ -60,7 +60,6 @@ Se recomienda ejecutar `gem install puma`, porque Sinatra lo utilizará si está
       - [Plantillas Markaby](#plantillas-markaby)
       - [Plantillas RABL](#plantillas-rabl)
       - [Plantillas Slim](#plantillas-slim)
-      - [Plantillas Creole](#plantillas-creole)
       - [Plantillas Yajl](#plantillas-yajl)
     - [Accediendo a Variables en Plantillas](#accediendo-a-variables-en-plantillas)
     - [Plantillas con `yield` y `layout` anidado](#plantillas-con-yield-y-layout-anidado)
@@ -857,42 +856,6 @@ También toma un bloque para plantillas inline (ver [ejemplo](#plantillas-inline
     <td><tt>slim :index</tt></td>
   </tr>
 </table>
-
-#### Plantillas Creole
-
-<table>
-  <tr>
-    <td>Dependencias</td>
-    <td><a href="https://github.com/minad/creole" title="Creole">Creole</a></td>
-  </tr>
-  <tr>
-    <td>Extensiones de Archivo</td>
-    <td><tt>.creole</tt></td>
-  </tr>
-  <tr>
-    <td>Ejemplo</td>
-    <td><tt>creole :wiki, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-No es posible llamar métodos desde creole, ni pasarle locales. Por lo tanto,
-generalmente va a usarlo en combinación con otro motor de renderizado:
-
-```ruby
-erb :resumen, :locals => { :texto => cerole(:introduccion) }
-```
-
-Debe tomar en cuenta que también puede llamar al método `creole` desde otras
-plantillas:
-
-```ruby
-%h1 Hola Desde Haml!
-%p= creole(:saludos)
-```
-
-Como no puedes utilizar Ruby desde Creole, no puedes usar layouts escritos en
-Creole. De todos modos, es posible usar un motor de renderizado para el layout
-distinto al de la plantilla pasando la opción `:layout_engine`.
 
 #### Plantillas Yajl
 

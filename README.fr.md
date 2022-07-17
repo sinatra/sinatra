@@ -61,7 +61,6 @@ Sinatra utilise le server Thin quand il est disponible.
       - [Templates Markaby](#templates-markaby)
       - [Templates RABL](#templates-rabl)
       - [Templates Slim](#templates-slim)
-      - [Templates Creole](#templates-creole)
       - [Templates Yajl](#templates-yajl)
     - [Accéder aux variables dans un Template](#accéder-aux-variables-dans-un-template)
     - [Templates avec `yield` et layouts imbriqués](#templates-avec-yield-et-layouts-imbriqués)
@@ -858,43 +857,6 @@ exemple).
     <td><tt>slim :index</tt></td>
   </tr>
 </table>
-
-#### Templates Creole
-
-<table>
-  <tr>
-    <td>Dépendances</td>
-    <td><a href="https://github.com/minad/creole" title="Creole">Creole</a></td>
-  </tr>
-  <tr>
-    <td>Extensions de fichier</td>
-    <td><tt>.creole</tt></td>
-  </tr>
-  <tr>
-    <td>Exemple</td>
-    <td><tt>creole :wiki, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-Il n'est pas possible d'appeler de méthodes Ruby depuis creole, ni de lui
-passer de variables locales. Par conséquent, il sera souvent utilisé en
-combinaison avec un autre moteur de rendu :
-
-```ruby
-erb :accueil, :locals => { :text => markdown(:introduction) }
-```
-
-Notez que vous pouvez également appeler la méthode `creole` depuis un autre template :
-
-```ruby
-%h1 Bonjour depuis Haml !
-%p= creole(:bienvenue)
-```
-
-Comme vous ne pouvez pas appeler de méthodes Ruby depuis Creole, vous ne pouvez
-pas utiliser de layouts écrits en Creole. Toutefois, il est possible
-d'utiliser un moteur de rendu différent pour le template et pour le layout
-en utilisant l'option `:layout_engine`.
 
 #### Templates Yajl
 

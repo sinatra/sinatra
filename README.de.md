@@ -61,7 +61,6 @@ diesen Server verwenden.
       - [Markaby Templates](#markaby-templates)
       - [RABL Templates](#rabl-templates)
       - [Slim Templates](#slim-templates)
-      - [Creole Templates](#creole-templates)
       - [Yajl Templates](#yajl-templates)
     - [Auf Variablen in Templates zugreifen](#auf-variablen-in-templates-zugreifen)
     - [Templates mit `yield` und verschachtelte Layouts](#templates-mit-yield-und-verschachtelte-layouts)
@@ -849,44 +848,6 @@ Nimmt ebenso einen Block für Inline-Templates entgegen (siehe Beispiel).
     <td><tt>slim :index</tt></td>
   </tr>
 </table>
-
-#### Creole Templates
-
-<table>
-  <tr>
-    <td>Abhängigkeit</td>
-    <td><a href="https://github.com/minad/creole">creole</a></td>
-  </tr>
-  <tr>
-    <td>Dateierweiterung</td>
-    <td><tt>.creole</tt></td>
-  </tr>
-  <tr>
-    <td>Beispiel</td>
-    <td><tt>creole :wiki, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-Da man aus dem Creole-Template heraus keine Ruby-Methoden aufrufen und auch
-keine locals verwenden kann, wird man Creole üblicherweise in Kombination mit
-anderen Renderern verwenden wollen:
-
-```ruby
-erb :overview, :locals => { :text => creole(:einfuehrung) }
-```
-
-Beachte, dass man die `creole`-Methode auch aus anderen Templates heraus
-aufrufen kann:
-
-```ruby
-%h1 Gruß von Haml!
-%p= creole(:Grüße)
-```
-
-Da man Ruby nicht von Creole heraus aufrufen kann, können auch Layouts
-nicht in Creole geschrieben werden. Es ist aber möglich, einen Renderer
-für die Templates zu verwenden und einen anderen für das Layout, indem
-die `:layout_engine`-Option verwendet wird.
 
 #### Yajl Templates
 

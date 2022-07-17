@@ -70,7 +70,6 @@ disponível, o Sinatra irá utilizá-la.
       - [Markaby Templates](#markaby-templates)
       - [RABL Templates](#rabl-templates)
       - [Slim Templates](#slim-templates)
-      - [Creole Templates](#creole-templates)
       - [Yajl Templates](#yajl-templates)
   - [Acessando Variáveis nos Templates](#acessando-variáveis-nos-templates)
     - [Templates com `yield` e layouts aninhados](#templates-com-yield-e-layouts-aninhados)
@@ -897,42 +896,6 @@ Este também recebe um bloco para templates (veja o exemplo).
     <td><tt>slim :index</tt></td>
   </tr>
 </table>
-
-#### Creole Templates
-
-<table>
-  <tr>
-    <td>Dependência</td>
-    <td><a href="https://github.com/minad/creole" title="Creole">Creole</a></td>
-  </tr>
-  <tr>
-    <td>Extensão do Arquivo</td>
-    <td><tt>.creole</tt></td>
-  </tr>
-  <tr>
-    <td>Exemplo</td>
-    <td><tt>creole :wiki, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-Não é possível chamar métodos por este template, nem passar *locals* para o
-mesmo. Portanto normalmente é utilizado junto a outra engine de renderização:
-
-```ruby
-erb :overview, :locals => { :text => creole(:introduction) }
-```
-
-Note que você também pode chamar o método `creole` dentro de outros templates:
-
-```ruby
-%h1 Olá do Haml!
-%p= creole(:saudacoes)
-```
-
-Já que você não pode chamar o Ruby pelo Creole, você não
-pode utilizar um layout escrito em Creole. Contudo é
-possível utilizar outra engine de renderização como template,
-deve-se passar a `:layout_engine` como opção.
 
 #### Yajl Templates
 

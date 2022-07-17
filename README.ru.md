@@ -62,7 +62,6 @@ ruby myapp.rb
       - [Markaby шаблоны](#markaby-шаблоны)
       - [RABL шаблоны](#rabl-шаблоны)
       - [Slim шаблоны](#slim-шаблоны)
-      - [Creole шаблоны](#creole-шаблоны)
       - [Yajl шаблоны](#yajl-шаблоны)
     - [Доступ к переменным в шаблонах](#доступ-к-переменным-в-шаблонах)
     - [Шаблоны с `yield` и вложенные лэйауты](#шаблоны-с-yield-и-вложенные-лэйауты)
@@ -854,43 +853,6 @@ erb :overview, :locals => { :text => rdoc(:introduction) }
     <td><tt>slim :index</tt></td>
   </tr>
 </table>
-
-#### Creole шаблоны
-
-<table>
-  <tr>
-    <td>Зависимости</td>
-    <td><a href="https://github.com/minad/creole" title="Creole">Creole</a></td>
-  </tr>
-  <tr>
-    <td>Расширения файлов</td>
-    <td><tt>.creole</tt></td>
-  </tr>
-  <tr>
-    <td>Пример</td>
-    <td><tt>creole :wiki, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-В Creole невозможно вызывать методы или передавать локальные переменные.
-Следовательно, вам, скорее всего, придётся использовать данный шаблон совместно
-с другим шаблонизатором:
-
-```ruby
-erb :overview, :locals => { :text => creole(:introduction) }
-```
-
-обратите внимание на то, что вы можете вызывать метод `creole` из других шаблонов:
-
-```ruby
-%h1 Hello From Haml!
-%p= creole(:greetings)
-```
-
-Вы не можете вызывать Ruby код из Creole, соответственно вы не можете
-использовать лэйауты на Creole. Тем не менее, существует возможность использовать
-один шаблонизатор для отображения шаблона, а другой для лэйаута при помощи
-опции `:layout_engine`.
 
 #### Yajl шаблоны
 
