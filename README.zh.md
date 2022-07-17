@@ -56,7 +56,6 @@ ruby myapp.rb
       - [RABL 模板](#rabl-模板)
       - [Slim 模板](#slim-模板)
       - [Creole 模板](#creole-模板)
-      - [MediaWiki 模板](#mediawiki-模板)
       - [Yajl 模板](#yajl-模板)
     - [在模板中访问变量](#在模板中访问变量)
     - [带 `yield` 的模板和嵌套布局](#带-yield-的模板和嵌套布局)
@@ -820,40 +819,6 @@ erb :overview, :locals => { :text => creole(:introduction) }
 ```
 
 因为不能在 Creole 模板文件内调用 Ruby 方法，你不能用 Creole 书写布局文件。
-然而，使用其它渲染引擎作为模版的布局是可能的，这需要通过传递 `:layout_engine` 选项。
-
-#### MediaWiki 模板
-
-<table>
-  <tr>
-    <td>依赖项</td>
-    <td><a href="https://github.com/nricciar/wikicloth" title="WikiCloth">WikiCloth</a></td>
-  </tr>
-  <tr>
-    <td>文件扩展名</td>
-    <td><tt>.mediawiki</tt> and <tt>.mw</tt></td>
-  </tr>
-  <tr>
-    <td>例子</td>
-    <td><tt>mediawiki :wiki, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-在 MediaWiki 标记文件内不能调用 Ruby 方法，也不能传递 locals 对象给它。
-因此你一般会结合其它的渲染引擎来使用它：
-
-```ruby
-erb :overview, :locals => { :text => mediawiki(:introduction) }
-```
-
-注意你也可以在其它模板内调用 `mediawiki` 方法：
-
-```ruby
-%h1 Hello From Haml!
-%p= mediawiki(:greetings)
-```
-
-因为不能在 MediaWiki 文件内调用 Ruby 方法，你不能用 MediaWiki 书写布局文件。
 然而，使用其它渲染引擎作为模版的布局是可能的，这需要通过传递 `:layout_engine` 选项。
 
 #### Yajl 模板

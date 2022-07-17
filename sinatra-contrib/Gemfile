@@ -3,7 +3,6 @@ gemspec
 
 gem 'sinatra', path: '..'
 gem 'rack-protection', path: '../rack-protection'
-gem "twitter-text", "1.14.7"
 
 group :development, :test do
   platform :jruby do

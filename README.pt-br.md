@@ -71,7 +71,6 @@ disponível, o Sinatra irá utilizá-la.
       - [RABL Templates](#rabl-templates)
       - [Slim Templates](#slim-templates)
       - [Creole Templates](#creole-templates)
-      - [MediaWiki Templates](#mediawiki-templates)
       - [Yajl Templates](#yajl-templates)
   - [Acessando Variáveis nos Templates](#acessando-variáveis-nos-templates)
     - [Templates com `yield` e layouts aninhados](#templates-com-yield-e-layouts-aninhados)
@@ -932,47 +931,6 @@ Note que você também pode chamar o método `creole` dentro de outros templates
 
 Já que você não pode chamar o Ruby pelo Creole, você não
 pode utilizar um layout escrito em Creole. Contudo é
-possível utilizar outra engine de renderização como template,
-deve-se passar a `:layout_engine` como opção.
-
-#### MediaWiki Templates
-
-<table>
-  <tr>
-    <td>Dependência</td>
-    <td>
-      <a href="https://github.com/nricciar/wikicloth" title="WikiCloth">
-        WikiCloth
-      </a>
-      </td>
-  </tr>
-  <tr>
-    <td>Extensão do Arquivo</td>
-    <td><tt>.mediawiki</tt> and <tt>.mw</tt></td>
-  </tr>
-  <tr>
-    <td>Exemplo</td>
-    <td><tt>mediawiki :wiki, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-It is not possible to call methods from MediaWiki markup, nor to pass locals to
-it. You therefore will usually use it in combination with another rendering
-engine:
-
-```ruby
-erb :overview, :locals => { :text => mediawiki(:introduction) }
-```
-
-Note that you may also call the `mediawiki` method from within other templates:
-
-```ruby
-%h1 Hello From Haml!
-%p= mediawiki(:greetings)
-```
-
-Já que você não pode chamar o Ruby pelo MediaWiki, você não
-pode utilizar um layout escrito em MediaWiki. Contudo é
 possível utilizar outra engine de renderização como template,
 deve-se passar a `:layout_engine` como opção.
 
