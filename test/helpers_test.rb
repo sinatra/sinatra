@@ -979,6 +979,8 @@ class HelpersTest < Minitest::Test
 
         get('/baz') { expires Time.at(0) }
 
+        get('/bah') { expires Time.at(0), :max_age => 20 }
+
         get('/blah') do
           obj = Object.new
           def obj.method_missing(*a, &b) 60.send(*a, &b) end
@@ -1009,6 +1011,12 @@ class HelpersTest < Minitest::Test
     it 'allows passing Time.at objects' do
       get '/baz'
       assert_equal 'Thu, 01 Jan 1970 00:00:00 GMT', response['Expires']
+    end
+
+    it 'allows max_age to be specified separately' do
+      get '/bah'
+      assert_equal 'Thu, 01 Jan 1970 00:00:00 GMT', response['Expires']
+      assert_equal ['max-age=20'], response['Cache-Control'].split(', ')
     end
 
     it 'accepts values pretending to be a Numeric (like ActiveSupport::Duration)' do

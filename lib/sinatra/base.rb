@@ -534,7 +534,7 @@ module Sinatra
         max_age = time - Time.now
       end
 
-      values.last.merge!(:max_age => max_age)
+      values.last.merge!(:max_age => max_age) { |key, v1, v2| v1 || v2 }
       cache_control(*values)
 
       response['Expires'] = time.httpdate
