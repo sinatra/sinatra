@@ -58,7 +58,6 @@ którego Sinatra użyje jeżeli będzie dostępny.
       - [Markaby Templates](#markaby-templates)
       - [RABL Templates](#rabl-templates)
       - [Slim Templates](#slim-templates)
-      - [Creole Templates](#creole-templates)
       - [Stylus Templates](#stylus-templates)
       - [Yajl Templates](#yajl-templates)
     - [Accessing Variables in Templates](#accessing-variables-in-templates)
@@ -848,41 +847,6 @@ It also takes a block for inline templates (see [example](#inline-templates)).
     <td><tt>slim :index</tt></td>
   </tr>
 </table>
-
-#### Creole Templates
-
-<table>
-  <tr>
-    <td>Dependency</td>
-    <td><a href="https://github.com/minad/creole" title="Creole">Creole</a></td>
-  </tr>
-  <tr>
-    <td>File Extension</td>
-    <td><tt>.creole</tt></td>
-  </tr>
-  <tr>
-    <td>Example</td>
-    <td><tt>creole :wiki, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-It is not possible to call methods from Creole, nor to pass locals to it. You
-therefore will usually use it in combination with another rendering engine:
-
-```ruby
-erb :overview, :locals => { :text => creole(:introduction) }
-```
-
-Note that you may also call the `creole` method from within other templates:
-
-```ruby
-%h1 Hello From Haml!
-%p= creole(:greetings)
-```
-
-Since you cannot call Ruby from Creole, you cannot use layouts written in
-Creole. However, it is possible to use another rendering engine for the
-template than for the layout by passing the `:layout_engine` option.
 
 #### Stylus Templates
 

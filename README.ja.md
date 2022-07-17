@@ -58,7 +58,6 @@ PumaがあればSinatraはこれを利用するので、`gem install puma`する
       - [Markaby テンプレート](#markaby-テンプレート)
       - [RABL テンプレート](#rabl-テンプレート)
       - [Slim テンプレート](#slim-テンプレート)
-      - [Creole テンプレート](#creole-テンプレート)
       - [Yajl テンプレート](#yajl-テンプレート)
     - [テンプレート内での変数へのアクセス](#テンプレート内での変数へのアクセス)
     - [`yield`を伴うテンプレートとネストしたレイアウト](#yieldを伴うテンプレートとネストしたレイアウト)
@@ -784,39 +783,6 @@ RadiusテンプレートからRubyのメソッドを直接呼び出すことが�
     <td><tt>slim :index</tt></td>
   </tr>
 </table>
-
-#### Creole テンプレート
-
-<table>
-  <tr>
-    <td>依存</td>
-    <td><a href="https://github.com/minad/creole" title="Creole">Creole</a></td>
-  </tr>
-  <tr>
-    <td>ファイル拡張子</td>
-    <td><tt>.creole</tt></td>
-  </tr>
-  <tr>
-    <td>例</td>
-    <td><tt>creole :wiki, :layout_engine => :erb</tt></td>
-  </tr>
-</table>
-
-Creoleからメソッドを呼び出すことも、localsに変数を渡すこともできません。
-それゆえ、他のレンダリングエンジンとの組み合わせで使うのが普通です。
-
-```ruby
-erb :overview, :locals => { :text => creole(:introduction) }
-```
-
-ノート: 他のテンプレート内で`creole`メソッドを呼び出せます。
-
-```ruby
-%h1 Hello From Haml!
-%p= creole(:greetings)
-```
-
-CreoleからはRubyを呼ぶことができないので、Creoleで書かれたレイアウトを使うことはできません。しかしながら、`:layout_engine`オプションを渡すことでテンプレートのものとは異なるレンダリングエンジンをレイアウトのために使うことができます。
 
 #### Yajl テンプレート
 
