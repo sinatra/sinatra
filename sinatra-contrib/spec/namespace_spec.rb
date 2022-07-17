@@ -702,6 +702,28 @@ RSpec.describe Sinatra::Namespace do
             expect(send(verb, '/').body).to eq 'Hello World!'
             expect(send(verb, '/foo').body).to eq 'Hi World!'
           end
+
+          specify 'can render strings' do
+            mock_app do
+              namespace '/foo' do
+                send(verb) { erb 'foo' }
+              end
+            end
+
+            expect(send(verb, '/foo').body).to eq 'foo'
+          end
+
+          specify 'can render strings nested' do
+            mock_app do
+              namespace '/foo' do
+                namespace '/bar' do
+                  send(verb) { erb 'bar' }
+                end
+              end
+            end
+
+            expect(send(verb, '/foo/bar').body).to eq 'bar'
+          end
         end
       end
 
