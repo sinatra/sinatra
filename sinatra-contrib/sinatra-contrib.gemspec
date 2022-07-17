@@ -50,7 +50,6 @@ EOF
   s.add_development_dependency "liquid"
   s.add_development_dependency "redcarpet"
   s.add_development_dependency "asciidoctor"
-  s.add_development_dependency "radius"
   s.add_development_dependency "nokogiri"
   s.add_development_dependency "markaby"
   s.add_development_dependency "rake", "< 11"

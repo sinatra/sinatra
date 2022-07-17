@@ -54,7 +54,6 @@ PumaがあればSinatraはこれを利用するので、`gem install puma`する
       - [Markdown テンプレート](#markdown-テンプレート)
       - [RDoc テンプレート](#rdoc-テンプレート)
       - [AsciiDoc テンプレート](#asciidoc-テンプレート)
-      - [Radius テンプレート](#radius-テンプレート)
       - [Markaby テンプレート](#markaby-テンプレート)
       - [RABL テンプレート](#rabl-テンプレート)
       - [Slim テンプレート](#slim-テンプレート)
@@ -711,25 +710,6 @@ RDocからはRubyを呼ぶことができないので、RDocで書かれたレ�
 </table>
 
 AsciiDocテンプレートからRubyのメソッドを直接呼び出すことができないため、ほぼ全ての場合にlocalsを指定する必要があるでしょう。
-
-#### Radius テンプレート
-
-<table>
-  <tr>
-    <td>依存</td>
-    <td><a href="https://github.com/jlong/radius" title="Radius">Radius</a></td>
-  </tr>
-  <tr>
-    <td>ファイル拡張子</td>
-    <td><tt>.radius</tt></td>
-  </tr>
-  <tr>
-    <td>例</td>
-    <td><tt>radius :index, :locals => { :key => 'value' }</tt></td>
-  </tr>
-</table>
-
-RadiusテンプレートからRubyのメソッドを直接呼び出すことができないため、ほぼ全ての場合にlocalsを指定する必要があるでしょう。
 
 #### Markaby テンプレート
 

@@ -57,7 +57,6 @@ diesen Server verwenden.
       - [Markdown Templates](#markdown-templates)
       - [RDoc Templates](#rdoc-templates)
       - [AsciiDoc Templates](#asciidoc-templates)
-      - [Radius Templates](#radius-templates)
       - [Markaby Templates](#markaby-templates)
       - [RABL Templates](#rabl-templates)
       - [Slim Templates](#slim-templates)
@@ -775,26 +774,6 @@ zu verwenden und einen anderen für das Layout, indem die
 Da man aus dem AsciiDoc-Template heraus keine Ruby-Methoden aufrufen kann
 (ausgenommen `yield`), wird man üblicherweise locals verwenden wollen, mit
 denen man Variablen weitergibt.
-
-#### Radius Templates
-
-<table>
-  <tr>
-    <td>Abhängigkeit</td>
-    <td><a href="https://github.com/jlong/radius">radius</a></td>
-  </tr>
-  <tr>
-    <td>Dateierweiterung</td>
-    <td><tt>.radius</tt></td>
-  </tr>
-  <tr>
-    <td>Beispiel</td>
-    <td><tt>radius :index, :locals => { :key => 'Wert' }</tt></td>
-  </tr>
-</table>
-
-Da man aus dem Radius-Template heraus keine Ruby-Methoden aufrufen kann, wird
-man üblicherweise locals verwenden wollen, mit denen man Variablen weitergibt.
 
 #### Markaby Templates
 

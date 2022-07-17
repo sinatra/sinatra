@@ -90,7 +90,7 @@ RSpec.describe Sinatra::ContentFor do
     end
   end
 
-  # TODO: liquid radius markaby builder nokogiri
+  # TODO: liquid markaby builder nokogiri
   engines = %w[erb erubi haml hamlit slim]
 
   engines.each do |inner|

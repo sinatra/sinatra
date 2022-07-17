@@ -45,11 +45,6 @@ module Sinatra
       @current_engine == :rdoc
     end
 
-    # @return [Boolean] Returns true if current engine is `:radius.
-    def radius?
-      @current_engine == :radius
-    end
-
     # @return [Boolean] Returns true if current engine is `:markaby`.
     def markaby?
       @current_engine == :markaby

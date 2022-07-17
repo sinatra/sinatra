@@ -733,10 +733,6 @@ module Sinatra
       render :asciidoc, template, options, locals
     end
 
-    def radius(template, options = {}, locals = {})
-      render :radius, template, options, locals
-    end
-
     def markaby(template = nil, options = {}, locals = {}, &block)
       render_ruby(:mab, template, options, locals, &block)
     end

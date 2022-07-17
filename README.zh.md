@@ -51,7 +51,6 @@ ruby myapp.rb
       - [Markdown 模板](#markdown-模板)
       - [RDoc 模板](#rdoc-模板)
       - [AsciiDoc 模板](#asciidoc-模板)
-      - [Radius 模板](#radius-模板)
       - [Markaby 模板](#markaby-模板)
       - [RABL 模板](#rabl-模板)
       - [Slim 模板](#slim-模板)
@@ -713,25 +712,6 @@ erb :overview, :locals => { :text => rdoc(:introduction) }
 </table>
 
 因为不能在 AsciiDoc 模板中直接调用 Ruby 方法，你几乎总是需要传递 locals 对象给它。
-
-#### Radius 模板
-
-<table>
-  <tr>
-    <td>依赖项</td>
-    <td><a href="https://github.com/jlong/radius" title="Radius">Radius</a></td>
-  </tr>
-  <tr>
-    <td>文件扩展名</td>
-    <td><tt>.radius</tt></td>
-  </tr>
-  <tr>
-    <td>例子</td>
-    <td><tt>radius :index, :locals => { :key => 'value' }</tt></td>
-  </tr>
-</table>
-
-因为不能在 Radius 模板中直接调用 Ruby 方法，你几乎总是可以传递 locals 对象给它。
 
 #### Markaby 模板
 
