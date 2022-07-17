@@ -31,7 +31,7 @@ end
 
 Rake::TestTask.new(:"test:core") do |t|
   core_tests = %w[base delegator encoding extensions filter
-     helpers mapped_error middleware radius rdoc
+     helpers mapped_error middleware rdoc
      readme request response result route_added_hook
      routing server settings sinatra static templates]
   t.test_files = core_tests.map {|n| "test/#{n}_test.rb"}
