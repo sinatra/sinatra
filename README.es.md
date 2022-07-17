@@ -56,7 +56,6 @@ Se recomienda ejecutar `gem install puma`, porque Sinatra lo utilizará si está
       - [Plantillas Markdown](#plantillas-markdown)
       - [Plantillas RDoc](#plantillas-rdoc)
       - [Plantillas AsciiDoc](#plantillas-asciidoc)
-      - [Plantillas Radius](#plantillas-radius)
       - [Plantillas Markaby](#plantillas-markaby)
       - [Plantillas RABL](#plantillas-rabl)
       - [Plantillas Slim](#plantillas-slim)
@@ -783,26 +782,6 @@ al de la plantilla pasando la opción `:layout_engine`.
 
 Desde que no se puede utilizar métodos de Ruby desde una
 plantilla AsciiDoc, casi siempre va a querer pasarle locales.
-
-#### Plantillas Radius
-
-<table>
-  <tr>
-    <td>Dependencias</td>
-    <td><a href="https://github.com/jlong/radius" title="Radius">Radius</a></td>
-  </tr>
-  <tr>
-    <td>Extensiones de Archivo</td>
-    <td><tt>.radius</tt></td>
-  </tr>
-  <tr>
-    <td>Ejemplo</td>
-    <td><tt>radius :index, :locals => { :clave => 'valor' }</tt></td>
-  </tr>
-</table>
-
-Desde que no se puede utilizar métodos de Ruby (excepto por `yield`) de una
-plantilla Radius, casi siempre se necesita pasar locales.
 
 #### Plantillas Markaby
 

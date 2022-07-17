@@ -58,7 +58,6 @@ ruby myapp.rb
       - [Markdown шаблоны](#markdown-шаблоны)
       - [RDoc шаблоны](#rdoc-шаблоны)
       - [AsciiDoc шаблоны](#asciidoc-шаблоны)
-      - [Radius шаблоны](#radius-шаблоны)
       - [Markaby шаблоны](#markaby-шаблоны)
       - [RABL шаблоны](#rabl-шаблоны)
       - [Slim шаблоны](#slim-шаблоны)
@@ -779,26 +778,6 @@ erb :overview, :locals => { :text => rdoc(:introduction) }
 </table>
 
 Так как в AsciiDoc шаблонах невозможно вызывать методы из Ruby напрямую, то вы
-почти всегда будете передавать в шаблон локальные переменные.
-
-#### Radius шаблоны
-
-<table>
-  <tr>
-    <td>Зависимости</td>
-    <td><a href="https://github.com/jlong/radius" title="Radius">Radius</a></td>
-  </tr>
-  <tr>
-    <td>Расширения файлов</td>
-    <td><tt>.radius</tt></td>
-  </tr>
-  <tr>
-    <td>Пример</td>
-    <td><tt>radius :index, :locals => { :key => 'value' }</tt></td>
-  </tr>
-</table>
-
-Так как в Radius шаблонах невозможно вызывать методы из Ruby напрямую, то вы
 почти всегда будете передавать в шаблон локальные переменные.
 
 #### Markaby шаблоны

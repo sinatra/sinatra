@@ -66,7 +66,6 @@ disponível, o Sinatra irá utilizá-la.
       - [Markdown Templates](#markdown-templates)
       - [RDoc Templates](#rdoc-templates)
       - [AsciiDoc Templates](#asciidoc-templates)
-      - [Radius Templates](#radius-templates)
       - [Markaby Templates](#markaby-templates)
       - [RABL Templates](#rabl-templates)
       - [Slim Templates](#slim-templates)
@@ -822,26 +821,6 @@ deve-se passar a `:layout_engine` como opção.
 </table>
 
 Já que você não pode chamar o Ruby pelo template AsciiDoc,
-você quase sempre precisará passar o `locals` para ele.
-
-#### Radius Templates
-
-<table>
-  <tr>
-    <td>Dependência</td>
-    <td><a href="https://github.com/jlong/radius" title="Radius">Radius</a></td>
-  </tr>
-  <tr>
-    <td>Extensão do Arquivo</td>
-    <td><tt>.radius</tt></td>
-  </tr>
-  <tr>
-    <td>Exemplo</td>
-    <td><tt>radius :index, :locals => { :key => 'value' }</tt></td>
-  </tr>
-</table>
-
-Já que você não pode chamar o Ruby pelo template Radius,
 você quase sempre precisará passar o `locals` para ele.
 
 #### Markaby Templates

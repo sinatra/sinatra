@@ -52,7 +52,6 @@ thin이 설치되어 있을 경우 Sinatra는 thin을 통해 실행합니다.
       - [Markdown 템플릿](#markdown-템플릿)
       - [RDoc 템플릿](#rdoc-템플릿)
       - [AsciiDoc 템플릿](#asciidoc-템플릿)
-      - [Radius 템플릿](#radius-템플릿)
       - [Markaby 템플릿](#markaby-템플릿)
       - [RABL 템플릿](#rabl-템플릿)
       - [Slim 템플릿](#slim-템플릿)
@@ -703,26 +702,6 @@ RDoc에서 루비를 호출할 수 없기 때문에, RDoc으로 작성된 레이
 </table>
 
 AsciiDoc 템플릿에서는 루비 메서드를 호출할 수 없기
-때문에, 거의 대부분의 경우 locals를 전달해야 합니다.
-
-#### Radius 템플릿
-
-<table>
-  <tr>
-    <td>의존성</td>
-    <td><a href="https://github.com/jlong/radius" title="Radius">radius</a></td>
-  </tr>
-  <tr>
-    <td>파일 확장자</td>
-    <td><tt>.radius</tt></td>
-  </tr>
-  <tr>
-    <td>예제</td>
-    <td><tt>radius :index, :locals => { :key => 'value' }</tt></td>
-  </tr>
-</table>
-
-Radius 템플릿에서는 루비 메서드를 호출할 수 없기
 때문에, 거의 대부분의 경우 locals를 전달해야 합니다.
 
 #### Markaby 템플릿

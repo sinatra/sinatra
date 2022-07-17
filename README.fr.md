@@ -57,7 +57,6 @@ Sinatra utilise le server Thin quand il est disponible.
       - [Templates Markdown](#templates-markdown)
       - [Templates RDoc](#templates-rdoc)
       - [Templates Asciidoc](#templates-asciidoc)
-      - [Templates Radius](#templates-radius)
       - [Templates Markaby](#templates-markaby)
       - [Templates RABL](#templates-rabl)
       - [Templates Slim](#templates-slim)
@@ -783,26 +782,6 @@ pour le layout en utilisant l’option `:layout_engine`.
 
 Comme vous ne pouvez pas appeler de méthodes Ruby depuis un template
 AsciiDoc, vous aurez sûrement à lui passer des variables locales.
-
-#### Templates Radius
-
-<table>
-  <tr>
-    <td>Dépendances</td>
-    <td><a href="https://github.com/jlong/radius" title="Radius">Radius</a></td>
-  </tr>
-  <tr>
-    <td>Extensions de fichier</td>
-    <td><tt>.radius</tt></td>
-  </tr>
-  <tr>
-    <td>Exemple</td>
-    <td><tt>radius :index, :locals => { :key => 'value' }</tt></td>
-  </tr>
-</table>
-
-Comme vous ne pouvez pas appeler de méthodes Ruby depuis un template
-Radius, vous aurez sûrement à lui passer des variables locales.
 
 #### Templates Markaby
 

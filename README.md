@@ -58,7 +58,6 @@ pick up if available.
       - [Markdown Templates](#markdown-templates)
       - [RDoc Templates](#rdoc-templates)
       - [AsciiDoc Templates](#asciidoc-templates)
-      - [Radius Templates](#radius-templates)
       - [Markaby Templates](#markaby-templates)
       - [RABL Templates](#rabl-templates)
       - [Slim Templates](#slim-templates)
@@ -775,26 +774,6 @@ template than for the layout by passing the `:layout_engine` option.
 </table>
 
 Since you cannot call Ruby methods directly from an AsciiDoc template, you
-almost always want to pass locals to it.
-
-#### Radius Templates
-
-<table>
-  <tr>
-    <td>Dependency</td>
-    <td><a href="https://github.com/jlong/radius" title="Radius">Radius</a></td>
-  </tr>
-  <tr>
-    <td>File Extension</td>
-    <td><tt>.radius</tt></td>
-  </tr>
-  <tr>
-    <td>Example</td>
-    <td><tt>radius :index, :locals => { :key => 'value' }</tt></td>
-  </tr>
-</table>
-
-Since you cannot call Ruby methods directly from a Radius template, you
 almost always want to pass locals to it.
 
 #### Markaby Templates
