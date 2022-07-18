@@ -351,16 +351,18 @@ get('/') { Stream.new }
 
 മുകളിൽ കാണിച്ചിരിക്കുന്ന പോലെ , സിനാട്ര ഉപയോഗിച്ച String patterns, regular expressions  കൈകാര്യം ചെയ്യാം  മാത്രമല്ല നിങ്ങളുടെ സ്വന്തം matchers  ഉം ഉണ്ടാക്കാം
 ```ruby
-class AllButPattern
-  Match = Struct.new(:captures)
 
+class AllButPattern
   def initialize(except)
-    @except   = except
-    @captures = Match.new([])
+    @except = except
   end
 
-  def match(str)
-    @captures unless @except === str
+  def to_pattern(options)
+    return self
+  end
+
+  def params(route)
+    return {} unless @except === route
   end
 end
 
@@ -376,16 +378,8 @@ end
 ഇതിനെ ഇങ്ങനെയും കാണിക്കാം
 
 ```ruby
-get // do
+get /.*/ do
   pass if request.path_info == "/index"
-  # ...
-end
-```
-
-Or, using negative look ahead:
-
-```ruby
-get %r{(?!/index)} do
   # ...
 end
 ```

@@ -372,15 +372,16 @@ stop there. You can easily define your own matchers:
 
 ```ruby
 class AllButPattern
-  Match = Struct.new(:captures)
-
   def initialize(except)
-    @except   = except
-    @captures = Match.new([])
+    @except = except
   end
 
-  def match(str)
-    @captures unless @except === str
+  def to_pattern(options)
+    return self
+  end
+
+  def params(route)
+    return {} unless @except === route
   end
 end
 
@@ -397,16 +398,8 @@ Note that the above example might be over-engineered, as it can also be
 expressed as:
 
 ```ruby
-get // do
+get /.*/ do
   pass if request.path_info == "/index"
-  # ...
-end
-```
-
-Or, using negative look ahead:
-
-```ruby
-get %r{(?!/index)} do
   # ...
 end
 ```

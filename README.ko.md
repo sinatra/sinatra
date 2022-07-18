@@ -332,15 +332,16 @@ get('/') { Stream.new }
 
 ```ruby
 class AllButPattern
-  Match = Struct.new(:captures)
-
   def initialize(except)
-    @except   = except
-    @captures = Match.new([])
+    @except = except
   end
 
-  def match(str)
-    @captures unless @except === str
+  def to_pattern(options)
+    return self
+  end
+
+  def params(route)
+    return {} unless @except === route
   end
 end
 
@@ -356,16 +357,8 @@ end
 사실 위의 예제는 조금 과하게 작성된 면이 있습니다. 간단하게 표현할 수도 있어요.
 
 ```ruby
-get // do
+get /.*/ do
   pass if request.path_info == "/index"
-  # ...
-end
-```
-
-또는 거꾸로 탐색(negative look ahead)할 수도 있습니다.
-
-```ruby
-get %r{(?!/index)} do
   # ...
 end
 ```

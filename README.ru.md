@@ -375,15 +375,16 @@ get('/') { Stream.new }
 
 ```ruby
 class AllButPattern
-  Match = Struct.new(:captures)
-
   def initialize(except)
-    @except   = except
-    @captures = Match.new([])
+    @except = except
   end
 
-  def match(str)
-    @captures unless @except === str
+  def to_pattern(options)
+    return self
+  end
+
+  def params(route)
+    return {} unless @except === route
   end
 end
 
@@ -400,16 +401,8 @@ end
 может быть реализован следующим образом:
 
 ```ruby
-get // do
+get /.*/ do
   pass if request.path_info == "/index"
-  # ...
-end
-```
-
-Или с использованием негативной опережающей проверки (отрицательное look-ahead условие):
-
-```ruby
-get %r{(?!/index)} do
   # ...
 end
 ```
