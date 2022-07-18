@@ -37,7 +37,7 @@ EOF
   s.required_ruby_version = '>= 2.6.0'
 
   s.add_dependency "sinatra", version
-  s.add_dependency "mustermann", "~> 1.0"
+  s.add_dependency "mustermann", "~> 2.0"
   s.add_dependency "tilt", "~> 2.0"
   s.add_dependency "rack-protection", version
   s.add_dependency "multi_json"
