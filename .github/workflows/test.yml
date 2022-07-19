@@ -28,6 +28,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: ruby/setup-ruby@v1
+      continue-on-error: ${{ matrix.allow-failure || false }}
+      id: setup-ruby
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
@@ -60,6 +62,8 @@ jobs:
         MATRIX_CONTEXT: ${{ toJson(matrix) }} # required
       if: failure() && env.SLACK_WEBHOOK_URL
     # because continue-on-error marks the steps as pass even if they fail
+    - name: "setup-ruby (bundle install) outcome: ${{ steps.setup-ruby.outcome }}"
+      run: ""
     - name: "sinatra tests outcome: ${{ steps.tests.outcome }}"
       run: ""
     - name: "sinatra-contrib tests outcome: ${{ steps.contrib-tests.outcome }}"
