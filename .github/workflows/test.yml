@@ -10,6 +10,7 @@ jobs:
   test:
     name: Ruby ${{ matrix.ruby }} (Rack ${{ matrix.rack }})
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -19,11 +20,16 @@ jobs:
         ruby: [2.6, 2.7, '3.0', 3.1, 'jruby-9.3']
         include:
           - { ruby: 3.1, rack: master, allow-failure: true }
+          - { ruby: jruby-head, rack: stable, allow-failure: true }
+          - { ruby: truffleruby-22, rack: stable, allow-failure: true }
+          - { ruby: truffleruby-head, rack: stable, allow-failure: true }
     env:
       rack: ${{ matrix.rack }}
     steps:
     - uses: actions/checkout@v3
     - uses: ruby/setup-ruby@v1
+      continue-on-error: ${{ matrix.allow-failure || false }}
+      id: setup-ruby
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
@@ -56,6 +62,8 @@ jobs:
         MATRIX_CONTEXT: ${{ toJson(matrix) }} # required
       if: failure() && env.SLACK_WEBHOOK_URL
     # because continue-on-error marks the steps as pass even if they fail
+    - name: "setup-ruby (bundle install) outcome: ${{ steps.setup-ruby.outcome }}"
+      run: ""
     - name: "sinatra tests outcome: ${{ steps.tests.outcome }}"
       run: ""
     - name: "sinatra-contrib tests outcome: ${{ steps.contrib-tests.outcome }}"
