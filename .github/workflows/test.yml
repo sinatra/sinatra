@@ -8,13 +8,19 @@ on:
 
 jobs:
   test:
-    name: Test with Ruby-${{ matrix.ruby }}
+    name: Ruby ${{ matrix.ruby }} (Rack ${{ matrix.rack }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
+        rack:
+          - stable
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
         ruby: [2.6, 2.7, '3.0', 3.1, 'jruby-9.3']
+        include:
+          - { ruby: 3.1, rack: master, allow-failure: true }
+    env:
+      rack: ${{ matrix.rack }}
     steps:
     - uses: actions/checkout@v3
     - uses: ruby/setup-ruby@v1
@@ -24,13 +30,19 @@ jobs:
     - name: Install dependencies
       run: sudo apt-get install -y pandoc nodejs pkg-config libxml2-dev libxslt-dev
     - name: Run sinatra tests
+      continue-on-error: ${{ matrix.allow-failure || false }}
+      id: tests
       run: bundle exec rake
     - name: Run sinatra-contrib tests
+      continue-on-error: ${{ matrix.allow-failure || false }}
+      id: contrib-tests
       working-directory: sinatra-contrib
       run: |
         bundle install --jobs=3 --retry=3
         bundle exec rake
     - name: Run rack-protection tests
+      continue-on-error: ${{ matrix.allow-failure || false }}
+      id: protection-tests
       working-directory: rack-protection
       run: |
         bundle install --jobs=3 --retry=3
@@ -43,3 +55,10 @@ jobs:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
         MATRIX_CONTEXT: ${{ toJson(matrix) }} # required
       if: failure() && env.SLACK_WEBHOOK_URL
+    # because continue-on-error marks the steps as pass even if they fail
+    - name: "sinatra tests outcome: ${{ steps.tests.outcome }}"
+      run: ""
+    - name: "sinatra-contrib tests outcome: ${{ steps.contrib-tests.outcome }}"
+      run: ""
+    - name: "rack-protection tests outcome: ${{ steps.protection-tests.outcome }}"
+      run: ""
