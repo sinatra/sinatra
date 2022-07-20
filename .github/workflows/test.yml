@@ -17,12 +17,10 @@ jobs:
         rack:
           - stable
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
-        ruby: [2.6, 2.7, '3.0', 3.1, 'jruby-9.3']
+        ruby: [2.6, 2.7, '3.0', 3.1, 'jruby-9.3', truffleruby, truffleruby-head]
         include:
           - { ruby: 3.1, rack: master, allow-failure: true }
           - { ruby: jruby-head, rack: stable, allow-failure: true }
-          - { ruby: truffleruby-22, rack: stable, allow-failure: true }
-          - { ruby: truffleruby-head, rack: stable, allow-failure: true }
     env:
       rack: ${{ matrix.rack }}
     steps:
