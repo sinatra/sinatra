@@ -32,7 +32,7 @@ gem 'puma'
 gem 'falcon', '~> 0.40', platforms: [ :ruby ]
 gem 'yajl-ruby', platforms: [ :ruby ]
 gem 'nokogiri', '> 1.5.0'
-gem 'rainbows', platforms: [ :ruby ]
+gem 'rainbows', platforms: [ :mri ] # uses #fork
 gem 'eventmachine'
 gem 'slim', '~> 4'
 gem 'rdoc'
