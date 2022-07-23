@@ -45,5 +45,5 @@ EOF
   s.add_dependency 'rack', '~> 2.2'
   s.add_dependency 'tilt', '~> 2.0'
   s.add_dependency 'rack-protection', version
-  s.add_dependency 'mustermann', '~> 1.0'
+  s.add_dependency 'mustermann', '~> 2.0'
 end
