@@ -1,6 +1,6 @@
 ## 2.2.2 / 2022-07-23
 
-* Update mustermann dependency version 2.
+* Update mustermann dependency to version 2.
 
 ## 2.2.1 / 2022-07-15
 
