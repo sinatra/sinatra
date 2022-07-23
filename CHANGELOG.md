@@ -1,3 +1,7 @@
+## 2.2.2 / 2022-07-23
+
+* Update mustermann dependency version 2.
+
 ## 2.2.1 / 2022-07-15
 
 * Fix JRuby regression by using ruby2_keywords for delegation. [#1750](https://github.com/sinatra/sinatra/pull/1750) by Patrik Ragnarsson
