@@ -1,5 +1,7 @@
 ## 3.0.0 / Unreleased
 
+* New: Add Falcon support. [#1794](https://github.com/sinatra/sinatra/pull/1794) by Samuel Williams and @horaciob
+
 * New: Add AES GCM encryption support for session cookies. [#1324] (https://github.com/sinatra/sinatra/pull/1324) by Michael Coyne
 
 * Fix: Internal Sinatra errors now extend `Sinatra::Error`. This fixes [#1204](https://github.com/sinatra/sinatra/issues/1204) and [#1518](https://github.com/sinatra/sinatra/issues/1518). [bda8c29d](https://github.com/sinatra/sinatra/commit/bda8c29d70619d53f5b1c181140638d340695514) by Jordan Owens
