@@ -13,19 +13,6 @@ module Sinatra
   # Helper methods to ease testing your Sinatra application. Partly extracted
   # from Sinatra. Testing framework agnostic.
   module TestHelpers
-    # Test variant of session, which exposes a `global_env`.
-    class Session < Rack::Test::Session
-      def global_env
-        @global_env ||= {}
-      end
-
-      private
-
-      def default_env
-        super.merge global_env
-      end
-    end
-
     include Rack::Test::Methods
     extend Forwardable
     attr_accessor :settings
@@ -207,10 +194,6 @@ module Sinatra
     # @return The env of the last request
     def last_env
       last_request.env
-    end
-
-    def build_rack_test_session(name) # :nodoc:
-      Session.new rack_mock_session(name)
     end
   end
 end

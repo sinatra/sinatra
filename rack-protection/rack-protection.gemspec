@@ -35,6 +35,6 @@ EOF
 
   # dependencies
   s.add_dependency "rack"
-  s.add_development_dependency "rack-test", "< 2"
+  s.add_development_dependency "rack-test", "~> 2"
   s.add_development_dependency "rspec", "~> 3"
 end
