@@ -16,7 +16,7 @@ rack_version = nil if rack_version.empty? or rack_version == 'stable'
 rack_version = {:github => 'rack/rack'} if rack_version == 'master'
 gem 'rack', rack_version
 
-gem 'rack-test', '>= 0.6.2', '< 2'
+gem 'rack-test', github: 'rack/rack-test'
 gem "minitest", "~> 5.0"
 gem 'yard'
 
