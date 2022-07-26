@@ -33,12 +33,7 @@ module Rack
         return true if base_url(env) == origin
         return true if options[:allow_if] && options[:allow_if].call(env)
 
-        if options.key? :origin_whitelist
-          warn env, "Rack::Protection origin_whitelist option is deprecated and will be removed, " \
-            "use permitted_origins instead.\n"
-        end
-
-        permitted_origins = options[:permitted_origins] || options[:origin_whitelist]
+        permitted_origins = options[:permitted_origins]
         Array(permitted_origins).include? origin
       end
 

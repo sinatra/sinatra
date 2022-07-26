@@ -42,13 +42,5 @@ RSpec.describe Rack::Protection::HttpOrigin do
       end
       expect(send(method.downcase, '/', {}, 'HTTP_ORIGIN' => 'http://www.friend.com')).to be_ok
     end
-
-    it "accepts #{method} requests with whitelisted Origin" do
-      mock_app do
-        use Rack::Protection::HttpOrigin, origin_whitelist: ['http://www.friend.com']
-        run DummyApp
-      end
-      expect(send(method.downcase, '/', {}, 'HTTP_ORIGIN' => 'http://www.friend.com')).to be_ok
-    end
   end
 end
