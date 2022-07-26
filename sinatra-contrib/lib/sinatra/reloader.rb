@@ -215,7 +215,7 @@ module Sinatra
     # Allow a block to be executed after any file being reloaded
     @@after_reload = []
     def after_reload(&block)
-      @@after_reload  << block
+      @@after_reload << block
     end
 
     # When the extension is registered it extends the Sinatra application
@@ -246,6 +246,8 @@ module Sinatra
       Watcher::List.for(klass).updated.each do |watcher|
         klass.set(:inline_templates, watcher.path) if watcher.inline_templates?
         watcher.elements.each { |element| klass.deactivate(element) }
+        # Deletes all old elements.
+        watcher.elements.delete_if { true }
         $LOADED_FEATURES.delete(watcher.path)
         require watcher.path
         watcher.update
@@ -253,8 +255,12 @@ module Sinatra
       end
       return if reloaded_paths.empty?
       @@after_reload.each do |block|
-        args = (block.lambda? && block.arity != 1) ? [] : [reloaded_paths]
-        block.call(*args)
+        block.arity != 0  ? block.call(reloaded_paths) : block.call
+      end
+      # Prevents after_reload from increasing each time it's reloaded.
+      @@after_reload.delete_if do |blk|
+        path, _ = blk.source_location
+        path && reloaded_paths.include?(path)
       end
     end
 
