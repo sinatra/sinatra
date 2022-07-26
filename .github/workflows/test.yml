@@ -30,8 +30,6 @@ jobs:
       id: setup-ruby
       with:
         ruby-version: ${{ matrix.ruby }}
-        # Workaround for https://github.com/rubygems/rubygems/issues/5691
-        bundler: ${{ startsWith(matrix.ruby, 'truffleruby') && 'none' || 'latest' }}
         bundler-cache: true
     - name: Install dependencies
       run: sudo apt-get install -y pandoc nodejs pkg-config libxml2-dev libxslt-dev
