@@ -250,13 +250,13 @@ class TemplatesTest < Minitest::Test
       template(:my_layout) { 'Hello <%= name %>!<%= yield %>' }
 
       get('/') do
-        erb('<p>content</p>', { :layout => :my_layout }, { :name => 'Mike'})
+        erb('<p><%= name %> content</p>', { :layout => :my_layout }, { :name => 'Mike'})
       end
     end
 
     get '/'
     assert ok?
-    assert_equal 'Hello Mike!<p>content</p>', body
+    assert_equal 'Hello Mike!<p>Mike content</p>', body
   end
 
   it 'sets layout-only options via layout_options' do

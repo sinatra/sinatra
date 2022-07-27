@@ -13,7 +13,7 @@ class NokogiriTest < Minitest::Test
   end
 
   it 'renders inline Nokogiri strings' do
-    nokogiri_app { nokogiri 'xml' }
+    nokogiri_app { nokogiri '' }
     assert ok?
     assert_body %(<?xml version="1.0"?>\n)
   end
