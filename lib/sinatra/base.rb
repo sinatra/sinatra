@@ -923,12 +923,6 @@ module Sinatra
       self.class.settings
     end
 
-    def options
-      warn "Sinatra::Base#options is deprecated and will be removed, " \
-        "use #settings instead."
-      settings
-    end
-
     # Exit the current block, halts any further processing
     # of the request, and returns the specified response.
     def halt(*response)
@@ -1176,12 +1170,6 @@ module Sinatra
         /bundler(\/(?:runtime|inline))?\.rb/,               # bundler require hacks
         /<internal:/                                        # internal in ruby >= 1.9.2
       ]
-
-      # contrary to what the comment said previously, rubinius never supported this
-      if defined?(RUBY_IGNORE_CALLERS)
-        warn "RUBY_IGNORE_CALLERS is deprecated and will no longer be supported by Sinatra 2.0"
-        CALLERS_TO_IGNORE.concat(RUBY_IGNORE_CALLERS)
-      end
 
       attr_reader :routes, :filters, :templates, :errors
 

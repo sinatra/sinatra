@@ -164,11 +164,6 @@ module Sinatra
       alias include? has_key?
       alias member?  has_key?
 
-      def index(value)
-        warn "Hash#index is deprecated; use Hash#key"
-        key(value)
-      end
-
       def inspect
         "<##{self.class}: #{to_hash.inspect[1..-2]}>"
       end
