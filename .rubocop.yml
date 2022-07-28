@@ -9,11 +9,14 @@
 #
 # See https://github.com/rubocop-hq/rubocop/blob/master/manual/configuration.md
 AllCops:
-  TargetRubyVersion: 2.2
+  TargetRubyVersion: 2.6
+  SuggestExtensions: false
+  NewCops: enable
   Exclude:
     - 'test/**/*'
     - 'rack-protection/**/*'
     - 'sinatra-contrib/**/*'
+    - vendor/bundle/**/*
 
 Layout/ExtraSpacing:
   AllowForAlignment: true
@@ -21,6 +24,9 @@ Layout/ExtraSpacing:
 
 # Temporary disable cops because warnings are fixed
 Style/SingleLineMethods:
+  Enabled: false
+
+Style/MutableConstant:
   Enabled: false
 
 Lint/AmbiguousBlockAssociation:
@@ -47,7 +53,7 @@ Style/SpecialGlobalVars:
 Bundler/DuplicatedGem:
   Enabled: false
 
-Layout/IndentHeredoc:
+Layout/HeredocIndentation:
   Enabled: false
 
 Style/FormatStringToken:
@@ -65,7 +71,7 @@ Lint/UselessAssignment:
 Style/EmptyLiteral:
   Enabled: false
 
-Metrics/LineLength:
+Layout/LineLength:
   Enabled: false
 
 Metrics/MethodLength:
@@ -80,7 +86,7 @@ Metrics/CyclomaticComplexity:
 Metrics/PerceivedComplexity:
   Enabled: false
 
-Lint/HandleExceptions:
+Lint/SuppressedException:
   Enabled: false
 
 Metrics/ClassLength:
@@ -104,7 +110,7 @@ Style/ClassAndModuleChildren:
 Style/EvalWithLocation:
   Enabled: false
 
-Style/MethodMissingSuper:
+Lint/MissingSuper:
   Enabled: false
 
 Style/MissingRespondToMissing:
@@ -123,4 +129,13 @@ Style/SymbolProc:
   Enabled: false
 
 Style/IfUnlessModifier:
+  Enabled: false
+
+Style/OptionalBooleanParameter:
+  Enabled: false
+
+Style/DocumentDynamicEvalDefinition:
+  Enabled: false
+
+Lint/ToEnumArguments:
   Enabled: false

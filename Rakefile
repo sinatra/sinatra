@@ -22,7 +22,7 @@ def prev_feature
 end
 
 def prev_version
-  return prev_feature + '.0' if source_version.end_with? '.0'
+  return "#{prev_feature}.0" if source_version.end_with? '.0'
 
   source_version.gsub(/\d+$/) { |s| s.to_i - 1 }
 end
@@ -35,7 +35,7 @@ Rake::TestTask.new(:test) do |t|
   t.warning = true
 end
 
-Rake::TestTask.new(:"test:core") do |t|
+Rake::TestTask.new(:'test:core') do |t|
   core_tests = %w[
     base delegator encoding extensions filter
     helpers mapped_error middleware rdoc
@@ -74,13 +74,13 @@ task :add_template, [:name] do |_t, args|
       puts "Already covered in #{file}"
     else
       template = code[%r{===[^\n]*Liquid.*index\.liquid</tt>[^\n]*}m]
-      if !template
-        puts "Liquid not found in #{file}"
-      else
+      if template
         puts "Adding section to #{file}"
         template = template.gsub(/Liquid/, args.name.capitalize).gsub(/liquid/, args.name.downcase)
         code.gsub! /^(\s*===.*CoffeeScript)/, "\n" << template << "\n\\1"
         File.open(file, 'w') { |f| f << code }
+      else
+        puts "Liquid not found in #{file}"
       end
     end
   end
@@ -155,9 +155,9 @@ if defined?(Gem)
   CLOBBER.include('pkg')
 
   GEMS_AND_ROOT_DIRECTORIES.each do |gem, directory|
-    file package(gem, '.gem') => ['pkg/', "#{directory + '/' + gem}.gemspec"] do |f|
+    file package(gem, '.gem') => ['pkg/', "#{"#{directory}/#{gem}"}.gemspec"] do |f|
       sh "cd #{directory} && gem build #{gem}.gemspec"
-      mv directory + '/' + File.basename(f.name), f.name
+      mv "#{directory}/#{File.basename(f.name)}", f.name
     end
 
     file package(gem, '.tar.gz') => ['pkg/'] do |f|

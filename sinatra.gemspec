@@ -20,7 +20,8 @@ Gem::Specification.new 'sinatra', version do |s|
     'Rakefile',
     'SECURITY.md',
     'sinatra.gemspec',
-    'VERSION']
+    'VERSION'
+  ]
   s.extra_rdoc_files  = %w[README.md LICENSE]
   s.rdoc_options      = %w[--line-numbers --title Sinatra --main README.rdoc --encoding=UTF-8]
 
