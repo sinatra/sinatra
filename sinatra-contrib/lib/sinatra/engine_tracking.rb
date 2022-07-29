@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sinatra/base'
 
 module Sinatra
@@ -17,7 +19,7 @@ module Sinatra
     # @return [Boolean] Returns true if current engine is `:erubi`.
     def erubi?
       @current_engine == :erubi or
-      erb? && Tilt[:erb] == Tilt::ErubiTemplate
+        (erb? && Tilt[:erb] == Tilt::ErubiTemplate)
     end
 
     # @return [Boolean] Returns true if current engine is `:haml`.
@@ -72,7 +74,8 @@ module Sinatra
 
     # @param engine [Symbol, String] Name of Engine to shift to.
     def with_engine(engine)
-      @current_engine, engine_was = engine.to_sym, @current_engine
+      engine_was = @current_engine
+      @current_engine = engine.to_sym
       yield
     ensure
       @current_engine = engine_was

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'open-uri'
 require 'net/http'
 require 'timeout'
@@ -49,7 +51,7 @@ module Sinatra
   # For an example, check https://github.com/apotonick/roar/blob/master/test/integration/runner.rb
   class Runner
     def app_file
-      File.expand_path("server.rb", __dir__)
+      File.expand_path('server.rb', __dir__)
     end
 
     def run
@@ -60,7 +62,8 @@ module Sinatra
 
     def kill
       return unless pipe
-      Process.kill("KILL", pipe.pid)
+
+      Process.kill('KILL', pipe.pid)
     rescue NotImplementedError
       system "kill -9 #{pipe.pid}"
     rescue Errno::ESRCH
@@ -70,7 +73,7 @@ module Sinatra
       Timeout.timeout(1) { get_url("#{protocol}://127.0.0.1:#{port}#{url}") }
     end
 
-    def get_stream(url = "/stream", &block)
+    def get_stream(url = '/stream', &block)
       Net::HTTP.start '127.0.0.1', port do |http|
         request = Net::HTTP::Get.new url
         http.request request do |response|
@@ -89,29 +92,32 @@ module Sinatra
     end
 
     def log
-      @log ||= ""
-      loop { @log <<  pipe.read_nonblock(1) }
+      @log ||= ''
+      loop { @log << pipe.read_nonblock(1) }
     rescue Exception
       @log
     end
 
-  private
+    private
+
     attr_accessor :pipe
 
     def start
       IO.popen(command)
     end
 
-    def command # to be overwritten
+    # to be overwritten
+    def command
       "bundle exec ruby #{app_file} -p #{port} -e production"
     end
 
-    def ping(timeout=30)
+    def ping(timeout = 30)
       loop do
         return if alive?
+
         if Time.now - @started > timeout
-          $stderr.puts command, log
-          fail "timeout"
+          warn command, log
+          raise 'timeout'
         else
           sleep 0.1
         end
@@ -121,26 +127,29 @@ module Sinatra
     def alive?
       3.times { get(ping_path) }
       true
-    rescue Errno::ECONNREFUSED, Errno::ECONNRESET, EOFError, SystemCallError, OpenURI::HTTPError, Timeout::Error
+    rescue EOFError, SystemCallError, OpenURI::HTTPError, Timeout::Error
       false
     end
 
-    def ping_path # to be overwritten
+    # to be overwritten
+    def ping_path
       '/ping'
     end
 
-    def port # to be overwritten
+    # to be overwritten
+    def port
       4567
     end
 
     def protocol
-      "http"
+      'http'
     end
 
     def get_url(url)
       uri = URI.parse(url)
 
-      return uri.read unless protocol == "https"
+      return uri.read unless protocol == 'https'
+
       get_https_url(uri)
     end
 

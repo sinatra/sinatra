@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'sinatra/base'
 
 module Sinatra
-
   # = Sinatra::Extension
   #
   # <tt>Sinatra::Extension</tt> is a mixin that provides some syntactic sugar
@@ -81,13 +82,14 @@ module Sinatra
 
     def method_missing(method, *args, &block)
       return super unless Sinatra::Base.respond_to? method
+
       record(method, *args, &block)
       DontCall.new(method)
     end
 
     class DontCall < BasicObject
       def initialize(method) @method = method end
-      def method_missing(*) fail "not supposed to use result of #@method!" end
+      def method_missing(*) raise "not supposed to use result of #{@method}!" end
       def inspect; "#<#{self.class}: #{@method}>" end
     end
   end

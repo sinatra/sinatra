@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Sinatra
   # = Sinatra::QuietLogger
   #
@@ -32,10 +34,14 @@ module Sinatra
   #     end
   #
   module QuietLogger
-
     def self.registered(app)
-      quiet_logger_prefixes = app.settings.quiet_logger_prefixes.join('|') rescue ''
+      quiet_logger_prefixes = begin
+        app.settings.quiet_logger_prefixes.join('|')
+      rescue StandardError
+        ''
+      end
       return warn('You need to specify the paths you wish to exclude from logging via `set :quiet_logger_prefixes, %w(images css fonts)`') if quiet_logger_prefixes.empty?
+
       const_set('QUIET_LOGGER_REGEX', %r(\A/{0,2}(?:#{quiet_logger_prefixes})))
       ::Rack::CommonLogger.prepend(
         ::Module.new do
@@ -45,6 +51,5 @@ module Sinatra
         end
       )
     end
-
   end
 end

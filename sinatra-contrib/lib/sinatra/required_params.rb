@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sinatra/base'
 
 module Sinatra
@@ -60,7 +62,7 @@ module Sinatra
         elsif key.is_a?(Array)
           _required_params(p, *key)
         else
-          halt 400 unless p && p.respond_to?(:has_key?) && p.has_key?(key.to_s)
+          halt 400 unless p.respond_to?(:has_key?) && p&.key?(key.to_s)
         end
       end
       true

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rack/protection'
 require 'rack/utils'
 require 'digest'
@@ -8,12 +10,12 @@ module Rack
   module Protection
     class Base
       DEFAULT_OPTIONS = {
-        :reaction    => :default_reaction, :logging   => true,
-        :message     => 'Forbidden',       :encryptor => Digest::SHA1,
-        :session_key => 'rack.session',    :status    => 403,
-        :allow_empty_referrer => true,
-        :report_key           => "protection.failed",
-        :html_types           => %w[text/html application/xhtml text/xml application/xml]
+        reaction: :default_reaction, logging: true,
+        message: 'Forbidden', encryptor: Digest::SHA1,
+        session_key: 'rack.session', status: 403,
+        allow_empty_referrer: true,
+        report_key: 'protection.failed',
+        html_types: %w[text/html application/xhtml text/xml application/xml]
       }
 
       attr_reader :app, :options
@@ -31,7 +33,8 @@ module Rack
       end
 
       def initialize(app, options = {})
-        @app, @options = app, default_options.merge(options)
+        @app = app
+        @options = default_options.merge(options)
       end
 
       def safe?(env)
@@ -52,24 +55,26 @@ module Rack
 
       def react(env)
         result = send(options[:reaction], env)
-        result if Array === result and result.size == 3
+        result if (Array === result) && (result.size == 3)
       end
 
       def warn(env, message)
         return unless options[:logging]
+
         l = options[:logger] || env['rack.logger'] || ::Logger.new(env['rack.errors'])
         l.warn(message)
       end
 
       def instrument(env)
-        return unless i = options[:instrumenter]
+        return unless (i = options[:instrumenter])
+
         env['rack.protection.attack'] = self.class.name.split('::').last.downcase
         i.instrument('rack.protection', env)
       end
 
       def deny(env)
         warn env, "attack prevented by #{self.class}"
-        [options[:status], {'Content-Type' => 'text/plain'}, [options[:message]]]
+        [options[:status], { 'Content-Type' => 'text/plain' }, [options[:message]]]
       end
 
       def report(env)
@@ -83,7 +88,8 @@ module Rack
 
       def session(env)
         return env[options[:session_key]] if session? env
-        fail "you need to set up a session middleware *before* #{self.class}"
+
+        raise "you need to set up a session middleware *before* #{self.class}"
       end
 
       def drop_session(env)
@@ -92,7 +98,8 @@ module Rack
 
       def referrer(env)
         ref = env['HTTP_REFERER'].to_s
-        return if !options[:allow_empty_referrer] and ref.empty?
+        return if !options[:allow_empty_referrer] && ref.empty?
+
         URI.parse(ref).host || Request.new(env).host
       rescue URI::InvalidURIError
       end
@@ -102,7 +109,7 @@ module Rack
       end
 
       def random_string(secure = defined? SecureRandom)
-        secure ? SecureRandom.hex(16) : "%032x" % rand(2**128-1)
+        secure ? SecureRandom.hex(16) : '%032x' % rand((2**128) - 1)
       rescue NotImplementedError
         random_string false
       end
@@ -118,8 +125,9 @@ module Rack
       alias default_reaction deny
 
       def html?(headers)
-        return false unless header = headers.detect { |k,v| k.downcase == 'content-type' }
-        options[:html_types].include? header.last[/^\w+\/\w+/]
+        return false unless (header = headers.detect { |k, _v| k.downcase == 'content-type' })
+
+        options[:html_types].include? header.last[%r{^\w+/\w+}]
       end
     end
   end

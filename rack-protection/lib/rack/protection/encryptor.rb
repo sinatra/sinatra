@@ -1,21 +1,23 @@
+# frozen_string_literal: true
+
 require 'openssl'
 
 module Rack
   module Protection
     module Encryptor
-      CIPHER     = 'aes-256-gcm'.freeze
-      DELIMITER  = '--'.freeze
+      CIPHER     = 'aes-256-gcm'
+      DELIMITER  = '--'
 
       def self.base64_encode(str)
         [str].pack('m0')
       end
 
       def self.base64_decode(str)
-        str.unpack('m0').first
+        str.unpack1('m0')
       end
 
       def self.encrypt_message(data, secret, auth_data = '')
-        raise ArgumentError, "data cannot be nil" if data.nil?
+        raise ArgumentError, 'data cannot be nil' if data.nil?
 
         cipher = OpenSSL::Cipher.new(CIPHER)
         cipher.encrypt
@@ -52,7 +54,6 @@ module Rack
         decrypted_data = cipher.update(cipher_text)
         decrypted_data << cipher.final
         decrypted_data
-
       rescue OpenSSL::Cipher::CipherError, TypeError, ArgumentError
         nil
       end

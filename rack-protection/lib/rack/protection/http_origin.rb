@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rack/protection'
 
 module Rack
@@ -19,7 +21,7 @@ module Rack
     class HttpOrigin < Base
       DEFAULT_PORTS = { 'http' => 80, 'https' => 443, 'coffee' => 80 }
       default_reaction :deny
-      default_options :allow_if => nil
+      default_options allow_if: nil
 
       def base_url(env)
         request = Rack::Request.new(env)
@@ -29,14 +31,13 @@ module Rack
 
       def accepts?(env)
         return true if safe? env
-        return true unless origin = env['HTTP_ORIGIN']
+        return true unless (origin = env['HTTP_ORIGIN'])
         return true if base_url(env) == origin
-        return true if options[:allow_if] && options[:allow_if].call(env)
+        return true if options[:allow_if]&.call(env)
 
         permitted_origins = options[:permitted_origins]
         Array(permitted_origins).include? origin
       end
-
     end
   end
 end

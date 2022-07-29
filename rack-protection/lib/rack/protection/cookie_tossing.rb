@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rack/protection'
 require 'pathname'
 
@@ -29,9 +31,8 @@ module Rack
         cookie_header = env['HTTP_COOKIE']
         cookies = Rack::Utils.parse_query(cookie_header, ';,') { |s| s }
         cookies.each do |k, v|
-          if k == session_key && Array(v).size > 1
-            bad_cookies << k
-          elsif k != session_key && Rack::Utils.unescape(k) == session_key
+          if (k == session_key && Array(v).size > 1) ||
+             (k != session_key && Rack::Utils.unescape(k) == session_key)
             bad_cookies << k
           end
         end
@@ -40,6 +41,7 @@ module Rack
 
       def remove_bad_cookies(request, response)
         return if bad_cookies.empty?
+
         paths = cookie_paths(request.path)
         bad_cookies.each do |name|
           paths.each { |path| response.set_cookie name, empty_cookie(request.host, path) }
@@ -49,7 +51,7 @@ module Rack
       def redirect(env)
         request = Request.new(env)
         warn env, "attack prevented by #{self.class}"
-        [302, {'Content-Type' => 'text/html', 'Location' => request.path}, []]
+        [302, { 'Content-Type' => 'text/html', 'Location' => request.path }, []]
       end
 
       def bad_cookies
@@ -64,7 +66,7 @@ module Rack
       end
 
       def empty_cookie(host, path)
-        {:value => '', :domain => host, :path => path, :expires => Time.at(0)}
+        { value: '', domain: host, path: path, expires: Time.at(0) }
       end
 
       def session_key

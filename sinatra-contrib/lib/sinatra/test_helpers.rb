@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sinatra/base'
 require 'rack'
 begin
@@ -158,7 +160,7 @@ module Sinatra
       # @param params [Hash]
       # @param env [Hash]
       def options(uri, params = {}, env = {}, &block)
-        env = env_for(uri, env.merge(:method => "OPTIONS", :params => params))
+        env = env_for(uri, env.merge(method: 'OPTIONS', params: params))
         current_session.send(:process_request, uri, env, &block)
       end
     end
@@ -170,7 +172,7 @@ module Sinatra
       # @param params [Hash]
       # @param env [Hash]
       def patch(uri, params = {}, env = {}, &block)
-        env = env_for(uri, env.merge(:method => "PATCH", :params => params))
+        env = env_for(uri, env.merge(method: 'PATCH', params: params))
         current_session.send(:process_request, uri, env, &block)
       end
     end
@@ -187,7 +189,8 @@ module Sinatra
     # @return [Hash] Session of last request, or the empty Hash
     def session
       return {} unless last_request?
-      raise Rack::Test::Error, "session not enabled for app" unless last_env["rack.session"] or app.session?
+      raise Rack::Test::Error, 'session not enabled for app' unless last_env['rack.session'] || app.session?
+
       last_request.session
     end
 

@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 RSpec.describe Rack::Protection::PathTraversal do
-  it_behaves_like "any rack application"
+  it_behaves_like 'any rack application'
 
   context 'escaping' do
     before do
-      mock_app { |e| [200, {'Content-Type' => 'text/plain'}, [e['PATH_INFO']]] }
+      mock_app { |e| [200, { 'Content-Type' => 'text/plain' }, [e['PATH_INFO']]] }
     end
 
     %w[/foo/bar /foo/bar/ / /.f /a.x].each do |path|
@@ -26,7 +28,7 @@ RSpec.describe Rack::Protection::PathTraversal do
 
   context "PATH_INFO's encoding" do
     before do
-      @app = Rack::Protection::PathTraversal.new(proc { |e| [200, {'Content-Type' => 'text/plain'}, [e['PATH_INFO'].encoding.to_s]] })
+      @app = Rack::Protection::PathTraversal.new(proc { |e| [200, { 'Content-Type' => 'text/plain' }, [e['PATH_INFO'].encoding.to_s]] })
     end
 
     it 'should remain unchanged as ASCII-8BIT' do

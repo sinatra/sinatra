@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 RSpec.describe Rack::Protection::CookieTossing do
-  it_behaves_like "any rack application"
+  it_behaves_like 'any rack application'
 
   context 'with default reaction' do
     before(:each) do
@@ -34,7 +36,7 @@ rack.%2573ession=; domain=example.org; path=/some/path; expires=Thu, 01 Jan 1970
 rack.session=; domain=example.org; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT
 rack.session=; domain=example.org; path=/some; expires=Thu, 01 Jan 1970 00:00:00 GMT
 rack.session=; domain=example.org; path=/some/path; expires=Thu, 01 Jan 1970 00:00:00 GMT
-END
+      END
       expect(last_response.headers['Set-Cookie']).to eq(expected_header)
     end
   end
@@ -42,7 +44,7 @@ END
   context 'with redirect reaction' do
     before(:each) do
       mock_app do
-        use Rack::Protection::CookieTossing, :reaction => :redirect
+        use Rack::Protection::CookieTossing, reaction: :redirect
         run DummyApp
       end
     end
@@ -63,7 +65,7 @@ END
   context 'with custom session key' do
     it 'denies requests with duplicate session cookies' do
       mock_app do
-        use Rack::Protection::CookieTossing, :session_key => '_session'
+        use Rack::Protection::CookieTossing, session_key: '_session'
         run DummyApp
       end
 

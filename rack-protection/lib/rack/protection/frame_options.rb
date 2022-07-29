@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rack/protection'
 
 module Rack
@@ -17,7 +19,7 @@ module Rack
     #                 frame. Use :deny to forbid any embedding, :sameorigin
     #                 to allow embedding from the same origin (default).
     class FrameOptions < Base
-      default_options :frame_options => :sameorigin
+      default_options frame_options: :sameorigin
 
       def frame_options
         @frame_options ||= begin

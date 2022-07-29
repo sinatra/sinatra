@@ -139,3 +139,9 @@ Style/DocumentDynamicEvalDefinition:
 
 Lint/ToEnumArguments:
   Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
+
+Naming/AccessorMethodName:
+  Enabled: false

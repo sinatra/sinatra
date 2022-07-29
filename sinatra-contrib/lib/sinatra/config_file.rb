@@ -3,7 +3,6 @@ require 'yaml'
 require 'erb'
 
 module Sinatra
-
   # = Sinatra::ConfigFile
   #
   # <tt>Sinatra::ConfigFile</tt> is an extension that allows you to load the
@@ -107,7 +106,6 @@ module Sinatra
   #       bar: 'baz' # override the default value
   #
   module ConfigFile
-
     # When the extension is registered sets the +environments+ setting to the
     # traditional environments: development, test and production.
     def self.registered(base)
@@ -122,8 +120,9 @@ module Sinatra
         paths.each do |pattern|
           Dir.glob(pattern) do |file|
             raise UnsupportedConfigType unless ['.yml', '.yaml', '.erb'].include?(File.extname(file))
+
             logger.info "loading config file '#{file}'" if logging? && respond_to?(:logger)
-            document = ERB.new(IO.read(file)).result
+            document = ERB.new(File.read(file)).result
             yaml = YAML.respond_to?(:unsafe_load) ? YAML.unsafe_load(document) : YAML.load(document)
             config = config_for_env(yaml)
             config.each_pair { |key, value| set(key, value) }
@@ -132,7 +131,7 @@ module Sinatra
       end
     end
 
-    class UnsupportedConfigType < Exception
+    class UnsupportedConfigType < StandardError
       def message
         'Invalid config file type, use .yml, .yaml or .erb'
       end

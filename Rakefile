@@ -5,10 +5,7 @@ require 'rake/testtask'
 require 'fileutils'
 require 'date'
 
-require 'rubocop/rake_task'
-RuboCop::RakeTask.new
-
-task default: %i[test rubocop]
+task default: :test
 task spec: :test
 
 CLEAN.include '**/*.rbc'

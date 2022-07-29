@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'openssl'
 require 'zlib'
 require 'json'
@@ -67,7 +69,7 @@ module Rack
         end
 
         def decode(str)
-          str.unpack('m').first
+          str.unpack1('m')
         end
 
         # Encode session cookies as Marshaled Base64 data
@@ -78,7 +80,12 @@ module Rack
 
           def decode(str)
             return unless str
-            ::Marshal.load(super(str)) rescue nil
+
+            begin
+              ::Marshal.load(super(str))
+            rescue StandardError
+              nil
+            end
           end
         end
 
@@ -91,7 +98,12 @@ module Rack
 
           def decode(str)
             return unless str
-            ::JSON.parse(super(str)) rescue nil
+
+            begin
+              ::JSON.parse(super(str))
+            rescue StandardError
+              nil
+            end
           end
         end
 
@@ -102,8 +114,9 @@ module Rack
 
           def decode(str)
             return unless str
+
             ::JSON.parse(Zlib::Inflate.inflate(super(str)))
-          rescue
+          rescue StandardError
             nil
           end
         end
@@ -127,12 +140,12 @@ module Rack
 
       attr_reader :coder
 
-      def initialize(app, options={})
+      def initialize(app, options = {})
         # Assume keys are hex strings and convert them to raw byte strings for
         # actual key material
-        @secrets = options.values_at(:secret, :old_secret).compact.map { |secret|
+        @secrets = options.values_at(:secret, :old_secret).compact.map do |secret|
           [secret].pack('H*')
-        }
+        end
 
         warn <<-MSG unless secure?(options)
         SECURITY WARNING: No secret option provided to Rack::Protection::EncryptedCookie.
@@ -154,7 +167,7 @@ module Rack
         Called from: #{caller[0]}.
         MSG
 
-        if options.has_key?(:legacy_hmac_secret)
+        if options.key?(:legacy_hmac_secret)
           @legacy_hmac = options.fetch(:legacy_hmac, OpenSSL::Digest::SHA1)
 
           # Multiply the :digest_length: by 2 because this value is the length of
@@ -173,19 +186,19 @@ module Rack
         # If no encryption is used, rely on the previous default (Base64::Marshal)
         @coder = (options[:coder] ||= (@secrets.any? ? Marshal.new : Base64::Marshal.new))
 
-        super(app, options.merge!(:cookie_only => true))
+        super(app, options.merge!(cookie_only: true))
       end
 
       private
 
-      def find_session(req, sid)
+      def find_session(req, _sid)
         data = unpacked_cookie_data(req)
         data = persistent_session_id!(data)
-        [data["session_id"], data]
+        [data['session_id'], data]
       end
 
       def extract_session_id(request)
-        unpacked_cookie_data(request)["session_id"]
+        unpacked_cookie_data(request)['session_id']
       end
 
       def unpacked_cookie_data(request)
@@ -214,14 +227,14 @@ module Rack
         end
       end
 
-      def persistent_session_id!(data, sid=nil)
+      def persistent_session_id!(data, sid = nil)
         data ||= {}
-        data["session_id"] ||= sid || generate_sid
+        data['session_id'] ||= sid || generate_sid
         data
       end
 
-      def write_session(req, session_id, session, options)
-        session = session.merge("session_id" => session_id)
+      def write_session(req, session_id, session, _options)
+        session = session.merge('session_id' => session_id)
         session_data = coder.encode(session)
 
         unless @secrets.empty?
@@ -229,14 +242,14 @@ module Rack
         end
 
         if session_data.size > (4096 - @key.size)
-          req.get_header(RACK_ERRORS).puts("Warning! Rack::Protection::EncryptedCookie data size exceeds 4K.")
+          req.get_header(RACK_ERRORS).puts('Warning! Rack::Protection::EncryptedCookie data size exceeds 4K.')
           nil
         else
           session_data
         end
       end
 
-      def delete_session(req, session_id, options)
+      def delete_session(_req, _session_id, options)
         # Nothing to do here, data is in the client
         generate_sid unless options[:drop]
       end
@@ -253,7 +266,7 @@ module Rack
 
       def secure?(options)
         @secrets.size >= 1 ||
-        (options[:coder] && options[:let_coder_handle_secure_encoding])
+          (options[:coder] && options[:let_coder_handle_secure_encoding])
       end
     end
   end

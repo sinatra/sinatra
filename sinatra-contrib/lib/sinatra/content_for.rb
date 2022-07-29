@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'sinatra/base'
 require 'sinatra/capture'
 
 module Sinatra
-
   # = Sinatra::ContentFor
   #
   # <tt>Sinatra::ContentFor</tt> is a set of helpers that allows you to capture
@@ -174,7 +175,7 @@ module Sinatra
     # for <tt>:head</tt>.
     def yield_content(key, *args, &block)
       if block_given? && !content_for?(key)
-        (haml? && Tilt[:haml] == Tilt::HamlTemplate) ? capture_haml(*args, &block) : yield(*args)
+        haml? && Tilt[:haml] == Tilt::HamlTemplate ? capture_haml(*args, &block) : yield(*args)
       else
         content = content_blocks[key.to_sym].map { |b| capture(*args, &b) }
         content.join.tap do |c|

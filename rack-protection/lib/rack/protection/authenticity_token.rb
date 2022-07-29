@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rack/protection'
 require 'securerandom'
 require 'openssl'
@@ -19,7 +21,7 @@ module Rack
     #
     # It is not OOTB-compatible with the {rack-csrf}[https://rubygems.org/gems/rack_csrf] gem.
     # For that, the following patch needs to be applied:
-    # 
+    #
     #   Rack::Protection::AuthenticityToken.default_options(key: "csrf.token", authenticity_param: "_csrf")
     #
     # == Options
@@ -95,12 +97,12 @@ module Rack
     class AuthenticityToken < Base
       TOKEN_LENGTH = 32
 
-      default_options :authenticity_param => 'authenticity_token',
-                      :key => :csrf,
-                      :allow_if => nil
+      default_options authenticity_param: 'authenticity_token',
+                      key: :csrf,
+                      allow_if: nil
 
       def self.token(session, path: nil, method: :post)
-        self.new(nil).mask_authenticity_token(session, path: path, method: method)
+        new(nil).mask_authenticity_token(session, path: path, method: method)
       end
 
       def self.random_token
@@ -114,8 +116,8 @@ module Rack
         safe?(env) ||
           valid_token?(env, env['HTTP_X_CSRF_TOKEN']) ||
           valid_token?(env, Request.new(env).params[options[:authenticity_param]]) ||
-          ( options[:allow_if] && options[:allow_if].call(env) )
-      rescue
+          options[:allow_if]&.call(env)
+      rescue StandardError
         false
       end
 
@@ -123,10 +125,10 @@ module Rack
         set_token(session)
 
         token = if path && method
-          per_form_token(session, path, method)
-        else
-          global_token(session)
-        end
+                  per_form_token(session, path, method)
+                else
+                  global_token(session)
+                end
 
         mask_token(token)
       end
@@ -185,7 +187,7 @@ module Rack
         # value and decrypt it
         token_length = masked_token.length / 2
         one_time_pad = masked_token[0...token_length]
-        encrypted_token = masked_token[token_length..-1]
+        encrypted_token = masked_token[token_length..]
         xor_byte_strings(one_time_pad, encrypted_token)
       end
 
@@ -207,8 +209,7 @@ module Rack
 
       def compare_with_per_form_token(token, session, request)
         secure_compare(token,
-          per_form_token(session, request.path.chomp('/'), request.request_method)
-        )
+                       per_form_token(session, request.path.chomp('/'), request.request_method))
       end
 
       def real_token(session)
@@ -233,7 +234,7 @@ module Rack
 
       def token_hmac(session, identifier)
         OpenSSL::HMAC.digest(
-          OpenSSL::Digest::SHA256.new,
+          OpenSSL::Digest.new('SHA256'),
           real_token(session),
           identifier
         )
