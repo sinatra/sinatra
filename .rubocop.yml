@@ -145,3 +145,7 @@ Naming/MethodParameterName:
 
 Naming/AccessorMethodName:
   Enabled: false
+
+Style/SlicingWithRange:
+  Enabled: false
+

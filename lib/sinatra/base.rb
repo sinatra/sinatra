@@ -1619,7 +1619,7 @@ module Sinatra
       def user_agent(pattern)
         condition do
           if request.user_agent.to_s =~ pattern
-            @params[:agent] = $~[1..]
+            @params[:agent] = $~[1..-1]
             true
           else
             false
