@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rack/protection'
 
 module Rack
@@ -18,11 +20,11 @@ module Rack
     # preload:: Allow this domain to be included in browsers HSTS preload list. See https://hstspreload.appspot.com/
 
     class StrictTransport < Base
-      default_options :max_age => 31_536_000, :include_subdomains => false, :preload => false
+      default_options max_age: 31_536_000, include_subdomains: false, preload: false
 
       def strict_transport
         @strict_transport ||= begin
-          strict_transport = 'max-age=' + options[:max_age].to_s
+          strict_transport = "max-age=#{options[:max_age]}"
           strict_transport += '; includeSubDomains' if options[:include_subdomains]
           strict_transport += '; preload' if options[:preload]
           strict_transport.to_str

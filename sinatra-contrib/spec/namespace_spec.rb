@@ -263,6 +263,7 @@ RSpec.describe Sinatra::Namespace do
 
           specify 'are accepted in the before-filter' do
             namespace '/foo' do
+              before { @yes = nil }
               before(:host_name => 'example.com') { @yes = 'yes' }
               send(verb) { @yes || 'no' }
             end

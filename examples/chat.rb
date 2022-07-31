@@ -1,16 +1,18 @@
 #!/usr/bin/env ruby -I ../lib -I lib
-# coding: utf-8
+# frozen_string_literal: true
+
 require_relative 'rainbows'
+
 require 'sinatra'
 set :server, :rainbows
 connections = []
 
 get '/' do
   halt erb(:login) unless params[:user]
-  erb :chat, :locals => { :user => params[:user].gsub(/\W/, '') }
+  erb :chat, locals: { user: params[:user].gsub(/\W/, '') }
 end
 
-get '/stream', :provides => 'text/event-stream' do
+get '/stream', provides: 'text/event-stream' do
   stream :keep_open do |out|
     connections << out
     out.callback { connections.delete(out) }

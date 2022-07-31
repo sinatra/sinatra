@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'sinatra/base'
 
 module Sinatra
-
   # = Sinatra::Reloader
   #
   # Extension to reload modified files.  Useful during development,
@@ -94,11 +95,9 @@ module Sinatra
   #     end
   #
   module Reloader
-
     # Watches a file so it can tell when it has been updated, and what
     # elements does it contain.
     class Watcher
-
       # Represents an element of a Sinatra application that may need to
       # be reloaded.  An element could be:
       # * a route
@@ -172,7 +171,8 @@ module Sinatra
       # Creates a new +Watcher+ instance for the file located at +path+.
       def initialize(path)
         @ignore = nil
-        @path, @elements = path, []
+        @path = path
+        @elements = []
         update
       end
 
@@ -254,12 +254,13 @@ module Sinatra
         reloaded_paths << watcher.path
       end
       return if reloaded_paths.empty?
+
       @@after_reload.each do |block|
-        block.arity != 0  ? block.call(reloaded_paths) : block.call
+        block.arity.zero? ? block.call : block.call(reloaded_paths)
       end
       # Prevents after_reload from increasing each time it's reloaded.
       @@after_reload.delete_if do |blk|
-        path, _ = blk.source_location
+        path, = blk.source_location
         path && reloaded_paths.include?(path)
       end
     end
@@ -286,7 +287,7 @@ module Sinatra
           block.source_location.first : caller_files[1]
         signature = super
         watch_element(
-          source_location, :route, { :verb => verb, :signature => signature }
+          source_location, :route, { verb: verb, signature: signature }
         )
         signature
       end
@@ -295,9 +296,8 @@ module Sinatra
       # tells the +Watcher::List+ for the Sinatra application to watch the
       # inline templates in +file+ or the file who made the call to this
       # method.
-      def inline_templates=(file=nil)
-        file = (file.nil? || file == true) ?
-          (caller_files[1] || File.expand_path($0)) : file
+      def inline_templates=(file = nil)
+        file = (caller_files[1] || File.expand_path($0)) if file.nil? || file == true
         watch_element(file, :inline_templates)
         super
       end
@@ -329,7 +329,7 @@ module Sinatra
         path = caller_files[1] || File.expand_path($0)
         result = super
         codes.each do |c|
-          watch_element(path, :error, :code => c, :handler => @errors[c])
+          watch_element(path, :error, code: c, handler: @errors[c])
         end
         result
       end
@@ -358,17 +358,17 @@ module Sinatra
       # Removes the +element+ from the Sinatra application.
       def deactivate(element)
         case element.type
-        when :route then
+        when :route
           verb      = element.representation[:verb]
           signature = element.representation[:signature]
           (routes[verb] ||= []).delete(signature)
-        when :middleware then
+        when :middleware
           @middleware.delete(element.representation)
-        when :before_filter then
+        when :before_filter
           filters[:before].delete(element.representation)
-        when :after_filter then
+        when :after_filter
           filters[:after].delete(element.representation)
-        when :error then
+        when :error
           code    = element.representation[:code]
           handler = element.representation[:handler]
           @errors.delete(code) if @errors[code] == handler
@@ -387,7 +387,7 @@ module Sinatra
         Dir[*glob].each { |path| Watcher::List.for(self).ignore(path) }
       end
 
-    private
+      private
 
       # attr_reader :register_path warn on -w (private attribute)
       def register_path; @register_path ||= nil; end
@@ -415,7 +415,7 @@ module Sinatra
       # watch it in the file where the extension has been registered.
       # This prevents the duplication of the elements added by the
       # extension in its +registered+ method with every reload.
-      def watch_element(path, type, representation=nil)
+      def watch_element(path, type, representation = nil)
         list = Watcher::List.for(self)
         element = Watcher::Element.new(type, representation)
         list.watch(path, element)

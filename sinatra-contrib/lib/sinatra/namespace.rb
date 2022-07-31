@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'sinatra/base'
 require 'mustermann'
 
 module Sinatra
-
   # = Sinatra::Namespace
   #
   # <tt>Sinatra::Namespace</tt> is an extension that adds namespaces to an
@@ -187,13 +188,16 @@ module Sinatra
   module Namespace
     def self.new(base, pattern, conditions = {}, &block)
       Module.new do
-        #quelch uninitialized variable warnings, since these get used by compile method.
-        @pattern, @conditions = nil, nil
+        # quelch uninitialized variable warnings, since these get used by compile method.
+        @pattern = nil
+        @conditions = nil
         extend NamespacedMethods
         include InstanceMethods
-        @base, @extensions, @errors = base, [], {}
+        @base = base
+        @extensions = []
+        @errors = {}
         @pattern, @conditions = compile(pattern, conditions)
-        @templates            = Hash.new { |h,k| @base.templates[k] }
+        @templates            = Hash.new { |_h, k| @base.templates[k] }
         namespace = self
         before { extend(@namespace = namespace) }
         class_eval(&block)
@@ -224,14 +228,14 @@ module Sinatra
       include SharedMethods
       attr_reader :base, :templates
 
-      ALLOWED_ENGINES = [
-        :erb, :erubi, :haml, :hamlit, :builder, :nokogiri,
-        :liquid, :markdown, :rdoc, :asciidoc, :markaby,
-        :rabl, :slim, :yajl
+      ALLOWED_ENGINES = %i[
+        erb erubi haml hamlit builder nokogiri
+        liquid markdown rdoc asciidoc markaby
+        rabl slim yajl
       ]
 
       def self.prefixed(*names)
-        names.each { |n| define_method(n) { |*a, &b| prefixed(n, *a, &b) }}
+        names.each { |n| define_method(n) { |*a, &b| prefixed(n, *a, &b) } }
       end
 
       prefixed :before, :after, :delete, :get, :head, :options, :patch, :post, :put
@@ -267,7 +271,7 @@ module Sinatra
       end
 
       def error(*codes, &block)
-        args  = Sinatra::Base.send(:compile!, "ERROR", /.*/, block)
+        args  = Sinatra::Base.send(:compile!, 'ERROR', /.*/, block)
         codes = codes.map { |c| Array(c) }.flatten
         codes << Exception if codes.empty?
         codes << Sinatra::NotFound if codes.include?(404)
@@ -280,12 +284,14 @@ module Sinatra
 
       def respond_to(*args)
         return @conditions[:provides] || base.respond_to if args.empty?
+
         @conditions[:provides] = args
       end
 
       def set(key, value = self, &block)
-        return key.each { |k,v| set(k, v) } if key.respond_to?(:each) and block.nil? and value == self
+        return key.each { |k, v| set(k, v) } if key.respond_to?(:each) && block.nil? && (value == self)
         raise ArgumentError, "may not set #{key}" unless ([:views] + ALLOWED_ENGINES).include?(key)
+
         block ||= proc { value }
         singleton_class.send(:define_method, key, &block)
       end
@@ -300,11 +306,12 @@ module Sinatra
 
       def template(name, &block)
         first_location = caller_locations.first
-        filename, line = first_location.path, first_location.lineno
+        filename = first_location.path
+        line = first_location.lineno
         templates[name] = [block, filename, line]
       end
 
-      def layout(name=:layout, &block)
+      def layout(name = :layout, &block)
         template name, &block
       end
 
@@ -323,21 +330,22 @@ module Sinatra
           conditions = conditions.merge pattern.to_hash
           pattern = nil
         end
-        base_pattern, base_conditions = @pattern, @conditions
+        base_pattern = @pattern
+        base_conditions = @conditions
         pattern ||= default_pattern
-        [ prefixed_path(base_pattern, pattern),
-          (base_conditions || {}).merge(conditions) ]
+        [prefixed_path(base_pattern, pattern),
+         (base_conditions || {}).merge(conditions)]
       end
 
       def prefixed_path(a, b)
-        return a || b || /.*/ unless a and b
+        return a || b || /.*/ unless a && b
         return Mustermann.new(b) if a == /.*/
 
         Mustermann.new(a) + Mustermann.new(b)
       end
 
       def prefixed(method, pattern = nil, conditions = {}, &block)
-        default = %r{(?:/.*)?} if method == :before or method == :after
+        default = %r{(?:/.*)?} if (method == :before) || (method == :after)
         pattern, conditions = compile pattern, conditions, default
         result = base.send(method, pattern, **conditions, &block)
         invoke_hook :route_added, method.to_s.upcase, pattern, block

@@ -1,47 +1,49 @@
+# frozen_string_literal: true
+
 module Sinatra
-  ParamsConfig = {}
+  PARAMS_CONFIG = {}
 
   if ARGV.any?
     require 'optparse'
-    parser = OptionParser.new { |op|
-      op.on('-p port',   'set the port (default is 4567)')               { |val| ParamsConfig[:port] = Integer(val) }
-      op.on('-s server', 'specify rack server/handler')                  { |val| ParamsConfig[:server] = val }
-      op.on('-q',        'turn on quiet mode (default is off)')          {       ParamsConfig[:quiet] = true }
-      op.on('-x',        'turn on the mutex lock (default is off)')      {       ParamsConfig[:lock] = true }
+    parser = OptionParser.new do |op|
+      op.on('-p port',   'set the port (default is 4567)')               { |val| PARAMS_CONFIG[:port] = Integer(val) }
+      op.on('-s server', 'specify rack server/handler')                  { |val| PARAMS_CONFIG[:server] = val }
+      op.on('-q',        'turn on quiet mode (default is off)')          {       PARAMS_CONFIG[:quiet] = true }
+      op.on('-x',        'turn on the mutex lock (default is off)')      {       PARAMS_CONFIG[:lock] = true }
       op.on('-e env',    'set the environment (default is development)') do |val|
         ENV['RACK_ENV'] = val
-        ParamsConfig[:environment] = val.to_sym
+        PARAMS_CONFIG[:environment] = val.to_sym
       end
       op.on('-o addr', "set the host (default is (env == 'development' ? 'localhost' : '0.0.0.0'))") do |val|
-        ParamsConfig[:bind] = val
+        PARAMS_CONFIG[:bind] = val
       end
-    }
+    end
     begin
       parser.parse!(ARGV.dup)
-    rescue => evar
-      ParamsConfig[:optparse_error] = evar
+    rescue StandardError => e
+      PARAMS_CONFIG[:optparse_error] = e
     end
   end
 
   require 'sinatra/base'
 
   class Application < Base
-
     # we assume that the first file that requires 'sinatra' is the
     # app_file. all other path related options are calculated based
     # on this path by default.
     set :app_file, caller_files.first || $0
 
-    set :run, Proc.new { File.expand_path($0) == File.expand_path(app_file) }
+    set :run, proc { File.expand_path($0) == File.expand_path(app_file) }
 
     if run? && ARGV.any?
-      error = ParamsConfig.delete(:optparse_error)
+      error = PARAMS_CONFIG.delete(:optparse_error)
       raise error if error
-      ParamsConfig.each { |k, v| set k, v }
+
+      PARAMS_CONFIG.each { |k, v| set k, v }
     end
   end
 
-  remove_const(:ParamsConfig)
+  remove_const(:PARAMS_CONFIG)
   at_exit { Application.run! if $!.nil? && Application.run? }
 end
 

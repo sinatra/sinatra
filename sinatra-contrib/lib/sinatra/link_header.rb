@@ -1,7 +1,6 @@
 require 'sinatra/base'
 
 module Sinatra
-
   # = Sinatra::LinkHeader
   #
   # <tt>Sinatra::LinkHeader</tt> adds a set of helper methods to generate link
@@ -86,8 +85,8 @@ module Sinatra
       opts[:rel]    = urls.shift unless urls.first.respond_to? :to_str
       options       = opts.map { |k, v| " #{k}=#{v.to_s.inspect}" }
       html_pattern  = "<link href=\"%s\"#{options.join} />"
-      http_pattern  = ["<%s>", *options].join ";"
-      link          = (response["Link"] ||= "")
+      http_pattern  = ['<%s>', *options].join ';'
+      link          = (response['Link'] ||= '')
 
       urls.map do |url|
         link << ",\n" unless link.empty?
@@ -116,14 +115,15 @@ module Sinatra
     #   %body= yield
     def link_headers
       yield if block_given?
-      return "" unless response.include? "Link"
-      response["Link"].split(",\n").map do |line|
+      return '' unless response.include? 'Link'
+
+      response['Link'].split(",\n").map do |line|
         url, *opts = line.split(';').map(&:strip)
-        "<link href=\"#{url[1..-2]}\" #{opts.join " "} />"
+        "<link href=\"#{url[1..-2]}\" #{opts.join ' '} />"
       end.join "\n"
     end
 
-    def self.registered(base)
+    def self.registered(_base)
       puts "WARNING: #{self} is a helpers module, not an extension."
     end
   end

@@ -79,7 +79,7 @@ module Sinatra
       super(convert_key(key), convert_value(value))
     end
 
-    alias_method :store, :[]=
+    alias store []=
 
     def key(value)
       super(convert_value(value))
@@ -89,20 +89,21 @@ module Sinatra
       super(convert_key(key))
     end
 
-    alias_method :has_key?, :key?
-    alias_method :include?, :key?
-    alias_method :member?, :key?
+    alias has_key? key?
+    alias include? key?
+    alias member? key?
 
     def value?(value)
       super(convert_value(value))
     end
 
-    alias_method :has_value?, :value?
+    alias has_value? value?
 
     def delete(key)
       super(convert_key(key))
     end
 
+    # Added in Ruby 2.3
     def dig(key, *other_keys)
       super(convert_key(key), *other_keys)
     end
@@ -141,7 +142,7 @@ module Sinatra
       self
     end
 
-    alias_method :update, :merge!
+    alias update merge!
 
     def merge(*other_hashes, &block)
       dup.merge!(*other_hashes, &block)
@@ -171,17 +172,19 @@ module Sinatra
 
     def select(*args, &block)
       return to_enum(:select) unless block_given?
+
       dup.tap { |hash| hash.select!(*args, &block) }
     end
 
     def reject(*args, &block)
       return to_enum(:reject) unless block_given?
+
       dup.tap { |hash| hash.reject!(*args, &block) }
     end
 
     def compact
       dup.tap(&:compact!)
-    end if method_defined?(:compact) # Added in Ruby 2.4
+    end
 
     private
 

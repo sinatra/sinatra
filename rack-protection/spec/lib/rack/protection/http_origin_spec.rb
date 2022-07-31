@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 RSpec.describe Rack::Protection::HttpOrigin do
-  it_behaves_like "any rack application"
+  it_behaves_like 'any rack application'
 
   before(:each) do
     mock_app do
@@ -8,29 +10,29 @@ RSpec.describe Rack::Protection::HttpOrigin do
     end
   end
 
-  %w(GET HEAD POST PUT DELETE).each do |method|
+  %w[GET HEAD POST PUT DELETE].each do |method|
     it "accepts #{method} requests with no Origin" do
       expect(send(method.downcase, '/')).to be_ok
     end
   end
 
-  %w(GET HEAD).each do |method|
+  %w[GET HEAD].each do |method|
     it "accepts #{method} requests with non-permitted Origin" do
       expect(send(method.downcase, '/', {}, 'HTTP_ORIGIN' => 'http://malicious.com')).to be_ok
     end
   end
 
-  %w(GET HEAD POST PUT DELETE).each do |method|
+  %w[GET HEAD POST PUT DELETE].each do |method|
     it "accepts #{method} requests when allow_if is true" do
       mock_app do
-        use Rack::Protection::HttpOrigin, :allow_if => lambda{|env| env.has_key?('HTTP_ORIGIN') }
+        use Rack::Protection::HttpOrigin, allow_if: ->(env) { env.key?('HTTP_ORIGIN') }
         run DummyApp
       end
       expect(send(method.downcase, '/', {}, 'HTTP_ORIGIN' => 'http://any.domain.com')).to be_ok
     end
   end
 
-  %w(POST PUT DELETE).each do |method|
+  %w[POST PUT DELETE].each do |method|
     it "denies #{method} requests with non-permitted Origin" do
       expect(send(method.downcase, '/', {}, 'HTTP_ORIGIN' => 'http://malicious.com')).not_to be_ok
     end

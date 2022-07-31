@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'sinatra/base'
 
 module Sinatra
-
   # = Sinatra::Streaming
   #
   # Sinatra 1.3 introduced the +stream+ helper. This addon improves the
@@ -84,13 +85,14 @@ module Sinatra
     end
 
     module Stream
-
       attr_accessor :app, :lineno, :pos, :transformer, :closed
       alias tell pos
       alias closed? closed
 
       def self.extended(obj)
-        obj.closed, obj.lineno, obj.pos = false, 0, 0
+        obj.closed = false
+        obj.lineno = 0
+        obj.pos = 0
         obj.callback { obj.closed = true }
         obj.errback  { obj.closed = true }
       end
@@ -108,6 +110,7 @@ module Sinatra
       def each
         # that way body.each.map { ... } works
         return self unless block_given?
+
         super
       end
 
@@ -120,7 +123,8 @@ module Sinatra
         @transformer ||= nil
 
         if @transformer
-          inner, outer = @transformer, block
+          inner = @transformer
+          outer = block
           block = proc { |value| outer[inner[value]] }
         end
         @transformer = block
@@ -132,7 +136,7 @@ module Sinatra
         data.to_s.bytesize
       end
 
-      alias syswrite      write
+      alias syswrite write
       alias write_nonblock write
 
       def print(*args)
@@ -154,7 +158,7 @@ module Sinatra
       end
 
       def close_read
-        raise IOError, "closing non-duplex IO for reading"
+        raise IOError, 'closing non-duplex IO for reading'
       end
 
       def closed_read?
@@ -171,10 +175,6 @@ module Sinatra
         settings.default_encoding
       end
 
-      def closed?
-        @closed
-      end
-
       def settings
         app.settings
       end
@@ -184,7 +184,7 @@ module Sinatra
       end
 
       def not_open_for_reading(*)
-        raise IOError, "not opened for reading"
+        raise IOError, 'not opened for reading'
       end
 
       alias bytes         not_open_for_reading

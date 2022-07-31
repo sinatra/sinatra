@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rack/protection'
 
 module Rack
@@ -12,7 +14,7 @@ module Rack
     # Options:
     # xss_mode:: How the browser should prevent the attack (default: :block)
     class XSSHeader < Base
-      default_options :xss_mode => :block, :nosniff => true
+      default_options xss_mode: :block, nosniff: true
 
       def call(env)
         status, headers, body = @app.call(env)

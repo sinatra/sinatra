@@ -1,0 +1,151 @@
+# The behavior of RuboCop can be controlled via the .rubocop.yml
+# configuration file. It makes it possible to enable/disable
+# certain cops (checks) and to alter their behavior if they accept
+# any parameters. The file can be placed either in your home
+# directory or in some project directory.
+#
+# RuboCop will start looking for the configuration file in the directory
+# where the inspected file is and continue its way up to the root directory.
+#
+# See https://github.com/rubocop-hq/rubocop/blob/master/manual/configuration.md
+AllCops:
+  TargetRubyVersion: 2.6
+  SuggestExtensions: false
+  NewCops: enable
+  Exclude:
+    - 'test/**/*'
+    - 'rack-protection/**/*'
+    - 'sinatra-contrib/**/*'
+    - vendor/bundle/**/*
+
+Layout/ExtraSpacing:
+  AllowForAlignment: true
+  AllowBeforeTrailingComments: true
+
+# Temporary disable cops because warnings are fixed
+Style/SingleLineMethods:
+  Enabled: false
+
+Style/MutableConstant:
+  Enabled: false
+
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+
+Style/CaseEquality:
+  Enabled: false
+
+Style/PerlBackrefs:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Lint/IneffectiveAccessModifier:
+  Enabled: false
+
+Lint/RescueException:
+  Enabled: false
+
+Style/SpecialGlobalVars:
+  Enabled: false
+
+Bundler/DuplicatedGem:
+  Enabled: false
+
+Layout/HeredocIndentation:
+  Enabled: false
+
+Style/FormatStringToken:
+  Enabled: false
+
+Lint/UselessAccessModifier:
+  Enabled: false
+
+Style/ClassVars:
+  Enabled: false
+
+Lint/UselessAssignment:
+  Enabled: false
+
+Style/EmptyLiteral:
+  Enabled: false
+
+Layout/LineLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+Lint/SuppressedException:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/ModuleLength:
+  Enabled: false
+
+Lint/AmbiguousRegexpLiteral:
+  Enabled: false
+
+Style/AccessModifierDeclarations:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/EvalWithLocation:
+  Enabled: false
+
+Lint/MissingSuper:
+  Enabled: false
+
+Style/MissingRespondToMissing:
+  Enabled: false
+
+Style/MixinUsage:
+  Enabled: false
+
+Style/MultilineTernaryOperator:
+  Enabled: false
+
+Style/StructInheritance:
+  Enabled: false
+
+Style/SymbolProc:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/OptionalBooleanParameter:
+  Enabled: false
+
+Style/DocumentDynamicEvalDefinition:
+  Enabled: false
+
+Lint/ToEnumArguments:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
+
+Naming/AccessorMethodName:
+  Enabled: false
+
+Style/SlicingWithRange:
+  Enabled: false
+

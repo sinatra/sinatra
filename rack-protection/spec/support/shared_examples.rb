@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples_for 'any rack application' do
-  it "should not interfere with normal get requests" do
+  it 'should not interfere with normal get requests' do
     expect(get('/')).to be_ok
     expect(body).to eq('ok')
   end
 
-  it "should not interfere with normal head requests" do
+  it 'should not interfere with normal head requests' do
     expect(head('/')).to be_ok
   end
 
@@ -14,9 +16,10 @@ RSpec.shared_examples_for 'any rack application' do
       def call(env)
         was = env.dup
         res = app.call(env)
-        was.each do |k,v|
+        was.each do |k, v|
           next if env[k] == v
-          fail "env[#{k.inspect}] changed from #{v.inspect} to #{env[k].inspect}"
+
+          raise "env[#{k.inspect}] changed from #{v.inspect} to #{env[k].inspect}"
         end
         res
       end
@@ -24,13 +27,13 @@ RSpec.shared_examples_for 'any rack application' do
 
     mock_app do
       use Rack::Head
-      use(Rack::Config) { |e| e['rack.session'] ||= {}}
+      use(Rack::Config) { |e| e['rack.session'] ||= {} }
       use detector
       use klass
       run DummyApp
     end
 
-    expect(get('/..', :foo => '<bar>')).to be_ok
+    expect(get('/..', foo: '<bar>')).to be_ok
   end
 
   it 'allows passing on values in env' do
@@ -53,7 +56,7 @@ RSpec.shared_examples_for 'any rack application' do
 
     mock_app do
       use Rack::Head
-      use(Rack::Config) { |e| e['rack.session'] ||= {}}
+      use(Rack::Config) { |e| e['rack.session'] ||= {} }
       use changer
       use klass
       use detector

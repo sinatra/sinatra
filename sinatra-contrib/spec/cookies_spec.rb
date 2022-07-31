@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 RSpec.describe Sinatra::Cookies do
-  def cookie_route(*cookies, &block)
+  def cookie_route(*cookies, headers: {}, &block)
     result = nil
     set_cookie(cookies)
     @cookie_app.get('/') do
       result = instance_eval(&block)
       "ok"
     end
-    get '/', {}, @headers || {}
+    get '/', {}, headers || {}
     expect(last_response).to be_ok
     expect(body).to eq("ok")
     result
@@ -97,8 +97,8 @@ RSpec.describe Sinatra::Cookies do
     end
 
     it 'sets domain to nil if localhost' do
-      @headers = {'HTTP_HOST' => 'localhost'}
-      expect(cookie_route do
+      headers = {'HTTP_HOST' => 'localhost'}
+      expect(cookie_route(headers: headers) do
         cookies['foo'] = 'bar'
         response['Set-Cookie']
       end).not_to include("domain")

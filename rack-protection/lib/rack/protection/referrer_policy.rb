@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rack/protection'
 
 module Rack
@@ -13,7 +15,7 @@ module Rack
     # Options:
     # referrer_policy:: The policy to use (default: 'strict-origin-when-cross-origin')
     class ReferrerPolicy < Base
-      default_options :referrer_policy => 'strict-origin-when-cross-origin'
+      default_options referrer_policy: 'strict-origin-when-cross-origin'
 
       def call(env)
         status, headers, body = @app.call(env)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rack/protection'
 
 module Rack
@@ -17,7 +19,7 @@ module Rack
     #
     # The `:allow_if` option can be set to a proc to use custom allow/deny logic.
     class JsonCsrf < Base
-      default_options :allow_if => nil
+      default_options allow_if: nil
 
       alias react deny
 
@@ -36,8 +38,9 @@ module Rack
 
       def has_vector?(request, headers)
         return false if request.xhr?
-        return false if options[:allow_if] && options[:allow_if].call(request.env)
-        return false unless headers['Content-Type'].to_s.split(';', 2).first =~ /^\s*application\/json\s*$/
+        return false if options[:allow_if]&.call(request.env)
+        return false unless headers['Content-Type'].to_s.split(';', 2).first =~ %r{^\s*application/json\s*$}
+
         origin(request.env).nil? and referrer(request.env) != request.host
       end
 

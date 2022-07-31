@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'forwardable'
 
 module SpecHelpers
@@ -12,12 +14,12 @@ module SpecHelpers
   end
 
   def mock_app(app = nil, &block)
-    app = block if app.nil? and block.arity == 1
+    app = block if app.nil? && (block.arity == 1)
     if app
       klass = described_class
       mock_app do
         use Rack::Head
-        use(Rack::Config) { |e| e['rack.session'] ||= {}}
+        use(Rack::Config) { |e| e['rack.session'] ||= {} }
         use klass
         run app
       end
@@ -27,7 +29,7 @@ module SpecHelpers
   end
 
   def with_headers(headers)
-    proc { [200, {'Content-Type' => 'text/plain'}.merge(headers), ['ok']] }
+    proc { [200, { 'Content-Type' => 'text/plain' }.merge(headers), ['ok']] }
   end
 
   def env

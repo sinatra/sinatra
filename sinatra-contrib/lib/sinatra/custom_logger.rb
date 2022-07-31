@@ -1,5 +1,6 @@
-module Sinatra
+# frozen_string_literal: true
 
+module Sinatra
   # = Sinatra::CustomLogger
   #
   # CustomLogger extension allows you to define your own logger instance

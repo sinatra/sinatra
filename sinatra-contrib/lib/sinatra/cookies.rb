@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sinatra/base'
 
 module Sinatra
@@ -65,15 +67,15 @@ module Sinatra
         @deleted         = []
 
         @options = {
-          :path => @request.script_name.to_s.empty? ? '/' : @request.script_name,
-          :domain => @request.host == 'localhost' ? nil : @request.host,
-          :secure   => @request.secure?,
-          :httponly => true
+          path: @request.script_name.to_s.empty? ? '/' : @request.script_name,
+          domain: @request.host == 'localhost' ? nil : @request.host,
+          secure: @request.secure?,
+          httponly: true
         }
 
-        if app.settings.respond_to? :cookie_options
-          @options.merge! app.settings.cookie_options
-        end
+        return unless app.settings.respond_to? :cookie_options
+
+        @options.merge! app.settings.cookie_options
       end
 
       def ==(other)
@@ -88,9 +90,11 @@ module Sinatra
         set(key, value: value)
       end
 
-      def assoc(key)
-        to_hash.assoc(key.to_s)
-      end if Hash.method_defined? :assoc
+      if Hash.method_defined? :assoc
+        def assoc(key)
+          to_hash.assoc(key.to_s)
+        end
+      end
 
       def clear
         each_key { |k| delete(k) }
@@ -114,17 +118,20 @@ module Sinatra
 
       def delete_if
         return enum_for(__method__) unless block_given?
+
         each { |k, v| delete(k) if yield(k, v) }
         self
       end
 
       def each(&block)
         return enum_for(__method__) unless block_given?
+
         to_hash.each(&block)
       end
 
       def each_key(&block)
         return enum_for(__method__) unless block_given?
+
         to_hash.each_key(&block)
       end
 
@@ -132,6 +139,7 @@ module Sinatra
 
       def each_value(&block)
         return enum_for(__method__) unless block_given?
+
         to_hash.each_value(&block)
       end
 
@@ -145,16 +153,18 @@ module Sinatra
         end
       end
 
-      def flatten
-        to_hash.flatten
-      end if Hash.method_defined? :flatten
+      if Hash.method_defined? :flatten
+        def flatten
+          to_hash.flatten
+        end
+      end
 
       def has_key?(key)
-        response_cookies.has_key? key.to_s or request_cookies.has_key? key.to_s
+        response_cookies.key? key.to_s or request_cookies.key? key.to_s
       end
 
       def has_value?(value)
-        response_cookies.has_value? value or request_cookies.has_value? value
+        response_cookies.value? value or request_cookies.value? value
       end
 
       def hash
@@ -168,13 +178,16 @@ module Sinatra
         "<##{self.class}: #{to_hash.inspect[1..-2]}>"
       end
 
-      def invert
-        to_hash.invert
-      end if Hash.method_defined? :invert
+      if Hash.method_defined? :invert
+        def invert
+          to_hash.invert
+        end
+      end
 
       def keep_if
         return enum_for(__method__) unless block_given?
-        delete_if { |*a| not yield(*a) }
+
+        delete_if { |*a| !yield(*a) }
       end
 
       def key(value)
@@ -197,11 +210,11 @@ module Sinatra
 
       def merge!(other)
         other.each_pair do |key, value|
-          if block_given? and include? key
-            self[key] = yield(key.to_s, self[key], value)
-          else
-            self[key] = value
-          end
+          self[key] = if block_given? && include?(key)
+                        yield(key.to_s, self[key], value)
+                      else
+                        value
+                      end
         end
       end
 
@@ -217,18 +230,20 @@ module Sinatra
 
       def reject(&block)
         return enum_for(__method__) unless block_given?
+
         to_hash.reject(&block)
       end
 
       alias reject! delete_if
 
       def replace(other)
-        select! { |k, v| other.include?(k) or other.include?(k.to_s)  }
+        select! { |k, _v| other.include?(k) or other.include?(k.to_s) }
         merge! other
       end
 
       def select(&block)
         return enum_for(__method__) unless block_given?
+
         to_hash.select(&block)
       end
 
@@ -246,9 +261,11 @@ module Sinatra
 
       alias size length
 
-      def sort(&block)
-        to_hash.sort(&block)
-      end if Hash.method_defined? :sort
+      if Hash.method_defined? :sort
+        def sort(&block)
+          to_hash.sort(&block)
+        end
+      end
 
       alias store []=
 
@@ -300,6 +317,7 @@ module Sinatra
         string.each_line do |line|
           key, value = line.split(';', 2).first.to_s.split('=', 2)
           next if key.nil?
+
           key = Rack::Utils.unescape(key)
           if line =~ /expires=Thu, 01[-\s]Jan[-\s]1970/
             @deleted << key
@@ -314,7 +332,7 @@ module Sinatra
       end
 
       def request_cookies
-        @request.cookies.reject { |key, value| deleted.include? key }
+        @request.cookies.reject { |key, _value| deleted.include? key }
       end
     end
 

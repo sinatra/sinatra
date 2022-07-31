@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 RSpec.describe Rack::Protection::Encryptor do
-  let(:secret) {
+  let(:secret) do
     OpenSSL::Cipher.new(Rack::Protection::Encryptor::CIPHER).random_key
-  }
+  end
 
   it 'encrypted message contains ciphertext iv and auth_tag' do
     msg = Rack::Protection::Encryptor.encrypt_message('hello world', secret)

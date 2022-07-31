@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sinatra/base'
 require 'sinatra/contrib/version'
 
@@ -5,7 +7,7 @@ module Sinatra
   module Contrib
     module Loader
       def extensions
-        @extensions ||= {:helpers => [], :register => []}
+        @extensions ||= { helpers: [], register: [] }
       end
 
       def register(name, path)

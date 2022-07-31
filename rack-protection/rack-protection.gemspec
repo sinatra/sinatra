@@ -1,40 +1,45 @@
-version = File.read(File.expand_path("../VERSION", __dir__)).strip
+# frozen_string_literal: true
+
+version = File.read(File.expand_path('../VERSION', __dir__)).strip
 
 Gem::Specification.new do |s|
   # general infos
-  s.name        = "rack-protection"
+  s.name        = 'rack-protection'
   s.version     = version
-  s.description = "Protect against typical web attacks, works with all Rack apps, including Rails."
-  s.homepage    = "http://sinatrarb.com/protection/"
+  s.description = 'Protect against typical web attacks, works with all Rack apps, including Rails.'
+  s.homepage    = 'http://sinatrarb.com/protection/'
   s.summary     = s.description
   s.license     = 'MIT'
-  s.authors     = ["https://github.com/sinatra/sinatra/graphs/contributors"]
-  s.email       = "sinatrarb@googlegroups.com"
-  s.files       = Dir["lib/**/*.rb"] + [
-    "License",
-    "README.md",
-    "Rakefile",
-    "Gemfile",
-    "rack-protection.gemspec"
+  s.authors     = ['https://github.com/sinatra/sinatra/graphs/contributors']
+  s.email       = 'sinatrarb@googlegroups.com'
+  s.files       = Dir['lib/**/*.rb'] + [
+    'License',
+    'README.md',
+    'Rakefile',
+    'Gemfile',
+    'rack-protection.gemspec'
   ]
 
-  if s.respond_to?(:metadata)
-    s.metadata = {
-      'source_code_uri'   => 'https://github.com/sinatra/sinatra/tree/master/rack-protection',
-      'homepage_uri'      => 'http://sinatrarb.com/protection/',
-      'documentation_uri' => 'https://www.rubydoc.info/gems/rack-protection'
-    }
-  else
-    raise <<-EOF
+  unless s.respond_to?(:metadata)
+    raise <<-WARN
 RubyGems 2.0 or newer is required to protect against public gem pushes. You can update your rubygems version by running:
   gem install rubygems-update
   update_rubygems:
   gem update --system
-EOF
+    WARN
   end
 
+  s.metadata = {
+    'source_code_uri' => 'https://github.com/sinatra/sinatra/tree/master/rack-protection',
+    'homepage_uri' => 'http://sinatrarb.com/protection/',
+    'documentation_uri' => 'https://www.rubydoc.info/gems/rack-protection',
+    'rubygems_mfa_required' => 'true'
+  }
+
+  s.required_ruby_version = '>= 2.6.0'
+
   # dependencies
-  s.add_dependency "rack"
-  s.add_development_dependency "rack-test", "~> 2"
-  s.add_development_dependency "rspec", "~> 3"
+  s.add_dependency 'rack'
+  s.add_development_dependency 'rack-test', '~> 2'
+  s.add_development_dependency 'rspec', '~> 3'
 end

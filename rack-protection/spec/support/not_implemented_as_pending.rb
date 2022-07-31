@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # see http://blog.101ideas.cz/posts/pending-examples-via-not-implemented-error-in-rspec.html
 module NotImplementedAsPending
   def self.included(base)
