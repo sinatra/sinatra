@@ -62,7 +62,7 @@ module Sinatra
         elsif key.is_a?(Array)
           _required_params(p, *key)
         else
-          halt 400 unless p.respond_to?(:has_key?) && p&.key?(key.to_s)
+          halt 400 unless p.respond_to?(:key?) && p&.key?(key.to_s)
         end
       end
       true

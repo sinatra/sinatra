@@ -108,22 +108,16 @@ module Sinatra
       super(convert_key(key), *other_keys)
     end
 
-    # Added in Ruby 2.3
-    if method_defined?(:fetch_values)
-      def fetch_values(*keys)
-        keys.map!(&method(:convert_key))
+    def fetch_values(*keys)
+      keys.map!(&method(:convert_key))
 
-        super(*keys)
-      end
+      super(*keys)
     end
 
-    # Added in Ruby 2.5
-    if method_defined?(:slice)
-      def slice(*keys)
-        keys.map!(&method(:convert_key))
+    def slice(*keys)
+      keys.map!(&method(:convert_key))
 
-        self.class[super(*keys)]
-      end
+      self.class[super(*keys)]
     end
 
     def values_at(*keys)
@@ -188,10 +182,8 @@ module Sinatra
       dup.tap { |hash| hash.reject!(*args, &block) }
     end
 
-    if method_defined?(:compact)
-      def compact
-        dup.tap(&:compact!)
-      end
+    def compact
+      dup.tap(&:compact!)
     end
 
     private
