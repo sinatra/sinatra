@@ -51,7 +51,7 @@ RubyGems 2.0 or newer is required to protect against public gem pushes. You can 
   s.add_development_dependency 'markaby'
   s.add_development_dependency 'nokogiri'
   s.add_development_dependency 'rack-test', '~> 2'
-  s.add_development_dependency 'rake', '< 11'
+  s.add_development_dependency 'rake', '>= 12.3.3'
   s.add_development_dependency 'redcarpet'
   s.add_development_dependency 'rspec', '~> 3'
   s.add_development_dependency 'slim'

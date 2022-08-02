@@ -30,7 +30,7 @@ gem 'activesupport', '~> 6.1'
 
 gem 'asciidoctor'
 gem 'builder'
-gem 'commonmarker', '~> 0.20.0', platforms: [:ruby]
+gem 'commonmarker', '~> 0.23.4', platforms: [:ruby]
 gem 'erubi'
 gem 'eventmachine'
 gem 'falcon', '~> 0.40', platforms: [:ruby]
