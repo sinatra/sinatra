@@ -27,7 +27,6 @@ module Sinatra
     ##
     # Other extensions you don't want to be loaded unless needed.
     module Custom
-      # register :Compass, 'sinatra/compass'
       register :Reloader, 'sinatra/reloader'
     end
 
