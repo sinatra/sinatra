@@ -5,6 +5,9 @@ require 'sinatra/base'
 module Sinatra
   # = Sinatra::Reloader
   #
+  # <b>DEPRECATED:<b> Please consider using an alternative like
+  # <tt>rerun</tt> or <tt>rack-unreloader</tt> instead.
+  #
   # Extension to reload modified files.  Useful during development,
   # since it will automatically require files defining routes, filters,
   # error handlers and inline templates, with every incoming request,

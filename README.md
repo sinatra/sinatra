@@ -31,8 +31,9 @@ ruby myapp.rb
 View at: [http://localhost:4567](http://localhost:4567)
 
 The code you changed will not take effect until you restart the server.
-Please restart the server every time you change or use
-[sinatra/reloader](http://www.sinatrarb.com/contrib/reloader).
+Please restart the server every time you change or use a code reloader
+like [rerun](https://github.com/alexch/rerun) or
+[rack-unreloader](https://github.com/jeremyevans/rack-unreloader).
 
 It is recommended to also run `gem install puma`, which Sinatra will
 pick up if available.

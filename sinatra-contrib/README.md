@@ -58,7 +58,9 @@ existing APIs.
 
 Currently included:
 
-* [`sinatra/reloader`][sinatra-reloader]: Automatically reloads Ruby files on code changes.
+* [`sinatra/reloader`][sinatra-reloader]: Automatically reloads Ruby files on code changes. **DEPRECATED**: Please consider
+consider using an alternative like [rerun](https://github.com/alexch/rerun) or
+[rack-unreloader](https://github.com/jeremyevans/rack-unreloader) instead.
 
 ### Other Tools
 
