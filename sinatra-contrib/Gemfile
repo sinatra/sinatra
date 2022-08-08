@@ -16,7 +16,7 @@ group :development, :test do
   end
 
   platform :jruby, :ruby do
-    gem 'hamlit', '~> 3'
+    gem 'hamlit', '>= 3'
     gem 'liquid', '~> 2.6.x'
     gem 'slim'
   end
