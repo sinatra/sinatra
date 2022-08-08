@@ -9,7 +9,7 @@ RSpec.describe Sinatra::ContentFor do
   end
 
   Tilt.prefer Tilt::ERBTemplate
-  require 'hamlit/block'
+  require 'hamlit'
   Tilt.register Tilt::HamlTemplate, :haml
 
   extend Forwardable
