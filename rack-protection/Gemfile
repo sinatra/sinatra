@@ -7,5 +7,3 @@ gem 'rake'
 gem 'sinatra', path: '..'
 
 gemspec
-
-gem 'rack-test', github: 'rack/rack-test'
