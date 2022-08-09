@@ -13,15 +13,6 @@ gemspec
 
 gem 'rake'
 
-rack_version = ENV['rack'].to_s
-rack_version = nil if rack_version.empty? || (rack_version == 'stable')
-rack_version = { github: 'rack/rack' } if rack_version == 'master'
-gem 'rack', rack_version
-
-if rack_version == 'master'
-  gem 'rack-session'
-end
-
 gem 'minitest', '~> 5.0'
 gem 'rack-test', github: 'rack/rack-test'
 gem 'rubocop', '~> 1.32.0', require: false

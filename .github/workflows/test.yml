@@ -19,10 +19,14 @@ jobs:
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
         ruby: [2.6, 2.7, '3.0', 3.1, 'jruby-9.3', truffleruby, truffleruby-head]
         include:
-          - { ruby: 3.1, rack: master, allow-failure: true }
-          - { ruby: jruby-head, rack: stable, allow-failure: true }
-    env:
-      rack: ${{ matrix.rack }}
+          - ruby: 3.1
+            env:
+              BUNDLE_GEMFILE: gems/rack-v3.rb
+            allow-failure: true
+          - ruby: jruby-head
+            env:
+              BUNDLE_GEMFILE: gems/rack-v2.rb
+            allow-failure: true
     steps:
     - uses: actions/checkout@v3
     - uses: ruby/setup-ruby@v1
