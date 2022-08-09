@@ -8,25 +8,23 @@ on:
 
 jobs:
   test:
-    name: Ruby ${{ matrix.ruby }} (Rack ${{ matrix.rack }})
+    name: Ruby ${{ matrix.ruby }} ${{ matrix.gemfile }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        rack:
-          - stable
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
         ruby: [2.6, 2.7, '3.0', 3.1, 'jruby-9.3', truffleruby, truffleruby-head]
         include:
           - ruby: 3.1
-            env:
-              BUNDLE_GEMFILE: gems/rack-v3.rb
+            gemfile: gems/rack-v3.rb
             allow-failure: true
           - ruby: jruby-head
-            env:
-              BUNDLE_GEMFILE: gems/rack-v2.rb
+            gemfile: gems/rack-v2.rb
             allow-failure: true
+    env:
+      BUNDLE_GEMFILE: ${{ matrix.gemfile }}
     steps:
     - uses: actions/checkout@v3
     - uses: ruby/setup-ruby@v1
