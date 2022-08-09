@@ -10,6 +10,10 @@ rack_version = nil if rack_version.empty? || (rack_version == 'stable')
 rack_version = { github: 'rack/rack' } if rack_version == 'master'
 gem 'rack', rack_version
 
+if rack_version == 'master'
+  gem 'rack-session'
+end  
+
 gem 'sinatra', path: '..'
 
 gemspec

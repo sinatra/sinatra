@@ -19,7 +19,7 @@ rack_version = { github: 'rack/rack' } if rack_version == 'master'
 gem 'rack', rack_version
 
 if rack_version == 'master'
-    gem 'rack-session'
+  gem 'rack-session'
 end
 
 gem 'minitest', '~> 5.0'
