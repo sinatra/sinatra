@@ -13,6 +13,7 @@ group :development, :test do
     gem 'json'
     gem 'rdoc'
     gem 'therubyrhino'
+    gem 'jar-dependencies', '= 0.4.1' # Gem::LoadError with jar-dependencies 0.4.2
   end
 
   platform :jruby, :ruby do
