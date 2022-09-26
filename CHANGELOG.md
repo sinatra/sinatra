@@ -1,4 +1,8 @@
-## 3.0.0 / Unreleased
+## Unreleased
+
+* _Your new feature here._
+
+## 3.0.0 / 2022-09-26
 
 * New: Add Falcon support. [#1794](https://github.com/sinatra/sinatra/pull/1794) by Samuel Williams and @horaciob
 
