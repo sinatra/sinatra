@@ -1408,7 +1408,7 @@ module Sinatra
       end
 
       def public=(value)
-        warn ':public is no longer used to avoid overloading Module#public, use :public_folder or :public_dir instead'
+        warn_for_deprecation ':public is no longer used to avoid overloading Module#public, use :public_folder or :public_dir instead'
         set(:public_folder, value)
       end
 
@@ -1772,8 +1772,8 @@ module Sinatra
       end
 
       # used for deprecation warnings
-      def warn(message)
-        super message + "\n\tfrom #{cleaned_caller.first.join(':')}"
+      def warn_for_deprecation(message)
+        warn message + "\n\tfrom #{cleaned_caller.first.join(':')}"
       end
 
       # Like Kernel#caller but excluding certain magic entries
