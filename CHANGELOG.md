@@ -2,6 +2,12 @@
 
 * _Your new feature here._
 
+## 3.0.1 / 2022-09-26
+
+* Fix: Revert removal of rack-protection.rb. [#1814](https://github.com/sinatra/sinatra/pull/1814) by Olle Jonsson
+
+* Fix: Revert change to server start and stop messaging by using Kernel#warn. Renamed internal warn method warn_for_deprecation. [#1818](https://github.com/sinatra/sinatra/pull/1818) by Jordan Owens
+
 ## 3.0.0 / 2022-09-26
 
 * New: Add Falcon support. [#1794](https://github.com/sinatra/sinatra/pull/1794) by Samuel Williams and @horaciob
