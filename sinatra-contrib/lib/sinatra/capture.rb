@@ -87,7 +87,7 @@ module Sinatra
     def capture(*args, &block)
       return block[*args] if ruby?
 
-      if haml? && Tilt[:haml] == Tilt::HamlTemplate
+      if haml? && Tilt[:haml] == Tilt::HamlTemplate && defined?(Haml::Buffer)
         buffer = Haml::Buffer.new(nil, Haml::Options.new.for_buffer)
         with_haml_buffer(buffer) { capture_haml(*args, &block) }
       else
