@@ -2,6 +2,10 @@
 
 * _Your new feature here._
 
+## 3.0.2 / 2022-10-01
+
+* New: Add Haml 6 support. [#1820](https://github.com/sinatra/sinatra/pull/1820) by Jordan Owens
+
 ## 3.0.1 / 2022-09-26
 
 * Fix: Revert removal of rack-protection.rb. [#1814](https://github.com/sinatra/sinatra/pull/1814) by Olle Jonsson
