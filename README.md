@@ -938,7 +938,7 @@ __END__
 
 @@ layout
 %html
-  = yield
+  != yield
 
 @@ index
 %div.title Hello world.
