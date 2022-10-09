@@ -16,7 +16,7 @@ module Rack
       def accepts?(env)
         return true unless env.include? 'HTTP_X_FORWARDED_FOR'
 
-        ips = env['HTTP_X_FORWARDED_FOR'].split(/\s*,\s*/)
+        ips = env['HTTP_X_FORWARDED_FOR'].split(',').map(&:strip)
         return false if env.include?('HTTP_CLIENT_IP') && (!ips.include? env['HTTP_CLIENT_IP'])
         return false if env.include?('HTTP_X_REAL_IP') && (!ips.include? env['HTTP_X_REAL_IP'])
 
