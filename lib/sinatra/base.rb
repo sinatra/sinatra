@@ -1850,7 +1850,6 @@ module Sinatra
     server.unshift 'puma'
     server.unshift 'falcon'   if ruby_engine != 'jruby'
     server.unshift 'mongrel'  if ruby_engine.nil?
-    server.unshift 'thin'     if ruby_engine != 'jruby'
     server.unshift 'trinidad' if ruby_engine == 'jruby'
 
     set :absolute_redirects, true
