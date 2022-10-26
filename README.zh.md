@@ -127,87 +127,84 @@ ruby myapp.rb
 
 ```ruby
 get '/' do
-  .. show something ..
+  .. 显示内容 ..
 end
 
 post '/' do
-  .. create something ..
+  .. 创建内容 ..
 end
 
 put '/' do
-  .. replace something ..
+  .. 替换内容 ..
 end
 
 patch '/' do
-  .. modify something ..
+  .. 修改内容 ..
 end
 
 delete '/' do
-  .. annihilate something ..
+  .. 删除内容 ..
 end
 
 options '/' do
-  .. appease something ..
+  .. 预检测内容 ..
 end
 
 link '/' do
-  .. affiliate something ..
+  .. 关联某些内容 ..
 end
 
 unlink '/' do
-  .. separate something ..
+  .. 移除某种联系 ..
 end
 ```
 
-Routes are matched in the order they are defined. The first route that
-matches the request is invoked.
+路由按照它们定义时的顺序进行匹配。第一个与请求匹配的路由会被调用。
 
-Routes with trailing slashes are different from the ones without:
+路由结尾是否有斜杠（/）会被认为是不同的路由：
 
 ```ruby
 get '/foo' do
-  # Does not match "GET /foo/"
+  # 不匹配 "GET /foo/"
 end
 ```
 
-Route patterns may include named parameters, accessible via the
-`params` hash:
+路由匹配模式可以包括具名参数，具名参数可以通过  `params` 哈希对象访问：
 
 ```ruby
 get '/hello/:name' do
-  # matches "GET /hello/foo" and "GET /hello/bar"
-  # params['name'] is 'foo' or 'bar'
+  # 匹配 "GET /hello/foo" 和 "GET /hello/bar"
+  # params['name'] 的值是 'foo' 或者 'bar'
   "Hello #{params['name']}!"
 end
 ```
 
-You can also access named parameters via block parameters:
+也可以通过代码块参数访问具名参数：
 
 ```ruby
 get '/hello/:name' do |n|
-  # matches "GET /hello/foo" and "GET /hello/bar"
-  # params['name'] is 'foo' or 'bar'
-  # n stores params['name']
+  # 匹配 "GET /hello/foo" 和 "GET /hello/bar"
+  # params['name'] 的值是 'foo' 或者 'bar'
+  # n 存储 params['name'] 的值
   "Hello #{n}!"
 end
 ```
 
-Route patterns may also include splat (or wildcard) parameters, accessible
-via the `params['splat']` array:
+路由匹配模式也可以包含 splat 或 通配符参数， 参数值可以通过 `params['splat']` 数组访问：
 
 ```ruby
 get '/say/*/to/*' do
-  # matches /say/hello/to/world
+  # 匹配 /say/hello/to/world
   params['splat'] # => ["hello", "world"]
 end
 
 get '/download/*.*' do
-  # matches /download/path/to/file.xml
+  # 匹配 /download/path/to/file.xml
   params['splat'] # => ["path/to/file", "xml"]
 end
 ```
 
-Or with block parameters:
+或者通过代码块参数访问：
 
 ```ruby
 get '/download/*.*' do |path, ext|
@@ -215,7 +212,7 @@ get '/download/*.*' do |path, ext|
 end
 ```
 
-Route matching with Regular Expressions:
+通过正则表达式匹配路由：
 
 ```ruby
 get /\/hello\/([\w]+)/ do
@@ -223,71 +220,71 @@ get /\/hello\/([\w]+)/ do
 end
 ```
 
-Or with a block parameter:
+或者使用代码块参数：
 
 ```ruby
 get %r{/hello/([\w]+)} do |c|
-  # Matches "GET /meta/hello/world", "GET /hello/world/1234" etc.
+  # 匹配 "GET /meta/hello/world", "GET /hello/world/1234" etc.
   "Hello, #{c}!"
 end
 ```
 
-Route patterns may have optional parameters:
+路由范式可以包含可选参数：
 
 ```ruby
 get '/posts/:format?' do
-  # matches "GET /posts/" and any extension "GET /posts/json", "GET /posts/xml" etc
+  # 匹配 "GET /posts/" and any extension "GET /posts/json", "GET /posts/xml" etc
 end
 ```
 
-Routes may also utilize query parameters:
+路由也可以使用查询参数：
 
 ```ruby
 get '/posts' do
-  # matches "GET /posts?title=foo&author=bar"
+  # 匹配 "GET /posts?title=foo&author=bar"
   title = params['title']
   author = params['author']
-  # uses title and author variables; query is optional to the /posts route
+  # 使用 title 和 author 变量；对于 /posts 路由来说，查询字符串是可选的
 end
 ```
 
-By the way, unless you disable the path traversal attack protection (see
-[below](#configuring-attack-protection)), the request path might be modified before
-matching against your routes.
+顺便一提，除非你禁用了路径遍历攻击防护（[见下文](#configuring-attack-protection))，请求路径可能在匹配路由前发生改变。
 
-You may customize the [Mustermann](https://github.com/sinatra/mustermann#readme)
-options used for a given route by passing in a `:mustermann_opts` hash:
+
+你也可以通过`:mustermann_opt`选项自定义 [Mustermann](https://github.com/sinatra/mustermann#readme) 来匹配路由。
 
 ```ruby
 get '\A/posts\z', :mustermann_opts => { :type => :regexp, :check_anchors => false } do
-  # matches /posts exactly, with explicit anchoring
+  # 锚 精准匹配 /posts
   "If you match an anchored pattern clap your hands!"
 end
 ```
 
-It looks like a [condition](#conditions), but it isn't one! These options will
-be merged into the global `:mustermann_opts` hash described
-[below](#available-settings).
 
-## Conditions
+它看起来像一个[条件](#conditions)，但实际不是！这些选项将被合并到[下文提到的](#available-settings)全局的`mustermann_opts`选项。
 
-Routes may include a variety of matching conditions, such as the user agent:
+
+## 条件
+
+
+路由可以包含各种匹配条件，比如 user agent：
+
 
 ```ruby
 get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
-  "You're using Songbird version #{params['agent'][0]}"
+  "你正在使用 Songbird 版本是 #{params['agent'][0]}"
 end
 
 get '/foo' do
-  # Matches non-songbird browsers
+  # 匹配非 songbird 浏览器
 end
 ```
 
-Other available conditions are `host_name` and `provides`:
+其它可以使用的条件有 `host_name` 和 `provides`：
 
 ```ruby
 get '/', :host_name => /^admin\./ do
-  "Admin Area, Access denied!"
+  "管理员区域，无权进入！"
 end
 
 get '/', :provides => 'html' do
@@ -298,9 +295,9 @@ get '/', :provides => ['rss', 'atom', 'xml'] do
   builder :feed
 end
 ```
-`provides` searches the request's Accept header.
+`provides` 会搜索请求的 Accept 首部字段。
 
-You can easily define your own conditions:
+也可以轻易地使用自定义条件：
 
 ```ruby
 set(:probability) { |value| condition { rand <= value } }
@@ -314,7 +311,7 @@ get '/win_a_car' do
 end
 ```
 
-For a condition that takes multiple values use a splat:
+对于一个需要提供多个值的条件，可以使用 splat：
 
 ```ruby
 set(:auth) do |*roles|   # <- notice the splat here
@@ -334,25 +331,20 @@ get "/only/admin/", :auth => :admin do
 end
 ```
 
-## Return Values
+## 返回值
 
-The return value of a route block determines at least the response body
-passed on to the HTTP client or at least the next middleware in the
-Rack stack. Most commonly, this is a string, as in the above examples.
-But other values are also accepted.
 
-You can return an object that would either be a valid Rack response, Rack
-body object or HTTP status code:
+路由代码块的返回值至少决定了返回给 HTTP 客户端的响应主体，或者至少决定了在 Rack 堆栈中的下一个中间件。大多数情况下，返回值是一个字符串，就像上面的例子中的一样。但是，其它类型的值也是可以接受的。
 
-* An Array with three elements: `[status (Integer), headers (Hash), response
-  body (responds to #each)]`
-* An Array with two elements: `[status (Integer), response body (responds to
-  #each)]`
-* An object that responds to `#each` and passes nothing but strings to
-  the given block
-* A Integer representing the status code
 
-That way we can, for instance, easily implement a streaming example:
+你可以返回任何对象，该对象要么是一个合理的 Rack 响应，要么是一个 Rack body 对象，要么是 HTTP 状态码：
+
+* 一个包含三个元素的数组: `[状态 (Integer), 响应首部 (Hash), 响应主体 (可以响应 #each 方法)]`
+* 一个包含两个元素的数组: `[状态 (Integer), 响应主体 (可以响应 #each 方法)]`
+* 一个响应 `#each` 方法，只传回字符串的对象
+* 一个代表状态码的数字
+
+例如，我们可以轻松地实现流式传输：
 
 ```ruby
 class Stream
@@ -364,8 +356,7 @@ end
 get('/') { Stream.new }
 ```
 
-You can also use the `stream` helper method ([described below](#streaming-responses)) to reduce
-boilerplate and embed the streaming logic in the route.
+也可以使用 `stream` 辅助方法（[见下文描述](#streaming-responses)）以减少样板代码并在路由中直接使用流式传输。
 
 ## Custom Route Matchers
 
