@@ -46,80 +46,80 @@ ruby myapp.rb
 - [Sinatra](#sinatra)
   - [目录](#目录)
   - [路由](#路由)
-  - [条件](#conditions)
-  - [返回值](#return-values)
-  - [自定义路由匹配器](#custom-route-matchers)
-  - [静态文件](#static-files)
-  - [视图 / 模板](#views--templates)
-    - [字面量模板](#literal-templates)
-    - [可用模板语言](#available-template-languages)
-      - [Haml 模板](#haml-templates)
-      - [Erb 模板](#erb-templates)
-      - [Builder 模板](#builder-templates)
-      - [Nokogiri 模板](#nokogiri-templates)
-      - [Liquid 模板](#liquid-templates)
-      - [Markdown 模板](#markdown-templates)
-      - [RDoc 模板](#rdoc-templates)
-      - [AsciiDoc 模板](#asciidoc-templates)
-      - [Markaby 模板](#markaby-templates)
-      - [RABL 模板](#rabl-templates)
-      - [Slim 模板](#slim-templates)
-      - [Yajl 模板](#yajl-templates)
-    - [模板中访问变量](#accessing-variables-in-templates)
-    - [带`yield`的模板和嵌套布局](#templates-with-yield-and-nested-layouts)
-    - [内联模板](#inline-templates)
-    - [具名模板](#named-templates)
-    - [关键文件名拓展](#associating-file-extensions)
-    - [添加你自定义的模板引擎](#adding-your-own-template-engine)
-    - [自定义模板查找逻辑](#using-custom-logic-for-template-lookup)
-  - [过滤器](#filters)
-  - [辅助方法](#helpers)
-    - [使用会话](#using-sessions)
-      - [会话安全加密](#session-secret-security)
-      - [会话配置](#session-config)
-      - [选择你自己的会话中间件](#choosing-your-own-session-middleware)
-    - [中断请求](#halting)
-    - [传递请求](#passing)
-    - [触发另一个路由](#triggering-another-route)
-    - [设置响应体、状态码和响应首部](#setting-body-status-code-and-headers)
-    - [流式数据响应](#streaming-responses)
-    - [日志](#logging)
-    - [媒体类型](#mime-types)
-    - [生成URL](#generating-urls)
-    - [浏览器重定向](#browser-redirect)
-    - [缓存控制](#cache-control)
-    - [发送文件](#sending-files)
-    - [访问请求对象](#accessing-the-request-object)
-    - [附件](#attachments)
-    - [处理日期和时间](#dealing-with-date-and-time)
-    - [查找模板文件](#looking-up-template-files)
-  - [配置](#configuration)
-    - [配置攻击防护](#configuring-attack-protection)
-    - [可选的设置](#available-settings)
-  - [环境](#environments)
-  - [错误处理](#error-handling)
-    - [未找到](#not-found)
-    - [错误](#error)
-  - [Rack 中间件](#rack-middleware)
-  - [测试](#testing)
-  - [Sinatra::Base - 中间件、库和模块化应用](#sinatrabase---middleware-libraries-and-modular-apps)
-    - [模块化风格 vs. 经典风格](#modular-vs-classic-style)
-    - [运行一个模块化应用](#serving-a-modular-application)
-    - [使用 config.ru 运行经典风格的应用](#using-a-classic-style-application-with-a-configru)
-    - [何时使用 config.ru？](#when-to-use-a-configru)
-    - [把 Sinatra 当作中间件使用](#using-sinatra-as-middleware)
-    - [创建动态应用](#dynamic-application-creation)
-  - [作用域和绑定](#scopes-and-binding)
-    - [应用/类作用域](#applicationclass-scope)
-    - [请求/实例作用域](#requestinstance-scope)
-    - [委托作用域(delegation scope)](#delegation-scope)
-  - [命令行](#command-line)
-    - [多线程](#multi-threading)
-  - [必要条件](#requirement)
-  - [紧跟前沿](#the-bleeding-edge)
-    - [通过 Bundler 使用 Sinatra](#with-bundler)
-  - [版本](#versioning)
-  - [更多资料](#further-reading)
+  - [条件](#条件)
+  - [返回值](#返回值)
+  - [自定义路由匹配器](#自定义路由匹配器)
+  - [静态文件](#静态文件)
+  - [视图 / 模板](#视图--模板)
+    - [字面量模板](#字面量模板)
+    - [可用模板语言](#可用模板语言)
+      - [Haml 模板](#haml-模板)
+      - [Erb 模板](#erb-模板)
+      - [Builder 模板](#builder-模板)
+      - [Nokogiri 模板](#nokogiri-模板)
+      - [Liquid 模板](#liquid-模板)
+      - [Markdown 模板](#markdown-模板)
+      - [RDoc 模板](#rdoc-模板)
+      - [AsciiDoc 模板](#asciidoc-模板)
+      - [Markaby 模板](#markaby-模板)
+      - [RABL 模板](#rabl-模板)
+      - [Slim 模板](#slim-模板)
+      - [Yajl 模板](#yajl-模板)
+    - [模板中访问变量](#模板中访问变量)
+    - [带`yield`的模板和嵌套布局](#带yield的模板和嵌套布局)
+    - [内联模板](#内联模板)
+    - [具名模板](#具名模板)
+    - [关联文件拓展名](#关联文件拓展名)
+    - [添加你自定义的模板引擎](#添加你自定义的模板引擎)
+    - [自定义模板查找逻辑](#自定义模板查找逻辑)
+  - [过滤器](#过滤器)
+  - [辅助方法](#辅助方法)
+    - [使用会话](#使用会话)
+      - [会话安全](#会话安全)
+      - [会话配置](#会话配置)
+      - [选择你自己的会话中间件](#选择你自己的会话中间件)
+    - [中断请求](#中断请求)
+    - [传递请求](#传递请求)
+    - [触发另一个路由](#触发另一个路由)
+    - [设置响应体、状态码和响应首部](#设置响应体状态码和响应首部)
+    - [流式数据响应](#流式数据响应)
+    - [日志](#日志)
+    - [媒体类型](#媒体类型)
+    - [生成URL](#生成url)
+    - [浏览器重定向](#浏览器重定向)
+    - [缓存控制](#缓存控制)
+    - [发送文件](#发送文件)
+    - [访问请求对象](#访问请求对象)
+    - [附件](#附件)
+    - [处理日期和时间](#处理日期和时间)
+    - [查找模板文件](#查找模板文件)
+  - [配置](#配置)
+    - [配置攻击防护](#配置攻击防护)
+    - [可用的设置](#可用的设置)
+  - [环境](#环境)
+  - [错误处理](#错误处理)
+    - [未找到](#未找到)
+    - [错误](#错误)
+  - [Rack 中间件](#rack-中间件)
+  - [测试](#测试)
+  - [Sinatra::Base - 中间件、库和模块化应用](#sinatrabase---中间件库和模块化应用)
+    - [模块化风格 vs. 经典风格](#模块化风格-vs-经典风格)
+    - [运行一个模块化应用](#运行一个模块化应用)
+    - [使用 config.ru 运行经典风格的应用](使用-configru-运行经典风格的应用)
+    - [何时使用 config.ru？](#何时使用-configru)
+    - [把 Sinatra 当作中间件使用](#把-sinatra-当作中间件使用)
+    - [创建动态应用](#创建动态应用)
+  - [作用域和绑定](#作用域和绑定)
+    - [应用/类作用域](#应用类作用域)
+    - [请求/实例作用域](#请求实例作用域)
+    - [委托作用域](#委托作用域)
+  - [命令行](#命令行)
+    - [多线程](#多线程)
+  - [必要条件](#必要条件)
+  - [紧跟前沿](#紧跟前沿)
+    - [通过 Bundler 使用 Sinatra](#通过-bundler-使用-sinatra)
+  - [版本](#版本)
+  - [更多资料](#更多资料)
 
 ## 路由
 
@@ -248,7 +248,7 @@ get '/posts' do
 end
 ```
 
-顺便一提，除非你禁用了路径遍历攻击防护（[见下文](#configuring-attack-protection))，请求路径可能在匹配路由前发生改变。
+顺便一提，除非你禁用了路径遍历攻击防护（[见下文](#配置攻击防护))，请求路径可能在匹配路由前发生改变。
 
 
 你也可以通过`:mustermann_opt`选项自定义 [Mustermann](https://github.com/sinatra/mustermann#readme) 来匹配路由。
@@ -261,7 +261,7 @@ end
 ```
 
 
-它看起来像一个[条件](#conditions)，但实际不是！这些选项将被合并到[下文提到的](#available-settings)全局的`mustermann_opts`选项。
+它看起来像一个[条件](#条件)，但实际不是！这些选项将被合并到[下文提到的](#可用的设置)全局的`mustermann_opts`选项。
 
 
 ## 条件
@@ -356,9 +356,9 @@ end
 get('/') { Stream.new }
 ```
 
-也可以使用 `stream` 辅助方法（[见下文描述](#streaming-responses)）以减少样板代码并在路由中直接使用流式传输。
+也可以使用 `stream` 辅助方法（[见下文描述](#流式数据响应)）以减少样板代码并在路由中直接使用流式传输。
 
-## Custom Route Matchers
+## 自定义路由匹配器
 
 As shown above, Sinatra ships with built-in support for using String
 patterns and regular expressions as route matches. However, it does not
@@ -398,7 +398,7 @@ get /.*/ do
 end
 ```
 
-## Static Files
+## 静态文件
 
 Static files are served from the `./public` directory. You can specify
 a different location by setting the `:public_folder` option:
@@ -411,10 +411,10 @@ Note that the public directory name is not included in the URL. A file
 `./public/css/style.css` is made available as
 `http://example.com/css/style.css`.
 
-Use the `:static_cache_control` setting (see [below](#cache-control)) to add
+Use the `:static_cache_control` setting (see [见下文描述](#浏览器重定向)) to add
 `Cache-Control` header info.
 
-## Views / Templates
+## 视图 / 模板
 
 Each template language is exposed via its own rendering method. These
 methods simply return a string:
@@ -537,7 +537,7 @@ use: `:'subdir/template'` or `'subdir/template'.to_sym`). You must use a
 symbol because otherwise rendering methods will render any strings
 passed to them directly.
 
-### Literal Templates
+### 字面量模板
 
 ```ruby
 get '/' do
@@ -555,7 +555,7 @@ get '/' do
 end
 ```
 
-### Available Template Languages
+### 可用模板语言
 
 Some languages have multiple implementations. To specify what implementation
 to use (and to be thread-safe), you should simply require it first:
@@ -565,7 +565,7 @@ require 'rdiscount'
 get('/') { markdown :index }
 ```
 
-#### Haml Templates
+#### Haml 模板
 
 <table>
   <tr>
@@ -582,7 +582,7 @@ get('/') { markdown :index }
   </tr>
 </table>
 
-#### Erb Templates
+#### Erb 模板
 
 <table>
   <tr>
@@ -602,7 +602,7 @@ get('/') { markdown :index }
   </tr>
 </table>
 
-#### Builder Templates
+#### Builder 模板
 
 <table>
   <tr>
@@ -621,9 +621,9 @@ get('/') { markdown :index }
   </tr>
 </table>
 
-It also takes a block for inline templates (see [example](#inline-templates)).
+It also takes a block for inline templates (see [例子](#内联模板)).
 
-#### Nokogiri Templates
+#### Nokogiri 模板
 
 <table>
   <tr>
@@ -640,10 +640,10 @@ It also takes a block for inline templates (see [example](#inline-templates)).
   </tr>
 </table>
 
-It also takes a block for inline templates (see [example](#inline-templates)).
+It also takes a block for inline templates (see [例子](#内联模板)).
 
 
-#### Liquid Templates
+#### Liquid 模板
 
 <table>
   <tr>
@@ -663,7 +663,7 @@ It also takes a block for inline templates (see [example](#inline-templates)).
 Since you cannot call Ruby methods (except for `yield`) from a Liquid
 template, you almost always want to pass locals to it.
 
-#### Markdown Templates
+#### Markdown 模板
 
 <table>
   <tr>
@@ -707,7 +707,7 @@ Since you cannot call Ruby from Markdown, you cannot use layouts written in
 Markdown. However, it is possible to use another rendering engine for the
 template than for the layout by passing the `:layout_engine` option.
 
-#### RDoc Templates
+#### RDoc 模板
 
 <table>
   <tr>
@@ -742,7 +742,7 @@ Since you cannot call Ruby from RDoc, you cannot use layouts written in
 RDoc. However, it is possible to use another rendering engine for the
 template than for the layout by passing the `:layout_engine` option.
 
-#### AsciiDoc Templates
+#### AsciiDoc 模板
 
 <table>
   <tr>
@@ -762,7 +762,7 @@ template than for the layout by passing the `:layout_engine` option.
 Since you cannot call Ruby methods directly from an AsciiDoc template, you
 almost always want to pass locals to it.
 
-#### Markaby Templates
+#### Markaby 模板
 
 <table>
   <tr>
@@ -779,9 +779,9 @@ almost always want to pass locals to it.
   </tr>
 </table>
 
-It also takes a block for inline templates (see [example](#inline-templates)).
+It also takes a block for inline templates (see [例子](#内联模板)).
 
-#### RABL Templates
+#### RABL 模板
 
 <table>
   <tr>
@@ -798,7 +798,7 @@ It also takes a block for inline templates (see [example](#inline-templates)).
   </tr>
 </table>
 
-#### Slim Templates
+#### Slim 模板
 
 <table>
   <tr>
@@ -815,7 +815,7 @@ It also takes a block for inline templates (see [example](#inline-templates)).
   </tr>
 </table>
 
-#### Yajl Templates
+#### Yajl 模板
 
 <table>
   <tr>
@@ -856,7 +856,7 @@ var resource = {"foo":"bar","baz":"qux"};
 present(resource);
 ```
 
-### Accessing Variables in Templates
+### 模板中访问变量
 
 Templates are evaluated within the same context as route handlers. Instance
 variables set in route handlers are directly accessible by templates:
@@ -880,7 +880,7 @@ end
 This is typically used when rendering templates as partials from within
 other templates.
 
-### Templates with `yield` and nested layouts
+### 带`yield`的模板和嵌套布局
 
 A layout is usually just a template that calls `yield`.
 Such a template can be used either through the `:template` option as
@@ -916,7 +916,7 @@ end
 Currently, the following rendering methods accept a block: `erb`, `haml`,
 `liquid`, `slim `. Also, the general `render` method accepts a block.
 
-### Inline Templates
+### 内联模板
 
 Templates may be defined at the end of the source file:
 
@@ -941,7 +941,7 @@ NOTE: Inline templates defined in the source file that requires Sinatra are
 automatically loaded. Call `enable :inline_templates` explicitly if you
 have inline templates in other source files.
 
-### Named Templates
+### 具名模板
 
 Templates may also be defined using the top-level `template` method:
 
@@ -970,7 +970,7 @@ get '/' do
 end
 ```
 
-### Associating File Extensions
+### 关联文件拓展名
 
 To associate a file extension with a template engine, use
 `Tilt.register`. For instance, if you like to use the file extension
@@ -980,7 +980,7 @@ To associate a file extension with a template engine, use
 Tilt.register :tt, Tilt[:haml]
 ```
 
-### Adding Your Own Template Engine
+### 添加你自定义的模板引擎
 
 First, register your engine with Tilt, then create a rendering method:
 
@@ -999,7 +999,7 @@ end
 Renders `./views/index.myat`. Learn more about
 [Tilt](https://github.com/rtomayko/tilt#readme).
 
-### Using Custom Logic for Template Lookup
+### 自定义模板查找逻辑
 
 To implement your own template lookup mechanism you can write your
 own `#find_template` method:
@@ -1016,7 +1016,7 @@ def find_template(views, name, engine, &block)
 end
 ```
 
-## Filters
+## 过滤器
 
 Before filters are evaluated before each request within the same context
 as the routes will be and can modify the request and response. Instance
@@ -1074,7 +1074,7 @@ after '/blog/*', :host_name => 'example.com' do
 end
 ```
 
-## Helpers
+## 辅助方法
 
 Use the top-level `helpers` method to define helper methods for use in
 route handlers and templates:
@@ -1107,7 +1107,7 @@ helpers FooUtils, BarUtils
 
 The effect is the same as including the modules in the application class.
 
-### Using Sessions
+### 使用会话
 
 A session is used to keep state during requests. If activated, you have one
 session hash per user session:
@@ -1124,7 +1124,7 @@ get '/:value' do
 end
 ```
 
-#### Session Secret Security
+#### 会话安全
 
 To improve security, the session data in the cookie is signed with a session
 secret using `HMAC-SHA1`. This session secret should optimally be a
@@ -1197,7 +1197,7 @@ require 'securerandom'
 set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
 ```
 
-#### Session Config
+#### 会话配置
 
 If you want to configure it further, you may also store a hash with options
 in the `sessions` setting:
@@ -1213,7 +1213,7 @@ domain with a *.* like this instead:
 set :sessions, :domain => '.foo.com'
 ```
 
-#### Choosing Your Own Session Middleware
+#### 选择你自己的会话中间件
 
 Note that `enable :sessions` actually stores all data in a cookie. This
 might not always be what you want (storing lots of data will increase your
@@ -1246,9 +1246,9 @@ use Rack::Protection::RemoteToken
 use Rack::Protection::SessionHijacking
 ```
 
-See '[Configuring attack protection](#configuring-attack-protection)' for more information.
+See '[配置攻击防护](#配置攻击防护)' for more information.
 
-### Halting
+### 中断请求
 
 To immediately stop a request within a filter or route use:
 
@@ -1286,7 +1286,7 @@ It is of course possible to combine a template with `halt`:
 halt erb(:error)
 ```
 
-### Passing
+### 传递请求
 
 A route can punt processing to the next matching route using `pass`:
 
@@ -1304,7 +1304,7 @@ end
 The route block is immediately exited and control continues with the next
 matching route. If no matching route is found, a 404 is returned.
 
-### Triggering Another Route
+### 触发另一个路由
 
 Sometimes `pass` is not what you want, instead, you would like to get the
 result of calling another route. Simply use `call` to achieve this:
@@ -1329,7 +1329,7 @@ than a duplicate, use `call!` instead of `call`.
 
 Check out the Rack specification if you want to learn more about `call`.
 
-### Setting Body, Status Code, and Headers
+### 设置响应体、状态码和响应首部
 
 It is possible and recommended to set the status code and response body with
 the return value of the route block. However, in some scenarios, you might
@@ -1348,7 +1348,7 @@ end
 ```
 
 It is also possible to pass a block to `body`, which will be executed by the
-Rack handler (this can be used to implement streaming, [see "Return Values"](#return-values)).
+Rack handler (this can be used to implement streaming, [see "Return Values"](#返回值)).
 
 Similar to the body, you can also set the status code and headers:
 
@@ -1365,7 +1365,7 @@ end
 Like `body`, `headers` and `status` with no arguments can be used to access
 their current values.
 
-### Streaming Responses
+### 流式数据响应
 
 Sometimes you want to start sending out data while still generating parts of
 the response body. In extreme examples, you want to keep sending data until
@@ -1450,7 +1450,7 @@ It's also possible for the client to close the connection when trying to
 write to the socket. Because of this, it's recommended to check
 `out.closed?` before trying to write.
 
-### Logging
+### 日志
 
 In the request scope, the `logger` helper exposes a `Logger` instance:
 
@@ -1481,7 +1481,7 @@ To avoid any logging middleware to be set up, set the `logging` option to
 common use case is when you want to set your own logger. Sinatra will use
 whatever it will find in `env['rack.logger']`.
 
-### Mime Types
+### 媒体类型
 
 When using `send_file` or static files you may have mime types Sinatra
 doesn't understand. Use `mime_type` to register them by file extension:
@@ -1501,7 +1501,7 @@ get '/' do
 end
 ```
 
-### Generating URLs
+### 生成URL
 
 For generating URLs you should use the `url` helper method, for instance, in
 Haml:
@@ -1512,9 +1512,9 @@ Haml:
 
 It takes reverse proxies and Rack routers into account - if present.
 
-This method is also aliased to `to` (see [below](#browser-redirect) for an example).
+This method is also aliased to `to` (see [见下文描述](#浏览器重定向) for an example).
 
-### Browser Redirect
+### 浏览器重定向
 
 You can trigger a browser redirect with the `redirect` helper method:
 
@@ -1566,7 +1566,7 @@ get '/bar' do
 end
 ```
 
-### Cache Control
+### 缓存控制
 
 Setting your headers correctly is the foundation for proper HTTP caching.
 
@@ -1635,7 +1635,7 @@ get '/' do
 end
 ```
 
-Use the `:static_cache_control` setting (see [below](#cache-control)) to add
+Use the `:static_cache_control` setting (see [见下文描述](#浏览器重定向)) to add
 `Cache-Control` header info to static files.
 
 According to RFC 2616, your application should behave differently if the
@@ -1660,7 +1660,7 @@ If you still want to use a weak ETag, pass in a `:kind` option:
 etag '', :new_resource => true, :kind => :weak
 ```
 
-### Sending Files
+### 发送文件
 
 To return the contents of a file as the response, you can use the `send_file`
 helper method:
@@ -1708,7 +1708,7 @@ The options are:
     </dd>
 </dl>
 
-### Accessing the Request Object
+### 访问请求对象
 
 The incoming request object can be accessed from request level (filter,
 routes, error handlers) through the `request` method:
@@ -1766,7 +1766,7 @@ post "/api" do
 end
 ```
 
-### Attachments
+### 附件
 
 You can use the `attachment` helper to tell the browser the response should
 be stored on disk rather than displayed in the browser:
@@ -1787,7 +1787,7 @@ get '/' do
 end
 ```
 
-### Dealing with Date and Time
+### 处理日期和时间
 
 Sinatra offers a `time_for` helper method that generates a Time object from
 the given value. It is also able to convert `DateTime`, `Date` and similar
@@ -1822,7 +1822,7 @@ get '/' do
 end
 ```
 
-### Looking Up Template Files
+### 查找模板文件
 
 The `find_template` helper is used to find template files for rendering:
 
@@ -1869,7 +1869,7 @@ found. Also, template locations (and content) will be cached if you are not
 running in development mode. You should keep that in mind if you write a
 really crazy method.
 
-## Configuration
+## 配置
 
 Run once, at startup, in any environment:
 
@@ -1923,7 +1923,7 @@ get '/' do
 end
 ```
 
-### Configuring attack protection
+### 配置攻击防护
 
 Sinatra is using
 [Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme) to
@@ -1947,7 +1947,7 @@ set :protection, :except => [:path_traversal, :session_hijacking]
 ```
 
 By default, Sinatra will only set up session based protection if `:sessions`
-have been enabled. See '[Using Sessions](#using-sessions)'. Sometimes you may want to set up
+have been enabled. See '[使用会话](#使用会话)'. Sometimes you may want to set up
 sessions "outside" of the Sinatra app, such as in the config.ru or with a
 separate `Rack::Builder` instance. In that case, you can still set up session
 based protection by passing the `:session` option:
@@ -1956,7 +1956,7 @@ based protection by passing the `:session` option:
 set :protection, :session => true
 ```
 
-### Available Settings
+### 可用的设置
 
 <dl>
   <dt>absolute_redirects</dt>
@@ -2177,7 +2177,7 @@ set :protection, :session => true
     </dd>
 </dl>
 
-## Environments
+## 环境
 
 There are three predefined `environments`: `"development"`,
 `"production"` and `"test"`. Environments can be set through the
@@ -2206,13 +2206,13 @@ get '/' do
 end
 ```
 
-## Error Handling
+## 错误处理
 
 Error handlers run within the same context as routes and before filters,
 which means you get all the goodies it has to offer, like `haml`, `erb`,
 `halt`, etc.
 
-### Not Found
+### 未找到
 
 When a `Sinatra::NotFound` exception is raised, or the response's status
 code is 404, the `not_found` handler is invoked:
@@ -2223,7 +2223,7 @@ not_found do
 end
 ```
 
-### Error
+### 错误
 
 The `error` handler is invoked any time an exception is raised from a route
 block or a filter. But note in development it will only run if you set the
@@ -2287,7 +2287,7 @@ Sinatra installs special `not_found` and `error` handlers when
 running under the development environment to display nice stack traces
 and additional debugging information in your browser.
 
-## Rack Middleware
+## Rack 中间件
 
 Sinatra rides on [Rack](https://rack.github.io/), a minimal standard
 interface for Ruby web frameworks. One of Rack's most interesting
@@ -2332,7 +2332,7 @@ You can find useful middleware in
 [rack-contrib](https://github.com/rack/rack-contrib#readme),
 or in the [Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
 
-## Testing
+## 测试
 
 Sinatra tests can be written using any Rack-based testing library or
 framework.
@@ -2371,7 +2371,7 @@ end
 Note: If you are using Sinatra in the modular style, replace
 `Sinatra::Application` above with the class name of your app.
 
-## Sinatra::Base - Middleware, Libraries, and Modular Apps
+## Sinatra::Base - 中间件、库和模块化应用
 
 Defining your app at the top-level works well for micro-apps but has
 considerable drawbacks when building reusable components such as Rack
@@ -2421,7 +2421,7 @@ class MyApp < Sinatra::Application
 end
 ```
 
-### Modular vs. Classic Style
+### 模块化风格 vs. 经典风格
 
 Contrary to common belief, there is nothing wrong with the classic
 style. If it suits your application, you do not have to switch to a
@@ -2486,7 +2486,7 @@ slightly different default settings:
   </tr>
 </table>
 
-### Serving a Modular Application
+### 运行一个模块化应用
 
 There are two common options for starting a modular app, actively
 starting with `run!`:
@@ -2523,7 +2523,7 @@ Run:
 rackup -p 4567
 ```
 
-### Using a Classic Style Application with a config.ru
+### 使用 config.ru 运行经典风格的应用
 
 Write your app file:
 
@@ -2543,7 +2543,7 @@ require './app'
 run Sinatra::Application
 ```
 
-### When to use a config.ru?
+### 何时使用 config.ru？
 
 A `config.ru` file is recommended if:
 
@@ -2556,7 +2556,7 @@ A `config.ru` file is recommended if:
 switched to the modular style, and you don't have to use the modular
 style for running with a `config.ru`.**
 
-### Using Sinatra as Middleware
+### 把 Sinatra 当作中间件使用
 
 Not only is Sinatra able to use other Rack middleware, any Sinatra
 application can, in turn, be added in front of any Rack endpoint as
@@ -2594,7 +2594,7 @@ class MyApp < Sinatra::Base
 end
 ```
 
-### Dynamic Application Creation
+### 创建动态应用
 
 Sometimes you want to create new applications at runtime without having to
 assign them to a constant. You can do this with `Sinatra.new`:
@@ -2640,12 +2640,12 @@ end
 run RailsProject::Application
 ```
 
-## Scopes and Binding
+## 作用域和绑定
 
 The scope you are currently in determines what methods and variables are
 available.
 
-### Application/Class Scope
+### 应用/类作用域
 
 Every Sinatra application corresponds to a subclass of `Sinatra::Base`.
 If you are using the top-level DSL (`require 'sinatra'`), then this
@@ -2681,7 +2681,7 @@ You can reach the scope object (the class) like this:
 * Via the object passed to configure blocks (`configure { |c| ... }`)
 * `settings` from within the request scope
 
-### Request/Instance Scope
+### 请求/实例作用域
 
 For every incoming request, a new instance of your application class is
 created, and all handler blocks run in that scope. From within this scope you
@@ -2713,7 +2713,7 @@ You have the request scope binding inside:
 * helper methods
 * templates/views
 
-### Delegation Scope
+### 委托作用域
 
 The delegation scope just forwards methods to the class scope. However, it
 does not behave exactly like the class scope, as you do not have the class
@@ -2731,7 +2731,7 @@ Have a look at the code for yourself: here's the
 [Sinatra::Delegator mixin](https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/base.rb#L1609-1633)
 being [extending the main object](https://github.com/sinatra/sinatra/blob/ca06364/lib/sinatra/main.rb#L28-30).
 
-## Command Line
+## 命令行
 
 Sinatra applications can be run directly:
 
@@ -2751,7 +2751,7 @@ Options are:
 -x # turn on the mutex lock (default is off)
 ```
 
-### Multi-threading
+### 多线程
 
 _Paraphrasing from
 [this StackOverflow answer](https://stackoverflow.com/a/6282999/5245129)
@@ -2794,7 +2794,7 @@ To start the server, the command would be:
 rainbows -c rainbows.conf
 ```
 
-## Requirement
+## 必要条件
 
 The following Ruby versions are officially supported:
 <dl>
@@ -2828,7 +2828,7 @@ implementation.
 
 Running Sinatra on a not officially supported Ruby flavor means that if things only break there we assume it's not our issue but theirs.
 
-## The Bleeding Edge
+## 紧跟前沿
 
 If you would like to use Sinatra's latest bleeding-edge code, feel free
 to run your application against the master branch, it should be rather
@@ -2842,7 +2842,7 @@ gem install sinatra --pre
 
 to get some of the latest features.
 
-### With Bundler
+### 通过 Bundler 使用 Sinatra
 
 If you want to run your application with the latest Sinatra, using
 [Bundler](https://bundler.io) is the recommended way.
@@ -2873,12 +2873,12 @@ Now you can run your app like this:
 bundle exec ruby myapp.rb
 ```
 
-## Versioning
+## 版本
 
 Sinatra follows [Semantic Versioning](https://semver.org/), both SemVer and
 SemVerTag.
 
-## Further Reading
+## 更多资料
 
 * [Project Website](http://www.sinatrarb.com/) - Additional documentation,
   news, and links to other resources.
