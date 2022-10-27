@@ -360,9 +360,7 @@ get('/') { Stream.new }
 
 ## 自定义路由匹配器
 
-As shown above, Sinatra ships with built-in support for using String
-patterns and regular expressions as route matches. However, it does not
-stop there. You can easily define your own matchers:
+如上所示，Sinatra路由中默认内置了字符串匹配和正则表达式匹配。然而，它并没有终止于此。你可以轻松定义你自己的匹配器：
 
 ```ruby
 class AllButPattern
@@ -388,8 +386,7 @@ get all_but("/index") do
 end
 ```
 
-Note that the above example might be over-engineered, as it can also be
-expressed as:
+注意，上面的例子可能是过度设计的，因为它也可以被简单的表示为：
 
 ```ruby
 get /.*/ do
@@ -400,24 +397,20 @@ end
 
 ## 静态文件
 
-Static files are served from the `./public` directory. You can specify
-a different location by setting the `:public_folder` option:
+静态文件在 `./public` 目录提供服务。你可以通过设置`:public_folder` 选项指定一个不同的位置：
 
 ```ruby
 set :public_folder, __dir__ + '/static'
 ```
 
-Note that the public directory name is not included in the URL. A file
-`./public/css/style.css` is made available as
-`http://example.com/css/style.css`.
+注意： `public` 目录名并没有包含在 URL 中。文件 `./public/css/style.css` 可以通过
+`http://example.com/css/style.css` 访问。
 
-Use the `:static_cache_control` setting (see [见下文描述](#浏览器重定向)) to add
-`Cache-Control` header info.
+可以使用 `:static_cache_control` 设置 [见下文描述](#浏览器重定向) 添加 `Cache-Control` 首部信息。
 
 ## 视图 / 模板
 
-Each template language is exposed via its own rendering method. These
-methods simply return a string:
+每一个模板语言都会通过暴露一个渲染方法来给到外部调用。这些渲染方法只是简单地返回字符串：
 
 ```ruby
 get '/' do
@@ -425,10 +418,9 @@ get '/' do
 end
 ```
 
-This renders `views/index.erb`.
+这段代码会渲染 `views/index.erb` 文件.
 
-Instead of a template name, you can also just pass in the template content
-directly:
+除了模板文件名，也可以直接传入模板内容：
 
 ```ruby
 get '/' do
@@ -437,7 +429,7 @@ get '/' do
 end
 ```
 
-Templates take a second argument, the options hash:
+渲染方法接受第二个参数，即hash选项：
 
 ```ruby
 get '/' do
@@ -445,11 +437,10 @@ get '/' do
 end
 ```
 
-This will render `views/index.erb` embedded in the
-`views/post.erb` (default is `views/layout.erb`, if it exists).
+这段代码会将 `views/index.erb` 嵌入在 `views/post.erb`
+布局中并一起渲染（`views/layout.erb` 是默认的布局，如果它存在的话）。
 
-Any options not understood by Sinatra will be passed on to the template
-engine:
+任何 Sinatra 不能理解的选项都会传递给模板引擎。
 
 ```ruby
 get '/' do
@@ -457,7 +448,7 @@ get '/' do
 end
 ```
 
-You can also set options per template language in general:
+你可以在通用选项（set）中，为每种模板语言自定义它们的设置：
 
 ```ruby
 set :haml, :format => :html5
@@ -467,75 +458,70 @@ get '/' do
 end
 ```
 
-Options passed to the render method override options set via `set`.
+在渲染方法中传入的选项会覆盖通过 `set` 设置的通用选项。
 
-Available Options:
+可用的选项：
 
 <dl>
   <dt>locals</dt>
   <dd>
-    List of locals passed to the document. Handy with partials.
-    Example: <tt>erb "<%= foo %>", :locals => {:foo => "bar"}</tt>
+    把 locals 对象传给模板做参数，在模板中可以直接使用。
+    例如: <tt>erb "<%= foo %>", :locals => {:foo => "bar"}</tt>
   </dd>
 
   <dt>default_encoding</dt>
   <dd>
-    String encoding to use if uncertain. Defaults to
+    如果不确定正在使用的字符串编码。默认值为：
     <tt>settings.default_encoding</tt>.
   </dd>
 
   <dt>views</dt>
   <dd>
-    Views folder to load templates from. Defaults to <tt>settings.views</tt>.
+    存放模板文件的目录。默认为： <tt>settings.views</tt>.
   </dd>
 
   <dt>layout</dt>
   <dd>
-    Whether to use a layout (<tt>true</tt> or <tt>false</tt>). If it's a
-    Symbol, specifies what template to use. Example:
+    是否使用布局，指定 `:layout` 值为： (<tt>true</tt> 或 <tt>false</tt>)。如果它是一个符号类型，则是具体指定了一个模板（注：见本节结尾）。 例如:
     <tt>erb :index, :layout => !request.xhr?</tt>
   </dd>
 
   <dt>content_type</dt>
   <dd>
-    Content-Type the template produces. Default depends on template language.
+    模板提供 Content-Type 配置。默认值取决于模板语言。
   </dd>
 
   <dt>scope</dt>
   <dd>
-    Scope to render template under. Defaults to the application
-    instance. If you change this, instance variables and helper methods
-    will not be available.
+    渲染模板时的上下文实例，默认是应用类的实例对象。如果更改此项，实例变量和辅助方法将不可用。
   </dd>
 
   <dt>layout_engine</dt>
   <dd>
-    Template engine to use for rendering the layout. Useful for
-    languages that do not support layouts otherwise. Defaults to the
-    engine used for the template. Example: <tt>set :rdoc, :layout_engine
+    `layout_engine`指定渲染布局所使用的模板引擎。适用于那些不支持布局的模板语言。默认值为模板所使用的引擎。例如：
+     <tt>set :rdoc, :layout_engine
     => :erb</tt>
   </dd>
 
   <dt>layout_options</dt>
   <dd>
-    Special options only used for rendering the layout. Example:
+    `layout_options` 是渲染布局的特殊选项。例如：
     <tt>set :rdoc, :layout_options => { :views => 'views/layouts' }</tt>
   </dd>
 </dl>
 
-Templates are assumed to be located directly under the `./views`
-directory. To use a different views directory:
+
+Sinatra 假定模板文件直接位于 `./views` 目录。要使用不同的视图目录：
 
 ```ruby
 set :views, settings.root + '/templates'
 ```
 
 
-One important thing to remember is that you always have to reference
-templates with symbols, even if they're in a subdirectory (in this case,
-use: `:'subdir/template'` or `'subdir/template'.to_sym`). You must use a
-symbol because otherwise rendering methods will render any strings
-passed to them directly.
+需要牢记的一点是，你必须通过符号引用模板， 即使它们存放在子目录下
+（在这种情况下，使用 `:'subdir/template'` 或 `'subdir/template'.to_sym`）。
+如果你不使用符号，渲染方法会直接渲染你传入的任何字符串。
+
 
 ### 字面量模板
 
