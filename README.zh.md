@@ -531,9 +531,7 @@ get '/' do
 end
 ```
 
-Renders the template string. You can optionally specify `:path` and
-`:line` for a clearer backtrace if there is a filesystem path or line
-associated with that string:
+渲染模板字符串。如果字符串在具体某个文件或者文件中的某行，你也可以指定`:path`和`:line`来清晰地引用它们。
 
 ```ruby
 get '/' do
@@ -543,8 +541,7 @@ end
 
 ### 可用模板语言
 
-Some languages have multiple implementations. To specify what implementation
-to use (and to be thread-safe), you should simply require it first:
+某些模板语言会有多种实现。为了确定使用哪种实现（以及保证线程安全），你应该首先引入该实现：
 
 ```ruby
 require 'rdiscount'
@@ -555,15 +552,15 @@ get('/') { markdown :index }
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>依赖</td>
     <td><a href="http://haml.info/" title="haml">haml</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>文件拓展名</td>
     <td><tt>.haml</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>例子</td>
     <td><tt>haml :index, :format => :html5</tt></td>
   </tr>
 </table>
@@ -572,18 +569,18 @@ get('/') { markdown :index }
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>依赖</td>
     <td>
       <a href="https://github.com/jeremyevans/erubi" title="erubi">erubi</a>
       or erb (included in Ruby)
     </td>
   </tr>
   <tr>
-    <td>File Extensions</td>
+    <td>文件拓展名</td>
     <td><tt>.erb</tt>, <tt>.rhtml</tt> or <tt>.erubi</tt> (Erubi only)</td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>例子</td>
     <td><tt>erb :index</tt></td>
   </tr>
 </table>
@@ -592,70 +589,69 @@ get('/') { markdown :index }
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>依赖</td>
     <td>
       <a href="https://github.com/jimweirich/builder" title="builder">builder</a>
     </td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>文件拓展名</td>
     <td><tt>.builder</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>例子</td>
     <td><tt>builder { |xml| xml.em "hi" }</tt></td>
   </tr>
 </table>
 
-It also takes a block for inline templates (see [例子](#内联模板)).
+渲染方法也接受一个代码块，用于内联模板（见[例子](#内联模板)）。
 
 #### Nokogiri 模板
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>依赖</td>
     <td><a href="http://www.nokogiri.org/" title="nokogiri">nokogiri</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>文件拓展名</td>
     <td><tt>.nokogiri</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>例子</td>
     <td><tt>nokogiri { |xml| xml.em "hi" }</tt></td>
   </tr>
 </table>
 
-It also takes a block for inline templates (see [例子](#内联模板)).
+渲染方法也接受一个代码块，用于内联模板（见[例子](#内联模板)）。
 
 
 #### Liquid 模板
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>依赖</td>
     <td><a href="https://shopify.github.io/liquid/" title="liquid">liquid</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>文件拓展名</td>
     <td><tt>.liquid</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>例子</td>
     <td><tt>liquid :index, :locals => { :key => 'value' }</tt></td>
   </tr>
 </table>
 
-Since you cannot call Ruby methods (except for `yield`) from a Liquid
-template, you almost always want to pass locals to it.
+因为不能在 Liquid 模板中调用 Ruby 方法（除了 `yield`），你几乎总是需要传递 locals 对象给它。
 
 #### Markdown 模板
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>依赖</td>
     <td>
-      Anyone of:
+      任选其一:
         <a href="https://github.com/davidfstr/rdiscount" title="RDiscount">RDiscount</a>,
         <a href="https://github.com/vmg/redcarpet" title="RedCarpet">RedCarpet</a>,
         <a href="https://kramdown.gettalong.org/" title="kramdown">kramdown</a>,
@@ -664,122 +660,121 @@ template, you almost always want to pass locals to it.
     </td>
   </tr>
   <tr>
-    <td>File Extensions</td>
+    <td>文件拓展名</td>
     <td><tt>.markdown</tt>, <tt>.mkd</tt> and <tt>.md</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>例子</td>
     <td><tt>markdown :index, :layout_engine => :erb</tt></td>
   </tr>
 </table>
 
-It is not possible to call methods from Markdown, nor to pass locals to it.
-You therefore will usually use it in combination with another rendering
-engine:
+因为在 Markdown 中无法调用 Ruby 方法或者传递 locals 对象。因此你总是需要结合其他渲染引擎使用它：
 
 ```ruby
 erb :overview, :locals => { :text => markdown(:introduction) }
 ```
 
-Note that you may also call the `markdown` method from within other
-templates:
+请注意，你也可以在其他模板中调用`markdown`方法。
 
 ```ruby
 %h1 Hello From Haml!
 %p= markdown(:greetings)
 ```
 
-Since you cannot call Ruby from Markdown, you cannot use layouts written in
-Markdown. However, it is possible to use another rendering engine for the
-template than for the layout by passing the `:layout_engine` option.
+因为不能在 Markdown 中使用 Ruby 语言，你不能使用 Markdown 书写的布局。
+不过，使用其它渲染引擎作为模板的布局是可能的，这需要通过传入 `:layout_engine` 选项。
+
 
 #### RDoc 模板
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>依赖</td>
     <td><a href="http://rdoc.sourceforge.net/" title="RDoc">RDoc</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>文件拓展名</td>
     <td><tt>.rdoc</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>例子</td>
     <td><tt>rdoc :README, :layout_engine => :erb</tt></td>
   </tr>
 </table>
 
-It is not possible to call methods from RDoc, nor to pass locals to it. You
-therefore will usually use it in combination with another rendering engine:
+
+因为在 RDoc 中无法调用 Ruby 方法或者传递 locals 对象。因此你总是需要结合其他渲染引擎使用它：
+
 
 ```ruby
 erb :overview, :locals => { :text => rdoc(:introduction) }
 ```
 
-Note that you may also call the `rdoc` method from within other templates:
+请注意，你也可以在其他模板中调用`rdoc`方法。
 
 ```ruby
 %h1 Hello From Haml!
 %p= rdoc(:greetings)
 ```
 
-Since you cannot call Ruby from RDoc, you cannot use layouts written in
-RDoc. However, it is possible to use another rendering engine for the
-template than for the layout by passing the `:layout_engine` option.
+
+因为不能在 RDoc 中使用 Ruby 语言，你不能使用 RDoc 书写的布局。
+不过，使用其它渲染引擎作为模板的布局是可能的，这需要通过传入 `:layout_engine` 选项。
+
 
 #### AsciiDoc 模板
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>依赖</td>
     <td><a href="http://asciidoctor.org/" title="Asciidoctor">Asciidoctor</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>文件拓展名</td>
     <td><tt>.asciidoc</tt>, <tt>.adoc</tt> and <tt>.ad</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>例子</td>
     <td><tt>asciidoc :README, :layout_engine => :erb</tt></td>
   </tr>
 </table>
 
-Since you cannot call Ruby methods directly from an AsciiDoc template, you
-almost always want to pass locals to it.
+
+因为不能在 AsciiDoc 模板中调用 Ruby 方法，你几乎总是需要传递 locals 对象给它。
 
 #### Markaby 模板
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>依赖</td>
     <td><a href="https://markaby.github.io/" title="Markaby">Markaby</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>文件拓展名</td>
     <td><tt>.mab</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>例子</td>
     <td><tt>markaby { h1 "Welcome!" }</tt></td>
   </tr>
 </table>
 
-It also takes a block for inline templates (see [例子](#内联模板)).
+渲染方法也接受一个代码块，用于内联模板（见[例子](#内联模板)）。
 
 #### RABL 模板
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>依赖</td>
     <td><a href="https://github.com/nesquena/rabl" title="Rabl">Rabl</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>文件拓展名</td>
     <td><tt>.rabl</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>例子</td>
     <td><tt>rabl :index</tt></td>
   </tr>
 </table>
@@ -788,15 +783,15 @@ It also takes a block for inline templates (see [例子](#内联模板)).
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>依赖</td>
     <td><a href="http://slim-lang.com/" title="Slim Lang">Slim Lang</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>文件拓展名</td>
     <td><tt>.slim</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>例子</td>
     <td><tt>slim :index</tt></td>
   </tr>
 </table>
@@ -805,15 +800,15 @@ It also takes a block for inline templates (see [例子](#内联模板)).
 
 <table>
   <tr>
-    <td>Dependency</td>
+    <td>依赖</td>
     <td><a href="https://github.com/brianmario/yajl-ruby" title="yajl-ruby">yajl-ruby</a></td>
   </tr>
   <tr>
-    <td>File Extension</td>
+    <td>文件拓展名</td>
     <td><tt>.yajl</tt></td>
   </tr>
   <tr>
-    <td>Example</td>
+    <td>例子</td>
     <td>
       <tt>
         yajl :index,
@@ -826,16 +821,15 @@ It also takes a block for inline templates (see [例子](#内联模板)).
 </table>
 
 
-The template source is evaluated as a Ruby string, and the
-resulting json variable is converted using `#to_json`:
+模板源会被当成 Ruby 字符串求值，返回的值通过 `#to_json` 方法返回。
 
 ```ruby
 json = { :foo => 'bar' }
 json[:baz] = key
 ```
 
-The `:callback` and `:variable` options can be used to decorate the rendered
-object:
+`:callback`和`:variable`选项可以用来装饰被渲染的对象：
+
 
 ```javascript
 var resource = {"foo":"bar","baz":"qux"};
