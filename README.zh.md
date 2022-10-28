@@ -998,9 +998,8 @@ end
 
 ## 过滤器
 
-Before filters are evaluated before each request within the same context
-as the routes will be and can modify the request and response. Instance
-variables set in filters are accessible by routes and templates:
+`before` 过滤器在每个请求之前调用，调用的上下文与请求的上下文相同，并且可以修改请求和响应。
+在过滤器中设置的变量可以被路由和模板访问：
 
 ```ruby
 before do
@@ -1014,10 +1013,10 @@ get '/foo/*' do
 end
 ```
 
-After filters are evaluated after each request within the same context
-as the routes will be and can also modify the request and response.
-Instance variables set in before filters and routes are accessible by
-after filters:
+
+`after` 过滤器在每个请求之后调用，调用上下文与请求的上下文相同，并且也会修改请求和响应。
+在 `before` 过滤器和路由中设置的实例变量可以被 `after` 过滤器访问：
+
 
 ```ruby
 after do
@@ -1025,12 +1024,10 @@ after do
 end
 ```
 
-Note: Unless you use the `body` method rather than just returning a
-String from the routes, the body will not yet be available in the after
-filter, since it is generated later on.
+注意：除非你显式使用 `body` 方法，而不是在路由中直接返回字符串，
+响应体在 `after` 过滤器是不可访问的， 因为它在那之后才会生成。
 
-Filters optionally take a pattern, causing them to be evaluated only if the
-request path matches that pattern:
+过滤器也可以带上可选的匹配模式， 只有路径匹配模式时才会执行：
 
 ```ruby
 before '/protected/*' do
@@ -1042,7 +1039,7 @@ after '/create/:slug' do |slug|
 end
 ```
 
-Like routes, filters also take conditions:
+和路由一样，过滤器也可以带有条件：
 
 ```ruby
 before :agent => /Songbird/ do
@@ -1056,8 +1053,7 @@ end
 
 ## 辅助方法
 
-Use the top-level `helpers` method to define helper methods for use in
-route handlers and templates:
+使用顶层的 `helpers` 方法来定义辅助方法， 以便在路由处理器和模板中使用：
 
 ```ruby
 helpers do
@@ -1071,7 +1067,7 @@ get '/:name' do
 end
 ```
 
-Alternatively, helper methods can be separately defined in a module:
+也可以在多个分散的模块中定义辅助方法：
 
 ```ruby
 module FooUtils
@@ -1085,7 +1081,7 @@ end
 helpers FooUtils, BarUtils
 ```
 
-The effect is the same as including the modules in the application class.
+以上代码块与在应用类中 include 模块等效。
 
 ### 使用会话
 
