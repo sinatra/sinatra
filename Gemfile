@@ -40,7 +40,7 @@ gem 'liquid'
 gem 'markaby'
 gem 'nokogiri', '> 1.5.0'
 gem 'pandoc-ruby', '~> 2.0.2'
-gem 'puma'
+gem 'puma', '~> 5'
 gem 'rabl'
 gem 'rainbows', platforms: [:mri] # uses #fork
 gem 'rdiscount', platforms: [:ruby]
