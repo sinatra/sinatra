@@ -8,21 +8,25 @@ on:
 
 jobs:
   test:
-    name: Ruby ${{ matrix.ruby }} (Rack ${{ matrix.rack }})
+    name: ${{ matrix.ruby }} (Rack ${{ matrix.rack }}, Puma ${{ matrix.puma }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
+        puma:
+          - '~> 5' # Due to https://github.com/puma/puma/issues/3000
         rack:
           - stable
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
         ruby: [2.6, 2.7, '3.0', 3.1, 'jruby-9.3', truffleruby, truffleruby-head]
         include:
-          - { ruby: 3.1, rack: main, allow-failure: true }
+          - { ruby: 3.1, rack: stable, puma: latest, allow-failure: true }
+          - { ruby: 3.1, rack: latest, allow-failure: true }
           - { ruby: jruby-head, rack: stable, allow-failure: true }
     env:
       rack: ${{ matrix.rack }}
+      puma: ${{ matrix.puma }}
     steps:
     - uses: actions/checkout@v3
     - uses: ruby/setup-ruby@v1
