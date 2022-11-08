@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: Ruby ${{ matrix.ruby }} (Rack ${{ matrix.rack }}, Puma ${{ matrix.rack }})
+    name: ${{ matrix.ruby }} (Rack ${{ matrix.rack }}, Puma ${{ matrix.rack }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
