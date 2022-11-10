@@ -2,6 +2,10 @@
 
 * _Your new feature here._
 
+## 3.0.3 / 2022-10-10
+
+* Fix: fixed ReDoS for Rack::Protection::IPSpoofing. [#1823](https://github.com/sinatra/sinatra/pull/1823)
+
 ## 3.0.2 / 2022-10-01
 
 * New: Add Haml 6 support. [#1820](https://github.com/sinatra/sinatra/pull/1820) by Jordan Owens
