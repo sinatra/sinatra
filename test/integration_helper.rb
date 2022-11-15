@@ -122,7 +122,15 @@ module IntegrationHelper
     super
 
     base_port = 5000 + Process.pid % 100
-    Sinatra::Base.server.each_with_index do |server, index|
+    servers = Sinatra::Base.server.dup
+
+    # TruffleRuby doesn't support `Fiber.set_scheduler` yet
+    unless Fiber.respond_to?(:set_scheduler)
+      warn "skip falcon server"
+      servers.delete('falcon')
+    end
+
+    servers.each_with_index do |server, index|
       Server.run(server, base_port+index)
     end
   end
