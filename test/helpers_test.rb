@@ -781,6 +781,18 @@ class HelpersTest < Minitest::Test
       assert_equal '<sinatra></sinatra>', body
     end
 
+    it 'escapes filename in the Content-Disposition header according to the multipart form data spec in WHATWG living standard' do
+      mock_app do
+        get('/attachment') do
+          attachment "test.xml\";\r\next=.txt"
+          response.write("<sinatra></sinatra>")
+        end
+      end
+
+      get '/attachment'
+      assert_equal 'attachment; filename="test.xml%22;%0D%0Aext=.txt"', response['Content-Disposition']
+      assert_equal '<sinatra></sinatra>', body
+    end
   end
 
   describe 'send_file' do

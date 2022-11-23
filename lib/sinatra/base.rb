@@ -396,13 +396,20 @@ module Sinatra
       response['Content-Type'] = mime_type
     end
 
+    # https://html.spec.whatwg.org/#multipart-form-data
+    MULTIPART_FORM_DATA_REPLACEMENT_TABLE = {
+      '"'  => '%22',
+      "\r" => '%0D',
+      "\n" => '%0A'
+    }.freeze
+
     # Set the Content-Disposition to "attachment" with the specified filename,
     # instructing the user agents to prompt to save.
     def attachment(filename = nil, disposition = :attachment)
       response['Content-Disposition'] = disposition.to_s.dup
       return unless filename
 
-      params = format('; filename="%s"', File.basename(filename))
+      params = format('; filename="%s"', File.basename(filename).gsub(/["\r\n]/, MULTIPART_FORM_DATA_REPLACEMENT_TABLE))
       response['Content-Disposition'] << params
       ext = File.extname(filename)
       content_type(ext) unless response['Content-Type'] || ext.empty?
