@@ -66,6 +66,12 @@
 
 * Docs: Japanese documentation: Make Session section reflect changes done to README.md. [#1731](https://github.com/sinatra/sinatra/pull/1731) by @shu-i-chi
 
+## 2.2.3 / 2022-11-25
+
+* Fix: Escape filename in the Content-Disposition header. [#1841](https://github.com/sinatra/sinatra/pull/1841) by Kunpei Sakai
+
+* Fix: fixed ReDoS for Rack::Protection::IPSpoofing. [#1823](https://github.com/sinatra/sinatra/pull/1823) by @ooooooo-q
+
 ## 2.2.2 / 2022-07-23
 
 * Update mustermann dependency to version 2.
