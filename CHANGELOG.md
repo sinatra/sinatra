@@ -10,6 +10,8 @@
 
 ## 2.2.0 / 2022-02-15
 
+* Breaking change: Add #select, #reject and #compact methods to Sinatra::IndifferentHash. If hash keys need to be converted to symbols, call #to_h to get a Hash instance first. #1711 by Olivier Bellone
+
 * Handle EOFError raised by Rack and return Bad Request 400 status. [#1743](https://github.com/sinatra/sinatra/pull/1743) by tamazon
 
 * Update README.es.md with removal of Thin. [#1630](https://github.com/sinatra/sinatra/pull/1630) by Espartaco Palma
@@ -51,9 +53,6 @@
 * Fix memory leaks for proc template. Fixes [#1704](https://github.com/sinatra/sinatra/issues/1714) [#1719](https://github.com/sinatra/sinatra/pull/1719) by Slevin
 
 * Remove unnecessary `test_files` from the gemspec. [#1712](https://github.com/sinatra/sinatra/pull/1712) by Masataka Pocke Kuwabara
-
-* Add `#select`, `#reject` and `#compact` methods to `Sinatra::IndifferentHash`. [#1711](https://github.com/sinatra/sinatra/pull/1711) by Olivier Bellone
-
 
 ### CI
 
