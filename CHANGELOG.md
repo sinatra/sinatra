@@ -2,6 +2,10 @@
 
 * _Your new feature here._
 
+## 3.0.4 / 2022-11-25
+
+* Fix: Escape filename in the Content-Disposition header. [#1841](https://github.com/sinatra/sinatra/pull/1841) by Kunpei Sakai
+
 ## 3.0.3 / 2022-11-11
 
 * Fix: fixed ReDoS for Rack::Protection::IPSpoofing. [#1823](https://github.com/sinatra/sinatra/pull/1823) by @ooooooo-q
@@ -74,6 +78,8 @@
 
 ## 2.2.0 / 2022-02-15
 
+* Breaking change: Add `#select`, `#reject` and `#compact` methods to `Sinatra::IndifferentHash`. If hash keys need to be converted to symbols, call `#to_h` to get a `Hash` instance first. [#1711](https://github.com/sinatra/sinatra/pull/1711) by Olivier Bellone
+
 * Handle EOFError raised by Rack and return Bad Request 400 status. [#1743](https://github.com/sinatra/sinatra/pull/1743) by tamazon
 
 * Minor refactors in `base.rb`. [#1640](https://github.com/sinatra/sinatra/pull/1640) by ceclinux
@@ -103,8 +109,6 @@
 * Fix memory leaks for proc template. Fixes [#1704](https://github.com/sinatra/sinatra/issues/1714) [#1719](https://github.com/sinatra/sinatra/pull/1719) by Slevin
 
 * Remove unnecessary `test_files` from the gemspec. [#1712](https://github.com/sinatra/sinatra/pull/1712) by Masataka Pocke Kuwabara
-
-* Add `#select`, `#reject` and `#compact` methods to `Sinatra::IndifferentHash`. [#1711](https://github.com/sinatra/sinatra/pull/1711) by Olivier Bellone
 
 * Docs: Spanish documentation: Update README.es.md with removal of Thin. [#1630](https://github.com/sinatra/sinatra/pull/1630) by Espartaco Palma
 
