@@ -45,7 +45,6 @@ if RUBY_ENGINE == "ruby"
   gem 'eventmachine'
   gem 'slim', '~> 2.0'
   gem 'coffee-script', '>= 2.0'
-  gem 'rdoc'
   gem 'kramdown'
   gem 'maruku'
   gem 'creole'
