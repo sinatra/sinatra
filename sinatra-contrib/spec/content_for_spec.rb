@@ -9,7 +9,6 @@ describe Sinatra::ContentFor do
   end
 
   Tilt.prefer Tilt::ERBTemplate
-  require 'hamlit/block'
   Tilt.register Tilt::HamlTemplate, :haml
 
   extend Forwardable
