@@ -984,7 +984,7 @@ To associate a file extension with a template engine, use
 `tt` for Haml templates, you can do the following:
 
 ```ruby
-Tilt.register :tt, Tilt[:haml]
+Tilt.register Tilt[:haml], :tt
 ```
 
 ### Adding Your Own Template Engine
@@ -992,7 +992,7 @@ Tilt.register :tt, Tilt[:haml]
 First, register your engine with Tilt, then create a rendering method:
 
 ```ruby
-Tilt.register :myat, MyAwesomeTemplateEngine
+Tilt.register MyAwesomeTemplateEngine, :myat
 
 helpers do
   def myat(*args) render(:myat, *args) end
