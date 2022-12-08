@@ -6,8 +6,15 @@ on:
       - '**'
   pull_request:
 
+permissions:
+  contents: read #  to fetch code (actions/checkout)
+
 jobs:
   test:
+    permissions:
+      contents: read #  to fetch code (actions/checkout)
+      actions: read #  to list jobs for workflow run (8398a7/action-slack)
+
     name: ${{ matrix.ruby }} (Rack ${{ matrix.rack }}, Puma ${{ matrix.puma }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
