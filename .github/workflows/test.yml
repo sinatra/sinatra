@@ -16,25 +16,38 @@ jobs:
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
         ruby: [2.6, 2.7, '3.0', 'jruby-9.3']
     steps:
-    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        sudo apt-get install --yes \
+          pandoc \
+          nodejs \
+          pkg-config \
+          libxml2-dev \
+          libxslt-dev \
+          libyaml-dev
+
+    - uses: actions/checkout@v3
+
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
-    - name: Install dependencies
-      run: sudo apt-get install -y pandoc nodejs pkg-config libxml2-dev libxslt-dev
+
     - name: Run sinatra tests
       run: bundle exec rake
+
     - name: Run sinatra-contrib tests
       working-directory: sinatra-contrib
       run: |
         bundle install --jobs=3 --retry=3
         bundle exec rake
+
     - name: Run rack-protection tests
       working-directory: rack-protection
       run: |
         bundle install --jobs=3 --retry=3
         bundle exec rake
+
     - uses: 8398a7/action-slack@v3
       with:
         status: ${{ job.status }}
