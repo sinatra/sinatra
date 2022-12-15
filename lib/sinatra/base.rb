@@ -1237,6 +1237,10 @@ module Sinatra
 
       attr_reader :routes, :filters, :templates, :errors
 
+      def callers_to_ignore
+        CALLERS_TO_IGNORE
+      end
+
       # Removes all routes, filters, middleware and extension hooks from the
       # current class (not routes/filters/... defined by its superclass).
       def reset!
@@ -1786,7 +1790,7 @@ module Sinatra
       def cleaned_caller(keep = 3)
         caller(1).
           map!    { |line| line.split(/:(?=\d|in )/, 3)[0,keep] }.
-          reject { |file, *_| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
+          reject { |file, *_| callers_to_ignore.any? { |pattern| file =~ pattern } }
       end
     end
 
