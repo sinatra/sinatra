@@ -1,3 +1,7 @@
+## 2.2.4 / 2022-12-16
+
+* Allow CALLERS_TO_IGNORE to be overridden. Sets up compatibility with v3.
+
 ## 2.2.3 / 2022-11-25
 
 * Fix: Escape filename in the Content-Disposition header. [#1841](https://github.com/sinatra/sinatra/pull/1841) by Kunpei Sakai
