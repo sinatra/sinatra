@@ -2,6 +2,12 @@
 
 * _Your new feature here._
 
+## 3.0.5 / 2022-12-16
+
+* Fix: Add Zeitwerk compatibility. [#1831](https://github.com/sinatra/sinatra/pull/1831) by Dawid Janczak
+
+* Fix: Allow CALLERS_TO_IGNORE to be overridden
+
 ## 3.0.4 / 2022-11-25
 
 * Fix: Escape filename in the Content-Disposition header. [#1841](https://github.com/sinatra/sinatra/pull/1841) by Kunpei Sakai
