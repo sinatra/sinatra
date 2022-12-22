@@ -2,6 +2,6 @@
 
 module Rack
   module Protection
-    VERSION = '3.0.0'
+    VERSION = '3.0.5'
   end
 end

@@ -1,4 +1,32 @@
-## 3.0.0 / Unreleased
+## Unreleased
+
+* _Your new feature here._
+
+## 3.0.5 / 2022-12-16
+
+* Fix: Add Zeitwerk compatibility. [#1831](https://github.com/sinatra/sinatra/pull/1831) by Dawid Janczak
+
+* Fix: Allow CALLERS_TO_IGNORE to be overridden
+
+## 3.0.4 / 2022-11-25
+
+* Fix: Escape filename in the Content-Disposition header. [#1841](https://github.com/sinatra/sinatra/pull/1841) by Kunpei Sakai
+
+## 3.0.3 / 2022-11-11
+
+* Fix: fixed ReDoS for Rack::Protection::IPSpoofing. [#1823](https://github.com/sinatra/sinatra/pull/1823) by @ooooooo-q
+
+## 3.0.2 / 2022-10-01
+
+* New: Add Haml 6 support. [#1820](https://github.com/sinatra/sinatra/pull/1820) by Jordan Owens
+
+## 3.0.1 / 2022-09-26
+
+* Fix: Revert removal of rack-protection.rb. [#1814](https://github.com/sinatra/sinatra/pull/1814) by Olle Jonsson
+
+* Fix: Revert change to server start and stop messaging by using Kernel#warn. Renamed internal warn method warn_for_deprecation. [#1818](https://github.com/sinatra/sinatra/pull/1818) by Jordan Owens
+
+## 3.0.0 / 2022-09-26
 
 * New: Add Falcon support. [#1794](https://github.com/sinatra/sinatra/pull/1794) by Samuel Williams and @horaciob
 
@@ -44,6 +72,12 @@
 
 * Docs: Japanese documentation: Make Session section reflect changes done to README.md. [#1731](https://github.com/sinatra/sinatra/pull/1731) by @shu-i-chi
 
+## 2.2.3 / 2022-11-25
+
+* Fix: Escape filename in the Content-Disposition header. [#1841](https://github.com/sinatra/sinatra/pull/1841) by Kunpei Sakai
+
+* Fix: fixed ReDoS for Rack::Protection::IPSpoofing. [#1823](https://github.com/sinatra/sinatra/pull/1823) by @ooooooo-q
+
 ## 2.2.2 / 2022-07-23
 
 * Update mustermann dependency to version 2.
@@ -55,6 +89,8 @@
 * Add JRuby to CI. #1755 by Karol Bucek
 
 ## 2.2.0 / 2022-02-15
+
+* Breaking change: Add `#select`, `#reject` and `#compact` methods to `Sinatra::IndifferentHash`. If hash keys need to be converted to symbols, call `#to_h` to get a `Hash` instance first. [#1711](https://github.com/sinatra/sinatra/pull/1711) by Olivier Bellone
 
 * Handle EOFError raised by Rack and return Bad Request 400 status. [#1743](https://github.com/sinatra/sinatra/pull/1743) by tamazon
 
@@ -85,8 +121,6 @@
 * Fix memory leaks for proc template. Fixes [#1704](https://github.com/sinatra/sinatra/issues/1714) [#1719](https://github.com/sinatra/sinatra/pull/1719) by Slevin
 
 * Remove unnecessary `test_files` from the gemspec. [#1712](https://github.com/sinatra/sinatra/pull/1712) by Masataka Pocke Kuwabara
-
-* Add `#select`, `#reject` and `#compact` methods to `Sinatra::IndifferentHash`. [#1711](https://github.com/sinatra/sinatra/pull/1711) by Olivier Bellone
 
 * Docs: Spanish documentation: Update README.es.md with removal of Thin. [#1630](https://github.com/sinatra/sinatra/pull/1630) by Espartaco Palma
 

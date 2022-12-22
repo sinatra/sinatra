@@ -396,13 +396,20 @@ module Sinatra
       response['Content-Type'] = mime_type
     end
 
+    # https://html.spec.whatwg.org/#multipart-form-data
+    MULTIPART_FORM_DATA_REPLACEMENT_TABLE = {
+      '"'  => '%22',
+      "\r" => '%0D',
+      "\n" => '%0A'
+    }.freeze
+
     # Set the Content-Disposition to "attachment" with the specified filename,
     # instructing the user agents to prompt to save.
     def attachment(filename = nil, disposition = :attachment)
       response['Content-Disposition'] = disposition.to_s.dup
       return unless filename
 
-      params = format('; filename="%s"', File.basename(filename))
+      params = format('; filename="%s"', File.basename(filename).gsub(/["\r\n]/, MULTIPART_FORM_DATA_REPLACEMENT_TABLE))
       response['Content-Disposition'] << params
       ext = File.extname(filename)
       content_type(ext) unless response['Content-Type'] || ext.empty?
@@ -1209,10 +1216,15 @@ module Sinatra
         %r{rubygems/(custom|core_ext/kernel)_require\.rb$}, # rubygems require hacks
         /active_support/,                                   # active_support require hacks
         %r{bundler(/(?:runtime|inline))?\.rb},              # bundler require hacks
-        /<internal:/                                        # internal in ruby >= 1.9.2
+        /<internal:/,                                       # internal in ruby >= 1.9.2
+        %r{zeitwerk/kernel\.rb}                             # Zeitwerk kernel#require decorator
       ].freeze
 
       attr_reader :routes, :filters, :templates, :errors
+
+      def callers_to_ignore
+        CALLERS_TO_IGNORE
+      end
 
       # Removes all routes, filters, middleware and extension hooks from the
       # current class (not routes/filters/... defined by its superclass).
@@ -1408,7 +1420,7 @@ module Sinatra
       end
 
       def public=(value)
-        warn ':public is no longer used to avoid overloading Module#public, use :public_folder or :public_dir instead'
+        warn_for_deprecation ':public is no longer used to avoid overloading Module#public, use :public_folder or :public_dir instead'
         set(:public_folder, value)
       end
 
@@ -1772,15 +1784,15 @@ module Sinatra
       end
 
       # used for deprecation warnings
-      def warn(message)
-        super message + "\n\tfrom #{cleaned_caller.first.join(':')}"
+      def warn_for_deprecation(message)
+        warn message + "\n\tfrom #{cleaned_caller.first.join(':')}"
       end
 
       # Like Kernel#caller but excluding certain magic entries
       def cleaned_caller(keep = 3)
         caller(1)
           .map! { |line| line.split(/:(?=\d|in )/, 3)[0, keep] }
-          .reject { |file, *_| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
+          .reject { |file, *_| callers_to_ignore.any? { |pattern| file =~ pattern } }
       end
     end
 

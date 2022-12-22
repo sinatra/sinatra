@@ -6,9 +6,15 @@ on:
       - '**'
   pull_request:
 
+permissions:
+  contents: read #  to fetch code (actions/checkout)
+
 jobs:
   test:
     name: Ruby ${{ matrix.ruby }} ${{ matrix.gemfile }}
+    permissions:
+      contents: read #  to fetch code (actions/checkout)
+      actions: read #  to list jobs for workflow run (8398a7/action-slack)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -25,20 +31,32 @@ jobs:
             allow-failure: true
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
+
     steps:
+    - name: Install dependencies
+      run: |
+        sudo apt-get install --yes \
+          pandoc \
+          nodejs \
+          pkg-config \
+          libxml2-dev \
+          libxslt-dev \
+          libyaml-dev
+
     - uses: actions/checkout@v3
+
     - uses: ruby/setup-ruby@v1
       continue-on-error: ${{ matrix.allow-failure || false }}
       id: setup-ruby
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
-    - name: Install dependencies
-      run: sudo apt-get install -y pandoc nodejs pkg-config libxml2-dev libxslt-dev
+
     - name: Run sinatra tests
       continue-on-error: ${{ matrix.allow-failure || false }}
       id: tests
       run: bundle exec rake
+
     - name: Run sinatra-contrib tests
       continue-on-error: ${{ matrix.allow-failure || false }}
       id: contrib-tests
@@ -46,6 +64,7 @@ jobs:
       run: |
         bundle install --jobs=3 --retry=3
         bundle exec rake
+
     - name: Run rack-protection tests
       continue-on-error: ${{ matrix.allow-failure || false }}
       id: protection-tests
@@ -53,6 +72,7 @@ jobs:
       run: |
         bundle install --jobs=3 --retry=3
         bundle exec rake
+
     - uses: 8398a7/action-slack@v3
       with:
         status: ${{ job.status }}

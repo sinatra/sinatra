@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.name        = 'rack-protection'
   s.version     = version
   s.description = 'Protect against typical web attacks, works with all Rack apps, including Rails.'
-  s.homepage    = 'http://sinatrarb.com/protection/'
+  s.homepage    = 'https://sinatrarb.com/protection/'
   s.summary     = s.description
   s.license     = 'MIT'
   s.authors     = ['https://github.com/sinatra/sinatra/graphs/contributors']
