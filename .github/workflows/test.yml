@@ -11,29 +11,30 @@ permissions:
 
 jobs:
   test:
+    name: ${{ matrix.ruby }} (Rack ${{ matrix.rack }}, Puma ${{ matrix.puma }})
     permissions:
       contents: read #  to fetch code (actions/checkout)
       actions: read #  to list jobs for workflow run (8398a7/action-slack)
-
-    name: ${{ matrix.ruby }} (Rack ${{ matrix.rack }}, Puma ${{ matrix.puma }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
         puma:
-          - '~> 5' # Due to https://github.com/puma/puma/issues/3000
-        rack:
           - stable
+        rack:
+          - '~> 2'
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
         ruby: [2.6, 2.7, '3.0', 3.1, 'jruby-9.3', truffleruby, truffleruby-head]
         include:
-          - { ruby: 3.1, rack: stable, puma: latest, allow-failure: true }
-          - { ruby: 3.1, rack: latest, allow-failure: true }
-          - { ruby: jruby-head, rack: stable, allow-failure: true }
+          - { ruby: 3.1, rack: stable, puma: stable, gemfile: gems/rack-v3.rb, allow-failure: true }
+          - { ruby: 3.1, rack: latest, puma: latest, gemfile: gems/rack-v3.rb, allow-failure: true }
+          - { ruby: jruby-head, rack: stable, puma: stable, gemfile: gems/rack-v3.rb, allow-failure: true }
     env:
       rack: ${{ matrix.rack }}
       puma: ${{ matrix.puma }}
+      BUNDLE_GEMFILE: ${{ matrix.gemfile }}
+
     steps:
     - name: Install dependencies
       run: |
