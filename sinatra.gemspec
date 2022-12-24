@@ -46,7 +46,9 @@ RubyGems 2.0 or newer is required to protect against public gem pushes. You can 
   s.required_ruby_version = '>= 2.6.0'
 
   s.add_dependency 'mustermann', '~> 3.0'
-  s.add_dependency 'rack', '~> 2.2', '>= 2.2.4'
+  s.add_dependency 'rack', '>= 2.2.4', '< 4'
+  s.add_dependency 'rackup', '>= 0.2.3', '< 1'
+  s.add_dependency 'rack-session', '>= 0.3.0', '< 1'
   s.add_dependency 'rack-protection', version
   s.add_dependency 'tilt', '~> 2.0'
 end
