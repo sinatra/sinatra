@@ -26,7 +26,7 @@ class HAMLTest < Minitest::Test
 
   it "renders with inline layouts" do
     mock_app do
-      layout { %q(%h1= 'THIS. IS. ' + yield.upcase) }
+      layout { %q(%h1!= 'THIS. IS. ' + yield.upcase) }
       get('/') { haml '%em Sparta' }
     end
     get '/'
@@ -66,7 +66,7 @@ class HAMLTest < Minitest::Test
 
   it "merges the default HAML options with the overrides and passes them to the Haml engine" do
     mock_app do
-      set :haml, {:format => :html5, :attr_wrapper => '"'} # default HAML attr are <tag attr='single-quoted'>
+      set :haml, {:format => :html5}
       get('/') { haml "!!!\n%h1{:class => :header} Hello World" }
       get('/html4') {
         haml "!!!\n%h1{:class => 'header'} Hello World", :format => :html4
@@ -74,7 +74,7 @@ class HAMLTest < Minitest::Test
     end
     get '/'
     assert ok?
-    assert_equal "<!DOCTYPE html>\n<h1 class=\"header\">Hello World</h1>\n", body
+    assert_equal "<!DOCTYPE html>\n<h1 class='header'>Hello World</h1>\n", body
     get '/html4'
     assert ok?
     assert_match(/^<!DOCTYPE html PUBLIC (.*) HTML 4.01/, body)
@@ -87,8 +87,8 @@ class HAMLTest < Minitest::Test
 
   it "can render truly nested layouts by accepting a layout and a block with the contents" do
     mock_app do
-      template(:main_outer_layout) { "%h1 Title\n= yield" }
-      template(:an_inner_layout) { "%h2 Subtitle\n= yield" }
+      template(:main_outer_layout) { "%h1 Title\n!= yield" }
+      template(:an_inner_layout) { "%h2 Subtitle\n!= yield" }
       template(:a_page) { "%p Contents." }
       get('/') do
         haml :main_outer_layout, :layout => false do
