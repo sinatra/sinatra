@@ -125,7 +125,7 @@ module IntegrationHelper
     servers = Sinatra::Base.server.dup
 
     # TruffleRuby doesn't support `Fiber.set_scheduler` yet
-    unless Fiber.respond_to?(:set_scheduler)
+    if RUBY_ENGINE == "truffleruby" && !Fiber.respond_to?(:set_scheduler)
       warn "skip falcon server"
       servers.delete('falcon')
     end
