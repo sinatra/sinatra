@@ -4,10 +4,10 @@
 #
 # run *one* of these:
 #
-#   rackup -s mongrel stream.ru         # gem install mongrel
-#   unicorn stream.ru                   # gem install unicorn
 #   puma stream.ru                      # gem install puma
-#   rainbows -c rainbows.conf stream.ru # gem install rainbows eventmachine
+#   unicorn stream.ru                   # gem install unicorn
+#   thin -R stream.ru start             # gem install thin
+#   falcon -c stream.ru                 # gem install falcon
 
 require 'sinatra/base'
 
