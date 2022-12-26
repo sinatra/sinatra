@@ -1,10 +1,9 @@
 #!/usr/bin/env ruby -I ../lib -I lib
 # frozen_string_literal: true
 
-require_relative 'rainbows'
-
+require 'thin'
 require 'sinatra'
-set :server, :rainbows
+set :server, :thin
 connections = []
 
 get '/' do
