@@ -133,6 +133,7 @@ class StreamingTest < Minitest::Test
         env['async.close'] = close
         stream(:keep_open) do |out|
           out.callback { ran = true }
+          out.close
         end
       end
     end

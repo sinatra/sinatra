@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby -I ../lib -I lib
 # frozen_string_literal: true
 
-require_relative 'rainbows'
+# This example does *not* work properly with WEBrick or other
+# servers that buffer output. To shut down the server, close any
+# open browser tabs that are connected to the chat server.
 
 require 'sinatra'
-set :server, :rainbows
-connections = []
+set :server, :puma
+connections = Set.new
 
 get '/' do
   halt erb(:login) unless params[:user]
@@ -14,13 +16,22 @@ end
 
 get '/stream', provides: 'text/event-stream' do
   stream :keep_open do |out|
-    connections << out
-    out.callback { connections.delete(out) }
+    if connections.add?(out)
+      out.callback { connections.delete(out) }
+    end
+    out << "heartbeat:\n"
+    sleep 1
+  rescue
+    out.close
   end
 end
 
 post '/' do
-  connections.each { |out| out << "data: #{params[:msg]}\n\n" }
+  connections.each do |out|
+    out << "data: #{params[:msg]}\n\n"
+  rescue
+    out.close
+  end
   204 # response without entity body
 end
 
@@ -37,10 +48,10 @@ __END__
 </html>
 
 @@ login
-<form action='/'>
+<form action="/">
   <label for='user'>User Name:</label>
-  <input name='user' value='' />
-  <input type='submit' value="GO!" />
+  <input name="user" value="" />
+  <input type="submit" value="GO!" />
 </form>
 
 @@ chat
