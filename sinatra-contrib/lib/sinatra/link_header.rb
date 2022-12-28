@@ -89,10 +89,10 @@ module Sinatra
       link          = (response['Link'] ||= '')
 
       urls.map do |url|
-        link << ",\n" unless link.empty?
+        link << "," unless link.empty?
         link << (http_pattern % url)
         html_pattern % url
-      end.join "\n"
+      end.join
     end
 
     ##
@@ -117,10 +117,10 @@ module Sinatra
       yield if block_given?
       return '' unless response.include? 'Link'
 
-      response['Link'].split(",\n").map do |line|
+      response['Link'].split(",").map do |line|
         url, *opts = line.split(';').map(&:strip)
         "<link href=\"#{url[1..-2]}\" #{opts.join ' '} />"
-      end.join "\n"
+      end.join
     end
 
     def self.registered(_base)

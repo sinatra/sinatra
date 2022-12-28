@@ -41,7 +41,7 @@ RSpec.describe Sinatra::LinkHeader do
     it "takes an options hash" do
       get '/'
       elements = ["<something>", "foo=\"bar\"", "rel=\"from-filter\""]
-      expect(headers['Link'].split(",\n").first.strip.split('; ').sort).to eq(elements)
+      expect(headers['Link'].split(",").first.strip.split('; ').sort).to eq(elements)
     end
   end
 
