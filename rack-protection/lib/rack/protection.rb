@@ -2,6 +2,7 @@
 
 require 'rack/protection/version'
 require 'rack'
+require 'rack/session'
 
 module Rack
   module Protection
