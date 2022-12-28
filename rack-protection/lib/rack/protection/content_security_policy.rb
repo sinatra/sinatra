@@ -26,7 +26,7 @@ module Rack
     #               https://scotthelme.co.uk/csp-cheat-sheet/
     #               http://www.html5rocks.com/en/tutorials/security/content-security-policy/
     #
-    # Sets the 'Content-Security-Policy[-Report-Only]' header.
+    # Sets the 'content-security-policy[-report-only]' header.
     #
     # Options: ContentSecurityPolicy configuration is a complex topic with
     #          several levels of support that has evolved over time.
@@ -71,7 +71,7 @@ module Rack
 
       def call(env)
         status, headers, body = @app.call(env)
-        header = options[:report_only] ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy'
+        header = options[:report_only] ? 'content-security-policy-report-only' : 'content-security-policy'
         headers[header] ||= csp_policy if html? headers
         [status, headers, body]
       end

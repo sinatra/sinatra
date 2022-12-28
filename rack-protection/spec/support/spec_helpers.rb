@@ -29,7 +29,7 @@ module SpecHelpers
   end
 
   def with_headers(headers)
-    proc { [200, { 'Content-Type' => 'text/plain' }.merge(headers), ['ok']] }
+    proc { [200, { 'content-type' => 'text/plain' }.merge(headers), ['ok']] }
   end
 
   def env

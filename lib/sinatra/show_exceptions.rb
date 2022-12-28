@@ -38,8 +38,8 @@ module Sinatra
       [
         500,
         {
-          'Content-Type' => content_type,
-          'Content-Length' => body.bytesize.to_s
+          'content-type' => content_type,
+          'content-length' => body.bytesize.to_s
         },
         [body]
       ]

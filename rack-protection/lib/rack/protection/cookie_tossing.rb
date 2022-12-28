@@ -51,7 +51,7 @@ module Rack
       def redirect(env)
         request = Request.new(env)
         warn env, "attack prevented by #{self.class}"
-        [302, { 'Content-Type' => 'text/html', 'Location' => request.path }, []]
+        [302, { 'content-type' => 'text/html', 'location' => request.path }, []]
       end
 
       def bad_cookies

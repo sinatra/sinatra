@@ -6,7 +6,7 @@ RSpec.describe Rack::Protection do
   it 'passes on options' do
     mock_app do
       use Rack::Protection, track: ['HTTP_FOO']
-      run proc { |_e| [200, { 'Content-Type' => 'text/plain' }, ['hi']] }
+      run proc { |_e| [200, { 'content-type' => 'text/plain' }, ['hi']] }
     end
 
     session = { foo: :bar }
@@ -21,7 +21,7 @@ RSpec.describe Rack::Protection do
   it 'passes errors through if :reaction => :report is used' do
     mock_app do
       use Rack::Protection, reaction: :report
-      run proc { |e| [200, { 'Content-Type' => 'text/plain' }, [e['protection.failed'].to_s]] }
+      run proc { |e| [200, { 'content-type' => 'text/plain' }, [e['protection.failed'].to_s]] }
     end
 
     session = { foo: :bar }
