@@ -236,7 +236,7 @@ class HelpersTest < Minitest::Test
 
     it 'uses 303 for post requests if request is HTTP 1.1' do
       mock_app { post('/') { redirect '/'} }
-      post('/', {}, 'HTTP_VERSION' => 'HTTP/1.1')
+      post('/', {}, 'SERVER_PROTOCOL' => 'HTTP/1.1')
       assert_equal 303, status
       assert_equal '', body
       assert_equal 'http://example.org/', response['Location']
@@ -244,7 +244,7 @@ class HelpersTest < Minitest::Test
 
     it 'uses 302 for post requests if request is HTTP 1.0' do
       mock_app { post('/') { redirect '/'} }
-      post('/', {}, 'HTTP_VERSION' => 'HTTP/1.0')
+      post('/', {}, 'SERVER_PROTOCOL' => 'HTTP/1.0')
       assert_equal 302, status
       assert_equal '', body
       assert_equal 'http://example.org/', response['Location']
