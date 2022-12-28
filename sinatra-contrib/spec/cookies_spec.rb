@@ -93,7 +93,7 @@ RSpec.describe Sinatra::Cookies do
       expect(cookie_route do
         cookies['foo'] = 'bar'
         response['Set-Cookie'].lines.detect { |l| l.start_with? 'foo=' }
-      end).to include('HttpOnly')
+      end).to include('httponly')
     end
 
     it 'sets domain to nil if localhost' do
@@ -217,7 +217,7 @@ RSpec.describe Sinatra::Cookies do
         cookies.delete 'foo'
         response['Set-Cookie']
       end
-      expect(cookie_header).to include("path=/foo;", "domain=bar.com;", "secure;", "HttpOnly")
+      expect(cookie_header).to include("path=/foo;", "domain=bar.com;", "secure;", "httponly")
     end
 
     it 'does not touch other cookies' do
@@ -724,20 +724,20 @@ RSpec.describe Sinatra::Cookies do
       expect(cookie_jar['foo']).to eq('bar')
     end
 
-    it 'sets a cookie with HttpOnly' do
+    it 'sets a cookie with httponly' do
       expect(cookie_route do
         request.script_name = '/foo'
         cookies.set('foo', value: 'bar', httponly: true)
         response['Set-Cookie'].lines.detect { |l| l.start_with? 'foo=' }
-      end).to include('HttpOnly')
+      end).to include('httponly')
     end
 
-    it 'sets a cookie without HttpOnly' do
+    it 'sets a cookie without httponly' do
       expect(cookie_route do
         request.script_name = '/foo'
         cookies.set('foo', value: 'bar', httponly: false)
         response['Set-Cookie'].lines.detect { |l| l.start_with? 'foo=' }
-      end).not_to include('HttpOnly')
+      end).not_to include('httponly')
     end
   end
 
