@@ -13,3 +13,5 @@ gem 'rack', rack_version
 gem 'sinatra', path: '..'
 
 gemspec
+
+gem 'rack-test', github: 'rack/rack-test'
