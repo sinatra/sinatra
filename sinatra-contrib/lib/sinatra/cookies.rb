@@ -60,7 +60,7 @@ module Sinatra
       attr_reader :options
 
       def initialize(app)
-        @response_string = nil
+        @response_array  = nil
         @response_hash   = {}
         @response        = app.response
         @request         = app.request
@@ -309,12 +309,12 @@ module Sinatra
       end
 
       def parse_response
-        string = @response['Set-Cookie']
-        return if @response_string == string
+        cookies_from_response = Array(@response['Set-Cookie'])
+        return if @response_array == cookies_from_response
 
         hash = {}
 
-        string.each_line do |line|
+        cookies_from_response.each do |line|
           key, value = line.split(';', 2).first.to_s.split('=', 2)
           next if key.nil?
 
@@ -328,7 +328,7 @@ module Sinatra
         end
 
         @response_hash.replace hash
-        @response_string = string
+        @response_array = cookies_from_response
       end
 
       def request_cookies

@@ -153,12 +153,12 @@ RSpec.describe Sinatra::Cookies do
       expect(jar['foo']).to be_nil
     end
 
-    it 'removes response cookies from cookies hash' do
+    it 'does not remove response cookies from cookies hash' do
       expect(cookie_route do
         cookies['foo'] = 'bar'
         cookies.clear
         cookies['foo']
-      end).to be_nil
+      end).to eq('bar')
     end
 
     it 'expires existing cookies' do
@@ -189,12 +189,12 @@ RSpec.describe Sinatra::Cookies do
       expect(jar['foo']).to be_nil
     end
 
-    it 'removes response cookies from cookies hash' do
+    it 'does not remove response cookies from cookies hash' do
       expect(cookie_route do
         cookies['foo'] = 'bar'
         cookies.delete 'foo'
         cookies['foo']
-      end).to be_nil
+      end).to eq('bar')
     end
 
     it 'expires existing cookies' do
@@ -246,13 +246,16 @@ RSpec.describe Sinatra::Cookies do
   end
 
   describe :delete_if do
-    it 'deletes cookies that match the block' do
+    it 'expires cookies that match the block' do
       expect(cookie_route('foo=bar') do
         cookies['bar'] = 'baz'
         cookies['baz'] = 'foo'
         cookies.delete_if { |*a| a.include? 'bar' }
-        cookies.values_at 'foo', 'bar', 'baz'
-      end).to eq([nil, nil, 'foo'])
+        response['Set-Cookie']
+      end).to eq(["bar=baz; domain=example.org; path=/; httponly",
+                  "baz=foo; domain=example.org; path=/; httponly",
+                  "foo=; domain=example.org; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; httponly",
+                  "bar=; domain=example.org; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; httponly"])
     end
   end
 
@@ -454,12 +457,12 @@ RSpec.describe Sinatra::Cookies do
       end).to be false
     end
 
-    it 'becomes true if response cookies are removed' do
+    it 'deos not become true if response cookies are removed' do
       expect(cookie_route do
         cookies['foo'] = 'bar'
         cookies.delete :foo
         cookies.empty?
-      end).to be true
+      end).to be false
     end
 
     it 'becomes true if request cookies are removed' do
@@ -469,12 +472,12 @@ RSpec.describe Sinatra::Cookies do
       end).to be_truthy
     end
 
-    it 'becomes true after clear' do
+    it 'does not become true after clear' do
       expect(cookie_route('foo=bar', 'bar=baz') do
         cookies['foo'] = 'bar'
         cookies.clear
         cookies.empty?
-      end).to be_truthy
+      end).to be false
     end
   end
 

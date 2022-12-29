@@ -30,7 +30,7 @@ RSpec.describe Sinatra::LinkHeader do
   describe :link do
     it "sets link headers" do
       get '/'
-      expect(headers['Link'].lines).to include('<booyah>; rel="something"')
+      expect(headers['Link']).to include('<booyah>; rel="something"')
     end
 
     it "returns link html tags" do
