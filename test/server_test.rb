@@ -24,7 +24,7 @@ module Rack::Handler
     end
   end
 
-  register 'mock', 'Rack::Handler::Mock'
+  register :mock, Mock
 end
 
 class ServerTest < Minitest::Test
