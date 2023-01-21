@@ -2895,8 +2895,7 @@ SemVerTag.
 * [Twitter](https://twitter.com/sinatra)
 * [Mailing List](https://groups.google.com/forum/#!forum/sinatrarb)
 * IRC: [#sinatra](irc://chat.freenode.net/#sinatra) on [Freenode](https://freenode.net)
-* [Sinatra & Friends](https://sinatrarb.slack.com) on Slack
-  ([get an invite](https://sinatra-slack.herokuapp.com/))
+* [Sinatra & Friends](https://discord.gg/ncjsfsNHh7) on Discord
 * [Sinatra Book](https://github.com/sinatra/sinatra-book) - Cookbook Tutorial
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) - Community contributed
   recipes
