@@ -37,7 +37,7 @@ end
 
 set :out, nil
 get '/async' do
-  stream(:keep_open) { |o| (settings.out = o) << "hi!" }
+  stream(:keep_open) { |o| (settings.out = o) << "hi!"; sleep 1 }
 end
 
 get '/send' do
@@ -66,7 +66,7 @@ end
 class Subclass < Sinatra::Base
   set :out, nil
   get '/subclass/async' do
-    stream(:keep_open) { |o| (settings.out = o) << "hi!" }
+    stream(:keep_open) { |o| (settings.out = o) << "hi!"; sleep 1 }
   end
 
   get '/subclass/send' do
