@@ -25,13 +25,16 @@ jobs:
         rack:
           - '~> 2'
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
-        ruby: [2.6, 2.7, '3.0', 3.1, 3.2, 'jruby-9.3', truffleruby]
+        ruby: [2.6, 2.7, '3.0', 3.1, 3.2, truffleruby]
         include:
           - { ruby: 2.6, rack: '~> 2', puma: '~> 5' }
           - { ruby: 3.2, rack: '~> 2', puma: '~> 5' }
           - { ruby: 3.2, rack: '~> 2', puma: latest }
+          # Due to flaky tests, see https://github.com/sinatra/sinatra/pull/1870
+          - { ruby: jruby-9.3, rack: '~> 2', puma: stable, allow-failure: true }
           # Due to https://github.com/jruby/jruby/issues/7647
           - { ruby: jruby-9.4, rack: '~> 2', puma: stable, allow-failure: true }
+          # Never fail our build due to problems with head
           - { ruby: jruby-head, rack: '~> 2', puma: stable, allow-failure: true }
           - { ruby: truffleruby-head, rack: '~> 2', puma: stable, allow-failure: true }
     env:
