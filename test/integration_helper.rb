@@ -44,7 +44,14 @@ module IntegrationHelper
 
     def installed?
       return @installed unless @installed.nil?
-      s = server == 'HTTP' ? 'net/http/server' : server
+      s = case server
+      when 'HTTP'
+        'net/http/server'
+      when 'puma'
+        'puma/rack/handler'
+      else
+        server
+      end
       require s
       @installed = true
     rescue LoadError
