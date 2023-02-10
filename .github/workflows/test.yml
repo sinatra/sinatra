@@ -35,6 +35,7 @@ jobs:
           # Due to https://github.com/jruby/jruby/issues/7647
           - { ruby: jruby-9.4, rack: '~> 2', puma: stable, allow-failure: true }
           # Never fail our build due to problems with head
+          - { ruby: ruby-head, rack: '~> 2', puma: stable, allow-failure: true }
           - { ruby: jruby-head, rack: '~> 2', puma: stable, allow-failure: true }
           - { ruby: truffleruby-head, rack: '~> 2', puma: stable, allow-failure: true }
     env:
