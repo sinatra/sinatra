@@ -1,4 +1,4 @@
-require File.expand_path('helper', __dir__)
+require_relative 'test_helper'
 require File.expand_path('integration_helper', __dir__)
 
 # These tests start a real server and talk to it over TCP.

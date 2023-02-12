@@ -1,6 +1,6 @@
-# Tests to check if all the README examples work.
-require File.expand_path('helper', __dir__)
+require_relative 'test_helper'
 
+# Tests to check if all the README examples work.
 class ReadmeTest < Minitest::Test
   example do
     mock_app { get('/') { 'Hello world!' } }

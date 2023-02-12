@@ -1,4 +1,4 @@
-require File.expand_path('helper', __dir__)
+require_relative 'test_helper'
 require 'stringio'
 
 class RequestTest < Minitest::Test
