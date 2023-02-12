@@ -1,5 +1,4 @@
-# encoding: UTF-8
-require File.expand_path('helper', __dir__)
+require 'test_helper'
 File.delete(__dir__ + '/views/layout.test') rescue nil
 
 class TestTemplate < Tilt::Template

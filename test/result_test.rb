@@ -1,4 +1,4 @@
-require File.expand_path('helper', __dir__)
+require 'test_helper'
 
 class ThirdPartyError < RuntimeError
   def http_status; 400 end

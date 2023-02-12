@@ -1,4 +1,4 @@
-require File.expand_path('helper', __dir__)
+require 'test_helper'
 require 'date'
 require 'json'
 

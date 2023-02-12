@@ -1,5 +1,4 @@
-# I like coding: UTF-8
-require File.expand_path('helper', __dir__)
+require 'test_helper'
 
 class CompileTest < Minitest::Test
   def self.parses pattern, example, expected_params, mtype = :sinatra, mopts = {}

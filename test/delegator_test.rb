@@ -1,4 +1,4 @@
-require File.expand_path('helper', __dir__)
+require 'test_helper'
 
 class DelegatorTest < Minitest::Test
   class Mirror
