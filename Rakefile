@@ -23,7 +23,7 @@ end
 
 # Tests ===============================================================
 
-Minitest::TestTask.create
+Minitest::TestTask.create # Default `test` task
 Minitest::TestTask.create(:'test:core') do |t|
   t.warning = true
   t.test_globs = %w[
