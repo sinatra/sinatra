@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative 'test_helper'
 
 class SinatraTest < Minitest::Test
   it 'creates a new Sinatra::Base subclass on new' do

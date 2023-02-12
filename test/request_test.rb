@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative 'test_helper'
 require 'stringio'
 
 class RequestTest < Minitest::Test

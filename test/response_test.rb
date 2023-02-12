@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative 'test_helper'
 
 class ResponseTest < Minitest::Test
   setup { @response = Sinatra::Response.new([], 200, { 'Content-Type' => 'text/html' }) }

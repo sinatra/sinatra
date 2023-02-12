@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative 'test_helper'
 
 class StreamingTest < Minitest::Test
   Stream = Sinatra::Helpers::Stream

@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative 'test_helper'
 
 class BeforeFilterTest < Minitest::Test
   it "executes filters in the order defined" do

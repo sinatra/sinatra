@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative 'test_helper'
 require File.expand_path('integration_async_helper', __dir__)
 
 # These tests are like integration_test, but they test asynchronous streaming.

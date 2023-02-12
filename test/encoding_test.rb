@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative 'test_helper'
 require 'erb'
 
 class BaseTest < Minitest::Test

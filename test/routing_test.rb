@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative 'test_helper'
 
 # Helper method for easy route pattern matching testing
 def route_def(pattern)

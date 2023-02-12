@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative 'test_helper'
 
 class CompileTest < Minitest::Test
   def self.parses pattern, example, expected_params, mtype = :sinatra, mopts = {}

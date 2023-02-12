@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative 'test_helper'
 
 MarkdownTest = proc do
   def markdown_app(&block)

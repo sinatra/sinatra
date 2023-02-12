@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative 'test_helper'
 require 'date'
 require 'json'
 
@@ -895,8 +895,8 @@ class HelpersTest < Minitest::Test
       send_file_app :disposition => 'inline'.freeze
       get '/file.txt'
       assert_equal 'inline; filename="file.txt"', response['Content-Disposition']
-    end 
-    
+    end
+
     it "sets the Content-Disposition header when :filename provided" do
       send_file_app :filename => 'foo.txt'
       get '/file.txt'

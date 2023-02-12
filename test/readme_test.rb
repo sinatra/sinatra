@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative 'test_helper'
 
 # Tests to check if all the README examples work.
 class ReadmeTest < Minitest::Test
