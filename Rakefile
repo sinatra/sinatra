@@ -8,7 +8,6 @@ require 'date'
 task default: :test
 task spec: :test
 
-CLEAN.include '**/*.rbc'
 
 def source_version
   @source_version ||= File.read(File.expand_path('VERSION', __dir__)).strip
@@ -54,6 +53,7 @@ namespace :test do
     Rake::Task['test'].invoke
   end
 end
+CLEAN.include('coverage')
 
 # Website =============================================================
 
