@@ -47,7 +47,7 @@ class IntegrationTest < Minitest::Test
     }ix
 
     # because Net HTTP Server logs to $stderr by default
-    assert_match exp, server.log unless server.net_http_server? || server.rainbows?
+    assert_match exp, server.log unless server.net_http_server?
   end
 
   it 'does not generate warnings' do
