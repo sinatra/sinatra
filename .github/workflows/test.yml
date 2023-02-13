@@ -115,12 +115,12 @@ jobs:
         rubygems: ${{ matrix.ruby == '3.0' && 'latest' || 'default' }}
 
     - name: Run sinatra tests
-      continue-on-error: true
+      continue-on-error: ${{ matrix.allow-failure || false }}
       id: tests
       run: bundle exec rake
 
     - name: Run sinatra-contrib tests
-      continue-on-error: true
+      continue-on-error: ${{ matrix.allow-failure || false }}
       id: contrib-tests
       working-directory: sinatra-contrib
       run: |
