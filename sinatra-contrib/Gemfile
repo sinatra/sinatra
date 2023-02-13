@@ -32,12 +32,14 @@ group :development, :test do
   gem 'multi_json'
 end
 
-# Allows stuff like `tilt=1.2.2 bundle install` or `tilt=master ...`.
-# Used by the CI.
-repos = { 'tilt' => 'rtomayko/tilt', 'rack' => 'rack/rack' }
-%w[tilt rack].each do |lib|
-  dep = (ENV[lib] || 'stable').sub "#{lib}-", ''
-  dep = nil if dep == 'stable'
-  dep = { github: repos[lib], branch: dep } if dep && dep !~ (/(\d+\.?)+(\d+)?/)
-  gem lib, dep if dep
-end
+rack_version = ENV['rack'].to_s
+rack_version = nil if rack_version.empty? || (rack_version == 'stable')
+rack_version = { github: 'rack/rack' } if rack_version == 'latest'
+gem 'rack', rack_version
+
+# tilt may move to https://github.com/jeremyevans/tilt
+# https://github.com/rtomayko/tilt/pull/394#issuecomment-1428522576
+tilt_version = ENV['tilt'].to_s
+tilt_version = nil if tilt_version.empty? || (tilt_version == 'stable')
+tilt_version = { github: 'rtomayko/tilt' } if tilt_version == 'latest'
+gem 'tilt', tilt_version
