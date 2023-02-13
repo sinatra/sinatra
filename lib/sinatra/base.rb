@@ -291,7 +291,7 @@ module Sinatra
       elsif value
         # Rack 2.0 returns a Rack::File::Iterator here instead of
         # Rack::File as it was in the previous API.
-        unless request.head? || value.is_a?(Rack::File::Iterator) || value.is_a?(Stream)
+        unless request.head? || value.is_a?(Rack::Files::Iterator) || value.is_a?(Stream)
           headers.delete 'Content-Length'
         end
         response.body = value
@@ -429,7 +429,7 @@ module Sinatra
 
       last_modified opts[:last_modified] if opts[:last_modified]
 
-      file   = Rack::File.new(File.dirname(settings.app_file))
+      file   = Rack::Files.new(File.dirname(settings.app_file))
       result = file.serving(request, path)
 
       result[1].each { |k, v| headers[k] ||= v }
