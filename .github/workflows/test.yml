@@ -25,26 +25,26 @@ jobs:
         rack:
           - '~> 2'
         tilt:
-          - '~> 2.0'
+          - '~> 2.0.0'
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
         ruby: [2.6, 2.7, '3.0', 3.1, 3.2, truffleruby]
         include:
           # Puma
-          - { ruby: 3.1, rack: '~> 2', puma: '~> 5',   tilt: '~> 2.0' }
-          - { ruby: 3.2, rack: '~> 2', puma: '~> 6.0', tilt: '~> 2.0' }
+          - { ruby: 3.1, rack: '~> 2', puma: '~> 5',   tilt: '~> 2.0.0' }
+          - { ruby: 3.2, rack: '~> 2', puma: '~> 6.0', tilt: '~> 2.0.0' }
           # Puma head
-          - { ruby: 3.2, rack: '~> 2', puma: latest,   tilt: '~> 2.0' }
+          - { ruby: 3.2, rack: '~> 2', puma: latest,   tilt: '~> 2.0.0' }
           # Tilt
           - { ruby: 3.1, rack: '~> 2', puma: latest,   tilt: '~> 2', allow-failure: true }
           - { ruby: 3.2, rack: '~> 2', puma: latest,   tilt: latest, allow-failure: true }
           # Due to flaky tests, see https://github.com/sinatra/sinatra/pull/1870
-          - { ruby: jruby-9.3, rack: '~> 2', puma: stable, tilt: '~> 2.0', allow-failure: true }
+          - { ruby: jruby-9.3, rack: '~> 2', puma: stable, tilt: '~> 2.0.0', allow-failure: true }
           # Due to https://github.com/jruby/jruby/issues/7647
-          - { ruby: jruby-9.4, rack: '~> 2', puma: stable, tilt: '~> 2.0', allow-failure: true }
+          - { ruby: jruby-9.4, rack: '~> 2', puma: stable, tilt: '~> 2.0.0', allow-failure: true }
           # Never fail our build due to problems with head
-          - { ruby: ruby-head,        rack: '~> 2', puma: stable, tilt: '~> 2.0', allow-failure: true }
-          - { ruby: jruby-head,       rack: '~> 2', puma: stable, tilt: '~> 2.0', allow-failure: true }
-          - { ruby: truffleruby-head, rack: '~> 2', puma: stable, tilt: '~> 2.0', allow-failure: true }
+          - { ruby: ruby-head,        rack: '~> 2', puma: stable, tilt: '~> 2.0.0', allow-failure: true }
+          - { ruby: jruby-head,       rack: '~> 2', puma: stable, tilt: '~> 2.0.0', allow-failure: true }
+          - { ruby: truffleruby-head, rack: '~> 2', puma: stable, tilt: '~> 2.0.0', allow-failure: true }
     env:
       rack: ${{ matrix.rack }}
       puma: ${{ matrix.puma }}
