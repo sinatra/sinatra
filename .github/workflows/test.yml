@@ -48,6 +48,7 @@ jobs:
     env:
       rack: ${{ matrix.rack }}
       puma: ${{ matrix.puma }}
+      tilt: ${{ matrix.tilt }}
     steps:
     - name: Install dependencies
       run: |
