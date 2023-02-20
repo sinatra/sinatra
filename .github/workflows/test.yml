@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   test:
-    name: ${{ matrix.ruby }} (Rack ${{ matrix.rack }}, Puma ${{ matrix.puma }}, Tilt ${{ matrix.puma }})
+    name: ${{ matrix.ruby }} (Rack ${{ matrix.rack }}, Puma ${{ matrix.puma }}, Tilt ${{ matrix.tilt }})
     permissions:
       contents: read #  to fetch code (actions/checkout)
       actions: read #  to list jobs for workflow run (8398a7/action-slack)
