@@ -33,7 +33,7 @@ jobs:
           - { ruby: 3.1, rack: '~> 2', puma: '~> 5',   tilt: '~> 2.0.0' }
           - { ruby: 3.2, rack: '~> 2', puma: '~> 6.0', tilt: '~> 2.0.0' }
           # Puma head
-          - { ruby: 3.2, rack: '~> 2', puma: latest,   tilt: '~> 2.0.0' }
+          - { ruby: 3.2, rack: '~> 2', puma: latest,   tilt: '~> 2.0.0', allow-failure: true }
           # Tilt
           - { ruby: 3.1, rack: '~> 2', puma: latest,   tilt: '~> 2', allow-failure: true }
           - { ruby: 3.2, rack: '~> 2', puma: latest,   tilt: latest, allow-failure: true }
