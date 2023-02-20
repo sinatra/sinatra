@@ -37,9 +37,7 @@ rack_version = nil if rack_version.empty? || (rack_version == 'stable')
 rack_version = { github: 'rack/rack' } if rack_version == 'latest'
 gem 'rack', rack_version
 
-# tilt may move to https://github.com/jeremyevans/tilt
-# https://github.com/rtomayko/tilt/pull/394#issuecomment-1428522576
 tilt_version = ENV['tilt'].to_s
 tilt_version = nil if tilt_version.empty? || (tilt_version == 'stable')
-tilt_version = { github: 'rtomayko/tilt' } if tilt_version == 'latest'
+tilt_version = { github: 'jeremyevans/tilt' } if tilt_version == 'latest'
 gem 'tilt', tilt_version
