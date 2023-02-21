@@ -15,12 +15,12 @@ gem 'rake'
 
 rack_version = ENV['rack'].to_s
 rack_version = nil if rack_version.empty? || (rack_version == 'stable')
-rack_version = { github: 'rack/rack' } if rack_version == 'latest'
+rack_version = { github: 'rack/rack' } if rack_version == 'head'
 gem 'rack', rack_version
 
 puma_version = ENV['puma'].to_s
 puma_version = nil if puma_version.empty? || (puma_version == 'stable')
-puma_version = { github: 'puma/puma' } if puma_version == 'latest'
+puma_version = { github: 'puma/puma' } if puma_version == 'head'
 gem 'puma', puma_version
 
 gem 'minitest', '~> 5.0'

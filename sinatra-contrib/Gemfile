@@ -34,10 +34,10 @@ end
 
 rack_version = ENV['rack'].to_s
 rack_version = nil if rack_version.empty? || (rack_version == 'stable')
-rack_version = { github: 'rack/rack' } if rack_version == 'latest'
+rack_version = { github: 'rack/rack' } if rack_version == 'head'
 gem 'rack', rack_version
 
 tilt_version = ENV['tilt'].to_s
 tilt_version = nil if tilt_version.empty? || (tilt_version == 'stable')
-tilt_version = { github: 'jeremyevans/tilt' } if tilt_version == 'latest'
+tilt_version = { github: 'jeremyevans/tilt' } if tilt_version == 'head'
 gem 'tilt', tilt_version

@@ -32,10 +32,10 @@ jobs:
           # Puma
           - { ruby: 3.1, rack: '~> 2', puma: '~> 5',   tilt: '~> 2.0.0' }
           - { ruby: 3.2, rack: '~> 2', puma: '~> 6.0', tilt: '~> 2.0.0' }
-          - { ruby: 3.2, rack: '~> 2', puma: latest,   tilt: '~> 2.0.0', allow-failure: true }
+          - { ruby: 3.2, rack: '~> 2', puma: head,     tilt: '~> 2.0.0', allow-failure: true }
           # Tilt
-          - { ruby: 3.1, rack: '~> 2', puma: stable,   tilt: '~> 2', allow-failure: true }
-          - { ruby: 3.2, rack: '~> 2', puma: stable,   tilt: latest, allow-failure: true }
+          - { ruby: 3.1, rack: '~> 2', puma: stable,   tilt: '~> 2',     allow-failure: true }
+          - { ruby: 3.2, rack: '~> 2', puma: stable,   tilt: head,       allow-failure: true }
           # Due to flaky tests, see https://github.com/sinatra/sinatra/pull/1870
           - { ruby: jruby-9.3, rack: '~> 2', puma: stable, tilt: '~> 2.0.0', allow-failure: true }
           # Due to https://github.com/jruby/jruby/issues/7647
