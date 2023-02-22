@@ -20,7 +20,7 @@ get '/stream' do
   stream do |out|
     sleep 0.1
     out << "a"
-    sleep 1.2
+    sleep 1.25
     out << "b"
   end
 end
