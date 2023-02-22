@@ -28,15 +28,17 @@ class IntegrationTest < Minitest::Test
 
   it 'streams' do
     next if server.webrick? or server.trinidad?
-    times, chunks = [Time.now], []
+    times, chunks = [Process.clock_gettime(Process::CLOCK_MONOTONIC)], []
     server.get_stream do |chunk|
       next if chunk.empty?
       chunks << chunk
-      times << Time.now
+      times << Process.clock_gettime(Process::CLOCK_MONOTONIC)
     end
     assert_equal ["a", "b"], chunks
-    assert times[1] - times[0] < 1
-    assert times[2] - times[1] > 1
+    int1 = (times[1] - times[0]).round 2
+    int2 = (times[2] - times[1]).round 2
+    assert_operator 1, :>, int1
+    assert_operator 1, :<, int2
   end
 
   it 'starts the correct server' do

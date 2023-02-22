@@ -35,6 +35,7 @@ module IntegrationHelper
 
     def initialize(server, port, async)
       @installed, @pipe, @server, @port = nil, nil, server, port
+      ENV['PUMA_MIN_THREADS'] = '1' if server == 'puma'
       if async
         Server.all_async << self
       else
