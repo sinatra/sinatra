@@ -289,9 +289,7 @@ module Sinatra
         def block.each; yield(call) end
         response.body = block
       elsif value
-        # Rack 2.0 returns a Rack::File::Iterator here instead of
-        # Rack::File as it was in the previous API.
-        unless request.head? || value.is_a?(Rack::File::Iterator) || value.is_a?(Stream)
+        unless request.head? || value.is_a?(Rack::Files::Iterator) || value.is_a?(Stream)
           headers.delete 'content-length'
         end
         response.body = value
