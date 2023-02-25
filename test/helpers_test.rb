@@ -681,11 +681,13 @@ class HelpersTest < Minitest::Test
           assert_equal content_type(:foo),    'text/foo;charset=utf-8'
           assert_equal content_type(:xml),    'application/xml;charset=utf-8'
           assert_equal content_type(:xhtml),  'application/xhtml+xml;charset=utf-8'
-          assert_equal content_type(:js),     'application/javascript;charset=utf-8'
           assert_equal content_type(:json),   'application/json'
           assert_equal content_type(:bar),    'application/bar'
           assert_equal content_type(:png),    'image/png'
           assert_equal content_type(:baz),    'application/baz;charset=utf-8'
+          # Changed to "text/javascript" in Rack >3.0
+          # https://github.com/sinatra/sinatra/pull/1857#issuecomment-1445062212
+          assert_match %r{^application|text/javascript;charset=utf-8$}, content_type(:js)
           tests_ran = true
           "done"
         end

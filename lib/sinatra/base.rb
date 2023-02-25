@@ -1461,7 +1461,13 @@ module Sinatra
       #   mime_types :js   # => ['application/javascript', 'text/javascript']
       def mime_types(type)
         type = mime_type type
-        type =~ %r{^application/(xml|javascript)$} ? [type, "text/#{$1}"] : [type]
+        if type =~ %r{^application/(xml|javascript)$}
+          [type, "text/#{$1}"]
+        elsif type =~ %r{^text/(xml|javascript)$}
+          [type, "application/#{$1}"]
+        else
+          [type]
+        end
       end
 
       # Define a before filter; runs before all requests within the same
