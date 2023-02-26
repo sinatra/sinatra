@@ -1849,7 +1849,8 @@ module Sinatra
       require 'securerandom'
       set :session_secret, SecureRandom.hex(64)
     rescue LoadError, NotImplementedError, RuntimeError
-      # SecureRandom raises a NotImplementedError if no random device is available, or RuntimeError if urandom is not available
+      # SecureRandom raises a NotImplementedError if no random device is available
+      # RuntimeError raised due to broken openssl backend: https://bugs.ruby-lang.org/issues/19230
       set :session_secret, format('%064x', Kernel.rand((2**256) - 1))
     end
 
