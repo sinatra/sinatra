@@ -1845,6 +1845,12 @@ class HelpersTest < Minitest::Test
       assert_equal 'http://example.org/foo/bar', body
     end
 
+    it 'handles integer input' do
+      mock_app { get('/') { uri 123 }}
+      get '/'
+      assert_equal 'http://example.org/123', body
+    end
+
     it 'handles absolute URIs' do
       mock_app { get('/') { uri 'http://google.com' }}
       get '/'
