@@ -2,6 +2,12 @@
 
 * _Your new feature here._
 
+* New: Add support to keep open streaming connections with Puma [#1858](https://github.com/sinatra/sinatra/pull/1858) by Jordan Owens
+
+* Fix: Avoid crash in `uri` helper on Integer input [#1890](https://github.com/sinatra/sinatra/pull/1890) by Patrik Ragnarsson
+
+* Fix: Rescue `RuntimeError` when trying to use `SecureRandom` [#1888](https://github.com/sinatra/sinatra/pull/1888) by Stefan Sundin
+
 ## 3.0.5 / 2022-12-16
 
 * Fix: Add Zeitwerk compatibility. [#1831](https://github.com/sinatra/sinatra/pull/1831) by Dawid Janczak
