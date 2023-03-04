@@ -2,6 +2,7 @@
 
 # external dependencies
 require 'rack'
+require 'rackup'
 require 'tilt'
 require 'rack/protection'
 require 'mustermann'
@@ -1599,7 +1600,7 @@ module Sinatra
         return if running?
 
         set options
-        handler         = Rack::Handler.pick(server)
+        handler         = Rackup::Handler.pick(server)
         handler_name    = handler.name.gsub(/.*::/, '')
         server_settings = settings.respond_to?(:server_settings) ? settings.server_settings : {}
         server_settings.merge!(Port: port, Host: bind)
