@@ -36,7 +36,7 @@ RubyGems 2.0 or newer is required to protect against public gem pushes. You can 
 
   s.metadata = {
     'source_code_uri' => 'https://github.com/sinatra/sinatra',
-    'changelog_uri' => 'https://github.com/sinatra/sinatra/blob/master/CHANGELOG.md',
+    'changelog_uri' => 'https://github.com/sinatra/sinatra/blob/main/CHANGELOG.md',
     'homepage_uri' => 'http://sinatrarb.com/',
     'bug_tracker_uri' => 'https://github.com/sinatra/sinatra/issues',
     'mailing_list_uri' => 'http://groups.google.com/group/sinatrarb',

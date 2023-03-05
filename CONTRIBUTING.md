@@ -65,21 +65,21 @@ track patch requests.
   also has its own [Git repository](http://github.com/sinatra/sinatra-recipes).
 
 * [The Introduction](http://www.sinatrarb.com/intro.html) is generated from
-  Sinatra's [README file](http://github.com/sinatra/sinatra/blob/master/README.md).
+  Sinatra's [README file](http://github.com/sinatra/sinatra/blob/main/README.md).
 
 * If you want to help translating the documentation, the README is already
   available in
-  [Japanese](http://github.com/sinatra/sinatra/blob/master/README.ja.md),
-  [German](http://github.com/sinatra/sinatra/blob/master/README.de.md),
-  [Chinese](https://github.com/sinatra/sinatra/blob/master/README.zh.md),
-  [Russian](https://github.com/sinatra/sinatra/blob/master/README.ru.md),
-  [European](https://github.com/sinatra/sinatra/blob/master/README.pt-pt.md) and
-  [Brazilian](https://github.com/sinatra/sinatra/blob/master/README.pt-br.md)
+  [Japanese](http://github.com/sinatra/sinatra/blob/main/README.ja.md),
+  [German](http://github.com/sinatra/sinatra/blob/main/README.de.md),
+  [Chinese](https://github.com/sinatra/sinatra/blob/main/README.zh.md),
+  [Russian](https://github.com/sinatra/sinatra/blob/main/README.ru.md),
+  [European](https://github.com/sinatra/sinatra/blob/main/README.pt-pt.md) and
+  [Brazilian](https://github.com/sinatra/sinatra/blob/main/README.pt-br.md)
   Portuguese,
-  [French](https://github.com/sinatra/sinatra/blob/master/README.fr.md),
-  [Spanish](https://github.com/sinatra/sinatra/blob/master/README.es.md),
-  [Korean](https://github.com/sinatra/sinatra/blob/master/README.ko.md), and
-  [Hungarian](https://github.com/sinatra/sinatra/blob/master/README.hu.md).
+  [French](https://github.com/sinatra/sinatra/blob/main/README.fr.md),
+  [Spanish](https://github.com/sinatra/sinatra/blob/main/README.es.md),
+  [Korean](https://github.com/sinatra/sinatra/blob/main/README.ko.md), and
+  [Hungarian](https://github.com/sinatra/sinatra/blob/main/README.hu.md).
   The translations tend to fall behind the English version. Translations into
   other languages would also be appreciated.
 

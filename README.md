@@ -1933,7 +1933,7 @@ end
 ### Configuring attack protection
 
 Sinatra is using
-[Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme) to
+[Rack::Protection](https://github.com/sinatra/sinatra/tree/main/rack-protection#readme) to
 defend your application against common, opportunistic attacks. You can
 easily disable this behavior (which will open up your application to tons
 of common vulnerabilities):
@@ -2838,7 +2838,7 @@ Running Sinatra on a not officially supported Ruby flavor means that if things o
 ## The Bleeding Edge
 
 If you would like to use Sinatra's latest bleeding-edge code, feel free
-to run your application against the master branch, it should be rather
+to run your application against the main branch, it should be rather
 stable.
 
 We also push out prerelease gems from time to time, so you can do a
