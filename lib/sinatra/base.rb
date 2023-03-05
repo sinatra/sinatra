@@ -19,7 +19,7 @@ require 'sinatra/version'
 
 module Sinatra
   # The request object. See Rack::Request for more info:
-  # http://rubydoc.info/github/rack/rack/master/Rack/Request
+  # https://rubydoc.info/github/rack/rack/main/Rack/Request
   class Request < Rack::Request
     HEADER_PARAM = /\s*[\w.]+=(?:[\w.]+|"(?:[^"\\]|\\.)*")?\s*/.freeze
     HEADER_VALUE_WITH_PARAMS = %r{(?:(?:\w+|\*)/(?:\w+(?:\.|-|\+)?|\*)*)\s*(?:;#{HEADER_PARAM})*}.freeze
@@ -158,8 +158,8 @@ module Sinatra
 
   # The response object. See Rack::Response and Rack::Response::Helpers for
   # more info:
-  # http://rubydoc.info/github/rack/rack/master/Rack/Response
-  # http://rubydoc.info/github/rack/rack/master/Rack/Response/Helpers
+  # https://rubydoc.info/github/rack/rack/main/Rack/Response
+  # https://rubydoc.info/github/rack/rack/main/Rack/Response/Helpers
   class Response < Rack::Response
     DROP_BODY_RESPONSES = [204, 304].freeze
 
