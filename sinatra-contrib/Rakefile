@@ -69,7 +69,7 @@ task release: :gemspec do
     gem push sinatra-contrib*.gem  &&
     git commit --allow-empty -a -m '#{Sinatra::Contrib::VERSION} release'  &&
     git tag -s v#{Sinatra::Contrib::VERSION} -m '#{Sinatra::Contrib::VERSION} release'  &&
-    git push && (git push origin master || true) &&
+    git push && (git push origin main || true) &&
     git push --tags && (git push origin --tags || true)
   SH
 end
