@@ -18,7 +18,7 @@ group :development, :test do
 
   platform :jruby, :ruby do
     gem 'hamlit', '>= 3'
-    gem 'liquid', '~> 2.6.x'
+    gem 'liquid'
     # Use main until there's a slim release that can be used with Tilt 2.1.0
     # https://github.com/slim-template/slim/pull/910
     gem 'slim', github: 'slim-template/slim'
