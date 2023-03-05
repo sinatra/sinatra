@@ -31,7 +31,6 @@ jobs:
         include:
           # Puma
           - { ruby: 3.1, rack: '~> 2', puma: '~> 5',   tilt: stable }
-          - { ruby: 3.2, rack: '~> 2', puma: '~> 6.0', tilt: stable }
           - { ruby: 3.2, rack: '~> 2', puma: head,     tilt: stable, allow-failure: true }
           # Tilt
           - { ruby: 3.2, rack: '~> 2', puma: stable,   tilt: head, allow-failure: true }
