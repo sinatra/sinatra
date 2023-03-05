@@ -25,7 +25,7 @@ module Sinatra
     #
     # Body of last_response
     #
-    # @see http://www.rubydoc.info/github/rack/rack/master/Rack/Response#body-instance_method
+    # @see https://www.rubydoc.info/github/rack/rack/main/Rack/Response#body-instance_method
     # @return [String] body of the last response
 
     # @!method headers
@@ -104,7 +104,7 @@ module Sinatra
     # @!group Instance Methods delegated to rack_mock_session
     # @!method cookie_jar
     #
-    # Returns a {http://www.rubydoc.info/github/rack-test/rack-test/Rack/Test/CookieJar Rack::Test::CookieJar}.
+    # Returns a {https://www.rubydoc.info/github/rack/rack-test/Rack/Test/CookieJar Rack::Test::CookieJar}.
     #
     # @return [Rack::Test::CookieJar]
     def_delegators :rack_mock_session, :cookie_jar

@@ -2319,7 +2319,7 @@ end
 ```
 
 The semantics of `use` are identical to those defined for the
-[Rack::Builder](http://www.rubydoc.info/github/rack/rack/master/Rack/Builder) DSL
+[Rack::Builder](https://www.rubydoc.info/github/rack/rack/main/Rack/Builder) DSL
 (most frequently used from rackup files). For example, the `use` method
 accepts multiple/variable args as well as blocks:
 
@@ -2335,7 +2335,7 @@ many of these components automatically based on configuration so you
 typically don't have to `use` them explicitly.
 
 You can find useful middleware in
-[rack](https://github.com/rack/rack/tree/master/lib/rack),
+[rack](https://github.com/rack/rack/tree/main/lib/rack),
 [rack-contrib](https://github.com/rack/rack-contrib#readme),
 or in the [Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
 
@@ -2343,7 +2343,7 @@ or in the [Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
 
 Sinatra tests can be written using any Rack-based testing library or
 framework.
-[Rack::Test](http://www.rubydoc.info/github/brynary/rack-test/master/frames)
+[Rack::Test](https://www.rubydoc.info/github/rack/rack-test/main/frames)
 is recommended:
 
 ```ruby
@@ -2887,9 +2887,9 @@ SemVerTag.
 
 ## Further Reading
 
-* [Project Website](http://www.sinatrarb.com/) - Additional documentation,
+* [Project Website](https://sinatrarb.com/) - Additional documentation,
   news, and links to other resources.
-* [Contributing](http://www.sinatrarb.com/contributing) - Find a bug? Need
+* [Contributing](https://sinatrarb.com/contributing) - Find a bug? Need
   help? Have a patch?
 * [Issue tracker](https://github.com/sinatra/sinatra/issues)
 * [Twitter](https://twitter.com/sinatra)
@@ -2899,7 +2899,7 @@ SemVerTag.
 * [Sinatra Book](https://github.com/sinatra/sinatra-book) - Cookbook Tutorial
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) - Community contributed
   recipes
-* API documentation for the [latest release](http://www.rubydoc.info/gems/sinatra)
-  or the [current HEAD](http://www.rubydoc.info/github/sinatra/sinatra) on
-  [RubyDoc](http://www.rubydoc.info/)
+* API documentation for the [latest release](https://www.rubydoc.info/gems/sinatra)
+  or the [current HEAD](https://www.rubydoc.info/github/sinatra/sinatra) on
+  [RubyDoc](https://www.rubydoc.info/)
 * [CI Actions](https://github.com/sinatra/sinatra/actions)

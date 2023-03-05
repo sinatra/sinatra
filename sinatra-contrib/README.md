@@ -157,7 +157,7 @@ end
 ### Documentation
 
 For more info check the [official docs](http://www.sinatrarb.com/contrib/) and
-[api docs](http://www.rubydoc.info/gems/sinatra-contrib).
+[api docs](https://www.rubydoc.info/gems/sinatra-contrib).
 
 [sinatra-reloader]: http://www.sinatrarb.com/contrib/reloader
 [sinatra-namespace]: http://www.sinatrarb.com/contrib/namespace

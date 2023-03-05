@@ -21,7 +21,7 @@ Dir[File.expand_path('support/**/*.rb', __dir__)].sort.each { |f| require f }
 # The `.rspec` file also contains a few flags that are not defaults but that
 # users commonly want.
 #
-# See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+# See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   # The settings below are suggested to provide a good initial experience
   # with RSpec, but feel free to customize to your heart's content.
