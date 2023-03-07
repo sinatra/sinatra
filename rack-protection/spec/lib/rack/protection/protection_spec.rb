@@ -52,6 +52,18 @@ RSpec.describe Rack::Protection do
       expect(io.string).not_to match(/prevented.*Origin/)
     end
 
+    it 'drops the session and warns if reaction is to drop_session' do
+      io = StringIO.new
+      mock_app do
+        use Rack::Protection, reaction: :drop_session, logger: Logger.new(io)
+        run DummyApp
+      end
+      session = { foo: :bar }
+      post('/', {}, 'rack.session' => session, 'HTTP_ORIGIN' => 'http://malicious.com')
+      expect(io.string).to match(/session dropped by Rack::Protection::HttpOrigin/)
+      expect(session).not_to have_key(:foo)
+    end
+
     it 'passes errors to reaction method if specified' do
       io = StringIO.new
       Rack::Protection::Base.send(:define_method, :special) { |*args| io << args.inspect }
