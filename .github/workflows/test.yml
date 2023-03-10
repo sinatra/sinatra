@@ -86,15 +86,6 @@ jobs:
       run: |
         bundle install --jobs=3 --retry=3
         bundle exec rake
-
-    - uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        fields: repo,message,commit,author,ref,job,took # selectable (default: repo,message)
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
-        MATRIX_CONTEXT: ${{ toJson(matrix) }} # required
-      if: failure() && env.SLACK_WEBHOOK_URL
     # because continue-on-error marks the steps as pass even if they fail
     - name: "setup-ruby (bundle install) outcome: ${{ steps.setup-ruby.outcome }}"
       run: ""
@@ -104,3 +95,12 @@ jobs:
       run: ""
     - name: "rack-protection tests outcome: ${{ steps.protection-tests.outcome }}"
       run: ""
+
+  notify:
+    uses: zzak/action-discord/.github/workflows/notify.yml@main
+    if: ${{ github.ref_name == 'main' }}
+    needs: test
+    secrets:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+    with:
+      result: ${{ needs.test.result }}
