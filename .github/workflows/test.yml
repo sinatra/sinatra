@@ -98,7 +98,7 @@ jobs:
 
   notify:
     uses: zzak/action-discord/.github/workflows/notify.yml@main
-    if: ${{ github.ref_name == 'main' }}
+    if: github.ref_name == 'main'
     needs: test
     secrets:
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
