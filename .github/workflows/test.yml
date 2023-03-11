@@ -101,7 +101,6 @@ jobs:
     if: always() && github.ref_name == 'main'
     needs: test
     steps:
-      - uses: zzak/action-discord@v3
+      - uses: zzak/action-discord@v4
         with:
-          result: ${{ needs.test.result }}
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
