@@ -229,7 +229,7 @@ module Sinatra
       attr_reader :base, :templates
 
       ALLOWED_ENGINES = %i[
-        erb erubi haml hamlit builder nokogiri
+        erb erubi haml hamlit builder nokogiri sass scss
         liquid markdown rdoc asciidoc markaby
         rabl slim yajl
       ]

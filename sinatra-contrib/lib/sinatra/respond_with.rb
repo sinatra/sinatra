@@ -249,6 +249,7 @@ module Sinatra
 
     def self.engines
       engines = {
+        css: %i[sass scss],
         xml: %i[builder nokogiri],
         html: %i[erb erubi haml hamlit slim liquid
                  mab markdown rdoc],
