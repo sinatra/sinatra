@@ -1568,7 +1568,7 @@ module Sinatra
         set :running_server, nil
         set :handler_name, nil
 
-        on_stop_callback.call
+        on_stop_callback.call if !on_stop_callback.nil?
       end
 
       alias stop! quit!
@@ -1656,8 +1656,7 @@ module Sinatra
           set :running_server, server
           set :handler_name,   handler_name
           server.threaded = settings.threaded if server.respond_to? :threaded=
-
-          on_start_callback.call
+          on_start_callback.call if !on_start_callback.nil?
           yield server if block_given?
         end
       end
