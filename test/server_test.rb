@@ -27,6 +27,14 @@ module Rack::Handler
   register 'mock', 'Rack::Handler::Mock'
 end
 
+class EventHookTest
+  def self.start
+  end
+
+  def self.stop
+  end
+end
+
 class ServerTest < Minitest::Test
   setup do
     mock_app do
@@ -43,6 +51,37 @@ class ServerTest < Minitest::Test
 
   it "locates the appropriate Rack handler and calls ::run" do
     @app.run!
+  end
+
+  context "event hooks" do
+    it "runs the provided code when the server starts" do
+      @app.on_start do
+        EventHookTest.start
+      end
+      mock = MiniTest::Mock.new
+      mock.expect(:call, nil)
+
+      EventHookTest.stub(:start, mock) do
+        @app.run!
+      end
+
+      assert_mock mock
+    end
+
+    it "runs the provided code when the server stops" do
+      @app.on_stop do
+        EventHookTest.stop
+      end
+      mock = MiniTest::Mock.new
+      mock.expect(:call, nil)
+
+      EventHookTest.stub(:stop, mock) do
+        @app.run!
+        @app.quit!
+      end
+
+      assert_mock mock
+    end
   end
 
   it "sets options on the app before running" do
