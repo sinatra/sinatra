@@ -115,6 +115,18 @@ class MappedErrorTest < Minitest::Test
       end
       get '/'
       assert_equal 500, status
+      assert_equal "she's there.", body
+    end
+
+    it "uses the Exception handler before raising errors even when raise_errors is set" do
+      mock_app do
+        set :raise_errors, true
+        error(Exception) { "Parent handler" }
+        get('/') { raise FooError }
+      end
+      get '/'
+      assert_equal 500, status
+      assert_equal "Parent handler", body
     end
 
     it "never raises Sinatra::NotFound beyond the application" do
