@@ -2089,8 +2089,12 @@ set :protection, :session => true
 
   <dt>raise_errors</dt>
     <dd>
-      Raise exceptions (will stop application). Enabled by default when
+      Raise unhandled errors (will stop application). Enabled by default when
       <tt>environment</tt> is set to <tt>"test"</tt>, disabled otherwise.
+    </dd>
+    <dd>
+      Any explicitly defined error handlers always override this setting. See 
+      the "Error" section below.
     </dd>
 
   <dt>run</dt>
@@ -2240,6 +2244,14 @@ show exceptions option to `:after_handler`:
 set :show_exceptions, :after_handler
 ```
 
+A catch-all error handler can be defined with `error` and a block:
+
+```ruby
+error do
+  'Sorry there was a nasty error'
+end
+```
+
 The exception object can be obtained from the `sinatra.error` Rack variable:
 
 ```ruby
@@ -2248,7 +2260,7 @@ error do
 end
 ```
 
-Custom errors:
+Pass an error class as an argument to create handlers for custom errors:
 
 ```ruby
 error MyCustomError do
@@ -2293,6 +2305,44 @@ end
 Sinatra installs special `not_found` and `error` handlers when
 running under the development environment to display nice stack traces
 and additional debugging information in your browser.
+
+### Behavior with `raise_errors` option
+
+When `raise_errors` option is `true`, errors that are unhandled are raised 
+outside of the application. Additionally, any errors that would have been 
+caught by the catch-all error handler are raised.
+
+For example, consider the following configuration:
+
+```ruby
+# First handler
+error MyCustomError do
+  'A custom message'
+end
+
+# Second handler
+error do
+  'A catch-all message'
+end
+```
+
+If `raise_errors` is `false`:
+
+* When `MyCustomError` or descendant is raised, the first handler is invoked.
+  The HTTP response body will contain `"A custom message"` with status code 500.
+* When any other error is raised, the second handler is invoked. The HTTP 
+  response body will contain "A catch-all message" with status code 500.
+
+If `raise_errors` is `true`:
+
+* When `MyCustomError` or descendant is raised, the behavior is identical to 
+  when `raise_errors` is `false`, described above.
+* When any other error is raised, the second handler is *not* invoked, and 
+  the error is raised outside of the application.
+
+In the `test` environment, `raise_errors` is set to `true` by default. This 
+means that in order to write a test for a catch-all error handler, 
+`raise_errors` must temporarily be set to `false` for that particular test.
 
 ## Rack Middleware
 
