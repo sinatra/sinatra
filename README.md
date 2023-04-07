@@ -2339,6 +2339,13 @@ If `raise_errors` is `true`:
   when `raise_errors` is `false`, described above.
 * When any other error is raised, the second handler is *not* invoked, and 
   the error is raised outside of the application.
+  * If the environment is `production`, the HTTP response body will contain 
+    a generic error message, e.g. `"An unhandled lowlevel error occurred. The
+    application logs may have details."`
+  * If the environment is not `production`, the HTTP response body will contain
+    the verbose error backtrace.
+  * Regardless of environment, if `show_exceptions` is set to `:after_handler`, 
+    the HTTP response body will contain the verbose error backtrace.
 
 In the `test` environment, `raise_errors` is set to `true` by default. This 
 means that in order to write a test for a catch-all error handler, 
