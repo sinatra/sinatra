@@ -2329,9 +2329,9 @@ end
 If `raise_errors` is `false`:
 
 * When `MyCustomError` or descendant is raised, the first handler is invoked.
-  The HTTP response body will contain `"A custom message"` with status code 500.
+  The HTTP response body will contain `"A custom message"`.
 * When any other error is raised, the second handler is invoked. The HTTP 
-  response body will contain `"A catch-all message"` with status code 500.
+  response body will contain `"A catch-all message"`.
 
 If `raise_errors` is `true`:
 
