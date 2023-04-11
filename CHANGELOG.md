@@ -2,7 +2,9 @@
 
 * _Your new feature here._
 
-* New: Add support to keep open streaming connections with Puma [#1858](https://github.com/sinatra/sinatra/pull/1858) by Jordan Owens
+## 3.0.6 / 2023-04-11
+
+* Fix: Add support to keep open streaming connections with Puma [#1858](https://github.com/sinatra/sinatra/pull/1858) by Jordan Owens
 
 * Fix: Avoid crash in `uri` helper on Integer input [#1890](https://github.com/sinatra/sinatra/pull/1890) by Patrik Ragnarsson
 
