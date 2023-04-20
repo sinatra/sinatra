@@ -210,7 +210,7 @@ module Sinatra
       end
 
       def template_cache
-        super.fetch(:nested, @namespace) { Tilt::Cache.new }
+        super.fetch(:nested, @namespace) { TemplateCache.new }
       end
 
       def redirect_to(uri, *args)
