@@ -74,6 +74,7 @@ Prevented by:
 ## Cookie Tossing
 
 Prevented by:
+
 * [`Rack::Protection::CookieTossing`][cookie-tossing] (not included by `use Rack::Protection`)
 
 ## IP Spoofing
@@ -95,6 +96,7 @@ Prevented by:
 # Instrumentation
 
 Instrumentation is enabled by passing in an instrumenter as an option.
+
 ```
 use Rack::Protection, instrumenter: ActiveSupport::Notifications
 ```
