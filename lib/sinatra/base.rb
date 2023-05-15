@@ -1899,10 +1899,10 @@ module Sinatra
 
     ruby_engine = defined?(RUBY_ENGINE) && RUBY_ENGINE
 
-    server.unshift 'puma'
     server.unshift 'thin'     if ruby_engine != 'jruby'
     server.unshift 'falcon'   if ruby_engine != 'jruby'
     server.unshift 'trinidad' if ruby_engine == 'jruby'
+    server.unshift 'puma'
 
     set :absolute_redirects, true
     set :prefixed_redirects, false
