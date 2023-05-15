@@ -726,7 +726,7 @@ module Sinatra
   # Possible options are:
   #   :content_type   The content type to use, same arguments as content_type.
   #   :layout         If set to something falsy, no layout is rendered, otherwise
-  #                   the specified layout is used
+  #                   the specified layout is used (Ignored for `sass`)
   #   :layout_engine  Engine to use for rendering the layout.
   #   :locals         A hash with local variables that should be available
   #                   in the template
@@ -750,6 +750,20 @@ module Sinatra
 
     def haml(template, options = {}, locals = {}, &block)
       render(:haml, template, options, locals, &block)
+    end
+
+    def sass(template, options = {}, locals = {})
+      options[:default_content_type] = :css
+      options[:exclude_outvar] = true
+      options[:layout] = nil
+      render :sass, template, options, locals
+    end
+
+    def scss(template, options = {}, locals = {})
+      options[:default_content_type] = :css
+      options[:exclude_outvar] = true
+      options[:layout] = nil
+      render :scss, template, options, locals
     end
 
     def builder(template = nil, options = {}, locals = {}, &block)
@@ -862,7 +876,11 @@ module Sinatra
         catch(:layout_missing) { return render(layout_engine, layout, options, locals) { output } }
       end
 
-      output.extend(ContentTyped).content_type = content_type if content_type
+      if content_type
+        # sass-embedded returns a frozen string
+        output = +output
+        output.extend(ContentTyped).content_type = content_type
+      end
       output
     end
 

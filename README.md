@@ -54,6 +54,8 @@ pick up if available.
       - [Erb Templates](#erb-templates)
       - [Builder Templates](#builder-templates)
       - [Nokogiri Templates](#nokogiri-templates)
+      - [Sass Templates](#sass-templates)
+      - [Scss Templates](#scss-templates)
       - [Liquid Templates](#liquid-templates)
       - [Markdown Templates](#markdown-templates)
       - [RDoc Templates](#rdoc-templates)
@@ -649,6 +651,39 @@ It also takes a block for inline templates (see [example](#inline-templates)).
 
 It also takes a block for inline templates (see [example](#inline-templates)).
 
+#### Sass Templates
+
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="https://github.com/ntkme/sass-embedded-host-ruby" title="sass-embedded">sass-embedded</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><tt>.sass</tt></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><tt>sass :stylesheet, :style => :expanded</tt></td>
+  </tr>
+</table>
+
+#### Scss Templates
+
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="https://github.com/ntkme/sass-embedded-host-ruby" title="sass-embedded">sass-embedded</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><tt>.scss</tt></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><tt>scss :stylesheet, :style => :expanded</tt></td>
+  </tr>
+</table>
 
 #### Liquid Templates
 

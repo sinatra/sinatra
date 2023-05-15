@@ -50,6 +50,7 @@ gem 'rainbows', platforms: [:mri] # uses #fork
 gem 'rdiscount', platforms: [:ruby]
 gem 'rdoc'
 gem 'redcarpet', platforms: [:ruby]
+gem 'sass-embedded', '~> 1.54'
 gem 'simplecov', require: false
 gem 'slim', '~> 4'
 gem 'yajl-ruby', platforms: [:ruby]

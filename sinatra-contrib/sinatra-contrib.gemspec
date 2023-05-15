@@ -54,5 +54,6 @@ RubyGems 2.0 or newer is required to protect against public gem pushes. You can 
   s.add_development_dependency 'rake', '>= 12.3.3'
   s.add_development_dependency 'redcarpet'
   s.add_development_dependency 'rspec', '~> 3'
+  s.add_development_dependency 'sass-embedded', '~> 1.54'
   s.add_development_dependency 'slim'
 end
