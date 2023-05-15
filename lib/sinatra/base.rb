@@ -877,6 +877,7 @@ module Sinatra
       end
 
       if content_type
+        # sass-embedded returns a frozen string
         output = +output
         output.extend(ContentTyped).content_type = content_type
       end
