@@ -914,6 +914,35 @@ module Sinatra
     end
   end
 
+  # Extremely simple template cache implementation.
+  #   * Not thread-safe.
+  #   * Size is unbounded.
+  #   * Keys are not copied defensively, and should not be modified after
+  #     being passed to #fetch.  More specifically, the values returned by
+  #     key#hash and key#eql? should not change.
+  #
+  # Implementation copied from Tilt::Cache.
+  class TemplateCache
+    def initialize
+      @cache = {}
+    end
+
+    # Caches a value for key, or returns the previously cached value.
+    # If a value has been previously cached for key then it is
+    # returned. Otherwise, block is yielded to and its return value
+    # which may be nil, is cached under key and returned.
+    def fetch(*key)
+      @cache.fetch(key) do
+        @cache[key] = yield
+      end
+    end
+
+    # Clears the cache.
+    def clear
+      @cache = {}
+    end
+  end
+
   # Base class for all Sinatra applications and middleware.
   class Base
     include Rack::Utils
@@ -928,7 +957,7 @@ module Sinatra
     def initialize(app = nil, **_kwargs)
       super()
       @app = app
-      @template_cache = Tilt::Cache.new
+      @template_cache = TemplateCache.new
       @pinned_response = nil # whether a before! filter pinned the content-type
       yield self if block_given?
     end
