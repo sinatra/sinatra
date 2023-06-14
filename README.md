@@ -2230,7 +2230,7 @@ There are 2 lifecycle events currently exposed by Sinatra. One when the server s
 
 They can be used like this:
 
-```
+```ruby
 on_start do
   puts "===== Booting up ====="
 end
