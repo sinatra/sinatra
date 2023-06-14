@@ -2226,6 +2226,22 @@ set :protection, :session => true
 
 ## Lifecycle Events
 
+There are 2 lifecycle events currently exposed by Sinatra. One when the server starts and one when it stops.
+
+They can be used like this:
+
+```
+on_start do
+  puts "===== Booting up ====="
+end
+
+on_stop do
+  puts "===== Shutting down ====="
+end
+```
+
+Note that these callbacks only work when using Sinatra to start the web server.
+
 ## Environments
 
 There are three predefined `environments`: `"development"`,
