@@ -95,6 +95,7 @@ pick up if available.
   - [Configuration](#configuration)
     - [Configuring attack protection](#configuring-attack-protection)
     - [Available Settings](#available-settings)
+  - [Lifecycle Events](#lifecycle-events)
   - [Environments](#environments)
   - [Error Handling](#error-handling)
     - [Not Found](#not-found)
@@ -2222,6 +2223,8 @@ set :protection, :session => true
       Defaults to <tt>true</tt>.
     </dd>
 </dl>
+
+## Lifecycle Events
 
 ## Environments
 
