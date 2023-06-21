@@ -27,14 +27,6 @@ module Rack::Handler
   register 'mock', 'Rack::Handler::Mock'
 end
 
-class EventHookTest
-  def self.start
-  end
-
-  def self.stop
-  end
-end
-
 class ServerTest < Minitest::Test
   setup do
     mock_app do
@@ -54,14 +46,19 @@ class ServerTest < Minitest::Test
   end
 
   context "event hooks" do
+    dummy_class = Class.new do
+      def self.start_hook; end
+      def self.stop_hook; end
+    end
+
     it "runs the provided code when the server starts" do
       @app.on_start do
-        EventHookTest.start
+        dummy_class.start_hook
       end
       mock = MiniTest::Mock.new
       mock.expect(:call, nil)
 
-      EventHookTest.stub(:start, mock) do
+      dummy_class.stub(:start_hook, mock) do
         @app.run!
       end
 
@@ -70,12 +67,12 @@ class ServerTest < Minitest::Test
 
     it "runs the provided code when the server stops" do
       @app.on_stop do
-        EventHookTest.stop
+        dummy_class.stop_hook
       end
       mock = MiniTest::Mock.new
       mock.expect(:call, nil)
 
-      EventHookTest.stub(:stop, mock) do
+      dummy_class.stub(:stop_hook, mock) do
         @app.run!
         @app.quit!
       end
