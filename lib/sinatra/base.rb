@@ -1656,7 +1656,7 @@ module Sinatra
           set :running_server, server
           set :handler_name,   handler_name
           server.threaded = settings.threaded if server.respond_to? :threaded=
-          on_start_callback.call if !on_start_callback.nil?
+          on_start_callback.call unless on_start_callback.nil?
           yield server if block_given?
         end
       end
