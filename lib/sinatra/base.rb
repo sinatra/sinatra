@@ -1568,7 +1568,7 @@ module Sinatra
         set :running_server, nil
         set :handler_name, nil
 
-        on_stop_callback.call if !on_stop_callback.nil?
+        on_stop_callback.call unless on_stop_callback.nil?
       end
 
       alias stop! quit!
