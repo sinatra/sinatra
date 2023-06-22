@@ -31,6 +31,12 @@ gem 'yard'
 gem 'rack-protection', path: 'rack-protection'
 gem 'sinatra-contrib', path: 'sinatra-contrib'
 
+# traces 0.10.0 started to use Ruby 2.7 syntax without specifying required Ruby version
+# https://github.com/socketry/traces/pull/8#discussion_r1237988182
+# async-http 0.60.2 added traces 0.10.0 as dependency
+# https://github.com/socketry/async-http/pull/124/files#r1237988899
+gem 'traces', '< 0.10.0' if RUBY_VERSION >= '2.6.0' && RUBY_VERSION < '2.7.0'
+
 gem 'activesupport', '~> 6.1'
 
 gem 'asciidoctor'
