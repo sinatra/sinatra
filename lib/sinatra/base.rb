@@ -1277,7 +1277,7 @@ module Sinatra
         %r{zeitwerk/kernel\.rb}                             # Zeitwerk kernel#require decorator
       ].freeze
 
-      attr_reader :routes, :filters, :templates, :errors
+      attr_reader :routes, :filters, :templates, :errors, :on_start_callback, :on_stop_callback
 
       def callers_to_ignore
         CALLERS_TO_IGNORE
@@ -1470,6 +1470,14 @@ module Sinatra
         filters[type] << compile!(type, path, block, **options)
       end
 
+      def on_start(&on_start_callback)
+        @on_start_callback = on_start_callback
+      end
+
+      def on_stop(&on_stop_callback)
+        @on_stop_callback = on_stop_callback
+      end
+
       # Add a route condition. The route is considered non-matching when the
       # block returns false.
       def condition(name = "#{caller.first[/`.*'/]} condition", &block)
@@ -1559,6 +1567,8 @@ module Sinatra
         warn '== Sinatra has ended his set (crowd applauds)' unless suppress_messages?
         set :running_server, nil
         set :handler_name, nil
+
+        on_stop_callback.call unless on_stop_callback.nil?
       end
 
       alias stop! quit!
@@ -1646,7 +1656,7 @@ module Sinatra
           set :running_server, server
           set :handler_name,   handler_name
           server.threaded = settings.threaded if server.respond_to? :threaded=
-
+          on_start_callback.call unless on_start_callback.nil?
           yield server if block_given?
         end
       end
@@ -2037,7 +2047,7 @@ module Sinatra
     delegate :get, :patch, :put, :post, :delete, :head, :options, :link, :unlink,
              :template, :layout, :before, :after, :error, :not_found, :configure,
              :set, :mime_type, :enable, :disable, :use, :development?, :test?,
-             :production?, :helpers, :settings, :register
+             :production?, :helpers, :settings, :register, :on_start, :on_stop
 
     class << self
       attr_accessor :target

@@ -45,6 +45,42 @@ class ServerTest < Minitest::Test
     @app.run!
   end
 
+  context "event hooks" do
+    dummy_class = Class.new do
+      def self.start_hook; end
+      def self.stop_hook; end
+    end
+
+    it "runs the provided code when the server starts" do
+      @app.on_start do
+        dummy_class.start_hook
+      end
+      mock = MiniTest::Mock.new
+      mock.expect(:call, nil)
+
+      dummy_class.stub(:start_hook, mock) do
+        @app.run!
+      end
+
+      assert_mock mock
+    end
+
+    it "runs the provided code when the server stops" do
+      @app.on_stop do
+        dummy_class.stop_hook
+      end
+      mock = MiniTest::Mock.new
+      mock.expect(:call, nil)
+
+      dummy_class.stub(:stop_hook, mock) do
+        @app.run!
+        @app.quit!
+      end
+
+      assert_mock mock
+    end
+  end
+
   it "sets options on the app before running" do
     @app.run! :sessions => true
     assert @app.sessions?

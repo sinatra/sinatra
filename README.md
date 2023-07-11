@@ -95,6 +95,7 @@ pick up if available.
   - [Configuration](#configuration)
     - [Configuring attack protection](#configuring-attack-protection)
     - [Available Settings](#available-settings)
+  - [Lifecycle Events](#lifecycle-events)
   - [Environments](#environments)
   - [Error Handling](#error-handling)
     - [Not Found](#not-found)
@@ -2222,6 +2223,24 @@ set :protection, :session => true
       Defaults to <tt>true</tt>.
     </dd>
 </dl>
+
+## Lifecycle Events
+
+There are 2 lifecycle events currently exposed by Sinatra. One when the server starts and one when it stops.
+
+They can be used like this:
+
+```ruby
+on_start do
+  puts "===== Booting up ====="
+end
+
+on_stop do
+  puts "===== Shutting down ====="
+end
+```
+
+Note that these callbacks only work when using Sinatra to start the web server.
 
 ## Environments
 
