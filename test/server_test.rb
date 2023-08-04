@@ -55,7 +55,7 @@ class ServerTest < Minitest::Test
       @app.on_start do
         dummy_class.start_hook
       end
-      mock = MiniTest::Mock.new
+      mock = Minitest::Mock.new
       mock.expect(:call, nil)
 
       dummy_class.stub(:start_hook, mock) do
@@ -69,7 +69,7 @@ class ServerTest < Minitest::Test
       @app.on_stop do
         dummy_class.stop_hook
       end
-      mock = MiniTest::Mock.new
+      mock = Minitest::Mock.new
       mock.expect(:call, nil)
 
       dummy_class.stub(:stop_hook, mock) do
