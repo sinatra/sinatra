@@ -93,7 +93,13 @@ module Rack
       end
 
       def drop_session(env)
-        session(env).clear if session? env
+        return unless session? env
+
+        session(env).clear
+
+        return if ["1", "true"].include?(ENV["RACK_PROTECTION_SILENCE_DROP_SESSION_WARNING"])
+
+        warn env, "session dropped by #{self.class}"
       end
 
       def referrer(env)
