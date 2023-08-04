@@ -10,3 +10,4 @@
 /doc
 .bundle
 vendor
+*.gem
