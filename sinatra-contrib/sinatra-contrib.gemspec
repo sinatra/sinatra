@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.description = 'Collection of useful Sinatra extensions'
   s.homepage    = 'http://sinatrarb.com/contrib/'
   s.license     = 'MIT'
-  s.summary     = s.description
+  s.summary     = "#{s.description}."
   s.authors     = ['https://github.com/sinatra/sinatra/graphs/contributors']
   s.email       = 'sinatrarb@googlegroups.com'
   s.files       = Dir['lib/**/*.rb'] + [
