@@ -16,6 +16,7 @@
 
 * Fix: rack-protection: specify rack version requirement [#1932] by Patrik Ragnarsson
 
+[#1911]: https://github.com/sinatra/sinatra/pull/1911
 [#1913]: https://github.com/sinatra/sinatra/pull/1913
 [#1900]: https://github.com/sinatra/sinatra/pull/1900
 [#1924]: https://github.com/sinatra/sinatra/pull/1924
