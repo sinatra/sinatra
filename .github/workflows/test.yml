@@ -74,7 +74,6 @@ jobs:
         ruby: [2.6, 2.7, '3.0', 3.1, 3.2, 3.3, truffleruby]
         include:
           # Puma
-          - { ruby: 3.1, rack: stable, puma: '~> 5',   tilt: stable }
           - { ruby: 3.2, rack: stable, puma: head,     tilt: stable, allow-failure: true }
           # Tilt
           - { ruby: 3.2, rack: stable, puma: stable,   tilt: head, allow-failure: true }
