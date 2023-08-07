@@ -73,6 +73,8 @@ jobs:
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
         ruby: [2.6, 2.7, '3.0', 3.1, 3.2, 3.3, truffleruby]
         include:
+          # Rack
+          - { ruby: 3.2, rack: head,   puma: stable,   tilt: stable, allow-failure: true }
           # Puma
           - { ruby: 3.2, rack: stable, puma: head,     tilt: stable, allow-failure: true }
           # Tilt
