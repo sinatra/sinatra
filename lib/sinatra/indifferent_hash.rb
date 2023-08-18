@@ -186,6 +186,12 @@ module Sinatra
       dup.tap(&:compact!)
     end
 
+    def except(*keys)
+      keys.map!(&method(:convert_key))
+
+      super(*keys)
+    end
+
     private
 
     def convert_key(key)
