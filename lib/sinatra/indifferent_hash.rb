@@ -186,6 +186,12 @@ module Sinatra
       dup.tap(&:compact!)
     end
 
+    def except(*keys)
+      keys.map!(&method(:convert_key))
+
+      super(*keys)
+    end if Gem::Version.new(RUBY_VERSION) > Gem::Version.new("3.0")
+
     private
 
     def convert_key(key)
