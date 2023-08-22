@@ -6,7 +6,7 @@ After the initial reply to your report the security team will endeavor to keep y
 
 If you have not received a reply to your email within 48 hours, or have not heard from the security team for the past five days there are a few steps you can take:
 
-* Contact the current security coordinator [Zachary Scott](mailto:zzak@ruby-lang.org) directly
+* Reach out to us on [discord](https://discord.gg/ncjsfsNHh7)
 
 ## Disclosure Policy
 
