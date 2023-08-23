@@ -98,12 +98,9 @@ jobs:
     - name: "rack-protection tests outcome: ${{ steps.protection-tests.outcome }}"
       run: ""
 
-  notify:
-    runs-on: ubuntu-latest
-    if: always() && github.ref_name == 'main'
-    continue-on-error: true # always allow failure
-    needs: test
-    steps:
-      - uses: zzak/action-discord@v4
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+    - uses: zzak/action-discord@v6
+      if: failure() && github.ref_name == 'main'
+      continue-on-error: true # always allow failure
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        webhook: ${{ secrets.DISCORD_WEBHOOK }}
