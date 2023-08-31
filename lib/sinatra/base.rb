@@ -1995,7 +1995,7 @@ module Sinatra
           </head>
           <body>
             <h2>Sinatra doesn’t know this ditty.</h2>
-            <img src='#{uri '/__sinatra__/404.png'}'>
+            <img src='#{request.script_name}/__sinatra__/404.png'>
             <div id="c">
               Try this:
               <pre>#{Rack::Utils.escape_html(code)}</pre>
