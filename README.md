@@ -846,7 +846,7 @@ It also takes a block for inline templates (see [example](#inline-templates)).
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="http://slim-lang.com/" title="Slim Lang">Slim Lang</a></td>
+    <td><a href="https://slim-template.github.io/" title="Slim Lang">Slim Lang</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
