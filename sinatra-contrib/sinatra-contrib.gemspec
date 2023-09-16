@@ -42,18 +42,4 @@ RubyGems 2.0 or newer is required to protect against public gem pushes. You can 
   s.add_dependency 'rack-protection', version
   s.add_dependency 'sinatra', version
   s.add_dependency 'tilt', '~> 2.0'
-
-  s.add_development_dependency 'asciidoctor'
-  s.add_development_dependency 'builder'
-  s.add_development_dependency 'erubi'
-  s.add_development_dependency 'haml'
-  s.add_development_dependency 'liquid'
-  s.add_development_dependency 'markaby'
-  s.add_development_dependency 'nokogiri'
-  s.add_development_dependency 'rack-test', '~> 2'
-  s.add_development_dependency 'rake', '>= 12.3.3'
-  s.add_development_dependency 'redcarpet'
-  s.add_development_dependency 'rspec', '~> 3'
-  s.add_development_dependency 'sass-embedded', '~> 1.54'
-  s.add_development_dependency 'slim'
 end
