@@ -41,7 +41,4 @@ RubyGems 2.0 or newer is required to protect against public gem pushes. You can 
   # dependencies
   s.add_dependency 'base64'
   s.add_dependency 'rack', '~> 2.2', '>= 2.2.4'
-
-  s.add_development_dependency 'rack-test', '~> 2'
-  s.add_development_dependency 'rspec', '~> 3'
 end
