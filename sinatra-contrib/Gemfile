@@ -9,28 +9,16 @@ gem 'sinatra', path: '..'
 gem 'rack-test', github: 'rack/rack-test'
 
 group :development, :test do
-  platform :jruby do
-    gem 'json'
-    gem 'rdoc'
-    gem 'therubyrhino'
-    gem 'jar-dependencies', '= 0.4.1' # Gem::LoadError with jar-dependencies 0.4.2
-  end
-
   platform :jruby, :ruby do
     gem 'hamlit', '>= 3'
-    gem 'liquid'
     # Use main until there's a slim release that can be used with Tilt 2.1.0
     # https://github.com/slim-template/slim/pull/910
     gem 'slim', github: 'slim-template/slim'
   end
 
   platform :ruby do
-    gem 'execjs', '>= 2.0.0'
-    gem 'redcarpet', '>= 3.5.1'
     gem 'yajl-ruby'
   end
-
-  gem 'multi_json'
 end
 
 rack_version = ENV['rack'].to_s
@@ -43,12 +31,7 @@ tilt_version = nil if tilt_version.empty? || (tilt_version == 'stable')
 tilt_version = { github: 'jeremyevans/tilt' } if tilt_version == 'head'
 gem 'tilt', tilt_version
 
-gem 'asciidoctor'
-gem 'builder'
 gem 'erubi'
 gem 'haml'
-gem 'markaby'
-gem 'nokogiri', '>= 1.13.6'
 gem 'rake', '>= 12.3.3'
 gem 'rspec', '~> 3'
-gem 'sass-embedded', '~> 1.54'
