@@ -58,5 +58,3 @@ gem 'sass-embedded', '~> 1.54'
 gem 'simplecov', require: false
 gem 'slim', '~> 4'
 gem 'yajl-ruby', platforms: [:ruby]
-
-gem 'jar-dependencies', '= 0.4.1', platforms: [:jruby] # Gem::LoadError with jar-dependencies 0.4.2
