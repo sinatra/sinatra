@@ -26,7 +26,7 @@ gem 'puma', puma_version
 gem 'minitest', '~> 5.0'
 gem 'rack-test', github: 'rack/rack-test'
 gem 'rubocop', '~> 1.32.0', require: false
-gem 'yard'
+gem 'yard' # used by rake doc
 
 gem 'rack-protection', path: 'rack-protection'
 gem 'sinatra-contrib', path: 'sinatra-contrib'
