@@ -37,8 +37,6 @@ gem 'sinatra-contrib', path: 'sinatra-contrib'
 # https://github.com/socketry/async-http/pull/124/files#r1237988899
 gem 'traces', '< 0.10.0' if RUBY_VERSION >= '2.6.0' && RUBY_VERSION < '2.7.0'
 
-gem 'activesupport', '~> 6.1'
-
 gem 'asciidoctor'
 gem 'builder'
 gem 'commonmarker', '~> 0.23.4', platforms: [:ruby]
