@@ -59,6 +59,4 @@ gem 'simplecov', require: false
 gem 'slim', '~> 4'
 gem 'yajl-ruby', platforms: [:ruby]
 
-gem 'json', platforms: %i[jruby mri]
-
 gem 'jar-dependencies', '= 0.4.1', platforms: [:jruby] # Gem::LoadError with jar-dependencies 0.4.2
