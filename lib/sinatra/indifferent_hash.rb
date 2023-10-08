@@ -21,7 +21,8 @@ module Sinatra
   # writing interface (calling e.g. <tt>[]=</tt>, <tt>merge</tt>). This mapping
   # belongs to the public interface. For example, given:
   #
-  #   hash = Sinatra::IndifferentHash.new(:a=>1)
+  #   hash = Sinatra::IndifferentHash.new
+  #   hash[:a] = 1
   #
   # You are guaranteed that the key is returned as a string:
   #
@@ -29,7 +30,8 @@ module Sinatra
   #
   # Technically other types of keys are accepted:
   #
-  #   hash = Sinatra::IndifferentHash.new(:a=>1)
+  #   hash = Sinatra::IndifferentHash
+  #   hash[:a] = 1
   #   hash[0] = 0
   #   hash # => { "a"=>1, 0=>0 }
   #
