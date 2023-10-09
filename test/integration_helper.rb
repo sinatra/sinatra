@@ -13,12 +13,16 @@ module IntegrationHelper
       @all ||= []
     end
 
+    def self.all_async
+      @all_async ||= []
+    end
+
     def self.each(&block)
       all.each(&block)
     end
 
-    def self.run(server, port)
-      new(server, port).run
+    def self.run(server, port, async: false)
+      new(server, port, async).run
     end
 
     def app_file
@@ -29,9 +33,14 @@ module IntegrationHelper
       "development"
     end
 
-    def initialize(server, port)
+    def initialize(server, port, async)
       @installed, @pipe, @server, @port = nil, nil, server, port
-      Server.all << self
+      ENV['PUMA_MIN_THREADS'] = '1' if server == 'puma'
+      if async
+        Server.all_async << self
+      else
+        Server.all << self
+      end
     end
 
     def run

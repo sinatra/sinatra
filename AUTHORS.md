@@ -2,31 +2,37 @@ Sinatra was designed and developed by Blake Mizerany in California.
 
 ### Current Team
 
-* **Konstantin Haase** (maintainer)
+* **Eloy Perez**
+* **Jordan Owens**
+* **Olle Jonsson**
+* **Patrik Ragnarsson**
 * **Zachary Scott**
+
+### Alumni
+
+* **Blake Mizerany** (creator)
+* **Konstantin Haase** (maintainer)
+* **Ryan Tomayko**
+* **Simon Rozet**
+* **Katrina Owen**
 * **Kashyap Kondamudi**
 * **Ashley Williams**
 * **Trevor Bramble**
 * **Kunpei Sakai**
 
-### Alumni
-
-* **Blake Mizerany** (creator)
-* **Ryan Tomayko**
-* **Simon Rozet**
-* **Katrina Owen**
-
 ### Thanks
 
 Sinatra would not have been possible without strong company backing.
 In the past, financial and emotional support have been provided mainly by
-[Heroku](http://heroku.com), [GitHub](https://github.com) and
-[Engine Yard](http://www.engineyard.com/), and is now taken care of by
-[Travis CI](http://travis-ci.com/).
+[Heroku](https://heroku.com), [GitHub](https://github.com),
+[Engine Yard](http://www.engineyard.com/) and [Travis CI](https://travis-ci.com/),
+and is now taken care of by [84codes](https://www.84codes.com/).
 
 Special thanks to the following extraordinary individuals, without whom
 Sinatra would not be possible:
 
+* [Benoit Daloze](https://eregon.me/blog/) (eregon) for help around TruffleRuby
+  and keyword arguments use in mustermann.
 * [Ryan Tomayko](http://tomayko.com/) (rtomayko) for constantly fixing
   whitespace errors __60d5006__
 * [Ezra Zygmuntowicz](http://brainspl.at/) (ezmobius) for initial help and

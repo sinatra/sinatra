@@ -4,13 +4,13 @@
 
 ### Releases
 
-The next major version of Sinatra will be released from the master branch. Each version will be tagged so it will be possible to branch of should there be a need for bug fixes and other updates.
+The next major version of Sinatra will be released from the main branch. Each version will be tagged so it will be possible to branch of should there be a need for bug fixes and other updates.
 
 ## Issues
 
 ### New features
 
-New features will only be added to the master branch and will not be made available in point releases.
+New features will only be added to the main branch and will not be made available in point releases.
 
 ### Bug fixes
 

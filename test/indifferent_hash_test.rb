@@ -291,4 +291,9 @@ class TestIndifferentHash < Minitest::Test
     compacted_hash = non_empty_hash.compact
     assert_equal non_empty_hash, compacted_hash
   end
+
+  def test_except
+    hash = @hash.except(?b, 3, :simple_nested, 'nested')
+    assert_equal Sinatra::IndifferentHash[a: :a], hash
+  end if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.0")
 end

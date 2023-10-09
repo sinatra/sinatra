@@ -2,6 +2,35 @@
 
 * _Your new feature here._
 
+## 3.1.0 / 2023-08-07
+
+* New: Add sass support via sass-embedded [#1911] by なつき
+
+* New: Add start and stop callbacks [#1913] by Jevin Sew
+
+* New: Warn on dropping sessions [#1900] by Jonathan del Strother
+
+* New: Make Puma the default server [#1924] by Patrik Ragnarsson
+
+* Fix: Remove use of Tilt::Cache [#1922] by Jeremy Evans (allows use of Tilt 2.2.0 without deprecation warning)
+
+* Fix: rack-protection: specify rack version requirement [#1932] by Patrik Ragnarsson
+
+[#1911]: https://github.com/sinatra/sinatra/pull/1911
+[#1913]: https://github.com/sinatra/sinatra/pull/1913
+[#1900]: https://github.com/sinatra/sinatra/pull/1900
+[#1924]: https://github.com/sinatra/sinatra/pull/1924
+[#1922]: https://github.com/sinatra/sinatra/pull/1922
+[#1932]: https://github.com/sinatra/sinatra/pull/1932
+
+## 3.0.6 / 2023-04-11
+
+* Fix: Add support to keep open streaming connections with Puma [#1858](https://github.com/sinatra/sinatra/pull/1858) by Jordan Owens
+
+* Fix: Avoid crash in `uri` helper on Integer input [#1890](https://github.com/sinatra/sinatra/pull/1890) by Patrik Ragnarsson
+
+* Fix: Rescue `RuntimeError` when trying to use `SecureRandom` [#1888](https://github.com/sinatra/sinatra/pull/1888) by Stefan Sundin
+
 ## 3.0.5 / 2022-12-16
 
 * Fix: Add Zeitwerk compatibility. [#1831](https://github.com/sinatra/sinatra/pull/1831) by Dawid Janczak

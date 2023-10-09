@@ -157,7 +157,7 @@ end
 ### Documentation
 
 For more info check the [official docs](http://www.sinatrarb.com/contrib/) and
-[api docs](http://www.rubydoc.info/gems/sinatra-contrib).
+[api docs](https://www.rubydoc.info/gems/sinatra-contrib).
 
 [sinatra-reloader]: http://www.sinatrarb.com/contrib/reloader
 [sinatra-namespace]: http://www.sinatrarb.com/contrib/namespace
@@ -167,7 +167,7 @@ For more info check the [official docs](http://www.sinatrarb.com/contrib/) and
 [sinatra-webdav]: http://www.sinatrarb.com/contrib/webdav
 [sinatra-runner]: http://www.sinatrarb.com/contrib/runner
 [sinatra-extension]: http://www.sinatrarb.com/contrib/extension
-[sinatra-test-helpers]: https://github.com/sinatra/sinatra/blob/master/sinatra-contrib/lib/sinatra/test_helpers.rb
+[sinatra-test-helpers]: https://github.com/sinatra/sinatra/blob/main/sinatra-contrib/lib/sinatra/test_helpers.rb
 [sinatra-required-params]: http://www.sinatrarb.com/contrib/required_params
 [sinatra-custom-logger]: http://www.sinatrarb.com/contrib/custom_logger
 [sinatra-multi-route]: http://www.sinatrarb.com/contrib/multi_route
@@ -176,5 +176,5 @@ For more info check the [official docs](http://www.sinatrarb.com/contrib/) and
 [sinatra-config-file]: http://www.sinatrarb.com/contrib/config_file
 [sinatra-link-header]: http://www.sinatrarb.com/contrib/link_header
 [sinatra-capture]: http://www.sinatrarb.com/contrib/capture
-[sinatra-engine-tracking]: https://github.com/sinatra/sinatra/blob/master/sinatra-contrib/lib/sinatra/engine_tracking.rb
+[sinatra-engine-tracking]: https://github.com/sinatra/sinatra/blob/main/sinatra-contrib/lib/sinatra/engine_tracking.rb
 

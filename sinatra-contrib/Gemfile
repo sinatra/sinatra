@@ -1,43 +1,26 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
+
 gemspec
 
+rack_version = ENV['rack'].to_s
+rack_version = nil if rack_version.empty? || (rack_version == 'stable')
+rack_version = { github: 'rack/rack' } if rack_version == 'head'
+
+tilt_version = ENV['tilt'].to_s
+tilt_version = nil if tilt_version.empty? || (tilt_version == 'stable')
+tilt_version = { github: 'jeremyevans/tilt' } if tilt_version == 'head'
+
+gem 'erubi'
+gem 'haml'
+gem 'hamlit', '>= 3'
+gem 'rack', rack_version
 gem 'rack-protection', path: '../rack-protection'
-gem 'sinatra', path: '..'
-
 gem 'rack-test', github: 'rack/rack-test'
-
-group :development, :test do
-  platform :jruby do
-    gem 'json'
-    gem 'rdoc'
-    gem 'therubyrhino'
-    gem 'jar-dependencies', '= 0.4.1' # Gem::LoadError with jar-dependencies 0.4.2
-  end
-
-  platform :jruby, :ruby do
-    gem 'hamlit', '>= 3'
-    gem 'liquid', '~> 2.6.x'
-    gem 'slim'
-  end
-
-  platform :ruby do
-    gem 'execjs', '>= 2.0.0'
-    gem 'nokogiri', '>= 1.13.6'
-    gem 'redcarpet', '>= 3.5.1'
-    gem 'yajl-ruby'
-  end
-
-  gem 'multi_json'
-end
-
-# Allows stuff like `tilt=1.2.2 bundle install` or `tilt=master ...`.
-# Used by the CI.
-repos = { 'tilt' => 'rtomayko/tilt', 'rack' => 'rack/rack' }
-%w[tilt rack].each do |lib|
-  dep = (ENV[lib] || 'stable').sub "#{lib}-", ''
-  dep = nil if dep == 'stable'
-  dep = { github: repos[lib], branch: dep } if dep && dep !~ (/(\d+\.?)+(\d+)?/)
-  gem lib, dep if dep
-end
+gem 'rake', '>= 12.3.3'
+gem 'rspec', '~> 3'
+gem 'sinatra', path: '..'
+gem 'slim'
+gem 'tilt', tilt_version
+gem 'yajl-ruby', platforms: [:ruby] # c-ext

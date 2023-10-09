@@ -1,4 +1,4 @@
-require File.expand_path('helper', __dir__)
+require_relative 'test_helper'
 require 'date'
 require 'json'
 
@@ -895,8 +895,8 @@ class HelpersTest < Minitest::Test
       send_file_app :disposition => 'inline'.freeze
       get '/file.txt'
       assert_equal 'inline; filename="file.txt"', response['Content-Disposition']
-    end 
-    
+    end
+
     it "sets the Content-Disposition header when :filename provided" do
       send_file_app :filename => 'foo.txt'
       get '/file.txt'
@@ -1843,6 +1843,12 @@ class HelpersTest < Minitest::Test
       mock_app { get('/:name') { uri '/bar' }}
       get '/foo', {}, { "SCRIPT_NAME" => '/foo' }
       assert_equal 'http://example.org/foo/bar', body
+    end
+
+    it 'handles integer input' do
+      mock_app { get('/') { uri 123 }}
+      get '/'
+      assert_equal 'http://example.org/123', body
     end
 
     it 'handles absolute URIs' do

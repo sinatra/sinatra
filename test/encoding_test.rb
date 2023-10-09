@@ -1,5 +1,4 @@
-# encoding: UTF-8
-require File.expand_path('helper', __dir__)
+require_relative 'test_helper'
 require 'erb'
 
 class BaseTest < Minitest::Test

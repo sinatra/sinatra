@@ -1,4 +1,4 @@
-require File.expand_path('helper', __dir__)
+require_relative 'test_helper'
 
 MarkdownTest = proc do
   def markdown_app(&block)

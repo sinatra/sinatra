@@ -19,7 +19,7 @@ require 'sinatra/version'
 
 module Sinatra
   # The request object. See Rack::Request for more info:
-  # http://rubydoc.info/github/rack/rack/master/Rack/Request
+  # https://rubydoc.info/github/rack/rack/main/Rack/Request
   class Request < Rack::Request
     HEADER_PARAM = /\s*[\w.]+=(?:[\w.]+|"(?:[^"\\]|\\.)*")?\s*/.freeze
     HEADER_VALUE_WITH_PARAMS = %r{(?:(?:\w+|\*)/(?:\w+(?:\.|-|\+)?|\*)*)\s*(?:;#{HEADER_PARAM})*}.freeze
@@ -158,8 +158,8 @@ module Sinatra
 
   # The response object. See Rack::Response and Rack::Response::Helpers for
   # more info:
-  # http://rubydoc.info/github/rack/rack/master/Rack/Response
-  # http://rubydoc.info/github/rack/rack/master/Rack/Response/Helpers
+  # https://rubydoc.info/github/rack/rack/main/Rack/Response
+  # https://rubydoc.info/github/rack/rack/main/Rack/Response/Helpers
   class Response < Rack::Response
     DROP_BODY_RESPONSES = [204, 304].freeze
 
@@ -291,7 +291,7 @@ module Sinatra
       elsif value
         # Rack 2.0 returns a Rack::File::Iterator here instead of
         # Rack::File as it was in the previous API.
-        unless request.head? || value.is_a?(Rack::File::Iterator) || value.is_a?(Stream)
+        unless request.head? || value.is_a?(Rack::Files::Iterator) || value.is_a?(Stream)
           headers.delete 'Content-Length'
         end
         response.body = value
@@ -317,7 +317,7 @@ module Sinatra
     # Generates the absolute URI for a given path in the app.
     # Takes Rack routers and reverse proxies into account.
     def uri(addr = nil, absolute = true, add_script_name = true)
-      return addr if addr =~ /\A[a-z][a-z0-9+.\-]*:/i
+      return addr if addr.to_s =~ /\A[a-z][a-z0-9+.\-]*:/i
 
       uri = [host = String.new]
       if absolute
@@ -429,7 +429,7 @@ module Sinatra
 
       last_modified opts[:last_modified] if opts[:last_modified]
 
-      file   = Rack::File.new(File.dirname(settings.app_file))
+      file   = Rack::Files.new(File.dirname(settings.app_file))
       result = file.serving(request, path)
 
       result[1].each { |k, v| headers[k] ||= v }
@@ -474,8 +474,9 @@ module Sinatra
             @back.call(self)
           rescue Exception => e
             @scheduler.schedule { raise e }
+          ensure
+            close unless @keep_open
           end
-          close unless @keep_open
         end
       end
 
@@ -506,7 +507,16 @@ module Sinatra
     def stream(keep_open = false)
       scheduler = env['async.callback'] ? EventMachine : Stream
       current   = @params.dup
-      body Stream.new(scheduler, keep_open) { |out| with_params(current) { yield(out) } }
+      stream = if scheduler == Stream  && keep_open
+        Stream.new(scheduler, false) do |out|
+          until out.closed?
+            with_params(current) { yield(out) }
+          end
+        end
+      else
+        Stream.new(scheduler, keep_open) { |out| with_params(current) { yield(out) } }
+      end
+      body stream
     end
 
     # Specify response freshness policy for HTTP caches (Cache-Control header).
@@ -716,7 +726,7 @@ module Sinatra
   # Possible options are:
   #   :content_type   The content type to use, same arguments as content_type.
   #   :layout         If set to something falsy, no layout is rendered, otherwise
-  #                   the specified layout is used
+  #                   the specified layout is used (Ignored for `sass`)
   #   :layout_engine  Engine to use for rendering the layout.
   #   :locals         A hash with local variables that should be available
   #                   in the template
@@ -740,6 +750,20 @@ module Sinatra
 
     def haml(template, options = {}, locals = {}, &block)
       render(:haml, template, options, locals, &block)
+    end
+
+    def sass(template, options = {}, locals = {})
+      options[:default_content_type] = :css
+      options[:exclude_outvar] = true
+      options[:layout] = nil
+      render :sass, template, options, locals
+    end
+
+    def scss(template, options = {}, locals = {})
+      options[:default_content_type] = :css
+      options[:exclude_outvar] = true
+      options[:layout] = nil
+      render :scss, template, options, locals
     end
 
     def builder(template = nil, options = {}, locals = {}, &block)
@@ -852,7 +876,11 @@ module Sinatra
         catch(:layout_missing) { return render(layout_engine, layout, options, locals) { output } }
       end
 
-      output.extend(ContentTyped).content_type = content_type if content_type
+      if content_type
+        # sass-embedded returns a frozen string
+        output = +output
+        output.extend(ContentTyped).content_type = content_type
+      end
       output
     end
 
@@ -904,6 +932,35 @@ module Sinatra
     end
   end
 
+  # Extremely simple template cache implementation.
+  #   * Not thread-safe.
+  #   * Size is unbounded.
+  #   * Keys are not copied defensively, and should not be modified after
+  #     being passed to #fetch.  More specifically, the values returned by
+  #     key#hash and key#eql? should not change.
+  #
+  # Implementation copied from Tilt::Cache.
+  class TemplateCache
+    def initialize
+      @cache = {}
+    end
+
+    # Caches a value for key, or returns the previously cached value.
+    # If a value has been previously cached for key then it is
+    # returned. Otherwise, block is yielded to and its return value
+    # which may be nil, is cached under key and returned.
+    def fetch(*key)
+      @cache.fetch(key) do
+        @cache[key] = yield
+      end
+    end
+
+    # Clears the cache.
+    def clear
+      @cache = {}
+    end
+  end
+
   # Base class for all Sinatra applications and middleware.
   class Base
     include Rack::Utils
@@ -918,7 +975,7 @@ module Sinatra
     def initialize(app = nil, **_kwargs)
       super()
       @app = app
-      @template_cache = Tilt::Cache.new
+      @template_cache = TemplateCache.new
       @pinned_response = nil # whether a before! filter pinned the content-type
       yield self if block_given?
     end
@@ -1220,7 +1277,7 @@ module Sinatra
         %r{zeitwerk/kernel\.rb}                             # Zeitwerk kernel#require decorator
       ].freeze
 
-      attr_reader :routes, :filters, :templates, :errors
+      attr_reader :routes, :filters, :templates, :errors, :on_start_callback, :on_stop_callback
 
       def callers_to_ignore
         CALLERS_TO_IGNORE
@@ -1413,6 +1470,14 @@ module Sinatra
         filters[type] << compile!(type, path, block, **options)
       end
 
+      def on_start(&on_start_callback)
+        @on_start_callback = on_start_callback
+      end
+
+      def on_stop(&on_stop_callback)
+        @on_stop_callback = on_stop_callback
+      end
+
       # Add a route condition. The route is considered non-matching when the
       # block returns false.
       def condition(name = "#{caller.first[/`.*'/]} condition", &block)
@@ -1502,12 +1567,14 @@ module Sinatra
         warn '== Sinatra has ended his set (crowd applauds)' unless suppress_messages?
         set :running_server, nil
         set :handler_name, nil
+
+        on_stop_callback.call unless on_stop_callback.nil?
       end
 
       alias stop! quit!
 
       # Run the Sinatra app as a self-hosted server using
-      # Puma, Falcon, Mongrel, or WEBrick (in that order). If given a block, will call
+      # Puma, Falcon, or WEBrick (in that order). If given a block, will call
       # with the constructed handler once we have taken the stage.
       def run!(options = {}, &block)
         return if running?
@@ -1589,7 +1656,7 @@ module Sinatra
           set :running_server, server
           set :handler_name,   handler_name
           server.threaded = settings.threaded if server.respond_to? :threaded=
-
+          on_start_callback.call unless on_start_callback.nil?
           yield server if block_given?
         end
       end
@@ -1838,8 +1905,9 @@ module Sinatra
     begin
       require 'securerandom'
       set :session_secret, SecureRandom.hex(64)
-    rescue LoadError, NotImplementedError
+    rescue LoadError, NotImplementedError, RuntimeError
       # SecureRandom raises a NotImplementedError if no random device is available
+      # RuntimeError raised due to broken openssl backend: https://bugs.ruby-lang.org/issues/19230
       set :session_secret, format('%064x', Kernel.rand((2**256) - 1))
     end
 
@@ -1859,11 +1927,10 @@ module Sinatra
 
     ruby_engine = defined?(RUBY_ENGINE) && RUBY_ENGINE
 
-    server.unshift 'puma'
-    server.unshift 'falcon'   if ruby_engine != 'jruby'
-    server.unshift 'mongrel'  if ruby_engine.nil?
     server.unshift 'thin'     if ruby_engine != 'jruby'
+    server.unshift 'falcon'   if ruby_engine != 'jruby'
     server.unshift 'trinidad' if ruby_engine == 'jruby'
+    server.unshift 'puma'
 
     set :absolute_redirects, true
     set :prefixed_redirects, false
@@ -1928,7 +1995,7 @@ module Sinatra
           </head>
           <body>
             <h2>Sinatra doesn’t know this ditty.</h2>
-            <img src='#{uri '/__sinatra__/404.png'}'>
+            <img src='#{request.script_name}/__sinatra__/404.png'>
             <div id="c">
               Try this:
               <pre>#{Rack::Utils.escape_html(code)}</pre>
@@ -1980,7 +2047,7 @@ module Sinatra
     delegate :get, :patch, :put, :post, :delete, :head, :options, :link, :unlink,
              :template, :layout, :before, :after, :error, :not_found, :configure,
              :set, :mime_type, :enable, :disable, :use, :development?, :test?,
-             :production?, :helpers, :settings, :register
+             :production?, :helpers, :settings, :register, :on_start, :on_stop
 
     class << self
       attr_accessor :target

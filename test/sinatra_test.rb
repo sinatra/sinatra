@@ -1,4 +1,4 @@
-require File.expand_path('helper', __dir__)
+require_relative 'test_helper'
 
 class SinatraTest < Minitest::Test
   it 'creates a new Sinatra::Base subclass on new' do
@@ -7,6 +7,6 @@ class SinatraTest < Minitest::Test
   end
 
   it "responds to #template_cache" do
-    assert_kind_of Tilt::Cache, Sinatra::Base.new!.template_cache
+    assert_kind_of Sinatra::TemplateCache, Sinatra::Base.new!.template_cache
   end
 end

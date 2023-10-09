@@ -1,4 +1,4 @@
-require File.expand_path('helper', __dir__)
+require_relative 'test_helper'
 
 class StaticTest < Minitest::Test
   setup do
@@ -164,7 +164,7 @@ class StaticTest < Minitest::Test
   end
 
   it 'correctly ignores syntactically invalid range requests' do
-    ["bytes=45-40", "bytes=IV-LXVI", "octets=10-20", "bytes=", "bytes=3-1,4-5"].each do |http_range|
+    ["bytes=45-40", "octets=10-20", "bytes=", "bytes=3-1,4-5"].each do |http_range|
       request = Rack::MockRequest.new(@app)
       response = request.get("/#{File.basename(__FILE__)}", 'HTTP_RANGE' => http_range)
 

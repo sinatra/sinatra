@@ -1,14 +1,11 @@
 # frozen_string_literal: true
 
 require 'rake/clean'
-require 'rake/testtask'
+require 'minitest/test_task'
 require 'fileutils'
 require 'date'
 
 task default: :test
-task spec: :test
-
-CLEAN.include '**/*.rbc'
 
 def source_version
   @source_version ||= File.read(File.expand_path('VERSION', __dir__)).strip
@@ -24,27 +21,20 @@ def prev_version
   source_version.gsub(/\d+$/) { |s| s.to_i - 1 }
 end
 
-# SPECS ===============================================================
+# Tests ===============================================================
 
-Rake::TestTask.new(:test) do |t|
-  t.test_files = FileList['test/*_test.rb']
-  t.ruby_opts = ['-r rubygems'] if defined? Gem
+Minitest::TestTask.create # Default `test` task
+Minitest::TestTask.create(:'test:core') do |t|
   t.warning = true
-end
-
-Rake::TestTask.new(:'test:core') do |t|
-  core_tests = %w[
+  t.test_globs = %w[
     base delegator encoding extensions filter
     helpers mapped_error middleware rdoc
     readme request response result route_added_hook
     routing server settings sinatra static templates
-  ]
-  t.test_files = core_tests.map { |n| "test/#{n}_test.rb" }
-  t.ruby_opts = ['-r rubygems'] if defined? Gem
-  t.warning = true
+  ].map { |n| "test/#{n}_test.rb" }
 end
 
-# Rcov ================================================================
+# Test code coverage ==================================================
 
 namespace :test do
   desc 'Measures test coverage'
@@ -54,6 +44,7 @@ namespace :test do
     Rake::Task['test'].invoke
   end
 end
+CLEAN.include('coverage')
 
 # Website =============================================================
 

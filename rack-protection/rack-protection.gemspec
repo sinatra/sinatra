@@ -6,9 +6,9 @@ Gem::Specification.new do |s|
   # general infos
   s.name        = 'rack-protection'
   s.version     = version
-  s.description = 'Protect against typical web attacks, works with all Rack apps, including Rails.'
+  s.description = 'Protect against typical web attacks, works with all Rack apps, including Rails'
   s.homepage    = 'https://sinatrarb.com/protection/'
-  s.summary     = s.description
+  s.summary     = "#{s.description}."
   s.license     = 'MIT'
   s.authors     = ['https://github.com/sinatra/sinatra/graphs/contributors']
   s.email       = 'sinatrarb@googlegroups.com'
@@ -30,7 +30,7 @@ RubyGems 2.0 or newer is required to protect against public gem pushes. You can 
   end
 
   s.metadata = {
-    'source_code_uri' => 'https://github.com/sinatra/sinatra/tree/master/rack-protection',
+    'source_code_uri' => 'https://github.com/sinatra/sinatra/tree/main/rack-protection',
     'homepage_uri' => 'http://sinatrarb.com/protection/',
     'documentation_uri' => 'https://www.rubydoc.info/gems/rack-protection',
     'rubygems_mfa_required' => 'true'
@@ -39,7 +39,6 @@ RubyGems 2.0 or newer is required to protect against public gem pushes. You can 
   s.required_ruby_version = '>= 2.6.0'
 
   # dependencies
-  s.add_dependency 'rack'
-  s.add_development_dependency 'rack-test', '~> 2'
-  s.add_development_dependency 'rspec', '~> 3'
+  s.add_dependency 'base64', '>= 0.1.0'
+  s.add_dependency 'rack', '~> 2.2', '>= 2.2.4'
 end

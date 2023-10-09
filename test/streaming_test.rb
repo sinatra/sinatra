@@ -1,4 +1,4 @@
-require File.expand_path('helper', __dir__)
+require_relative 'test_helper'
 
 class StreamingTest < Minitest::Test
   Stream = Sinatra::Helpers::Stream
@@ -133,6 +133,7 @@ class StreamingTest < Minitest::Test
         env['async.close'] = close
         stream(:keep_open) do |out|
           out.callback { ran = true }
+          out.close
         end
       end
     end

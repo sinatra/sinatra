@@ -27,6 +27,16 @@ module Sinatra
       @current_engine == :haml
     end
 
+    # @return [Boolean] Returns true if current engine is `:sass`.
+    def sass?
+      @current_engine == :sass
+    end
+
+    # @return [Boolean] Returns true if current engine is `:scss`.
+    def scss?
+      @current_engine == :scss
+    end
+
     # @return [Boolean] Returns true if current engine is `:builder`.
     def builder?
       @current_engine == :builder

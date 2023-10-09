@@ -8,3 +8,6 @@
 /coverage
 .yardoc
 /doc
+.bundle
+vendor
+*.gem

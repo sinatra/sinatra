@@ -54,6 +54,8 @@ pick up if available.
       - [Erb Templates](#erb-templates)
       - [Builder Templates](#builder-templates)
       - [Nokogiri Templates](#nokogiri-templates)
+      - [Sass Templates](#sass-templates)
+      - [Scss Templates](#scss-templates)
       - [Liquid Templates](#liquid-templates)
       - [Markdown Templates](#markdown-templates)
       - [RDoc Templates](#rdoc-templates)
@@ -93,6 +95,7 @@ pick up if available.
   - [Configuration](#configuration)
     - [Configuring attack protection](#configuring-attack-protection)
     - [Available Settings](#available-settings)
+  - [Lifecycle Events](#lifecycle-events)
   - [Environments](#environments)
   - [Error Handling](#error-handling)
     - [Not Found](#not-found)
@@ -649,6 +652,39 @@ It also takes a block for inline templates (see [example](#inline-templates)).
 
 It also takes a block for inline templates (see [example](#inline-templates)).
 
+#### Sass Templates
+
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="https://github.com/ntkme/sass-embedded-host-ruby" title="sass-embedded">sass-embedded</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><tt>.sass</tt></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><tt>sass :stylesheet, :style => :expanded</tt></td>
+  </tr>
+</table>
+
+#### Scss Templates
+
+<table>
+  <tr>
+    <td>Dependency</td>
+    <td><a href="https://github.com/ntkme/sass-embedded-host-ruby" title="sass-embedded">sass-embedded</a></td>
+  </tr>
+  <tr>
+    <td>File Extension</td>
+    <td><tt>.scss</tt></td>
+  </tr>
+  <tr>
+    <td>Example</td>
+    <td><tt>scss :stylesheet, :style => :expanded</tt></td>
+  </tr>
+</table>
 
 #### Liquid Templates
 
@@ -810,7 +846,7 @@ It also takes a block for inline templates (see [example](#inline-templates)).
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="http://slim-lang.com/" title="Slim Lang">Slim Lang</a></td>
+    <td><a href="https://slim-template.github.io/" title="Slim Lang">Slim Lang</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
@@ -1933,7 +1969,7 @@ end
 ### Configuring attack protection
 
 Sinatra is using
-[Rack::Protection](https://github.com/sinatra/sinatra/tree/master/rack-protection#readme) to
+[Rack::Protection](https://github.com/sinatra/sinatra/tree/main/rack-protection#readme) to
 defend your application against common, opportunistic attacks. You can
 easily disable this behavior (which will open up your application to tons
 of common vulnerabilities):
@@ -2089,8 +2125,12 @@ set :protection, :session => true
 
   <dt>raise_errors</dt>
     <dd>
-      Raise exceptions (will stop application). Enabled by default when
+      Raise unhandled errors (will stop application). Enabled by default when
       <tt>environment</tt> is set to <tt>"test"</tt>, disabled otherwise.
+    </dd>
+    <dd>
+      Any explicitly defined error handlers always override this setting. See 
+      the "Error" section below.
     </dd>
 
   <dt>run</dt>
@@ -2184,6 +2224,24 @@ set :protection, :session => true
     </dd>
 </dl>
 
+## Lifecycle Events
+
+There are 2 lifecycle events currently exposed by Sinatra. One when the server starts and one when it stops.
+
+They can be used like this:
+
+```ruby
+on_start do
+  puts "===== Booting up ====="
+end
+
+on_stop do
+  puts "===== Shutting down ====="
+end
+```
+
+Note that these callbacks only work when using Sinatra to start the web server.
+
 ## Environments
 
 There are three predefined `environments`: `"development"`,
@@ -2240,6 +2298,14 @@ show exceptions option to `:after_handler`:
 set :show_exceptions, :after_handler
 ```
 
+A catch-all error handler can be defined with `error` and a block:
+
+```ruby
+error do
+  'Sorry there was a nasty error'
+end
+```
+
 The exception object can be obtained from the `sinatra.error` Rack variable:
 
 ```ruby
@@ -2248,7 +2314,7 @@ error do
 end
 ```
 
-Custom errors:
+Pass an error class as an argument to create handlers for custom errors:
 
 ```ruby
 error MyCustomError do
@@ -2294,6 +2360,51 @@ Sinatra installs special `not_found` and `error` handlers when
 running under the development environment to display nice stack traces
 and additional debugging information in your browser.
 
+### Behavior with `raise_errors` option
+
+When `raise_errors` option is `true`, errors that are unhandled are raised 
+outside of the application. Additionally, any errors that would have been 
+caught by the catch-all error handler are raised.
+
+For example, consider the following configuration:
+
+```ruby
+# First handler
+error MyCustomError do
+  'A custom message'
+end
+
+# Second handler
+error do
+  'A catch-all message'
+end
+```
+
+If `raise_errors` is `false`:
+
+* When `MyCustomError` or descendant is raised, the first handler is invoked.
+  The HTTP response body will contain `"A custom message"`.
+* When any other error is raised, the second handler is invoked. The HTTP 
+  response body will contain `"A catch-all message"`.
+
+If `raise_errors` is `true`:
+
+* When `MyCustomError` or descendant is raised, the behavior is identical to 
+  when `raise_errors` is `false`, described above.
+* When any other error is raised, the second handler is *not* invoked, and 
+  the error is raised outside of the application.
+  * If the environment is `production`, the HTTP response body will contain 
+    a generic error message, e.g. `"An unhandled lowlevel error occurred. The
+    application logs may have details."`
+  * If the environment is not `production`, the HTTP response body will contain
+    the verbose error backtrace.
+  * Regardless of environment, if `show_exceptions` is set to `:after_handler`, 
+    the HTTP response body will contain the verbose error backtrace.
+
+In the `test` environment, `raise_errors` is set to `true` by default. This 
+means that in order to write a test for a catch-all error handler, 
+`raise_errors` must temporarily be set to `false` for that particular test.
+
 ## Rack Middleware
 
 Sinatra rides on [Rack](https://rack.github.io/), a minimal standard
@@ -2319,7 +2430,7 @@ end
 ```
 
 The semantics of `use` are identical to those defined for the
-[Rack::Builder](http://www.rubydoc.info/github/rack/rack/master/Rack/Builder) DSL
+[Rack::Builder](https://www.rubydoc.info/github/rack/rack/main/Rack/Builder) DSL
 (most frequently used from rackup files). For example, the `use` method
 accepts multiple/variable args as well as blocks:
 
@@ -2335,7 +2446,7 @@ many of these components automatically based on configuration so you
 typically don't have to `use` them explicitly.
 
 You can find useful middleware in
-[rack](https://github.com/rack/rack/tree/master/lib/rack),
+[rack](https://github.com/rack/rack/tree/main/lib/rack),
 [rack-contrib](https://github.com/rack/rack-contrib#readme),
 or in the [Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
 
@@ -2343,7 +2454,7 @@ or in the [Rack wiki](https://github.com/rack/rack/wiki/List-of-Middleware).
 
 Sinatra tests can be written using any Rack-based testing library or
 framework.
-[Rack::Test](http://www.rubydoc.info/github/brynary/rack-test/master/frames)
+[Rack::Test](https://www.rubydoc.info/github/rack/rack-test/main/frames)
 is recommended:
 
 ```ruby
@@ -2838,7 +2949,7 @@ Running Sinatra on a not officially supported Ruby flavor means that if things o
 ## The Bleeding Edge
 
 If you would like to use Sinatra's latest bleeding-edge code, feel free
-to run your application against the master branch, it should be rather
+to run your application against the main branch, it should be rather
 stable.
 
 We also push out prerelease gems from time to time, so you can do a
@@ -2887,20 +2998,19 @@ SemVerTag.
 
 ## Further Reading
 
-* [Project Website](http://www.sinatrarb.com/) - Additional documentation,
+* [Project Website](https://sinatrarb.com/) - Additional documentation,
   news, and links to other resources.
-* [Contributing](http://www.sinatrarb.com/contributing) - Find a bug? Need
+* [Contributing](https://sinatrarb.com/contributing) - Find a bug? Need
   help? Have a patch?
 * [Issue tracker](https://github.com/sinatra/sinatra/issues)
 * [Twitter](https://twitter.com/sinatra)
 * [Mailing List](https://groups.google.com/forum/#!forum/sinatrarb)
 * IRC: [#sinatra](irc://chat.freenode.net/#sinatra) on [Freenode](https://freenode.net)
-* [Sinatra & Friends](https://sinatrarb.slack.com) on Slack
-  ([get an invite](https://sinatra-slack.herokuapp.com/))
+* [Sinatra & Friends](https://discord.gg/ncjsfsNHh7) on Discord
 * [Sinatra Book](https://github.com/sinatra/sinatra-book) - Cookbook Tutorial
 * [Sinatra Recipes](http://recipes.sinatrarb.com/) - Community contributed
   recipes
-* API documentation for the [latest release](http://www.rubydoc.info/gems/sinatra)
-  or the [current HEAD](http://www.rubydoc.info/github/sinatra/sinatra) on
-  [RubyDoc](http://www.rubydoc.info/)
+* API documentation for the [latest release](https://www.rubydoc.info/gems/sinatra)
+  or the [current HEAD](https://www.rubydoc.info/github/sinatra/sinatra) on
+  [RubyDoc](https://www.rubydoc.info/)
 * [CI Actions](https://github.com/sinatra/sinatra/actions)
