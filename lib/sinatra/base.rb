@@ -1265,7 +1265,7 @@ module Sinatra
         msg = boom.detailed_message(highlight: false)
         if msg =~ /\A(.*?)(?: \(#{ Regexp.quote(boom.class.to_s) }\))?\n/
           msg = $1
-          additional_msg = $'.lines.map {|s| s.chomp }
+          additional_msg = $'.lines(chomp: true)
         else
           additional_msg = []
         end
