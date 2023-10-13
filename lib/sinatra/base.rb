@@ -1261,7 +1261,19 @@ module Sinatra
     end
 
     def dump_errors!(boom)
-      msg = ["#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} - #{boom.class} - #{boom.message}:", *boom.backtrace].join("\n\t")
+      if boom.respond_to?(:detailed_message)
+        msg = boom.detailed_message(highlight: false)
+        if msg =~ /\A(.*?)(?: \(#{ Regexp.quote(boom.class.to_s) }\))?\n/
+          msg = $1
+          additional_msg = $'.lines.map {|s| s.chomp }
+        else
+          additional_msg = []
+        end
+      else
+        msg = boom.message
+        additional_msg = []
+      end
+      msg = ["#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} - #{boom.class} - #{msg}:", *additional_msg, *boom.backtrace].join("\n\t")
       @env['rack.errors'].puts(msg)
     end
 
