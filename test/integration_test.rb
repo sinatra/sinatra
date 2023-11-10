@@ -13,7 +13,7 @@ class IntegrationTest < Minitest::Test
   it('only extends main') { assert_equal "true", server.get("/mainonly") }
 
   it 'logs once in development mode' do
-    next if server.puma? or server.falcon? or server.rainbows? or RUBY_ENGINE == 'jruby'
+    next if server.puma? or server.falcon? or RUBY_ENGINE == 'jruby'
     random = "%064x" % Kernel.rand(2**256-1)
     server.get "/ping?x=#{random}"
     count = server.log.scan("GET /ping?x=#{random}").count

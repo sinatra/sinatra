@@ -1441,53 +1441,9 @@ to `stream` finishes executing. Streaming does not work at all with Shotgun.
 
 If the optional parameter is set to `keep_open`, it will not call `close` on
 the stream object, allowing you to close it at any later point in the
-execution flow. This only works on evented servers, like Rainbows.
-Other servers will still close the stream:
+execution flow.
 
-```ruby
-# config.ru
-require 'sinatra/base'
-
-class App < Sinatra::Base
-  connections = []
-
-  get '/subscribe', provides: 'text/event-stream'  do
-    # register a client's interest in server events
-    stream(:keep_open) do |out|
-      connections << out
-      # purge dead connections
-      connections.reject!(&:closed?)
-    end
-  end
-
-  post '/' do
-    connections.each do |out|
-      # notify client that a new message has arrived
-      out << "data: #{params[:msg]}\n\n"
-
-      # indicate client to connect again
-      out.close
-    end
-
-    204 # response without entity body
-  end
-end
-
-run App
-```
-
-```ruby
-# rainbows.conf
-Rainbows! do
-  use :EventMachine
-end
-````
-
-Run:
-
-```shell
-rainbows -c rainbows.conf
-```
+You can have a look at the [chat example](https://github.com/sinatra/sinatra/blob/main/examples/chat.rb)
 
 It's also possible for the client to close the connection when trying to
 write to the socket. Because of this, it's recommended to check

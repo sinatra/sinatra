@@ -14,7 +14,7 @@ module IntegrationAsyncHelper
     super
 
     base_port = 5100 + Process.pid % 100
-    servers = %w(rainbows puma)
+    servers = %w(puma)
 
     servers.each_with_index do |server, index|
       Server.run(server, base_port+index, async: true)

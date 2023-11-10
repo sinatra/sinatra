@@ -209,7 +209,7 @@ module Sinatra
     end
   end
 
-  # Some Rack handlers (Rainbows!) implement an extended body object protocol, however,
+  # Some Rack handlers implement an extended body object protocol, however,
   # some middleware (namely Rack::Lint) will break it by not mirroring the methods in question.
   # This middleware will detect an extended body object and will make sure it reaches the
   # handler directly. We do this here, so our middleware and middleware set up by the app will
@@ -502,8 +502,7 @@ module Sinatra
     # the response body have not yet been generated.
     #
     # The close parameter specifies whether Stream#close should be called
-    # after the block has been executed. This is only relevant for evented
-    # servers like Rainbows.
+    # after the block has been executed.
     def stream(keep_open = false)
       scheduler = env['async.callback'] ? EventMachine : Stream
       current   = @params.dup
