@@ -6,7 +6,6 @@
 #
 #   unicorn stream.ru                   # gem install unicorn
 #   puma stream.ru                      # gem install puma
-#   rainbows -c rainbows.conf stream.ru # gem install rainbows eventmachine
 
 require 'sinatra/base'
 
