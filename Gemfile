@@ -37,6 +37,10 @@ gem 'sinatra-contrib', path: 'sinatra-contrib'
 # https://github.com/socketry/async-http/pull/124/files#r1237988899
 gem 'traces', '< 0.10.0' if RUBY_VERSION >= '2.6.0' && RUBY_VERSION < '2.7.0'
 
+# async-io started to use Ruby 2.7 syntax without specifying required Ruby version
+# https://github.com/socketry/async-io/issues/74
+gem 'async-io', '< 1.37.0' if RUBY_VERSION >= '2.6.0' && RUBY_VERSION < '2.7.0'
+
 gem 'asciidoctor'
 gem 'builder'
 gem 'commonmarker', '~> 0.23.4', platforms: [:ruby]
