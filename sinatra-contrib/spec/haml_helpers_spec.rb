@@ -74,4 +74,4 @@ RSpec.describe Sinatra::HamlHelpers do
       expect(body).to eq(html_code)
     end
   end
-end if defined?(Haml) && Haml::VERSION >= "6.0.0"
+end
