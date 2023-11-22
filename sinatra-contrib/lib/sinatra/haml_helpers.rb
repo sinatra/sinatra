@@ -6,7 +6,7 @@ require 'sinatra/capture'
 module Sinatra
   # = Sinatra::HamlHelpers
   #
-  # This extensions provides helper methods that existed in Haml 5 but was
+  # This extension provides helper methods that existed in Haml 5 but was
   # removed in Haml 6. To use this in your app, just +register+ it:
   #
   #   require 'sinatra/base'
