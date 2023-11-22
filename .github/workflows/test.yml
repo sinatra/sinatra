@@ -57,7 +57,7 @@ jobs:
           libxslt-dev \
           libyaml-dev
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - uses: ruby/setup-ruby@v1
       continue-on-error: ${{ matrix.allow-failure || false }}
