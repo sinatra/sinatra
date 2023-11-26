@@ -28,6 +28,8 @@ module Sinatra
     # Other extensions you don't want to be loaded unless needed.
     module Custom
       register :Reloader, 'sinatra/reloader'
+
+      helpers :HamlHelpers, 'sinatra/haml_helpers'
     end
 
     ##
