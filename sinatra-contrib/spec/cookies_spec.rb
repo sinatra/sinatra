@@ -457,7 +457,7 @@ RSpec.describe Sinatra::Cookies do
       end).to be false
     end
 
-    it 'deos not become true if response cookies are removed' do
+    it 'does not become true if response cookies are removed' do
       expect(cookie_route do
         cookies['foo'] = 'bar'
         cookies.delete :foo
