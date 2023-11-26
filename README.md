@@ -2834,39 +2834,7 @@ by Konstantin_
 Sinatra doesn't impose any concurrency model but leaves that to the
 underlying Rack handler (server) like Puma or WEBrick. Sinatra
 itself is thread-safe, so there won't be any problem if the Rack handler
-uses a threaded model of concurrency. This would mean that when starting
-the server, you'd have to specify the correct invocation method for the
-specific Rack handler. The following example is a demonstration of how
-to start a multi-threaded Rainbows server:
-
-```ruby
-# config.ru
-
-require 'sinatra/base'
-
-class App < Sinatra::Base
-  get '/' do
-    "Hello, World"
-  end
-end
-
-run App
-```
-
-```ruby
-# rainbows.conf
-
-# Rainbows configurator is based on Unicorn.
-Rainbows! do
-  use :ThreadSpawn
-end
-```
-
-To start the server, the command would be:
-
-```shell
-rainbows -c rainbows.conf
-```
+uses a threaded model of concurrency.
 
 ## Requirement
 
