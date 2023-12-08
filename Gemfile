@@ -46,7 +46,13 @@ gem 'falcon', '~> 0.40', platforms: [:ruby]
 gem 'haml', '~> 6'
 gem 'kramdown'
 gem 'liquid'
-gem 'markaby'
+# markaby 0.9.1 introduced Ruby 2.7 syntax in https://github.com/markaby/markaby/pull/44
+# and does not specify required_ruby_version
+if RUBY_VERSION >= '2.6.0' && RUBY_VERSION < '2.7.0'
+  gem 'markaby', '< 0.9.1'
+else
+  gem 'markaby'
+end
 gem 'nokogiri', '> 1.5.0'
 gem 'pandoc-ruby', '~> 2.0.2'
 gem 'rabl'
