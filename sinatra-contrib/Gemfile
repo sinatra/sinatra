@@ -17,7 +17,7 @@ gem 'haml'
 gem 'hamlit', '>= 3'
 gem 'rack', rack_version
 gem 'rack-protection', path: '../rack-protection'
-gem 'rack-test', github: 'rack/rack-test'
+gem 'rack-test'
 gem 'rake', '>= 12.3.3'
 gem 'rspec', '~> 3'
 gem 'sinatra', path: '..'
