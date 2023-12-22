@@ -24,7 +24,7 @@ puma_version = { github: 'puma/puma' } if puma_version == 'head'
 gem 'puma', puma_version
 
 gem 'minitest', '~> 5.0'
-gem 'rack-test', github: 'rack/rack-test'
+gem 'rack-test'
 gem 'rubocop', '~> 1.32.0', require: false
 gem 'yard' # used by rake doc
 

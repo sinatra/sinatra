@@ -13,4 +13,4 @@ gem 'rack', rack_version
 
 gemspec
 
-gem 'rack-test', github: 'rack/rack-test'
+gem 'rack-test'
