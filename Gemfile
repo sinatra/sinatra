@@ -56,7 +56,11 @@ end
 gem 'nokogiri', '> 1.5.0'
 gem 'pandoc-ruby', '~> 2.0.2'
 gem 'rabl'
-gem 'rdiscount', platforms: [:ruby]
+if RUBY_ENGINE == 'truffleruby'
+  gem 'rdiscount', '< 2.2.7.2' # https://github.com/oracle/truffleruby/issues/3362
+else
+  gem 'rdiscount', platforms: [:ruby]
+end
 gem 'rdoc'
 gem 'redcarpet', platforms: [:ruby]
 gem 'sass-embedded', '~> 1.54'
