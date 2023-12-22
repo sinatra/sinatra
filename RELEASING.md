@@ -2,35 +2,24 @@
 
 This document explains releasing process for all Sinatra gems.
 
-Since everything is bundled in same repo (except `Mustermann`), we now
-have one rake task to cut a release.
+Since everything is bundled in same repo (except `Mustermann`), we
+have some rake tasks and a GitHub Actions workflow to cut a release.
 
 (Please refer to [Mustermann](https://github.com/sinatra/mustermann) if that also needs a release.)
 
 ### Releasing
+
 For releasing new version of [`sinatra`, `sinatra-contrib`, `rack-protection`], this is the procedure:
 
+1. Update `CHANGELOG.md`
 1. Update `VERSION` file with target version
-2. Run `bundle exec rake release:all`
-3. ???
-4. Profit!!!
-
-Thats it!
-
-This rake task can be broken down as:
-
-* Pick up latest version string from `VERSION` file
-* Run all tests to ensure gems are not broken
-* Update `version.rb` file in all gems with latest `VERSION`
-* Create a new commit with new `VERSION` and `version.rb` files
-* Tag the commit with same version
-* Push the commit and tags to github
-* Package all the gems, ie create all `.gem` files
-* Ensure that all the gems can be installed locally
-* If no issues, push all gems to upstream.
-
-In addition to above rake task, there are other rake tasks which can help
-with development.
+1. Run `rake release:commit_version`
+1. Create pull request with all that ([example](https://github.com/sinatra/sinatra/pull/1893))
+1. Merge the pull request when CI is green
+1. Ensure you have latest changes locally
+1. Run `rake release:tag_version`
+1. Push tag to upstream
+1. Run `rake release:watch` and watch GitHub Actions push to RubyGems.org
 
 ### Packaging
 These rake tasks will generate `.gem` and `.tar.gz` files. For each gem,
