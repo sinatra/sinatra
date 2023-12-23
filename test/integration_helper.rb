@@ -73,7 +73,7 @@ module IntegrationHelper
         cmd << "-w" unless net_http_server?
         cmd << "-I" << File.expand_path('../lib', __dir__).inspect
         cmd << app_file.inspect << '-s' << server << '-o' << '127.0.0.1' << '-p' << port
-        cmd << "-e" << environment.to_s << '2>&1'
+        cmd << "-e" << environment.to_s
         cmd.join " "
       end
     end
