@@ -63,7 +63,7 @@ module IntegrationHelper
 
     def command
       @command ||= begin
-        cmd = ["APP_ENV=#{environment}", "bundle exec"]
+        cmd = ["APP_ENV=#{environment}", "bundle", "exec"]
         if RbConfig.respond_to? :ruby
           cmd << RbConfig.ruby.inspect
         else
