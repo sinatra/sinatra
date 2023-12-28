@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write # for trusted publishing
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          ruby-version: ruby
+      - uses: rubygems/configure-rubygems-credentials@v1.0.0
+      # ensure gems can be built and installed
+      - run: bundle exec rake install:rack-protection
+      - run: bundle exec rake install:sinatra
+      - run: bundle exec rake install:sinatra-contrib
+      # push gems to rubygems.org
+      - run: bundle exec rake release:rack-protection
+      - run: bundle exec rake release:sinatra
+      - run: bundle exec rake release:sinatra-contrib

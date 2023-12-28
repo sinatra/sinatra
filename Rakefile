@@ -191,7 +191,7 @@ if defined?(Gem)
       end
     end
 
-    desc 'Commits the version to github repository'
+    desc 'Commits the version to git (no push)'
     task :commit_version do
       %w[
         lib/sinatra
@@ -203,10 +203,22 @@ if defined?(Gem)
       end
 
       sh <<-SH
-        git commit --allow-empty -a -m '#{source_version} release'  &&
-        git tag -s v#{source_version} -m '#{source_version} release'  &&
-        git push && (git push origin || true) &&
-        git push --tags && (git push origin --tags || true)
+        git commit --allow-empty --all --message '#{source_version} release'
+      SH
+    end
+
+    desc 'Tags the version in git (no push)'
+    task :tag_version do
+      sh <<-SH
+        git tag --sign v#{source_version} --message '#{source_version} release'
+      SH
+    end
+
+    desc 'Watch the release workflow run'
+    task :watch do
+      sh <<-SH
+        runId=$(gh run list --workflow=release.yml --limit 1 --json databaseId --jq '.[].databaseId')
+        gh run watch --interval 1 --exit-status $runId
       SH
     end
 
