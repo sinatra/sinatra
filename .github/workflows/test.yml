@@ -71,7 +71,7 @@ jobs:
         tilt:
           - stable
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
-        ruby: [2.6, 2.7, '3.0', 3.1, 3.2, truffleruby]
+        ruby: [2.6, 2.7, '3.0', 3.1, 3.2, 3.3, truffleruby]
         include:
           # Puma
           - { ruby: 3.1, rack: '~> 2', puma: '~> 5',   tilt: stable }

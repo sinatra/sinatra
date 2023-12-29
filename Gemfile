@@ -39,6 +39,7 @@ gem 'traces', '< 0.10.0' if RUBY_VERSION >= '2.6.0' && RUBY_VERSION < '2.7.0'
 
 gem 'asciidoctor'
 gem 'builder'
+gem 'childprocess'
 gem 'commonmarker', '~> 0.23.4', platforms: [:ruby]
 gem 'erubi'
 gem 'eventmachine'
@@ -67,3 +68,4 @@ gem 'sass-embedded', '~> 1.54'
 gem 'simplecov', require: false
 gem 'slim', '~> 4'
 gem 'yajl-ruby', platforms: [:ruby]
+gem 'zeitwerk'
