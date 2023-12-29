@@ -1281,6 +1281,7 @@ module Sinatra
         %r{/sinatra(/(base|main|show_exceptions))?\.rb$},   # all sinatra code
         %r{lib/tilt.*\.rb$},                                # all tilt code
         /^\(.*\)$/,                                         # generated code
+        /\/bundled_gems.rb$/,                               # ruby >= 3.3 with bundler >= 2.5
         %r{rubygems/(custom|core_ext/kernel)_require\.rb$}, # rubygems require hacks
         /active_support/,                                   # active_support require hacks
         %r{bundler(/(?:runtime|inline))?\.rb},              # bundler require hacks
