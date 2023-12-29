@@ -2,6 +2,29 @@
 
 * _Your new feature here._
 
+## 3.2.0 / 2023-12-29
+
+* New: Add `#except` method to `Sinatra::IndifferentHash` ([#1940])
+
+* New: Use `Exception#detailed_message` to show backtrace ([#1952])
+
+* New: Add `Sinatra::HamlHelpers` to sinatra-contrib ([#1960])
+
+* Fix: Add `base64` to rack-protection runtime dependencies ([#1946])
+
+* Fix: Avoid open-ended dependencies for sinatra-contrib and rack-protection ([#1949])
+
+* Fix: Helpful message when `Sinatra::Runner` times out ([#1975])
+
+* Fix: Ruby 3.3 + Bundler 2.5 compatibility ([#1975])
+
+[#1940]: https://github.com/sinatra/sinatra/pull/1940
+[#1946]: https://github.com/sinatra/sinatra/pull/1946
+[#1949]: https://github.com/sinatra/sinatra/pull/1949
+[#1952]: https://github.com/sinatra/sinatra/pull/1952
+[#1960]: https://github.com/sinatra/sinatra/pull/1960
+[#1975]: https://github.com/sinatra/sinatra/pull/1960
+
 ## 3.1.0 / 2023-08-07
 
 * New: Add sass support via sass-embedded [#1911] by なつき
