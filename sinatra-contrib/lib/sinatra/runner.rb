@@ -111,7 +111,7 @@ module Sinatra
       "bundle exec ruby #{app_file} -p #{port} -e production"
     end
 
-    def ping(timeout = 30)
+    def ping(timeout = 10)
       loop do
         return if alive?
 
