@@ -8,11 +8,10 @@ on:
 
 jobs:
   release:
+    if: github.repository == 'sinatra/sinatra'
     runs-on: ubuntu-latest
-
     permissions:
       id-token: write # for trusted publishing
-
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
