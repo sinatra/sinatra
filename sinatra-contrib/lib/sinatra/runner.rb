@@ -117,7 +117,7 @@ module Sinatra
 
         if Time.now - @started > timeout
           warn command, log
-          raise 'timeout'
+          raise "timeout starting server with command '#{command}'"
         else
           sleep 0.1
         end
