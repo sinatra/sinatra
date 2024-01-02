@@ -2,7 +2,10 @@
 
 # external dependencies
 require 'rack'
-require 'rackup'
+begin
+  require 'rackup'
+rescue LoadError
+end
 require 'tilt'
 require 'rack/protection'
 require 'mustermann'
@@ -1597,6 +1600,23 @@ module Sinatra
       # Puma, Falcon, or WEBrick (in that order). If given a block, will call
       # with the constructed handler once we have taken the stage.
       def run!(options = {}, &block)
+        unless defined?(Rackup::Handler)
+          rackup_warning = <<~MISSING_RACKUP
+            Sinatra could not start, the "rackup" gem was not found!
+
+            Add it to your bundle with:
+
+                bundle add rackup
+
+            or install it with:
+
+                gem install rackup
+
+          MISSING_RACKUP
+          warn rackup_warning
+          exit 1
+        end
+
         return if running?
 
         set options
