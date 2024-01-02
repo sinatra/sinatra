@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         rack:
-          - "~> 2"
+          - stable
         ruby:
           - "2.6"
           - "2.7"
