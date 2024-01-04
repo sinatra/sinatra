@@ -14,7 +14,7 @@
 
 * Fix: Avoid open-ended dependencies for sinatra-contrib and rack-protection ([#1949])
 
-* Fix: Helpful message when `Sinatra::Runner` times out ([#1960])
+* Fix: Helpful message when `Sinatra::Runner` times out ([#1975])
 
 * Fix: Ruby 3.3 + Bundler 2.5 compatibility ([#1975])
 
