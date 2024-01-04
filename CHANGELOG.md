@@ -23,7 +23,7 @@
 [#1949]: https://github.com/sinatra/sinatra/pull/1949
 [#1952]: https://github.com/sinatra/sinatra/pull/1952
 [#1960]: https://github.com/sinatra/sinatra/pull/1960
-[#1975]: https://github.com/sinatra/sinatra/pull/1960
+[#1975]: https://github.com/sinatra/sinatra/pull/1975
 
 ## 3.1.0 / 2023-08-07
 
