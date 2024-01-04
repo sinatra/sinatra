@@ -9,7 +9,7 @@ class IntegrationStartTest < Minitest::Test
     app_file = File.join(__dir__, "integration", "simple_app.rb")
     gem_file = File.join(__dir__, "integration", "gemfile_without_rackup.rb")
     command = command_for(app_file)
-    env = { BUNDLE_GEMFILE: gem_file }
+    env = { "BUNDLE_GEMFILE" => gem_file }
 
     with_process(command: command, env: env) do |process, read_io|
       assert wait_for_output(read_io, /Sinatra could not start, the "rackup" gem was not found/)
