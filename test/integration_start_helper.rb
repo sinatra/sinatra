@@ -2,10 +2,6 @@ require "childprocess"
 require "expect"
 require "minitest/autorun"
 
-# https://github.com/enkessler/childprocess/issues/172
-# https://github.com/oracle/truffleruby/issues/1525
-ENV["CHILDPROCESS_POSIX_SPAWN"] = "true" if %w(jruby truffleruby).include?(RUBY_ENGINE)
-
 module IntegrationStartHelper
   def command_for(app_file)
     [
