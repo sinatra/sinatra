@@ -5,7 +5,8 @@ RSpec.describe Rack::Protection do
 
   it 'passes on options' do
     mock_app do
-      use Rack::Protection, track: ['HTTP_FOO']
+      # the :track option is used by session_hijacking
+      use Rack::Protection, track: ['HTTP_FOO'], use: [:session_hijacking], except: [:remote_token]
       run proc { |_e| [200, { 'content-type' => 'text/plain' }, ['hi']] }
     end
 
@@ -15,6 +16,8 @@ RSpec.describe Rack::Protection do
     expect(session[:foo]).to eq(:bar)
 
     get '/', {}, 'rack.session' => session, 'HTTP_FOO' => 'BAR'
+    # wont be empty if the remote_token middleware runs after session_hijacking
+    # why we run the mock app without remote_token
     expect(session).to be_empty
   end
 
