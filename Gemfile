@@ -66,8 +66,15 @@ else
 end
 gem 'rdoc'
 gem 'redcarpet', platforms: [:ruby]
-gem 'sass-embedded', '~> 1.54'
 gem 'simplecov', require: false
 gem 'slim', '~> 4'
 gem 'yajl-ruby', platforms: [:ruby]
 gem 'zeitwerk'
+
+# sass-embedded depends on google-protobuf
+# which fails to be installed on JRuby and TruffleRuby under aarch64
+# https://github.com/jruby/jruby/issues/8062
+# https://github.com/protocolbuffers/protobuf/issues/11935
+java    = %w(jruby truffleruby).include?(RUBY_ENGINE)
+aarch64 = RbConfig::CONFIG["target_cpu"] == 'aarch64'
+gem 'sass-embedded', '~> 1.54' unless java && aarch64
