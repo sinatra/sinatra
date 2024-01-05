@@ -43,12 +43,6 @@ module Sinatra
       new.merge!(Hash[*args])
     end
 
-    def initialize(*args)
-      args.map!(&method(:convert_value))
-
-      super(*args)
-    end
-
     def default(*args)
       args.map!(&method(:convert_key))
 

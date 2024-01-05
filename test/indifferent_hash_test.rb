@@ -27,8 +27,8 @@ class TestIndifferentHashBasics < Minitest::Test
 
   def test_default_object
     hash = Sinatra::IndifferentHash.new(:a=>1, ?b=>2)
-    assert_equal({ ?a=>1, ?b=>2 }, hash.default)
-    assert_equal({ ?a=>1, ?b=>2 }, hash[:a])
+    assert_equal({ :a=>1, ?b=>2 }, hash.default)
+    assert_equal({ :a=>1, ?b=>2 }, hash[:a])
   end
 
   def test_default_assignment
