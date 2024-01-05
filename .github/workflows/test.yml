@@ -11,13 +11,15 @@ permissions:
 
 jobs:
   rack-protection:
-    name: rack-protection (${{ matrix.ruby }}, Rack ${{ matrix.rack }})
+    name: rack-protection (${{ matrix.ruby }}, rack ${{ matrix.rack }}, rack-session ${{ matrix.rack_session }})
     runs-on: ubuntu-latest
     timeout-minutes: 5
     strategy:
       fail-fast: false
       matrix:
         rack:
+          - stable
+        rack_session:
           - stable
         ruby:
           - "2.6"
@@ -31,7 +33,8 @@ jobs:
           - "ruby-head"
         include:
           # Rack
-          - { ruby: 3.2, rack: head }
+          - { ruby: 3.2, rack: head,   rack_session: stable }
+          - { ruby: 3.2, rack: stable, rack_session: head }
     env:
       rack: ${{ matrix.rack }}
     steps:

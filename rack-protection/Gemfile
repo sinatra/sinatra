@@ -1,16 +1,18 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
-# encoding: utf-8
+gemspec
 
 gem 'rake'
 gem 'rspec', '~> 3'
+gem 'rack-test'
 
 rack_version = ENV['rack'].to_s
 rack_version = nil if rack_version.empty? || (rack_version == 'stable')
 rack_version = { github: 'rack/rack' } if rack_version == 'head'
 gem 'rack', rack_version
 
-gemspec
-
-gem 'rack-test'
+rack_session_version = ENV['rack_session'].to_s
+rack_session_version = nil if rack_session_version.empty? || (rack_session_version == 'stable')
+rack_session_version = { github: 'rack/rack-session' } if rack_session_version == 'head'
+gem 'rack-session', rack_session_version
