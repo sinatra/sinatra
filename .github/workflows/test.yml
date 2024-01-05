@@ -29,6 +29,9 @@ jobs:
           - "jruby"
           - "truffleruby"
           - "ruby-head"
+        include:
+          # Rack
+          - { ruby: 3.2, rack: head }
     env:
       rack: ${{ matrix.rack }}
     steps:
