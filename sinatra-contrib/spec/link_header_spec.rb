@@ -30,7 +30,7 @@ RSpec.describe Sinatra::LinkHeader do
   describe :link do
     it "sets link headers" do
       get '/'
-      expect(headers['Link'].lines).to include('<booyah>; rel="something"')
+      expect(headers['Link']).to include('<booyah>; rel="something"')
     end
 
     it "returns link html tags" do
@@ -41,7 +41,7 @@ RSpec.describe Sinatra::LinkHeader do
     it "takes an options hash" do
       get '/'
       elements = ["<something>", "foo=\"bar\"", "rel=\"from-filter\""]
-      expect(headers['Link'].split(",\n").first.strip.split('; ').sort).to eq(elements)
+      expect(headers['Link'].split(",").first.strip.split('; ').sort).to eq(elements)
     end
   end
 

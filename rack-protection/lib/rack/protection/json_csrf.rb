@@ -39,7 +39,7 @@ module Rack
       def has_vector?(request, headers)
         return false if request.xhr?
         return false if options[:allow_if]&.call(request.env)
-        return false unless headers['Content-Type'].to_s.split(';', 2).first =~ %r{^\s*application/json\s*$}
+        return false unless headers['content-type'].to_s.split(';', 2).first =~ %r{^\s*application/json\s*$}
 
         origin(request.env).nil? and referrer(request.env) != request.host
       end

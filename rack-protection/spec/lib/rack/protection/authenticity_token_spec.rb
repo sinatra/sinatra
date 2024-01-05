@@ -61,7 +61,7 @@ RSpec.describe Rack::Protection::AuthenticityToken do
   it 'allows for a custom authenticity token param' do
     mock_app do
       use Rack::Protection::AuthenticityToken, authenticity_param: 'csrf_param'
-      run proc { |_e| [200, { 'Content-Type' => 'text/plain' }, ['hi']] }
+      run proc { |_e| [200, { 'content-type' => 'text/plain' }, ['hi']] }
     end
 
     post('/', { 'csrf_param' => token }, 'rack.session' => { csrf: token })

@@ -57,7 +57,10 @@ RSpec.describe Sinatra::JSON do
 
   it "accepts shorthands for :content_type" do
     mock_app { get('/') { json({}, :content_type => :js) } }
-    expect(get('/')["Content-Type"]).to eq("application/javascript;charset=utf-8")
+    # Changed to "text/javascript" in Rack >3.0
+    # https://github.com/sinatra/sinatra/pull/1857#issuecomment-1445062212
+    expect(get('/')["Content-Type"])
+      .to eq("application/javascript;charset=utf-8").or eq("text/javascript;charset=utf-8")
   end
 
   it 'calls generate on :encoder if available' do

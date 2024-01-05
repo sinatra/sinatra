@@ -1,7 +1,7 @@
 require_relative 'test_helper'
 require 'stringio'
 
-module Rack::Handler
+module Rackup::Handler
   class Mock
     extend Minitest::Assertions
     # Allow assertions in request context
@@ -24,7 +24,7 @@ module Rack::Handler
     end
   end
 
-  register 'mock', 'Rack::Handler::Mock'
+  register :mock, Mock
 end
 
 class ServerTest < Minitest::Test

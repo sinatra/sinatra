@@ -14,9 +14,10 @@ module IntegrationStartHelper
     ]
   end
 
-  def with_process(command)
+  def with_process(command:, env: {}, debug: false)
     process = ChildProcess.build(*command)
     process.leader = true # ensure entire process tree dies
+    process.environment.merge!(env)
     read_io, write_io = IO.pipe
     process.io.stdout = write_io
     process.io.stderr = write_io
@@ -26,6 +27,8 @@ module IntegrationStartHelper
     # attempting to read from it. If the parent leaves its write end open, it
     # will not detect EOF.
     write_io.close
+
+    echo_output(read_io) if debug || debug_all?
 
     yield process, read_io
   ensure
@@ -42,7 +45,7 @@ module IntegrationStartHelper
     end
   end
 
-  def debug?
+  def debug_all?
     ENV.key?("DEBUG_START_PROCESS")
   end
 

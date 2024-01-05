@@ -2,6 +2,10 @@
 
 # external dependencies
 require 'rack'
+begin
+  require 'rackup'
+rescue LoadError
+end
 require 'tilt'
 require 'rack/protection'
 require 'mustermann'
@@ -176,8 +180,8 @@ module Sinatra
       result = body
 
       if drop_content_info?
-        headers.delete 'Content-Length'
-        headers.delete 'Content-Type'
+        headers.delete 'content-length'
+        headers.delete 'content-type'
       end
 
       if drop_body?
@@ -186,9 +190,9 @@ module Sinatra
       end
 
       if calculate_content_length?
-        # if some other code has already set Content-Length, don't muck with it
+        # if some other code has already set content-length, don't muck with it
         # currently, this would be the static file-handler
-        headers['Content-Length'] = body.map(&:bytesize).reduce(0, :+).to_s
+        headers['content-length'] = body.map(&:bytesize).reduce(0, :+).to_s
       end
 
       [status, headers, result]
@@ -197,7 +201,7 @@ module Sinatra
     private
 
     def calculate_content_length?
-      headers['Content-Type'] && !headers['Content-Length'] && (Array === body)
+      headers['content-type'] && !headers['content-length'] && (Array === body)
     end
 
     def drop_content_info?
@@ -289,10 +293,8 @@ module Sinatra
         def block.each; yield(call) end
         response.body = block
       elsif value
-        # Rack 2.0 returns a Rack::File::Iterator here instead of
-        # Rack::File as it was in the previous API.
         unless request.head? || value.is_a?(Rack::Files::Iterator) || value.is_a?(Stream)
-          headers.delete 'Content-Length'
+          headers.delete 'content-length'
         end
         response.body = value
       else
@@ -302,7 +304,10 @@ module Sinatra
 
     # Halt processing and redirect to the URI provided.
     def redirect(uri, *args)
-      if (env['HTTP_VERSION'] == 'HTTP/1.1') && (env['REQUEST_METHOD'] != 'GET')
+      # SERVER_PROTOCOL is required in Rack 3, fall back to HTTP_VERSION
+      # for servers not updated for Rack 3 (like Puma 5)
+      http_version = env['SERVER_PROTOCOL'] || env['HTTP_VERSION']
+      if (http_version == 'HTTP/1.1') && (env['REQUEST_METHOD'] != 'GET')
         status 303
       else
         status 302
@@ -372,10 +377,10 @@ module Sinatra
       Base.mime_type(type)
     end
 
-    # Set the Content-Type of the response body given a media type or file
+    # Set the content-type of the response body given a media type or file
     # extension.
     def content_type(type = nil, params = {})
-      return response['Content-Type'] unless type
+      return response['content-type'] unless type
 
       default = params.delete :default
       mime_type = mime_type(type) || default
@@ -393,7 +398,7 @@ module Sinatra
           "#{key}=#{val}"
         end.join(', ')
       end
-      response['Content-Type'] = mime_type
+      response['content-type'] = mime_type
     end
 
     # https://html.spec.whatwg.org/#multipart-form-data
@@ -412,12 +417,12 @@ module Sinatra
       params = format('; filename="%s"', File.basename(filename).gsub(/["\r\n]/, MULTIPART_FORM_DATA_REPLACEMENT_TABLE))
       response['Content-Disposition'] << params
       ext = File.extname(filename)
-      content_type(ext) unless response['Content-Type'] || ext.empty?
+      content_type(ext) unless response['content-type'] || ext.empty?
     end
 
     # Use the contents of the file at +path+ as the response body.
     def send_file(path, opts = {})
-      if opts[:type] || !response['Content-Type']
+      if opts[:type] || !response['content-type']
         content_type opts[:type] || File.extname(path), default: 'application/octet-stream'
       end
 
@@ -433,7 +438,7 @@ module Sinatra
       result = file.serving(request, path)
 
       result[1].each { |k, v| headers[k] ||= v }
-      headers['Content-Length'] = result[1]['Content-Length']
+      headers['content-length'] = result[1]['content-length']
       opts[:status] &&= Integer(opts[:status])
       halt (opts[:status] || result[0]), result[2]
     rescue Errno::ENOENT
@@ -995,7 +1000,7 @@ module Sinatra
       invoke { dispatch! }
       invoke { error_block!(response.status) } unless @env['sinatra.error']
 
-      unless @response['Content-Type']
+      unless @response['content-type']
         if Array === body && body[0].respond_to?(:content_type)
           content_type body[0].content_type
         elsif (default = settings.default_content_type)
@@ -1058,7 +1063,7 @@ module Sinatra
       routes = base.routes[@request.request_method]
 
       routes&.each do |pattern, conditions, block|
-        response.delete_header('Content-Type') unless @pinned_response
+        response.delete_header('content-type') unless @pinned_response
 
         returned_pass_block = process_route(pattern, conditions) do |*args|
           env['sinatra.route'] = "#{@request.request_method} #{pattern}"
@@ -1179,7 +1184,7 @@ module Sinatra
       invoke do
         static! if settings.static? && (request.get? || request.head?)
         filter! :before do
-          @pinned_response = !response['Content-Type'].nil?
+          @pinned_response = !response['content-type'].nil?
         end
         route!
       end
@@ -1460,7 +1465,13 @@ module Sinatra
       #   mime_types :js   # => ['application/javascript', 'text/javascript']
       def mime_types(type)
         type = mime_type type
-        type =~ %r{^application/(xml|javascript)$} ? [type, "text/#{$1}"] : [type]
+        if type =~ %r{^application/(xml|javascript)$}
+          [type, "text/#{$1}"]
+        elsif type =~ %r{^text/(xml|javascript)$}
+          [type, "application/#{$1}"]
+        else
+          [type]
+        end
       end
 
       # Define a before filter; runs before all requests within the same
@@ -1589,10 +1600,27 @@ module Sinatra
       # Puma, Falcon, or WEBrick (in that order). If given a block, will call
       # with the constructed handler once we have taken the stage.
       def run!(options = {}, &block)
+        unless defined?(Rackup::Handler)
+          rackup_warning = <<~MISSING_RACKUP
+            Sinatra could not start, the "rackup" gem was not found!
+
+            Add it to your bundle with:
+
+                bundle add rackup
+
+            or install it with:
+
+                gem install rackup
+
+          MISSING_RACKUP
+          warn rackup_warning
+          exit 1
+        end
+
         return if running?
 
         set options
-        handler         = Rack::Handler.pick(server)
+        handler         = Rackup::Handler.pick(server)
         handler_name    = handler.name.gsub(/.*::/, '')
         server_settings = settings.respond_to?(:server_settings) ? settings.server_settings : {}
         server_settings.merge!(Port: port, Host: bind)
@@ -1724,7 +1752,7 @@ module Sinatra
         types.map! { |t| mime_types(t) }
         types.flatten!
         condition do
-          response_content_type = response['Content-Type']
+          response_content_type = response['content-type']
           preferred_type = request.preferred_type(types)
 
           if response_content_type

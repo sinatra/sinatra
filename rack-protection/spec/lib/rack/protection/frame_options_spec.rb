@@ -32,7 +32,7 @@ RSpec.describe Rack::Protection::FrameOptions do
   end
 
   it 'should not override the header if already set' do
-    mock_app with_headers('X-Frame-Options' => 'allow')
+    mock_app with_headers('x-frame-options' => 'allow')
     expect(get('/', {}, 'wants' => 'text/html').headers['X-Frame-Options']).to eq('allow')
   end
 end

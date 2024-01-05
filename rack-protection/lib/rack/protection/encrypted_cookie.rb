@@ -202,7 +202,7 @@ module Rack
       end
 
       def unpacked_cookie_data(request)
-        request.fetch_header(RACK_SESSION_UNPACKED_COOKIE_DATA) do |k|
+        request.fetch_header(Session::RACK_SESSION_UNPACKED_COOKIE_DATA) do |k|
           session_data = cookie_data = request.cookies[@key]
 
           # Try to decrypt with the first secret, if that returns nil, try

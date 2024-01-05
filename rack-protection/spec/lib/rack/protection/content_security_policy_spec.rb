@@ -62,7 +62,7 @@ RSpec.describe Rack::Protection::ContentSecurityPolicy do
   end
 
   it 'should not override the header if already set' do
-    mock_app with_headers('Content-Security-Policy' => 'default-src: none')
+    mock_app with_headers('content-security-policy' => 'default-src: none')
     expect(get('/', {}, 'wants' => 'text/html').headers['Content-Security-Policy']).to eq('default-src: none')
   end
 end

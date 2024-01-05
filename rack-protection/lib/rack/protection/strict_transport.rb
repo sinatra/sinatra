@@ -33,7 +33,7 @@ module Rack
 
       def call(env)
         status, headers, body = @app.call(env)
-        headers['Strict-Transport-Security'] ||= strict_transport
+        headers['strict-transport-security'] ||= strict_transport
         [status, headers, body]
       end
     end

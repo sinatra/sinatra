@@ -40,7 +40,7 @@ class ResponseTest < Minitest::Test
       @response.body   = ['Hello World']
       assert_equal [
         status_code,
-        { 'Content-Type' => 'text/html', 'Content-Length' => '11' },
+        { 'content-type' => 'text/html', 'content-length' => '11' },
         ['Hello World']
       ], @response.finish
     end

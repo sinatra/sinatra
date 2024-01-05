@@ -27,8 +27,8 @@ RSpec.describe Rack::Protection::SessionHijacking do
 
   it 'accepts requests with a changing Version header' do
     session = { foo: :bar }
-    get '/', {}, 'rack.session' => session, 'HTTP_VERSION' => '1.0'
-    get '/', {}, 'rack.session' => session, 'HTTP_VERSION' => '1.1'
+    get '/', {}, 'rack.session' => session, 'SERVER_PROTOCOL' => 'HTTP/1.0'
+    get '/', {}, 'rack.session' => session, 'SERVER_PROTOCOL' => 'HTTP/1.1'
     expect(session[:foo]).to eq(:bar)
   end
 end
