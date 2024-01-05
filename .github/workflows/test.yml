@@ -63,7 +63,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         webhook: ${{ secrets.DISCORD_WEBHOOK }}
-  test:
+  sinatra:
     name: ${{ matrix.ruby }} (Rack ${{ matrix.rack }}, Puma ${{ matrix.puma }}, Tilt ${{ matrix.tilt }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
