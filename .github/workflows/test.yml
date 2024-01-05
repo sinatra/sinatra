@@ -82,10 +82,9 @@ jobs:
           - { ruby: 3.2, rack: stable, puma: head,     tilt: stable, allow-failure: true }
           # Tilt
           - { ruby: 3.2, rack: stable, puma: stable,   tilt: head, allow-failure: true }
-          # Due to flaky tests, see https://github.com/sinatra/sinatra/pull/1870
-          - { ruby: jruby-9.3, rack: stable, puma: stable, tilt: stable, allow-failure: true }
-          # Due to https://github.com/jruby/jruby/issues/7647
-          - { ruby: jruby-9.4, rack: stable, puma: stable, tilt: stable, allow-failure: true }
+          # JRuby
+          - { ruby: jruby-9.3, rack: stable, puma: stable, tilt: stable } # targets Ruby 2.6 compatibility
+          - { ruby: jruby-9.4, rack: stable, puma: stable, tilt: stable } # targets Ruby 3.1 compatibility
           # Never fail our build due to problems with head
           - { ruby: ruby-head,        rack: stable, puma: stable, tilt: stable, allow-failure: true }
           - { ruby: jruby-head,       rack: stable, puma: stable, tilt: stable, allow-failure: true }
