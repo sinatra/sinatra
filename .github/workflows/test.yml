@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   rack-protection:
-    name: rack-protection (${{ matrix.ruby }}, Rack ${{ matrix.rack }})
+    name: rack-protection (${{ matrix.ruby }}, rack ${{ matrix.rack }}, rack-session ${{ matrix.rack_session }})
     runs-on: ubuntu-latest
     timeout-minutes: 5
     strategy:
@@ -29,6 +29,10 @@ jobs:
           - "jruby"
           - "truffleruby"
           - "ruby-head"
+        include:
+          # Rack
+          - { ruby: 3.2, rack: head,   rack_session: stable }
+          - { ruby: 3.2, rack: stable, rack_session: head }
     env:
       rack: ${{ matrix.rack }}
     steps:
@@ -57,7 +61,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         webhook: ${{ secrets.DISCORD_WEBHOOK }}
-  test:
+  sinatra:
     name: ${{ matrix.ruby }} (Rack ${{ matrix.rack }}, Puma ${{ matrix.puma }}, Tilt ${{ matrix.tilt }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -71,7 +75,7 @@ jobs:
         tilt:
           - stable
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
-        ruby: [2.6, 2.7, '3.0', 3.1, 3.2, 3.3, truffleruby]
+        ruby: [2.6, 2.7, '3.0', 3.1, 3.2, 3.3, jruby, truffleruby]
         include:
           # Puma
           - { ruby: 3.1, rack: '~> 2', puma: '~> 5',   tilt: stable }
