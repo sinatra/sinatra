@@ -1922,7 +1922,7 @@ set :protection, :except => :path_traversal
 You can also hand in an array in order to disable a list of protections:
 
 ```ruby
-set :protection, :except => [:path_traversal, :session_hijacking]
+set :protection, :except => [:path_traversal, :remote_token]
 ```
 
 By default, Sinatra will only set up session based protection if `:sessions`

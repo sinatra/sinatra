@@ -27,12 +27,11 @@ module Rack
     autoload :XSSHeader,             'rack/protection/xss_header'
 
     def self.new(app, options = {})
-      # does not include: RemoteReferrer, AuthenticityToken and FormToken
       except = Array options[:except]
       use_these = Array options[:use]
 
       if options.fetch(:without_session, false)
-        except += %i[session_hijacking remote_token]
+        except += %i[remote_token]
       end
 
       Rack::Builder.new do
@@ -44,6 +43,7 @@ module Rack
         use ::Rack::Protection::FormToken,             options if use_these.include? :form_token
         use ::Rack::Protection::ReferrerPolicy,        options if use_these.include? :referrer_policy
         use ::Rack::Protection::RemoteReferrer,        options if use_these.include? :remote_referrer
+        use ::Rack::Protection::SessionHijacking,      options if use_these.include? :session_hijacking
         use ::Rack::Protection::StrictTransport,       options if use_these.include? :strict_transport
 
         # On by default, unless skipped
@@ -53,7 +53,6 @@ module Rack
         use ::Rack::Protection::JsonCsrf,              options unless except.include? :json_csrf
         use ::Rack::Protection::PathTraversal,         options unless except.include? :path_traversal
         use ::Rack::Protection::RemoteToken,           options unless except.include? :remote_token
-        use ::Rack::Protection::SessionHijacking,      options unless except.include? :session_hijacking
         use ::Rack::Protection::XSSHeader,             options unless except.include? :xss_header
         run app
       end.to_app

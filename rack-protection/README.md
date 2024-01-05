@@ -69,7 +69,7 @@ Prevented by:
 
 Prevented by:
 
-* [`Rack::Protection::SessionHijacking`][session-hijacking]
+* [`Rack::Protection::SessionHijacking`][session-hijacking] (not included by `use Rack::Protection`)
 
 ## Cookie Tossing
 
