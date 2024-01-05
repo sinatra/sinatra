@@ -39,7 +39,9 @@ gem 'traces', '< 0.10.0' if RUBY_VERSION >= '2.6.0' && RUBY_VERSION < '2.7.0'
 
 gem 'asciidoctor'
 gem 'builder'
-gem 'childprocess'
+# https://github.com/oracle/truffleruby/issues/1525
+# https://github.com/enkessler/childprocess/issues/172
+gem 'childprocess', github: 'https://github.com/enkessler/childprocess/pull/175'
 gem 'commonmarker', '~> 0.23.4', platforms: [:ruby]
 gem 'erubi'
 gem 'eventmachine'
