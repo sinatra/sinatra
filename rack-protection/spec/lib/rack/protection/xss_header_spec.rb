@@ -31,11 +31,11 @@ RSpec.describe Rack::Protection::XSSHeader do
   end
 
   it 'should set the X-Content-Type-Options' do
-    expect(get('/', {}, 'wants' => 'text/html').header['X-Content-Type-Options']).to eq('nosniff')
+    expect(get('/', {}, 'wants' => 'text/html').headers['X-Content-Type-Options']).to eq('nosniff')
   end
 
   it 'should set the X-Content-Type-Options for other content types' do
-    expect(get('/', {}, 'wants' => 'application/foo').header['X-Content-Type-Options']).to eq('nosniff')
+    expect(get('/', {}, 'wants' => 'application/foo').headers['X-Content-Type-Options']).to eq('nosniff')
   end
 
   it 'should allow changing the nosniff-mode off' do
