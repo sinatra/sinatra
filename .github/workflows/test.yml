@@ -30,11 +30,12 @@ jobs:
           - "3.3"
           - "jruby"
           - "truffleruby"
-          - "ruby-head"
         include:
           # Rack
-          - { ruby: 3.2, rack: head,   rack_session: stable }
-          - { ruby: 3.2, rack: stable, rack_session: head }
+          - { ruby: 3.2,       rack: head,   rack_session: stable }
+          - { ruby: 3.2,       rack: stable, rack_session: head }
+          # https://github.com/sinatra/sinatra/issues/1988
+          - { ruby: ruby-head, rack: stable, rack_session: stable, allow-failure: true }
     env:
       rack: ${{ matrix.rack }}
     steps:
