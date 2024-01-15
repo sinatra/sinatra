@@ -9,8 +9,6 @@ end
 
 ENV['APP_ENV'] = 'test'
 
-RUBY_ENGINE = 'ruby' unless defined? RUBY_ENGINE
-
 require 'rack'
 
 testdir = __dir__
