@@ -9,7 +9,7 @@
 #
 # See https://github.com/rubocop-hq/rubocop/blob/master/manual/configuration.md
 AllCops:
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 2.7
   SuggestExtensions: false
   NewCops: enable
   Exclude:

@@ -2820,30 +2820,24 @@ uses a threaded model of concurrency.
 
 The following Ruby versions are officially supported:
 <dl>
-  <dt>Ruby 2.6</dt>
+  <dt>Ruby</dt>
   <dd>
-    2.6 is fully supported and recommended. There are currently no plans to
-    drop official support for it.
+    <a href="https://www.ruby-lang.org/en/downloads/">The stable releases</a> are fully supported and recommended.
   </dd>
 
-  <dt>Rubinius</dt>
+  <dt>TruffleRuby</dt>
   <dd>
-    Rubinius is officially supported (Rubinius >= 2.x). It is recommended to
-    <tt>gem install puma</tt>.
+    The latest stable release of TruffleRuby is supported.
   </dd>
 
   <dt>JRuby</dt>
   <dd>
-    The latest stable release of JRuby is officially supported. It is not
-    recommended to use C extensions with JRuby. It is recommended to
-    <tt>gem install trinidad</tt>.
+    The latest stable release of JRuby is supported. It is not
+    recommended to use C extensions with JRuby.
   </dd>
 </dl>
 
-Versions of Ruby before 2.6 are no longer supported as of Sinatra 3.0.0.
-
-We also keep an eye on upcoming Ruby versions. Expect upcoming
-3.x releases to be fully supported.
+Versions of Ruby before 2.7.8 are no longer supported as of Sinatra 4.0.0.
 
 Sinatra should work on any operating system supported by the chosen Ruby
 implementation.
