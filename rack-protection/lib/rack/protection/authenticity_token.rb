@@ -51,6 +51,7 @@ module Rack
     # Here is <tt>server.rb</tt>:
     #
     #   require 'rack/protection'
+    #   require 'rack/session'
     #
     #   app = Rack::Builder.app do
     #     use Rack::Session::Cookie, secret: 'secret'

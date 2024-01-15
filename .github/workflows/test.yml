@@ -11,15 +11,13 @@ permissions:
 
 jobs:
   rack-protection:
-    name: rack-protection (${{ matrix.ruby }}, rack ${{ matrix.rack }}, rack-session ${{ matrix.rack_session }})
+    name: rack-protection (${{ matrix.ruby }}, rack ${{ matrix.rack }})
     runs-on: ubuntu-latest
     timeout-minutes: 5
     strategy:
       fail-fast: false
       matrix:
         rack:
-          - stable
-        rack_session:
           - stable
         ruby:
           - "2.6"
@@ -32,10 +30,9 @@ jobs:
           - "truffleruby"
         include:
           # Rack
-          - { ruby: 3.2,       rack: head,   rack_session: stable }
-          - { ruby: 3.2,       rack: stable, rack_session: head }
-          # https://github.com/sinatra/sinatra/issues/1988
-          - { ruby: ruby-head, rack: stable, rack_session: stable, allow-failure: true }
+          - { ruby: 3.2, rack: head }
+          # Never fail our build due to problems with head
+          - { ruby: ruby-head, rack: stable, allow-failure: true }
     env:
       rack: ${{ matrix.rack }}
     steps:
@@ -65,7 +62,7 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         webhook: ${{ secrets.DISCORD_WEBHOOK }}
   sinatra:
-    name: ${{ matrix.ruby }} (Rack ${{ matrix.rack }}, Puma ${{ matrix.puma }}, Tilt ${{ matrix.tilt }})
+    name: ${{ matrix.ruby }} (Rack ${{ matrix.rack }}, Rack::Session ${{ matrix.rack_session }}, Puma ${{ matrix.puma }}, Tilt ${{ matrix.tilt }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -75,23 +72,28 @@ jobs:
           - stable
         rack:
           - stable
+        rack_session:
+          - stable
         tilt:
           - stable
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
         ruby: [2.6, 2.7, '3.0', 3.1, 3.2, 3.3, jruby, truffleruby]
         include:
           # Rack
-          - { ruby: 3.2, rack: head,   puma: stable,   tilt: stable, allow-failure: true }
+          - { ruby: 3.2, rack: head,   puma: stable,   tilt: stable, rack_session: stable, allow-failure: true }
+          # Rack::Session
+          - { ruby: 3.2, rack: stable, puma: stable,   tilt: stable, rack_session: head,   allow-failure: true }
           # Puma
-          - { ruby: 3.2, rack: stable, puma: head,     tilt: stable, allow-failure: true }
+          - { ruby: 3.2, rack: stable, puma: head,     tilt: stable, rack_session: stable, allow-failure: true }
           # Tilt
-          - { ruby: 3.2, rack: stable, puma: stable,   tilt: head, allow-failure: true }
+          - { ruby: 3.2, rack: stable, puma: stable,   tilt: head,   rack_session: stable, allow-failure: true }
           # Never fail our build due to problems with head
-          - { ruby: ruby-head,        rack: stable, puma: stable, tilt: stable, allow-failure: true }
-          - { ruby: jruby-head,       rack: stable, puma: stable, tilt: stable, allow-failure: true }
-          - { ruby: truffleruby-head, rack: stable, puma: stable, tilt: stable, allow-failure: true }
+          - { ruby: ruby-head,        rack: stable, puma: stable, tilt: stable, rack_session: stable, allow-failure: true }
+          - { ruby: jruby-head,       rack: stable, puma: stable, tilt: stable, rack_session: stable, allow-failure: true }
+          - { ruby: truffleruby-head, rack: stable, puma: stable, tilt: stable, rack_session: stable, allow-failure: true }
     env:
       rack: ${{ matrix.rack }}
+      rack_session: ${{ matrix.rack_session }}
       puma: ${{ matrix.puma }}
       tilt: ${{ matrix.tilt }}
 
