@@ -4,8 +4,8 @@ class IntegrationStartTest < Minitest::Test
   include IntegrationStartHelper
 
   def test_app_start_without_rackup
-    # The Gemfile used here would have to support the ENVs
-    # and we would need to bundle before starting the app
+    # Why we skip head versions: The Gemfile used here would have to support
+    # the ENVs and we would need to bundle before starting the app
     #
     # Example from locally playing with this:
     #
