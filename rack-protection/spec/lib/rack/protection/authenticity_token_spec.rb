@@ -75,7 +75,7 @@ RSpec.describe Rack::Protection::AuthenticityToken do
 
   it 'allows for a custom token session key' do
     mock_app do
-      use Rack::Session::Cookie, key: 'rack.session', secret: SecureRandom.hex(32)
+      use(Rack::Config) { |e| e['rack.session'] ||= {} }
       use Rack::Protection::AuthenticityToken, key: :_csrf
       run DummyApp
     end

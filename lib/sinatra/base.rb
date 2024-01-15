@@ -8,6 +8,7 @@ rescue LoadError
 end
 require 'tilt'
 require 'rack/protection'
+require 'rack/session'
 require 'mustermann'
 require 'mustermann/sinatra'
 require 'mustermann/regular'
@@ -1929,7 +1930,7 @@ module Sinatra
     set :dump_errors, proc { !test? }
     set :show_exceptions, proc { development? }
     set :sessions, false
-    set :session_store, Rack::Protection::EncryptedCookie
+    set :session_store, Rack::Session::Cookie
     set :logging, false
     set :protection, true
     set :method_override, false
