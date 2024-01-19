@@ -1,6 +1,27 @@
-## Unreleased
+## 4.0.0. / 2024-01-19
 
-* _Your new feature here._
+* New: Add support for Rack 3 ([#1857])
+  * Note: you may want to read the [Rack 3 Upgrade Guide]
+
+* Require Ruby 2.7.8 as minimum Ruby version ([#1993])
+
+* Breaking change: Drop support for Rack 2 ([#1857])
+  * Note: when using Sinatra to start the web server, you now need the `rackup` gem installed
+
+* Breaking change: Remove the `IndifferentHash` initializer ([#1982])
+
+* Breaking change: Disable `session_hijacking` protection by default ([#1984])
+
+* Breaking change: Remove `Rack::Protection::EncryptedCookie` ([#1989])
+  * Note: cookies are still encrypted (by [`Rack::Session::Cookie`])
+
+[#1857]: https://github.com/sinatra/sinatra/pull/1857
+[#1993]: https://github.com/sinatra/sinatra/pull/1993
+[#1982]: https://github.com/sinatra/sinatra/pull/1982
+[#1984]: https://github.com/sinatra/sinatra/pull/1984
+[#1989]: https://github.com/sinatra/sinatra/pull/1989
+[`Rack::Session::Cookie`]: https://github.com/rack/rack-session
+[Rack 3 Upgrade Guide]: https://github.com/rack/rack/blob/main/UPGRADE-GUIDE.md
 
 ## 3.2.0 / 2023-12-29
 
