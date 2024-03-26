@@ -243,7 +243,7 @@
 
 * Fix issue with passed routes and provides Fixes [#1095](https://github.com/sinatra/sinatra/pull/1095) [#1606](https://github.com/sinatra/sinatra/pull/1606) by Mike Pastore, Jordan Owens
 
-* Add QuietLogger that excludes pathes from Rack::CommonLogger [1250](https://github.com/sinatra/sinatra/pull/1250) by Christoph Wagner
+* Add QuietLogger that excludes paths from Rack::CommonLogger [1250](https://github.com/sinatra/sinatra/pull/1250) by Christoph Wagner
 
 * Sinatra::Contrib dependency updates. Fixes [#1207](https://github.com/sinatra/sinatra/pull/1207) [#1411](https://github.com/sinatra/sinatra/pull/1411) by Mike Pastore
 
@@ -1609,7 +1609,7 @@ the 1.0 release:
    Hash structure. e.g., "post[title]=Hello&post[body]=World" yields
    params: {'post' => {'title' => 'Hello', 'body' => 'World'}}.
 
- * Regular expressions may now be used in route pattens; captures are
+ * Regular expressions may now be used in route patterns; captures are
    available at "params[:captures]".
 
  * New ":provides" route condition takes an array of mime types and

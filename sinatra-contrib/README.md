@@ -69,7 +69,7 @@ consider using an alternative like [rerun](https://github.com/alexch/rerun) or
 * [`sinatra/test_helpers`][sinatra-test-helpers]: Helper methods to ease testing your Sinatra
   application. Partly extracted from Sinatra. Testing framework agnostic
 
-* `sinatra/quiet_logger`: Extension to exclude specific pathes from access log.
+* `sinatra/quiet_logger`: Extension to exclude specific paths from access log.
   It works by patching Rack::CommonLogger
 
 ## Installation
