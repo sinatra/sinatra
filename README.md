@@ -15,11 +15,12 @@ get '/' do
 end
 ```
 
-Install the gem:
+Install the gems needed:
 
 ```shell
 gem install sinatra
-gem install puma # or any other server
+gem install rackup
+gem install puma # or any other server (optional step)
 ```
 
 And run with:
