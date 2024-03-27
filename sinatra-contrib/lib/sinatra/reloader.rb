@@ -395,12 +395,12 @@ module Sinatra
       # attr_reader :register_path warn on -w (private attribute)
       def register_path; @register_path ||= nil; end
 
-      # Indicates an extesion is being registered.
+      # Indicates an extension is being registered.
       def start_registering_extension
         @register_path = caller_files[2]
       end
 
-      # Indicates the extesion has already been registered.
+      # Indicates the extension has already been registered.
       def stop_registering_extension
         @register_path = nil
       end

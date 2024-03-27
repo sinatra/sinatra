@@ -288,7 +288,7 @@ class SettingsTest < Minitest::Test
       assert body.include?("<code>show_exceptions</code> setting")
     end
 
-    it 'does not attempt to show unparseable query parameters' do
+    it 'does not attempt to show unparsable query parameters' do
       klass = Sinatra.new(Sinatra::Application)
       mock_app(klass) {
         enable :show_exceptions

@@ -642,7 +642,7 @@ RSpec.describe Sinatra::Cookies do
   end
 
   describe :merge do
-    it 'is mergable with a hash' do
+    it 'is mergeable with a hash' do
       expect(cookies('foo=bar').merge(:bar => :baz)).to eq({"foo" => "bar", :bar => :baz})
     end
 

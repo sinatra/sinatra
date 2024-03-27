@@ -21,7 +21,7 @@ module Sinatra
   #     end
   #   end
   #
-  # You can use it in classic application just by requring the extension:
+  # You can use it in classic application just by requiring the extension:
   #
   #   require 'sinatra'
   #   require 'sinatra/webdav'
