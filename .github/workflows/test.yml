@@ -75,8 +75,14 @@ jobs:
           - '~> 2'
         tilt:
           - stable
-        # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
-        ruby: [2.6, 2.7, '3.0', 3.1, 3.2, 3.3, jruby, truffleruby]
+        ruby:
+          - "2.6"
+          - "2.7"
+          - "3.0"
+          - "3.1"
+          - "3.2"
+          - "3.3"
+          - "jruby"
         include:
           # Puma
           - { ruby: 3.1, rack: '~> 2', puma: '~> 5',   tilt: stable }
@@ -91,6 +97,7 @@ jobs:
           - { ruby: ruby-head,        rack: '~> 2', puma: stable, tilt: stable, allow-failure: true }
           - { ruby: jruby-head,       rack: '~> 2', puma: stable, tilt: stable, allow-failure: true }
           - { ruby: truffleruby-head, rack: '~> 2', puma: stable, tilt: stable, allow-failure: true }
+          - { ruby: truffleruby,      rack: '~> 2', puma: stable, tilt: stable, allow-failure: true }
     env:
       rack: ${{ matrix.rack }}
       puma: ${{ matrix.puma }}
