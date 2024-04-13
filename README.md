@@ -2025,6 +2025,11 @@ set :protection, :session => true
       if no absolute path is given. That way <tt>redirect '/foo'</tt> would
         behave like <tt>redirect to('/foo')</tt>. Disabled by default.
     </dd>
+  
+  <dt>use_x_forwarded_host</dt>
+    <dd>
+      When <tt>prefixed_redirects</tt> is <tt>true</tt> (default value is <tt>true</tt>), it retrieves the value from the <tt>X-Forwarded-Host</tt> header due to the implementation of <tt>rack</tt>. This value might cause problems due to unintended input, so its use is optional. If <tt>use_x_forwarded_host</tt> is set to true (default value is <tt>false</tt>), <tt>SERVER_NAME</tt> will be inserted into the redirection.
+    </dd>
 
   <dt>protection</dt>
     <dd>

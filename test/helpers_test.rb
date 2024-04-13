@@ -258,6 +258,55 @@ class HelpersTest < Minitest::Test
       assert_equal 'http://example.com/foo', response['Location']
     end
 
+    it 'enable X-Forwarded-Header' do
+      mock_app {
+        configure do
+          set :use_x_forwarded_host, true
+        end
+
+        get('/') {
+          redirect '/foo'
+        }
+      }
+
+      request = Rack::MockRequest.new(@app)
+      response = request.get('/', 'HTTP_HOST' => 'example.org', 'HTTP_X_FORWARDED_HOST' => 'example.com', 'SERVER_PORT' => '8080')
+      assert_equal 'http://example.com/foo', response['Location']
+    end
+
+    it 'disable X-Forwarded-Header' do
+      mock_app {
+        configure do
+          set :use_x_forwarded_host, false
+        end
+
+        get('/') {
+          redirect '/foo'
+        }
+      }
+
+      request = Rack::MockRequest.new(@app)
+      response = request.get('/', 'HTTP_X_FORWARDED_HOST' => 'example.com', 'SERVER_PORT' => '8080')
+      assert_equal 'http://example.org/foo', response['Location']
+    end
+
+    it 'disable X-Forwarded-Header and absolute_redirects' do
+      mock_app {
+        configure do
+          set :absolute_redirects, false
+          set :use_x_forwarded_host, false
+        end
+
+        get('/') {
+          redirect '/foo'
+        }
+      }
+
+      request = Rack::MockRequest.new(@app)
+      response = request.get('/', 'HTTP_X_FORWARDED_HOST' => 'example.com', 'SERVER_PORT' => '8080')
+      assert_equal '/foo', response['Location']
+    end
+
     it 'accepts absolute URIs' do
       mock_app do
         get('/') do

@@ -11,3 +11,4 @@
 .bundle
 vendor
 *.gem
+.vscode

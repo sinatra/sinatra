@@ -316,13 +316,13 @@ module Sinatra
 
       # According to RFC 2616 section 14.30, "the field value consists of a
       # single absolute URI"
-      response['Location'] = uri(uri.to_s, settings.absolute_redirects?, settings.prefixed_redirects?)
+      response['Location'] = uri(uri.to_s, settings.absolute_redirects?, settings.prefixed_redirects?, settings.use_x_forwarded_host?, env['SERVER_NAME'])
       halt(*args)
     end
 
     # Generates the absolute URI for a given path in the app.
     # Takes Rack routers and reverse proxies into account.
-    def uri(addr = nil, absolute = true, add_script_name = true)
+    def uri(addr = nil, absolute = true, add_script_name = true, use_xfh = true, origin_host = true) # rubocop:disable Metrics/ParameterLists
       return addr if addr.to_s =~ /\A[a-z][a-z0-9+.\-]*:/i
 
       uri = [host = String.new]
@@ -334,6 +334,21 @@ module Sinatra
                   request.host
                 end
       end
+      if (absolute == true) && (use_xfh == false)
+        protocol = if request.secure?
+                     'https'
+                   else
+                     'http'
+                   end
+
+        host.replace("#{protocol}://#{origin_host}")
+
+        if request.port != (request.secure? ? 443 : 80)
+          host << ':'
+          host << request.port.to_s
+        end
+      end
+
       uri << request.script_name.to_s if add_script_name
       uri << (addr || request.path_info).to_s
       File.join uri
@@ -1977,6 +1992,7 @@ module Sinatra
     set :prefixed_redirects, false
     set :empty_path_info, nil
     set :strict_paths, true
+    set :use_x_forwarded_host, true
 
     set :app_file, nil
     set :root, proc { app_file && File.expand_path(File.dirname(app_file)) }
