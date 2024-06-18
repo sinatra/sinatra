@@ -40,6 +40,7 @@ jobs:
       continue-on-error: ${{ matrix.allow-failure || false }}
       id: setup-ruby
       with:
+        cache-version: 1
         bundler-cache: true
         ruby-version: ${{ matrix.ruby }}
         working-directory: rack-protection
