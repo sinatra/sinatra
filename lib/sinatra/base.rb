@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # external dependencies
+require 'logger'
 require 'rack'
 begin
   require 'rackup'
@@ -249,6 +250,23 @@ module Sinatra
       return true if status == -1
 
       body.respond_to?(:callback) && body.respond_to?(:errback)
+    end
+  end
+
+  # This is Rack::Logger that was removed in Rack 3.2
+  # https://github.com/rack/rack/blob/v3.1.6/lib/rack/logger.rb
+  class Logger
+    # Sets up rack.logger to write to rack.errors stream
+    def initialize(app, level = ::Logger::INFO)
+      @app, @level = app, level
+    end
+
+    def call(env)
+      logger = ::Logger.new(env["rack.errors"])
+      logger.level = @level
+
+      env["rack.logger"] = logger
+      @app.call(env)
     end
   end
 
@@ -1844,9 +1862,9 @@ module Sinatra
 
       def setup_custom_logger(builder)
         if logging.respond_to? :to_int
-          builder.use Rack::Logger, logging
+          builder.use Sinatra::Logger, logging
         else
-          builder.use Rack::Logger
+          builder.use Sinatra::Logger
         end
       end
 
