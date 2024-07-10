@@ -296,7 +296,7 @@ module Sinatra
         def block.each; yield(call) end
         response.body = block
       elsif value
-        unless request.head? || value.is_a?(Rack::Files::Iterator) || value.is_a?(Stream)
+        unless request.head? || value.is_a?(Rack::Files::BaseIterator) || value.is_a?(Stream)
           headers.delete 'content-length'
         end
         response.body = value
