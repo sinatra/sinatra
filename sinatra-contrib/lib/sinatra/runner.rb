@@ -92,7 +92,7 @@ module Sinatra
     end
 
     def log
-      @log ||= ''
+      @log ||= +''
       loop { @log << pipe.read_nonblock(1) }
     rescue Exception
       @log
