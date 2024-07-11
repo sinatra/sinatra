@@ -1837,7 +1837,7 @@ module Sinatra
       end
 
       def setup_null_logger(builder)
-        builder.use Sinatra::Middleware::NullLogger
+        builder.use Sinatra::Middleware::Logger, ::Logger::FATAL
       end
 
       def setup_common_logger(builder)
