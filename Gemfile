@@ -42,6 +42,7 @@ gem 'kramdown'
 gem 'liquid'
 gem 'markaby'
 gem 'nokogiri', '> 1.5.0'
+gem 'ostruct'
 gem 'pandoc-ruby', '~> 2.0.2'
 gem 'rabl'
 gem 'rdiscount', platforms: [:ruby]
