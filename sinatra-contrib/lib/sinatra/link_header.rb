@@ -88,6 +88,8 @@ module Sinatra
       http_pattern  = ['<%s>', *options].join ';'
       link          = (response['Link'] ||= '')
 
+      link = response['Link'] = +link
+
       urls.map do |url|
         link << "," unless link.empty?
         link << (http_pattern % url)
