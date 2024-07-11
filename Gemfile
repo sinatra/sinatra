@@ -42,6 +42,7 @@ gem 'kramdown'
 gem 'liquid'
 gem 'markaby'
 gem 'nokogiri', '> 1.5.0'
+gem 'ostruct'
 gem 'pandoc-ruby', '~> 2.0.2'
 gem 'rabl'
 gem 'rdiscount', platforms: [:ruby]
@@ -51,7 +52,6 @@ gem 'simplecov', require: false
 gem 'slim', '~> 4'
 gem 'yajl-ruby', platforms: [:ruby]
 gem 'zeitwerk'
-gem 'ostruct'
 
 # sass-embedded depends on google-protobuf
 # which fails to be installed on JRuby and TruffleRuby under aarch64
