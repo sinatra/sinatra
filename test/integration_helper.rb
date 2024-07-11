@@ -46,7 +46,7 @@ module IntegrationHelper
     def run
       return unless installed?
       kill
-      @log     = ""
+      @log     = +""
       super
       at_exit { kill }
     end
