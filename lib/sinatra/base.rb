@@ -22,6 +22,8 @@ require 'sinatra/indifferent_hash'
 require 'sinatra/show_exceptions'
 require 'sinatra/version'
 
+require_relative 'middleware/logger'
+
 module Sinatra
   # The request object. See Rack::Request for more info:
   # https://rubydoc.info/github/rack/rack/main/Rack/Request
@@ -1835,7 +1837,7 @@ module Sinatra
       end
 
       def setup_null_logger(builder)
-        builder.use Rack::NullLogger
+        builder.use Sinatra::Middleware::NullLogger
       end
 
       def setup_common_logger(builder)
@@ -1844,9 +1846,9 @@ module Sinatra
 
       def setup_custom_logger(builder)
         if logging.respond_to? :to_int
-          builder.use Rack::Logger, logging
+          builder.use Sinatra::Middleware::Logger, logging
         else
-          builder.use Rack::Logger
+          builder.use Sinatra::Middleware::Logger
         end
       end
 

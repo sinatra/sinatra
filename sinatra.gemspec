@@ -50,4 +50,5 @@ RubyGems 2.0 or newer is required to protect against public gem pushes. You can 
   s.add_dependency 'rack-session', '>= 2.0.0', '< 3'
   s.add_dependency 'rack-protection', version
   s.add_dependency 'tilt', '~> 2.0'
+  s.add_dependency 'logger'
 end
