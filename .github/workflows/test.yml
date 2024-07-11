@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         rack:
-          - stable
+          - "~>3.0.0"
         ruby:
           - "2.7"
           - "3.0"
@@ -29,9 +29,10 @@ jobs:
           - "truffleruby"
         include:
           # Rack
+          - { ruby: 3.2, rack: "~>3.1.0" }
           - { ruby: 3.2, rack: head }
-          # Never fail our build due to problems with head
-          - { ruby: ruby-head, rack: stable, allow-failure: true }
+          # Never fail our build due to problems with Ruby head
+          - { ruby: ruby-head, rack: "~>3.0.0", allow-failure: true }
     env:
       rack: ${{ matrix.rack }}
     steps:
@@ -61,7 +62,9 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         webhook: ${{ secrets.DISCORD_WEBHOOK }}
   sinatra:
-    name: ${{ matrix.ruby }} (Rack ${{ matrix.rack }}, Rack::Session ${{ matrix.rack_session }}, Puma ${{ matrix.puma }}, Tilt ${{ matrix.tilt }})
+    name: |
+      ${{ matrix.ruby }}
+      (Rack ${{ matrix.rack }}, Rack::Session ${{ matrix.rack_session }}, Puma ${{ matrix.puma }}, Tilt ${{ matrix.tilt }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -70,7 +73,7 @@ jobs:
         puma:
           - stable
         rack:
-          - stable
+          - "~>3.0.0"
         rack_session:
           - stable
         tilt:
@@ -84,19 +87,21 @@ jobs:
           - "jruby"
         include:
           # Rack
-          - { ruby: 3.2, rack: head,   puma: stable,   tilt: stable, rack_session: stable, allow-failure: true }
+          # allow Rack 3.1 to fail as we need a new release: https://github.com/sinatra/sinatra/issues/2014
+          - { ruby: 3.2, rack: "~>3.1.0", puma: stable,   tilt: stable, rack_session: stable, allow-failure: true }
+          - { ruby: 3.2, rack: head,      puma: stable,   tilt: stable, rack_session: stable }
           # Rack::Session
-          - { ruby: 3.2, rack: stable, puma: stable,   tilt: stable, rack_session: head,   allow-failure: true }
+          - { ruby: 3.2, rack: "~>3.0.0", puma: stable,   tilt: stable, rack_session: head }
           # Puma
-          - { ruby: 3.2, rack: stable, puma: head,     tilt: stable, rack_session: stable, allow-failure: true }
+          - { ruby: 3.2, rack: "~>3.0.0", puma: head,     tilt: stable, rack_session: stable }
           # Tilt
-          - { ruby: 3.2, rack: stable, puma: stable,   tilt: head,   rack_session: stable, allow-failure: true }
-          # Never fail our build due to problems with head
-          - { ruby: ruby-head,        rack: stable, puma: stable, tilt: stable, rack_session: stable, allow-failure: true }
-          - { ruby: jruby-head,       rack: stable, puma: stable, tilt: stable, rack_session: stable, allow-failure: true }
-          - { ruby: truffleruby-head, rack: stable, puma: stable, tilt: stable, rack_session: stable, allow-failure: true }
+          - { ruby: 3.2, rack: "~>3.0.0", puma: stable,   tilt: head,   rack_session: stable }
+          # Never fail our build due to problems with head rubies
+          - { ruby: ruby-head,        rack: "~>3.0.0", puma: stable, tilt: stable, rack_session: stable, allow-failure: true }
+          - { ruby: jruby-head,       rack: "~>3.0.0", puma: stable, tilt: stable, rack_session: stable, allow-failure: true }
+          - { ruby: truffleruby-head, rack: "~>3.0.0", puma: stable, tilt: stable, rack_session: stable, allow-failure: true }
           # truffleruby 24 fails, see https://github.com/sinatra/sinatra/issues/2007
-          - { ruby: truffleruby,      rack: stable, puma: stable, tilt: stable, rack_session: stable, allow-failure: true }
+          - { ruby: truffleruby,      rack: "~>3.0.0", puma: stable, tilt: stable, rack_session: stable, allow-failure: true }
 
     env:
       rack: ${{ matrix.rack }}
