@@ -31,8 +31,7 @@ module Rack
         cookie_header = env['HTTP_COOKIE']
         cookies = Rack::Utils.parse_query(cookie_header, ';,') { |s| s }
         cookies.each do |k, v|
-          if (k == session_key && Array(v).size > 1) ||
-             (k != session_key && Rack::Utils.unescape(k) == session_key)
+          if k == session_key && Array(v).size > 1
             bad_cookies << k
           end
         end
