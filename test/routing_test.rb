@@ -11,7 +11,7 @@ class PatternLookAlike
   end
 
   def params(input)
-    { "one" => "this", "two" => "is", "three" => "a", "four" => "test" }
+    { "one" => +"this", "two" => +"is", "three" => +"a", "four" => +"test" }
   end
 end
 

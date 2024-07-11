@@ -49,7 +49,7 @@ gem 'rdiscount', platforms: [:ruby]
 gem 'rdoc'
 gem 'redcarpet', platforms: [:ruby]
 gem 'simplecov', require: false
-gem 'slim', '~> 4'
+gem 'slim', '~> 5'
 gem 'yajl-ruby', platforms: [:ruby]
 gem 'zeitwerk'
 
