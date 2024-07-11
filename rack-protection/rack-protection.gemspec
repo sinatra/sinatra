@@ -40,5 +40,6 @@ RubyGems 2.0 or newer is required to protect against public gem pushes. You can 
 
   # dependencies
   s.add_dependency 'base64', '>= 0.1.0'
+  s.add_dependency 'logger', '>= 1.6.0'
   s.add_dependency 'rack', '>= 3.0.0', '< 4'
 end
