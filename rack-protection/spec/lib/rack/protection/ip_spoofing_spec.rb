@@ -32,4 +32,25 @@ RSpec.describe Rack::Protection::IPSpoofing do
         'HTTP_X_REAL_IP' => '1.2.3.4')
     expect(last_response).not_to be_ok
   end
+
+  it 'denies requests where the client spoofs the IP but not Forwarded' do
+    get('/', {}, 'HTTP_CLIENT_IP' => '1.2.3.5',
+                 'HTTP_FORWARDED' => 'for=192.168.1.20;for=1.2.3.4;for=127.0.0.1')
+    expect(last_response).not_to be_ok
+  end
+
+  it 'denies requests where the client spoofs Forwarded but not the IP' do
+    get('/', {}, 'HTTP_CLIENT_IP' => '1.2.3.4', 'HTTP_FORWARDED' => 'for=1.2.3.5')
+    expect(last_response).not_to be_ok
+  end
+
+  it 'accepts requests with matching Forwarded having by and client IP' do
+    get('/', {}, 'HTTP_CLIENT_IP' => '1.2.3.4', 'HTTP_FORWARDED' => 'for=1.2.3.4;proto=http;by=203.0.113.43')
+    expect(last_response).to be_ok
+  end
+
+  it 'accepts requests with matching Forwarded having ipv6 & client IP' do
+    get('/', {}, 'HTTP_CLIENT_IP' => '1.2.3.4', 'HTTP_FORWARDED' => 'for=1.2.3.4, for="[2001:db8:cafe::17]"')
+    expect(last_response).to be_ok
+  end
 end
