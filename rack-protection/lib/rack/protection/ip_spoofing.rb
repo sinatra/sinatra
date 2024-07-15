@@ -33,8 +33,7 @@ module Rack
       def parse_forwarded(forwarded_header)
         return [] unless forwarded_header_hash = Rack::Utils.forwarded_values(forwarded_header)
 
-        ips = (forwarded_header_hash.fetch(:for, []) + forwarded_header_hash.fetch(:by, [])).map { |ip| ip.gsub(/\[|\]/, "")  }
-
+        (forwarded_header_hash.fetch(:for, []) + forwarded_header_hash.fetch(:by, [])).map { |ip| ip.gsub(/\[|\]/, "")  }
       end
     end
   end
