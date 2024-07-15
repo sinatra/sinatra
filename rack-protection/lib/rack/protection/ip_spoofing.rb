@@ -31,21 +31,10 @@ module Rack
       private
 
       def parse_forwarded(forwarded_header)
-        return nil unless forwarded_header
+        return [] unless forwarded_header_hash = Rack::Utils.forwarded_values(forwarded_header)
 
-        ips = []
+        ips = (forwarded_header_hash.fetch(:for, []) + forwarded_header_hash.fetch(:by, [])).map { |ip| ip.gsub(/\[|\]/, "")  }
 
-        forwarded_header.to_s.split(/\s*;\s*/).each do |field|
-          field.split(/\s*,\s*/).each do |key|
-            # Use a regex to match and capture 'for' and 'by' fields along with their IP addresses
-            if match = key.match(/\A\s*(by|for)\s*=\s*"?\[?([^\]]+)\]?"?\s*\Z/i)
-              # Extract the IP address and strip any surrounding whitespace
-              ips << match[2].strip
-            end
-          end
-        end
-
-        ips
       end
     end
   end
