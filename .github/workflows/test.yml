@@ -108,6 +108,7 @@ jobs:
       rack_session: ${{ matrix.rack_session }}
       puma: ${{ matrix.puma }}
       tilt: ${{ matrix.tilt }}
+      RUBYOPT: "--enable-frozen-string-literal --debug-frozen-string-literal"
 
     steps:
     - name: Install dependencies

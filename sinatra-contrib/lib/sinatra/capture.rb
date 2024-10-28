@@ -92,7 +92,7 @@ module Sinatra
         with_haml_buffer(buffer) { capture_haml(*args, &block) }
       else
         buf_was = @_out_buf
-        @_out_buf = ''
+        @_out_buf = +''
         begin
           raw = block[*args]
           captured = block.binding.eval('@_out_buf')

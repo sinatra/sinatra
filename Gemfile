@@ -42,15 +42,16 @@ gem 'kramdown'
 gem 'liquid'
 gem 'markaby'
 gem 'nokogiri', '> 1.5.0'
+gem 'ostruct'
 gem 'pandoc-ruby', '~> 2.0.2'
 gem 'rabl'
 gem 'rdiscount', platforms: [:ruby]
 gem 'rdoc'
 gem 'redcarpet', platforms: [:ruby]
 gem 'simplecov', require: false
-gem 'slim', '~> 4'
+gem 'slim', '~> 5'
 gem 'yajl-ruby', platforms: [:ruby]
-gem 'zeitwerk'
+gem 'zeitwerk', '< 2.7.0' # https://github.com/sinatra/sinatra/issues/2047
 
 # sass-embedded depends on google-protobuf
 # which fails to be installed on JRuby and TruffleRuby under aarch64

@@ -13,7 +13,7 @@ module Sinatra
   #   require 'sinatra/haml_helpers'
   #
   #   class Application < Sinatra::Base
-  #     register Sinatra::HamlHelpers
+  #     helpers Sinatra::HamlHelpers
   #
   #     # now you can use the helpers in your views
   #     get '/' do
