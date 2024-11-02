@@ -52,7 +52,7 @@ gem 'redcarpet', platforms: [:ruby]
 gem 'simplecov', require: false
 gem 'slim', '~> 5'
 gem 'yajl-ruby', platforms: [:ruby]
-gem 'zeitwerk', '< 2.7.0' # https://github.com/sinatra/sinatra/issues/2047
+gem 'zeitwerk'
 
 # sass-embedded depends on google-protobuf
 # which fails to be installed on JRuby and TruffleRuby under aarch64
