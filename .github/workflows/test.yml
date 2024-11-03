@@ -64,7 +64,7 @@ jobs:
   sinatra:
     name: |
       ${{ matrix.ruby }}
-      (Rack ${{ matrix.rack }}, Rack::Session ${{ matrix.rack_session }}, Puma ${{ matrix.puma }}, Tilt ${{ matrix.tilt }})
+      (Rack ${{ matrix.rack }}, Rack::Session ${{ matrix.rack_session }}, Puma ${{ matrix.puma }}, Tilt ${{ matrix.tilt }}, Zeitwerk ${{ matrix.zeitwerk }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
