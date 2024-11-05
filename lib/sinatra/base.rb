@@ -324,17 +324,23 @@ module Sinatra
 
     # Generates the absolute URI for a given path in the app.
     # Takes Rack routers and reverse proxies into account.
+    set :trust_forwarded_host, false
+
     def uri(addr = nil, absolute = true, add_script_name = true)
       return addr if addr.to_s =~ /\A[a-z][a-z0-9+.\-]*:/i
-
       uri = [host = String.new]
       if absolute
         host << "http#{'s' if request.secure?}://"
-        host << if request.forwarded? || (request.port != (request.secure? ? 443 : 80))
-                  request.host_with_port
-                else
-                  request.host
-                end
+        if request.forwarded? || (request.port != (request.secure? ? 443 : 80))
+          host_with_port = if request.forwarded? && !settings.trust_forwarded_host?
+                            request.host_with_port.sub(env['HTTP_X_FORWARDED_HOST'], request.host)
+                          else
+                            request.host_with_port
+                          end
+          host << host_with_port
+        else
+          host << request.host
+        end
       end
       uri << request.script_name.to_s if add_script_name
       uri << (addr || request.path_info).to_s
