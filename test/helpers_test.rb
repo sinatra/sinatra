@@ -258,6 +258,32 @@ class HelpersTest < Minitest::Test
       assert_equal 'http://example.com/foo', response['Location']
     end
 
+    it 'redirects to permitted hosts' do
+      mock_app do
+        set :permitted_hosts, ['example.com']
+
+        get('/') { redirect '/foo' }
+      end
+
+      request = Rack::MockRequest.new(@app)
+      response = request.get('/', 'HTTP_X_FORWARDED_HOST' => 'example.com')
+      assert_equal 302, response.status
+      assert_equal 'http://example.com/foo', response['Location']
+    end
+
+    it 'stops requests to non-permitted hosts' do
+      mock_app do
+        set :permitted_hosts, ['example.com']
+
+        get('/') { redirect '/foo' }
+      end
+
+      request = Rack::MockRequest.new(@app)
+      response = request.get('/', 'HTTP_X_FORWARDED_HOST' => 'evil.com')
+      assert_equal 403, response.status
+      assert_equal 'Host not permitted', response.body
+    end
+
     it 'accepts absolute URIs' do
       mock_app do
         get('/') do

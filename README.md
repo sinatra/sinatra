@@ -2014,6 +2014,16 @@ set :protection, :session => true
     paths.
   </dd>
 
+  <dt>permitted_hosts</dt>
+    <dd>
+      An array of hostnames your app recognizes. Requests with an unrecognized hostname
+      will be stopped to prevent DNS rebinding and other host header attacks.
+      Checks the <tt>Host</tt>, <tt>X-Forwarded-Host</tt> and <tt>Forwarded</tt> headers.
+    </dd>
+    <dd>
+      By default the array is empty and all hostnames are permitted.
+    </dd>
+
   <dt>port</dt>
     <dd>Port to listen on. Only used for built-in server.</dd>
 

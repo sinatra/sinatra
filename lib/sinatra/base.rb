@@ -63,7 +63,7 @@ module Sinatra
     alias secure? ssl?
 
     def forwarded?
-      @env.include? 'HTTP_X_FORWARDED_HOST'
+      Rack::Protection::HostAuthorization.forwarded?(self)
     end
 
     def safe?
@@ -330,11 +330,7 @@ module Sinatra
       uri = [host = String.new]
       if absolute
         host << "http#{'s' if request.secure?}://"
-        host << if request.forwarded? || (request.port != (request.secure? ? 443 : 80))
-                  request.host_with_port
-                else
-                  request.host
-                end
+        host << Rack::Protection::HostAuthorization.host_from(request: request)
       end
       uri << request.script_name.to_s if add_script_name
       uri << (addr || request.path_info).to_s
@@ -1821,6 +1817,7 @@ module Sinatra
         setup_logging    builder
         setup_sessions   builder
         setup_protection builder
+        setup_host_authorization builder
       end
 
       def setup_middleware(builder)
@@ -1867,6 +1864,11 @@ module Sinatra
         options[:reaction] ||= :drop_session
 
         builder.use Rack::Protection, options
+      end
+
+      def setup_host_authorization(builder)
+        options = { permitted_hosts: permitted_hosts }
+        builder.use Rack::Protection::HostAuthorization, options
       end
 
       def setup_sessions(builder)
@@ -1934,6 +1936,7 @@ module Sinatra
     set :sessions, false
     set :session_store, Rack::Session::Cookie
     set :logging, false
+    set :permitted_hosts, []
     set :protection, true
     set :method_override, false
     set :use_code, false
