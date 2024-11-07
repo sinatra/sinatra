@@ -61,3 +61,10 @@ gem 'zeitwerk', '< 2.7.0' # https://github.com/sinatra/sinatra/issues/2047
 java    = %w(jruby truffleruby).include?(RUBY_ENGINE)
 aarch64 = RbConfig::CONFIG["target_cpu"] == 'aarch64'
 gem 'sass-embedded', '~> 1.54' unless java && aarch64
+
+# falcon brings the console dependency (via many of its dependencies)
+# console v1.28.0 is broken due to
+# https://github.com/socketry/console/commit/643dd0ffcc1bc916fc351f5477332038cc066b72
+# # console v1.29.0 is fixed with
+# https://github.com/socketry/console/commit/00952f55420577ec683b9c44edc980c0d48f9835
+gem 'console', '>= 1.29.0'
