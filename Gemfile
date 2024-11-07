@@ -15,7 +15,8 @@ rack_session_version = nil if rack_session_version.empty? || (rack_session_versi
 rack_session_version = { github: 'rack/rack-session' } if rack_session_version == 'head'
 gem 'rack-session', rack_session_version
 
-gem 'rackup'
+# https://github.com/sinatra/sinatra/issues/2055
+gem 'rackup', '< 2.2.0'
 
 puma_version = ENV['puma'].to_s
 puma_version = nil if puma_version.empty? || (puma_version == 'stable')
