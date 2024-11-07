@@ -22,7 +22,7 @@ class IntegrationStartTest < Minitest::Test
     env = { "BUNDLE_GEMFILE" => gem_file }
 
     with_process(command: command, env: env) do |process, read_io|
-      assert wait_for_output(read_io, /Sinatra could not start, the "rackup" gem was not found/)
+      assert wait_for_output(read_io, /Sinatra could not start, the required gems weren't found/)
     end
   end
 

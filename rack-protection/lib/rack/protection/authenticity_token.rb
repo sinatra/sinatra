@@ -46,15 +46,15 @@ module Rack
     # Install the gem, then run the program:
     #
     #   gem install 'rack-protection'
-    #   ruby server.rb
+    #   puma server.ru
     #
-    # Here is <tt>server.rb</tt>:
+    # Here is <tt>server.ru</tt>:
     #
     #   require 'rack/protection'
     #   require 'rack/session'
     #
     #   app = Rack::Builder.app do
-    #     use Rack::Session::Cookie, secret: 'secret'
+    #     use Rack::Session::Cookie, secret: 'CHANGEMEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
     #     use Rack::Protection::AuthenticityToken
     #
     #     run -> (env) do
@@ -88,7 +88,7 @@ module Rack
     #     end
     #   end
     #
-    #   Rack::Handler::WEBrick.run app
+    #   run app
     #
     # == Example: Customize which POST parameter holds the token
     #
