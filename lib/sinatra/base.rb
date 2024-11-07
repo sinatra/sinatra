@@ -1286,7 +1286,7 @@ module Sinatra
         /active_support/,                                   # active_support require hacks
         %r{bundler(/(?:runtime|inline))?\.rb},              # bundler require hacks
         /<internal:/,                                       # internal in ruby >= 1.9.2
-        %r{zeitwerk/kernel\.rb}                             # Zeitwerk kernel#require decorator
+        %r{zeitwerk/(core_ext/)?kernel\.rb}                 # Zeitwerk kernel#require decorator
       ].freeze
 
       attr_reader :routes, :filters, :templates, :errors, :on_start_callback, :on_stop_callback
