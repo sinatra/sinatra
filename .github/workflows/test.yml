@@ -64,7 +64,7 @@ jobs:
   sinatra:
     name: |
       ${{ matrix.ruby }}
-      (Rack ${{ matrix.rack }}, Rack::Session ${{ matrix.rack_session }}, Puma ${{ matrix.puma }}, Tilt ${{ matrix.tilt }})
+      (Rack ${{ matrix.rack }}, Rack::Session ${{ matrix.rack_session }}, Puma ${{ matrix.puma }}, Tilt ${{ matrix.tilt }}, Zeitwerk ${{ matrix.zeitwerk }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -78,6 +78,8 @@ jobs:
           - stable
         tilt:
           - stable
+        zeitwerk:
+          - stable
         ruby:
           - "2.7"
           - "3.0"
@@ -86,28 +88,31 @@ jobs:
           - "3.3"
         include:
           # Rack
-          - { ruby: 3.2, rack: "~>3.0.0", puma: stable, tilt: stable, rack_session: stable }
-          - { ruby: 3.2, rack: head, puma: stable, tilt: stable, rack_session: stable }
+          - { ruby: 3.2, rack: "~>3.0.0", puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable }
+          - { ruby: 3.2, rack: head, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable }
           # Rack::Session
-          - { ruby: 3.2, rack: stable, puma: stable, tilt: stable, rack_session: head }
+          - { ruby: 3.2, rack: stable, puma: stable, tilt: stable, rack_session: head, zeitwerk: stable }
           # Puma
-          - { ruby: 3.2, rack: stable, puma: head, tilt: stable, rack_session: stable }
+          - { ruby: 3.2, rack: stable, puma: head, tilt: stable, rack_session: stable, zeitwerk: stable }
           # Tilt
-          - { ruby: 3.2, rack: stable, puma: stable,tilt: head,   rack_session: stable }
+          - { ruby: 3.2, rack: stable, puma: stable, tilt: head, rack_session: stable, zeitwerk: stable }
+          # Test Zeitwerk < 2.7.0 separately
+          - { ruby: 3.2, rack: stable, puma: stable, tilt: head, rack_session: stable, zeitwerk: '<2.7.0' }
           # JRuby, tests are flaky: https://github.com/sinatra/sinatra/issues/2027
-          - { ruby: jruby,            rack: stable, puma: stable, tilt: stable, rack_session: stable, allow-failure: true }
+          - { ruby: jruby,            rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
           # Never fail our build due to problems with head rubies
-          - { ruby: ruby-head,        rack: stable, puma: stable, tilt: stable, rack_session: stable, allow-failure: true }
-          - { ruby: jruby-head,       rack: stable, puma: stable, tilt: stable, rack_session: stable, allow-failure: true }
-          - { ruby: truffleruby-head, rack: stable, puma: stable, tilt: stable, rack_session: stable, allow-failure: true }
+          - { ruby: ruby-head,        rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
+          - { ruby: jruby-head,       rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
+          - { ruby: truffleruby-head, rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
           # truffleruby 24 fails, see https://github.com/sinatra/sinatra/issues/2007
-          - { ruby: truffleruby,      rack: stable, puma: stable, tilt: stable, rack_session: stable, allow-failure: true }
+          - { ruby: truffleruby,      rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
 
     env:
       rack: ${{ matrix.rack }}
       rack_session: ${{ matrix.rack_session }}
       puma: ${{ matrix.puma }}
       tilt: ${{ matrix.tilt }}
+      zeitwerk: ${{ matrix.zeitwerk }}
       RUBYOPT: "--enable-frozen-string-literal --debug-frozen-string-literal"
 
     steps:
