@@ -130,8 +130,9 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
-        # Update rubygems due to https://github.com/rubygems/rubygems/pull/6490
-        rubygems: ${{ matrix.ruby == '3.0' && 'latest' || 'default' }}
+        # Update rubygems due to https://github.com/rubygems/rubygems/pull/6490 (3.0)
+        # and https://github.com/sinatra/sinatra/issues/2051 (3.1)
+        rubygems: ${{ matrix.ruby == '3.0' && 'latest' || matrix.ruby == '3.1' && 'latest' || 'default' }}
 
     - name: Run sinatra tests
       continue-on-error: ${{ matrix.allow-failure || false }}
