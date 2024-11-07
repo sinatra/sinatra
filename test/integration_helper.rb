@@ -130,7 +130,11 @@ module IntegrationHelper
     servers = Sinatra::Base.server.dup
 
     # TruffleRuby doesn't support `Fiber.set_scheduler` yet
-    if RUBY_ENGINE == "truffleruby" && !Fiber.respond_to?(:set_scheduler)
+    unsupported_truffleruby = RUBY_ENGINE == "truffleruby" && !Fiber.respond_to?(:set_scheduler)
+    # Ruby 2.7 uses falcon 0.42.3 which isn't working with rackup 2.2.0+
+    too_old_ruby = RUBY_VERSION <= "3.0.0"
+
+    if unsupported_truffleruby || too_old_ruby
       warn "skip falcon server"
       servers.delete('falcon')
     end
