@@ -1604,7 +1604,7 @@ module Sinatra
       alias stop! quit!
 
       # Run the Sinatra app as a self-hosted server using
-      # Puma, Falcon, or WEBrick (in that order). If given a block, will call
+      # Puma, Falcon (in that order). If given a block, will call
       # with the constructed handler once we have taken the stage.
       def run!(options = {}, &block)
         return if running?
@@ -1953,7 +1953,7 @@ module Sinatra
     set :running_server, nil
     set :handler_name, nil
     set :traps, true
-    set :server, %w[HTTP webrick]
+    set :server, %w[]
     set :bind, proc { development? ? 'localhost' : '0.0.0.0' }
     set :port, Integer(ENV['PORT'] && !ENV['PORT'].empty? ? ENV['PORT'] : 4567)
     set :quiet, false
