@@ -16,25 +16,28 @@ RSpec.describe Rack::Protection::HostAuthorization do
     end
   end
 
-  allowed_host = "example.com"
-  bad_host = "evil.com"
-  good_requests = [
-    { "HTTP_HOST" => allowed_host },
-    { "HTTP_X_FORWARDED_HOST" => allowed_host },
-    { "HTTP_FORWARDED" => "host=#{allowed_host}" },
-  ]
-  bad_requests = [
-    { "HTTP_HOST" => bad_host },
-    { "HTTP_X_FORWARDED_HOST" => bad_host },
-    { "HTTP_FORWARDED" => "host=#{bad_host}" },
-    { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => bad_host },
-    { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{bad_host}" },
-  ]
+  good_requests = lambda do |allowed_host|
+    [
+      { "HTTP_HOST" => allowed_host },
+      { "HTTP_X_FORWARDED_HOST" => allowed_host },
+      { "HTTP_FORWARDED" => "host=#{allowed_host}" },
+    ]
+  end
 
-  good_requests.each do |headers|
-    it 'allows requests based on the permitted hosts specified' do
+  bad_requests = lambda do |allowed_host, bad_host|
+    [
+      { "HTTP_HOST" => bad_host },
+      { "HTTP_X_FORWARDED_HOST" => bad_host },
+      { "HTTP_FORWARDED" => "host=#{bad_host}" },
+      { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => bad_host },
+      { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{bad_host}" },
+    ]
+  end
+
+  good_requests.call("allowed.org").each do |headers|
+    it "allows the request with headers '#{headers}'" do
       mock_app do
-        use Rack::Protection::HostAuthorization, permitted_hosts: [allowed_host]
+        use Rack::Protection::HostAuthorization, permitted_hosts: ["allowed.org"]
         run DummyApp
       end
 
@@ -44,10 +47,10 @@ RSpec.describe Rack::Protection::HostAuthorization do
     end
   end
 
-  bad_requests.each do |headers|
-    it 'stops requests based on the permitted hosts specified' do
+  bad_requests.call("allowed.org", "bad.org").each do |headers|
+    it "stops the request with headers '#{headers}'" do
       mock_app do
-        use Rack::Protection::HostAuthorization, permitted_hosts: [allowed_host]
+        use Rack::Protection::HostAuthorization, permitted_hosts: ["allowed.org"]
         run DummyApp
       end
 
@@ -58,6 +61,8 @@ RSpec.describe Rack::Protection::HostAuthorization do
   end
 
   it "accepts requests for non-permitted hosts when allow_if is true" do
+    allowed_host = "allowed.org"
+    bad_host = "bad.org"
     mock_app do
       use Rack::Protection::HostAuthorization, allow_if: ->(_env) { true },
                                                permitted_hosts: [allowed_host]
@@ -70,6 +75,8 @@ RSpec.describe Rack::Protection::HostAuthorization do
   end
 
   it "allows the response given for non-permitted requests to be customized" do
+    allowed_host = "allowed.org"
+    bad_host = "bad.org"
     message = "Unrecognized host"
     mock_app do
       use Rack::Protection::HostAuthorization, message: message, status: 406,
@@ -84,18 +91,18 @@ RSpec.describe Rack::Protection::HostAuthorization do
   end
 
   describe "when the header value is upcased but the permitted host not" do
-    allowed_host = "example.com"
-    host_in_request = allowed_host.upcase
-    test_cases = [
-      { "HTTP_HOST" => host_in_request },
-      { "HTTP_X_FORWARDED_HOST" => host_in_request },
-      { "HTTP_FORWARDED" => "host=#{host_in_request}" },
-    ]
+    test_cases = lambda do |host_in_request|
+      [
+        { "HTTP_HOST" => host_in_request },
+        { "HTTP_X_FORWARDED_HOST" => host_in_request },
+        { "HTTP_FORWARDED" => "host=#{host_in_request}" },
+      ]
+    end
 
-    test_cases.each do |headers|
+    test_cases.call("allowed.org".upcase).each do |headers|
       it "works" do
         mock_app do
-          use Rack::Protection::HostAuthorization, permitted_hosts: [allowed_host]
+          use Rack::Protection::HostAuthorization, permitted_hosts: ["allowed.org"]
           run DummyApp
         end
 
@@ -107,18 +114,18 @@ RSpec.describe Rack::Protection::HostAuthorization do
   end
 
   describe "when the permitted host is upcased but the header value is not" do
-    allowed_host = "example.com".upcase
-    host_in_request = allowed_host
-    test_cases = [
-      { "HTTP_HOST" => host_in_request },
-      { "HTTP_X_FORWARDED_HOST" => host_in_request },
-      { "HTTP_FORWARDED" => "host=#{host_in_request}" },
-    ]
+    test_cases = lambda do |host_in_request|
+      [
+        { "HTTP_HOST" => host_in_request },
+        { "HTTP_X_FORWARDED_HOST" => host_in_request },
+        { "HTTP_FORWARDED" => "host=#{host_in_request}" },
+      ]
+    end
 
-    test_cases.each do |headers|
+    test_cases.call("allowed.org").each do |headers|
       it "works" do
         mock_app do
-          use Rack::Protection::HostAuthorization, permitted_hosts: [allowed_host]
+          use Rack::Protection::HostAuthorization, permitted_hosts: ["allowed.org".upcase]
           run DummyApp
         end
 
