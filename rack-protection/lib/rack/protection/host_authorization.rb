@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'ipaddr'
 require 'rack/protection'
 
 module Rack
@@ -25,17 +26,34 @@ module Rack
 
       def initialize(*)
         super
-        @permitted_hosts = Array(options[:permitted_hosts]).map(&:downcase)
+        @all_permitted_hosts = Array(options[:permitted_hosts])
+        @permitted_hosts = @all_permitted_hosts
+          .select { |host| host.is_a?(String) }
+          .map(&:downcase)
+        @ip_hosts = @all_permitted_hosts.select { |host| host.is_a?(IPAddr) }
       end
 
       def accepts?(env)
         return true if options[:allow_if]&.call(env)
-        return true if @permitted_hosts.empty?
+        return true if @all_permitted_hosts.empty?
 
         request = Request.new(env)
-        origin_host = request.host
 
-        @permitted_hosts.include?(origin_host.downcase)
+        host_permitted?(request.host.downcase)
+      end
+
+      private
+
+      def host_permitted?(origin_host)
+        return true if @permitted_hosts.include?(origin_host)
+
+        ip_match?(origin_host)
+      end
+
+      def ip_match?(origin_host)
+        @ip_hosts.any? { |ip_host| ip_host.include?(origin_host) }
+      rescue IPAddr::InvalidAddressError
+        false
       end
     end
   end
