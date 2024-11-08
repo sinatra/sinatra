@@ -23,10 +23,6 @@ module Rack
       default_options allow_if: nil,
                       message: "Host not permitted"
 
-      def self.forwarded?(request)
-        request.get_header(Request::HTTP_X_FORWARDED_HOST)
-      end
-
       def initialize(*)
         super
         @permitted_hosts = Array(options[:permitted_hosts]).map(&:downcase)
