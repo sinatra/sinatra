@@ -18,22 +18,21 @@ RSpec.describe Rack::Protection::HostAuthorization do
 
   allowed_host = "example.com"
   bad_host = "evil.com"
-  test_cases = [
-    # good requests
-    [:allowed, { "HTTP_HOST" => allowed_host }],
-    [:allowed, { "HTTP_X_FORWARDED_HOST" => allowed_host }],
-    [:allowed, { "HTTP_FORWARDED" => "host=#{allowed_host}" }],
-
-    # bad requests
-    [:stopped, { "HTTP_HOST" => bad_host }],
-    [:stopped, { "HTTP_X_FORWARDED_HOST" => bad_host }],
-    [:stopped, { "HTTP_FORWARDED" => "host=#{bad_host}" }],
-    [:stopped, { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => bad_host }],
-    [:stopped, { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{bad_host}" }],
+  good_requests = [
+    { "HTTP_HOST" => allowed_host },
+    { "HTTP_X_FORWARDED_HOST" => allowed_host },
+    { "HTTP_FORWARDED" => "host=#{allowed_host}" },
+  ]
+  bad_requests = [
+    { "HTTP_HOST" => bad_host },
+    { "HTTP_X_FORWARDED_HOST" => bad_host },
+    { "HTTP_FORWARDED" => "host=#{bad_host}" },
+    { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => bad_host },
+    { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{bad_host}" },
   ]
 
-  test_cases.each do |outcome, headers|
-    it 'allows/stops requests based on the permitted hosts specified' do
+  good_requests.each do |headers|
+    it 'allows requests based on the permitted hosts specified' do
       mock_app do
         use Rack::Protection::HostAuthorization, permitted_hosts: [allowed_host]
         run DummyApp
@@ -41,7 +40,20 @@ RSpec.describe Rack::Protection::HostAuthorization do
 
       get("/", {}, headers)
 
-      assert_response(outcome: outcome, headers: headers, last_response: last_response)
+      assert_response(outcome: :allowed, headers: headers, last_response: last_response)
+    end
+  end
+
+  bad_requests.each do |headers|
+    it 'stops requests based on the permitted hosts specified' do
+      mock_app do
+        use Rack::Protection::HostAuthorization, permitted_hosts: [allowed_host]
+        run DummyApp
+      end
+
+      get("/", {}, headers)
+
+      assert_response(outcome: :stopped, headers: headers, last_response: last_response)
     end
   end
 
