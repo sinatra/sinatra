@@ -20,7 +20,9 @@ RSpec.describe Rack::Protection::HostAuthorization do
     [
       { "HTTP_HOST" => allowed_host },
       { "HTTP_X_FORWARDED_HOST" => allowed_host },
+      { "HTTP_X_FORWARDED_HOST" => "example.com, #{allowed_host}" },
       { "HTTP_FORWARDED" => "host=#{allowed_host}" },
+      { "HTTP_FORWARDED" => "host=example.com; host=#{allowed_host}" },
     ]
   end
 
@@ -28,7 +30,9 @@ RSpec.describe Rack::Protection::HostAuthorization do
     [
       { "HTTP_HOST" => bad_host },
       { "HTTP_X_FORWARDED_HOST" => bad_host },
+      { "HTTP_X_FORWARDED_HOST" => "#{allowed_host}, #{bad_host}" },
       { "HTTP_FORWARDED" => "host=#{bad_host}" },
+      { "HTTP_FORWARDED" => "host=#{allowed_host}; host=#{bad_host}" },
       { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => bad_host },
       { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{bad_host}" },
     ]
