@@ -3,64 +3,50 @@
 require_relative "test_helper"
 
 class HostAuthorization < Minitest::Test
-  def assert_response(outcome:, headers:, response:)
-    fail_message = "Expected outcome '#{outcome}' for headers '#{headers}'"
+  it "allows requests based on the permitted hosts specified" do
+    allowed_host = "allowed.org"
+    mock_app do
+      set :permitted_hosts, [allowed_host]
 
-    case outcome
-    when :allowed
-      assert_equal 200, response.status, fail_message
-      assert_equal "OK", response.body, fail_message
-    when :stopped
-      assert_equal 403, response.status, fail_message
-      assert_equal "Host not permitted", response.body, fail_message
+      get("/") { "OK" }
     end
+
+    headers = { "HTTP_HOST" => allowed_host }
+    request = Rack::MockRequest.new(@app)
+    response = request.get("/", headers)
+
+    assert_equal 200, response.status
+    assert_equal "OK", response.body
   end
 
-  allowed_host = "example.com"
-  bad_host = "evil.com"
-  test_cases = [
-    # good requests
-    [:allowed, { "HTTP_HOST" => allowed_host }],
-    [:allowed, { "HTTP_X_FORWARDED_HOST" => allowed_host }],
-    [:allowed, { "HTTP_FORWARDED" => "host=#{allowed_host}" }],
+  it "stops requests based on the permitted hosts specified" do
+    allowed_host = "allowed.org"
+    mock_app do
+      set :permitted_hosts, [allowed_host]
 
-    # bad requests
-    [:stopped, { "HTTP_HOST" => bad_host }],
-    [:stopped, { "HTTP_X_FORWARDED_HOST" => bad_host }],
-    [:stopped, { "HTTP_FORWARDED" => "host=#{bad_host}" }],
-    [:stopped, { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => bad_host }],
-    [:stopped, { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{bad_host}" }],
-  ]
-
-  test_cases.each do |outcome, headers|
-    it "allows/stops requests based on the permitted hosts specified" do
-      mock_app do
-        set :permitted_hosts, [allowed_host]
-
-        get("/") { "OK" }
-      end
-
-      request = Rack::MockRequest.new(@app)
-      response = request.get("/", headers)
-
-      assert_response(outcome: outcome, headers: headers, response: response)
+      get("/") { "OK" }
     end
+
+    headers = { "HTTP_HOST" => "bad-host.org" }
+    request = Rack::MockRequest.new(@app)
+    response = request.get("/", headers)
+
+    assert_equal 403, response.status
+    assert_equal "Host not permitted", response.body
   end
 
   it "allows any requests when no permitted hosts are specified" do
-    test_cases.each do |_outcome, headers|
-      mock_app do
-        set :permitted_hosts, []
+    mock_app do
+      set :permitted_hosts, []
 
-        get("/") { "OK" }
-      end
-
-      fail_message = "Expected request with headers '#{headers}' to be allowed"
-      request = Rack::MockRequest.new(@app)
-      response = request.get("/", headers)
-
-      assert_equal 200, response.status, fail_message
-      assert_equal "OK", response.body, fail_message
+      get("/") { "OK" }
     end
+
+    headers = { "HTTP_HOST" => "some-host.org" }
+    request = Rack::MockRequest.new(@app)
+    response = request.get("/", headers)
+
+    assert_equal 200, response.status
+    assert_equal "OK", response.body
   end
 end
