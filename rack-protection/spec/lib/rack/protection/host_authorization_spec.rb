@@ -64,7 +64,7 @@ RSpec.describe Rack::Protection::HostAuthorization do
     end
   end
 
-  it "accepts requests for non-permitted hosts when allow_if is true" do
+  it "accepts requests for unrecognized hosts when allow_if is true" do
     allowed_host = "allowed.org"
     bad_host = "bad.org"
     mock_app do
@@ -78,12 +78,13 @@ RSpec.describe Rack::Protection::HostAuthorization do
     expect(last_response).to be_ok
   end
 
-  it "allows the response given for non-permitted requests to be customized" do
+  it "allows the response for blocked requests to be customized" do
     allowed_host = "allowed.org"
     bad_host = "bad.org"
     message = "Unrecognized host"
     mock_app do
-      use Rack::Protection::HostAuthorization, message: message, status: 406,
+      use Rack::Protection::HostAuthorization, message: message,
+                                               status: 406,
                                                permitted_hosts: [allowed_host]
       run DummyApp
     end
@@ -104,7 +105,7 @@ RSpec.describe Rack::Protection::HostAuthorization do
     end
 
     test_cases.call("allowed.org".upcase).each do |headers|
-      it "works" do
+      it "allows the request with headers '#{headers}'" do
         mock_app do
           use Rack::Protection::HostAuthorization, permitted_hosts: ["allowed.org"]
           run DummyApp
@@ -127,7 +128,7 @@ RSpec.describe Rack::Protection::HostAuthorization do
     end
 
     test_cases.call("allowed.org").each do |headers|
-      it "works" do
+      it "allows the request with headers '#{headers}'" do
         mock_app do
           use Rack::Protection::HostAuthorization, permitted_hosts: ["allowed.org".upcase]
           run DummyApp
