@@ -27,14 +27,6 @@ module Rack
         request.get_header(Request::HTTP_X_FORWARDED_HOST)
       end
 
-      def self.host_from(request:)
-        if forwarded?(request) || (request.port != (request.ssl? ? 443 : 80))
-          request.host_with_port
-        else
-          request.host
-        end
-      end
-
       def initialize(*)
         super
         @permitted_hosts = Array(options[:permitted_hosts]).map(&:downcase)
@@ -45,7 +37,7 @@ module Rack
         return true if @permitted_hosts.empty?
 
         request = Request.new(env)
-        origin_host = self.class.host_from(request: request)
+        origin_host = request.host
 
         @permitted_hosts.include?(origin_host.downcase)
       end

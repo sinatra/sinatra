@@ -19,6 +19,7 @@ RSpec.describe Rack::Protection::HostAuthorization do
   good_requests = lambda do |allowed_host|
     [
       { "HTTP_HOST" => allowed_host },
+      { "HTTP_HOST" => "#{allowed_host}:3000" },
       { "HTTP_X_FORWARDED_HOST" => allowed_host },
       { "HTTP_X_FORWARDED_HOST" => "example.com, #{allowed_host}" },
       { "HTTP_FORWARDED" => "host=#{allowed_host}" },

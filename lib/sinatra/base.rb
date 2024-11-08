@@ -330,7 +330,11 @@ module Sinatra
       uri = [host = String.new]
       if absolute
         host << "http#{'s' if request.secure?}://"
-        host << Rack::Protection::HostAuthorization.host_from(request: request)
+        host << if request.forwarded? || (request.port != (request.secure? ? 443 : 80))
+                  request.host_with_port
+                else
+                  request.host
+                end
       end
       uri << request.script_name.to_s if add_script_name
       uri << (addr || request.path_info).to_s
