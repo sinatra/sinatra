@@ -185,7 +185,7 @@ module Sinatra
     def except(*keys)
       keys.map!(&method(:convert_key))
 
-      super(*keys)
+      self.class[super(*keys)]
     end if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.0")
 
     private
