@@ -1867,8 +1867,7 @@ module Sinatra
       end
 
       def setup_host_authorization(builder)
-        options = { permitted_hosts: permitted_hosts }
-        builder.use Rack::Protection::HostAuthorization, options
+        builder.use Rack::Protection::HostAuthorization, host_authorization
       end
 
       def setup_sessions(builder)
@@ -1936,7 +1935,7 @@ module Sinatra
     set :sessions, false
     set :session_store, Rack::Session::Cookie
     set :logging, false
-    set :permitted_hosts, []
+    set :host_authorization, {}
     set :protection, true
     set :method_override, false
     set :use_code, false

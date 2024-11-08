@@ -1992,6 +1992,25 @@ set :protection, :session => true
       <tt>"development"</tt> if not available.
     </dd>
 
+  <dt>host_authorization</dt>
+  <dd>
+    You can pass a hash of options to <tt>host_authorization</tt>,
+    to be used by the <tt>Rack::Protection::HostAuthorization</tt> middleware.
+  <dd>
+  <dd>
+    The middleware can block requests with unrecognized hostnames, to prevent DNS rebinding
+    and other host header attacks. It checks the <tt>Host</tt>, <tt>X-Forwarded-Host</tt>
+    and <tt>Forwarded</tt> headers.
+  </dd>
+  <dd>
+    Useful options are:
+    <ul>
+      <li><tt>permitted_hosts</tt> – an array of hostnames your app recognizes, if empty all hostnames are permitted</li>
+      <li><tt>status</tt> – the HTTP status code used in the response when a request is blcoked</li>
+      <li><tt>message</tt> – the body used in the response when a request is blocked</li>
+      <li><tt>allow_if</tt> – supply a <tt>Proc</tt> to use custom allow/deny logic, the proc is passed the request environment</li>
+  </dd>
+
   <dt>logging</dt>
     <dd>Use the logger.</dd>
 
@@ -2013,16 +2032,6 @@ set :protection, :session => true
     A default hash of options to pass to Mustermann.new when compiling routing
     paths.
   </dd>
-
-  <dt>permitted_hosts</dt>
-    <dd>
-      An array of hostnames your app recognizes. Requests with an unrecognized hostname
-      will be stopped to prevent DNS rebinding and other host header attacks.
-      Checks the <tt>Host</tt>, <tt>X-Forwarded-Host</tt> and <tt>Forwarded</tt> headers.
-    </dd>
-    <dd>
-      By default the array is empty and all hostnames are permitted.
-    </dd>
 
   <dt>port</dt>
     <dd>Port to listen on. Only used for built-in server.</dd>

@@ -273,7 +273,7 @@ class HelpersTest < Minitest::Test
 
     it 'stops requests to non-permitted hosts' do
       mock_app do
-        set :permitted_hosts, ['example.com']
+        set :host_authorization, { permitted_hosts: ['example.com'] }
 
         get('/') { redirect '/foo' }
       end
