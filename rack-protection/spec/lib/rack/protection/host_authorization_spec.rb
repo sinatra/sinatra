@@ -19,6 +19,34 @@ RSpec.describe Rack::Protection::HostAuthorization do
   # we always specify HTTP_HOST because when HTTP_HOST is not set in env,
   # requests are made with env { HTTP_HOST => Rack::Test::DEFAULT_HOST }
 
+  describe "requests with bogus values in headers" do
+    requests = lambda do |allowed_host|
+      [
+        { "HTTP_HOST" => "::1" },
+        { "HTTP_HOST" => "[0]" },
+        { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => "[0]" },
+        { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=::1" },
+        { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=[0]" },
+        { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=\"::1\"" },
+        { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=\"[0]\"" },
+      ]
+    end
+
+    requests.call("allowed.org").each do |headers|
+      it "stops the request with headers '#{headers}'" do
+        permitted_hosts = [IPAddr.new("0.0.0.0/0"), IPAddr.new("::/0"), "allowed.org"]
+        rack_lint = false
+        mock_app(nil, rack_lint) do
+          use Rack::Protection::HostAuthorization, permitted_hosts: permitted_hosts
+          run DummyApp
+        end
+
+        get("/", {}, headers)
+        assert_response(outcome: :stopped, headers: headers, last_response: last_response)
+      end
+    end
+  end
+
   describe "when permitted hosts include IPAddr instance for 0.0.0.0/0" do
     good_requests = lambda do
       [
@@ -54,6 +82,7 @@ RSpec.describe Rack::Protection::HostAuthorization do
       [
         { "HTTP_HOST" => "[::1]" },
         { "HTTP_HOST" => "[::1]:3000" },
+        { "HTTP_HOST" => "[::1]", "HTTP_X_FORWARDED_HOST" => "::1" },
         { "HTTP_HOST" => "[::1]", "HTTP_X_FORWARDED_HOST" => "[::1]" },
         { "HTTP_HOST" => "[::1]:3000", "HTTP_X_FORWARDED_HOST" => "[::1]:3000" },
         { "HTTP_HOST" => "[::1]", "HTTP_X_FORWARDED_HOST" => "example.com, [::1]" },
@@ -141,6 +170,7 @@ RSpec.describe Rack::Protection::HostAuthorization do
     bad_requests = lambda do |allowed_host, bad_host|
       [
         { "HTTP_HOST" => bad_host },
+        { "HTTP_HOST" => "#{bad_host}##{allowed_host}" },
         { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => bad_host },
         { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => "#{allowed_host}, #{bad_host}" },
         { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{bad_host}" },

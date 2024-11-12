@@ -13,7 +13,7 @@ module SpecHelpers
     @app || mock_app(DummyApp)
   end
 
-  def mock_app(app = nil, &block)
+  def mock_app(app = nil, lint = true, &block)
     app = block if app.nil? && (block.arity == 1)
     if app
       klass = described_class
@@ -23,8 +23,10 @@ module SpecHelpers
         use klass
         run app
       end
-    else
+    elsif lint
       @app = Rack::Lint.new Rack::Builder.new(&block).to_app
+    else
+      @app = Rack::Builder.new(&block).to_app
     end
   end
 
