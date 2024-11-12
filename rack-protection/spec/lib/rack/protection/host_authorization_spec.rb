@@ -19,6 +19,32 @@ RSpec.describe Rack::Protection::HostAuthorization do
   # we always specify HTTP_HOST because when HTTP_HOST is not set in env,
   # requests are made with env { HTTP_HOST => Rack::Test::DEFAULT_HOST }
 
+  describe "when subdomains under .test and .example.com are permitted" do
+    requests = lambda do
+      [
+        { "HTTP_HOST" => "foo.test" },
+        { "HTTP_HOST" => "foo.example.com" },
+        { "HTTP_HOST" => "foo.test", "HTTP_X_FORWARDED_HOST" => "bar.baz.example.com" },
+        { "HTTP_HOST" => "foo.test", "HTTP_X_FORWARDED_HOST" => "bar.test, baz.test" },
+        { "HTTP_HOST" => "foo.test", "HTTP_FORWARDED" => %(host="baz.test") },
+        { "HTTP_HOST" => "foo.test", "HTTP_FORWARDED" => %(host="baz.test" host="baz.example.com") },
+      ]
+    end
+
+    requests.call.each do |headers|
+      it "stops the request with headers '#{headers}'" do
+        permitted_hosts = [".test", ".example.com"]
+        mock_app do
+          use Rack::Protection::HostAuthorization, permitted_hosts: permitted_hosts
+          run DummyApp
+        end
+
+        get("/", {}, headers)
+        assert_response(outcome: :allowed, headers: headers, last_response: last_response)
+      end
+    end
+  end
+
   describe "requests with bogus values in headers" do
     requests = lambda do |allowed_host|
       [
@@ -177,6 +203,8 @@ RSpec.describe Rack::Protection::HostAuthorization do
         { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{allowed_host}; host=#{bad_host}" },
         { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => bad_host },
         { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{bad_host}" },
+        { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => %(host=".#{allowed_host}") },
+        { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => %(host="foo.#{allowed_host}") },
         { "HTTP_HOST" => bad_host, "HTTP_X_FORWARDED_HOST" => allowed_host },
         { "HTTP_HOST" => bad_host, "HTTP_FORWARDED" => "host=#{allowed_host}" },
       ]

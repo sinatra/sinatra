@@ -31,6 +31,7 @@ module Rack
         @permitted_hosts = @all_permitted_hosts
           .select { |host| host.is_a?(String) }
           .map(&:downcase)
+        @domain_hosts = @permitted_hosts.select { |host| host[0] == "." }
         @ip_hosts = @all_permitted_hosts.select { |host| host.is_a?(IPAddr) }
       end
 
@@ -60,9 +61,15 @@ module Rack
       end
 
       def host_permitted?(host)
-        return true if @permitted_hosts.include?(host)
+        exact_match?(host) || domain_match?(host) || ip_match?(host)
+      end
 
-        ip_match?(host)
+      def exact_match?(host)
+        @permitted_hosts.include?(host)
+      end
+
+      def domain_match?(host)
+        @domain_hosts.any? { |domain_host| host.end_with?(domain_host) }
       end
 
       def ip_match?(host)
