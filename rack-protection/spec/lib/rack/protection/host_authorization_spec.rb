@@ -112,55 +112,58 @@ RSpec.describe Rack::Protection::HostAuthorization do
     end
   end
 
-  good_requests = lambda do |allowed_host|
-    [
-      { "HTTP_HOST" => allowed_host },
-      { "HTTP_HOST" => "#{allowed_host}:3000" },
-      { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => allowed_host },
-      { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => "example.com, #{allowed_host}" },
-      { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{allowed_host}" },
-      { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=example.com; host=#{allowed_host}" },
-    ]
-  end
-
-  good_requests.call("allowed.org").each do |headers|
-    it "allows the request with headers '#{headers}'" do
-      permitted_hosts = ["allowed.org"]
-      mock_app do
-        use Rack::Protection::HostAuthorization, permitted_hosts: permitted_hosts
-        run DummyApp
-      end
-
-      get("/", {}, headers)
-
-      assert_response(outcome: :allowed, headers: headers, last_response: last_response)
+  describe "when the permitted hosts are ['allowed.org']" do
+    good_requests = lambda do |allowed_host|
+      [
+        { "HTTP_HOST" => allowed_host },
+        { "HTTP_HOST" => "#{allowed_host}:3000" },
+        { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => allowed_host },
+        { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => "example.com, #{allowed_host}" },
+        { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{allowed_host}" },
+        { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=example.com; host=#{allowed_host}" },
+      ]
     end
-  end
 
-  bad_requests = lambda do |allowed_host, bad_host|
-    [
-      { "HTTP_HOST" => bad_host },
-      { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => bad_host },
-      { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => "#{allowed_host}, #{bad_host}" },
-      { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{bad_host}" },
-      { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{allowed_host}; host=#{bad_host}" },
-      { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => bad_host },
-      { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{bad_host}" },
-      { "HTTP_HOST" => bad_host, "HTTP_X_FORWARDED_HOST" => allowed_host },
-      { "HTTP_HOST" => bad_host, "HTTP_FORWARDED" => "host=#{allowed_host}" },
-    ]
-  end
+    good_requests.call("allowed.org").each do |headers|
+      it "allows the request with headers '#{headers}'" do
+        permitted_hosts = ["allowed.org"]
+        mock_app do
+          use Rack::Protection::HostAuthorization, permitted_hosts: permitted_hosts
+          run DummyApp
+        end
 
-  bad_requests.call("allowed.org", "bad.org").each do |headers|
-    it "stops the request with headers '#{headers}'" do
-      mock_app do
-        use Rack::Protection::HostAuthorization, permitted_hosts: ["allowed.org"]
-        run DummyApp
+        get("/", {}, headers)
+
+        assert_response(outcome: :allowed, headers: headers, last_response: last_response)
       end
+    end
 
-      get("/", {}, headers)
+    bad_requests = lambda do |allowed_host, bad_host|
+      [
+        { "HTTP_HOST" => bad_host },
+        { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => bad_host },
+        { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => "#{allowed_host}, #{bad_host}" },
+        { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{bad_host}" },
+        { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{allowed_host}; host=#{bad_host}" },
+        { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => bad_host },
+        { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{bad_host}" },
+        { "HTTP_HOST" => bad_host, "HTTP_X_FORWARDED_HOST" => allowed_host },
+        { "HTTP_HOST" => bad_host, "HTTP_FORWARDED" => "host=#{allowed_host}" },
+      ]
+    end
 
-      assert_response(outcome: :stopped, headers: headers, last_response: last_response)
+    bad_requests.call("allowed.org", "bad.org").each do |headers|
+      it "stops the request with headers '#{headers}'" do
+        permitted_hosts = ["allowed.org"]
+        mock_app do
+          use Rack::Protection::HostAuthorization, permitted_hosts: permitted_hosts
+          run DummyApp
+        end
+
+        get("/", {}, headers)
+
+        assert_response(outcome: :stopped, headers: headers, last_response: last_response)
+      end
     end
   end
 
