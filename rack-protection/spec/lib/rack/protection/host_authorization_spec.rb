@@ -16,26 +16,59 @@ RSpec.describe Rack::Protection::HostAuthorization do
     end
   end
 
+  # we always specify HTTP_HOST because when HTTP_HOST is not set in env,
+  # requests are made with env { HTTP_HOST => Rack::Test::DEFAULT_HOST }
+
   describe "when permitted hosts include IPAddr instance for 0.0.0.0/0" do
     good_requests = lambda do
       [
         { "HTTP_HOST" => "127.0.0.1" },
         { "HTTP_HOST" => "127.0.0.1:3000" },
-        { "HTTP_X_FORWARDED_HOST" => "127.0.0.1" },
-        { "HTTP_X_FORWARDED_HOST" => "127.0.0.1:3000" },
-        { "HTTP_X_FORWARDED_HOST" => "example.com, 127.0.0.1" },
-        { "HTTP_X_FORWARDED_HOST" => "example.com, 127.0.0.1:3000" },
-        { "HTTP_FORWARDED" => "host=127.0.0.1" },
-        { "HTTP_FORWARDED" => "host=example.com; host=127.0.0.1" },
-        { "HTTP_FORWARDED" => "host=example.com; host=127.0.0.1:3000" },
+        { "HTTP_HOST" => "127.0.0.1", "HTTP_X_FORWARDED_HOST" => "127.0.0.1" },
+        { "HTTP_HOST" => "127.0.0.1:3000", "HTTP_X_FORWARDED_HOST" => "127.0.0.1:3000" },
+        { "HTTP_HOST" => "127.0.0.1", "HTTP_X_FORWARDED_HOST" => "example.com, 127.0.0.1" },
+        { "HTTP_HOST" => "127.0.0.1:3000", "HTTP_X_FORWARDED_HOST" => "example.com, 127.0.0.1:3000" },
+        { "HTTP_HOST" => "127.0.0.1", "HTTP_FORWARDED" => "host=127.0.0.1" },
+        { "HTTP_HOST" => "127.0.0.1", "HTTP_FORWARDED" => "host=example.com; host=127.0.0.1" },
+        { "HTTP_HOST" => "127.0.0.1:3000", "HTTP_FORWARDED" => "host=example.com; host=127.0.0.1:3000" },
       ]
     end
 
     good_requests.call.each do |headers|
       it "allows the request with headers '#{headers}'" do
-        permitted = IPAddr.new("0.0.0.0/0")
+        permitted_hosts = [IPAddr.new("0.0.0.0/0")]
         mock_app do
-          use Rack::Protection::HostAuthorization, permitted_hosts: [permitted]
+          use Rack::Protection::HostAuthorization, permitted_hosts: permitted_hosts
+          run DummyApp
+        end
+
+        get("/", {}, headers)
+
+        assert_response(outcome: :allowed, headers: headers, last_response: last_response)
+      end
+    end
+  end
+
+  describe "when permitted hosts include IPAddr instance for ::/0" do
+    good_requests = lambda do
+      [
+        { "HTTP_HOST" => "[::1]" },
+        { "HTTP_HOST" => "[::1]:3000" },
+        { "HTTP_HOST" => "[::1]", "HTTP_X_FORWARDED_HOST" => "[::1]" },
+        { "HTTP_HOST" => "[::1]:3000", "HTTP_X_FORWARDED_HOST" => "[::1]:3000" },
+        { "HTTP_HOST" => "[::1]", "HTTP_X_FORWARDED_HOST" => "example.com, [::1]" },
+        { "HTTP_HOST" => "[::1]:3000", "HTTP_X_FORWARDED_HOST" => "example.com, [::1]:3000" },
+        { "HTTP_HOST" => "[::1]", "HTTP_FORWARDED" => "host=[::1]" },
+        { "HTTP_HOST" => "[::1]", "HTTP_FORWARDED" => "host=example.com; host=[::1]" },
+        { "HTTP_HOST" => "[::1]:3000", "HTTP_FORWARDED" => "host=example.com; host=[::1]:3000" },
+      ]
+    end
+
+    good_requests.call.each do |headers|
+      it "allows the request with headers '#{headers}'" do
+        permitted_hosts = [IPAddr.new("::/0")]
+        mock_app do
+          use Rack::Protection::HostAuthorization, permitted_hosts: permitted_hosts
           run DummyApp
         end
 
@@ -52,23 +85,23 @@ RSpec.describe Rack::Protection::HostAuthorization do
         { "HTTP_HOST" => "127.0.0.1" },
         { "HTTP_HOST" => "127.0.0.1:3000" },
         { "HTTP_HOST" => "example.com" },
-        { "HTTP_X_FORWARDED_HOST" => "127.0.0.1" },
-        { "HTTP_X_FORWARDED_HOST" => "127.0.0.1:3000" },
-        { "HTTP_X_FORWARDED_HOST" => "example.com" },
-        { "HTTP_X_FORWARDED_HOST" => "example.com, 127.0.0.1" },
-        { "HTTP_X_FORWARDED_HOST" => "example.com, 127.0.0.1:3000" },
-        { "HTTP_FORWARDED" => "host=127.0.0.1" },
-        { "HTTP_FORWARDED" => "host=example.com" },
-        { "HTTP_FORWARDED" => "host=example.com; host=127.0.0.1" },
-        { "HTTP_FORWARDED" => "host=example.com; host=127.0.0.1:3000" },
+        { "HTTP_HOST" => "192.168.0.1", "HTTP_X_FORWARDED_HOST" => "127.0.0.1" },
+        { "HTTP_HOST" => "192.168.0.1:3000", "HTTP_X_FORWARDED_HOST" => "127.0.0.1:3000" },
+        { "HTTP_HOST" => "192.168.0.1", "HTTP_X_FORWARDED_HOST" => "example.com" },
+        { "HTTP_HOST" => "192.168.0.1", "HTTP_X_FORWARDED_HOST" => "example.com, 127.0.0.1" },
+        { "HTTP_HOST" => "192.168.0.1:3000", "HTTP_X_FORWARDED_HOST" => "example.com, 127.0.0.1:3000" },
+        { "HTTP_HOST" => "192.168.0.1", "HTTP_FORWARDED" => "host=127.0.0.1" },
+        { "HTTP_HOST" => "192.168.0.1", "HTTP_FORWARDED" => "host=example.com" },
+        { "HTTP_HOST" => "192.168.0.1", "HTTP_FORWARDED" => "host=example.com; host=127.0.0.1" },
+        { "HTTP_HOST" => "192.168.0.1:3000", "HTTP_FORWARDED" => "host=example.com; host=127.0.0.1:3000" },
       ]
     end
 
     bad_requests.call.each do |headers|
       it "stops the request with headers '#{headers}'" do
-        permitted = IPAddr.new("192.168.0.1")
+        permitted_hosts = [IPAddr.new("192.168.0.1")]
         mock_app do
-          use Rack::Protection::HostAuthorization, permitted_hosts: [permitted]
+          use Rack::Protection::HostAuthorization, permitted_hosts: permitted_hosts
           run DummyApp
         end
 
@@ -83,17 +116,18 @@ RSpec.describe Rack::Protection::HostAuthorization do
     [
       { "HTTP_HOST" => allowed_host },
       { "HTTP_HOST" => "#{allowed_host}:3000" },
-      { "HTTP_X_FORWARDED_HOST" => allowed_host },
-      { "HTTP_X_FORWARDED_HOST" => "example.com, #{allowed_host}" },
-      { "HTTP_FORWARDED" => "host=#{allowed_host}" },
-      { "HTTP_FORWARDED" => "host=example.com; host=#{allowed_host}" },
+      { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => allowed_host },
+      { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => "example.com, #{allowed_host}" },
+      { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{allowed_host}" },
+      { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=example.com; host=#{allowed_host}" },
     ]
   end
 
   good_requests.call("allowed.org").each do |headers|
     it "allows the request with headers '#{headers}'" do
+      permitted_hosts = ["allowed.org"]
       mock_app do
-        use Rack::Protection::HostAuthorization, permitted_hosts: ["allowed.org"]
+        use Rack::Protection::HostAuthorization, permitted_hosts: permitted_hosts
         run DummyApp
       end
 
@@ -106,12 +140,14 @@ RSpec.describe Rack::Protection::HostAuthorization do
   bad_requests = lambda do |allowed_host, bad_host|
     [
       { "HTTP_HOST" => bad_host },
-      { "HTTP_X_FORWARDED_HOST" => bad_host },
-      { "HTTP_X_FORWARDED_HOST" => "#{allowed_host}, #{bad_host}" },
-      { "HTTP_FORWARDED" => "host=#{bad_host}" },
-      { "HTTP_FORWARDED" => "host=#{allowed_host}; host=#{bad_host}" },
+      { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => bad_host },
+      { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => "#{allowed_host}, #{bad_host}" },
+      { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{bad_host}" },
+      { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{allowed_host}; host=#{bad_host}" },
       { "HTTP_HOST" => allowed_host, "HTTP_X_FORWARDED_HOST" => bad_host },
       { "HTTP_HOST" => allowed_host, "HTTP_FORWARDED" => "host=#{bad_host}" },
+      { "HTTP_HOST" => bad_host, "HTTP_X_FORWARDED_HOST" => allowed_host },
+      { "HTTP_HOST" => bad_host, "HTTP_FORWARDED" => "host=#{allowed_host}" },
     ]
   end
 
@@ -163,8 +199,8 @@ RSpec.describe Rack::Protection::HostAuthorization do
     test_cases = lambda do |host_in_request|
       [
         { "HTTP_HOST" => host_in_request },
-        { "HTTP_X_FORWARDED_HOST" => host_in_request },
-        { "HTTP_FORWARDED" => "host=#{host_in_request}" },
+        { "HTTP_HOST" => host_in_request, "HTTP_X_FORWARDED_HOST" => host_in_request },
+        { "HTTP_HOST" => host_in_request, "HTTP_FORWARDED" => "host=#{host_in_request}" },
       ]
     end
 
@@ -186,8 +222,8 @@ RSpec.describe Rack::Protection::HostAuthorization do
     test_cases = lambda do |host_in_request|
       [
         { "HTTP_HOST" => host_in_request },
-        { "HTTP_X_FORWARDED_HOST" => host_in_request },
-        { "HTTP_FORWARDED" => "host=#{host_in_request}" },
+        { "HTTP_HOST" => host_in_request, "HTTP_X_FORWARDED_HOST" => host_in_request },
+        { "HTTP_HOST" => host_in_request, "HTTP_FORWARDED" => "host=#{host_in_request}" },
       ]
     end
 

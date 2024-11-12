@@ -20,6 +20,7 @@ module Rack
     #
     # The `:allow_if` option can also be set to a proc to use custom allow/deny logic.
     class HostAuthorization < Base
+      PORT_REGEXP = /:\d+\z/.freeze
       default_reaction :deny
       default_options allow_if: nil,
                       message: "Host not permitted"
@@ -38,20 +39,34 @@ module Rack
         return true if @all_permitted_hosts.empty?
 
         request = Request.new(env)
+        origin_host = extract_host(request.host_authority)
+        forwarded_host = extract_host(request.forwarded_authority)
 
-        host_permitted?(request.host.downcase)
+        if host_permitted?(origin_host)
+          if forwarded_host.nil?
+            true
+          else
+            host_permitted?(forwarded_host)
+          end
+        else
+          false
+        end
       end
 
       private
 
-      def host_permitted?(origin_host)
-        return true if @permitted_hosts.include?(origin_host)
-
-        ip_match?(origin_host)
+      def extract_host(authority)
+        authority&.split(PORT_REGEXP)&.first&.downcase
       end
 
-      def ip_match?(origin_host)
-        @ip_hosts.any? { |ip_host| ip_host.include?(origin_host) }
+      def host_permitted?(host)
+        return true if @permitted_hosts.include?(host)
+
+        ip_match?(host)
+      end
+
+      def ip_match?(host)
+        @ip_hosts.any? { |ip_host| ip_host.include?(host) }
       rescue IPAddr::InvalidAddressError
         false
       end
