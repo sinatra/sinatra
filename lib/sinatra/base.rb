@@ -63,7 +63,7 @@ module Sinatra
     alias secure? ssl?
 
     def forwarded?
-      get_header(Request::HTTP_X_FORWARDED_HOST)
+      !forwarded_authority.nil?
     end
 
     def safe?
