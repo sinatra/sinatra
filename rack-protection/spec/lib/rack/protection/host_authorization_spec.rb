@@ -256,6 +256,22 @@ RSpec.describe Rack::Protection::HostAuthorization do
     expect(last_response.body).to eq(message)
   end
 
+  describe "when HTTP_HOST is not present in the environment" do
+    it "stops the request" do
+      app = mock_app do
+        use Rack::Protection::HostAuthorization, permitted_hosts: [".tld"]
+        run DummyApp
+      end
+
+      headers = { "HTTP_X_FORWARDED_HOST" => "foo.tld" }
+      request = Rack::MockRequest.new(app) # this is from rack, not rack-test
+      response = request.get("/", headers)
+
+      expect(response.status).to eq(403)
+      expect(response.body).to eq("Host not permitted")
+    end
+  end
+
   describe "when the header value is upcased but the permitted host not" do
     test_cases = lambda do |host_in_request|
       [

@@ -69,6 +69,8 @@ module Rack
       end
 
       def domain_match?(host)
+        return false if host.nil?
+
         @domain_hosts.any? { |domain_host| host.end_with?(domain_host) }
       end
 
