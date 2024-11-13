@@ -77,17 +77,24 @@ class HostAuthorization < Minitest::Test
     mock_app do
       set :host_authorization, {
         permitted_hosts: [allowed_host],
-        allow_if: ->(_env) { true },
+        allow_if: ->(env) do
+          request = Sinatra::Request.new(env)
+          request.path == "/allowed"
+        end
       }
 
       get("/") { "OK" }
+      get("/allowed") { "OK" }
     end
 
     headers = { "HTTP_HOST" => "some-host.org" }
     request = Rack::MockRequest.new(@app)
-    response = request.get("/", headers)
-
+    response = request.get("/allowed", headers)
     assert_equal 200, response.status
     assert_equal "OK", response.body
+
+    request = Rack::MockRequest.new(@app)
+    response = request.get("/", headers)
+    assert_equal 403, response.status
   end
 end
