@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'ipaddr'
 require 'rack/protection'
+require 'ipaddr'
 
 module Rack
   module Protection
