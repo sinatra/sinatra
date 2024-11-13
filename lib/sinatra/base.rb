@@ -14,6 +14,7 @@ require 'mustermann/sinatra'
 require 'mustermann/regular'
 
 # stdlib dependencies
+require 'ipaddr'
 require 'time'
 require 'uri'
 
@@ -1939,7 +1940,6 @@ module Sinatra
     set :sessions, false
     set :session_store, Rack::Session::Cookie
     set :logging, false
-    set :host_authorization, {}
     set :protection, true
     set :method_override, false
     set :use_code, false
@@ -1973,6 +1973,21 @@ module Sinatra
     set :bind, proc { development? ? 'localhost' : '0.0.0.0' }
     set :port, Integer(ENV['PORT'] && !ENV['PORT'].empty? ? ENV['PORT'] : 4567)
     set :quiet, false
+    set :host_authorization, ->() do
+      if development?
+        {
+          permitted_hosts: [
+            "localhost",
+            ".localhost",
+            ".test",
+            IPAddr.new("0.0.0.0/0"),
+            IPAddr.new("::/0"),
+          ]
+        }
+      else
+        {}
+      end
+    end
 
     ruby_engine = defined?(RUBY_ENGINE) && RUBY_ENGINE
 
