@@ -2005,7 +2005,7 @@ set :protection, :session => true
   <dd>
     Useful options are:
     <ul>
-      <li><tt>permitted_hosts</tt> – an array of hostnames your app recognizes, if empty all hostnames are permitted</li>
+      <li><tt>permitted_hosts</tt> – an array of hostnames (and `IPAddr` objects) your app recognizes, if empty all hostnames are permitted</li>
       <li><tt>status</tt> – the HTTP status code used in the response when a request is blocked</li>
       <li><tt>message</tt> – the body used in the response when a request is blocked</li>
       <li><tt>allow_if</tt> – supply a <tt>Proc</tt> to use custom allow/deny logic, the proc is passed the request environment</li>
