@@ -58,6 +58,13 @@ module Rack
         result if (Array === result) && (result.size == 3)
       end
 
+      def debug(env, message)
+        return unless options[:logging]
+
+        l = options[:logger] || env['rack.logger'] || ::Logger.new(env['rack.errors'])
+        l.debug(message)
+      end
+
       def warn(env, message)
         return unless options[:logging]
 

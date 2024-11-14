@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
+require "stringio"
+
 RSpec.describe Rack::Protection::HostAuthorization do
-  it_behaves_like 'any rack application'
+  it_behaves_like "any rack application"
 
   def assert_response(outcome:, headers:, last_response:)
     fail_message = "Expected outcome '#{outcome}' for headers '#{headers}' " \
@@ -223,6 +225,22 @@ RSpec.describe Rack::Protection::HostAuthorization do
         assert_response(outcome: :stopped, headers: headers, last_response: last_response)
       end
     end
+  end
+
+  it "has debug logging" do
+    io = StringIO.new
+    logger = ::Logger.new(io)
+    logger.level = Logger::DEBUG
+    allowed_host = "allowed.org"
+    mock_app do
+      use Rack::Protection::HostAuthorization, logger: logger,
+                                               permitted_hosts: [allowed_host]
+      run DummyApp
+    end
+
+    get("/")
+
+    expect(io.string).to match(/Rack::Protection::HostAuthorization.+#{allowed_host}/)
   end
 
   it "accepts requests for unrecognized hosts when allow_if is true" do

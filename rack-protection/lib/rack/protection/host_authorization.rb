@@ -43,6 +43,13 @@ module Rack
         origin_host = extract_host(request.host_authority)
         forwarded_host = extract_host(request.forwarded_authority)
 
+        debug env, "#{self.class} " \
+                   "@all_permitted_hosts=#{@all_permitted_hosts.inspect} " \
+                   "@domain_hosts=#{@domain_hosts.inspect} " \
+                   "@ip_hosts=#{@ip_hosts.inspect} " \
+                   "origin_host=#{origin_host.inspect} " \
+                   "forwarded_host=#{forwarded_host.inspect}"
+
         if host_permitted?(origin_host)
           if forwarded_host.nil?
             true
