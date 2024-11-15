@@ -87,7 +87,7 @@ class HostAuthorization < Minitest::Test
       assert_equal "Host not permitted", response.body
     end
 
-    it "defaults to permitt any hosts" do
+    it "defaults to permit any hosts" do
       mock_app do
         get("/") { "OK" }
       end
