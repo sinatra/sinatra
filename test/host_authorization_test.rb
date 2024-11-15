@@ -54,7 +54,7 @@ class HostAuthorization < Minitest::Test
     end
   end
 
-  describe "in test (and production) environment" do
+  describe "in non-development environments" do
     it "allows requests based on the permitted hosts specified" do
       allowed_host = "allowed.org"
       mock_app do
