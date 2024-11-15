@@ -34,7 +34,7 @@ RSpec.describe Rack::Protection::HostAuthorization do
     end
 
     requests.call.each do |headers|
-      it "stops the request with headers '#{headers}'" do
+      it "allows the request with headers '#{headers}'" do
         permitted_hosts = [".test", ".example.com"]
         mock_app do
           use Rack::Protection::HostAuthorization, permitted_hosts: permitted_hosts
