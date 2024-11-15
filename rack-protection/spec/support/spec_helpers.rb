@@ -13,7 +13,7 @@ module SpecHelpers
     @app || mock_app(DummyApp)
   end
 
-  def mock_app(app = nil, lint = true, &block)
+  def mock_app(app = nil, lint: true, &block)
     app = block if app.nil? && (block.arity == 1)
     if app
       klass = described_class

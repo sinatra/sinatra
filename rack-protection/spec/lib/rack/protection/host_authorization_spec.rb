@@ -63,8 +63,7 @@ RSpec.describe Rack::Protection::HostAuthorization do
     requests.call("allowed.org").each do |headers|
       it "stops the request with headers '#{headers}'" do
         permitted_hosts = [IPAddr.new("0.0.0.0/0"), IPAddr.new("::/0"), "allowed.org"]
-        rack_lint = false
-        mock_app(nil, rack_lint) do
+        mock_app(nil, lint: false) do
           use Rack::Protection::HostAuthorization, permitted_hosts: permitted_hosts
           run DummyApp
         end
