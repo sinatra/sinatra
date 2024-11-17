@@ -20,19 +20,36 @@ module Rack
     #
     # The `:allow_if` option can also be set to a proc to use custom allow/deny logic.
     class HostAuthorization < Base
+      DOT = '.'
       PORT_REGEXP = /:\d+\z/.freeze
+      SUBDOMAINS = /[a-z0-9-.]+/.freeze
+      private_constant :DOT,
+                       :PORT_REGEXP,
+                       :SUBDOMAINS
       default_reaction :deny
       default_options allow_if: nil,
                       message: "Host not permitted"
 
       def initialize(*)
         super
+        @permitted_hosts = []
+        @domain_hosts = []
+        @ip_hosts = []
         @all_permitted_hosts = Array(options[:permitted_hosts])
-        @permitted_hosts = @all_permitted_hosts
-          .select { |host| host.is_a?(String) }
-          .map(&:downcase)
-        @domain_hosts = @permitted_hosts.select { |host| host[0] == "." }
-        @ip_hosts = @all_permitted_hosts.select { |host| host.is_a?(IPAddr) }
+
+        @all_permitted_hosts.each do |host|
+          case host
+          when String
+            if host.start_with?(DOT)
+              domain = host[1..-1]
+              @permitted_hosts << domain.downcase
+              @domain_hosts << /\A#{SUBDOMAINS}#{Regexp.escape(domain)}\z/i
+            else
+              @permitted_hosts << host.downcase
+            end
+          when IPAddr then @ip_hosts << host
+          end
+        end
       end
 
       def accepts?(env)
@@ -45,6 +62,7 @@ module Rack
 
         debug env, "#{self.class} " \
                    "@all_permitted_hosts=#{@all_permitted_hosts.inspect} " \
+                   "@permitted_hosts=#{@permitted_hosts.inspect} " \
                    "@domain_hosts=#{@domain_hosts.inspect} " \
                    "@ip_hosts=#{@ip_hosts.inspect} " \
                    "origin_host=#{origin_host.inspect} " \
@@ -77,8 +95,9 @@ module Rack
 
       def domain_match?(host)
         return false if host.nil?
+        return false if host.start_with?(DOT)
 
-        @domain_hosts.any? { |domain_host| host.end_with?(domain_host) }
+        @domain_hosts.any? { |domain_host| host.match?(domain_host) }
       end
 
       def ip_match?(host)
