@@ -34,6 +34,10 @@ run MyApp
 
 # Prevented Attacks
 
+## DNS rebinding and other Host header attacks
+
+* [`Rack::Protection::HostAuthorization`][host-authorization] (not included by `use Rack::Protection`)
+
 ## Cross Site Request Forgery
 
 Prevented by:
@@ -109,6 +113,7 @@ The instrumenter is passed a namespace (String) and environment (Hash). The name
 [escaped-params]: http://www.sinatrarb.com/protection/escaped_params
 [form-token]: http://www.sinatrarb.com/protection/form_token
 [frame-options]: http://www.sinatrarb.com/protection/frame_options
+[host-authorization]: https://github.com/sinatra/sinatra/blob/main/rack-protection/lib/rack/protection/host_authorization.rb
 [http-origin]: http://www.sinatrarb.com/protection/http_origin
 [ip-spoofing]: http://www.sinatrarb.com/protection/ip_spoofing
 [json-csrf]: http://www.sinatrarb.com/protection/json_csrf
