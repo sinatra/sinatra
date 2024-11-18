@@ -82,7 +82,7 @@ module Rack
       private
 
       def extract_host(authority)
-        authority&.split(PORT_REGEXP)&.first&.downcase
+        authority&.split(PORT_REGEXP)&.first&.downcase # rubocop:disable Style/SafeNavigationChainLength
       end
 
       def host_permitted?(host)
