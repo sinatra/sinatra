@@ -22,7 +22,7 @@ module Rack
     class HostAuthorization < Base
       DOT = '.'
       PORT_REGEXP = /:\d+\z/.freeze
-      SUBDOMAINS = /[a-z0-9-.]+/.freeze
+      SUBDOMAINS = /[a-z0-9\-.]+/.freeze
       private_constant :DOT,
                        :PORT_REGEXP,
                        :SUBDOMAINS
