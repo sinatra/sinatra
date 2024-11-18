@@ -1,3 +1,19 @@
+## 4.1.0 / 2024-11-18
+
+* New: Add `host_authorization` setting ([#2053](https://github.com/sinatra/sinatra/pull/2053))
+  * Defaults to `.localhost`, `.test` and any IP address in development mode.
+  * Security: addresses [CVE-2018-11627](https://github.com/advisories/GHSA-hxx2-7vcw-mqr3).
+* Fix: Return an instance of `Sinatra::IndifferentHash` when calling `#except` ([#2044](https://github.com/sinatra/sinatra/pull/2044))
+* Fix: Address warning from `URI` for Ruby 3.4 ([#2060](https://github.com/sinatra/sinatra/pull/2060))
+* Fix: `rackup` no longer depends on WEBrick, recommend Puma instead ([`4a558503`](https://github.com/sinatra/sinatra/commit/4a558503a0ee41f26d4ebc07b478340e8a8a5ed6))
+* Fix: Zeitwerk 2.7.0+ compatibility ([#2050](https://github.com/sinatra/sinatra/pull/2050))
+* Fix: Address warning about Hash construction for Ruby 3.4 ([#2028](https://github.com/sinatra/sinatra/pull/2028))
+* Fix: Declare missing dependencies for Ruby 3.5 ([#2032](https://github.com/sinatra/sinatra/pull/2032))
+* Fix: Compatibility with `--enable-frozen-string-literal` ([#2033](https://github.com/sinatra/sinatra/pull/2033))
+* Fix: Rack 3.1 compatibility ([#2035](https://github.com/sinatra/sinatra/pull/2035))
+  * Don't depend on `Rack::Logger`
+  * Don't delete `content-length` header when `Rack::Files` is used
+
 ## 4.0.0. / 2024-01-19
 
 * New: Add support for Rack 3 ([#1857])
