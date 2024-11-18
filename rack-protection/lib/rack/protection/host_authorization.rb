@@ -28,7 +28,7 @@ module Rack
                        :SUBDOMAINS
       default_reaction :deny
       default_options allow_if: nil,
-                      message: "Host not permitted"
+                      message: 'Host not permitted'
 
       def initialize(*)
         super
