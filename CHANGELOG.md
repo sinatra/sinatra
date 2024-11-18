@@ -2,7 +2,7 @@
 
 * New: Add `host_authorization` setting ([#2053](https://github.com/sinatra/sinatra/pull/2053))
   * Defaults to `.localhost`, `.test` and any IP address in development mode.
-  * Security: addresses [CVE-2018-11627](https://github.com/advisories/GHSA-hxx2-7vcw-mqr3).
+  * Security: addresses [CVE-2024-21510](https://github.com/advisories/GHSA-hxx2-7vcw-mqr3).
 * Fix: Return an instance of `Sinatra::IndifferentHash` when calling `#except` ([#2044](https://github.com/sinatra/sinatra/pull/2044))
 * Fix: Address warning from `URI` for Ruby 3.4 ([#2060](https://github.com/sinatra/sinatra/pull/2060))
 * Fix: `rackup` no longer depends on WEBrick, recommend Puma instead ([`4a558503`](https://github.com/sinatra/sinatra/commit/4a558503a0ee41f26d4ebc07b478340e8a8a5ed6))
