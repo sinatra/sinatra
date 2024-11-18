@@ -1992,6 +1992,31 @@ set :protection, :session => true
       <tt>"development"</tt> if not available.
     </dd>
 
+  <dt>host_authorization</dt>
+  <dd>
+    You can pass a hash of options to <tt>host_authorization</tt>,
+    to be used by the <tt>Rack::Protection::HostAuthorization</tt> middleware.
+  <dd>
+  <dd>
+    The middleware can block requests with unrecognized hostnames, to prevent DNS rebinding
+    and other host header attacks. It checks the <tt>Host</tt>, <tt>X-Forwarded-Host</tt>
+    and <tt>Forwarded</tt> headers.
+  </dd>
+  <dd>
+    Useful options are:
+    <ul>
+      <li><tt>permitted_hosts</tt> – an array of hostnames (and <tt>IPAddr</tt> objects) your app recognizes
+        <ul>
+          <li>in the <tt>development</tt> environment, it is set to <tt>.localhost</tt>, <tt>.test</tt> and any IPv4/IPv6 address</li>
+          <li>if empty, any hostname is permitted (the default for any other environment)</li>
+        </ul>
+      </li>
+      <li><tt>status</tt> – the HTTP status code used in the response when a request is blocked (defaults to <tt>403</tt>)</li>
+      <li><tt>message</tt> – the body used in the response when a request is blocked (defaults to <tt>Host not permitted</tt>)</li>
+      <li><tt>allow_if</tt> – supply a <tt>Proc</tt> to use custom allow/deny logic, the proc is passed the request environment</li>
+    </ul>
+  </dd>
+
   <dt>logging</dt>
     <dd>Use the logger.</dd>
 

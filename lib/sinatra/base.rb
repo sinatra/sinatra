@@ -14,6 +14,7 @@ require 'mustermann/sinatra'
 require 'mustermann/regular'
 
 # stdlib dependencies
+require 'ipaddr'
 require 'time'
 require 'uri'
 
@@ -63,7 +64,7 @@ module Sinatra
     alias secure? ssl?
 
     def forwarded?
-      @env.include? 'HTTP_X_FORWARDED_HOST'
+      !forwarded_authority.nil?
     end
 
     def safe?
@@ -1821,6 +1822,7 @@ module Sinatra
         setup_logging    builder
         setup_sessions   builder
         setup_protection builder
+        setup_host_authorization builder
       end
 
       def setup_middleware(builder)
@@ -1867,6 +1869,10 @@ module Sinatra
         options[:reaction] ||= :drop_session
 
         builder.use Rack::Protection, options
+      end
+
+      def setup_host_authorization(builder)
+        builder.use Rack::Protection::HostAuthorization, host_authorization
       end
 
       def setup_sessions(builder)
@@ -1967,6 +1973,21 @@ module Sinatra
     set :bind, proc { development? ? 'localhost' : '0.0.0.0' }
     set :port, Integer(ENV['PORT'] && !ENV['PORT'].empty? ? ENV['PORT'] : 4567)
     set :quiet, false
+    set :host_authorization, ->() do
+      if development?
+        {
+          permitted_hosts: [
+            "localhost",
+            ".localhost",
+            ".test",
+            IPAddr.new("0.0.0.0/0"),
+            IPAddr.new("::/0"),
+          ]
+        }
+      else
+        {}
+      end
+    end
 
     ruby_engine = defined?(RUBY_ENGINE) && RUBY_ENGINE
 
