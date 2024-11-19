@@ -55,6 +55,7 @@ gem 'redcarpet', platforms: [:ruby]
 gem 'simplecov', require: false
 gem 'slim', '~> 5'
 gem 'yajl-ruby', platforms: [:ruby]
+gem 'webrick'
 
 # sass-embedded depends on google-protobuf
 # which fails to be installed on JRuby and TruffleRuby under aarch64

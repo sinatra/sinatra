@@ -78,6 +78,10 @@ module IntegrationHelper
       end
     end
 
+    def webrick?
+      name.to_s == "webrick"
+    end
+
     def puma?
       name.to_s == "puma"
     end

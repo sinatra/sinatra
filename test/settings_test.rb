@@ -479,6 +479,11 @@ class SettingsTest < Minitest::Test
   end
 
   describe 'server' do
+    it 'includes webrick' do
+      assert @base.server.include?('webrick')
+      assert @application.server.include?('webrick')
+    end
+
     it 'includes puma' do
       assert @base.server.include?('puma')
       assert @application.server.include?('puma')

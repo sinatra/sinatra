@@ -1969,7 +1969,7 @@ module Sinatra
     set :running_server, nil
     set :handler_name, nil
     set :traps, true
-    set :server, %w[]
+    set :server, %w[webrick]
     set :bind, proc { development? ? 'localhost' : '0.0.0.0' }
     set :port, Integer(ENV['PORT'] && !ENV['PORT'].empty? ? ENV['PORT'] : 4567)
     set :quiet, false

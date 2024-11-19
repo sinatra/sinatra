@@ -19,13 +19,15 @@ class IntegrationTest < Minitest::Test
     count = server.log.scan("GET /ping?x=#{random}").count
     if server.net_http_server?
       assert_equal 0, count
+    elsif server.webrick?
+      assert(count > 0)
     else
       assert_equal(1, count)
     end
   end
 
   it 'streams' do
-    next if server.trinidad?
+    next if server.webrick? or server.trinidad?
     times, chunks = [Process.clock_gettime(Process::CLOCK_MONOTONIC)], []
     server.get_stream do |chunk|
       next if chunk.empty?
