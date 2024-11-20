@@ -1,3 +1,7 @@
+## 4.1.1 / 2024-11-20
+
+* Fix: Restore WEBrick support ([#2067](https://github.com/sinatra/sinatra/pull/2067))
+
 ## 4.1.0 / 2024-11-18
 
 * New: Add `host_authorization` setting ([#2053](https://github.com/sinatra/sinatra/pull/2053))
