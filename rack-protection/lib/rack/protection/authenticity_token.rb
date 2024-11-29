@@ -26,16 +26,11 @@ module Rack
     #
     # == Options
     #
-    # [<tt>:authenticity_param</tt>] the name of the param that should contain
-    #                                the token on a request. Default value:
-    #                                <tt>"authenticity_token"</tt>
+    # [<tt>:authenticity_param</tt>] the name of the param that should contain the token on a request. Default value: <tt>"authenticity_token"</tt>
     #
-    # [<tt>:key</tt>] the name of the param that should contain
-    #                                the token in the session. Default value:
-    #                                <tt>:csrf</tt>
+    # [<tt>:key</tt>] the name of the param that should contain the token in the session. Default value: <tt>:csrf</tt>
     #
-    # [<tt>:allow_if</tt>] a proc for custom allow/deny logic. Default value:
-    #                                <tt>nil</tt>
+    # [<tt>:allow_if</tt>] a proc for custom allow/deny logic. Default value: <tt>nil</tt>
     #
     # == Example: Forms application
     #
