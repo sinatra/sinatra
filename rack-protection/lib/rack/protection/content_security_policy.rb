@@ -8,7 +8,7 @@ module Rack
     # Prevented attack::   XSS and others
     # Supported browsers:: Firefox 23+, Safari 7+, Chrome 25+, Opera 15+
     #
-    # Sets the 'content-security-policy' or the 'content-security-policy-report-only]' header, based on options provided.
+    # Sets the 'content-security-policy' or the 'content-security-policy-report-only' header, based on options provided.
     #
     # Description:: Content Security Policy, is a mechanism web applications
     #               can use to mitigate a broad class of content injection
