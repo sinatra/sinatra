@@ -15,13 +15,19 @@ module Rack
     #
     # These may be given to any subclass, however they may affect different subclasses differently.
     #
-    # [<tt>:reaction</tt>] - name of a method of the class that will be used to respond when the middleware rejects the response. Default behavior is to use #default_reaction.
+    # [<tt>:reaction</tt>] - name of a method of the class that will be used to respond when the
+    #                        middleware rejects the response. Default behavior is to use #default_reaction.
     # [<tt>:logging</tt>] - if true, debug and warning statements are sent to the logger.
-    # [<tt>:message</tt>] - if set, and <tt>:reaction</tt> has not been set, this is the text of the message sent to the client when the request is rejected. See DEFAULT_OPTIONS.
-    # [<tt>:session_key</tt>] - string to use as the key into <tt>env</tt> where the current session is stored. See DEFAULT_OPTIONS.
-    # [<tt>:status</tt>] - HTTP status to use when a request is rejected. See DEFAULT_OPTIONS.
-    # [<tt>:report_key</tt>] - key set in <tt>env</tt> if the request has been denied and <tt>:reaction</tt> is set to <tt>:report</tt> (see #report). See DEFAULT_OPTIONS.
-    # [<tt>:html_types</tt>] - Array of strings containing content types that are consider HTML for the purposes of this gem. See DEFAULT_OPTIONS.
+    # [<tt>:message</tt>] - if set, and <tt>:reaction</tt> has not been set, this is the
+    #                       text of the message sent to the client when the request is rejected. See DEFAULT_OPTIONS.
+    # [<tt>:session_key</tt>] - string to use as the key into <tt>env</tt> where the current
+    #                           session is stored. See DEFAULT_OPTIONS.
+    # [<tt>:status</tt>] - HTTP status to use when a request is rejected.
+    #                      See DEFAULT_OPTIONS.
+    # [<tt>:report_key</tt>] - key set in <tt>env</tt> if the request has been denied
+    #                          and <tt>:reaction</tt> is set to <tt>:report</tt> (see #report). See DEFAULT_OPTIONS.
+    # [<tt>:html_types</tt>] - Array of strings containing content types that are consider HTML
+    #                          for the purposes of this gem. See DEFAULT_OPTIONS.
     #
     class Base
       DEFAULT_OPTIONS = {
@@ -35,12 +41,14 @@ module Rack
 
       attr_reader :app, :options
 
-      # Used by subclasses to declare default values for options they require. These defaults are merged onto the DEFAULT_OPTIONS provided by this class.
+      # Used by subclasses to declare default values for options they require.
+      # These defaults are merged onto the DEFAULT_OPTIONS provided by this class.
       def self.default_options(options)
         define_method(:default_options) { super().merge(options) }
       end
 
-      # Used by subclasses to declare default reaction when a request is rejected.  This replaces the default provided by this class.
+      # Used by subclasses to declare default reaction when a request is rejected.
+      # This replaces the default provided by this class.
       # See #default_reaction.
       def self.default_reaction(reaction)
         alias_method(:default_reaction, reaction)
@@ -97,13 +105,17 @@ module Rack
         i.instrument('rack.protection', env)
       end
 
-      # Deny the request.  Sends a content type of "text/plain" using the status and message set in the options.
+      # Deny the request.  Sends a content type of "text/plain" using
+      # the status and message set in the options.
       def deny(env)
         warn env, "attack prevented by #{self.class}"
         [options[:status], { 'content-type' => 'text/plain' }, [options[:message]]]
       end
 
-      # When used as a reaction (with option <tt>reaction: :report</tt>), any rejected request will be allowed through, and a warning is omitted (note that warnings will not be shown if the <tt>:logging</tt> option has been set to false).
+      # When used as a reaction (with option <tt>reaction: :report</tt>),
+      # any rejected request will be allowed through, and a warning is
+      # omitted (note that warnings will not be shown if the
+      # <tt>:logging</tt> option has been set to false).
       def report(env)
         warn env, "attack reported by #{self.class}"
         env[options[:report_key]] = true

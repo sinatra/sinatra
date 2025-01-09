@@ -35,11 +35,32 @@ module Rack
     # See the W3C documentation and the links in the more info
     # section for CSP usage examples and best practices.
     #
-    # [<tt>:report_only</tt>] - if true, the <tt>content-security-policy-report-only</tt> header is set, instead of <tt>content-security-policy</tt>. Note that in this case, you should also set the <tt>:report_uri</tt> option and the <tt>:report_to</tt> option.  If you *do* set <tt>:report_to</tt>, you must also set the `reporting-endpoints` header yourself.
+    # [<tt>:report_only</tt>] - if true, the <tt>content-security-policy-report-only</tt>
+    #                           header is set, instead of <tt>content-security-policy</tt>. Note that 
+    #                           in this case, you should also set the <tt>:report_uri</tt> option and the 
+    #                           <tt>:report_to</tt> option.  If you *do* set <tt>:report_to</tt>, you must 
+    #                           also set the `reporting-endpoints` header yourself.
     #
-    # [<tt>:default_src</tt>] - sets the <tt>default-src</tt> directive, which acts as a fallback for any directive you don't specify. Default is <tt>'self'</tt>.
+    # [<tt>:default_src</tt>] - sets the <tt>default-src</tt> directive, which acts as a
+    #                           fallback for any directive you don't specify. Default is <tt>'self'</tt>.
     #
-    # [Any Supported CSP Directive, underscorized] - All supported CSP directives can be configured individually. See DIRECTIVES and NO_ARG_DIRECTIVES for a list of what is supported. Note that this list is not necessarly complete as the spec and browser behavior is constantly evovling (for example, <tt>script-src-elem</tt> is not supported).  Pass in an underscorized symbol. For example, to set the <tt>script-src</tt> directive, use <tt>:script_src</tt>.  The value should be whatever value you want set in the header. Note that for directives that do not take an argument, you must set their value to <tt>true</tt> to ensure they are set. See NO_ARG_DIRECTIVES. Note that <tt>'self'</tt> and <tt>'none'</tt> require single quotes and this middleware will not add them. For example, to disallow <tt>iframe</tt>s, you would need to use <tt>frame_src: "'none'"</tt>.
+    # [Any Supported CSP Directive, underscorized] - All supported CSP directives can be configured individually. See DIRECTIVES 
+    #                                                and NO_ARG_DIRECTIVES for a list of what is supported.
+    #
+    #                                                Note that this list is not necessarly complete as the spec and
+    #                                                browser behavior is constantly evolving (for example,
+    #                                                <tt>script-src-elem</tt> is not supported).
+    #                                                
+    #                                                Pass in an underscorized symbol. For example, to set the <tt>script-src</tt> 
+    #                                                directive, use <tt>:script_src</tt>.  The value should be whatever value you 
+    #                                                want set in the header.
+    #
+    #                                                Note that for directives that do not take an argument, you must set their 
+    #                                                value to <tt>true</tt> to ensure they are set. See NO_ARG_DIRECTIVES.
+    #                                                Note that <tt>'self'</tt> and <tt>'none'</tt> require 
+    #                                                single quotes and this middleware will not add them. For example, to 
+    #                                                disallow <tt>iframe</tt>s, you would need to use <tt>frame_src: 
+    #                                                "'none'"</tt>.
     #
     class ContentSecurityPolicy < Base
       default_options default_src: "'self'", report_only: false
