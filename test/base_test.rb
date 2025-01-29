@@ -181,5 +181,17 @@ class BaseTest < Minitest::Test
       response = request_content_length.get('/forward')
       assert_equal '28', response['Content-Length']
     end
+
+    it 'formats integer values correctly in Content-Type parameters' do
+      mock_app do
+        get('/') do
+          content_type "foo/bar", baz: 1
+          'Ok'
+        end
+      end
+
+      get '/'
+      assert_equal 'foo/bar;baz=1', response['Content-Type']
+    end
   end
 end
