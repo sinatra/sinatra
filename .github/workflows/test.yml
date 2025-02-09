@@ -26,6 +26,7 @@ jobs:
           - "3.1"
           - "3.2"
           - "3.3"
+          - "3.4"
           - "jruby"
           - "truffleruby"
         include:
@@ -86,6 +87,7 @@ jobs:
           - "3.1"
           - "3.2"
           - "3.3"
+          - "3.4"
           - "jruby"
         rubyopt:
           - "--enable-frozen-string-literal --debug-frozen-string-literal"
@@ -99,13 +101,14 @@ jobs:
           - { ruby: jruby-9.3, rack: '~> 2', puma: stable, tilt: stable, allow-failure: true }
           # Due to https://github.com/jruby/jruby/issues/7647
           - { ruby: jruby-9.4, rack: '~> 2', puma: stable, tilt: stable, allow-failure: true }
-          # JRuby, tests are flaky: https://github.com/sinatra/sinatra/issues/2027
+          # JRuby, tests are notable flaky
           - { ruby: jruby, rubyopt: "", rack: stable, puma: stable, tilt: stable, zeitwerk: stable, allow-failure: true }
           # Never fail our build due to problems with head
           - { ruby: ruby-head,        rack: '~> 2', puma: stable, tilt: stable, allow-failure: true }
           - { ruby: jruby-head,       rack: '~> 2', puma: stable, tilt: stable, allow-failure: true }
           - { ruby: jruby-head,       rubyopt: "", rack: stable, puma: stable, tilt: stable, zeitwerk: stable, allow-failure: true }
           - { ruby: truffleruby-head, rack: '~> 2', puma: stable, tilt: stable, allow-failure: true }
+          # truffleruby 24.1 fails, see https://github.com/oracle/truffleruby/issues/3788
           - { ruby: truffleruby,      rack: '~> 2', puma: stable, tilt: stable, allow-failure: true }
 
     env:
