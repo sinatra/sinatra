@@ -1143,6 +1143,7 @@ module Sinatra
 
     # Attempt to serve static files from public directory. Throws :halt when
     # a matching file is found, returns nil otherwise.
+    # If custom static headers are defined, use them.
     def static!(options = {})
       return if (public_dir = settings.public_folder).nil?
 
@@ -1151,11 +1152,19 @@ module Sinatra
 
       path = File.expand_path(path)
       return unless path.start_with?("#{File.expand_path(public_dir)}/")
-
       return unless File.file?(path)
 
       env['sinatra.static_file'] = path
+
+      # Add caching if configured
       cache_control(*settings.static_cache_control) if settings.static_cache_control?
+
+      if settings.respond_to?(:static_headers) && settings.static_headers
+        settings.static_headers.each do |k, v|
+          headers[k] = v
+        end
+      end
+
       send_file path, options.merge(disposition: nil)
     end
 
@@ -2011,6 +2020,8 @@ module Sinatra
     set :public_folder, proc { root && File.join(root, 'public') }
     set :static, proc { public_folder && File.exist?(public_folder) }
     set :static_cache_control, false
+    
+    set :static_headers, {}
 
     error ::Exception do
       response.status = 500

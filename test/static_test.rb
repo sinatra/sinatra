@@ -273,4 +273,20 @@ class StaticTest < Minitest::Test
     assert response.headers.include?('Last-Modified')
   end
 
+  it 'applies custom headers defined in static_headers setting' do
+    mock_app do
+      set :static, true
+      set :public_folder, __dir__
+      set :static_headers, {
+        'Access-Control-Allow-Origin' => '*',
+        'X-Static-Test' => 'yes'
+      }
+    end
+
+    get "/#{File.basename(__FILE__)}"
+    assert ok?
+    assert_equal '*', response['Access-Control-Allow-Origin']
+    assert_equal 'yes', response['X-Static-Test']
+  end
+
 end
