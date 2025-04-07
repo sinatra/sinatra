@@ -1155,8 +1155,6 @@ module Sinatra
       return unless File.file?(path)
 
       env['sinatra.static_file'] = path
-
-      # Add caching if configured
       cache_control(*settings.static_cache_control) if settings.static_cache_control?
 
       if settings.respond_to?(:static_headers) && settings.static_headers
