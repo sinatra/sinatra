@@ -29,14 +29,27 @@ RSpec.describe Rack::Protection::CookieTossing do
     it 'adds the correct Set-Cookie header' do
       get '/some/path', {}, 'HTTP_COOKIE' => 'rack.%73ession=EVIL_SESSION_TOKEN; rack.session=EVIL_SESSION_TOKEN; rack.session=SESSION_TOKEN'
 
-      expected_header = <<-END.chomp.split("\n")
-rack.%2573ession=; domain=example.org; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT
-rack.%2573ession=; domain=example.org; path=/some; expires=Thu, 01 Jan 1970 00:00:00 GMT
-rack.%2573ession=; domain=example.org; path=/some/path; expires=Thu, 01 Jan 1970 00:00:00 GMT
+      # Rack no longer URI encodes the % in the cookie in Rack 3.1+
+      # https://github.com/sinatra/sinatra/issues/2017
+      cookie_key = if Rack::RELEASE < "3.1"
+        "rack.%2573ession"
+      else
+        "rack.%73ession"
+      end
+
+      expected_header = <<-END.chomp
+#{cookie_key}=; domain=example.org; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT
+#{cookie_key}=; domain=example.org; path=/some; expires=Thu, 01 Jan 1970 00:00:00 GMT
+#{cookie_key}=; domain=example.org; path=/some/path; expires=Thu, 01 Jan 1970 00:00:00 GMT
 rack.session=; domain=example.org; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT
 rack.session=; domain=example.org; path=/some; expires=Thu, 01 Jan 1970 00:00:00 GMT
 rack.session=; domain=example.org; path=/some/path; expires=Thu, 01 Jan 1970 00:00:00 GMT
       END
+
+      if Rack::RELEASE >= "3.0"
+        expected_header = expected_header.split("\n")
+      end
+
       expect(last_response.headers['Set-Cookie']).to eq(expected_header)
     end
   end

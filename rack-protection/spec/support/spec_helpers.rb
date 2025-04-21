@@ -29,7 +29,13 @@ module SpecHelpers
   end
 
   def with_headers(headers)
-    proc { [200, { 'content-type' => 'text/plain' }.merge(headers), ['ok']] }
+    if Rack::RELEASE >= '3.0'
+      _headers = { 'content-type' => 'text/plain' }
+    else
+      _headers = { 'Content-Type' => 'text/plain' }
+    end
+
+    proc { [200, _headers.merge(headers), ['ok']] }
   end
 
   def env
