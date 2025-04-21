@@ -26,7 +26,13 @@ RSpec.describe Rack::Protection::XSSHeader do
   end
 
   it 'should not override the header if already set' do
-    mock_app with_headers('x-xss-protection' => '0')
+    if Rack::RELEASE >= '3.0'
+      headers = { 'x-xss-protection' => '0' }
+    else
+      headers = { 'X-XSS-Protection' => '0' }
+    end
+
+    mock_app with_headers(headers)
     expect(get('/', {}, 'wants' => 'text/html').headers['X-XSS-Protection']).to eq('0')
   end
 
@@ -48,7 +54,13 @@ RSpec.describe Rack::Protection::XSSHeader do
   end
 
   it 'should not override the header if already set X-Content-Type-Options' do
-    mock_app with_headers('x-content-type-options' => 'sniff')
+   if Rack::RELEASE >= '3.0'
+      headers = { 'x-content-type-options' => 'sniff' }
+    else
+      headers = { 'X-Content-Type-Options' => 'sniff' }
+    end
+
+    mock_app with_headers(headers)
     expect(get('/', {}, 'wants' => 'text/html').headers['X-Content-Type-Options']).to eq('sniff')
   end
 end

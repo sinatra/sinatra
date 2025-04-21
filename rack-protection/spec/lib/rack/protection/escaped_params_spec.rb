@@ -7,7 +7,14 @@ RSpec.describe Rack::Protection::EscapedParams do
     it 'escapes html entities' do
       mock_app do |env|
         request = Rack::Request.new(env)
-        [200, { 'content-type' => 'text/plain' }, [request.params['foo']]]
+
+        if Rack::RELEASE >= '3.0'
+          headers = { 'content-type' => 'text/plain' }
+        else
+          headers = { 'Content-Type' => 'text/plain' }
+        end
+
+        [200, headers, [request.params['foo']]]
       end
       get '/', foo: '<bar>'
       expect(body).to eq('&lt;bar&gt;')
@@ -16,7 +23,14 @@ RSpec.describe Rack::Protection::EscapedParams do
     it 'leaves normal params untouched' do
       mock_app do |env|
         request = Rack::Request.new(env)
-        [200, { 'content-type' => 'text/plain' }, [request.params['foo']]]
+
+        if Rack::RELEASE >= '3.0'
+          headers = { 'content-type' => 'text/plain' }
+        else
+          headers = { 'Content-Type' => 'text/plain' }
+        end
+
+        [200, headers, [request.params['foo']]]
       end
       get '/', foo: 'bar'
       expect(body).to eq('bar')
@@ -25,7 +39,14 @@ RSpec.describe Rack::Protection::EscapedParams do
     it 'copes with nested arrays' do
       mock_app do |env|
         request = Rack::Request.new(env)
-        [200, { 'content-type' => 'text/plain' }, [request.params['foo']['bar']]]
+
+        if Rack::RELEASE >= '3.0'
+          headers = { 'content-type' => 'text/plain' }
+        else
+          headers = { 'Content-Type' => 'text/plain' }
+        end
+
+        [200, headers, [request.params['foo']['bar']]]
       end
       get '/', foo: { bar: '<bar>' }
       expect(body).to eq('&lt;bar&gt;')
@@ -33,7 +54,13 @@ RSpec.describe Rack::Protection::EscapedParams do
 
     it 'leaves cache-breaker params untouched' do
       mock_app do |_env|
-        [200, { 'content-type' => 'text/plain' }, ['hi']]
+        if Rack::RELEASE >= '3.0'
+          headers = { 'content-type' => 'text/plain' }
+        else
+          headers = { 'Content-Type' => 'text/plain' }
+        end
+
+        [200, headers, ['hi']]
       end
 
       get '/?95df8d9bf5237ad08df3115ee74dcb10'
@@ -43,7 +70,14 @@ RSpec.describe Rack::Protection::EscapedParams do
     it 'leaves TempFiles untouched' do
       mock_app do |env|
         request = Rack::Request.new(env)
-        [200, { 'content-type' => 'text/plain' }, ["#{request.params['file'][:filename]}\n#{request.params['file'][:tempfile].read}\n#{request.params['other']}"]]
+
+        if Rack::RELEASE >= '3.0'
+          headers = { 'content-type' => 'text/plain' }
+        else
+          headers = { 'Content-Type' => 'text/plain' }
+        end
+
+        [200, headers, ["#{request.params['file'][:filename]}\n#{request.params['file'][:tempfile].read}\n#{request.params['other']}"]]
       end
 
       temp_file = File.open('_escaped_params_tmp_file', 'w')

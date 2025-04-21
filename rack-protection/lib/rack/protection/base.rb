@@ -74,7 +74,14 @@ module Rack
 
       def deny(env)
         warn env, "attack prevented by #{self.class}"
-        [options[:status], { 'content-type' => 'text/plain' }, [options[:message]]]
+
+        if Rack::RELEASE >= '3.0'
+          key = 'content-type'
+        else
+          key = 'Content-Type'
+        end
+
+        [options[:status], { key => 'text/plain' }, [options[:message]]]
       end
 
       def report(env)

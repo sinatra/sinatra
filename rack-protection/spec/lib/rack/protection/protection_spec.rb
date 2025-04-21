@@ -7,7 +7,14 @@ RSpec.describe Rack::Protection do
     mock_app do
       # the :track option is used by session_hijacking
       use Rack::Protection, track: ['HTTP_FOO'], use: [:session_hijacking], except: [:remote_token]
-      run proc { |_e| [200, { 'content-type' => 'text/plain' }, ['hi']] }
+
+      if Rack::RELEASE >= '3.0'
+        headers = { 'content-type' => 'text/plain' }
+      else
+        headers = { 'Content-Type' => 'text/plain' }
+      end
+
+      run proc { |_e| [200, headers, ['hi']] }
     end
 
     session = { foo: :bar }
@@ -24,7 +31,14 @@ RSpec.describe Rack::Protection do
   it 'passes errors through if :reaction => :report is used' do
     mock_app do
       use Rack::Protection, reaction: :report
-      run proc { |e| [200, { 'content-type' => 'text/plain' }, [e['protection.failed'].to_s]] }
+
+      if Rack::RELEASE >= '3.0'
+        headers = { 'content-type' => 'text/plain' }
+      else
+        headers = { 'Content-Type' => 'text/plain' }
+      end
+
+      run proc { |e| [200, headers, [e['protection.failed'].to_s]] }
     end
 
     session = { foo: :bar }

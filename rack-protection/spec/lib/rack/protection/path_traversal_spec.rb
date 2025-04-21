@@ -5,7 +5,13 @@ RSpec.describe Rack::Protection::PathTraversal do
 
   context 'escaping' do
     before do
-      mock_app { |e| [200, { 'content-type' => 'text/plain' }, [e['PATH_INFO']]] }
+      if Rack::RELEASE >= '3.0'
+        headers = { 'content-type' => 'text/plain' }
+      else
+        headers = { 'Content-Type' => 'text/plain' }
+      end
+
+      mock_app { |e| [200, headers, [e['PATH_INFO']]] }
     end
 
     %w[/foo/bar /foo/bar/ / /.f /a.x].each do |path|
@@ -28,7 +34,13 @@ RSpec.describe Rack::Protection::PathTraversal do
 
   context "PATH_INFO's encoding" do
     before do
-      @app = Rack::Protection::PathTraversal.new(proc { |e| [200, { 'content-type' => 'text/plain' }, [e['PATH_INFO'].encoding.to_s]] })
+      if Rack::RELEASE >= '3.0'
+        headers = { 'content-type' => 'text/plain' }
+      else
+        headers = { 'Content-Type' => 'text/plain' }
+      end
+
+      @app = Rack::Protection::PathTraversal.new(proc { |e| [200, headers, [e['PATH_INFO'].encoding.to_s]] })
     end
 
     it 'should remain unchanged as ASCII-8BIT' do
