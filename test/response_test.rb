@@ -36,11 +36,18 @@ class ResponseTest < Minitest::Test
   [200, 201, 202, 301, 302, 400, 401, 403, 404, 500].each do |status_code|
     it "will not removes the Content-Type header and body when response status
         is #{status_code}" do
+
+      if Rack::RELEASE >= '3.0'
+        headers = { 'content-type' => 'text/html', 'content-length' => '11' }
+      else
+        headers = { 'Content-Type' => 'text/html', 'Content-Length' => '11' }
+      end
+
       @response.status = status_code
       @response.body   = ['Hello World']
       assert_equal [
         status_code,
-        { 'content-type' => 'text/html', 'content-length' => '11' },
+        headers,
         ['Hello World']
       ], @response.finish
     end

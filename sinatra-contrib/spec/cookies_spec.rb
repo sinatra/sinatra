@@ -90,10 +90,16 @@ RSpec.describe Sinatra::Cookies do
 
   describe :[]= do
     it 'sets cookies to httponly' do
+      if Rack::RELEASE >= '3.0'
+        value = 'httponly'
+      else
+        value = 'HttpOnly'
+      end
+
       expect(cookie_route do
         cookies['foo'] = 'bar'
         response['Set-Cookie'].lines.detect { |l| l.start_with? 'foo=' }
-      end).to include('httponly')
+      end).to include(value)
     end
 
     it 'sets domain to nil if localhost' do
@@ -153,12 +159,22 @@ RSpec.describe Sinatra::Cookies do
       expect(jar['foo']).to be_nil
     end
 
-    it 'does not remove response cookies from cookies hash' do
-      expect(cookie_route do
-        cookies['foo'] = 'bar'
-        cookies.clear
-        cookies['foo']
-      end).to eq('bar')
+    if Rack::RELEASE >= '3.0'
+      it 'does not remove response cookies from cookies hash' do
+        expect(cookie_route do
+          cookies['foo'] = 'bar'
+          cookies.clear
+          cookies['foo']
+        end).to eq('bar')
+      end
+    else
+      it 'removes response cookies from cookies hash' do
+        expect(cookie_route do
+          cookies['foo'] = 'bar'
+          cookies.clear
+          cookies['foo']
+        end).to be_nil
+      end
     end
 
     it 'expires existing cookies' do
@@ -189,12 +205,22 @@ RSpec.describe Sinatra::Cookies do
       expect(jar['foo']).to be_nil
     end
 
-    it 'does not remove response cookies from cookies hash' do
-      expect(cookie_route do
-        cookies['foo'] = 'bar'
-        cookies.delete 'foo'
-        cookies['foo']
-      end).to eq('bar')
+    if Rack::RELEASE >= '3.0'
+      it 'does not remove response cookies from cookies hash' do
+        expect(cookie_route do
+          cookies['foo'] = 'bar'
+          cookies.clear
+          cookies['foo']
+        end).to eq('bar')
+      end
+    else
+      it 'removes response cookies from cookies hash' do
+        expect(cookie_route do
+          cookies['foo'] = 'bar'
+          cookies.clear
+          cookies['foo']
+        end).to be_nil
+      end
     end
 
     it 'expires existing cookies' do
@@ -217,7 +243,14 @@ RSpec.describe Sinatra::Cookies do
         cookies.delete 'foo'
         response['Set-Cookie']
       end
-      expect(cookie_header).to include("path=/foo;", "domain=bar.com;", "secure;", "httponly")
+
+      if Rack::RELEASE >= '3.0'
+        value = 'httponly'
+      else
+        value = 'HttpOnly'
+      end
+
+      expect(cookie_header).to include("path=/foo;", "domain=bar.com;", "secure;", value)
     end
 
     it 'does not touch other cookies' do
@@ -246,16 +279,39 @@ RSpec.describe Sinatra::Cookies do
   end
 
   describe :delete_if do
-    it 'expires cookies that match the block' do
-      expect(cookie_route('foo=bar') do
-        cookies['bar'] = 'baz'
-        cookies['baz'] = 'foo'
-        cookies.delete_if { |*a| a.include? 'bar' }
-        response['Set-Cookie']
-      end).to eq(["bar=baz; domain=example.org; path=/; httponly",
-                  "baz=foo; domain=example.org; path=/; httponly",
-                  "foo=; domain=example.org; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; httponly",
-                  "bar=; domain=example.org; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; httponly"])
+    if Rack::RELEASE >= '3.0'
+      it 'expires cookies that match the block' do
+        if Rack::RELEASE >= '3.0'
+          value = 'httponly'
+        else
+          value = 'HttpOnly'
+        end
+
+        expect(cookie_route('foo=bar') do
+          cookies['bar'] = 'baz'
+          cookies['baz'] = 'foo'
+          cookies.delete_if { |*a| a.include? 'bar' }
+          response['Set-Cookie']
+        end).to eq(["bar=baz; domain=example.org; path=/; #{value}",
+                    "baz=foo; domain=example.org; path=/; #{value}",
+                    "foo=; domain=example.org; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; #{value}",
+                    "bar=; domain=example.org; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; #{value}"])
+      end
+    else
+      it 'deletes cookies that match the block' do
+        if Rack::RELEASE >= '3.0'
+          value = 'httponly'
+        else
+          value = 'HttpOnly'
+        end
+
+        expect(cookie_route('foo=bar') do
+          cookies['bar'] = 'baz'
+          cookies['baz'] = 'foo'
+          cookies.delete_if { |*a| a.include? 'bar' }
+          cookies.values_at('foo', 'bar', 'baz')
+        end).to eq([nil, nil, 'foo'])
+      end
     end
   end
 
@@ -457,12 +513,22 @@ RSpec.describe Sinatra::Cookies do
       end).to be false
     end
 
-    it 'does not become true if response cookies are removed' do
-      expect(cookie_route do
-        cookies['foo'] = 'bar'
-        cookies.delete :foo
-        cookies.empty?
-      end).to be false
+    if Rack::RELEASE >= '3.0'
+      it 'does not become true if response cookies are removed' do
+        expect(cookie_route do
+          cookies['foo'] = 'bar'
+          cookies.delete :foo
+          cookies.empty?
+        end).to be false
+      end
+    else
+      it 'becomes true if response cookies are removed' do
+        expect(cookie_route do
+          cookies['foo'] = 'bar'
+          cookies.delete :foo
+          cookies.empty?
+        end).to be true
+      end
     end
 
     it 'becomes true if request cookies are removed' do
@@ -472,12 +538,22 @@ RSpec.describe Sinatra::Cookies do
       end).to be_truthy
     end
 
-    it 'does not become true after clear' do
-      expect(cookie_route('foo=bar', 'bar=baz') do
-        cookies['foo'] = 'bar'
-        cookies.clear
-        cookies.empty?
-      end).to be false
+    if Rack::RELEASE >= '3.0'
+      it 'does not become true after clear' do
+        expect(cookie_route('foo=bar', 'bar=baz') do
+          cookies['foo'] = 'bar'
+          cookies.clear
+          cookies.empty?
+        end).to be false
+      end
+    else
+      it 'becomes true after clear' do
+        expect(cookie_route('foo=bar', 'bar=baz') do
+          cookies['foo'] = 'bar'
+          cookies.clear
+          cookies.empty?
+        end).to be true
+      end
     end
   end
 
@@ -728,19 +804,31 @@ RSpec.describe Sinatra::Cookies do
     end
 
     it 'sets a cookie with httponly' do
+      if Rack::RELEASE >= '3.0'
+        value = 'httponly'
+      else
+        value = 'HttpOnly'
+      end
+
       expect(cookie_route do
         request.script_name = '/foo'
         cookies.set('foo', value: 'bar', httponly: true)
         response['Set-Cookie'].lines.detect { |l| l.start_with? 'foo=' }
-      end).to include('httponly')
+      end).to include(value)
     end
 
     it 'sets a cookie without httponly' do
+      if Rack::RELEASE >= '3.0'
+        value = 'httponly'
+      else
+        value = 'HttpOnly'
+      end
+
       expect(cookie_route do
         request.script_name = '/foo'
         cookies.set('foo', value: 'bar', httponly: false)
         response['Set-Cookie'].lines.detect { |l| l.start_with? 'foo=' }
-      end).not_to include('httponly')
+      end).not_to include(value)
     end
   end
 

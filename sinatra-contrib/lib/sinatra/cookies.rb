@@ -61,6 +61,7 @@ module Sinatra
 
       def initialize(app)
         @response_array  = nil
+        @response_string = nil
         @response_hash   = {}
         @response        = app.response
         @request         = app.request
@@ -309,8 +310,14 @@ module Sinatra
       end
 
       def parse_response
-        cookies_from_response = Array(@response['Set-Cookie'])
-        return if @response_array == cookies_from_response
+        if Rack::RELEASE >= '3.0'
+          cookies_from_response = Array(@response['Set-Cookie'])
+          return if @response_array == cookies_from_response
+        else
+          string = @response['Set-Cookie']
+          return if @response_string == string
+          cookies_from_response = string.to_s.split("\n")
+        end
 
         hash = {}
 
@@ -329,6 +336,7 @@ module Sinatra
 
         @response_hash.replace hash
         @response_array = cookies_from_response
+        @response_string = cookies_from_response.join("\n")
       end
 
       def request_cookies
