@@ -18,8 +18,7 @@ end
 Install the gem:
 
 ```shell
-gem install sinatra
-gem install puma # or any other server
+gem install sinatra rackup puma
 ```
 
 And run with:
@@ -34,9 +33,6 @@ The code you changed will not take effect until you restart the server.
 Please restart the server every time you change or use a code reloader
 like [rerun](https://github.com/alexch/rerun) or
 [rack-unreloader](https://github.com/jeremyevans/rack-unreloader).
-
-It is recommended to also run `gem install puma`, which Sinatra will
-pick up if available.
 
 ## Table of Contents
 
@@ -2086,12 +2082,8 @@ set :protection, :session => true
 
   <dt>server_settings</dt>
     <dd>
-      If you are using a WEBrick web server, presumably for your development
-      environment, you can pass a hash of options to <tt>server_settings</tt>,
-      such as <tt>SSLEnable</tt> or <tt>SSLVerifyClient</tt>. However, web
-      servers such as Puma do not support this, so you can set
-      <tt>server_settings</tt> by defining it as a method when you call
-      <tt>configure</tt>.
+      You can pass a hash of options to <tt>server_settings</tt>,
+      such as <tt>Host</tt> or <tt>Port</tt>.
     </dd>
 
   <dt>sessions</dt>
@@ -2812,7 +2804,7 @@ _Paraphrasing from
 by Konstantin_
 
 Sinatra doesn't impose any concurrency model but leaves that to the
-underlying Rack handler (server) like Puma or WEBrick. Sinatra
+underlying Rack handler (server) like Puma or Falcon. Sinatra
 itself is thread-safe, so there won't be any problem if the Rack handler
 uses a threaded model of concurrency.
 

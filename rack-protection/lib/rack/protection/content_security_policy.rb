@@ -71,6 +71,20 @@ module Rack
 
       def call(env)
         status, headers, body = @app.call(env)
+
+        if options[:report_only]
+          if Rack::RELEASE >= '3.0'
+            header = 'content-security-policy-report-only'
+          else
+            header = 'Content-Security-Policy-Report-Only'
+          end
+        else
+          if Rack::RELEASE >= '3.0'
+            header = 'content-security-policy'
+          else
+            header = 'Content-Security-Policy'
+          end
+        end
         header = options[:report_only] ? 'content-security-policy-report-only' : 'content-security-policy'
         headers[header] ||= csp_policy if html? headers
         [status, headers, body]

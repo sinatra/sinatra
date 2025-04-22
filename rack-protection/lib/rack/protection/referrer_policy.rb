@@ -19,7 +19,14 @@ module Rack
 
       def call(env)
         status, headers, body = @app.call(env)
-        headers['referrer-policy'] ||= options[:referrer_policy]
+
+        if Rack::RELEASE >= '3.0'
+          key = 'referrer-policy'
+        else
+          key = 'Referrer-Policy'
+        end
+
+        headers[key] ||= options[:referrer_policy]
         [status, headers, body]
       end
     end

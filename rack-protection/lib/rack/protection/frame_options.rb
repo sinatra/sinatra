@@ -31,7 +31,14 @@ module Rack
 
       def call(env)
         status, headers, body        = @app.call(env)
-        headers['x-frame-options'] ||= frame_options if html? headers
+
+        if Rack::RELEASE >= '3.0'
+          key = 'x-frame-options'
+        else
+          key = 'X-Frame-Options'
+        end
+
+        headers[key] ||= frame_options if html? headers
         [status, headers, body]
       end
     end
