@@ -34,9 +34,6 @@ Please restart the server every time you change or use a code reloader
 like [rerun](https://github.com/alexch/rerun) or
 [rack-unreloader](https://github.com/jeremyevans/rack-unreloader).
 
-It is recommended to also run `gem install puma`, which Sinatra will
-pick up if available.
-
 ## Table of Contents
 
 - [Sinatra](#sinatra)

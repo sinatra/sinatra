@@ -52,15 +52,15 @@ RSpec.describe Rack::Protection::HostAuthorization do
   describe "when hosts under 'allowed.org' are permitted" do
     bad_requests = lambda do
       [
-        { 'HTTP_HOST' => '.allowed.org' },
-        { 'HTTP_HOST' => 'attacker.com#x.allowed.org' }
+        [{ 'HTTP_HOST' => '.allowed.org' }, true],
+        [{ 'HTTP_HOST' => 'attacker.com#x.allowed.org' }, false]
       ]
     end
 
-    bad_requests.call.each do |headers|
+    bad_requests.call.each do |(headers, lint)|
       it "stops the request with headers '#{headers}'" do
         permitted_hosts = ['.allowed.org']
-        mock_app do
+        mock_app(lint: lint) do
           use Rack::Protection::HostAuthorization, permitted_hosts: permitted_hosts
           run DummyApp
         end
@@ -220,25 +220,25 @@ RSpec.describe Rack::Protection::HostAuthorization do
 
     bad_requests = lambda do |allowed_host, bad_host|
       [
-        { 'HTTP_HOST' => bad_host },
-        { 'HTTP_HOST' => "#{bad_host}##{allowed_host}" },
-        { 'HTTP_HOST' => allowed_host, 'HTTP_X_FORWARDED_HOST' => bad_host },
-        { 'HTTP_HOST' => allowed_host, 'HTTP_X_FORWARDED_HOST' => "#{allowed_host}, #{bad_host}" },
-        { 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => "host=#{bad_host}" },
-        { 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => "host=#{allowed_host}; host=#{bad_host}" },
-        { 'HTTP_HOST' => allowed_host, 'HTTP_X_FORWARDED_HOST' => bad_host },
-        { 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => "host=#{bad_host}" },
-        { 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => %(host=".#{allowed_host}") },
-        { 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => %(host="foo.#{allowed_host}") },
-        { 'HTTP_HOST' => bad_host, 'HTTP_X_FORWARDED_HOST' => allowed_host },
-        { 'HTTP_HOST' => bad_host, 'HTTP_FORWARDED' => "host=#{allowed_host}" }
+        [{ 'HTTP_HOST' => bad_host }, true],
+        [{ 'HTTP_HOST' => "#{bad_host}##{allowed_host}" }, false],
+        [{ 'HTTP_HOST' => allowed_host, 'HTTP_X_FORWARDED_HOST' => bad_host }, true],
+        [{ 'HTTP_HOST' => allowed_host, 'HTTP_X_FORWARDED_HOST' => "#{allowed_host}, #{bad_host}" }, true],
+        [{ 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => "host=#{bad_host}" }, true],
+        [{ 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => "host=#{allowed_host}; host=#{bad_host}" }, true],
+        [{ 'HTTP_HOST' => allowed_host, 'HTTP_X_FORWARDED_HOST' => bad_host }, true],
+        [{ 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => "host=#{bad_host}" }, true],
+        [{ 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => %(host=".#{allowed_host}") }, true],
+        [{ 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => %(host="foo.#{allowed_host}") }, true],
+        [{ 'HTTP_HOST' => bad_host, 'HTTP_X_FORWARDED_HOST' => allowed_host }, true],
+        [{ 'HTTP_HOST' => bad_host, 'HTTP_FORWARDED' => "host=#{allowed_host}" }, true],
       ]
     end
 
-    bad_requests.call('allowed.org', 'bad.org').each do |headers|
+    bad_requests.call('allowed.org', 'bad.org').each do |(headers, lint)|
       it "stops the request with headers '#{headers}'" do
         permitted_hosts = ['allowed.org']
-        mock_app do
+        mock_app(lint: lint) do
           use Rack::Protection::HostAuthorization, permitted_hosts: permitted_hosts
           run DummyApp
         end

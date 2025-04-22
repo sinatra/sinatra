@@ -706,7 +706,19 @@ class HelpersTest < Minitest::Test
       end
 
       get '/'
-      assert_equal 'foo/bar;level=1, charset=utf-8', response['Content-Type']
+      assert_equal 'foo/bar;level=1;charset=utf-8', response['Content-Type']
+    end
+
+    it 'handles multiple params' do
+      mock_app do
+        get('/') do
+          content_type 'foo/bar;level=1', :charset => 'utf-8', :version => '1.0'
+          'ok'
+        end
+      end
+
+      get '/'
+      assert_equal 'foo/bar;level=1;charset=utf-8;version=1.0', response['Content-Type']
     end
 
     it 'does not add charset if present' do

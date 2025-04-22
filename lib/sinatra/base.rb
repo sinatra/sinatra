@@ -396,11 +396,11 @@ module Sinatra
       end
       params.delete :charset if mime_type.include? 'charset'
       unless params.empty?
-        mime_type << (mime_type.include?(';') ? ', ' : ';')
+        mime_type << ';'
         mime_type << params.map do |key, val|
-          val = val.inspect if val =~ /[";,]/
+          val = val.inspect if val.to_s =~ /[";,]/
           "#{key}=#{val}"
-        end.join(', ')
+        end.join(';')
       end
       response['content-type'] = mime_type
     end
