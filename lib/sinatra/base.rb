@@ -1152,16 +1152,13 @@ module Sinatra
 
       path = File.expand_path(path)
       return unless path.start_with?("#{File.expand_path(public_dir)}/")
+
       return unless File.file?(path)
 
       env['sinatra.static_file'] = path
       cache_control(*settings.static_cache_control) if settings.static_cache_control?
 
-      if settings.respond_to?(:static_headers) && settings.static_headers
-        settings.static_headers.each do |k, v|
-          headers[k] = v
-        end
-      end
+      headers(settings.static_headers) if settings.static_headers?
 
       send_file path, options.merge(disposition: nil)
     end

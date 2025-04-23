@@ -427,8 +427,8 @@ By default, Sinatra serves static files from the `public/` folder without runnin
 
 ```ruby
   set :static_headers, {
-    'Access-Control-Allow-Origin' => '*',
-    'X-Static-Asset' => 'served-by-sinatra'
+    'access-control-allow-origin' => '*',
+    'x-static-asset' => 'served-by-sinatra'
   }
 ```
 
@@ -2168,6 +2168,16 @@ set :protection, :session => true
       Use an explicit array when setting multiple values:
       <tt>set :static_cache_control, [:public, :max_age => 300]</tt>
     </dd>
+
+  <dt>static_headers</dt>
+    <dd>
+      Allows you to define custom header settings for static file responses. Header keys should be lowercase (as required by Rack 3).
+    </dd>
+    <dd>
+      For example: <br>
+      <tt>set :static_headers, {'access-control-allow-origin' => '*', 'x-static-asset' => 'served-by-sinatra'}</tt>
+    </dd>
+
 
   <dt>threaded</dt>
     <dd>

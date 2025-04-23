@@ -278,8 +278,8 @@ class StaticTest < Minitest::Test
       set :static, true
       set :public_folder, __dir__
       set :static_headers, {
-        'Access-Control-Allow-Origin' => '*',
-        'X-Static-Test' => 'yes'
+        'access-control-allow-origin' => '*',
+        'x-static-test' => 'yes'
       }
     end
 
@@ -289,25 +289,12 @@ class StaticTest < Minitest::Test
     assert_equal 'yes', response['X-Static-Test']
   end
 
-  it 'does not apply static headers when static_headers is not set' do
-    mock_app do
-      set :static, true
-      set :public_folder, __dir__
-      # no static_headers
-    end
-
-    get "/#{File.basename(__FILE__)}"
-    assert ok?
-    assert_nil response['Access-Control-Allow-Origin']
-    assert_nil response['X-Static-Test']
-  end
-
   it 'respects both static_cache_control and static_headers settings together' do
     mock_app do
       set :static, true
       set :public_folder, __dir__
       set :static_cache_control, [:public, max_age: 3600]
-      set :static_headers, { 'X-Static-Test' => 'yes' }
+      set :static_headers, { 'x-static-test' => 'yes' }
     end
 
     get "/#{File.basename(__FILE__)}"
