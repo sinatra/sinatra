@@ -2171,7 +2171,7 @@ set :protection, :session => true
 
   <dt>static_headers</dt>
     <dd>
-      Allows you to define custom header settings for static file responses. Header keys should be lowercase (as required by Rack 3).
+      Allows you to define custom header settings for static file responses.
     </dd>
     <dd>
       For example: <br>
