@@ -273,4 +273,35 @@ class StaticTest < Minitest::Test
     assert response.headers.include?('Last-Modified')
   end
 
+  it 'applies custom headers defined in static_headers setting' do
+    mock_app do
+      set :static, true
+      set :public_folder, __dir__
+      set :static_headers, {
+        'access-control-allow-origin' => '*',
+        'x-static-test' => 'yes'
+      }
+    end
+
+    get "/#{File.basename(__FILE__)}"
+    assert ok?
+    assert_equal '*', response['access-control-allow-origin']
+    assert_equal 'yes', response['x-static-test']
+  end
+
+  it 'respects both static_cache_control and static_headers settings together' do
+    mock_app do
+      set :static, true
+      set :public_folder, __dir__
+      set :static_cache_control, [:public, max_age: 3600]
+      set :static_headers, { 'x-static-test' => 'yes' }
+    end
+
+    get "/#{File.basename(__FILE__)}"
+    assert ok?
+    assert_equal 'yes', response['x-static-test']
+    assert_includes response['cache-control'], 'public'
+    assert_match(/max-age=3600/, response['cache-control'])
+  end
+
 end

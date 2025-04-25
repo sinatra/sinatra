@@ -420,6 +420,15 @@ Note that the public directory name is not included in the URL. A file
 Use the `:static_cache_control` setting (see [below](#cache-control)) to add
 `Cache-Control` header info.
 
+By default, Sinatra serves static files from the `public/` folder without running middleware or filters. To add custom headers (e.g, for CORS or caching), use the `:static_headers` setting:
+
+```ruby
+  set :static_headers, {
+    'access-control-allow-origin' => '*',
+    'x-static-asset' => 'served-by-sinatra'
+  }
+```
+
 ## Views / Templates
 
 Each template language is exposed via its own rendering method. These
@@ -2156,6 +2165,16 @@ set :protection, :session => true
       Use an explicit array when setting multiple values:
       <tt>set :static_cache_control, [:public, :max_age => 300]</tt>
     </dd>
+
+  <dt>static_headers</dt>
+    <dd>
+      Allows you to define custom header settings for static file responses.
+    </dd>
+    <dd>
+      For example: <br>
+      <tt>set :static_headers, {'access-control-allow-origin' => '*', 'x-static-asset' => 'served-by-sinatra'}</tt>
+    </dd>
+
 
   <dt>threaded</dt>
     <dd>
