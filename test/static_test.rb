@@ -285,8 +285,8 @@ class StaticTest < Minitest::Test
 
     get "/#{File.basename(__FILE__)}"
     assert ok?
-    assert_equal '*', response['Access-Control-Allow-Origin']
-    assert_equal 'yes', response['X-Static-Test']
+    assert_equal '*', response['access-control-allow-origin']
+    assert_equal 'yes', response['x-static-test']
   end
 
   it 'respects both static_cache_control and static_headers settings together' do
@@ -299,9 +299,9 @@ class StaticTest < Minitest::Test
 
     get "/#{File.basename(__FILE__)}"
     assert ok?
-    assert_equal 'yes', response['X-Static-Test']
-    assert_includes response['Cache-Control'], 'public'
-    assert_match(/max-age=3600/, response['Cache-Control'])
+    assert_equal 'yes', response['x-static-test']
+    assert_includes response['cache-control'], 'public'
+    assert_match(/max-age=3600/, response['cache-control'])
   end
 
 end
