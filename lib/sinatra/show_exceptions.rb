@@ -35,11 +35,14 @@ module Sinatra
 
       env['rack.errors'] = errors
 
+      length = Headers::MAP[:content_length]
+      type = Headers::MAP[:content_type]
+
       [
         500,
         {
-          'content-type' => content_type,
-          'content-length' => body.bytesize.to_s
+          type => content_type,
+          length => body.bytesize.to_s
         },
         [body]
       ]
