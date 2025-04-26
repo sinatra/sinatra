@@ -18,11 +18,11 @@ module Rack
     # [<tt>:reaction</tt>] - name of a method of the class that will be used to respond when the
     #                        middleware rejects the response. Default behavior is to use #default_reaction.
     # [<tt>:logging</tt>] - if true, debug and warning statements are sent to the logger.
-    # [<tt>:message</tt>] - if set, and <tt>:reaction</tt> has not been set, this is the
-    #                       text of the message sent to the client when the request is rejected. See DEFAULT_OPTIONS.
+    # [<tt>:message</tt>] - if set, this is the message sent when a request is rejected via <tt>deny</tt>.
+    #                       See DEFAULT_OPTIONS.
     # [<tt>:session_key</tt>] - string to use as the key into <tt>env</tt> where the current
     #                           session is stored. See DEFAULT_OPTIONS.
-    # [<tt>:status</tt>] - HTTP status to use when a request is rejected.
+    # [<tt>:status</tt>] - HTTP status to use when a request is rejected via <tt>deny</tt>.
     #                      See DEFAULT_OPTIONS.
     # [<tt>:report_key</tt>] - key set in <tt>env</tt> if the request has been denied
     #                          and <tt>:reaction</tt> is set to <tt>:report</tt> (see #report). See DEFAULT_OPTIONS.
