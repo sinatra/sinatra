@@ -6,19 +6,23 @@ module Rack
   module Protection
     ##
     # Prevented attack::   Protects against against protocol downgrade attacks and cookie hijacking.
-    # Supported browsers:: all
-    # More infos::         https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security
+    # Supported browsers:: All modern browsers. See https://caniuse.com/stricttransportsecurity
+    # More info::          https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security
     #
-    # browser will prevent any communications from being sent over HTTP
-    # to the specified domain and will instead send all communications over HTTPS.
+    # Sets the {Strict-Transport-Security}[https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Strict-Transport-Security]
+    # http header. This headers tells the browser that HTTP requests will be upgraded to HTTPS.
     # It also prevents HTTPS click through prompts on browsers.
     #
-    # Options:
+    # Note that if an upstream middleware sets the Strict-Transport-Security header, this middleware will not overwrite
+    # it and thus have no effect.
     #
-    # max_age:: How long future requests to the domain should go over HTTPS; specified in seconds
-    # include_subdomains:: If all present and future subdomains will be HTTPS
-    # preload:: Allow this domain to be included in browsers HSTS preload list. See https://hstspreload.appspot.com/
-
+    # == Options
+    #
+    # [<tt>:max_age</tt>] Time, in seconds, that the browser should remember the requirement to use HTTPS. Default is
+    #                     one year.
+    # [<tt>:include_subdomains</tt>] If true, all present and future subdomains should also use HTTPS. Default is false.
+    # [<tt>:preload</tt>] Allow this domain to be included in browsers HSTS preload list. Default is false.
+    #                     See https://hstspreload.org/
     class StrictTransport < Base
       default_options max_age: 31_536_000, include_subdomains: false, preload: false
 
