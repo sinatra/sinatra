@@ -25,9 +25,7 @@ get '/' do
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script type="module">
-    import * as Turbo from 'https://cdn.skypack.dev/@hotwired/turbo@7.3';
-  </script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@hotwired/turbo@7.3/dist/turbo.es2017-esm.min.js"></script>
   <meta charset="UTF-8">
 </head>
 <body>
