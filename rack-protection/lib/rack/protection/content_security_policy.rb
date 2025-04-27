@@ -66,6 +66,10 @@ module Rack
           end
         end
 
+        (options[:custom_directives] ||{}).each do |d,value|
+          directives << "#{d.to_s.gsub(/_/, '-')} #{value}"
+        end
+
         directives.compact.sort.join('; ')
       end
 
