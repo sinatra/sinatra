@@ -25,7 +25,7 @@ get '/' do
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script type="module" integrity="sha384-Id9ZWq9E6J7XWA0hdorM8h8CgDI9WciiAUX9782Y97uOA7YVO3fxLlPvwXcdFOgX" src="https://cdn.jsdelivr.net/npm/@hotwired/turbo@7.3/dist/turbo.es2017-esm.min.js"></script>
+  <script type="module" integrity="sha384-snAbo4VirmpRdbk7i0NI/mKq/BNeGFpjEal+XmSkiuqgpDd/UhIlGcxLcKeag0CF" src="https://cdn.jsdelivr.net/npm/@hotwired/turbo@8.0.13/dist/turbo.es2017-esm.min.js"></script>
   <meta charset="UTF-8">
 </head>
 <body>
