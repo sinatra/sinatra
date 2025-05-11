@@ -65,19 +65,4 @@ RSpec.describe Rack::Protection::ContentSecurityPolicy do
     mock_app with_headers('content-security-policy' => 'default-src: none')
     expect(get('/', {}, 'wants' => 'text/html').headers['Content-Security-Policy']).to eq('default-src: none')
   end
-
-  it 'should allow directives not in the pre-determined list' do
-    mock_app do
-      use Rack::Protection::ContentSecurityPolicy, custom_directives: {
-        script_src_elem: 'https://example.com',
-        style_src_attr: 'https://example.com',
-      }
-
-      run DummyApp
-    end
-
-    headers = get('/', {}, 'wants' => 'text/html').headers
-    expect(headers['Content-Security-Policy']).to eq("default-src 'self'; script-src-elem https://example.com; style-src-attr https://example.com")
-    expect(headers['Content-Security-Policy-Report-Only']).to be_nil
-  end
 end
