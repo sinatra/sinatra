@@ -18,6 +18,33 @@
   * Don't depend on `Rack::Logger`
   * Don't delete `content-length` header when `Rack::Files` is used
 
+## 4.0.1 / 2025-05-24
+
+* Rack 3.1 compatibility ([#2035])
+
+* Fix malformed Content-Type headers ([#2081])
+
+* Avoid crash for integer values in `content_type` parameters ([#2078])
+
+* Fix compatibility with --enable-frozen-string-literal ([#2033])
+
+* Declare missing dependencies for Ruby 3.5 ([#2032])
+
+* Fix warning about Hash construction. ([#2028])
+
+* Support Zeitwerk 2.7.0+ ([#2050])
+
+* Address URI depreciation ([#2060])
+
+[#2035]: https://github.com/sinatra/sinatra/pull/2035
+[#2081]: https://github.com/sinatra/sinatra/pull/2081
+[#2078]: https://github.com/sinatra/sinatra/pull/2078
+[#2033]: https://github.com/sinatra/sinatra/pull/2033
+[#2032]: https://github.com/sinatra/sinatra/pull/2032
+[#2028]: https://github.com/sinatra/sinatra/pull/2028
+[#2050]: https://github.com/sinatra/sinatra/pull/2050
+[#2060]: https://github.com/sinatra/sinatra/pull/2060
+
 ## 4.0.0. / 2024-01-19
 
 * New: Add support for Rack 3 ([#1857])
