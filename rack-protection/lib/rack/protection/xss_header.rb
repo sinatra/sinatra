@@ -18,8 +18,18 @@ module Rack
 
       def call(env)
         status, headers, body = @app.call(env)
-        headers['x-xss-protection']       ||= "1; mode=#{options[:xss_mode]}" if html? headers
-        headers['x-content-type-options'] ||= 'nosniff'                       if options[:nosniff]
+
+        if Rack::RELEASE >= '3.0'
+          xss_key = 'x-xss-protection'
+          content_type_key = 'x-content-type-options'
+        else
+          xss_key = 'X-XSS-Protection'
+          content_type_key = 'X-Content-Type-Options'
+        end
+
+        headers[xss_key] ||= "1; mode=#{options[:xss_mode]}" if html? headers
+        headers[content_type_key] ||= 'nosniff' if options[:nosniff]
+
         [status, headers, body]
       end
     end

@@ -18,6 +18,7 @@ require 'time'
 require 'uri'
 
 # other files we need
+require 'sinatra/headers'
 require 'sinatra/indifferent_hash'
 require 'sinatra/show_exceptions'
 require 'sinatra/version'
@@ -183,8 +184,8 @@ module Sinatra
       result = body
 
       if drop_content_info?
-        headers.delete 'content-length'
-        headers.delete 'content-type'
+        headers.delete Sinatra::Headers::MAP[:content_length]
+        headers.delete Sinatra::Headers::MAP[:content_type]
       end
 
       if drop_body?
@@ -193,9 +194,10 @@ module Sinatra
       end
 
       if calculate_content_length?
-        # if some other code has already set content-length, don't muck with it
+        # if some other code has already set Content-Length, don't muck with it
         # currently, this would be the static file-handler
-        headers['content-length'] = body.map(&:bytesize).reduce(0, :+).to_s
+        key = Sinatra::Headers::MAP[:content_length]
+        headers[key] = body.map(&:bytesize).reduce(0, :+).to_s
       end
 
       [status, headers, result]
@@ -204,7 +206,10 @@ module Sinatra
     private
 
     def calculate_content_length?
-      headers['content-type'] && !headers['content-length'] && (Array === body)
+      length = headers[Sinatra::Headers::MAP[:content_length]]
+      type = headers[Sinatra::Headers::MAP[:content_type]]
+
+      type && !length && (Array === body)
     end
 
     def drop_content_info?
@@ -297,7 +302,7 @@ module Sinatra
         response.body = block
       elsif value
         unless request.head? || value.is_a?(Rack::Files::BaseIterator) || value.is_a?(Stream)
-          headers.delete 'content-length'
+          headers.delete Sinatra::Headers::MAP[:content_length]
         end
         response.body = value
       else
@@ -383,7 +388,7 @@ module Sinatra
     # Set the content-type of the response body given a media type or file
     # extension.
     def content_type(type = nil, params = {})
-      return response['content-type'] unless type
+      return response[Sinatra::Headers::MAP[:content_type]] unless type
 
       default = params.delete :default
       mime_type = mime_type(type) || default
@@ -401,7 +406,7 @@ module Sinatra
           "#{key}=#{val}"
         end.join(';')
       end
-      response['content-type'] = mime_type
+      response[Sinatra::Headers::MAP[:content_type]] = mime_type
     end
 
     # https://html.spec.whatwg.org/#multipart-form-data
@@ -420,12 +425,12 @@ module Sinatra
       params = format('; filename="%s"', File.basename(filename).gsub(/["\r\n]/, MULTIPART_FORM_DATA_REPLACEMENT_TABLE))
       response['Content-Disposition'] << params
       ext = File.extname(filename)
-      content_type(ext) unless response['content-type'] || ext.empty?
+      content_type(ext) unless response[Sinatra::Headers::MAP[:content_type]] || ext.empty?
     end
 
     # Use the contents of the file at +path+ as the response body.
     def send_file(path, opts = {})
-      if opts[:type] || !response['content-type']
+      if opts[:type] || !response[Sinatra::Headers::MAP[:content_type]]
         content_type opts[:type] || File.extname(path), default: 'application/octet-stream'
       end
 
@@ -441,7 +446,8 @@ module Sinatra
       result = file.serving(request, path)
 
       result[1].each { |k, v| headers[k] ||= v }
-      headers['content-length'] = result[1]['content-length']
+      key = Sinatra::Headers::MAP[:content_length]
+      headers[key] = result[1][key]
       opts[:status] &&= Integer(opts[:status])
       halt (opts[:status] || result[0]), result[2]
     rescue Errno::ENOENT
@@ -983,7 +989,7 @@ module Sinatra
       super()
       @app = app
       @template_cache = TemplateCache.new
-      @pinned_response = nil # whether a before! filter pinned the content-type
+      @pinned_response = nil # whether a before! filter pinned the Content-Type
       yield self if block_given?
     end
 
@@ -1003,7 +1009,7 @@ module Sinatra
       invoke { dispatch! }
       invoke { error_block!(response.status) } unless @env['sinatra.error']
 
-      unless @response['content-type']
+      unless @response[Sinatra::Headers::MAP[:content_type]]
         if Array === body && body[0].respond_to?(:content_type)
           content_type body[0].content_type
         elsif (default = settings.default_content_type)
@@ -1066,7 +1072,7 @@ module Sinatra
       routes = base.routes[@request.request_method]
 
       routes&.each do |pattern, conditions, block|
-        response.delete_header('content-type') unless @pinned_response
+        response.delete_header(Sinatra::Headers::MAP[:content_type]) unless @pinned_response
 
         returned_pass_block = process_route(pattern, conditions) do |*args|
           env['sinatra.route'] = "#{@request.request_method} #{pattern}"
@@ -1187,7 +1193,7 @@ module Sinatra
       invoke do
         static! if settings.static? && (request.get? || request.head?)
         filter! :before do
-          @pinned_response = !response['content-type'].nil?
+          @pinned_response = !response[Sinatra::Headers::MAP[:content_type]].nil?
         end
         route!
       end
@@ -1603,27 +1609,13 @@ module Sinatra
       # Puma, Falcon, or WEBrick (in that order). If given a block, will call
       # with the constructed handler once we have taken the stage.
       def run!(options = {}, &block)
-        unless defined?(Rackup::Handler)
-          rackup_warning = <<~MISSING_RACKUP
-            Sinatra could not start, the "rackup" gem was not found!
-
-            Add it to your bundle with:
-
-                bundle add rackup
-
-            or install it with:
-
-                gem install rackup
-
-          MISSING_RACKUP
-          warn rackup_warning
-          exit 1
-        end
-
         return if running?
 
         set options
-        handler         = Rackup::Handler.pick(server)
+
+        rackup = defined?(Rackup::Handler) ? Rackup::Handler : Rack::Handler
+
+        handler         = rackup.pick(server)
         handler_name    = handler.name.gsub(/.*::/, '')
         server_settings = settings.respond_to?(:server_settings) ? settings.server_settings : {}
         server_settings.merge!(Port: port, Host: bind)
@@ -1755,7 +1747,7 @@ module Sinatra
         types.map! { |t| mime_types(t) }
         types.flatten!
         condition do
-          response_content_type = response['content-type']
+          response_content_type = response[Sinatra::Headers::MAP[:content_type]]
           preferred_type = request.preferred_type(types)
 
           if response_content_type
