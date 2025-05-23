@@ -37,7 +37,7 @@ RSpec.describe Rack::Protection::CookieTossing do
         "rack.%73ession"
       end
 
-      expected_header = <<-END.chomp.split("\n")
+      expected_header = <<-END.chomp
 #{cookie_key}=; domain=example.org; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT
 #{cookie_key}=; domain=example.org; path=/some; expires=Thu, 01 Jan 1970 00:00:00 GMT
 #{cookie_key}=; domain=example.org; path=/some/path; expires=Thu, 01 Jan 1970 00:00:00 GMT
@@ -45,6 +45,11 @@ rack.session=; domain=example.org; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT
 rack.session=; domain=example.org; path=/some; expires=Thu, 01 Jan 1970 00:00:00 GMT
 rack.session=; domain=example.org; path=/some/path; expires=Thu, 01 Jan 1970 00:00:00 GMT
       END
+
+      if Rack::RELEASE >= "3.0"
+        expected_header = expected_header.split("\n")
+      end
+
       expect(last_response.headers['Set-Cookie']).to eq(expected_header)
     end
   end

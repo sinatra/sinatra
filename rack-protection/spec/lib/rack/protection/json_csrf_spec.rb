@@ -24,13 +24,26 @@ RSpec.describe Rack::Protection::JsonCsrf do
 
     def self.call(env)
       Thread.current[:last_env] = env
-      [200, { 'content-type' => 'application/json' }, body]
+
+      if Rack::RELEASE >= '3.0'
+        headers = { 'content-type' => 'application/json' }
+      else
+        headers = { 'Content-Type' => 'application/json' }
+      end
+
+      [200, headers, body]
     end
   end
 
   describe 'json response' do
     before do
-      mock_app { |_e| [200, { 'content-type' => 'application/json' }, []] }
+      if Rack::RELEASE >= '3.0'
+        headers = { 'content-type' => 'application/json' }
+      else
+        headers = { 'Content-Type' => 'application/json' }
+      end
+
+      mock_app { |_e| [200, headers, []] }
     end
 
     it 'denies get requests with json responses with a remote referrer' do
@@ -39,7 +52,13 @@ RSpec.describe Rack::Protection::JsonCsrf do
 
     it 'closes the body returned by the app if it denies the get request' do
       mock_app DummyAppWithBody do |_e|
-        [200, { 'content-type' => 'application/json' }, []]
+        if Rack::RELEASE >= '3.0'
+          headers = { 'content-type' => 'application/json' }
+        else
+          headers = { 'Content-Type' => 'application/json' }
+        end
+
+        [200, headers, []]
       end
 
       get('/', {}, 'HTTP_REFERER' => 'http://evil.com')
@@ -50,7 +69,14 @@ RSpec.describe Rack::Protection::JsonCsrf do
     it 'accepts requests with json responses with a remote referrer when allow_if is true' do
       mock_app do
         use Rack::Protection::JsonCsrf, allow_if: ->(env) { env['HTTP_REFERER'] == 'http://good.com' }
-        run proc { |_e| [200, { 'content-type' => 'application/json' }, []] }
+
+        if Rack::RELEASE >= '3.0'
+          headers = { 'content-type' => 'application/json' }
+        else
+          headers = { 'Content-Type' => 'application/json' }
+        end
+
+        run proc { |_e| [200, headers, []] }
       end
 
       expect(get('/', {}, 'HTTP_REFERER' => 'http://good.com')).to be_ok
@@ -88,7 +114,14 @@ RSpec.describe Rack::Protection::JsonCsrf do
     it 'still denies' do
       mock_app do
         use Rack::Protection, reaction: :drop_session
-        run proc { |_e| [200, { 'content-type' => 'application/json' }, []] }
+
+        if Rack::RELEASE >= '3.0'
+          headers = { 'content-type' => 'application/json' }
+        else
+          headers = { 'Content-Type' => 'application/json' }
+        end
+
+        run proc { |_e| [200, headers, []] }
       end
 
       session = { foo: :bar }
