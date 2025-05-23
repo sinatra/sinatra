@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   rack-protection:
-    name: rack-protection (${{ matrix.ruby }}, rack ${{ matrix.rack }}, rack-session ${{ matrix.rack_session }})
+    name: rack-protection (${{ matrix.ruby }}, rack ${{ matrix.rack }})
     runs-on: ubuntu-latest
     timeout-minutes: 5
     strategy:
@@ -30,11 +30,8 @@ jobs:
           - "jruby"
           - "truffleruby"
         include:
-          # Rack
-          - { ruby: 3.2,       rack: head,   rack_session: stable }
-          - { ruby: 3.2,       rack: stable, rack_session: head }
           # https://github.com/sinatra/sinatra/issues/1988
-          - { ruby: ruby-head, rack: stable, rack_session: stable, allow-failure: true }
+          - { ruby: ruby-head, allow-failure: true }
     env:
       rack: ${{ matrix.rack }}
     steps:
@@ -102,11 +99,11 @@ jobs:
           # Due to https://github.com/jruby/jruby/issues/7647
           - { ruby: jruby-9.4, rack: '~> 2', puma: stable, tilt: stable, allow-failure: true }
           # JRuby, tests are notable flaky
-          - { ruby: jruby, rubyopt: "", rack: stable, puma: stable, tilt: stable, zeitwerk: stable, allow-failure: true }
+          - { ruby: jruby, rubyopt: "", rack: '~> 2', puma: stable, tilt: stable, zeitwerk: stable, allow-failure: true }
           # Never fail our build due to problems with head
           - { ruby: ruby-head,        rack: '~> 2', puma: stable, tilt: stable, allow-failure: true }
           - { ruby: jruby-head,       rack: '~> 2', puma: stable, tilt: stable, allow-failure: true }
-          - { ruby: jruby-head,       rubyopt: "", rack: stable, puma: stable, tilt: stable, zeitwerk: stable, allow-failure: true }
+          - { ruby: jruby-head,       rubyopt: "", rack: '~> 2', puma: stable, tilt: stable, zeitwerk: stable, allow-failure: true }
           - { ruby: truffleruby-head, rack: '~> 2', puma: stable, tilt: stable, allow-failure: true }
           # truffleruby 24.1 fails, see https://github.com/oracle/truffleruby/issues/3788
           - { ruby: truffleruby,      rack: '~> 2', puma: stable, tilt: stable, allow-failure: true }
