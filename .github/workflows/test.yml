@@ -30,6 +30,8 @@ jobs:
           - "jruby"
           - "truffleruby"
         include:
+          - { ruby: "3.4", allow-failure: true }
+          - { ruby: "jruby", allow-failure: true }
           # https://github.com/sinatra/sinatra/issues/1988
           - { ruby: ruby-head, allow-failure: true }
     env:
@@ -89,6 +91,7 @@ jobs:
         rubyopt:
           - "--enable-frozen-string-literal --debug-frozen-string-literal"
         include:
+          - { ruby: "2.6", allow-failure: true }
           # Puma
           - { ruby: 3.1, rack: '~> 2', puma: '~> 5',   tilt: stable }
           - { ruby: 3.2, rack: '~> 2', puma: head,     tilt: stable, allow-failure: true }
