@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'stringio'
+
 RSpec.describe Rack::Protection do
   it_behaves_like 'any rack application'
 

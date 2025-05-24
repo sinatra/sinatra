@@ -14,6 +14,7 @@ module Rack
     autoload :EscapedParams,         'rack/protection/escaped_params'
     autoload :FormToken,             'rack/protection/form_token'
     autoload :FrameOptions,          'rack/protection/frame_options'
+    autoload :HostAuthorization,     'rack/protection/host_authorization'
     autoload :HttpOrigin,            'rack/protection/http_origin'
     autoload :IPSpoofing,            'rack/protection/ip_spoofing'
     autoload :JsonCsrf,              'rack/protection/json_csrf'
