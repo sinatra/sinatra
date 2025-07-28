@@ -1099,7 +1099,6 @@ module Sinatra
     # Returns pass block.
     def process_route(pattern, conditions, block = nil, values = [])
       route = @request.path_info
-      route = '/' if route.empty? && !settings.empty_path_info?
       route = route[0..-2] if !settings.strict_paths? && route != '/' && route.end_with?('/')
 
       params = pattern.params(route)
@@ -1776,7 +1775,6 @@ module Sinatra
       end
 
       def route(verb, path, options = {}, &block)
-        enable :empty_path_info if path == '' && empty_path_info.nil?
         signature = compile!(verb, path, block, **options)
         (@routes[verb] ||= []) << signature
         invoke_hook(:route_added, verb, path, block)
@@ -2002,7 +2000,6 @@ module Sinatra
 
     set :absolute_redirects, true
     set :prefixed_redirects, false
-    set :empty_path_info, nil
     set :strict_paths, true
 
     set :app_file, nil

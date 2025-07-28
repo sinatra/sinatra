@@ -1,3 +1,7 @@
+## Unreleased
+
+* `PATH_INFO` can never be empty ([#2114](https://github.com/sinatra/sinatra/pull/2114))
+
 ## 4.1.1 / 2024-11-20
 
 * Fix: Restore WEBrick support ([#2067](https://github.com/sinatra/sinatra/pull/2067))
