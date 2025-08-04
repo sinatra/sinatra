@@ -23,16 +23,23 @@ RSpec.describe Rack::Protection::HostAuthorization do
 
   describe 'when subdomains under .test and .example.com are permitted' do
     requests = lambda do
-      [
+      tests = [
         { 'HTTP_HOST' => 'foo.test' },
         { 'HTTP_HOST' => 'example.com' },
         { 'HTTP_HOST' => 'foo.example.com' },
         { 'HTTP_HOST' => 'foo.bar.example.com' },
         { 'HTTP_HOST' => 'foo.test', 'HTTP_X_FORWARDED_HOST' => 'bar.baz.example.com' },
         { 'HTTP_HOST' => 'foo.test', 'HTTP_X_FORWARDED_HOST' => 'bar.test, baz.test' },
-        { 'HTTP_HOST' => 'foo.test', 'HTTP_FORWARDED' => %(host="baz.test") },
-        { 'HTTP_HOST' => 'foo.test', 'HTTP_FORWARDED' => %(host="baz.test" host="baz.example.com") }
       ]
+
+      if Rack::RELEASE >= '3.0'
+        tests.concat([
+          { 'HTTP_HOST' => 'foo.test', 'HTTP_FORWARDED' => %(host="baz.test") },
+          { 'HTTP_HOST' => 'foo.test', 'HTTP_FORWARDED' => %(host="baz.test" host="baz.example.com") }
+        ])
+      end
+
+      tests
     end
 
     requests.call.each do |headers|
@@ -73,15 +80,22 @@ RSpec.describe Rack::Protection::HostAuthorization do
 
   describe 'requests with bogus values in headers' do
     requests = lambda do |allowed_host|
-      [
+      tests = [
         { 'HTTP_HOST' => '::1' },
         { 'HTTP_HOST' => '[0]' },
-        { 'HTTP_HOST' => allowed_host, 'HTTP_X_FORWARDED_HOST' => '[0]' },
-        { 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => 'host=::1' },
-        { 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => 'host=[0]' },
-        { 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => 'host="::1"' },
-        { 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => 'host="[0]"' }
+        { 'HTTP_HOST' => allowed_host, 'HTTP_X_FORWARDED_HOST' => '[0]' }
       ]
+
+      if Rack::RELEASE >= '3.0'
+        tests.concat([
+          { 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => 'host=::1' },
+          { 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => 'host=[0]' },
+          { 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => 'host="::1"' },
+          { 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => 'host="[0]"' }
+        ])
+      end
+
+      tests
     end
 
     requests.call('allowed.org').each do |headers|
@@ -100,17 +114,24 @@ RSpec.describe Rack::Protection::HostAuthorization do
 
   describe 'when permitted hosts include IPAddr instance for 0.0.0.0/0' do
     good_requests = lambda do
-      [
+      tests = [
         { 'HTTP_HOST' => '127.0.0.1' },
         { 'HTTP_HOST' => '127.0.0.1:3000' },
         { 'HTTP_HOST' => '127.0.0.1', 'HTTP_X_FORWARDED_HOST' => '127.0.0.1' },
-        { 'HTTP_HOST' => '127.0.0.1:3000', 'HTTP_X_FORWARDED_HOST' => '127.0.0.1:3000' },
-        { 'HTTP_HOST' => '127.0.0.1', 'HTTP_X_FORWARDED_HOST' => 'example.com, 127.0.0.1' },
-        { 'HTTP_HOST' => '127.0.0.1:3000', 'HTTP_X_FORWARDED_HOST' => 'example.com, 127.0.0.1:3000' },
-        { 'HTTP_HOST' => '127.0.0.1', 'HTTP_FORWARDED' => 'host=127.0.0.1' },
-        { 'HTTP_HOST' => '127.0.0.1', 'HTTP_FORWARDED' => 'host=example.com; host=127.0.0.1' },
-        { 'HTTP_HOST' => '127.0.0.1:3000', 'HTTP_FORWARDED' => 'host=example.com; host=127.0.0.1:3000' }
+        { 'HTTP_HOST' => '127.0.0.1:3000', 'HTTP_X_FORWARDED_HOST' => '127.0.0.1:3000' }
       ]
+
+      if Rack::RELEASE >= '3.0'
+        tests.concat([
+          { 'HTTP_HOST' => '127.0.0.1', 'HTTP_X_FORWARDED_HOST' => 'example.com, 127.0.0.1' },
+          { 'HTTP_HOST' => '127.0.0.1:3000', 'HTTP_X_FORWARDED_HOST' => 'example.com, 127.0.0.1:3000' },
+          { 'HTTP_HOST' => '127.0.0.1', 'HTTP_FORWARDED' => 'host=127.0.0.1' },
+          { 'HTTP_HOST' => '127.0.0.1', 'HTTP_FORWARDED' => 'host=example.com; host=127.0.0.1' },
+          { 'HTTP_HOST' => '127.0.0.1:3000', 'HTTP_FORWARDED' => 'host=example.com; host=127.0.0.1:3000' }
+        ])
+      end
+
+      tests
     end
 
     good_requests.call.each do |headers|
@@ -130,18 +151,25 @@ RSpec.describe Rack::Protection::HostAuthorization do
 
   describe 'when permitted hosts include IPAddr instance for ::/0' do
     good_requests = lambda do
-      [
+      tests = [
         { 'HTTP_HOST' => '[::1]' },
         { 'HTTP_HOST' => '[::1]:3000' },
         { 'HTTP_HOST' => '[::1]', 'HTTP_X_FORWARDED_HOST' => '::1' },
         { 'HTTP_HOST' => '[::1]', 'HTTP_X_FORWARDED_HOST' => '[::1]' },
         { 'HTTP_HOST' => '[::1]:3000', 'HTTP_X_FORWARDED_HOST' => '[::1]:3000' },
-        { 'HTTP_HOST' => '[::1]', 'HTTP_X_FORWARDED_HOST' => 'example.com, [::1]' },
-        { 'HTTP_HOST' => '[::1]:3000', 'HTTP_X_FORWARDED_HOST' => 'example.com, [::1]:3000' },
-        { 'HTTP_HOST' => '[::1]', 'HTTP_FORWARDED' => 'host=[::1]' },
-        { 'HTTP_HOST' => '[::1]', 'HTTP_FORWARDED' => 'host=example.com; host=[::1]' },
-        { 'HTTP_HOST' => '[::1]:3000', 'HTTP_FORWARDED' => 'host=example.com; host=[::1]:3000' }
       ]
+
+      if Rack::RELEASE >= '3.0'
+        tests.concat([
+          { 'HTTP_HOST' => '[::1]', 'HTTP_X_FORWARDED_HOST' => 'example.com, [::1]' },
+          { 'HTTP_HOST' => '[::1]:3000', 'HTTP_X_FORWARDED_HOST' => 'example.com, [::1]:3000' },
+          { 'HTTP_HOST' => '[::1]', 'HTTP_FORWARDED' => 'host=[::1]' },
+          { 'HTTP_HOST' => '[::1]', 'HTTP_FORWARDED' => 'host=example.com; host=[::1]' },
+          { 'HTTP_HOST' => '[::1]:3000', 'HTTP_FORWARDED' => 'host=example.com; host=[::1]:3000' }
+        ])
+      end
+
+      tests
     end
 
     good_requests.call.each do |headers|
@@ -161,7 +189,7 @@ RSpec.describe Rack::Protection::HostAuthorization do
 
   describe 'when permitted hosts include IPAddr instance for 192.168.0.1/32' do
     bad_requests = lambda do
-      [
+      tests = [
         { 'HTTP_HOST' => '127.0.0.1' },
         { 'HTTP_HOST' => '127.0.0.1:3000' },
         { 'HTTP_HOST' => 'example.com' },
@@ -169,12 +197,19 @@ RSpec.describe Rack::Protection::HostAuthorization do
         { 'HTTP_HOST' => '192.168.0.1:3000', 'HTTP_X_FORWARDED_HOST' => '127.0.0.1:3000' },
         { 'HTTP_HOST' => '192.168.0.1', 'HTTP_X_FORWARDED_HOST' => 'example.com' },
         { 'HTTP_HOST' => '192.168.0.1', 'HTTP_X_FORWARDED_HOST' => 'example.com, 127.0.0.1' },
-        { 'HTTP_HOST' => '192.168.0.1:3000', 'HTTP_X_FORWARDED_HOST' => 'example.com, 127.0.0.1:3000' },
-        { 'HTTP_HOST' => '192.168.0.1', 'HTTP_FORWARDED' => 'host=127.0.0.1' },
-        { 'HTTP_HOST' => '192.168.0.1', 'HTTP_FORWARDED' => 'host=example.com' },
-        { 'HTTP_HOST' => '192.168.0.1', 'HTTP_FORWARDED' => 'host=example.com; host=127.0.0.1' },
-        { 'HTTP_HOST' => '192.168.0.1:3000', 'HTTP_FORWARDED' => 'host=example.com; host=127.0.0.1:3000' }
+        { 'HTTP_HOST' => '192.168.0.1:3000', 'HTTP_X_FORWARDED_HOST' => 'example.com, 127.0.0.1:3000' }
       ]
+
+      if Rack::RELEASE >= '3.0'
+        tests.concat([
+          { 'HTTP_HOST' => '192.168.0.1', 'HTTP_FORWARDED' => 'host=127.0.0.1' },
+          { 'HTTP_HOST' => '192.168.0.1', 'HTTP_FORWARDED' => 'host=example.com' },
+          { 'HTTP_HOST' => '192.168.0.1', 'HTTP_FORWARDED' => 'host=example.com; host=127.0.0.1' },
+          { 'HTTP_HOST' => '192.168.0.1:3000', 'HTTP_FORWARDED' => 'host=example.com; host=127.0.0.1:3000' }
+        ])
+      end
+
+      tests
     end
 
     bad_requests.call.each do |headers|
@@ -194,14 +229,21 @@ RSpec.describe Rack::Protection::HostAuthorization do
 
   describe "when the permitted hosts are ['allowed.org']" do
     good_requests = lambda do |allowed_host|
-      [
+      tests = [
         { 'HTTP_HOST' => allowed_host },
         { 'HTTP_HOST' => "#{allowed_host}:3000" },
         { 'HTTP_HOST' => allowed_host, 'HTTP_X_FORWARDED_HOST' => allowed_host },
-        { 'HTTP_HOST' => allowed_host, 'HTTP_X_FORWARDED_HOST' => "example.com, #{allowed_host}" },
-        { 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => "host=#{allowed_host}" },
-        { 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => "host=example.com; host=#{allowed_host}" }
       ]
+
+      if Rack::RELEASE >= '3.0'
+        tests.concat([
+          { 'HTTP_HOST' => allowed_host, 'HTTP_X_FORWARDED_HOST' => "example.com, #{allowed_host}" },
+          { 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => "host=#{allowed_host}" },
+          { 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => "host=example.com; host=#{allowed_host}" }
+        ])
+      end
+
+      tests
     end
 
     good_requests.call('allowed.org').each do |headers|
@@ -219,20 +261,27 @@ RSpec.describe Rack::Protection::HostAuthorization do
     end
 
     bad_requests = lambda do |allowed_host, bad_host|
-      [
+      tests = [
         [{ 'HTTP_HOST' => bad_host }, true],
         [{ 'HTTP_HOST' => "#{bad_host}##{allowed_host}" }, false],
         [{ 'HTTP_HOST' => allowed_host, 'HTTP_X_FORWARDED_HOST' => bad_host }, true],
-        [{ 'HTTP_HOST' => allowed_host, 'HTTP_X_FORWARDED_HOST' => "#{allowed_host}, #{bad_host}" }, true],
-        [{ 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => "host=#{bad_host}" }, true],
-        [{ 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => "host=#{allowed_host}; host=#{bad_host}" }, true],
         [{ 'HTTP_HOST' => allowed_host, 'HTTP_X_FORWARDED_HOST' => bad_host }, true],
-        [{ 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => "host=#{bad_host}" }, true],
-        [{ 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => %(host=".#{allowed_host}") }, true],
-        [{ 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => %(host="foo.#{allowed_host}") }, true],
-        [{ 'HTTP_HOST' => bad_host, 'HTTP_X_FORWARDED_HOST' => allowed_host }, true],
-        [{ 'HTTP_HOST' => bad_host, 'HTTP_FORWARDED' => "host=#{allowed_host}" }, true],
+        [{ 'HTTP_HOST' => bad_host, 'HTTP_X_FORWARDED_HOST' => allowed_host }, true]
       ]
+
+      if Rack::RELEASE >= '3.0'
+        tests.concat([
+          [{ 'HTTP_HOST' => allowed_host, 'HTTP_X_FORWARDED_HOST' => "#{allowed_host}, #{bad_host}" }, true],
+          [{ 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => "host=#{bad_host}" }, true],
+          [{ 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => "host=#{allowed_host}; host=#{bad_host}" }, true],
+          [{ 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => "host=#{bad_host}" }, true],
+          [{ 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => %(host=".#{allowed_host}") }, true],
+          [{ 'HTTP_HOST' => allowed_host, 'HTTP_FORWARDED' => %(host="foo.#{allowed_host}") }, true],
+          [{ 'HTTP_HOST' => bad_host, 'HTTP_FORWARDED' => "host=#{allowed_host}" }, true],
+        ])
+      end
+
+      tests
     end
 
     bad_requests.call('allowed.org', 'bad.org').each do |(headers, lint)|
@@ -315,11 +364,18 @@ RSpec.describe Rack::Protection::HostAuthorization do
 
   describe 'when the header value is upcased but the permitted host not' do
     test_cases = lambda do |host_in_request|
-      [
+      tests = [
         { 'HTTP_HOST' => host_in_request },
         { 'HTTP_HOST' => host_in_request, 'HTTP_X_FORWARDED_HOST' => host_in_request },
-        { 'HTTP_HOST' => host_in_request, 'HTTP_FORWARDED' => "host=#{host_in_request}" }
       ]
+
+      if Rack::RELEASE >= '3.0'
+        tests.concat([
+          { 'HTTP_HOST' => host_in_request, 'HTTP_FORWARDED' => "host=#{host_in_request}" }
+        ])
+      end
+
+      tests
     end
 
     test_cases.call('allowed.org'.upcase).each do |headers|
@@ -338,11 +394,18 @@ RSpec.describe Rack::Protection::HostAuthorization do
 
   describe 'when the permitted host is upcased but the header value is not' do
     test_cases = lambda do |host_in_request|
-      [
+      tests = [
         { 'HTTP_HOST' => host_in_request },
-        { 'HTTP_HOST' => host_in_request, 'HTTP_X_FORWARDED_HOST' => host_in_request },
-        { 'HTTP_HOST' => host_in_request, 'HTTP_FORWARDED' => "host=#{host_in_request}" }
+        { 'HTTP_HOST' => host_in_request, 'HTTP_X_FORWARDED_HOST' => host_in_request }
       ]
+
+      if Rack::RELEASE >= '3.0'
+        tests.concat([
+          { 'HTTP_HOST' => host_in_request, 'HTTP_FORWARDED' => "host=#{host_in_request}" }
+        ])
+      end
+
+      tests
     end
 
     test_cases.call('allowed.org').each do |headers|

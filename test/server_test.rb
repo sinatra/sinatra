@@ -1,7 +1,9 @@
 require_relative 'test_helper'
 require 'stringio'
 
-module Rackup::Handler
+mod = defined?(Rack::Handler) ? Rack::Handler : Rackup::Handler
+
+mod.module_eval do
   class Mock
     extend Minitest::Assertions
     # Allow assertions in request context

@@ -41,12 +41,14 @@ class RequestTest < Minitest::Test
     assert request.forwarded?
   end
 
-  it 'respects Forwarded header with host key' do
-    request = Sinatra::Request.new('HTTP_FORWARDED' => 'host=example.com')
-    assert request.forwarded?
+  if Rack::Request.const_defined?(:HTTP_FORWARDED)
+    it 'respects Forwarded header with host key' do
+      request = Sinatra::Request.new('HTTP_FORWARDED' => 'host=example.com')
+      assert request.forwarded?
 
-    request = Sinatra::Request.new('HTTP_FORWARDED' => 'for=192.0.2.60;proto=http;by=203.0.113.43')
-    refute request.forwarded?
+      request = Sinatra::Request.new('HTTP_FORWARDED' => 'for=192.0.2.60;proto=http;by=203.0.113.43')
+      refute request.forwarded?
+    end
   end
 
   it 'respects X-Forwarded-Proto header for proxied SSL' do
