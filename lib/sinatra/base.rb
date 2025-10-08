@@ -711,7 +711,7 @@ module Sinatra
     def etag_matches?(list, new_resource = request.post?)
       return !new_resource if list == '*'
 
-      list.to_s.split(/\s*,\s*/).include? response['ETag']
+      list.to_s.split(',').map(&:strip).include?(response['ETag'])
     end
 
     def with_params(temp_params)
