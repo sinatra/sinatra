@@ -1,9 +1,14 @@
 ## Unreleased
 
+## 4.2.1 / 2025-10-10
+
+* Fix: Revert "`PATH_INFO` can never be empty" ([#2124](https://github.com/sinatra/sinatra/pull/2124))
+  * addresses issues with routing and 404, [more in the original pull request](https://github.com/sinatra/sinatra/issues/2113#issuecomment-3388476329)
+
 ## 4.2.0 / 2025-10-08
 
 * New: Add `:static_headers` setting for custom headers in static file responses ([#2089](https://github.com/sinatra/sinatra/pull/2089))
-* Fix: Fix regex in `etag_matches?` to prevent ReDoS ([#2121](https://github.com/sinatra/sinatra/pull/2121)))
+* Fix: Fix regex in `etag_matches?` to prevent ReDoS ([#2121](https://github.com/sinatra/sinatra/pull/2121))
 * Fix: `PATH_INFO` can never be empty ([#2114](https://github.com/sinatra/sinatra/pull/2114))
 * Fix: Fix malformed Content-Type headers ([#2081](https://github.com/sinatra/sinatra/pull/2081))
 * Fix: Avoid crash for integer values in `content_type` parameters ([#2078](https://github.com/sinatra/sinatra/pull/2078))
