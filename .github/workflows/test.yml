@@ -38,7 +38,7 @@ jobs:
     env:
       rack: ${{ matrix.rack }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: ruby/setup-ruby@v1
       continue-on-error: ${{ matrix.allow-failure || false }}
       id: setup-ruby
@@ -134,7 +134,7 @@ jobs:
           libxslt-dev \
           libyaml-dev
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - uses: ruby/setup-ruby@v1
       continue-on-error: ${{ matrix.allow-failure || false }}
