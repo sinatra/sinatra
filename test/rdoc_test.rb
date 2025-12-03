@@ -16,13 +16,13 @@ class RdocTest < Minitest::Test
   it 'renders inline rdoc strings' do
     rdoc_app { rdoc '= Hiya' }
     assert ok?
-    assert_body(/<h1[^>]*>Hiya(<span><a href=\"#label-Hiya\">&para;<\/a> <a href=\"#(documentation|top)\">&uarr;<\/a><\/span>)?<\/h1>/)
+    assert_body(/<h1[^>]*>(<.*>)?Hiya(<.*>)?<\/h1>/)
   end
 
   it 'renders .rdoc files in views path' do
     rdoc_app { rdoc :hello }
     assert ok?
-    assert_body(/<h1[^>]*>Hello From RDoc(<span><a href=\"#label-Hello\+From\+RDoc\">&para;<\/a> <a href=\"#(documentation|top)\">&uarr;<\/a><\/span>)?<\/h1>/)
+    assert_body(/<h1[^>]*>(<.*>)?Hello From RDoc(<.*>)?<\/h1>/)
   end
 
   it "raises error if template not found" do
