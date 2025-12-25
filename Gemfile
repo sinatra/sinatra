@@ -41,7 +41,7 @@ gem 'commonmarker', '~> 0.23.4', platforms: [:ruby]
 gem 'erubi'
 gem 'eventmachine'
 gem 'falcon', '~> 0.40', platforms: [:ruby]
-gem 'haml', '~> 6'
+gem 'haml'
 gem 'kramdown'
 gem 'liquid'
 gem 'markaby'
