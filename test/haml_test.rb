@@ -65,6 +65,7 @@ class HAMLTest < Minitest::Test
   end
 
   it "merges the default HAML options with the overrides and passes them to the Haml engine" do
+    quote_char = Haml::VERSION >= "7.0.0" ? "\"" : "'"
     mock_app do
       set :haml, {:format => :html5}
       get('/') { haml "!!!\n%h1{:class => :header} Hello World" }
@@ -74,7 +75,7 @@ class HAMLTest < Minitest::Test
     end
     get '/'
     assert ok?
-    assert_equal "<!DOCTYPE html>\n<h1 class='header'>Hello World</h1>\n", body
+    assert_equal "<!DOCTYPE html>\n<h1 class=#{quote_char}header#{quote_char}>Hello World</h1>\n", body
     get '/html4'
     assert ok?
     assert_match(/^<!DOCTYPE html PUBLIC (.*) HTML 4.01/, body)
