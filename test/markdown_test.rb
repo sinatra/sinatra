@@ -23,13 +23,22 @@ MarkdownTest = proc do
   it 'renders inline markdown strings' do
     markdown_app { markdown '# Hiya' }
     assert ok?
-    assert_like "<h1>Hiya</h1>\n", body
+    if self.class == CommonMarkerTest && defined?(::Commonmarker) # commonmarker >= 1.x
+      assert_equal "<h1><a href=\"#hiya\" aria-hidden=\"true\" class=\"anchor\" id=\"hiya\"></a>Hiya</h1>\n", body
+    else
+      assert_like "<h1>Hiya</h1>\n", body
+    end
   end
 
   it 'renders .markdown files in views path' do
     markdown_app { markdown :hello }
     assert ok?
-    assert_like "<h1>Hello From Markdown</h1>", body
+    if self.class == CommonMarkerTest && defined?(::Commonmarker) # commonmarker >= 1.x
+      assert_equal "<h1><a href=\"#hello-from-markdown\" aria-hidden=\"true\" " \
+                   "class=\"anchor\" id=\"hello-from-markdown\"></a>Hello From Markdown</h1>\n", body
+    else
+      assert_like "<h1>Hello From Markdown</h1>", body
+    end
   end
 
   it "raises error if template not found" do

@@ -37,7 +37,7 @@ gem 'sinatra-contrib', path: 'sinatra-contrib'
 gem 'asciidoctor'
 gem 'builder'
 gem 'childprocess', '>= 5'
-gem 'commonmarker', '~> 0.23.4', platforms: [:ruby]
+gem 'commonmarker', platforms: [:ruby]
 gem 'erubi'
 gem 'eventmachine'
 gem 'falcon', '~> 0.40', platforms: [:ruby]
