@@ -89,29 +89,33 @@ jobs:
           - "3.2"
           - "3.3"
           - "3.4"
+        bundler:
+          - default
         rubyopt:
           - "--enable-frozen-string-literal --debug-frozen-string-literal"
         include:
+          # Avoid Bundler 4 for now: https://github.com/sinatra/sinatra/issues/2135
+          - { ruby: "4.0", bundler: 2.7.2, rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable }
           # Rack
-          - { ruby: 3.4, rack: "~>3.0.0", puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable }
-          - { ruby: 3.4, rack: "~>3.1.0", puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable }
-          - { ruby: 3.4, rack: head, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable }
+          - { ruby: 3.4, bundler: default, rack: "~>3.0.0", puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable }
+          - { ruby: 3.4, bundler: default, rack: "~>3.1.0", puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable }
+          - { ruby: 3.4, bundler: default, rack: head, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable }
           # Rack::Session
-          - { ruby: 3.4, rack: stable, puma: stable, tilt: stable, rack_session: head, zeitwerk: stable }
+          - { ruby: 3.4, bundler: default, rack: stable, puma: stable, tilt: stable, rack_session: head, zeitwerk: stable }
           # Puma
-          - { ruby: 3.4, rack: stable, puma: head, tilt: stable, rack_session: stable, zeitwerk: stable }
+          - { ruby: 3.4, bundler: default, rack: stable, puma: head, tilt: stable, rack_session: stable, zeitwerk: stable }
           # Tilt
-          - { ruby: 3.4, rack: stable, puma: stable, tilt: head, rack_session: stable, zeitwerk: stable }
+          - { ruby: 3.4, bundler: default, rack: stable, puma: stable, tilt: head, rack_session: stable, zeitwerk: stable }
           # Test Zeitwerk < 2.7.0 separately
-          - { ruby: 3.4, rack: stable, puma: stable, tilt: head, rack_session: stable, zeitwerk: '<2.7.0' }
+          - { ruby: 3.4, bundler: default, rack: stable, puma: stable, tilt: head, rack_session: stable, zeitwerk: '<2.7.0' }
           # JRuby, tests are notable flaky
-          - { ruby: jruby,            rubyopt: "", rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
+          - { ruby: jruby,            bundler: default, rubyopt: "", rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
           # Never fail our build due to problems with head rubies
-          - { ruby: ruby-head,        rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
-          - { ruby: jruby-head,       rubyopt: "", rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
-          - { ruby: truffleruby-head, rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
+          - { ruby: ruby-head,        bundler: 2.7.2,   rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
+          - { ruby: jruby-head,       bundler: default, rubyopt: "", rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
+          - { ruby: truffleruby-head, bundler: default, rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
           # truffleruby 24.1 fails, see https://github.com/oracle/truffleruby/issues/3788
-          - { ruby: truffleruby,      rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
+          - { ruby: truffleruby,      bundler: default, rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
 
     env:
       rack: ${{ matrix.rack }}
@@ -141,6 +145,7 @@ jobs:
       id: setup-ruby
       with:
         ruby-version: ${{ matrix.ruby }}
+        bundler: ${{ matrix.bundler }}
         bundler-cache: true
         # Update rubygems due to https://github.com/rubygems/rubygems/pull/6490 (3.0)
         # and https://github.com/sinatra/sinatra/issues/2051 (3.1)
