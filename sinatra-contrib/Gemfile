@@ -24,3 +24,6 @@ gem 'sinatra', path: '..'
 gem 'slim'
 gem 'tilt', tilt_version
 gem 'yajl-ruby', platforms: [:ruby] # c-ext
+
+# until release with https://github.com/sferik/multi_json/commit/c5bf2fc95dfdde6b30d63fefb0b2f4aa29633969
+gem 'multi_json', '< 1.19.0'
