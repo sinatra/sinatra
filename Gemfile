@@ -37,7 +37,6 @@ gem 'sinatra-contrib', path: 'sinatra-contrib'
 gem 'asciidoctor'
 gem 'builder'
 gem 'childprocess', '>= 5'
-gem 'commonmarker', platforms: [:ruby]
 gem 'erubi'
 gem 'eventmachine'
 gem 'falcon', '~> 0.40', platforms: [:ruby]
@@ -64,3 +63,7 @@ gem 'webrick'
 java    = %w(jruby truffleruby).include?(RUBY_ENGINE)
 aarch64 = RbConfig::CONFIG["target_cpu"] == 'aarch64'
 gem 'sass-embedded', '~> 1.54' unless java && aarch64
+
+# jruby does not support native extensions
+# https://github.com/truffleruby/truffleruby/issues/3396#issuecomment-3694252552
+gem 'commonmarker' unless java
