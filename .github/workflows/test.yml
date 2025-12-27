@@ -113,9 +113,9 @@ jobs:
           # Never fail our build due to problems with head rubies
           - { ruby: ruby-head,        bundler: 2.7.2,   rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
           - { ruby: jruby-head,       bundler: default, rubyopt: "", rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
-          - { ruby: truffleruby-head, bundler: default, rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
+          - { ruby: truffleruby-head, bundler: 2.7.2, rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
           # truffleruby 24.1 fails, see https://github.com/oracle/truffleruby/issues/3788
-          - { ruby: truffleruby,      bundler: default, rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
+          - { ruby: truffleruby,      bundler: 2.7.2, rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable, allow-failure: true }
 
     env:
       rack: ${{ matrix.rack }}
@@ -152,8 +152,8 @@ jobs:
         rubygems: ${{ matrix.ruby == '3.0' && 'latest' || matrix.ruby == '3.1' && 'latest' || 'default' }}
 
     # workaround for https://github.com/ruby/setup-ruby/issues/845
-    - name: Ensure Gemfile.lock is created with Bundler 2 for Ruby 4
-      if: matrix.ruby == '4.0' || matrix.ruby == 'ruby-head'
+    - name: Ensure Gemfile.lock is created with Bundler ${{ matrix.bundler }}
+      if: matrix.bundler != 'default'
       run: |
         rm Gemfile.lock
         bundle install
