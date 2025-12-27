@@ -14,6 +14,11 @@ MarkdownTest = proc do
     super
   end
 
+  # commonmarker is not installed on all platforms (e.g. jruby)
+  def commonmarker_v1_or_higher?
+    defined?(CommonMarkerTest) && self.class == CommonMarkerTest && defined?(::Commonmarker)
+  end
+
   it 'uses the correct engine' do
     assert_equal engine, Tilt[:md]
     assert_equal engine, Tilt[:mkd]
@@ -23,7 +28,7 @@ MarkdownTest = proc do
   it 'renders inline markdown strings' do
     markdown_app { markdown '# Hiya' }
     assert ok?
-    if self.class == CommonMarkerTest && defined?(::Commonmarker) # commonmarker >= 1.x
+    if commonmarker_v1_or_higher?
       assert_equal "<h1><a href=\"#hiya\" aria-hidden=\"true\" class=\"anchor\" id=\"hiya\"></a>Hiya</h1>\n", body
     else
       assert_like "<h1>Hiya</h1>\n", body
@@ -33,7 +38,7 @@ MarkdownTest = proc do
   it 'renders .markdown files in views path' do
     markdown_app { markdown :hello }
     assert ok?
-    if self.class == CommonMarkerTest && defined?(::Commonmarker) # commonmarker >= 1.x
+    if commonmarker_v1_or_higher?
       assert_equal "<h1><a href=\"#hello-from-markdown\" aria-hidden=\"true\" " \
                    "class=\"anchor\" id=\"hello-from-markdown\"></a>Hello From Markdown</h1>\n", body
     else
