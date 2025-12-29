@@ -338,7 +338,7 @@ module Sinatra
                 end
       end
       uri << request.script_name.to_s if add_script_name
-      uri << (addr || request.path_info).to_s
+      uri << (addr || request.path_info).to_s.delete("\u0000")
       File.join uri
     end
 
