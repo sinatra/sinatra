@@ -64,6 +64,12 @@ java    = %w(jruby truffleruby).include?(RUBY_ENGINE)
 aarch64 = RbConfig::CONFIG["target_cpu"] == 'aarch64'
 gem 'sass-embedded', '~> 1.54' unless java && aarch64
 
+# if commonmarker can't be loaded, the commonmarker tests are skipped, that's fine thanks to the big CI matrix
+#
 # jruby does not support native extensions
 # https://github.com/truffleruby/truffleruby/issues/3396#issuecomment-3694252552
-gem 'commonmarker' unless java
+#
+# it is not a guarantee that the rust gems magnus and rb-sys have been updated for ruby-head
+# example for 4.1 dev https://github.com/matsadler/magnus/pull/164, https://github.com/oxidize-rb/rb-sys/pull/697
+ruby_head = RUBY_PATCHLEVEL == -1
+gem 'commonmarker' unless (java || ruby_head)
