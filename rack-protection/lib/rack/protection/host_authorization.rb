@@ -8,15 +8,42 @@ module Rack
     ##
     # Prevented attack::   DNS rebinding and other Host header attacks
     # Supported browsers:: all
-    # More infos::         https://en.wikipedia.org/wiki/DNS_rebinding
-    #                      https://portswigger.net/web-security/host-header
+    # More info::          * https://en.wikipedia.org/wiki/DNS_rebinding
+    #                      * https://portswigger.net/web-security/host-header
     #
     # Blocks HTTP requests with an unrecognized hostname in any of the following
-    # HTTP headers: Host, X-Forwarded-Host, Forwarded
+    # HTTP headers: Host, X-Forwarded-Host, Forwarded, based on
+    # {<tt>Request#forwarded_authority</tt>}[https://rubydoc.info/github/rack/rack/Rack/Request/Helpers#forwarded_authority-instance_method] and
+    # {<tt>Request#host_authority</tt>}[https://rubydoc.info/github/rack/rack/Rack%2FRequest%2FHelpers:host_authority].
     #
-    # If you want to permit a specific hostname, you can pass in as the `:permitted_hosts` option:
+    # == Options
+    #
+    # [<tt>:permitted_hosts</tt>] an Array of hosts to allow.  Elements can be as follows:
+    #                             [<tt>String</tt> not starting with a dot] a hostname that must be a case-insensitive
+    #                                                                       match to allow the request.
+    #                             [<tt>String</tt> starting with a dot] allow matches from the entire domain, including
+    #                                                                   any subdomain.
+    #                             [<tt>IPAddr</tt>] Specific IP or IP Range to allow (based on <tt>#include?</tt>).
+    #                                               Note that no DNS lookup is done - this is just based on the 
+    #                                               value of the HTTP header.
+    #
+    # [<tt>:allow_if</tt>] a Proc that, if it returns true, allows the request regardless of the
+    #                      value of <tt>:permitted_hosts</tt>. Default value is <tt>nil</tt>, meaning
+    #                      <tt>:permitted_hosts</tt> is respected and there are no exceptions.
+    # [Rack::Protection::Base options] options supported by Rack::Protection::Base may affect this middleware.
+    #
+    #
+    # == Example: Allow specific hosts
     #
     #     use Rack::Protection::HostAuthorization, permitted_hosts: ["www.example.org", "sinatrarb.com"]
+    #
+    # == Example: Allow all subdomains
+    #
+    #     use Rack::Protection::HostAuthorization, permitted_hosts: [".example.org", ".sinatrarb.com"]
+    #
+    # == Example: Allow an IP range
+    #
+    #     use Rack::Protection::HostAuthorization, permitted_hosts: [ IPAddr.new("192.168.2.0/16") ]
     #
     # The `:allow_if` option can also be set to a proc to use custom allow/deny logic.
     class HostAuthorization < Base
