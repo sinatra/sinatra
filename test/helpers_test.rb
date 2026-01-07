@@ -1899,6 +1899,12 @@ class HelpersTest < Minitest::Test
       get '/'
       assert_equal 'http://example.org/htt^p://google.com', body
     end
+
+    it 'handles null byte' do
+      mock_app { get('/') { uri "\u0000" }}
+      get '/'
+      assert_equal 'http://example.org/', body
+    end
   end
 
   describe 'logger' do
