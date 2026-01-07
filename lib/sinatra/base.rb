@@ -308,9 +308,7 @@ module Sinatra
 
     # Halt processing and redirect to the URI provided.
     def redirect(uri, *args)
-      # SERVER_PROTOCOL is required in Rack 3, fall back to HTTP_VERSION
-      # for servers not updated for Rack 3 (like Puma 5)
-      http_version = env['SERVER_PROTOCOL'] || env['HTTP_VERSION']
+      http_version = env['SERVER_PROTOCOL']
       if (http_version == 'HTTP/1.1') && (env['REQUEST_METHOD'] != 'GET')
         status 303
       else
