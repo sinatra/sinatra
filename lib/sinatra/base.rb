@@ -2101,6 +2101,8 @@ module Sinatra
   module Delegator # :nodoc:
     def self.delegate(*methods)
       methods.each do |method_name|
+        next if method_defined?(method_name) || private_method_defined?(method_name)
+
         define_method(method_name) do |*args, &block|
           return super(*args, &block) if respond_to? method_name
 
