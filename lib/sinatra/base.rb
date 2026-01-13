@@ -173,7 +173,12 @@ module Sinatra
 
     def body=(value)
       value = value.body while Rack::Response === value
-      @body = String === value ? [value.to_str] : value
+
+      if value.respond_to?(:to_str)
+        value = [value.to_str]
+      end
+
+      @body = value
     end
 
     def each
@@ -297,13 +302,18 @@ module Sinatra
         def block.each; yield(call) end
         response.body = block
       elsif value
-        unless request.head? || value.is_a?(Rack::Files::BaseIterator) || value.is_a?(Stream)
-          headers.delete 'content-length'
-        end
         response.body = value
-      else
-        response.body
+
+        # If this isn't a head request, try to recompute the content length:
+        if !request.head?
+          body = response.body
+          if body.is_a?(Array)
+            headers['content-length'] = body.sum(&:bytesize).to_s
+          end
+        end
       end
+
+      return response.body
     end
 
     # Halt processing and redirect to the URI provided.
