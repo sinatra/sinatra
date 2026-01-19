@@ -39,30 +39,74 @@ module Rack
     class ContentSecurityPolicy < Base
       default_options default_src: "'self'", report_only: false
 
-      DIRECTIVES = %i[base_uri child_src connect_src default_src
-                      font_src form_action frame_ancestors frame_src
-                      img_src manifest_src media_src object_src
-                      plugin_types referrer reflected_xss report_to
-                      report_uri require_sri_for sandbox script_src
-                      style_src worker_src webrtc_src navigate_to
-                      prefetch_src].freeze
+      # Please try to maintain this
+      # list from https://www.w3.org/TR/CSP3/#csp-directives
+      SUPPORTED_DIRECTIVES = %i[
+        child_src
+        connect_src
+        default_src
+        font_src
+        frame_src
+        img_src
+        manifest_src
+        media_src
+        object_src
+        script_src
+        script_src_elem
+        script_src_attr
+        style_src
+        style_src_elem
+        style_src_attr
+        webrtc
+        worker_src
+        base_uri
+        sandbox
+        form_action
+        frame_ancestors
+        report_uri
+        report_to
+        upgrade_insecure_requests
+      ].freeze
 
-      NO_ARG_DIRECTIVES = %i[block_all_mixed_content disown_opener
-                             upgrade_insecure_requests].freeze
+      DEPRECATED_DIRECTIVES = [
+        # https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/block-all-mixed-content
+        :block_all_mixed_content,
+        # https://github.com/w3c/webappsec-csp/issues/194
+        :disown_opener,
+        # https://github.com/w3c/webappsec-csp/pull/456
+        :plugin_types,
+        # https://web.archive.org/web/20250320135738/https://centralcsp.com/directives/referrer
+        :referrer,
+        # https://security.stackexchange.com/questions/223022/what-was-the-real-reason-for-dropping-reflected-xss-directive-from-csp
+        :reflected_xss,
+        # https://udn.realityripple.com/docs/Web/HTTP/Headers/Content-Security-Policy/require-sri-for https://security.stackexchange.com/questions/180450/why-does-chrome-tell-me-that-the-csp-require-sri-for-directive-is-implemented
+        :require_sri_for,
+        :webrtc_src,
+        # https://content-security-policy.com/navigate-to/
+        :navigate_to,
+        # https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/prefetch-src
+        :prefetch_src,
+      ].freeze
+
+      DIRECTIVES = (SUPPORTED_DIRECTIVES + DEPRECATED_DIRECTIVES).freeze
+      NO_ARG_DIRECTIVES = [
+        :disown_opener,
+        :block_all_mixed_content,
+        :upgrade_insecure_requests,
+      ]
 
       def csp_policy
         directives = []
 
-        DIRECTIVES.each do |d|
+        DIRECTIVES.each do |d,type|
           if options.key?(d)
-            directives << "#{d.to_s.sub(/_/, '-')} #{options[d]}"
-          end
-        end
-
-        # Set these key values to boolean 'true' to include in policy
-        NO_ARG_DIRECTIVES.each do |d|
-          if options.key?(d) && options[d].is_a?(TrueClass)
-            directives << d.to_s.tr('_', '-')
+            if NO_ARG_DIRECTIVES.include?(d)
+              if options[d].is_a?(TrueClass)
+                directives << d.to_s.tr('_', '-')
+              end
+            else
+              directives << "#{d.to_s.sub(/_/, '-')} #{options[d]}"
+            end
           end
         end
 
