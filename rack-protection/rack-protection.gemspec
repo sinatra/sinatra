@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-version = File.read(File.expand_path('../VERSION', __dir__)).strip
+version_file = File.expand_path('lib/rack/protection/version.rb', __dir__)
+version = File.read(version_file)[/VERSION = ['"](.+?)['"]/, 1]
 
 Gem::Specification.new do |s|
   # general infos
