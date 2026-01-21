@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-version = File.read(File.expand_path('../VERSION', __dir__)).strip
+require_relative 'lib/sinatra/contrib/version'
+
+version = Sinatra::Contrib::VERSION
 
 Gem::Specification.new do |s|
   s.name        = 'sinatra-contrib'

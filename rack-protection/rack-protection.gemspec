@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-version = File.read(File.expand_path('../VERSION', __dir__)).strip
+require_relative 'lib/rack/protection/version'
 
 Gem::Specification.new do |s|
   # general infos
   s.name        = 'rack-protection'
-  s.version     = version
+  s.version     = Rack::Protection::VERSION
   s.description = 'Protect against typical web attacks, works with all Rack apps, including Rails'
   s.homepage    = 'https://sinatrarb.com/protection/'
   s.summary     = "#{s.description}."
