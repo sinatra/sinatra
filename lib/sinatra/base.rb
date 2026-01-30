@@ -1055,8 +1055,14 @@ module Sinatra
     def filter!(type, base = settings, &block)
       filter!(type, base.superclass, &block) if base.superclass.respond_to?(:filters)
       base.filters[type].each do |args|
-        result = process_route(*args)
-        block.call(result) if block_given?
+        if block_given?
+          if block.arity == 1
+            result = process_route(*args)
+            block.call(result)
+          else
+            block.call
+          end
+        end
       end
     end
 
@@ -2013,7 +2019,7 @@ module Sinatra
     set :public_folder, proc { root && File.join(root, 'public') }
     set :static, proc { public_folder && File.exist?(public_folder) }
     set :static_cache_control, false
-    
+
     set :static_headers, {}
 
     error ::Exception do
