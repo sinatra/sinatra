@@ -1899,6 +1899,13 @@ class HelpersTest < Minitest::Test
       get '/'
       assert_equal 'http://example.org/htt^p://google.com', body
     end
+
+    it 'raises BadRequest for null-byte input in uri helper' do
+      mock_app { get('/') { uri params[:foo] }}
+      get '/', { 'foo' => "\u0000" }
+      assert_equal 400, status
+      assert_includes body, 'Invalid URI: string contains null byte'
+    end
   end
 
   describe 'logger' do

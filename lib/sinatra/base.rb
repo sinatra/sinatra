@@ -337,7 +337,11 @@ module Sinatra
       end
       uri << request.script_name.to_s if add_script_name
       uri << (addr || request.path_info).to_s
-      File.join uri
+      File.join(uri)
+    rescue ArgumentError => e
+      raise BadRequest, "Invalid URI: #{Rack::Utils.escape_html(e.message)}" if e.message.include?('null byte')
+
+      raise
     end
 
     alias url uri
