@@ -245,22 +245,19 @@ class RoutingTest < Minitest::Test
     assert_equal 404, status
   end
 
-  it 'matches empty PATH_INFO to "/" if no route is defined for ""' do
+  it 'matches empty PATH_INFO to "/" if no route is defined for "" (valid with SCRIPT_NAME)' do
     mock_app do
       get '/' do
         'worked'
       end
     end
 
-    get '/', {}, "PATH_INFO" => ""
+    get '/', {}, "SCRIPT_NAME" => "/mounted", "PATH_INFO" => ""
     assert ok?
     assert_equal 'worked', body
-  rescue Rack::Lint::LintError => error
-    # Temporary fix for https://github.com/sinatra/sinatra/issues/2113
-    skip error.message
   end
 
-  it 'matches empty PATH_INFO to "" if a route is defined for ""' do
+  it 'matches empty PATH_INFO to "" if a route is defined for "" (valid with SCRIPT_NAME)' do
     mock_app do
       disable :protection
 
@@ -273,12 +270,9 @@ class RoutingTest < Minitest::Test
       end
     end
 
-    get '/', {}, "PATH_INFO" => ""
+    get '/', {}, "SCRIPT_NAME" => "/mounted", "PATH_INFO" => ""
     assert ok?
     assert_equal 'worked', body
-  rescue Rack::Lint::LintError => error
-    # Temporary fix for https://github.com/sinatra/sinatra/issues/2113
-    skip error.message
   end
 
   it 'takes multiple definitions of a route' do
