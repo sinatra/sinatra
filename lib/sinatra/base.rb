@@ -10,6 +10,7 @@ require 'tilt'
 require 'rack/protection'
 require 'rack/session'
 require 'mustermann'
+require 'mustermann/set'
 require 'mustermann/sinatra'
 require 'mustermann/regular'
 
@@ -1062,17 +1063,25 @@ module Sinatra
 
     # Run routes defined on the class and all superclasses.
     def route!(base = settings, pass_block = nil)
-      routes = base.routes[@request.request_method]
+      if set = base.route_sets[@request.request_method]
+        routes = set.match_all(route)
+      else
+        routes = base.routes[@request.request_method]
+      end
 
-      routes&.each do |pattern, conditions, block|
-        response.delete_header('content-type') unless @pinned_response
+      routes&.each do |match_or_signature|
+        if match_or_signature.is_a?(Mustermann::Match)
+          params = match_or_signature.params
+          pattern, conditions, block = match_or_signature.value
+        else
+          pattern, conditions, block = match_or_signature
+        end
 
-        returned_pass_block = process_route(pattern, conditions) do |*args|
+        returned_pass_block = process_route(pattern, conditions, params: params) do |*args|
           env['sinatra.route'] = "#{@request.request_method} #{pattern}"
           route_eval { block[*args] }
         end
 
-        # don't wipe out pass_block in superclass
         pass_block = returned_pass_block if returned_pass_block
       end
 
@@ -1095,14 +1104,11 @@ module Sinatra
     # Revert params afterwards.
     #
     # Returns pass block.
-    def process_route(pattern, conditions, block = nil, values = [], params = nil)
-      route = @request.path_info
-      route = '/' if route.empty? && !settings.empty_path_info?
-      route = route[0..-2] if !settings.strict_paths? && route != '/' && route.end_with?('/')
-
-      params ||= pattern.params(route).dup
+    def process_route(pattern, conditions, block = nil, values = [], params: nil)
+      params ||= pattern.params(route)
       return unless params
 
+      params = params.dup
       params.delete('ignore') # TODO: better params handling, maybe turn it into "smart" object or detect changes
       force_encoding(params)
 
@@ -1124,6 +1130,14 @@ module Sinatra
     ensure
       params ||= {}
       params.each { |k, _| @params.delete(k) } unless @env['sinatra.error.params']
+    end
+
+    # The current route being processed. Used for pattern matching and URL generation.
+    def route
+      route = @request.path_info
+      route = '/' if route.empty? && !settings.empty_path_info?
+      route = route[0..-2] if !settings.strict_paths? && route != '/' && route.end_with?('/')
+      route
     end
 
     # No matching route was found or all routes passed. The default
@@ -1298,7 +1312,7 @@ module Sinatra
         %r{zeitwerk/(core_ext/)?kernel\.rb}                 # Zeitwerk kernel#require decorator
       ].freeze
 
-      attr_reader :routes, :filters, :templates, :errors, :on_start_callback, :on_stop_callback
+      attr_reader :routes, :route_sets, :filters, :templates, :errors, :on_start_callback, :on_stop_callback
 
       def callers_to_ignore
         CALLERS_TO_IGNORE
@@ -1309,6 +1323,7 @@ module Sinatra
       def reset!
         @conditions     = []
         @routes         = {}
+        @route_sets     = {}
         @filters        = { before: [], after: [] }
         @errors         = {}
         @middleware     = []
@@ -1773,8 +1788,17 @@ module Sinatra
 
       def route(verb, path, options = {}, &block)
         enable :empty_path_info if path == '' && empty_path_info.nil?
-        signature = compile!(verb, path, block, **options)
+        pattern, _ = signature = compile!(verb, path, block, **options)
+
         (@routes[verb] ||= []) << signature
+        
+        if pattern.is_a? Mustermann::AST::Pattern
+          @route_sets[verb] = Mustermann::Set.new(strict_order: true) if @route_sets[verb].nil?
+          @route_sets[verb]&.add(pattern, signature)
+        else
+          @route_sets[verb] = false
+        end
+
         invoke_hook(:route_added, verb, path, block)
         signature
       end
