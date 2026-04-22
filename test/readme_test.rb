@@ -101,20 +101,6 @@ class ReadmeTest < Minitest::Test
 
     example do
       mock_app do
-        get(%r{/hello/([\w]+)}) {
-          "Hello, #{params[:captures].first}!"
-        }
-      end
-
-      get '/hello/foo'
-      assert_body 'Hello, foo!'
-
-      get '/hello/bar'
-      assert_body 'Hello, bar!'
-    end
-
-    example do
-      mock_app do
         get( %r{/hello/([\w]+)}) { |c|
           "Hello, #{c}!"
         }
