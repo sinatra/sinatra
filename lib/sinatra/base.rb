@@ -1070,18 +1070,21 @@ module Sinatra
       end
 
       routes&.each do |match_or_signature|
+        response.delete_header('content-type') unless @pinned_response
+
         if match_or_signature.is_a?(Mustermann::Match)
-          params = match_or_signature.params
+          match = match_or_signature
           pattern, conditions, block = match_or_signature.value
         else
           pattern, conditions, block = match_or_signature
         end
 
-        returned_pass_block = process_route(pattern, conditions, params: params) do |*args|
+        returned_pass_block = process_route(pattern, conditions, match: match) do |*args|
           env['sinatra.route'] = "#{@request.request_method} #{pattern}"
           route_eval { block[*args] }
         end
 
+         # don't wipe out pass_block in superclass
         pass_block = returned_pass_block if returned_pass_block
       end
 
@@ -1104,9 +1107,14 @@ module Sinatra
     # Revert params afterwards.
     #
     # Returns pass block.
-    def process_route(pattern, conditions, block = nil, values = [], params: nil)
-      params ||= pattern.params(route)
-      return unless params
+    def process_route(pattern, conditions, block = nil, values = [], match: nil)
+      if match
+        params   = match.params
+        captures = match.captures
+      else
+        params = pattern.params(route)
+        return unless params
+      end
 
       params = params.dup
       params.delete('ignore') # TODO: better params handling, maybe turn it into "smart" object or detect changes
@@ -1114,8 +1122,12 @@ module Sinatra
 
       @params = @params.merge(params) { |_k, v1, v2| v2 || v1 } if params.any?
 
-      if pattern.is_a?(Mustermann::Regular)
-        values += pattern.regexp.match(route).captures.map { |c| URI_INSTANCE.unescape(c) if c }
+      regexp_exists = pattern.is_a?(Mustermann::Regular) || (pattern.respond_to?(:patterns) && pattern.patterns.any? { |subpattern| subpattern.is_a?(Mustermann::Regular) })
+      if regexp_exists
+        match            ||= pattern.match(route)
+        captures           = match.captures.map { |c| URI_INSTANCE.unescape(c) if c }
+        values            += captures
+        @params[:captures] = force_encoding(captures) unless captures.nil? || captures.empty?
       else
         values += params.values.flatten
       end

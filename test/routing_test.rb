@@ -415,6 +415,19 @@ class RoutingTest < Minitest::Test
     assert_equal "format=", body
   end
 
+  it 'uses the default encoding for named captures' do
+    mock_app {
+      set :default_encoding ,'ISO-8859-1'
+
+      get Regexp.new('/page(?<format>.[^/?#]+)?') do
+        "format=#{params[:format].encoding};captures=#{params[:captures][0].encoding}"
+      end
+    }
+    get '/page.f%C3%B6'
+    assert ok?
+    assert_equal 'format=ISO-8859-1;captures=ISO-8859-1', body
+  end
+
   it 'does not concatenate params with the same name' do
     mock_app { get('/:foo') { params[:foo] } }
     get '/a?foo=b'
@@ -702,8 +715,44 @@ class RoutingTest < Minitest::Test
 
     get '/foo/bar%e2%80%8cbaz'
     assert ok?
-    assert_equal "bar\xE2\x80\x8Cbaz".b, body
+    assert_equal "bar\xE2\x80\x8Cbaz", body
     assert_predicate body, :valid_encoding?
+  end
+
+  it 'makes regular expression captures available in params[:captures]' do
+    mock_app {
+      get(/\/fo(.*)\/ba(.*)/) do
+        assert_equal ['orooomma', 'f'], params[:captures]
+        'right on'
+      end
+    }
+
+    get '/foorooomma/baf'
+    assert ok?
+    assert_equal 'right on', body
+  end
+
+  it 'makes regular expression captures available in params[:captures] for concatenated routes' do
+    with_regexp = Mustermann.new('/prefix') + Mustermann.new("/fo(.*)/ba(.*)", type: :regexp)
+    without_regexp = Mustermann.new('/prefix', type: :identity) + Mustermann.new('/baz')
+    mock_app {
+      get(with_regexp) do
+        assert_equal ['orooomma', 'f'], params[:captures]
+        'right on'
+      end
+      get(without_regexp) do
+        assert !params.keys.include?(:captures)
+        'no captures here'
+      end
+    }
+
+    get '/prefix/foorooomma/baf'
+    assert ok?
+    assert_equal 'right on', body
+
+    get '/prefix/baz'
+    assert ok?
+    assert_equal 'no captures here', body
   end
 
   it 'supports regular expression look-alike routes' do
