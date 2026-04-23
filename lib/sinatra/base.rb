@@ -1806,7 +1806,7 @@ module Sinatra
         
         if pattern.is_a? Mustermann::AST::Pattern
           @route_sets[verb] = Mustermann::Set.new(strict_order: true) if @route_sets[verb].nil?
-          @route_sets[verb]&.add(pattern, signature)
+          @route_sets[verb].add(pattern, signature) if @route_sets[verb]
         else
           @route_sets[verb] = false
         end

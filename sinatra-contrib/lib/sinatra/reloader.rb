@@ -362,8 +362,9 @@ module Sinatra
       def deactivate(element)
         case element.type
         when :route
-          verb      = element.representation[:verb]
-          signature = element.representation[:signature]
+          verb             = element.representation[:verb]
+          signature        = element.representation[:signature]
+          route_sets[verb] = false # disable set based routing as we can't remove routes from sets
           (routes[verb] ||= []).delete(signature)
         when :middleware
           @middleware.delete(element.representation)
