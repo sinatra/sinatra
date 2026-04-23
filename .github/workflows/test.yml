@@ -27,9 +27,9 @@ jobs:
           - "truffleruby"
         include:
           # Rack
-          - { ruby: "4.0", rack: "~>3.0.0" }
-          - { ruby: "4.0", rack: "~>3.1.0" }
-          - { ruby: "4.0", rack: head }
+          - { ruby: "3.4", rack: "~>3.0.0" }
+          - { ruby: "3.4", rack: "~>3.1.0" }
+          - { ruby: "3.4", rack: head }
           # Never fail our build due to problems with Ruby head
           - { ruby: ruby-head, rack: stable, allow-failure: true }
     env:
@@ -63,7 +63,7 @@ jobs:
   sinatra:
     name: |
       ${{ matrix.ruby }}
-      (Rack ${{ matrix.rack }}, Rack::Session ${{ matrix.rack_session }}, Puma ${{ matrix.puma }}, Tilt ${{ matrix.tilt }}, Zeitwerk ${{ matrix.zeitwerk }})
+      (Rack ${{ matrix.rack }}, Rack::Session ${{ matrix.rack_session }}, Puma ${{ matrix.puma }}, Tilt ${{ matrix.tilt }}, Zeitwerk ${{ matrix.zeitwerk }}, Bundler ${{ matrix.bundler }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -82,7 +82,6 @@ jobs:
         ruby:
           - "3.3"
           - "3.4"
-          - "4.0"
         bundler:
           - default
         rubyopt:
@@ -141,6 +140,15 @@ jobs:
         ruby-version: ${{ matrix.ruby }}
         bundler: ${{ matrix.bundler }}
         bundler-cache: true
+
+    # workaround for https://github.com/ruby/setup-ruby/issues/845
+    - name: Ensure Gemfile.lock is created with Bundler 2 for Ruby 4
+      if: matrix.ruby == '4.0' || matrix.ruby == 'ruby-head'
+      run: |
+        rm Gemfile.lock
+        bundle install
+      env:
+        BUNDLER_VERSION: ${{ matrix.bundler ==  'default' && '2.7.2' || matrix.bundler }}
 
     - name: Run sinatra tests
       continue-on-error: ${{ matrix.allow-failure || false }}
