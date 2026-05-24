@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Fix: Skip `host_authorization` when protection is disabled with `disable :protection` ([#2106](https://github.com/sinatra/sinatra/issues/2106))
+
 ## 4.2.1 / 2025-10-10
 
 * Fix: Revert "`PATH_INFO` can never be empty" ([#2124](https://github.com/sinatra/sinatra/pull/2124))
