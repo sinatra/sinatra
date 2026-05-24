@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Fix: Skip `host_authorization` when protection is disabled with `disable :protection` ([#2106](https://github.com/sinatra/sinatra/issues/2106))
+
 ## 4.2.2 / 2026-11-17
 
 * Fix: Require a dot before the domain for leading-dot `permitted_hosts` in `Rack::Protection::HostAuthorization`
