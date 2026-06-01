@@ -65,6 +65,30 @@ class RequestTest < Minitest::Test
     assert_equal 'bar', Marshal.load(dumped)['foo']
   end
 
+  it 'symbolizes wrapped params for keyword-argument splatting' do
+    request = Sinatra::Request.new(
+      'REQUEST_METHOD' => 'PUT',
+      'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
+      'rack.input' => StringIO.new('name=ada&lang=ruby')
+    )
+    params = Sinatra::IndifferentHash[request.params]
+    greet = ->(name:, lang:) { "#{name}/#{lang}" }
+    assert_equal 'ada/ruby', greet.call(**params.symbolize_keys)
+  end
+
+  it 'overrides ActiveSupport Hash#symbolize_keys for IndifferentHash instances' do
+    # test_helper preloads active_support/core_ext/hash/keys, which defines
+    # Hash#symbolize_keys. Our override must win by method resolution order and
+    # yield real symbols; AS's version routes through the overridden
+    # #transform_keys, which would re-stringify the keys.
+    assert Hash.method_defined?(:symbolize_keys), 'expected ActiveSupport to be loaded'
+
+    result = Sinatra::IndifferentHash[a: 1].symbolize_keys
+    assert_equal [Symbol], result.keys.map(&:class)
+    assert_instance_of Hash, result
+    refute_kind_of Sinatra::IndifferentHash, result
+  end
+
   it "exposes the preferred type's parameters" do
     request = Sinatra::Request.new(
       'HTTP_ACCEPT' => 'image/jpeg; compress=0.25'
