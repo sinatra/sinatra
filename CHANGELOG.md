@@ -1,4 +1,20 @@
-## Unreleased
+## 5.0.0 (unreleased)
+
+* New: Rewrite `stream` on top of a Rack 3 streaming (callable) body ([#1892](https://github.com/sinatra/sinatra/pull/1892))
+  * `Sinatra::Helpers::Stream` is now a callable body (responds to `#call`, not `#each`), so Rack 3 servers (Puma 6+, Falcon, ...) drive it in push mode instead of treating it as an enumerable. Requires a Rack 3 server that supports streaming bodies.
+  * Breaking change: removed the EventMachine / Thin `async.callback` / `async.close` / `throw :async` streaming path. `Sinatra::ExtendedRack` is no longer installed by default and is now an inert, deprecated pass-through that warns if you still `use` it; it will be removed in Sinatra 6.0.
+  * Breaking change: `Stream.new` signature changed. The `scheduler` positional argument was removed and the constructor now takes keyword arguments: `Stream.new(keep_open = false, heartbeat:, ttl:, poll:, protocol:, error_handlers:, &back)`.
+  * `keep_open` no longer busy-loops: the block runs once and the connection is held open (without CPU spin) until `out.close`. A parked `keep_open` stream now detects client disconnect and tears itself down (firing `out.callback`), instead of leaking a server thread.
+  * Client disconnects (socket errnos `EPIPE`/`ECONNRESET`/`ECONNABORTED`/`ESHUTDOWN`/`ENOTCONN`) are treated as a clean teardown; genuine application errors raised inside the stream block (e.g. `Errno::ENOENT`, `IOError`, `RuntimeError`) now propagate loudly instead of being swallowed.
+  * Security: a hand-set `Content-Length` is now stripped on streaming responses. The server owns framing under Rack 3, so a stale `Content-Length` could hang the connection or split the response on keep-alive sockets.
+  * Security: a parked `keep_open` stream now self-closes after a finite default TTL (300 seconds, plus jitter), so an idle or leaked connection cannot park forever. Configure the global default with `set :stream_keep_open_ttl, seconds` (or `nil` to disable), pass `ttl:` to tune it per stream, or `ttl: nil` to opt a single stream out.
+  * Security: concurrent `keep_open` streams are capped per process (`set :stream_max_concurrent`, default 1000). Past the cap a stream is shed with `503` plus a `Retry-After` header (`set :stream_retry_after`, default 5) instead of parking, so a flood of idle connections cannot starve the worker pool.
+  * New: `on_stream_error { |e| ... }` registers a handler invoked when a producer block raises mid-stream, so apps can report the exception (Sentry, OpenTelemetry) that is otherwise invisible to error blocks and Rack error middleware. The exception still propagates after the handlers run.
+  * `out.callback` is now reason-aware: an arity-1 callback receives `:complete`, `:disconnect` or `:error`; an arity-0 callback keeps the old no-argument contract.
+  * New: `out.flush` explicitly flushes the server stream (no auto-flush; on Puma and Falcon it is a no-op, exposed for API completeness and portability). `out.write` is an IO-style alias for `out <<`.
+  * New: SSE framing helpers `out.sse(data, event:, id:, retry_after:)` and `out.sse_comment(text)`. `sse` JSON-encodes non-String data, splits multi-line data into one `data:` line each, and strips NUL/CR/LF from `event:`/`id:` so they cannot inject extra fields; `id:` is opt-in and never auto-generated. Read `request.env['HTTP_LAST_EVENT_ID']` to resume after a reconnect.
+  * The disconnect heartbeat is an HTTP/1-only workaround for Falcon's IO-less stream. It is skipped on HTTP/2 and newer, where the protocol layer reaps a closed stream natively, and is never written when the server hands a raw socket (Puma uses a zero-byte `MSG_PEEK` probe instead).
+  * `sinatra-contrib`'s `sinatra/streaming` addon was rewritten on top of the new callable body: its IO emulation (`puts`/`printf`/`write`/`<<`/`putc`/`flush`/`close`) and the `map`/`map!`/`each` middleware helpers work again.
 
 ## 4.2.1 / 2025-10-10
 

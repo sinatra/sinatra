@@ -60,6 +60,18 @@ module Sinatra
   #
   # Note that both examples violate the Rack specification.
   #
+  # == Rack 3 callable body
+  #
+  # Sinatra core's +Sinatra::Helpers::Stream+ is a Rack 3 *callable* streaming
+  # body (it responds to #call, not #each), so a Rack 3 server drives it in push
+  # mode. This addon re-adds the IO emulation and the #each/#map/#map! middleware
+  # tricks on top of that callable body: a stream extended with
+  # Sinatra::Streaming::Stream becomes #each-able again (it drives the producer
+  # block and buffers the writes), which is what makes #map/#map! and
+  # middleware-unaware buffering work. As before, this trades Rack 3 push-mode
+  # for enumerable compatibility, which technically violates the Rack streaming
+  # contract; use the native +stream+ helper if you need true push streaming.
+  #
   # == Setup
   #
   # In a classic application:
@@ -80,7 +92,6 @@ module Sinatra
       stream = super
       stream.extend Stream
       stream.app = self
-      env['async.close'].callback { stream.close } if env.key? 'async.close'
       stream
     end
 
@@ -89,29 +100,26 @@ module Sinatra
       alias tell pos
       alias closed? closed
 
+      # Initialize the IO-emulation ivars exactly once, at extend time, so the
+      # object shape stays stable (no lazily-assigned ivars on the hot path).
       def self.extended(obj)
-        obj.closed = false
-        obj.lineno = 0
-        obj.pos = 0
+        obj.closed      = false
+        obj.lineno      = 0
+        obj.pos         = 0
+        obj.transformer = nil
         obj.callback { obj.closed = true }
         obj.errback  { obj.closed = true }
       end
 
-      def <<(data)
-        raise IOError, 'not opened for writing' if closed?
-
-        @transformer ||= nil
-        data = data.to_s
-        data = @transformer[data] if @transformer
-        @pos += data.bytesize
-        super(data)
-      end
-
-      def each
-        # that way body.each.map { ... } works
+      # Drive the underlying callable body, buffering each write so the body is
+      # consumable as an Enumerable (this is what re-enables #map/#map! and the
+      # middleware tricks on top of the Rack 3 callable body). With no block,
+      # returns self so `body.each.map { ... }` works.
+      def each(&block)
         return self unless block_given?
 
-        super
+        call(Collector.new(block))
+        self
       end
 
       def map(&block)
@@ -120,15 +128,22 @@ module Sinatra
       end
 
       def map!(&block)
-        @transformer ||= nil
-
-        if @transformer
-          inner = @transformer
+        if transformer
+          inner = transformer
           outer = block
           block = proc { |value| outer[inner[value]] }
         end
-        @transformer = block
+        self.transformer = block
         self
+      end
+
+      def <<(data)
+        raise IOError, 'not opened for writing' if closed?
+
+        data = data.to_s
+        data = transformer[data] if transformer
+        self.pos += data.bytesize
+        super(data)
       end
 
       def write(data)
@@ -149,7 +164,7 @@ module Sinatra
       end
 
       def putc(c)
-        print c.chr
+        print c.is_a?(Numeric) ? c.chr : c.to_s[0, 1]
       end
 
       def puts(*args)
@@ -180,7 +195,7 @@ module Sinatra
       end
 
       def rewind
-        @pos = @lineno = 0
+        self.pos = self.lineno = 0
       end
 
       def not_open_for_reading(*)
@@ -239,6 +254,38 @@ module Sinatra
       end
 
       alias isatty tty?
+
+      # Stands in for the Rack 3 server stream while #each buffers a callable
+      # body: every write the producer block performs is forwarded to the #each
+      # block instead of going to a socket. Implements just enough of the server
+      # stream interface (#write, #flush, #close, #closed?) for the body to run.
+      class Collector
+        def initialize(sink)
+          @sink   = sink
+          @closed = false
+        end
+
+        def write(data)
+          @sink.call(data)
+          data.bytesize
+        end
+
+        def <<(data)
+          write(data)
+          self
+        end
+
+        def flush;   self end
+        def read(*)  nil  end
+
+        def close
+          @closed = true
+        end
+
+        def closed?
+          @closed
+        end
+      end
     end
   end
 
