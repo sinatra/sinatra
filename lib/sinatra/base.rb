@@ -1875,6 +1875,7 @@ module Sinatra
 
       def setup_host_authorization(builder)
         return unless protection?
+        return unless host_authorization
 
         builder.use Rack::Protection::HostAuthorization, host_authorization
       end

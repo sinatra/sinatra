@@ -1,6 +1,6 @@
 ## Unreleased
 
-* Fix: Skip `host_authorization` when protection is disabled with `disable :protection` ([#2106](https://github.com/sinatra/sinatra/issues/2106))
+* Fix: Skip `host_authorization` when protection is disabled with `disable :protection`, or when `host_authorization` itself is set to `false` ([#2106](https://github.com/sinatra/sinatra/issues/2106))
 
 ## 4.2.1 / 2025-10-10
 
