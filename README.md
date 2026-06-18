@@ -1714,6 +1714,16 @@ high fan-out SSE to Falcon, and enable YJIT.
 * **Falcon HTTP/2**: the protocol reaps a closed stream natively; the write-probe
   is skipped.
 
+**Server version floor.** Streaming relies on the server driving a Rack 3
+*callable* response body, so support is per server, not universal:
+
+* **Puma** streams across Sinatra's whole supported range — every Ruby (2.7+) and
+  Rack 3 (3.0+) Sinatra runs on.
+* **Falcon** needs **Falcon >= 0.54**, and therefore **Ruby >= 3.2**: older Falcon
+  releases never flush the callable-body stream, so a streamed response arrives
+  empty, and Ruby < 3.2 can only resolve those older Falcons. On Ruby < 3.2,
+  stream with Puma.
+
 Do not mount `Rack::Deflater` on any of them for streaming routes.
 
 The Falcon HTTP/1 write-probe heartbeat is deliberate, not a stopgap awaiting an
