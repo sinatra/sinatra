@@ -807,11 +807,15 @@ module Sinatra
       # out.write/out.sse already exercises the transport and would surface a
       # dead peer on its own; only an idle stream needs the synthetic heartbeat.
       #
-      # Future work: the HTTP/1 write-probe exists only because async-http does
-      # not yet surface peer disconnect on an idle streaming body. Once it reaps
-      # an idle HTTP/1 stream natively (a server-delivered close hook), this
-      # probe becomes dead weight and can be dropped, leaving the Puma MSG_PEEK
-      # path untouched. Tracking upstream at
+      # Why an app-level write-probe and not a server-side hook: async-http
+      # cannot surface a disconnect on an IDLE HTTP/1 streaming body without
+      # either missing a FIN that sits behind buffered bytes (a non-consuming
+      # peek) or stealing request-body bytes a bidirectional body owns (a
+      # consuming read). HTTP/2 escapes this only because its reader routes
+      # framed DATA by stream id. So the heartbeat is the deliberate, portable
+      # mechanism here, not a stopgap awaiting an upstream fix: it makes an idle
+      # stream write, the existing write path detects the drop, and the TTL
+      # ceiling backstops it. Investigation, repros and discussion:
       # https://github.com/socketry/async-http/issues/224
       def probe_disconnect!
         if (io = raw_socket)

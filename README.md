@@ -1708,18 +1708,20 @@ high fan-out SSE to Falcon, and enable YJIT.
 
 * **Puma**: raw-socket hijack; zero-byte `MSG_PEEK` disconnect probe (writes
   nothing); close-delimited framing.
-* **Falcon HTTP/1**: IO-less stream; disconnect on an idle stream is detected by
-  the write-probe heartbeat (an invisible SSE comment), enabled automatically only
-  for `text/event-stream`.
+* **Falcon HTTP/1**: the callable-body stream exposes no raw socket; disconnect on
+  an idle stream is detected by the write-probe heartbeat (an invisible SSE
+  comment), enabled automatically only for `text/event-stream`.
 * **Falcon HTTP/2**: the protocol reaps a closed stream natively; the write-probe
   is skipped.
 
 Do not mount `Rack::Deflater` on any of them for streaming routes.
 
-Future work: the Falcon HTTP/1 write-probe is a workaround for async-http not yet
-surfacing peer disconnect on an idle body. Once it reaps idle HTTP/1 streams
-natively, Sinatra can drop the heartbeat for that path
-([async-http#224](https://github.com/socketry/async-http/issues/224)); the Puma
+The Falcon HTTP/1 write-probe heartbeat is deliberate, not a stopgap awaiting an
+upstream fix: async-http cannot surface a disconnect on an idle HTTP/1 body
+without either missing a FIN that sits behind buffered bytes or stealing
+request-body bytes a bidirectional body owns, so disconnect detection on an idle
+stream is kept app-level. Background, repros and discussion:
+[async-http#224](https://github.com/socketry/async-http/issues/224). The Puma
 `MSG_PEEK` path is unaffected.
 
 ### Logging
