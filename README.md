@@ -1719,10 +1719,10 @@ high fan-out SSE to Falcon, and enable YJIT.
 
 * **Puma** streams across Sinatra's whole supported range — every Ruby (2.7+) and
   Rack 3 (3.0+) Sinatra runs on.
-* **Falcon** needs **Falcon >= 0.54**, and therefore **Ruby >= 3.2**: older Falcon
-  releases never flush the callable-body stream, so a streamed response arrives
-  empty, and Ruby < 3.2 can only resolve those older Falcons. On Ruby < 3.2,
-  stream with Puma.
+* **Falcon** requires **Ruby >= 3.2** for streaming. On older Ruby only Falcon
+  0.51 and earlier resolve, and those never flush the callable-body stream, so a
+  streamed response arrives empty; the streaming-capable Falcon (0.54+) installs
+  only on Ruby >= 3.2. On Ruby < 3.2, stream with Puma.
 
 Do not mount `Rack::Deflater` on any of them for streaming routes.
 
