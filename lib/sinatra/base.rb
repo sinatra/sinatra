@@ -832,10 +832,11 @@ module Sinatra
         end
       end
 
-      # The write-probe heartbeat is an HTTP/1-only workaround for Falcon's
-      # IO-less stream. It runs only when ALL hold: a heartbeat byte string was
-      # configured, the server stream is NOT a raw socket (Puma uses MSG_PEEK),
-      # and the protocol is HTTP/1.x. On HTTP/2 and newer the protocol layer
+      # The write-probe heartbeat is an HTTP/1-only workaround for a callable-body
+      # stream that exposes no raw socket (Falcon). It runs only when ALL hold: a
+      # heartbeat byte string was configured, the server stream is NOT a raw
+      # socket (Puma uses MSG_PEEK), and the protocol is HTTP/1.x. On HTTP/2 and
+      # newer the protocol layer
       # reaps a closed stream natively, so the probe would be dead weight on the
       # wire; a nil/unknown protocol is treated as HTTP/1 (the safe default that
       # still probes).
@@ -863,6 +864,14 @@ module Sinatra
       # Bidi-safe, byte-exact: MSG_PEEK reads zero bytes off the wire, so SSE,
       # long-poll and duplex clients are all undisturbed. An empty peek on a
       # readable socket means EOF: the peer closed its write half.
+      #
+      # Scope: this is a closure detector, not a liveness test. It only reaps a
+      # disconnect the kernel already knows about (a received FIN/RST). It cannot
+      # tell a still-connected-but-unresponsive peer from a healthy one -- silent
+      # network failure, a sleeping client, a blackholed path or stale NAT all
+      # peek as "still here". Those are caught instead by the parking TTL ceiling
+      # (see #park / KEEP_OPEN_TTL), which bounds how long any idle stream may
+      # linger regardless of what the socket reports.
       def peer_gone_peek?(io)
         # io.wait_readable(0) is the fiber-scheduler-aware equivalent of a
         # zero-timeout IO.select: it returns the IO when readable, nil when not,
@@ -894,11 +903,15 @@ module Sinatra
     #   * Puma hijacks to a raw BasicSocket -> a zero-byte MSG_PEEK EOF probe
     #     always detects a vanished client, regardless of heartbeat. Nothing is
     #     written to the wire, so binary/long-poll streams are never corrupted.
-    #   * Falcon hands an IO-less stream -> there is no socket to peek, so the
-    #     ONLY way to notice an abrupt disconnect on an idle stream is to attempt
-    #     a write. That write puts bytes on the wire, so we only enable it by
-    #     default when it is provably harmless: a true SSE response
-    #     (text/event-stream), where the heartbeat is an invisible ': ' comment.
+    #   * Falcon hands a stream that exposes no raw socket -> we cannot MSG_PEEK
+    #     it. (Falcon HTTP/1 does still retain the underlying transport deeper in
+    #     protocol-rack/async-http, but reaching for it would couple Sinatra to
+    #     Falcon internals instead of the Rack streaming contract, so we don't.)
+    #     With no peekable socket the ONLY way to notice an abrupt disconnect on
+    #     an idle stream is to attempt a write. That write puts bytes on the wire,
+    #     so we only enable it by default when it is provably harmless: a true SSE
+    #     response (text/event-stream), where the heartbeat is an invisible ': '
+    #     comment.
     #
     # For a non-SSE keep_open stream on Falcon we must NOT inject bytes silently
     # (it would corrupt an arbitrary binary/long-poll body), so the heartbeat is
