@@ -66,6 +66,7 @@ class StreamingTest < Minitest::Test
   end
 
   it 'returns the concatenated body' do
+    skip_unless_rack_buffers_callable_body
     mock_app do
       get('/') do
         stream do |out|
@@ -151,6 +152,7 @@ class StreamingTest < Minitest::Test
   end
 
   it 'gives access to route specific params' do
+    skip_unless_rack_buffers_callable_body
     mock_app do
       get('/:name') do
         stream { |o| o << params[:name] }
@@ -210,6 +212,7 @@ class StreamingTest < Minitest::Test
   end
 
   it 'sets no content-length on the streamed response' do
+    skip_unless_rack_buffers_callable_body
     mock_app do
       get('/') { stream { |o| o << 'data' } }
     end
@@ -219,6 +222,7 @@ class StreamingTest < Minitest::Test
   end
 
   it 'emits a bare arity-1 callable returned from a route as a streaming body' do
+    skip_unless_rack_buffers_callable_body
     # U2: returning a Rack 3 streaming body directly (not via the stream helper)
     # used to fall through invoke and be dropped to an empty 200.
     mock_app do
@@ -647,6 +651,7 @@ class StreamingTest < Minitest::Test
   end
 
   it 'does not count a plain (non keep_open) stream against the cap' do
+    skip_unless_rack_buffers_callable_body
     mock_app do
       set :stream_max_concurrent, 1
       get('/plain') do

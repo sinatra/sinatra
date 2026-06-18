@@ -87,6 +87,23 @@ class Minitest::Test
     response.body.to_s
   end
 
+  # Rack's in-process test harness (Rack::MockResponse, reached via rack-test)
+  # only learned to drive a *callable* streaming body in Rack 3.2: MockResponse#body
+  # now calls `body.call(io)`. Rack 3.0/3.1 instead call `body.each`, and Rack::Lint
+  # then raises "Enumerable Body must respond to each" because our Stream is
+  # call-only. Real servers (Puma, Falcon) drive callable bodies from Rack 3.0 on
+  # — covered by the integration suite — so this is purely a harness limitation.
+  # Tests that buffer a *streamed* response through the mock harness skip on older
+  # Rack instead of asserting against an error the runtime never produces.
+  RACK_BUFFERS_CALLABLE_BODY = Gem::Version.new(Rack.release) >= Gem::Version.new('3.2')
+
+  def skip_unless_rack_buffers_callable_body
+    return if RACK_BUFFERS_CALLABLE_BODY
+
+    skip "Rack #{Rack.release} MockResponse cannot buffer a callable streaming " \
+         'body (needs Rack >= 3.2); real servers drive it on Rack 3.0+.'
+  end
+
   def assert_body(value)
     if value.respond_to? :to_str
       assert_equal value.lstrip.gsub(/\s*\n\s*/, ""), body.lstrip.gsub(/\s*\n\s*/, "")

@@ -21,6 +21,7 @@ class ExamplesTest < Minitest::Test
   # examples/stream.ru exercises the basic `stream`/`out <<` path end to end. Its
   # producer is finite, so Rack::Test can drive the callable body to completion.
   it 'stream.ru streams its body through the real streaming API' do
+    skip_unless_rack_buffers_callable_body
     app, = Rack::Builder.parse_file(File.join(EXAMPLES, 'stream.ru'))
     response = Rack::MockRequest.new(app).get('/')
     assert_equal 200, response.status
