@@ -783,6 +783,32 @@ class StreamingTest < Minitest::Test
     assert(heartbeats.all? { |c| c == ": \n" })
   end
 
+  # An actively-writing stream already exercises the transport on every event, so
+  # the synthetic heartbeat must back off: a stream writing faster than the poll
+  # interval should never accrue a single ": \n" probe. (The idle case is covered
+  # by 'still emits the write-probe heartbeat on HTTP/1.1' above.)
+  it 'suppresses the write-probe heartbeat while the stream is actively writing' do
+    out_ref = nil
+    stream  = Stream.new(:keep_open, heartbeat: ": \n", poll: 0.05,
+                         protocol: 'HTTP/1.1') { |out| out_ref = out }
+    fake    = FakeStream.new
+    writer  = Thread.new do
+      # Write every ~10ms, five times faster than the 50ms poll, so the parked
+      # loop always sees a write within the last poll and skips the probe.
+      50.times do
+        sleep 0.01
+        out_ref&.<<("data: tick\n\n")
+      end
+      stream.close
+    end
+    Timeout.timeout(3) { stream.call(fake) }
+    writer.join
+    assert_empty fake.chunks.select { |c| c == ": \n" },
+                 'an actively-writing stream must not get injected heartbeat probes'
+    refute_empty fake.chunks.select { |c| c == "data: tick\n\n" },
+                 'the application writes themselves must still reach the wire'
+  end
+
   it 'treats a nil/unknown protocol as HTTP/1 (heartbeat still fires)' do
     stream = Stream.new(:keep_open, heartbeat: ": \n", poll: 0.02,
                         protocol: nil) { |out| out << "data: hi\n\n" }

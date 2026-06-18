@@ -568,6 +568,12 @@ module Sinatra
         @stream         = nil
         @reason         = nil
         @slot_held      = false
+        # Monotonic timestamp of the last successful application write. The
+        # write-probe heartbeat only fires once a stream has been write-idle for
+        # a full poll, so an actively-writing stream is never given redundant
+        # probe bytes (its own writes already exercise the transport). nil until
+        # the first write; treated as "idle since open" by #write_idle?.
+        @last_write_at  = nil
         @mutex          = Mutex.new
         @cond           = ConditionVariable.new
       end
@@ -600,6 +606,12 @@ module Sinatra
 
       def <<(data)
         @stream.write(data.to_s)
+        # Record the write so the idle heartbeat backs off: a stream that is
+        # actively emitting events does not need an extra probe on top. A plain
+        # monotonic-float assignment is atomic under the GVL, and the only
+        # cross-fiber reader (#write_idle? in the parked loop) tolerates a stale
+        # read by at most one poll, so no lock is needed here.
+        @last_write_at = current_time
         self
       rescue *DISCONNECT_ERRORS
         # Peer vanished mid-write. Surface it as our sentinel so #call's rescue
@@ -783,10 +795,17 @@ module Sinatra
 
       # Detect a vanished peer using whatever the server gives us:
       #   * Puma hijacks to a raw BasicSocket  -> MSG_PEEK (zero bytes on wire)
-      #   * Falcon HTTP/1 hands an IO-less stream -> the heartbeat write IS the
-      #     probe (HTTP/1 only; see #write_probe?)
+      #   * Falcon HTTP/1 exposes no raw socket on the callable-body stream ->
+      #     the heartbeat write IS the probe (HTTP/1 only, and only once
+      #     write-idle; see #write_probe? and #write_idle?)
       #   * Falcon HTTP/2 -> the protocol reaps a closed stream natively, so we
       #     emit nothing and rely on the broadcast/poll backstop.
+      #
+      # The MSG_PEEK path probes every poll regardless of writes: it puts zero
+      # bytes on the wire, so there is nothing to suppress. The write-probe path
+      # instead backs off while the application is actively writing, because each
+      # out.write/out.sse already exercises the transport and would surface a
+      # dead peer on its own; only an idle stream needs the synthetic heartbeat.
       #
       # Future work: the HTTP/1 write-probe exists only because async-http does
       # not yet surface peer disconnect on an idle streaming body. Once it reaps
@@ -797,7 +816,7 @@ module Sinatra
       def probe_disconnect!
         if (io = raw_socket)
           raise ClientDisconnected if peer_gone_peek?(io)
-        elsif write_probe?
+        elsif write_probe? && write_idle?
           begin
             @stream.write(@heartbeat)
           rescue *DISCONNECT_ERRORS
@@ -825,6 +844,16 @@ module Sinatra
         return false if raw_socket
 
         @protocol.nil? || @protocol.start_with?('HTTP/1')
+      end
+
+      # True when no successful application write has landed in the last poll
+      # interval, i.e. the stream is quiet enough to warrant a synthetic
+      # heartbeat. A stream that has never written (nil) is idle by definition.
+      # The window is @poll so that a stream writing more often than once per
+      # poll never accrues a probe (a write landing exactly @poll ago still
+      # does), while a fully idle one still gets one heartbeat per poll.
+      def write_idle?
+        @last_write_at.nil? || (current_time - @last_write_at) >= @poll
       end
 
       def raw_socket
