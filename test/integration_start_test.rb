@@ -21,7 +21,9 @@ class IntegrationStartTest < Minitest::Test
     gem_file = File.join(__dir__, "integration", "gemfile_without_rackup.rb")
     lock_file = File.join(__dir__, "integration", "gemfile_without_rackup.rb.lock")
     command = command_for(app_file)
-    env = { "BUNDLE_GEMFILE" => gem_file }
+    # BUNDLE_LOCKFILE is exported by Bundler 4; without clearing it the child would
+    # write the alternate gemfile's lock to the parent project's Gemfile.lock path
+    env = { "BUNDLE_GEMFILE" => gem_file, "BUNDLE_LOCKFILE" => nil }
 
     with_process(command: command, env: env) do |process, read_io|
       assert wait_for_output(read_io, /Sinatra could not start, the required gems weren't found/)
