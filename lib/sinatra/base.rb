@@ -1093,7 +1093,13 @@ module Sinatra
         return route!(base.superclass, pass_block)
       end
 
-      route_eval(&pass_block) if pass_block
+      # Set-based routing only iterates matching routes, so the per-iteration
+      # reset above is skipped after a route that set a content-type then passed.
+      # Clear it so the pass block starts clean, as the legacy all-routes scan did.
+      if pass_block
+        response.delete_header('content-type') unless @pinned_response
+        route_eval(&pass_block)
+      end
       route_missing
     end
 
