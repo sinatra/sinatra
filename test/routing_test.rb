@@ -922,6 +922,24 @@ class RoutingTest < Minitest::Test
     assert "this", body
   end
 
+  it "does not leak a passed route's content-type into the pass block" do
+    mock_app {
+      get('/a') do
+        content_type :json
+        pass { 'from pass block' }
+      end
+      get('/b') { 'b' } # later, non-matching route for the same verb
+    }
+
+    get '/a'
+    assert_equal 200, status
+    assert_equal 'from pass block', body
+    # The content-type set by the passed route must not survive into the pass
+    # block: set-based routing iterates only matching routes, so route! must
+    # clear it before the fallthrough just as the legacy all-routes scan did.
+    assert_equal 'text/html;charset=utf-8', response.headers['content-type']
+  end
+
   it "passes when matching condition returns false" do
     mock_app {
       condition { params[:foo] == 'bar' }
