@@ -16,7 +16,7 @@ class PatternLookAlike
 end
 
 class RoutingTest < Minitest::Test
-  %w[get put post delete options patch link unlink].each do |verb|
+  %w[get put post query delete options patch link unlink].each do |verb|
     it "defines #{verb.upcase} request handlers with #{verb}" do
       mock_app {
         send verb, '/hello' do
@@ -1698,5 +1698,18 @@ class RoutingTest < Minitest::Test
 
     get '/foo/'
     assert_equal 'foo', body
+  end
+
+  it 'registers the route signature for QUERY' do
+    signature = list = nil
+
+    mock_app do
+      signature = query('/') { }
+      list = routes['QUERY']
+    end
+
+    assert_equal Array, signature.class
+    assert_equal 3, signature.length
+    assert list.include?(signature)
   end
 end

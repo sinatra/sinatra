@@ -1540,6 +1540,8 @@ module Sinatra
 
       def post(path, opts = {}, &block)    route 'POST',    path, opts, &block end
 
+      def query(path, opts = {}, &block)   route 'QUERY',   path, opts, &block end
+
       def delete(path, opts = {}, &block)  route 'DELETE',  path, opts, &block end
 
       def head(path, opts = {}, &block)    route 'HEAD',    path, opts, &block end
@@ -2114,7 +2116,7 @@ module Sinatra
       end
     end
 
-    delegate :get, :patch, :put, :post, :delete, :head, :options, :link, :unlink,
+    delegate :get, :patch, :put, :post, :query, :delete, :head, :options, :link, :unlink,
              :template, :layout, :before, :after, :error, :not_found, :configure,
              :set, :mime_type, :enable, :disable, :use, :development?, :test?,
              :production?, :helpers, :settings, :register, :on_start, :on_stop
