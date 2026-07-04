@@ -68,11 +68,15 @@ module Sinatra
     end
 
     def safe?
-      get? || head? || options? || trace?
+      get? || head? || options? || trace? || query?
     end
 
     def idempotent?
       safe? || put? || delete? || link? || unlink?
+    end
+
+    def query?
+      request_method == 'QUERY'
     end
 
     def link?
