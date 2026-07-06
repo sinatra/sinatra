@@ -1070,7 +1070,7 @@ module Sinatra
       end
 
       routes&.each do |match_or_signature|
-        response.delete_header('content-type') unless @pinned_response
+        reset_content_type!
 
         if match_or_signature.is_a?(Mustermann::Match)
           match = match_or_signature
@@ -1094,13 +1094,22 @@ module Sinatra
       end
 
       # Set-based routing only iterates matching routes, so the per-iteration
-      # reset above is skipped after a route that set a content-type then passed.
-      # Clear it so the pass block starts clean, as the legacy all-routes scan did.
+      # reset above is skipped after a matching route set a content-type then
+      # passed. Reset it here too so the pass block starts clean, uniformly for
+      # every verb. (main's all-routes scan cleared this only incidentally for
+      # GET, via the built-in /__sinatra__ image route, and leaked it otherwise.)
       if pass_block
-        response.delete_header('content-type') unless @pinned_response
+        reset_content_type!
         route_eval(&pass_block)
       end
       route_missing
+    end
+
+    # Reset the content-type a passed/previous route may have set, so the next
+    # handler -- route block or pass block -- starts from its baseline: nothing,
+    # or the value a before-filter pinned via @pinned_response.
+    def reset_content_type!
+      response.delete_header('content-type') unless @pinned_response
     end
 
     # Run a route block and throw :halt with the result.

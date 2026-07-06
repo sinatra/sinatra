@@ -936,7 +936,24 @@ class RoutingTest < Minitest::Test
     assert_equal 'from pass block', body
     # The content-type set by the passed route must not survive into the pass
     # block: set-based routing iterates only matching routes, so route! must
-    # clear it before the fallthrough just as the legacy all-routes scan did.
+    # clear it before the fallthrough.
+    assert_equal 'text/html;charset=utf-8', response.headers['content-type']
+  end
+
+  it "does not leak a passed route's content-type into the pass block for non-GET verbs" do
+    mock_app {
+      post('/a') do
+        content_type :json
+        pass { 'from pass block' }
+      end
+    }
+
+    post '/a'
+    assert_equal 200, status
+    assert_equal 'from pass block', body
+    # Non-GET verbs are the case main got wrong: it cleared a single-match GET
+    # only incidentally (via its built-in image route) and leaked every other
+    # verb. The shared-fallthrough reset covers them all.
     assert_equal 'text/html;charset=utf-8', response.headers['content-type']
   end
 
