@@ -31,11 +31,15 @@ module Rack
     #                                <tt>"authenticity_token"</tt>
     #
     # [<tt>:key</tt>] the name of the param that should contain
-    #                                the token in the session. Default value:
-    #                                <tt>:csrf</tt>
+    #                 the token in the session. Default value: <tt>:csrf</tt>
     #
-    # [<tt>:allow_if</tt>] a proc for custom allow/deny logic. Default value:
-    #                                <tt>nil</tt>
+    # [<tt>:allow_if</tt>] a proc for custom allow/deny logic. Will be passed <tt>env</tt>
+    #                      as the only arg and should return true if the request is allowed,
+    #                      regardless of the authenticity token. Default is <tt>nil</tt>,
+    #                      which means there is no special logic for allowing requests that
+    #                      don't have a valid token.
+    #
+    # [Rack::Protection::Base options] any option supported by Rack::Protection::Base.
     #
     # == Example: Forms application
     #
@@ -102,6 +106,8 @@ module Rack
                       key: :csrf,
                       allow_if: nil
 
+      # Access the token from the given session.  Useful for building a
+      # form that should include the current authenticity token.
       def self.token(session, path: nil, method: :post)
         new(nil).mask_authenticity_token(session, path: path, method: method)
       end
