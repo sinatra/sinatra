@@ -47,7 +47,7 @@ module Rack
     # [Any Supported CSP Directive, underscorized] - All supported CSP directives can be configured individually. See DIRECTIVES 
     #                                                and NO_ARG_DIRECTIVES for a list of what is supported.
     #
-    #                                                Note that this list is not necessarly complete as the spec and
+    #                                                Note that this list is not necessarily complete as the spec and
     #                                                browser behavior is constantly evolving (for example,
     #                                                <tt>script-src-elem</tt> is not supported).
     #                                                

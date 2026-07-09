@@ -25,7 +25,7 @@ module Rack
     #                               that you should include the scheme, and include the port *only* if it 
     #                               is not the default port for the scheme (80 for http and 443 for https).
     #
-    # [<tt>:allow_if</tt>] A Proc to be used for custom logic, superceding the values in <tt>:permitted_origins</tt>.
+    # [<tt>:allow_if</tt>] A Proc to be used for custom logic, superseding the values in <tt>:permitted_origins</tt>.
     #                      By default, this is <tt>nil</tt>, meaning that <tt>:permitted_origins</tt> control
     #                      the behavior. Note that if the request's origin is the same as the Origin header,
     #                      this Proc is not evaluated and the request is allowed.  Further note that if there is no
