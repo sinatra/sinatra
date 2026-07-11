@@ -1096,23 +1096,6 @@ module Sinatra
       route_missing
     end
 
-    # Snapshot the response state a route may mutate, so process_route can roll
-    # it back if the route passes. Array-valued headers (e.g. multiple
-    # set-cookie) are dup'd too: Rack appends to them in place, which would
-    # otherwise mutate the snapshot through the shared array reference.
-    def response_snapshot
-      headers = response.headers.transform_values { |v| v.is_a?(Array) ? v.dup : v }
-      [response.status, headers]
-    end
-
-    # Restore a snapshot captured by response_snapshot, undoing every status and
-    # header change a passed route made.
-    def restore_response(snapshot)
-      status, headers = snapshot
-      response.status = status
-      response.headers.replace(headers)
-    end
-
     # Run a route block and throw :halt with the result.
     def route_eval
       throw :halt, yield
@@ -1148,20 +1131,28 @@ module Sinatra
         values += params.values.flatten
       end
 
+      # Snapshot the response state a route may mutate so it can be rolled back
+      # if the route passes. Array-valued headers (e.g. multiple set-cookie) are
+      # dup'd: Rack appends to them in place, which would otherwise mutate the
+      # snapshot through the shared reference.
+      snapshot_status  = response.status
+      snapshot_headers = response.headers.transform_values { |v| v.is_a?(Array) ? v.dup : v }
+
       passed = true
-      snapshot = response_snapshot
       result = catch(:pass) do
         conditions.each { |c| throw :pass if c.bind(self).call == false }
         value = block ? block[self, values] : yield(self, values)
         passed = false
         value
       end
-      # Roll the response back to its pre-route baseline only when the route
-      # actually passed: a real :pass throw leaves `passed` true, while a
-      # before-filter returning normally through this method sets it false and
-      # keeps whatever content-type it set. A matching route throws :halt, which
-      # unwinds past here and keeps its response untouched.
-      restore_response(snapshot) if passed
+      # Roll back only when the route actually passed: a real :pass throw leaves
+      # `passed` true, while a before-filter returning normally through this
+      # method sets it false and keeps whatever content-type it set. A matching
+      # route throws :halt, which unwinds past here and keeps its response.
+      if passed
+        response.status = snapshot_status
+        response.headers.replace(snapshot_headers)
+      end
       result
     rescue StandardError
       @env['sinatra.error.params'] = @params
