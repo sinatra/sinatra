@@ -983,7 +983,6 @@ module Sinatra
       super()
       @app = app
       @template_cache = TemplateCache.new
-      @pinned_response = nil # whether a before! filter pinned the content-type
       yield self if block_given?
     end
 
@@ -997,7 +996,6 @@ module Sinatra
       @params   = IndifferentHash.new
       @request  = Request.new(env)
       @response = Response.new
-      @pinned_response = nil
       template_cache.clear if settings.reload_templates
 
       invoke { dispatch! }
@@ -1070,8 +1068,6 @@ module Sinatra
       end
 
       routes&.each do |match_or_signature|
-        reset_content_type!
-
         if match_or_signature.is_a?(Mustermann::Match)
           match = match_or_signature
           pattern, conditions, block = match_or_signature.value
@@ -1093,23 +1089,28 @@ module Sinatra
         return route!(base.superclass, pass_block)
       end
 
-      # Set-based routing only iterates matching routes, so the per-iteration
-      # reset above is skipped after a matching route set a content-type then
-      # passed. Reset it here too so the pass block starts clean, uniformly for
-      # every verb. (main's all-routes scan cleared this only incidentally for
-      # GET, via the built-in /__sinatra__ image route, and leaked it otherwise.)
-      if pass_block
-        reset_content_type!
-        route_eval(&pass_block)
-      end
+      # A passed route restores its own response state on the :pass throw (see
+      # process_route), so the pass block already starts from the pre-route
+      # baseline -- no reset needed here, for any verb or iteration position.
+      route_eval(&pass_block) if pass_block
       route_missing
     end
 
-    # Reset the content-type a passed/previous route may have set, so the next
-    # handler -- route block or pass block -- starts from its baseline: nothing,
-    # or the value a before-filter pinned via @pinned_response.
-    def reset_content_type!
-      response.delete_header('content-type') unless @pinned_response
+    # Snapshot the response state a route may mutate, so process_route can roll
+    # it back if the route passes. Array-valued headers (e.g. multiple
+    # set-cookie) are dup'd too: Rack appends to them in place, which would
+    # otherwise mutate the snapshot through the shared array reference.
+    def response_snapshot
+      headers = response.headers.transform_values { |v| v.is_a?(Array) ? v.dup : v }
+      [response.status, headers]
+    end
+
+    # Restore a snapshot captured by response_snapshot, undoing every status and
+    # header change a passed route made.
+    def restore_response(snapshot)
+      status, headers = snapshot
+      response.status = status
+      response.headers.replace(headers)
     end
 
     # Run a route block and throw :halt with the result.
@@ -1147,10 +1148,21 @@ module Sinatra
         values += params.values.flatten
       end
 
-      catch(:pass) do
+      passed = true
+      snapshot = response_snapshot
+      result = catch(:pass) do
         conditions.each { |c| throw :pass if c.bind(self).call == false }
-        block ? block[self, values] : yield(self, values)
+        value = block ? block[self, values] : yield(self, values)
+        passed = false
+        value
       end
+      # Roll the response back to its pre-route baseline only when the route
+      # actually passed: a real :pass throw leaves `passed` true, while a
+      # before-filter returning normally through this method sets it false and
+      # keeps whatever content-type it set. A matching route throws :halt, which
+      # unwinds past here and keeps its response untouched.
+      restore_response(snapshot) if passed
+      result
     rescue StandardError
       @env['sinatra.error.params'] = @params
       raise
@@ -1228,9 +1240,7 @@ module Sinatra
 
       invoke do
         static! if settings.static? && (request.get? || request.head?)
-        filter! :before do
-          @pinned_response = !response['content-type'].nil?
-        end
+        filter! :before
         route!
       end
     rescue ::Exception => e

@@ -957,6 +957,124 @@ class RoutingTest < Minitest::Test
     assert_equal 'text/html;charset=utf-8', response.headers['content-type']
   end
 
+  it "does not leak a passed route's status into the pass block" do
+    mock_app {
+      get('/a') do
+        status 201
+        pass { 'from pass block' }
+      end
+    }
+
+    get '/a'
+    assert_equal 'from pass block', body
+    # The abandoned route's status must not survive into the pass block.
+    assert_equal 200, status
+  end
+
+  it "does not leak a passed route's custom header into the pass block" do
+    mock_app {
+      get('/a') do
+        headers['X-Foo'] = 'bar'
+        pass { 'from pass block' }
+      end
+    }
+
+    get '/a'
+    assert_equal 'from pass block', body
+    assert_nil response.headers['X-Foo']
+  end
+
+  it "does not leak a passed route's cookie into the pass block" do
+    mock_app {
+      get('/a') do
+        response.set_cookie('foo', 'bar')
+        pass { 'from pass block' }
+      end
+    }
+
+    get '/a'
+    assert_equal 'from pass block', body
+    # Set-Cookie is just a response header, so the header rollback covers it.
+    assert_nil response.headers['set-cookie']
+  end
+
+  it "does not leak a passed route's cookie when a baseline cookie array already exists" do
+    # A before-filter leaves 'set-cookie' as an Array; the passing route appends
+    # to it. Rack mutates that array in place, so a shallow snapshot must dup the
+    # array or the appended cookie leaks past the rollback.
+    mock_app {
+      before do
+        response.set_cookie('a', '1')
+        response.set_cookie('b', '2')
+      end
+      get('/a') do
+        response.set_cookie('c', '3')
+        pass { 'from pass block' }
+      end
+    }
+
+    get '/a'
+    assert_equal 'from pass block', body
+    cookies = Array(response.headers['set-cookie'])
+    assert(cookies.any? { |c| c.start_with?('a=1') }, 'filter cookie a should survive')
+    assert(cookies.any? { |c| c.start_with?('b=2') }, 'filter cookie b should survive')
+    refute(cookies.any? { |c| c.start_with?('c=3') }, "passed route's cookie must not leak")
+  end
+
+  it "does not leak a passed route's status and headers into a later matching route" do
+    mock_app {
+      get('/a') do
+        status 201
+        headers['X-Foo'] = 'bar'
+        pass
+      end
+      get('/a') { 'second route' }
+    }
+
+    get '/a'
+    assert_equal 'second route', body
+    # The leak surfaces between routes, not just into the pass block.
+    assert_equal 200, status
+    assert_nil response.headers['X-Foo']
+  end
+
+  it "resets response state when the last defined route passes" do
+    # rkh's edge case (PR #2175 review): with no later route to iterate to,
+    # the previous positional reset never fired. Snapshot/restore-on-throw
+    # cleans up regardless of iteration position.
+    mock_app {
+      get('/a') do
+        status 201
+        headers['X-Foo'] = 'bar'
+        content_type :json
+        pass { 'from pass block' }
+      end
+    }
+
+    get '/a'
+    assert_equal 'from pass block', body
+    assert_equal 200, status
+    assert_nil response.headers['X-Foo']
+    assert_equal 'text/html;charset=utf-8', response.headers['content-type']
+  end
+
+  it "keeps a before-filter's content-type through a passing route" do
+    # Guard: rollback fires only on the :pass throw. A before-filter returns
+    # normally through the same process_route and must keep what it set.
+    mock_app {
+      before { content_type :json }
+      get('/a') do
+        content_type :xml
+        pass { 'from pass block' }
+      end
+    }
+
+    get '/a'
+    assert_equal 'from pass block', body
+    # Rolls back to the filter's pinned baseline, not the route's xml.
+    assert_equal 'application/json', response.headers['content-type']
+  end
+
   it "passes when matching condition returns false" do
     mock_app {
       condition { params[:foo] == 'bar' }
