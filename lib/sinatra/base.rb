@@ -939,15 +939,14 @@ module Sinatra
   end
 
   # Extremely simple template cache implementation.
-  #   * Not thread-safe.
+  #   * Thread-safe, locking approach mirrors Roda::RodaCache.
   #   * Size is unbounded.
   #   * Keys are not copied defensively, and should not be modified after
   #     being passed to #fetch.  More specifically, the values returned by
   #     key#hash and key#eql? should not change.
-  #
-  # Implementation copied from Tilt::Cache.
   class TemplateCache
     def initialize
+      @mutex = Mutex.new
       @cache = {}
     end
 
@@ -956,14 +955,15 @@ module Sinatra
     # returned. Otherwise, block is yielded to and its return value
     # which may be nil, is cached under key and returned.
     def fetch(*key)
-      @cache.fetch(key) do
-        @cache[key] = yield
-      end
+      @mutex.synchronize { return @cache[key] if @cache.key?(key) }
+
+      value = yield
+      @mutex.synchronize { @cache[key] = value }
     end
 
     # Clears the cache.
     def clear
-      @cache = {}
+      @mutex.synchronize { @cache = {} }
     end
   end
 
