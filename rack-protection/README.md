@@ -32,6 +32,62 @@ use Rack::Protection::AuthenticityToken
 run MyApp
 ```
 
+
+## More examples
+
+Enable host authorization with an explicit allowlist:
+
+``` ruby
+# config.ru
+require 'rack/protection'
+
+use Rack::Protection::HostAuthorization,
+  permitted_hosts: ['example.com', '.example.org']
+
+run MyApp
+```
+
+Enable HTTPS-related headers in production only:
+
+``` ruby
+# config.ru
+require 'rack/protection'
+
+if ENV['RACK_ENV'] == 'production'
+  use Rack::Protection::StrictTransport,
+    max_age: 31_536_000, # 1 year
+    include_subdomains: true
+end
+
+run MyApp
+```
+
+Customize CSP directives:
+
+``` ruby
+# config.ru
+require 'rack/protection'
+
+use Rack::Protection::ContentSecurityPolicy,
+  default_src: "'self'",
+  script_src: ["'self'", 'https://cdn.example.com']
+
+run MyApp
+```
+
+Disable more than one protection middleware:
+
+``` ruby
+# config.ru
+require 'rack/protection'
+
+use Rack::Protection,
+  except: [:path_traversal, :json_csrf]
+
+run MyApp
+```
+
+
 # Prevented Attacks
 
 ## DNS rebinding and other Host header attacks

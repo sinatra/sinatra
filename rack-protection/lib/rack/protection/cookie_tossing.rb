@@ -10,12 +10,24 @@ module Rack
     # Supported browsers:: all
     # More infos::         https://github.com/blog/1466-yummy-cookies-across-domains
     #
-    # Does not accept HTTP requests if the HTTP_COOKIE header contains more than one
-    # session cookie. This does not protect against a cookie overflow attack.
+    # Does not accept HTTP requests if the
+    # {Cookie header}[https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cookie] 
+    # contains more than one session cookie. This does not protect against a cookie overflow attack.
     #
-    # Options:
+    # == Options
     #
-    # session_key:: The name of the session cookie (default: 'rack.session')
+    # [<tt>:session_key</tt>] The name of the session cookie (default: 'rack.session')
+    #
+    # [Rack::Protection::Base options] any option supported by Rack::Protection::Base.
+    #
+    # == Example: Default session key
+    #
+    #   use Rack::Protection::CookieTossing
+    #
+    # == Example: Custom session key
+    #
+    #   use Rack::Session::Cookie, key: "custom.session"
+    #   use Rack::Protection::CookieTossing, session_key: "custom.session"
     class CookieTossing < Base
       default_reaction :deny
 
