@@ -30,7 +30,7 @@ Minitest::TestTask.create(:'test:core') do |t|
     base delegator encoding extensions filter
     helpers mapped_error middleware rdoc
     readme request response result route_added_hook
-    routing server settings sinatra static templates
+    routing server settings sinatra static template_cache templates
   ].map { |n| "test/#{n}_test.rb" }
 end
 
