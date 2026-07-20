@@ -19,6 +19,12 @@ MarkdownTest = proc do
     defined?(CommonMarkerTest) && self.class == CommonMarkerTest && defined?(::Commonmarker)
   end
 
+  # commonmarker 2.9.0 changed how heading anchors are rendered: the anchor now comes
+  # after the heading text and uses aria-label/data-heading-content instead of aria-hidden
+  def commonmarker_v2_9_or_higher?
+    commonmarker_v1_or_higher? && Gem::Version.new(::Commonmarker::VERSION) >= Gem::Version.new('2.9.0')
+  end
+
   it 'uses the correct engine' do
     assert_equal engine, Tilt[:md]
     assert_equal engine, Tilt[:mkd]
@@ -28,7 +34,10 @@ MarkdownTest = proc do
   it 'renders inline markdown strings' do
     markdown_app { markdown '# Hiya' }
     assert ok?
-    if commonmarker_v1_or_higher?
+    if commonmarker_v2_9_or_higher?
+      assert_equal "<h1 id=\"hiya\">Hiya<a href=\"#hiya\" aria-label=\"Link to heading 'Hiya'\" " \
+                   "data-heading-content=\"Hiya\" class=\"anchor\"></a></h1>\n", body
+    elsif commonmarker_v1_or_higher?
       assert_equal "<h1><a href=\"#hiya\" aria-hidden=\"true\" class=\"anchor\" id=\"hiya\"></a>Hiya</h1>\n", body
     else
       assert_like "<h1>Hiya</h1>\n", body
@@ -38,7 +47,11 @@ MarkdownTest = proc do
   it 'renders .markdown files in views path' do
     markdown_app { markdown :hello }
     assert ok?
-    if commonmarker_v1_or_higher?
+    if commonmarker_v2_9_or_higher?
+      assert_equal "<h1 id=\"hello-from-markdown\">Hello From Markdown<a href=\"#hello-from-markdown\" " \
+                   "aria-label=\"Link to heading 'Hello From Markdown'\" " \
+                   "data-heading-content=\"Hello From Markdown\" class=\"anchor\"></a></h1>\n", body
+    elsif commonmarker_v1_or_higher?
       assert_equal "<h1><a href=\"#hello-from-markdown\" aria-hidden=\"true\" " \
                    "class=\"anchor\" id=\"hello-from-markdown\"></a>Hello From Markdown</h1>\n", body
     else
