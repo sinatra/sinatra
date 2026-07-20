@@ -939,7 +939,9 @@ module Sinatra
   end
 
   # Extremely simple template cache implementation.
-  #   * Thread-safe, locking approach mirrors Roda::RodaCache.
+  #   * Thread-safe. Reads are lock-free; only a cache miss's write is
+  #     synchronized, so concurrent reads of already-cached templates never
+  #     contend on the mutex.
   #   * Size is unbounded.
   #   * Keys are not copied defensively, and should not be modified after
   #     being passed to #fetch.  More specifically, the values returned by
@@ -955,15 +957,16 @@ module Sinatra
     # returned. Otherwise, block is yielded to and its return value
     # which may be nil, is cached under key and returned.
     def fetch(*key)
-      @mutex.synchronize { return @cache[key] if @cache.key?(key) }
-
-      value = yield
-      @mutex.synchronize { @cache[key] = value }
+      @cache.fetch(key) do
+        value = yield
+        @mutex.synchronize { @cache[key] = value unless @cache.key?(key) }
+        value
+      end
     end
 
     # Clears the cache.
     def clear
-      @mutex.synchronize { @cache = {} }
+      @cache = {}
     end
   end
 
