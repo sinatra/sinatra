@@ -45,6 +45,24 @@ RSpec.describe Sinatra::JSON do
     results_in 'foo' => [1, 'bar', nil]
   end
 
+  it 'flags the multi_json compat shim for removal once the floor reaches 1.21' do
+    # multi_json 1.21.0 introduced ::MultiJSON and #generate, deprecating
+    # ::MultiJson and #dump. The defined?(::MultiJSON) / respond_to?(:generate)
+    # fallbacks in lib/sinatra/json.rb exist only to support multi_json < 1.21
+    # (the gemspec floor). Once the floor reaches 1.21 they are dead code.
+    spec = Gem::Specification.load(File.expand_path('../sinatra-contrib.gemspec', __dir__))
+    dep  = spec&.dependencies&.find { |d| d.name == 'multi_json' }
+    skip 'multi_json is no longer a dependency' unless dep
+
+    # 1.20.1 is the final pre-1.21 release; if the floor no longer admits it,
+    # every supported version has the new API and the shim is dead.
+    expect(dep.requirement.satisfied_by?(Gem::Version.new('1.20.1'))).to be(true),
+           "multi_json floor is now #{dep.requirement}; every supported version has " \
+           '::MultiJSON and #generate. Drop the defined?(::MultiJSON) / ' \
+           'respond_to?(:generate) fallbacks in lib/sinatra/json.rb and call ' \
+           '::MultiJSON.generate directly.'
+  end
+
   it "sets the content type to 'application/json'" do
     mock_app { get('/') { json({}) } }
     expect(get('/')["Content-Type"]).to include("application/json")
