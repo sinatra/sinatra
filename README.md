@@ -1418,21 +1418,321 @@ the basis for [WebSockets](https://en.wikipedia.org/wiki/WebSocket). It can
 also be used to increase throughput if some but not all content depends on a
 slow resource.
 
+Under the hood the stream is a [Rack 3 streaming body](https://github.com/rack/rack/blob/main/SPEC.rdoc):
+a callable that the server drives in push mode. The server owns the framing
+(chunked on HTTP/1.1, binary frames on HTTP/2), so Sinatra does not set
+`Content-Length` or `Transfer-Encoding` for a streamed response, and any
+`Content-Length` you set by hand is dropped, since it can no longer match the
+bytes Sinatra writes. Requires a Rack 3 server that supports streaming bodies
+(Puma 6+, Falcon, ...); the legacy EventMachine/Thin `async.callback` path has
+been removed (and `Sinatra::ExtendedRack` is now a deprecated no-op).
+
 Note that the streaming behavior, especially the number of concurrent
 requests, highly depends on the webserver used to serve the application.
-Some servers might not even support streaming at all. If the server does not
-support streaming, the body will be sent all at once after the block passed
-to `stream` finishes executing. Streaming does not work at all with Shotgun.
+Some servers buffer the response; behind a proxy, disable buffering for the
+streaming route (for example `X-Accel-Buffering: no` on nginx) and do not gzip
+it. Streaming does not work at all with Shotgun.
 
-If the optional parameter is set to `keep_open`, it will not call `close` on
-the stream object, allowing you to close it at any later point in the
-execution flow.
+If the optional parameter is set to `keep_open`, Sinatra will not call `close`
+on the stream object when the block returns. The block runs **once**; the
+connection is held open (without busy-looping) until you call `out.close`,
+from this or another request, allowing patterns like a chat fan-out. On a
+threaded server (Puma) each open `keep_open` stream holds one worker thread for
+its lifetime, so size the pool accordingly or use a fiber server (Falcon).
+
+A parked `keep_open` stream detects a vanished client and tears itself down
+(firing your `out.callback`) so a closed browser tab does not leak the worker,
+but how disconnect is detected is server-dependent:
+
+* **Puma** hijacks to a raw socket, so Sinatra reaps a vanished client with a
+  zero-byte `MSG_PEEK` EOF probe. This always works and writes nothing to the
+  wire, so it is safe for any stream (SSE, long-poll, binary).
+* **Falcon** hands Sinatra an IO-less stream with no socket to peek, so the only
+  way to notice an abrupt disconnect on an *idle* stream is to attempt a write.
+  Sinatra does this automatically **only for `text/event-stream` (SSE)**
+  responses, where the heartbeat is an invisible `: ` comment line. For a
+  non-SSE `keep_open` stream on Falcon, pass `heartbeat:` explicitly to opt in
+  (otherwise no bytes are injected and the stream is reaped on its next write, or
+  at the latest when the finite `ttl:` ceiling fires):
+
+```ruby
+get '/sse' do
+  content_type 'text/event-stream'
+  stream(:keep_open) { |out| ... }      # auto heartbeat on Falcon, reaps cleanly
+end
+
+get '/binary' do
+  # non-SSE: opt in to a heartbeat (bytes you choose) for idle-disconnect reaping
+  stream(:keep_open, heartbeat: "\0") { |out| ... }
+end
+```
+
+On HTTP/2 and newer the write-probe heartbeat is skipped entirely: the protocol
+layer reaps a closed stream natively, so the heartbeat (an HTTP/1-only
+workaround for Falcon's IO-less stream) is not emitted.
+
+A parked `keep_open` stream cannot park forever. By default it self-closes after
+a generous finite ceiling of 300 seconds, plus a little jitter so a fleet does
+not all reconnect on the same tick, which bounds the damage from an idle or
+leaked connection. Change the global default with `set :stream_keep_open_ttl,
+seconds` (or `nil` to disable it), pass `ttl:` to tune it per stream, or
+`ttl: nil` to opt a single stream out (then only an explicit `out.close` or a
+detected disconnect closes it). Because a long-lived SSE endpoint is then
+reconnected as a matter of course, make it resumable: assign a monotonic, real
+`id:` to each event and replay strictly after `request.env['HTTP_LAST_EVENT_ID']`
+when the client reconnects.
+
+Concurrent `keep_open` streams are capped per process to keep a flood of idle
+connections from starving the worker pool. Past `settings.stream_max_concurrent`
+(default 1000) a stream is shed with `503` and a `Retry-After` header
+(`settings.stream_retry_after`, default 5) instead of parking. The cap is
+per-process (per Puma worker or Falcon process); in a clustered deployment the
+real ceiling is `workers * threads` and any active-stream metric must be summed
+across workers. Set `stream_max_concurrent` to `nil` to disable the cap.
+
+A mid-stream exception is invisible to the normal error channels (error blocks,
+`dump_errors`, Rack error middleware) because the Rack response was already
+returned before the body ran. Register `on_stream_error` to report it (for
+example to Sentry or OpenTelemetry); the exception still propagates afterwards:
+
+```ruby
+on_stream_error { |e| Sentry.capture_exception(e) }
+```
+
+Your `out.callback` can also learn *why* a stream ended: an arity-1 callback
+receives `:complete`, `:disconnect` or `:error`, while a zero-argument callback
+keeps the old contract.
+
+```ruby
+stream(:keep_open) do |out|
+  out.callback { |reason| metrics.increment("stream.#{reason}") }
+end
+```
 
 You can have a look at the [chat example](https://github.com/sinatra/sinatra/blob/main/examples/chat.rb)
 
 It's also possible for the client to close the connection when trying to
 write to the socket. Because of this, it's recommended to check
 `out.closed?` before trying to write.
+
+#### Writing to the stream
+
+The stream handle (`out`) is the object you write to:
+
+* `out << data` writes `data` straight through to the server stream (there is no
+  internal Sinatra buffer; see [Backpressure](#backpressure-and-memory) below).
+  It returns `out` so writes chain. `out.write(data)` is an IO-style alias.
+* `out.flush` explicitly flushes whatever the server buffers. There is **no**
+  auto-flush. At realistic SSE cadence both Puma and Falcon already deliver each
+  write as its own client read, and on those servers `flush` is a no-op (Falcon's
+  stream `flush` is empty, Puma writes a raw socket with nothing buffered). It
+  exists for API completeness, explicit intent, and portability to a server that
+  does buffer. It is safe to call after `close` and chains (`out.flush << data`).
+* `out.close` ends the stream; `out.closed?` reports whether it has ended.
+
+#### Server-Sent Events (SSE)
+
+For SSE there are two framing helpers built on `out <<`, so they inherit its
+disconnect handling for free:
+
+```ruby
+get '/events' do
+  content_type 'text/event-stream'
+  cache_control :no_cache
+  headers 'X-Accel-Buffering' => 'no' # tell nginx not to buffer this route
+
+  stream(:keep_open) do |out|
+    out.sse({ user: 'ada', text: 'hi' })          # JSON-encoded data
+    out.sse("line one\nline two", event: 'note')  # multi-line + named event
+    out.sse('resume me', id: 42)                  # resumable id (opt-in)
+    out.sse('slow down', retry_after: 5000)       # reconnection hint in ms
+  end
+end
+```
+
+`out.sse(data, event:, id:, retry_after:)` writes one spec-correct event:
+
+* `data` that is not a String is JSON-encoded; a String is sent verbatim, split
+  on every `\n` into one `data:` line each (a trailing newline is preserved).
+* `event:` and `id:` are optional. NUL, CR and LF are stripped from them so they
+  cannot inject extra SSE fields. `id:` is **opt-in and never auto-generated**.
+* `retry_after:` (in milliseconds) maps to the SSE `retry:` reconnection hint
+  (the Ruby keyword `retry` cannot be a method keyword, hence the name).
+
+`out.sse_comment(text)` writes an SSE comment line (`": ...\n\n"`), invisible to
+`EventSource` clients but a real write on the wire. Use it as an **application
+keepalive** to keep idle SSE connections alive through proxies. This is distinct
+from Sinatra's internal disconnect-probe heartbeat (see below): the probe detects
+a vanished client, the comment keeps a proxy from idling the connection out.
+
+#### SSE reconnection and `Last-Event-ID`
+
+Because a finite `ttl:` (and any proxy/server restart) closes idle streams,
+reconnection is the *steady state* of a long-lived SSE endpoint, not an edge
+case. The browser's `EventSource` reconnects automatically and replays the last
+`id:` it saw in a `Last-Event-ID` request header. To avoid silent event loss,
+make the endpoint resumable:
+
+* Assign a monotonic, genuinely **resumable** `id:` to each event (a row id, an
+  offset, a sequence number, never a random UUID).
+* On connect, read `request.env['HTTP_LAST_EVENT_ID']` and replay strictly the
+  events *after* it.
+* Treat a reconnect as normal. For a non-replayable firehose, either buffer a
+  short backlog or document the gap.
+* Use `retry_after:` together with the jittered `ttl:` so a fleet of clients does
+  not all reconnect on the same tick (a reconnect storm).
+* Verify end to end with `curl -N` **through your proxy**, not just against the
+  app directly.
+
+```ruby
+get '/events' do
+  content_type 'text/event-stream'
+  last_id = request.env['HTTP_LAST_EVENT_ID']&.to_i || 0
+  stream(:keep_open) do |out|
+    events_after(last_id).each { |e| out.sse(e.payload, id: e.id) }
+  end
+end
+```
+
+#### Backpressure and memory
+
+Memory is bounded by the kernel socket buffer, not by Sinatra. There is no
+internal Ruby-level queue between `out << data` and the socket. A fast producer
+writing to a slow or stalled client blocks at the `write` syscall once the kernel
+send buffer fills:
+
+* On **Puma** that pins the worker thread until the client drains (size the pool
+  accordingly).
+* On **Falcon** it cheaply suspends the serving fiber on the reactor until the
+  socket is writable again.
+
+The socket is the backpressure, so do not add your own bounding queue.
+
+#### Do not compress or buffer streams
+
+`Rack::Deflater` crashes a Rack 3 streaming body (it calls `each` on a callable
+body). Do not mount it in front of streaming routes; exclude them or do not use
+it. More generally, any middleware that buffers the whole response (an old
+buffering `Rack::ETag`/`ConditionalGet` variant) defeats streaming. Rack 3.2's
+`to_ary` guard makes the current `Rack::ETag`/`ConditionalGet` safe, so no action
+is needed there.
+
+#### Clustered deployments (Puma workers x threads)
+
+On clustered Puma the hard ceiling on concurrent `keep_open` streams is
+`workers * max_threads`. A parked stream holds one thread for its whole lifetime,
+so a saturated stream pool **starves every other route on that worker, including
+health checks**, which makes an orchestrator kill an otherwise healthy pod. Plan
+for it:
+
+* Size `stream_max_concurrent` (and your app-level caps) relative to
+  `max_threads`; threads, not the app cap, are usually the binding constraint.
+  Keep thread headroom for non-stream routes, or run high fan-out on Falcon.
+* Any active-stream gauge is **per worker** (per process). A single `/metrics`
+  scrape undercounts by up to a factor of `workers`; aggregate per pid.
+* A restart (`SIGUSR1` phased, `SIGUSR2` hot) drops in-flight streams and blocks
+  per worker up to `worker_shutdown_timeout` (default 30s) before force-killing.
+  Clients must auto-reconnect (`EventSource` does). Set a sane
+  `worker_shutdown_timeout`. Puma 8 needs `preload_app! false` for phased restart
+  to work at all (preload is on by default and silently downgrades `SIGUSR1` to a
+  full hot restart).
+* `out.callback` fires on client disconnect but **not** on a server force-kill.
+  Cross-process cleanup (for example deleting a Redis presence key) must not rely
+  on it alone.
+
+#### Graceful shutdown
+
+* **Puma**: with its default `force_shutdown_after` (currently `-1`, no forced
+  stop), `SIGTERM` hangs forever on an active `keep_open` stream. Set
+  `force_shutdown_after N` so shutdown completes (the actual force happens at
+  roughly N + 5s). Puma's defaults change between versions, so confirm yours.
+* **Falcon**: force-kills the worker in about a second on shutdown, so
+  `out.callback` and `ensure` blocks will **not** run at shutdown. Drive cleanup
+  off the disconnect probe, not off shutdown.
+
+Size your orchestrator's grace period accordingly (see below).
+
+#### Kubernetes liveness, readiness, and autoscaling
+
+* **Liveness** must point at a route that is *not* on the saturated stream pool,
+  with `timeoutSeconds >= 3` and `failureThreshold >= 3`, so a busy stream pool
+  does not get a healthy pod killed. A dedicated stream Deployment behind a path
+  split is the cleanest separation.
+* **Readiness** should reflect pool saturation: return `503` (or flip NotReady)
+  when free threads fall below a threshold, so traffic sheds without the pod being
+  killed.
+* **Autoscaling** on CPU/memory is blind here: a pod saturated with idle parked
+  streams looks ~99% idle. Use a pool-utilization custom metric (active streams /
+  `max_threads`, summed across workers; an OpenTelemetry `UpDownCounter`
+  incremented on stream start and decremented in `out.callback`, exported to
+  Prometheus, target ~0.7). Finite `ttl:` plus jitter is what makes scale-down
+  drain and pod rebalancing possible at all, since a pinned long connection never
+  migrates on its own.
+* Set `terminationGracePeriodSeconds >= max ttl + margin` so a draining pod can
+  let streams close. On `SIGTERM`, flip readiness NotReady, broadcast `out.close`
+  to parked streams, then drain. Size a `PodDisruptionBudget` so a reconnect storm
+  cannot exceed surviving capacity.
+
+#### Proxy idle timeouts vs. the disconnect probe
+
+The internal heartbeat is **disconnect detection, not proxy keepalive**, and on
+Puma it writes *zero* bytes (`MSG_PEEK`). So behind a proxy with an idle timeout
+(at the time of writing, AWS ALB defaults to about 60s, Cloudflare to about 100s,
+Heroku to 55s, and nginx to its `proxy_read_timeout`; these change over time and
+vary by provider, so check your own) an idle stream is closed by the proxy unless
+the *application* writes something below the smallest timeout. Emit your own
+`out.sse_comment` (or any `": keep-alive\n\n"`) on an interval under that limit,
+disable proxy buffering (`proxy_buffering off;` / `X-Accel-Buffering: no` on
+nginx), and verify with `curl -N` through the proxy.
+
+#### Performance and server choice
+
+A streamed response carries roughly 26-28% more per-request overhead than a plain
+one (acceptable for a streaming primitive). On Puma a stream is close-delimited,
+which ends HTTP keep-alive for that connection. Many tiny `out <<` writes are slow
+(one syscall per write, no coalescing), so batch SSE events application-side. Steer
+high fan-out SSE to Falcon, and enable YJIT.
+
+#### Testing streams
+
+* A plain `stream` (no `keep_open`) is testable with `Rack::Test`: the body is
+  buffered and you can assert on it directly.
+* A `keep_open` stream with `ttl: nil` **hangs `Rack::Test` forever**: it parks
+  with nothing to close it. In a test either pass a finite `ttl:`, close it
+  yourself (`out.close`), or drive the callable body directly with a stream
+  double. With the finite default `ttl:` the hang is at least bounded.
+* Incremental delivery and disconnect behaviour need a real server; see Sinatra's
+  own integration tests, which exercise streaming on both Puma and Falcon.
+
+#### Server matrix
+
+* **Puma**: raw-socket hijack; zero-byte `MSG_PEEK` disconnect probe (writes
+  nothing); close-delimited framing.
+* **Falcon HTTP/1**: the callable-body stream exposes no raw socket; disconnect on
+  an idle stream is detected by the write-probe heartbeat (an invisible SSE
+  comment), enabled automatically only for `text/event-stream`.
+* **Falcon HTTP/2**: the protocol reaps a closed stream natively; the write-probe
+  is skipped.
+
+**Server version floor.** Streaming relies on the server driving a Rack 3
+*callable* response body, so support is per server, not universal:
+
+* **Puma** streams across Sinatra's whole supported range — every Ruby (2.7+) and
+  Rack 3 (3.0+) Sinatra runs on.
+* **Falcon** requires **Ruby >= 3.2** for streaming. On older Ruby only Falcon
+  0.51 and earlier resolve, and those never flush the callable-body stream, so a
+  streamed response arrives empty; the streaming-capable Falcon (0.54+) installs
+  only on Ruby >= 3.2. On Ruby < 3.2, stream with Puma.
+
+Do not mount `Rack::Deflater` on any of them for streaming routes.
+
+The Falcon HTTP/1 write-probe heartbeat is deliberate, not a stopgap awaiting an
+upstream fix: async-http cannot surface a disconnect on an idle HTTP/1 body
+without either missing a FIN that sits behind buffered bytes or stealing
+request-body bytes a bidirectional body owns, so disconnect detection on an idle
+stream is kept app-level. Background, repros and discussion:
+[async-http#224](https://github.com/socketry/async-http/issues/224). The Puma
+`MSG_PEEK` path is unaffected.
 
 ### Logging
 
@@ -2178,8 +2478,8 @@ set :protection, :session => true
 
   <dt>threaded</dt>
     <dd>
-      If set to <tt>true</tt>, will tell server to use
-      <tt>EventMachine.defer</tt> for processing the request.
+      If set to <tt>true</tt>, sets the Rack handler's <tt>threaded</tt> flag
+      (on servers that support it) so requests are processed on a thread pool.
     </dd>
 
   <dt>traps</dt>

@@ -15,6 +15,7 @@ require 'mustermann/regular'
 
 # stdlib dependencies
 require 'ipaddr'
+require 'socket' # BasicSocket / Socket::MSG_PEEK for streaming disconnect probe
 require 'time'
 require 'uri'
 
@@ -188,6 +189,14 @@ module Sinatra
         headers.delete 'content-type'
       end
 
+      # U3: a streaming/callable body has no knowable length and is framed by
+      # the server (chunked or close-delimited). Strip any Content-Length the
+      # app hand-set, including one set AFTER the stream call (a route tail or
+      # an after filter), which Helpers#body's strip cannot see. Done here at
+      # the single finalization point, mirroring the lowercase 'content-length'
+      # the Array === body fast-path above uses.
+      headers.delete 'content-length' if streaming_body?
+
       if drop_body?
         close
         result = []
@@ -208,6 +217,12 @@ module Sinatra
       headers['content-type'] && !headers['content-length'] && (Array === body)
     end
 
+    # A Rack 3 streaming body: a bare arity-1 callable (responds to #call, not
+    # #each). Matches Helpers#body's streaming detection.
+    def streaming_body?
+      body.respond_to?(:call) && !body.respond_to?(:each)
+    end
+
     def drop_content_info?
       informational? || drop_body?
     end
@@ -217,41 +232,29 @@ module Sinatra
     end
   end
 
-  # Some Rack handlers implement an extended body object protocol, however,
-  # some middleware (namely Rack::Lint) will break it by not mirroring the methods in question.
-  # This middleware will detect an extended body object and will make sure it reaches the
-  # handler directly. We do this here, so our middleware and middleware set up by the app will
-  # still be able to run.
+  # Deprecated, inert pass-through middleware. It once detected the extended
+  # EventMachine/Thin async body protocol (async.callback / async.close /
+  # throw :async) and routed it straight to the handler. That whole async path
+  # was removed in Sinatra 5.0 in favour of the Rack 3 callable streaming body
+  # (Sinatra::Helpers::Stream), so this class now does nothing but forward the
+  # request. Sinatra no longer installs it by default; it survives only so that
+  # an app which still `use Sinatra::ExtendedRack` keeps working (with a
+  # deprecation warning) instead of raising NameError. It will be removed in
+  # Sinatra 6.0.
   class ExtendedRack < Struct.new(:app)
+    def initialize(app)
+      super
+      Sinatra::Base.send(
+        :warn_for_deprecation,
+        'Sinatra::ExtendedRack is deprecated and does nothing; the async ' \
+        'streaming path it supported was removed in Sinatra 5.0. Remove ' \
+        '`use Sinatra::ExtendedRack` from your middleware stack. It will be ' \
+        'removed in Sinatra 6.0.'
+      )
+    end
+
     def call(env)
-      result = app.call(env)
-      callback = env['async.callback']
-      return result unless callback && async?(*result)
-
-      after_response { callback.call result }
-      setup_close(env, *result)
-      throw :async
-    end
-
-    private
-
-    def setup_close(env, _status, _headers, body)
-      return unless body.respond_to?(:close) && env.include?('async.close')
-
-      env['async.close'].callback { body.close }
-      env['async.close'].errback { body.close }
-    end
-
-    def after_response(&block)
-      raise NotImplementedError, 'only supports EventMachine at the moment' unless defined? EventMachine
-
-      EventMachine.next_tick(&block)
-    end
-
-    def async?(status, _headers, body)
-      return true if status == -1
-
-      body.respond_to?(:callback) && body.respond_to?(:errback)
+      app.call(env)
     end
   end
 
@@ -297,7 +300,19 @@ module Sinatra
         def block.each; yield(call) end
         response.body = block
       elsif value
-        unless request.head? || value.is_a?(Rack::Files::BaseIterator) || value.is_a?(Stream)
+        # A raw Rack 3 streaming body is a callable that takes the server stream
+        # (arity != 0) and is NOT an Enumerable body (does not respond to
+        # #each). respond_to?(:arity) guards non-Proc #call objects, which raise
+        # NoMethodError on #arity. Sinatra::Helpers::Stream flows through here
+        # too (arity 1, no #each). For a streaming body the SERVER owns framing
+        # (Rack 3 removed Rack::Chunked), so we must NOT carry a hand-set
+        # Content-Length: see #strip_streaming_content_length! for the
+        # response-splitting rationale.
+        streaming = value.respond_to?(:call) && !value.respond_to?(:each) &&
+                    (!value.respond_to?(:arity) || value.arity != 0)
+        if streaming
+          strip_streaming_content_length!
+        elsif !(request.head? || value.is_a?(Rack::Files::BaseIterator))
           headers.delete 'content-length'
         end
         response.body = value
@@ -447,53 +462,257 @@ module Sinatra
       not_found
     end
 
-    # Class of the response body in case you use #stream.
+    # The response body used by #stream. It is a Rack 3 *callable body*: it
+    # responds to #call(stream) and deliberately NOT to #each, so Rack 3
+    # servers (Puma 6+, Falcon, ...) treat it as a streaming body and drive it
+    # in push mode. The same object is the +out+ handle the user writes to.
     #
-    # Three things really matter: The front and back block (back being the
-    # block generating content, front the one sending it to the client) and
-    # the scheduler, integrating with whatever concurrency feature the Rack
-    # handler is using.
-    #
-    # Scheduler has to respond to defer and schedule.
+    # The server hands #call a Rack stream (an IO-like object responding to
+    # +write+/+<<+/+close+/+closed?+/...). The block supplied to #stream runs
+    # once against this Stream; +out << data+ writes straight through to the
+    # server stream (no internal buffer, the socket is the backpressure).
     class Stream
-      def self.schedule(*) yield end
-      def self.defer(*)    yield end
+      # The socket errnos that mean "the peer is gone": a clean teardown, NOT
+      # an application bug. Deliberately narrow: only these. We do NOT rescue
+      # the whole SystemCallError tree, so a genuine app Errno::ENOENT (missing
+      # file) / Errno::EACCES (permissions) raised inside the producer block
+      # still propagates loudly instead of becoming a silent, truncated 200.
+      DISCONNECT_ERRORS = [
+        Errno::EPIPE, Errno::ECONNRESET, Errno::ECONNABORTED,
+        Errno::ESHUTDOWN, Errno::ENOTCONN
+      ].freeze
 
-      def initialize(scheduler = self.class, keep_open = false, &back)
-        @back = back.to_proc
-        @scheduler = scheduler
-        @keep_open = keep_open
-        @callbacks = []
-        @closed = false
-      end
+      # Raised ONLY by our own disconnect probe (peek/heartbeat). Modelled on
+      # Rails' ActionController::Live::ClientDisconnected: a sentinel we control,
+      # never confused with an app exception. Caught alongside DISCONNECT_ERRORS
+      # and turned into a clean #close.
+      class ClientDisconnected < RuntimeError; end
 
-      def close
-        return if closed?
+      # How often a parked keep_open #call re-probes for a vanished peer. Also
+      # the upper bound on detection latency when no broadcast wakes us first
+      # (server close, cross-request #close, reaper EOF, Falcon h2 RST_STREAM
+      # all broadcast and wake us in ~1ms; this poll is the backstop).
+      POLL = 15
 
-        @closed = true
-        @scheduler.schedule { @callbacks.each { |c| c.call } }
-      end
+      # Hard ceiling (seconds) on how long a single keep_open #call may park. If
+      # every probe somehow misses a dead peer, this bounds the leak to one TTL
+      # instead of forever, makes a saturated Puma pool self-recover, and gives
+      # autoscalers a drain/rebalance point (a pinned long connection eventually
+      # closes and the client reconnects, possibly to a fresher pod). Generous
+      # by design so it does not interfere with normal long-lived SSE; pass
+      # ttl: nil to opt out entirely, or ttl: N to tune. Jittered per-stream at
+      # park time so TTLs do not all expire together into a reconnect storm.
+      KEEP_OPEN_TTL = 300
 
-      def each(&front)
-        @front = front
-        @scheduler.defer do
-          begin
-            @back.call(self)
-          rescue Exception => e
-            @scheduler.schedule { raise e }
-          ensure
-            close unless @keep_open
+      # Default write-probe byte string for a keep_open stream constructed
+      # directly via Stream.new. It is the invisible SSE comment (a line
+      # beginning with ':' is ignored by EventSource clients) so the low-level
+      # API still reaps an idle Falcon-shape disconnect out of the box. The
+      # public #stream helper overrides this: it passes the SSE comment only for
+      # text/event-stream responses and nil otherwise, so an arbitrary
+      # binary/long-poll body is never injected with bytes.
+      DEFAULT_HEARTBEAT = ": \n"
+
+      # Process-wide gauge of currently-parked keep_open streams. Used by the
+      # public #stream helper to shed past settings.stream_max_concurrent. It is
+      # per-process (per Puma worker / Falcon process); a clustered metric must
+      # sum this across workers. Guarded by its own mutex so increment/decrement
+      # is atomic under threads.
+      @active       = 0
+      @active_mutex = Mutex.new
+
+      class << self
+        # Current number of parked keep_open streams in this process.
+        def active_count
+          @active_mutex.synchronize { @active }
+        end
+
+        # Atomically claim a slot if we are below the cap. Returns true on
+        # success, false if the cap is already reached (caller then sheds 503).
+        # A nil cap means unlimited.
+        def claim_slot(cap)
+          @active_mutex.synchronize do
+            return false if cap && @active >= cap
+
+            @active += 1
+            true
           end
         end
+
+        def release_slot
+          @active_mutex.synchronize { @active -= 1 if @active.positive? }
+        end
+
+        # Test seam: reset the gauge between examples.
+        attr_writer :active
+      end
+
+      # Each keyword maps to a distinct, documented streaming concern (idle
+      # heartbeat, parking ceiling, re-probe interval, wire protocol, error
+      # reporting), so the list is intentionally wide rather than bundled into an
+      # opaque options hash.
+      # rubocop:disable Metrics/ParameterLists
+      def initialize(keep_open = false, heartbeat: DEFAULT_HEARTBEAT,
+                     ttl: KEEP_OPEN_TTL, poll: POLL, protocol: nil,
+                     error_handlers: nil, &back)
+        # rubocop:enable Metrics/ParameterLists
+        @back           = back ? back.to_proc : proc {}
+        @keep_open      = keep_open
+        @heartbeat      = heartbeat
+        @ttl            = ttl
+        @poll           = poll
+        @protocol       = protocol
+        @error_handlers = error_handlers || []
+        @callbacks      = []
+        @closed         = false
+        @stream         = nil
+        @reason         = nil
+        @slot_held      = false
+        # Monotonic timestamp of the last successful application write. The
+        # write-probe heartbeat only fires once a stream has been write-idle for
+        # a full poll, so an actively-writing stream is never given redundant
+        # probe bytes (its own writes already exercise the transport). nil until
+        # the first write; treated as "idle since open" by #write_idle?.
+        @last_write_at  = nil
+        @mutex          = Mutex.new
+        @cond           = ConditionVariable.new
+      end
+
+      # Account a claimed concurrency slot to this stream so #close releases it
+      # exactly once. The public #stream helper claims the slot before parking.
+      def slot_held!
+        @slot_held = true
+      end
+
+      # Rack 3 streaming-body entry point. The server calls this exactly once.
+      def call(stream)
+        @stream = stream
+        @back.call(self)
+        park if @keep_open && !@closed
+        @reason ||= :complete
+      rescue *DISCONNECT_ERRORS, ClientDisconnected
+        @reason = :disconnect
+      rescue Exception => e
+        # Genuine application error: notify the registered error handlers (so a
+        # mid-stream crash is not invisible to Sentry/OpenTelemetry), tear the
+        # stream down, then re-raise LOUD so it still reaches
+        # handle_exception!/dump_errors! instead of a silent or truncated 200.
+        @reason = :error
+        notify_error_handlers(e)
+        raise e
+      ensure
+        close # idempotent; waiters wake + callbacks fire exactly once
       end
 
       def <<(data)
-        @scheduler.schedule { @front.call(data.to_s) }
+        @stream.write(data.to_s)
+        # Record the write so the idle heartbeat backs off: a stream that is
+        # actively emitting events does not need an extra probe on top. A plain
+        # monotonic-float assignment is atomic under the GVL, and the only
+        # cross-fiber reader (#write_idle? in the parked loop) tolerates a stale
+        # read by at most one poll, so no lock is needed here.
+        @last_write_at = current_time
         self
+      rescue *DISCONNECT_ERRORS
+        # Peer vanished mid-write. Surface it as our sentinel so #call's rescue
+        # tears down cleanly rather than letting a raw Errno escape user code.
+        raise ClientDisconnected
+      end
+
+      # IO-like alias for <<. Lets code that expects an IO-ish sink (anything
+      # calling #write) drive the stream unchanged.
+      alias write <<
+
+      # Explicitly flush whatever the server stream buffers. There is NO
+      # auto-flush: at realistic SSE cadence both Puma and Falcon already
+      # deliver each write as its own client read, and on those servers #flush
+      # is a no-op (Falcon's stream #flush is empty; Puma writes a raw socket
+      # with nothing buffered). This exists for API completeness, explicit
+      # intent, and portability to a server that DOES buffer. Closed?-guarded,
+      # tolerant of a stream without #flush, routes a mid-flush disconnect
+      # through the same sentinel as <<, and returns self so it chains.
+      def flush
+        return self if @closed || @stream.nil?
+        return self unless @stream.respond_to?(:flush)
+        return self if @stream.respond_to?(:closed?) && @stream.closed?
+
+        @stream.flush
+        self
+      rescue *DISCONNECT_ERRORS
+        raise ClientDisconnected
+      end
+
+      # Write one spec-correct Server-Sent Event over <<. See Sinatra::Helpers
+      # for the full SSE framing rationale.
+      #
+      #   out.sse({ token: 'hi' })                 # JSON-encoded data
+      #   out.sse("line1\nline2", event: 'msg')    # multi-line + named event
+      #   out.sse('resume', id: 42)                # resumable id (opt-in)
+      #
+      # data:        non-String is JSON-encoded; a String is sent verbatim,
+      #              split on every "\n" into one `data:` line each (a trailing
+      #              newline yields a trailing empty `data:` line, preserved).
+      # event:/id:   optional; NUL/CR/LF stripped so they cannot inject extra
+      #              SSE fields. id: is per-event opt-in and NEVER auto-generated.
+      # retry_after: maps to the SSE `retry:` reconnection hint (ms); off unless
+      #              given (Ruby's `retry` keyword cannot be a kwarg name).
+      def sse(data, event: nil, id: nil, retry_after: nil)
+        data = data.to_json unless data.is_a?(String)
+        frame = +''
+        # Chained << of frozen literals avoids building a throwaway interpolated
+        # string per field.
+        frame << 'event: ' << sse_scrub(event) << "\n" if event
+        frame << 'id: ' << sse_scrub(id) << "\n" unless id.nil?
+        frame << "retry: #{Integer(retry_after)}\n" unless retry_after.nil?
+        # split("\n", -1) keeps trailing empties, so "a\n" -> ["a", ""] -> two
+        # data: lines, preserving the author's trailing newline. Skip the split
+        # (and its array) for the common single-line case.
+        if data.include?("\n")
+          data.split("\n", -1).each { |line| frame << 'data: ' << line << "\n" }
+        else
+          frame << 'data: ' << data << "\n"
+        end
+        # The mandatory blank line that terminates the event.
+        frame << "\n"
+        self << frame
+      end
+
+      # An SSE comment line (": ...\n\n"): invisible to EventSource clients yet a
+      # real write on the wire, so apps use it as a proxy/idle keepalive. This is
+      # the APP's keepalive, conceptually distinct from the internal disconnect
+      # probe heartbeat (which Sinatra emits on its own; see #stream).
+      def sse_comment(text = '')
+        self << ": #{sse_scrub(text)}\n\n"
+      end
+
+      # reason is one of :complete, :disconnect, :error (defaults to
+      # :disconnect for an out-of-band close, e.g. a server/h2 native reap).
+      def close(reason = nil)
+        cbs = nil
+        @mutex.synchronize do
+          return if @closed
+
+          @closed    = true
+          @reason  ||= reason || :disconnect
+          cbs        = @callbacks
+          @callbacks = []
+          # The load-bearing line: wake a parked keep_open #call. This is what
+          # makes server-close, cross-request #close, the reaper's EOF and
+          # Falcon's h2 RST_STREAM all reap a parked stream instead of leaking
+          # the worker thread/fiber forever.
+          @cond.broadcast
+        end
+        release_slot
+        begin
+          @stream.close if @stream && !@stream.closed?
+        rescue *DISCONNECT_ERRORS, IOError
+          # already gone; nothing to flush
+        end
+        fire(cbs, @reason)
       end
 
       def callback(&block)
-        return yield if closed?
+        return fire([block], @reason || :complete) if closed?
 
         @callbacks << block
       end
@@ -503,27 +722,276 @@ module Sinatra
       def closed?
         @closed
       end
+
+      private
+
+      # Fire teardown callbacks with the teardown reason, back-compatibly: an
+      # arity-0 callback gets no argument (old contract), an arity-1 (or splat)
+      # callback gets the reason. A callback hitting a dead peer must not stop
+      # later callbacks.
+      def fire(callbacks, reason)
+        callbacks.each do |c|
+          c.arity.zero? ? c.call : c.call(reason)
+        rescue *DISCONNECT_ERRORS, ClientDisconnected
+          # a teardown callback hitting a dead peer must not stop later callbacks
+        end
+      end
+
+      # Invoke the registered on_stream_error handlers with the producer
+      # exception. A broken reporter must not block the others, and must never
+      # mask the real exception (which #call re-raises after this returns).
+      def notify_error_handlers(error)
+        @error_handlers.each do |handler|
+          handler.call(error)
+        rescue StandardError
+          # a broken error reporter must not swallow the real exception
+        end
+      end
+
+      def release_slot
+        return unless @slot_held
+
+        @slot_held = false
+        self.class.release_slot
+      end
+
+      # Strip NUL/CR/LF from an SSE field value so an id/event/comment cannot
+      # smuggle in a newline and forge extra SSE fields or terminate the event
+      # early. Coerced to String first so non-String ids (e.g. integers) work.
+      def sse_scrub(value)
+        string = value.to_s
+        # #delete allocates even when nothing is removed, so skip it when the
+        # value is already clean (a constant event name, a numeric id).
+        string.match?(/[\u0000\r\n]/) ? string.delete("\u0000\r\n") : string
+      end
+
+      # Park a keep_open #call until something closes us. Timed wait so the
+      # worker re-probes the peer even if no broadcast arrives (a bare
+      # @cond.wait would leak the thread when the client vanishes silently).
+      def park
+        # Add up to 10% jitter so a fleet of streams opened together does not
+        # all hit the TTL on the same tick and reconnect in a thundering herd.
+        deadline = @ttl && (current_time + @ttl + (@ttl * 0.1 * rand))
+        @mutex.synchronize do
+          until @closed
+            @cond.wait(@mutex, @poll) # woken by timeout OR #close's broadcast
+            break if @closed
+
+            if deadline && current_time >= deadline
+              # TTL ceiling reached: treat as a disconnect-class teardown so the
+              # idle/leaked connection is reaped rather than parked forever.
+              @reason = :disconnect
+              break
+            end
+
+            probe_disconnect!
+          end
+        end
+      end
+
+      def current_time
+        Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      end
+
+      # Detect a vanished peer using whatever the server gives us:
+      #   * Puma hijacks to a raw BasicSocket  -> MSG_PEEK (zero bytes on wire)
+      #   * Falcon HTTP/1 exposes no raw socket on the callable-body stream ->
+      #     the heartbeat write IS the probe (HTTP/1 only, and only once
+      #     write-idle; see #write_probe? and #write_idle?)
+      #   * Falcon HTTP/2 -> the protocol reaps a closed stream natively, so we
+      #     emit nothing and rely on the broadcast/poll backstop.
+      #
+      # The MSG_PEEK path probes every poll regardless of writes: it puts zero
+      # bytes on the wire, so there is nothing to suppress. The write-probe path
+      # instead backs off while the application is actively writing, because each
+      # out.write/out.sse already exercises the transport and would surface a
+      # dead peer on its own; only an idle stream needs the synthetic heartbeat.
+      #
+      # Why an app-level write-probe and not a server-side hook: async-http
+      # cannot surface a disconnect on an IDLE HTTP/1 streaming body without
+      # either missing a FIN that sits behind buffered bytes (a non-consuming
+      # peek) or stealing request-body bytes a bidirectional body owns (a
+      # consuming read). HTTP/2 escapes this only because its reader routes
+      # framed DATA by stream id. So the heartbeat is the deliberate, portable
+      # mechanism here, not a stopgap awaiting an upstream fix: it makes an idle
+      # stream write, the existing write path detects the drop, and the TTL
+      # ceiling backstops it. Investigation, repros and discussion:
+      # https://github.com/socketry/async-http/issues/224
+      def probe_disconnect!
+        if (io = raw_socket)
+          raise ClientDisconnected if peer_gone_peek?(io)
+        elsif write_probe? && write_idle?
+          begin
+            @stream.write(@heartbeat)
+          rescue *DISCONNECT_ERRORS
+            raise ClientDisconnected
+          rescue IOError => e
+            # Falcon surfaces "output closed" as a plain IOError from
+            # protocol-http's stream.rb, not an errno. Match that ONE message,
+            # ONLY on this write-path probe, never broadened to the app path.
+            raise ClientDisconnected if e.message.include?('closed')
+
+            raise
+          end
+        end
+      end
+
+      # The write-probe heartbeat is an HTTP/1-only workaround for a callable-body
+      # stream that exposes no raw socket (Falcon). It runs only when ALL hold: a
+      # heartbeat byte string was configured, the server stream is NOT a raw
+      # socket (Puma uses MSG_PEEK), and the protocol is HTTP/1.x. On HTTP/2 and
+      # newer the protocol layer
+      # reaps a closed stream natively, so the probe would be dead weight on the
+      # wire; a nil/unknown protocol is treated as HTTP/1 (the safe default that
+      # still probes).
+      def write_probe?
+        return false unless @heartbeat
+        return false if raw_socket
+
+        @protocol.nil? || @protocol.start_with?('HTTP/1')
+      end
+
+      # True when no successful application write has landed in the last poll
+      # interval, i.e. the stream is quiet enough to warrant a synthetic
+      # heartbeat. A stream that has never written (nil) is idle by definition.
+      # The window is @poll so that a stream writing more often than once per
+      # poll never accrues a probe (a write landing exactly @poll ago still
+      # does), while a fully idle one still gets one heartbeat per poll.
+      def write_idle?
+        @last_write_at.nil? || (current_time - @last_write_at) >= @poll
+      end
+
+      def raw_socket
+        @stream if @stream.is_a?(::BasicSocket)
+      end
+
+      # Bidi-safe, byte-exact: MSG_PEEK reads zero bytes off the wire, so SSE,
+      # long-poll and duplex clients are all undisturbed. An empty peek on a
+      # readable socket means EOF: the peer closed its write half.
+      #
+      # Scope: this is a closure detector, not a liveness test. It only reaps a
+      # disconnect the kernel already knows about (a received FIN/RST). It cannot
+      # tell a still-connected-but-unresponsive peer from a healthy one -- silent
+      # network failure, a sleeping client, a blackholed path or stale NAT all
+      # peek as "still here". Those are caught instead by the parking TTL ceiling
+      # (see #park / KEEP_OPEN_TTL), which bounds how long any idle stream may
+      # linger regardless of what the socket reports.
+      def peer_gone_peek?(io)
+        # io.wait_readable(0) is the fiber-scheduler-aware equivalent of a
+        # zero-timeout IO.select: it returns the IO when readable, nil when not,
+        # so a not-yet-readable socket short-circuits as "still connected".
+        return false unless io.wait_readable(0)
+
+        # EOF peeks as nil or "" depending on platform/socket; both mean gone.
+        peeked = io.recv(1, Socket::MSG_PEEK)
+        peeked.nil? || peeked.empty?
+      rescue *DISCONNECT_ERRORS
+        true
+      end
     end
+
+    # SSE comment line. Invisible to EventSource clients (a line beginning with
+    # ':' is a comment per the SSE spec) yet still a real write on the wire, so
+    # it doubles as the Falcon disconnect probe. Used as the default keep_open
+    # heartbeat ONLY for text/event-stream responses. See #stream.
+    SSE_HEARTBEAT = ": \n"
 
     # Allows to start sending data to the client even though later parts of
     # the response body have not yet been generated.
     #
-    # The close parameter specifies whether Stream#close should be called
-    # after the block has been executed.
-    def stream(keep_open = false)
-      scheduler = env['async.callback'] ? EventMachine : Stream
+    # The keep_open parameter specifies whether the stream stays open after the
+    # block returns (e.g. an SSE/long-poll endpoint that pushes later). When
+    # false, Stream#close is called once the block finishes.
+    #
+    # Disconnect reaping of a parked keep_open stream is server-aware:
+    #   * Puma hijacks to a raw BasicSocket -> a zero-byte MSG_PEEK EOF probe
+    #     always detects a vanished client, regardless of heartbeat. Nothing is
+    #     written to the wire, so binary/long-poll streams are never corrupted.
+    #   * Falcon hands a stream that exposes no raw socket -> we cannot MSG_PEEK
+    #     it. (Falcon HTTP/1 does still retain the underlying transport deeper in
+    #     protocol-rack/async-http, but reaching for it would couple Sinatra to
+    #     Falcon internals instead of the Rack streaming contract, so we don't.)
+    #     With no peekable socket the ONLY way to notice an abrupt disconnect on
+    #     an idle stream is to attempt a write. That write puts bytes on the wire,
+    #     so we only enable it by default when it is provably harmless: a true SSE
+    #     response (text/event-stream), where the heartbeat is an invisible ': '
+    #     comment.
+    #
+    # For a non-SSE keep_open stream on Falcon we must NOT inject bytes silently
+    # (it would corrupt an arbitrary binary/long-poll body), so the heartbeat is
+    # off by default there; pass heartbeat: explicitly to opt in. poll: and ttl:
+    # tune the re-probe interval and the hard parking ceiling.
+    def stream(keep_open = false, heartbeat: :auto, poll: Stream::POLL, ttl: :default)
       current   = @params.dup
-      stream = if scheduler == Stream  && keep_open
-        Stream.new(scheduler, false) do |out|
-          until out.closed?
-            with_params(current) { yield(out) }
-          end
-        end
-      else
-        Stream.new(scheduler, keep_open) { |out| with_params(current) { yield(out) } }
-      end
+      heartbeat = default_heartbeat if heartbeat == :auto
+      protocol  = request.env['SERVER_PROTOCOL'] if respond_to?(:request) && request
+      # ttl: :default uses the configured global default (set :stream_keep_open_ttl);
+      # ttl: nil opts a stream out of the ceiling; ttl: N tunes it per stream.
+      ttl       = stream_keep_open_ttl if ttl == :default
+
+      # A keep_open stream holds a worker thread/fiber for its whole lifetime, so
+      # cap how many can be parked at once (per process). Past the cap, shed with
+      # 503 + Retry-After instead of parking another one, so a flood of idle
+      # connections cannot starve the worker pool. Plain (non keep_open) streams
+      # finish promptly and are not counted.
+      return shed_stream if keep_open && !claim_stream_slot
+
+      # Braces (not do/end) so the producer block binds to Stream.new, not to
+      # the enclosing #body call.
+      stream = Stream.new(
+        keep_open,
+        heartbeat: heartbeat,
+        poll: poll,
+        ttl: ttl,
+        protocol: protocol,
+        error_handlers: stream_error_handlers
+      ) { |out| with_params(current) { yield(out) } }
+      stream.slot_held! if keep_open
       body stream
     end
+
+    private
+
+    # Registered on_stream_error handlers for this app, or none.
+    def stream_error_handlers
+      settings.respond_to?(:stream_error_handlers) ? settings.stream_error_handlers : []
+    end
+
+    def stream_max_concurrent
+      settings.respond_to?(:stream_max_concurrent) ? settings.stream_max_concurrent : nil
+    end
+
+    # Global default keep_open ceiling, configurable via set :stream_keep_open_ttl.
+    def stream_keep_open_ttl
+      settings.respond_to?(:stream_keep_open_ttl) ? settings.stream_keep_open_ttl : Stream::KEEP_OPEN_TTL
+    end
+
+    def claim_stream_slot
+      Stream.claim_slot(stream_max_concurrent)
+    end
+
+    # Shed an over-cap keep_open request with 503 + Retry-After.
+    def shed_stream
+      retry_after = settings.respond_to?(:stream_retry_after) ? settings.stream_retry_after : 5
+      response['Retry-After'] = retry_after.to_s
+      halt 503, 'Too many concurrent streams, please retry later.'
+    end
+
+    # The default keep_open heartbeat: an invisible SSE comment, enabled only for
+    # a true text/event-stream response, where it is provably harmless (a line
+    # beginning with ':' is ignored by EventSource clients). For any other
+    # content type we return nil so no bytes are ever injected into an arbitrary
+    # binary/long-poll body. The protocol gating (skip the write-probe on HTTP/2,
+    # where the protocol reaps natively) and the not-a-BasicSocket gating (Puma
+    # uses MSG_PEEK) both live in Stream#write_probe?, so this only decides "is
+    # this an SSE body that may carry an invisible comment". start_with? (not
+    # include?) so a spoofed 'x-text/event-stream' type cannot trip it.
+    def default_heartbeat
+      ct = response['content-type'] || response['Content-Type']
+      SSE_HEARTBEAT if ct.to_s.start_with?('text/event-stream')
+    end
+
+    public
 
     # Specify response freshness policy for HTTP caches (Cache-Control header).
     # Any number of non-value directives (:public, :private, :no_cache,
@@ -718,6 +1186,26 @@ module Sinatra
       yield
     ensure
       @params = original if original
+    end
+
+    # Drop any hand-set Content-Length on a streaming/callable-body response.
+    #
+    # SECURITY (response splitting / desync): under Rack 3 the SERVER owns
+    # framing for a streaming body (Rack::Chunked was removed; Puma/Falcon emit
+    # chunked or close-delimited framing themselves). A Content-Length the app
+    # set by hand cannot be honoured by Sinatra; it no longer counts the bytes,
+    # so if the streamed body is shorter the connection hangs waiting for the
+    # promised bytes, and if it is longer the surplus bytes bleed into the next
+    # response on a keep-alive socket: classic response splitting. Stripping it
+    # here is the spec-correct framing behaviour, not an app-error swallow, so a
+    # silent strip is the right call (no app intent is being second-guessed,
+    # the header is simply not the app's to set on a stream under Rack 3).
+    #
+    # Scoped narrowly to the streaming path on purpose: dentarg removed
+    # over-eager Content-Length deletion in a39c0c92 (Rack::Files), so we do NOT
+    # touch the header on any non-streaming response. Lowercase per Rack 3.
+    def strip_streaming_content_length!
+      headers.delete 'content-length'
     end
   end
 
@@ -1171,7 +1659,14 @@ module Sinatra
         status(res.shift)
         body(res.pop)
         headers(*res)
-      elsif res.respond_to? :each
+      elsif res.respond_to?(:each) ||
+            (res.respond_to?(:call) && (!res.respond_to?(:arity) || res.arity != 0))
+        # Besides an Enumerable body (responds to #each), also emit a bare Rack 3
+        # streaming body (U2): an arity-1 callable that takes the server stream.
+        # Such a body used to fall through every branch here and be silently
+        # dropped to an empty 200. The arity guard mirrors Helpers#body so an
+        # arity-0 callable (which #body treats as a deferred enumerable producer)
+        # is not misrouted here.
         body res
       end
       nil # avoid double setting the same response tuple twice
@@ -1408,6 +1903,19 @@ module Sinatra
       # Sugar for `error(404) { ... }`
       def not_found(&block)
         error(404, &block)
+      end
+
+      # Register a handler invoked when a streaming producer block raises
+      # mid-stream. A mid-stream exception is invisible to the normal error
+      # channels (error blocks, dump_errors, Rack error middleware) because the
+      # Rack triple was already returned before the body ran, so this is the one
+      # place to report it (Sentry, OpenTelemetry, ...). The exception still
+      # propagates after every handler runs.
+      #
+      #   on_stream_error { |e| Sentry.capture_exception(e) }
+      def on_stream_error(&block)
+        # Dup so appending to a subclass never mutates the parent's array.
+        set :stream_error_handlers, stream_error_handlers + [block]
       end
 
       # Define a named template. The block must return the template source.
@@ -1817,7 +2325,10 @@ module Sinatra
       end
 
       def setup_default_middleware(builder)
-        builder.use ExtendedRack
+        # ExtendedRack is no longer installed by default: the EventMachine/Thin
+        # async.callback path it supported is gone (Rack 3 streaming bodies
+        # replace it). It survives only as an inert, deprecation-warning shim for
+        # apps that still `use Sinatra::ExtendedRack` explicitly; see the class.
         builder.use ShowExceptions       if show_exceptions?
         builder.use Rack::MethodOverride if method_override?
         builder.use Rack::Head
@@ -1952,6 +2463,21 @@ module Sinatra
     set :mustermann_opts, {}
     set :default_content_type, 'text/html'
 
+    # Streaming concurrency cap (per process): the maximum number of parked
+    # keep_open streams. Past it, the #stream helper sheds with 503 + the
+    # stream_retry_after header instead of parking another worker thread/fiber.
+    # Set to nil to disable the cap.
+    set :stream_max_concurrent, 1000
+    set :stream_retry_after, 5
+    # Default keep_open ceiling in seconds: a parked stream self-closes after this
+    # (plus jitter) so a leaked or idle connection cannot park forever. Override
+    # per stream with stream(..., ttl:), or set to nil to disable the default.
+    set :stream_keep_open_ttl, 300
+    # Handlers invoked when a streaming producer block raises mid-stream, set
+    # via on_stream_error. Each receives the exception; the exception still
+    # propagates afterwards.
+    set :stream_error_handlers, []
+
     # explicitly generating a session secret eagerly to play nice with preforking
     begin
       require 'securerandom'
@@ -2013,7 +2539,7 @@ module Sinatra
     set :public_folder, proc { root && File.join(root, 'public') }
     set :static, proc { public_folder && File.exist?(public_folder) }
     set :static_cache_control, false
-    
+
     set :static_headers, {}
 
     error ::Exception do

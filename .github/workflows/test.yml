@@ -153,6 +153,22 @@ jobs:
       id: tests
       run: bundle exec rake
 
+    # Streaming is server-specific (Puma uses a MSG_PEEK disconnect probe, Falcon
+    # HTTP/1 uses a write-probe heartbeat), so the streaming integration tests
+    # must run against Falcon as well as Puma. The integration suite iterates
+    # every installed server; this step fails loudly if Falcon is missing so the
+    # Falcon coverage cannot silently disappear from the matrix. Skipped on
+    # engines/versions where Falcon is not supported (JRuby/TruffleRuby, <=3.0).
+    - name: Run streaming integration tests (Puma + Falcon)
+      if: ${{ matrix.ruby != 'jruby' && matrix.ruby != 'jruby-head' && matrix.ruby != 'truffleruby' && matrix.ruby != 'truffleruby-head' && matrix.ruby != '2.7' && matrix.ruby != '3.0' }}
+      continue-on-error: ${{ matrix.allow-failure || false }}
+      id: streaming-tests
+      run: |
+        bundle exec ruby -e "gem 'falcon'; require 'falcon'" \
+          || (echo 'Falcon must be installed for streaming integration coverage' && exit 1)
+        bundle exec ruby -Itest -Ilib test/integration_test.rb
+        bundle exec ruby -Itest -Ilib test/streaming_test.rb
+
     - name: Run sinatra-contrib tests
       continue-on-error: ${{ matrix.allow-failure || false }}
       id: contrib-tests
