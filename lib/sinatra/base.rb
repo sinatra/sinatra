@@ -10,6 +10,7 @@ require 'tilt'
 require 'rack/protection'
 require 'rack/session'
 require 'mustermann'
+require 'mustermann/set'
 require 'mustermann/sinatra'
 require 'mustermann/regular'
 
@@ -1062,17 +1063,28 @@ module Sinatra
 
     # Run routes defined on the class and all superclasses.
     def route!(base = settings, pass_block = nil)
-      routes = base.routes[@request.request_method]
+      if set = base.route_sets[@request.request_method]
+        routes = set.match_all(route)
+      else
+        routes = base.routes[@request.request_method]
+      end
 
-      routes&.each do |pattern, conditions, block|
-        response.delete_header('content-type') unless @pinned_response
+      routes&.each do |match_or_signature|
+        reset_content_type!
 
-        returned_pass_block = process_route(pattern, conditions) do |*args|
+        if match_or_signature.is_a?(Mustermann::Match)
+          match = match_or_signature
+          pattern, conditions, block = match_or_signature.value
+        else
+          pattern, conditions, block = match_or_signature
+        end
+
+        returned_pass_block = process_route(pattern, conditions, match: match) do |*args|
           env['sinatra.route'] = "#{@request.request_method} #{pattern}"
           route_eval { block[*args] }
         end
 
-        # don't wipe out pass_block in superclass
+         # don't wipe out pass_block in superclass
         pass_block = returned_pass_block if returned_pass_block
       end
 
@@ -1081,8 +1093,23 @@ module Sinatra
         return route!(base.superclass, pass_block)
       end
 
-      route_eval(&pass_block) if pass_block
+      # Set-based routing only iterates matching routes, so the per-iteration
+      # reset above is skipped after a matching route set a content-type then
+      # passed. Reset it here too so the pass block starts clean, uniformly for
+      # every verb. (main's all-routes scan cleared this only incidentally for
+      # GET, via the built-in /__sinatra__ image route, and leaked it otherwise.)
+      if pass_block
+        reset_content_type!
+        route_eval(&pass_block)
+      end
       route_missing
+    end
+
+    # Reset the content-type a passed/previous route may have set, so the next
+    # handler -- route block or pass block -- starts from its baseline: nothing,
+    # or the value a before-filter pinned via @pinned_response.
+    def reset_content_type!
+      response.delete_header('content-type') unless @pinned_response
     end
 
     # Run a route block and throw :halt with the result.
@@ -1095,21 +1122,25 @@ module Sinatra
     # Revert params afterwards.
     #
     # Returns pass block.
-    def process_route(pattern, conditions, block = nil, values = [])
-      route = @request.path_info
-      route = '/' if route.empty? && !settings.empty_path_info?
-      route = route[0..-2] if !settings.strict_paths? && route != '/' && route.end_with?('/')
+    def process_route(pattern, conditions, block = nil, values = [], match: nil)
+      if match
+        params   = match.params
+        captures = match.captures
+      else
+        params = pattern.params(route)
+        return unless params
+      end
 
-      params = pattern.params(route)
-      return unless params
-
+      params = params.dup
       params.delete('ignore') # TODO: better params handling, maybe turn it into "smart" object or detect changes
       force_encoding(params)
+
       @params = @params.merge(params) { |_k, v1, v2| v2 || v1 } if params.any?
 
       regexp_exists = pattern.is_a?(Mustermann::Regular) || (pattern.respond_to?(:patterns) && pattern.patterns.any? { |subpattern| subpattern.is_a?(Mustermann::Regular) })
       if regexp_exists
-        captures           = pattern.match(route).captures.map { |c| URI_INSTANCE.unescape(c) if c }
+        match            ||= pattern.match(route)
+        captures           = match.captures.map { |c| URI_INSTANCE.unescape(c) if c }
         values            += captures
         @params[:captures] = force_encoding(captures) unless captures.nil? || captures.empty?
       else
@@ -1126,6 +1157,14 @@ module Sinatra
     ensure
       params ||= {}
       params.each { |k, _| @params.delete(k) } unless @env['sinatra.error.params']
+    end
+
+    # The current route being processed. Used for pattern matching and URL generation.
+    def route
+      route = @request.path_info
+      route = '/' if route.empty? && !settings.empty_path_info?
+      route = route[0..-2] if !settings.strict_paths? && route != '/' && route.end_with?('/')
+      route
     end
 
     # No matching route was found or all routes passed. The default
@@ -1300,7 +1339,7 @@ module Sinatra
         %r{zeitwerk/(core_ext/)?kernel\.rb}                 # Zeitwerk kernel#require decorator
       ].freeze
 
-      attr_reader :routes, :filters, :templates, :errors, :on_start_callback, :on_stop_callback
+      attr_reader :routes, :route_sets, :filters, :templates, :errors, :on_start_callback, :on_stop_callback
 
       def callers_to_ignore
         CALLERS_TO_IGNORE
@@ -1311,6 +1350,7 @@ module Sinatra
       def reset!
         @conditions     = []
         @routes         = {}
+        @route_sets     = {}
         @filters        = { before: [], after: [] }
         @errors         = {}
         @middleware     = []
@@ -1775,8 +1815,17 @@ module Sinatra
 
       def route(verb, path, options = {}, &block)
         enable :empty_path_info if path == '' && empty_path_info.nil?
-        signature = compile!(verb, path, block, **options)
+        pattern, _ = signature = compile!(verb, path, block, **options)
+
         (@routes[verb] ||= []) << signature
+        
+        if pattern.is_a? Mustermann::AST::Pattern
+          @route_sets[verb] = Mustermann::Set.new(strict_order: true) if @route_sets[verb].nil?
+          @route_sets[verb].add(pattern, signature) if @route_sets[verb]
+        else
+          @route_sets[verb] = false
+        end
+
         invoke_hook(:route_added, verb, path, block)
         signature
       end
