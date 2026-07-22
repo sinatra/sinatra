@@ -415,7 +415,7 @@ set :public_folder, __dir__ + '/static'
 
 Note that the public directory name is not included in the URL. A file
 `./public/css/style.css` is made available as
-`http://example.com/css/style.css`.
+`https://example.com/css/style.css`.
 
 Use the `:static_cache_control` setting (see [below](#cache-control)) to add
 `Cache-Control` header info.
@@ -585,7 +585,7 @@ get('/') { markdown :index }
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="http://haml.info/" title="haml">haml</a></td>
+    <td><a href="https://haml.info/" title="haml">haml</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
@@ -643,7 +643,7 @@ It also takes a block for inline templates (see [example](#inline-templates)).
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="http://www.nokogiri.org/" title="nokogiri">nokogiri</a></td>
+    <td><a href="https://www.nokogiri.org/" title="nokogiri">nokogiri</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
@@ -760,7 +760,7 @@ template than for the layout by passing the `:layout_engine` option.
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="http://rdoc.sourceforge.net/" title="RDoc">RDoc</a></td>
+    <td><a href="https://rdoc.sourceforge.net/" title="RDoc">RDoc</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
@@ -795,7 +795,7 @@ template than for the layout by passing the `:layout_engine` option.
 <table>
   <tr>
     <td>Dependency</td>
-    <td><a href="http://asciidoctor.org/" title="Asciidoctor">Asciidoctor</a></td>
+    <td><a href="https://asciidoctor.org/" title="Asciidoctor">Asciidoctor</a></td>
   </tr>
   <tr>
     <td>File Extension</td>
@@ -1512,7 +1512,7 @@ Any additional parameters are handled like arguments passed to `halt`:
 
 ```ruby
 redirect to('/bar'), 303
-redirect 'http://www.google.com/', 'wrong place, buddy'
+redirect 'https://www.google.com/', 'wrong place, buddy'
 ```
 
 You can also easily redirect back to the page the user came from with
@@ -1698,7 +1698,7 @@ The incoming request object can be accessed from request level (filter,
 routes, error handlers) through the `request` method:
 
 ```ruby
-# app running on http://example.com/example
+# app running on https://example.com/example
 get '/foo' do
   t = %w[text/css text/html application/javascript]
   request.accept              # ['text/html', '*/*']
@@ -1721,7 +1721,7 @@ get '/foo' do
   request.user_agent          # user agent (used by :agent condition)
   request.cookies             # hash of browser cookies
   request.xhr?                # is this an ajax request?
-  request.url                 # "http://example.com/example/foo"
+  request.url                 # "https://example.com/example/foo"
   request.path                # "/example/foo"
   request.ip                  # client IP address
   request.secure?             # false (would be true over ssl)
@@ -2498,7 +2498,7 @@ converted to `Sinatra::Base` components with two modifications:
 
 `Sinatra::Base` is a blank slate. Most options are disabled by default,
 including the built-in server. See [Configuring
-Settings](http://www.sinatrarb.com/configuration.html) for details on
+Settings](https://www.sinatrarb.com/configuration.html) for details on
 available options and their behavior. If you want behavior more similar
 to when you define your app at the top level (also known as Classic
 style), you can subclass `Sinatra::Application`:
@@ -2944,7 +2944,7 @@ SemVerTag.
 * IRC: [#sinatra](irc://chat.freenode.net/#sinatra) on [Freenode](https://freenode.net)
 * [Sinatra & Friends](https://discord.gg/ncjsfsNHh7) on Discord
 * [Sinatra Book](https://github.com/sinatra/sinatra-book) - Cookbook Tutorial
-* [Sinatra Recipes](http://recipes.sinatrarb.com/) - Community contributed
+* [Sinatra Recipes](https://recipes.sinatrarb.com/) - Community contributed
   recipes
 * API documentation for the [latest release](https://www.rubydoc.info/gems/sinatra)
   or the [current HEAD](https://www.rubydoc.info/github/sinatra/sinatra) on
