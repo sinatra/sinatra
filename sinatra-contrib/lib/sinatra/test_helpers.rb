@@ -73,7 +73,7 @@ module Sinatra
     #
     # Same as calling `set :option, false` for each of the given options.
 
-    # @!method use(middleware, *args, &block)
+    # @!method use(middleware, *args, **kwargs, &block)
     # @!scope class
     # Use the specified Rack middleware
 

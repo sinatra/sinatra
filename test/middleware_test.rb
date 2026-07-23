@@ -107,4 +107,38 @@ class MiddlewareTest < Minitest::Test
     @app.use KeywordArgumentInitializationMiddleware, argument: "argument"
     get '/'
   end
+
+  class ArgumentRecorderMiddleware < MockMiddleware
+    class << self
+      attr_accessor :args, :kwargs, :block
+    end
+
+    def initialize(app, *args, **kwargs, &block)
+      self.class.args, self.class.kwargs, self.class.block = args, kwargs, block
+      super app
+    end
+  end
+
+  it "passes keyword arguments as keywords, not as a trailing positional hash" do
+    @app.use ArgumentRecorderMiddleware, :positional, argument: 'keyword'
+    get '/'
+    assert_equal [:positional], ArgumentRecorderMiddleware.args
+    assert_equal({ argument: 'keyword' }, ArgumentRecorderMiddleware.kwargs)
+  end
+
+  # Ruby 2.7 cannot tell a trailing positional Hash from keywords: it absorbs
+  # both into **kwargs. The distinction only exists from Ruby 3.0 on.
+  it "passes a trailing positional hash as a positional argument, not as keywords" do
+    @app.use ArgumentRecorderMiddleware, { argument: 'positional' }
+    get '/'
+    assert_equal [{ argument: 'positional' }], ArgumentRecorderMiddleware.args
+    assert_equal({}, ArgumentRecorderMiddleware.kwargs)
+  end if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.0")
+
+  it "passes the block through to the middleware" do
+    block = proc { :called }
+    @app.use ArgumentRecorderMiddleware, &block
+    get '/'
+    assert_equal block, ArgumentRecorderMiddleware.block
+  end
 end
