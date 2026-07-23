@@ -9,6 +9,16 @@ class DelegatorTest < Minitest::Test
     end
   end
 
+  # Mirror cannot tell keywords apart from a trailing positional hash, since a
+  # method that only takes *args receives keywords as a Hash. This one can.
+  class KeywordRecorder
+    attr_reader :args, :kwargs
+
+    def use(*args, **kwargs)
+      @args, @kwargs = args, kwargs
+    end
+  end
+
   def self.delegates(name)
     it "delegates #{name}" do
       m = mirror { send name }
@@ -43,6 +53,12 @@ class DelegatorTest < Minitest::Test
   def mirror(&block)
     mirror = Mirror.new
     Sinatra::Delegator.target = mirror
+    delegate(&block)
+  end
+
+  def recorder(&block)
+    recorder = KeywordRecorder.new
+    Sinatra::Delegator.target = recorder
     delegate(&block)
   end
 
@@ -99,6 +115,20 @@ class DelegatorTest < Minitest::Test
     end
   end
 
+  it "delegates keyword arguments as keywords, not as a trailing positional hash" do
+    app = recorder { use :positional, keyword: 'value' }
+    assert_equal [:positional], app.args
+    assert_equal({ keyword: 'value' }, app.kwargs)
+  end
+
+  # Ruby 2.7 cannot tell a trailing positional Hash from keywords: it absorbs
+  # both into **kwargs. The distinction only exists from Ruby 3.0 on.
+  it "delegates a trailing positional hash as a positional argument, not as keywords" do
+    app = recorder { use({ keyword: 'value' }) }
+    assert_equal [{ keyword: 'value' }], app.args
+    assert_equal({}, app.kwargs)
+  end if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.0")
+
   it "registers extensions with the delegation target" do
     app, mixin = mirror, Module.new
     Sinatra.register mixin
@@ -115,6 +145,13 @@ class DelegatorTest < Minitest::Test
     app, mixin = mirror, Module.new
     Sinatra.use mixin
     assert_equal ["use", mixin.to_s], app.last_call
+  end
+
+  it "registers middleware with keyword arguments as keywords" do
+    app, mixin = recorder, Module.new
+    Sinatra.use mixin, keyword: 'value'
+    assert_equal [mixin], app.args
+    assert_equal({ keyword: 'value' }, app.kwargs)
   end
 
   it "should work with method_missing proxies for options" do
