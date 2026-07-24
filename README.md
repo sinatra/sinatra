@@ -2950,3 +2950,7 @@ SemVerTag.
   or the [current HEAD](https://www.rubydoc.info/github/sinatra/sinatra) on
   [RubyDoc](https://www.rubydoc.info/)
 * [CI Actions](https://github.com/sinatra/sinatra/actions)
+
+## Documentation
+
+- [Sourcey-generated API Reference](https://5e10621b510583.lhr.life) — Auto-generated documentation covering Sinatra routes, HTTP verbs, request/response, middleware, configuration, helpers, and more.
