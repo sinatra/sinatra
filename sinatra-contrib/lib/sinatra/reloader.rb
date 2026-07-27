@@ -313,6 +313,11 @@ module Sinatra
         watch_element(path, :middleware, [middleware, args, block])
         super
       end
+      # This override stores +args+ so the watcher can recognise the entry
+      # again, so it cannot forward with <tt>(...)</tt>. Without the flag the
+      # keyword marker is lost on the way to Sinatra::Base#use, and
+      # `use Foo, key: value` reaches Foo as a positional Hash.
+      ruby2_keywords(:use) if respond_to?(:ruby2_keywords, true)
 
       # Does everything Sinatra::Base#add_filter does, but it also tells
       # the +Watcher::List+ for the Sinatra application to watch the defined

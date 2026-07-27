@@ -46,6 +46,23 @@ class DelegatorTest < Minitest::Test
     delegate(&block)
   end
 
+  # Mirror cannot tell keywords from a trailing positional Hash, since a method
+  # that only takes *args receives keywords as a Hash. This one can.
+  class KeywordRecorder
+    attr_reader :args, :kwargs
+
+    def use(*args, **kwargs)
+      @args = args
+      @kwargs = kwargs
+    end
+  end
+
+  def recorder(&block)
+    recorder = KeywordRecorder.new
+    Sinatra::Delegator.target = recorder
+    delegate(&block)
+  end
+
   def delegate(&block)
     assert Sinatra::Delegator.target != Sinatra::Application
     Object.new.extend(Sinatra::Delegator).instance_eval(&block) if block
@@ -115,6 +132,13 @@ class DelegatorTest < Minitest::Test
     app, mixin = mirror, Module.new
     Sinatra.use mixin
     assert_equal ["use", mixin.to_s], app.last_call
+  end
+
+  it "registers middleware with keyword arguments as keywords" do
+    app, mixin = recorder, Module.new
+    Sinatra.use mixin, keyword: 'value'
+    assert_equal [mixin], app.args
+    assert_equal({ keyword: 'value' }, app.kwargs)
   end
 
   it "should work with method_missing proxies for options" do

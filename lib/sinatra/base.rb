@@ -2170,4 +2170,7 @@ module Sinatra
   def self.use(*args, &block)
     Delegator.target.use(*args, &block)
   end
+  # Without this, keyword arguments are collapsed into a trailing positional
+  # Hash on the way to Sinatra::Base.use.
+  singleton_class.send(:ruby2_keywords, :use) if singleton_class.respond_to?(:ruby2_keywords, true)
 end

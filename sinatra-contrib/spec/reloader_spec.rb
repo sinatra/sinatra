@@ -172,6 +172,35 @@ RSpec.describe Sinatra::Reloader do
       get('/foo') # ...to perform the reload
       expect(app_const.middleware).to be_empty
     end
+
+    it "passes keyword arguments to the middleware as keywords" do
+      class ::KeywordMiddleware
+        class << self; attr_accessor :options, :kwargs; end
+
+        # Declares both an optional positional Hash and keywords, which is the
+        # signature that cannot recover from a collapsed keyword Hash.
+        def initialize(app, options = {}, **kwargs)
+          self.class.options = options
+          self.class.kwargs = kwargs
+          @app = app
+        end
+
+        def call(env)
+          @app.call(env)
+        end
+      end
+
+      setup_example_app(:routes => ['get("/foo") { "foo" }'])
+      update_app_file(
+        :routes => ['get("/foo") { "foo" }'],
+        :middlewares => ['KeywordMiddleware, answer: 42']
+      )
+      get('/foo') # ...to perform the reload
+      get('/foo') # ...to build the middleware pipeline
+
+      expect(KeywordMiddleware.options).to eq({})
+      expect(KeywordMiddleware.kwargs).to eq(answer: 42)
+    end
   end
 
   describe "default filter reloading mechanism" do
