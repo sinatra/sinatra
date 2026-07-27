@@ -52,6 +52,30 @@ class HostAuthorization < Minitest::Test
       assert_equal 200, response.status
       assert_equal "OK", body
     end
+
+    it "allows any host when protection is disabled" do
+      mock_app do
+        disable :protection
+        get("/") { "OK" }
+      end
+
+      get "/", { "HTTP_HOST" => "example.com" }
+
+      assert_equal 200, response.status
+      assert_equal "OK", body
+    end
+
+    it "allows any host when host_authorization is set to false" do
+      mock_app do
+        set :host_authorization, false
+        get("/") { "OK" }
+      end
+
+      get "/", { "HTTP_HOST" => "example.com" }
+
+      assert_equal 200, response.status
+      assert_equal "OK", body
+    end
   end
 
   describe "in non-development environments" do
