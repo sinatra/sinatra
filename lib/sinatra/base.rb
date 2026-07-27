@@ -68,11 +68,15 @@ module Sinatra
     end
 
     def safe?
-      get? || head? || options? || trace?
+      get? || head? || options? || trace? || query?
     end
 
     def idempotent?
       safe? || put? || delete? || link? || unlink?
+    end
+
+    def query?
+      request_method == 'QUERY'
     end
 
     def link?
@@ -1540,6 +1544,8 @@ module Sinatra
 
       def post(path, opts = {}, &block)    route 'POST',    path, opts, &block end
 
+      def query(path, opts = {}, &block)   route 'QUERY',   path, opts, &block end
+
       def delete(path, opts = {}, &block)  route 'DELETE',  path, opts, &block end
 
       def head(path, opts = {}, &block)    route 'HEAD',    path, opts, &block end
@@ -2114,7 +2120,7 @@ module Sinatra
       end
     end
 
-    delegate :get, :patch, :put, :post, :delete, :head, :options, :link, :unlink,
+    delegate :get, :patch, :put, :post, :query, :delete, :head, :options, :link, :unlink,
              :template, :layout, :before, :after, :error, :not_found, :configure,
              :set, :mime_type, :enable, :disable, :use, :development?, :test?,
              :production?, :helpers, :settings, :register, :on_start, :on_stop
