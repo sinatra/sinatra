@@ -90,7 +90,17 @@ module Sinatra
   module JSON
     class << self
       def encode(object)
-        ::MultiJson.dump(object)
+        encoder = multi_json
+        encoder.respond_to?(:generate) ? encoder.generate(object) : encoder.dump(object)
+      end
+
+      # multi_json 1.21 renamed the +MultiJson+ constant to +MultiJSON+ and
+      # deprecated #dump/#load in favour of #generate/#parse. Prefer the new
+      # names when they're available while still supporting multi_json < 1.21
+      # (the gemspec floor), and resolve lazily so the lookup matches
+      # multi_json's load timing.
+      def multi_json
+        defined?(::MultiJSON) ? ::MultiJSON : ::MultiJson
       end
     end
 
@@ -110,17 +120,20 @@ module Sinatra
     end
 
     def resolve_encoder_action(object, encoder)
-      %i[encode generate].each do |method|
-        return encoder.send(method, object) if encoder.respond_to? method
+      if encoder.respond_to?(:generate)
+        encoder.generate(object)
+      elsif encoder.respond_to?(:encode)
+        encoder.encode(object)
+      elsif encoder.is_a?(Symbol)
+        object.__send__(encoder)
+      else
+        raise "#{encoder} does not respond to #generate nor #encode"
       end
-      raise "#{encoder} does not respond to #generate nor #encode" unless encoder.is_a? Symbol
-
-      object.__send__(encoder)
     end
   end
 
   Base.set :json_encoder do
-    ::MultiJson
+    Sinatra::JSON.multi_json
   end
 
   Base.set :json_content_type, :json
