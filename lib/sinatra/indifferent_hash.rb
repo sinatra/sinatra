@@ -38,6 +38,12 @@ module Sinatra
   # But this class is intended for use cases where strings or symbols are the
   # expected keys and it is convenient to understand both as the same. For
   # example the +params+ hash in Sinatra.
+  #
+  # To splat the hash into keyword arguments, use +symbolize_keys+, e.g.
+  # <tt>some_method(**params.symbolize_keys)</tt>. Splatting an IndifferentHash
+  # directly does not work, because its keys are stored as strings and keyword
+  # arguments bind by symbol. The result of +symbolize_keys+ is a plain Hash,
+  # not an IndifferentHash, so do not keep using it for string-key access.
   class IndifferentHash < Hash
     def self.[](*args)
       new.merge!(Hash[*args])
@@ -166,6 +172,32 @@ module Sinatra
       super(&method(:convert_key))
     end
 
+    # Returns a plain Hash (not an IndifferentHash) with String keys converted
+    # to Symbols. Intended as the bridge for keyword-argument splatting:
+    #
+    #   some_method(**params.symbolize_keys)
+    #
+    # Symbol, Integer, and invalid-encoding String keys are left as-is. The
+    # result is a plain Hash and is no longer indifferent, so a string lookup
+    # that previously worked now returns nil:
+    #
+    #   h = Sinatra::IndifferentHash[a: 1]
+    #   s = h.symbolize_keys # => { a: 1 } (a plain Hash)
+    #   s[:a]  # => 1
+    #   s['a'] # => nil
+    #
+    # It is shallow: only top-level String keys become Symbols. Nested
+    # IndifferentHash values are left as-is, so they stay indifferent. The
+    # receiver is not mutated.
+    #
+    # Note this is intentionally not routed through #transform_keys, which would
+    # re-apply #convert_key and turn the symbols straight back into strings.
+    def symbolize_keys
+      each_with_object({}) do |(key, value), hash|
+        hash[symbolizable?(key) ? key.to_sym : key] = value
+      end
+    end
+
     def select(*args, &block)
       return to_enum(:select) unless block_given?
 
@@ -192,6 +224,14 @@ module Sinatra
 
     def convert_key(key)
       key.is_a?(Symbol) ? key.to_s : key
+    end
+
+    # A key is safe to symbolize only if it is a String with valid encoding.
+    # Param names are attacker-controlled, and #to_sym raises EncodingError on
+    # invalid-encoding strings, so malformed keys are left untouched (as are
+    # non-String keys such as Integers and existing Symbols).
+    def symbolizable?(key)
+      key.is_a?(String) && key.valid_encoding?
     end
 
     def convert_value(value)
