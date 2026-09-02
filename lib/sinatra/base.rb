@@ -29,7 +29,12 @@ module Sinatra
   # The request object. See Rack::Request for more info:
   # https://rubydoc.info/github/rack/rack/main/Rack/Request
   class Request < Rack::Request
-    HEADER_PARAM = /\s*[\w.]+=(?:[\w.]+|"(?:[^"\\]|\\.)*")?\s*/.freeze
+    # Parameter names and unquoted values are tokens, so they may contain any
+    # of the tchar characters listed in RFC 9110 Section 5.6.2. Notably that
+    # includes "-", without which "charset=utf-8" stops matching part way
+    # through and every parameter after it, including the q weight, is lost.
+    HEADER_PARAM_TOKEN = /[\w.!\#$%&'*+^`|~-]+/.freeze
+    HEADER_PARAM = /\s*#{HEADER_PARAM_TOKEN}=(?:#{HEADER_PARAM_TOKEN}|"(?:[^"\\]|\\.)*")?\s*/.freeze
     HEADER_VALUE_WITH_PARAMS = %r{(?:(?:\w+|\*)/(?:\w+(?:\.|-|\+)?|\*)*)\s*(?:;#{HEADER_PARAM})*}.freeze
 
     # Returns an array of acceptable media types for the response
