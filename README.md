@@ -2280,6 +2280,18 @@ error do
 end
 ```
 
+Note that this catch-all handler (`error do ... end`, equivalent to
+`error Exception do ... end`) is *not* invoked for a server error when
+`show_exceptions` is set to `:after_handler`; the exception is always
+re-raised instead, for the development error page to display. The
+catch-all only runs for a server error when both `show_exceptions` and
+`raise_errors` are falsy (e.g. in `production`, where both default to
+`false`). A handler for a *specific* exception class
+(`error SomeError do ... end`) or HTTP status code
+(`error 500 do ... end`) does not have this limitation -- with
+`show_exceptions` set to `:after_handler`, it is matched and invoked
+regardless of `raise_errors`.
+
 The exception object can be obtained from the `sinatra.error` Rack variable:
 
 ```ruby
