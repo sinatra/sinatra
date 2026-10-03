@@ -286,6 +286,20 @@ class HelpersTest < Minitest::Test
       assert_equal 'mailto:jsmith@example.com', response['Location']
     end
 
+    it 'accepts protocol-relative URIs' do
+      mock_app do
+        get('/') do
+          redirect '//cdn.example.com/asset.png'
+          fail 'redirect should halt'
+        end
+      end
+
+      get '/'
+      assert_equal 302, status
+      assert_equal '', body
+      assert_equal '//cdn.example.com/asset.png', response['Location']
+    end
+
     it 'accepts a URI object instead of a String' do
       mock_app do
         get('/') { redirect URI.parse('http://sinatrarb.com') }

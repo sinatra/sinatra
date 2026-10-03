@@ -324,7 +324,11 @@ module Sinatra
     # Generates the absolute URI for a given path in the app.
     # Takes Rack routers and reverse proxies into account.
     def uri(addr = nil, absolute = true, add_script_name = true)
-      return addr if addr.to_s =~ /\A[a-z][a-z0-9+.\-]*:/i
+      # Anything that already addresses another resource has to be handed back
+      # untouched: a URI carrying a scheme (RFC 3986 section 3.1), and a
+      # network-path reference such as '//example.org/foo' (RFC 3986
+      # section 4.2), which inherits the scheme of the current request.
+      return addr if addr.to_s.start_with?('//') || addr.to_s =~ /\A[a-z][a-z0-9+.\-]*:/i
 
       uri = [host = String.new]
       if absolute
