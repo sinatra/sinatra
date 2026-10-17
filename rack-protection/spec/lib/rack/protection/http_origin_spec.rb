@@ -45,4 +45,48 @@ RSpec.describe Rack::Protection::HttpOrigin do
       expect(send(method.downcase, '/', {}, 'HTTP_ORIGIN' => 'http://www.friend.com')).to be_ok
     end
   end
+
+  describe 'with deny_missing_origin' do
+    before(:each) do
+      mock_app do
+        use Rack::Protection::HttpOrigin, deny_missing_origin: true,
+                                          permitted_origins: ['http://www.friend.com']
+        run DummyApp
+      end
+    end
+
+    %w[GET HEAD].each do |method|
+      it "accepts #{method} requests with no Origin" do
+        expect(send(method.downcase, '/')).to be_ok
+      end
+    end
+
+    %w[POST PUT DELETE].each do |method|
+      it "denies #{method} requests with no Origin" do
+        expect(send(method.downcase, '/')).not_to be_ok
+      end
+
+      it "accepts #{method} requests with same Origin as the request" do
+        expect(send(method.downcase, '/', {}, 'HTTP_ORIGIN' => 'http://example.org')).to be_ok
+      end
+
+      it "accepts #{method} requests with permitted Origin" do
+        expect(send(method.downcase, '/', {}, 'HTTP_ORIGIN' => 'http://www.friend.com')).to be_ok
+      end
+
+      it "denies #{method} requests with non-permitted Origin" do
+        expect(send(method.downcase, '/', {}, 'HTTP_ORIGIN' => 'http://malicious.com')).not_to be_ok
+      end
+
+      it "accepts #{method} requests with no Origin when allow_if is true" do
+        mock_app do
+          use Rack::Protection::HttpOrigin, deny_missing_origin: true,
+                                            allow_if: ->(env) { env['PATH_INFO'] == '/webhook' }
+          run DummyApp
+        end
+        expect(send(method.downcase, '/webhook')).to be_ok
+        expect(send(method.downcase, '/')).not_to be_ok
+      end
+    end
+  end
 end
