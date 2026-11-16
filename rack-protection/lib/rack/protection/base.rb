@@ -28,8 +28,13 @@ module Rack
     #                          and <tt>:reaction</tt> is set to <tt>:report</tt> (see #report). See DEFAULT_OPTIONS.
     # [<tt>:html_types</tt>] - Array of strings containing content types that are consider HTML
     #                          for the purposes of this gem. See DEFAULT_OPTIONS.
+    # [<tt>:allow_empty_referrer</tt>] - if true, a request without a Referer is treated as coming
+    #                                    from the same host, unless the browser marks it as
+    #                                    cross-site via Sec-Fetch-Site. See DEFAULT_OPTIONS.
     #
     class Base
+      CROSS_SITE_FETCHES = %w[cross-site same-site].freeze
+
       DEFAULT_OPTIONS = {
         reaction: :default_reaction, logging: true,
         message: 'Forbidden', encryptor: Digest::SHA1,
@@ -143,10 +148,16 @@ module Rack
 
       def referrer(env)
         ref = env['HTTP_REFERER'].to_s
-        return if !options[:allow_empty_referrer] && ref.empty?
+        return if ref.empty? && !empty_referrer_allowed?(env)
 
         URI.parse(ref).host || Request.new(env).host
       rescue URI::InvalidURIError
+      end
+
+      # A page can suppress the Referer with a Referrer-Policy, but browsers
+      # still report cross-site requests through Sec-Fetch-Site.
+      def empty_referrer_allowed?(env)
+        options[:allow_empty_referrer] && !CROSS_SITE_FETCHES.include?(env['HTTP_SEC_FETCH_SITE'])
       end
 
       def origin(env)

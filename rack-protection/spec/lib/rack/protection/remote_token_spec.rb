@@ -12,6 +12,10 @@ RSpec.describe Rack::Protection::RemoteToken do
     expect(post('/')).to be_ok
   end
 
+  it 'denies post requests with no referrer and no token from a cross-site browser context' do
+    expect(post('/', {}, 'HTTP_SEC_FETCH_SITE' => 'cross-site')).not_to be_ok
+  end
+
   it 'accepts post requests with a local referrer' do
     expect(post('/', {}, 'HTTP_REFERER' => '/')).to be_ok
   end

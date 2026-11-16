@@ -72,6 +72,10 @@ RSpec.describe Rack::Protection::JsonCsrf do
       expect(get('/', {})).to be_ok
     end
 
+    it 'denies get requests with json responses with no referrer from a cross-site browser context' do
+      expect(get('/', {}, 'HTTP_SEC_FETCH_SITE' => 'cross-site')).not_to be_ok
+    end
+
     it 'accepts XHR requests' do
       expect(get('/', {}, 'HTTP_REFERER' => 'http://evil.com', 'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest')).to be_ok
     end

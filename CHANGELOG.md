@@ -2,6 +2,9 @@
 
 * Fix: Require a dot before the domain for leading-dot `permitted_hosts` in `Rack::Protection::HostAuthorization`
   * `.example.org` no longer permits hosts that only end in `example.org`, like `evilexample.org`
+* Fix: Do not treat a missing `Referer` as same-origin when `Sec-Fetch-Site` says the request is cross-site or same-site
+  * Affects `RemoteToken`, `JsonCsrf` and `RemoteReferrer` in `Rack::Protection`
+  * Requests with neither header are accepted as before, `allow_empty_referrer` still defaults to `true`
 
 ## 4.2.1 / 2025-10-10
 
