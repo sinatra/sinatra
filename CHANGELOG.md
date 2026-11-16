@@ -1,5 +1,8 @@
 ## Unreleased
 
+* Fix: Require a dot before the domain for leading-dot `permitted_hosts` in `Rack::Protection::HostAuthorization`
+  * `.example.org` no longer permits hosts that only end in `example.org`, like `evilexample.org`
+
 ## 4.2.1 / 2025-10-10
 
 * Fix: Revert "`PATH_INFO` can never be empty" ([#2124](https://github.com/sinatra/sinatra/pull/2124))

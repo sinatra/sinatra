@@ -53,7 +53,12 @@ RSpec.describe Rack::Protection::HostAuthorization do
     bad_requests = lambda do
       [
         [{ 'HTTP_HOST' => '.allowed.org' }, true],
-        [{ 'HTTP_HOST' => 'attacker.com#x.allowed.org' }, false]
+        [{ 'HTTP_HOST' => 'attacker.com#x.allowed.org' }, false],
+        [{ 'HTTP_HOST' => 'notallowed.org' }, true],
+        [{ 'HTTP_HOST' => 'evil-allowed.org' }, true],
+        [{ 'HTTP_HOST' => 'foo.notallowed.org' }, true],
+        [{ 'HTTP_HOST' => 'foo.allowed.org', 'HTTP_X_FORWARDED_HOST' => 'notallowed.org' }, true],
+        [{ 'HTTP_HOST' => 'foo.allowed.org', 'HTTP_FORWARDED' => 'host=notallowed.org' }, true]
       ]
     end
 

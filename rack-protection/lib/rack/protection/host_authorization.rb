@@ -70,7 +70,7 @@ module Rack
             if host.start_with?(DOT)
               domain = host[1..-1]
               @permitted_hosts << domain.downcase
-              @domain_hosts << /\A#{SUBDOMAINS}#{Regexp.escape(domain)}\z/i
+              @domain_hosts << /\A#{SUBDOMAINS}\.#{Regexp.escape(domain)}\z/i
             else
               @permitted_hosts << host.downcase
             end
