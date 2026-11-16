@@ -226,6 +226,11 @@ RSpec.describe Sinatra::RespondWith do
 
       unless defined? JRUBY_VERSION
         it 'uses yajl for json' do
+          begin
+            require 'yajl'
+          rescue LoadError
+            skip 'unable to load yajl'
+          end
           respond_with :baz
           expect(req(:json)).to be_ok
           expect(body).to eq("\"yajl!\"")

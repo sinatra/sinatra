@@ -34,11 +34,15 @@ gem 'yard' # used by rake doc
 gem 'rack-protection', path: 'rack-protection'
 gem 'sinatra-contrib', path: 'sinatra-contrib'
 
+# eventmachine and yajl-ruby use the Data_Wrap_Struct C API, which was removed
+# in Ruby 4.1, so they fail to compile there. Their tests skip without them.
+legacy_c_api = Gem::Version.new(RUBY_VERSION) < Gem::Version.new('4.1')
+
 gem 'asciidoctor'
 gem 'builder'
 gem 'childprocess', '>= 5'
 gem 'erubi'
-gem 'eventmachine'
+gem 'eventmachine' if legacy_c_api
 gem 'falcon', '~> 0.40', platforms: [:ruby]
 gem 'haml'
 gem 'kramdown'
@@ -53,7 +57,7 @@ gem 'rdoc'
 gem 'redcarpet', platforms: [:ruby]
 gem 'simplecov', require: false
 gem 'slim', '~> 5'
-gem 'yajl-ruby', platforms: [:ruby]
+gem 'yajl-ruby', platforms: [:ruby] if legacy_c_api
 gem 'webrick'
 
 # sass-embedded depends on google-protobuf
