@@ -38,16 +38,19 @@ module Rack
         # the app will route on.
         use ::Rack::Protection::PathTraversal,         options unless except.include? :path_traversal
 
+        # Off by default, unless added. Wrap the rejecting protections so their
+        # responses get these headers too.
+        use ::Rack::Protection::ReferrerPolicy,        options if use_these.include? :referrer_policy
+        use ::Rack::Protection::StrictTransport,       options if use_these.include? :strict_transport
+
         # Off by default, unless added
         use ::Rack::Protection::AuthenticityToken,     options if use_these.include? :authenticity_token
         use ::Rack::Protection::ContentSecurityPolicy, options if use_these.include? :content_security_policy
         use ::Rack::Protection::CookieTossing,         options if use_these.include? :cookie_tossing
         use ::Rack::Protection::EscapedParams,         options if use_these.include? :escaped_params
         use ::Rack::Protection::FormToken,             options if use_these.include? :form_token
-        use ::Rack::Protection::ReferrerPolicy,        options if use_these.include? :referrer_policy
         use ::Rack::Protection::RemoteReferrer,        options if use_these.include? :remote_referrer
         use ::Rack::Protection::SessionHijacking,      options if use_these.include? :session_hijacking
-        use ::Rack::Protection::StrictTransport,       options if use_these.include? :strict_transport
 
         # On by default, unless skipped
         use ::Rack::Protection::FrameOptions,          options unless except.include? :frame_options

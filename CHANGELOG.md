@@ -9,6 +9,11 @@
 * Docs: Document that static files are served through symlinks pointing outside `public_folder`
 * Fix: `Sinatra::QuietLogger` no longer hides requests that are routed outside the quiet prefixes
   * `/images/../admin` is routed to `/admin`, so it is now logged even with `images` as a quiet prefix
+* Fix: Set `Strict-Transport-Security` and `Referrer-Policy` on responses rejected by other protections
+  * Only for apps that use `strict_transport` or `referrer_policy`, neither is enabled by default
+  * Responses rejected by `AuthenticityToken`, `FormToken` or `CookieTossing` now have both headers, those rejected by `RemoteReferrer` or `SessionHijacking` now have `Strict-Transport-Security`
+  * Requests are accepted and rejected as before, so nothing changes with the `drop_session` reaction, the default in Sinatra, as it does not reject requests
+  * A header already set on the response is kept
 * Fix: Run `Rack::Protection::PathTraversal` before the other protections
   * All protections now see the normalized path, the one the app routes on, where some saw the path as it was sent
   * Only requests with a path that gets normalized are affected: `.` or `..` segments, `%2e`, `%2f`, `%5c`, backslashes or repeated slashes

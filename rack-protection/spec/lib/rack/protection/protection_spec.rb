@@ -166,5 +166,17 @@ RSpec.describe Rack::Protection do
       post('/api/external/%2e%2e/secret', {}, 'rack.session' => {})
       expect(last_response).to be_forbidden
     end
+
+    it 'sets response headers on requests rejected by other protections' do
+      mock_app do
+        use Rack::Protection, use: %i[authenticity_token referrer_policy strict_transport]
+        run DummyApp
+      end
+
+      post('/', {}, 'rack.session' => {})
+      expect(last_response).to be_forbidden
+      expect(last_response.headers['strict-transport-security']).to eq('max-age=31536000')
+      expect(last_response.headers['referrer-policy']).to eq('strict-origin-when-cross-origin')
+    end
   end
 end
