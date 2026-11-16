@@ -5,6 +5,7 @@
 * Fix: Do not treat a missing `Referer` as same-origin when `Sec-Fetch-Site` says the request is cross-site or same-site
   * Affects `RemoteToken`, `JsonCsrf` and `RemoteReferrer` in `Rack::Protection`
   * Requests with neither header are accepted as before, `allow_empty_referrer` still defaults to `true`
+* Fix: `Rack::Protection::CookieTossing` no longer rejects all requests after one with duplicate session cookies
 
 ## 4.2.1 / 2025-10-10
 

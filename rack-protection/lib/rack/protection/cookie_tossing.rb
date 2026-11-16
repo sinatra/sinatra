@@ -40,22 +40,15 @@ module Rack
       end
 
       def accepts?(env)
-        cookie_header = env['HTTP_COOKIE']
-        cookies = Rack::Utils.parse_query(cookie_header, ';,') { |s| s }
-        cookies.each do |k, v|
-          if (k == session_key && Array(v).size > 1) ||
-             (k != session_key && Rack::Utils.unescape(k) == session_key)
-            bad_cookies << k
-          end
-        end
-        bad_cookies.empty?
+        bad_cookies(env).empty?
       end
 
       def remove_bad_cookies(request, response)
-        return if bad_cookies.empty?
+        names = bad_cookies(request.env)
+        return if names.empty?
 
         paths = cookie_paths(request.path)
-        bad_cookies.each do |name|
+        names.each do |name|
           paths.each { |path| response.set_cookie name, empty_cookie(request.host, path) }
         end
       end
@@ -66,8 +59,15 @@ module Rack
         [302, { 'content-type' => 'text/html', 'location' => request.path }, []]
       end
 
-      def bad_cookies
-        @bad_cookies ||= []
+      # The names of the session cookies of this request that are not
+      # the one session cookie. The middleware instance serves every
+      # request, so they must not be kept on it.
+      def bad_cookies(env)
+        cookies = Rack::Utils.parse_query(env['HTTP_COOKIE'], ';,') { |s| s }
+        cookies.filter_map do |k, v|
+          k if (k == session_key && Array(v).size > 1) ||
+               (k != session_key && Rack::Utils.unescape(k) == session_key)
+        end
       end
 
       def cookie_paths(path)

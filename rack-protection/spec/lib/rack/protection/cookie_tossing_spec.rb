@@ -26,6 +26,15 @@ RSpec.describe Rack::Protection::CookieTossing do
       expect(last_response).not_to be_ok
     end
 
+    it 'accepts requests after one with duplicate session cookies' do
+      get '/', {}, 'HTTP_COOKIE' => 'rack.session=EVIL_SESSION_TOKEN; rack.session=SESSION_TOKEN'
+      expect(last_response).not_to be_ok
+
+      get '/', {}, 'HTTP_COOKIE' => 'rack.session=SESSION_TOKEN'
+      expect(last_response).to be_ok
+      expect(last_response.headers).not_to have_key('set-cookie')
+    end
+
     it 'adds the correct Set-Cookie header' do
       get '/some/path', {}, 'HTTP_COOKIE' => 'rack.%73ession=EVIL_SESSION_TOKEN; rack.session=EVIL_SESSION_TOKEN; rack.session=SESSION_TOKEN'
 
