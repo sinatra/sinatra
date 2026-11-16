@@ -23,4 +23,6 @@ gem 'rspec', '~> 3'
 gem 'sinatra', path: '..'
 gem 'slim'
 gem 'tilt', tilt_version
-gem 'yajl-ruby', platforms: [:ruby] # c-ext
+# uses the Data_Wrap_Struct C API, which was removed in Ruby 4.1, so it fails
+# to compile there; the yajl specs skip without it
+gem 'yajl-ruby', platforms: [:ruby] if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('4.1')
