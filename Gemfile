@@ -79,5 +79,10 @@ gem 'sass-embedded', '~> 1.54' unless (java && aarch64) || ruby31
 #
 # it is not a guarantee that the rust gems magnus and rb-sys have been updated for ruby-head
 # example for 4.1 dev https://github.com/matsadler/magnus/pull/164, https://github.com/oxidize-rb/rb-sys/pull/697
+#
+# commonmarker 2.0.1 is the last release with prebuilt gems for Ruby 3.1. Newer
+# ones are compiled from source there, and their bundled oniguruma fails to
+# build with GCC 15 (C23 by default), as on ubuntu-26.04.
 ruby_head = RUBY_PATCHLEVEL == -1
-gem 'commonmarker' unless (java || ruby_head)
+commonmarker_version = ruby31 ? '2.0.1' : nil
+gem 'commonmarker', commonmarker_version unless (java || ruby_head)
