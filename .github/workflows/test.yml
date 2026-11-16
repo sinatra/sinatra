@@ -27,6 +27,7 @@ jobs:
           - "3.3"
           - "3.4"
           - "4.0"
+          - "4.1.0-preview1"
           - "jruby"
           - "truffleruby"
         include:
@@ -94,6 +95,7 @@ jobs:
           - "--enable-frozen-string-literal --debug-frozen-string-literal"
         include:
           - { ruby: "4.0", rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable }
+          - { ruby: "4.1.0-preview1", rack: stable, puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable }
           # Rack
           - { ruby: 3.4, rack: "~>3.0.0", puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable }
           - { ruby: 3.4, rack: "~>3.1.0", puma: stable, tilt: stable, rack_session: stable, zeitwerk: stable }
