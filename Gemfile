@@ -66,7 +66,11 @@ gem 'webrick'
 # https://github.com/protocolbuffers/protobuf/issues/11935
 java    = %w(jruby truffleruby).include?(RUBY_ENGINE)
 aarch64 = RbConfig::CONFIG["target_cpu"] == 'aarch64'
-gem 'sass-embedded', '~> 1.54' unless java && aarch64
+# sass-embedded has no prebuilt gems for Ruby 3.1, and building it from source
+# in this bundle fails as Ruby 3.1's own psych and json get mixed with the
+# newer psych and json gems. The sass tests skip without it.
+ruby31 = RUBY_VERSION.start_with?('3.1.')
+gem 'sass-embedded', '~> 1.54' unless (java && aarch64) || ruby31
 
 # if commonmarker can't be loaded, the commonmarker tests are skipped, that's fine thanks to the big CI matrix
 #
