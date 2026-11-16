@@ -7,6 +7,8 @@
   * Requests with neither header are accepted as before, `allow_empty_referrer` still defaults to `true`
 * Fix: `Rack::Protection::CookieTossing` no longer rejects all requests after one with duplicate session cookies
 * Docs: Document that static files are served through symlinks pointing outside `public_folder`
+* Fix: `Sinatra::QuietLogger` no longer hides requests that are routed outside the quiet prefixes
+  * `/images/../admin` is routed to `/admin`, so it is now logged even with `images` as a quiet prefix
 
 ## 4.2.1 / 2025-10-10
 
