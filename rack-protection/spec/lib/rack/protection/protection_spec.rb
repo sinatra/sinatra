@@ -152,5 +152,19 @@ RSpec.describe Rack::Protection do
       post('/', {}, 'HTTP_REFERER' => 'http://example.com/foo', 'HTTP_HOST' => 'example.org')
       expect(last_response).to be_ok
     end
+
+    it 'evaluates allow_if against the path after traversal cleanup' do
+      mock_app do
+        use Rack::Protection, use: [:authenticity_token],
+                              allow_if: ->(env) { env['PATH_INFO'].start_with?('/api/external/') }
+        run DummyApp
+      end
+
+      post('/api/external/hook', {}, 'rack.session' => {})
+      expect(last_response).to be_ok
+
+      post('/api/external/%2e%2e/secret', {}, 'rack.session' => {})
+      expect(last_response).to be_forbidden
+    end
   end
 end

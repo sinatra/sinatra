@@ -33,6 +33,11 @@ module Rack
       end
 
       Rack::Builder.new do
+        # On by default, unless skipped. Runs first so every other protection,
+        # including allow_if hooks, sees the same normalized PATH_INFO that
+        # the app will route on.
+        use ::Rack::Protection::PathTraversal,         options unless except.include? :path_traversal
+
         # Off by default, unless added
         use ::Rack::Protection::AuthenticityToken,     options if use_these.include? :authenticity_token
         use ::Rack::Protection::ContentSecurityPolicy, options if use_these.include? :content_security_policy
@@ -49,7 +54,6 @@ module Rack
         use ::Rack::Protection::HttpOrigin,            options unless except.include? :http_origin
         use ::Rack::Protection::IPSpoofing,            options unless except.include? :ip_spoofing
         use ::Rack::Protection::JsonCsrf,              options unless except.include? :json_csrf
-        use ::Rack::Protection::PathTraversal,         options unless except.include? :path_traversal
         use ::Rack::Protection::RemoteToken,           options unless except.include? :remote_token
         use ::Rack::Protection::XSSHeader,             options unless except.include? :xss_header
         run app

@@ -9,6 +9,18 @@
 * Docs: Document that static files are served through symlinks pointing outside `public_folder`
 * Fix: `Sinatra::QuietLogger` no longer hides requests that are routed outside the quiet prefixes
   * `/images/../admin` is routed to `/admin`, so it is now logged even with `images` as a quiet prefix
+* Fix: Run `Rack::Protection::PathTraversal` before the other protections
+  * All protections now see the normalized path, the one the app routes on, where some saw the path as it was sent
+  * Only requests with a path that gets normalized are affected: `.` or `..` segments, `%2e`, `%2f`, `%5c`, backslashes or repeated slashes
+  * Check code written for the path as it was sent: an `allow_if` matching `/webhooks/[^/]+` no longer matches `/webhooks/a%2Fb`, as it is called with `/webhooks/a/b`
+
+  | What | Before | After |
+  | --- | --- | --- |
+  | `allow_if` of `AuthenticityToken`, `FormToken`, `HttpOrigin` and `JsonCsrf` | called with the path as it was sent | called with the normalized path |
+  | `instrumenter` of the protections that ran before `PathTraversal` | notified with the path as it was sent | notified with the normalized path |
+  | Per-form tokens of `AuthenticityToken` and `FormToken` | checked against the path as it was sent | checked against the normalized path |
+  | `CookieTossing` | redirected to, and expired cookies for, the path as it was sent | uses the normalized path |
+  | `RemoteToken`, `XSSHeader` and middleware added with `use` | saw the normalized path | unchanged |
 
 ## 4.2.1 / 2025-10-10
 
