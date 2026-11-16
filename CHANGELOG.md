@@ -6,6 +6,7 @@
   * Affects `RemoteToken`, `JsonCsrf` and `RemoteReferrer` in `Rack::Protection`
   * Requests with neither header are accepted as before, `allow_empty_referrer` still defaults to `true`
 * Fix: `Rack::Protection::CookieTossing` no longer rejects all requests after one with duplicate session cookies
+* Docs: Document that static files are served through symlinks pointing outside `public_folder`
 
 ## 4.2.1 / 2025-10-10
 

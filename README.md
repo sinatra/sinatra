@@ -417,6 +417,10 @@ Note that the public directory name is not included in the URL. A file
 `./public/css/style.css` is made available as
 `http://example.com/css/style.css`.
 
+Symbolic links inside the public directory are followed, even when they
+point outside of it. Only link to files and directories that are meant to
+be public.
+
 Use the `:static_cache_control` setting (see [below](#cache-control)) to add
 `Cache-Control` header info.
 

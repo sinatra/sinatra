@@ -1,4 +1,5 @@
 require_relative 'test_helper'
+require 'tmpdir'
 
 class StaticTest < Minitest::Test
   setup do
@@ -271,6 +272,23 @@ class StaticTest < Minitest::Test
     assert_equal File.read(real_path), body
     assert_equal File.size(real_path).to_s, response['Content-Length']
     assert response.headers.include?('Last-Modified')
+  end
+
+  it 'serves files through symlinks pointing outside the public directory' do
+    Dir.mktmpdir do |dir|
+      public_dir = File.join(dir, 'public')
+      Dir.mkdir(public_dir)
+      File.write(File.join(dir, 'shared.txt'), 'shared')
+      File.symlink(File.join(dir, 'shared.txt'), File.join(public_dir, 'link.txt'))
+      mock_app do
+        set :static, true
+        set :public_folder, public_dir
+      end
+
+      get '/link.txt'
+      assert ok?
+      assert_equal 'shared', body
+    end
   end
 
   it 'applies custom headers defined in static_headers setting' do
