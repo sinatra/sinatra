@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 4.2.2 / 2026-11-17
+
 * Fix: Require a dot before the domain for leading-dot `permitted_hosts` in `Rack::Protection::HostAuthorization`
   * `.example.org` no longer permits hosts that only end in `example.org`, like `evilexample.org`
 * Fix: Do not treat a missing `Referer` as same-origin when `Sec-Fetch-Site` says the request is cross-site or same-site
@@ -26,6 +28,9 @@
   | Per-form tokens of `AuthenticityToken` and `FormToken` | checked against the path as it was sent | checked against the normalized path |
   | `CookieTossing` | redirected to, and expired cookies for, the path as it was sent | uses the normalized path |
   | `RemoteToken`, `XSSHeader` and middleware added with `use` | saw the normalized path | unchanged |
+
+* Fix: `rack-protection` and `sinatra-contrib` used from a path source no longer fail to load after `bundle cache` ([#2144](https://github.com/sinatra/sinatra/pull/2144))
+* Fix: Avoid "method redefined" warnings in `Sinatra::Delegator` ([#2139](https://github.com/sinatra/sinatra/pull/2139))
 
 ## 4.2.1 / 2025-10-10
 
