@@ -308,9 +308,9 @@ module Sinatra
       # Does everything Sinatra::Base#use does, but it also tells the
       # +Watcher::List+ for the Sinatra application to watch the middleware
       # being used.
-      def use(middleware, *args, &block)
+      def use(middleware, *args, **kwargs, &block)
         path = caller_files[1] || File.expand_path($0)
-        watch_element(path, :middleware, [middleware, args, block])
+        watch_element(path, :middleware, [middleware, args, kwargs, block])
         super
       end
 

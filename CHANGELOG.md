@@ -1,5 +1,18 @@
 ## Unreleased
 
+* Breaking change: Stop using `ruby2_keywords` for argument forwarding ([#2184](https://github.com/sinatra/sinatra/issues/2184))
+  * `Sinatra::Base.middleware` entries are now `[middleware, args, kwargs, block]` instead of
+    `[middleware, args, block]`. Code that reads or appends to `settings.middleware` needs updating;
+    a leftover 3-element entry lands its block in the keyword slot, raising `TypeError` when the
+    middleware pipeline is built.
+  * `use` called with keyword arguments but no middleware class (`use(middleware: Foo)`) now raises
+    `ArgumentError` at the call site instead of failing later when the app is built.
+  * Fix: `Sinatra::Reloader` no longer turns middleware keyword arguments into a positional Hash.
+    Middleware declaring both an optional positional Hash and keywords
+    (`def initialize(app, options = {}, **kwargs)`) now receives them in the keyword slot.
+  * Keyword arguments passed through `use`, `Sinatra::Base.new` and the top-level DSL are otherwise
+    delivered unchanged.
+
 ## 4.2.1 / 2025-10-10
 
 * Fix: Revert "`PATH_INFO` can never be empty" ([#2124](https://github.com/sinatra/sinatra/pull/2124))

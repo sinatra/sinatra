@@ -1581,11 +1581,10 @@ module Sinatra
       end
 
       # Use the specified Rack middleware
-      def use(middleware, *args, &block)
+      def use(middleware, *args, **kwargs, &block)
         @prototype = nil
-        @middleware << [middleware, args, block]
+        @middleware << [middleware, args, kwargs, block]
       end
-      ruby2_keywords(:use) if respond_to?(:ruby2_keywords, true)
 
       # Stop the self-hosted server if running.
       def quit!
@@ -1659,11 +1658,10 @@ module Sinatra
       # Create a new instance of the class fronted by its middleware
       # pipeline. The object is guaranteed to respond to #call but may not be
       # an instance of the class new was called on.
-      def new(*args, &block)
-        instance = new!(*args, &block)
+      def new(*args, **kwargs, &block)
+        instance = new!(*args, **kwargs, &block)
         Wrapper.new(build(instance).to_app, instance)
       end
-      ruby2_keywords :new if respond_to?(:ruby2_keywords, true)
 
       # Creates a Rack::Builder instance with all the middleware set up and
       # the given +app+ as end point.
@@ -1828,7 +1826,7 @@ module Sinatra
       end
 
       def setup_middleware(builder)
-        middleware.each { |c, a, b| builder.use(c, *a, &b) }
+        middleware.each { |c, a, k, b| builder.use(c, *a, **k, &b) }
       end
 
       def setup_logging(builder)
@@ -2103,13 +2101,11 @@ module Sinatra
       methods.each do |method_name|
         next if method_defined?(method_name) || private_method_defined?(method_name)
 
-        define_method(method_name) do |*args, &block|
-          return super(*args, &block) if respond_to? method_name
+        define_method(method_name) do |*args, **kwargs, &block|
+          return super(*args, **kwargs, &block) if respond_to? method_name
 
-          Delegator.target.send(method_name, *args, &block)
+          Delegator.target.send(method_name, *args, **kwargs, &block)
         end
-        # ensure keyword argument passing is compatible with ruby >= 2.7
-        ruby2_keywords(method_name) if respond_to?(:ruby2_keywords, true)
         private method_name
       end
     end
@@ -2167,7 +2163,7 @@ module Sinatra
   end
 
   # Use the middleware for classic applications.
-  def self.use(*args, &block)
-    Delegator.target.use(*args, &block)
+  def self.use(*args, **kwargs, &block)
+    Delegator.target.use(*args, **kwargs, &block)
   end
 end
