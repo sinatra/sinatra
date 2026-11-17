@@ -2408,7 +2408,7 @@ end
 ```
 
 The semantics of `use` are identical to those defined for the
-[Rack::Builder](https://www.rubydoc.info/gems/rack/Rack/Builder) DSL
+Rack::Builder DSL
 (most frequently used from rackup files). For example, the `use` method
 accepts multiple/variable args as well as blocks:
 
