@@ -13,9 +13,11 @@ module Rack
     #                      * https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Origin
     #
     # Rejects any {unsafe request}[https://httpwg.org/specs/rfc9110.html#safe.methods]
-    # whose Origin HTTP header does match one of the origins given to <tt>:permitted_origins</tt>.
+    # whose Origin HTTP header does not match one of the origins given to <tt>:permitted_origins</tt>.
     # Note that if the Origin is the same as the request host, the request is always allowed.
-    # Similarly, if there is not Origin header for an unsafe request, it is always denied.
+    # By default, an unsafe request without an Origin header is also allowed, since many
+    # non-browser clients (curl, mobile apps, webhooks) do not send one. Set
+    # <tt>:deny_missing_origin</tt> to deny those requests instead.
     #
     # == Options
     #
@@ -29,7 +31,14 @@ module Rack
     #                      By default, this is <tt>nil</tt>, meaning that <tt>:permitted_origins</tt> control
     #                      the behavior. Note that if the request's origin is the same as the Origin header,
     #                      this Proc is not evaluated and the request is allowed.  Further note that if there is no
-    #                      Origin header, this Proc is not evaluated and the request is denied.
+    #                      Origin header and <tt>:deny_missing_origin</tt> is not set, this Proc is not evaluated
+    #                      and the request is allowed.
+    #
+    # [<tt>:deny_missing_origin</tt>] When <tt>true</tt>, unsafe requests without an Origin header are denied,
+    #                                 unless <tt>:allow_if</tt> returns true for them. This hardens CSRF
+    #                                 protection, but breaks clients that do not send an Origin header,
+    #                                 such as older browsers and most non-browser clients.
+    #                                 Default value is <tt>false</tt>.
     #
     # [Rack::Protection::Base options] options supported by Rack::Protection::Base may affect this middleware.
     #
@@ -38,10 +47,15 @@ module Rack
     #
     #     use Rack::Protection, permitted_origins: ["http://localhost:3000", "http://127.0.0.1:3000"]
     #
+    # == Example: Deny unsafe requests without an Origin header, except for webhooks
+    #
+    #     use Rack::Protection::HttpOrigin, deny_missing_origin: true,
+    #                                       allow_if: ->(env) { env['PATH_INFO'].start_with?('/webhooks/') }
+    #
     class HttpOrigin < Base
       DEFAULT_PORTS = { 'http' => 80, 'https' => 443, 'coffee' => 80 }
       default_reaction :deny
-      default_options allow_if: nil
+      default_options allow_if: nil, deny_missing_origin: false
 
       def base_url(env)
         request = Rack::Request.new(env)
@@ -51,9 +65,12 @@ module Rack
 
       def accepts?(env)
         return true if safe? env
-        return true unless (origin = env['HTTP_ORIGIN'])
-        return true if base_url(env) == origin
+
+        origin = env['HTTP_ORIGIN']
+        return true if origin.nil? && !options[:deny_missing_origin]
+        return true if origin && base_url(env) == origin
         return true if options[:allow_if]&.call(env)
+        return false if origin.nil?
 
         permitted_origins = options[:permitted_origins]
         Array(permitted_origins).include? origin
