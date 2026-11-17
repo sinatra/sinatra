@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.name        = 'sinatra-contrib'
   s.version     = version
   s.description = 'Collection of useful Sinatra extensions'
-  s.homepage    = 'http://sinatra.run/contrib/'
+  s.homepage    = 'https://sinatra.run/contrib/'
   s.license     = 'MIT'
   s.summary     = "#{s.description}."
   s.authors     = ['https://github.com/sinatra/sinatra/graphs/contributors']
@@ -32,7 +32,7 @@ RubyGems 2.0 or newer is required to protect against public gem pushes. You can 
 
   s.metadata = {
     'source_code_uri' => 'https://github.com/sinatra/sinatra/tree/main/sinatra-contrib',
-    'homepage_uri' => 'http://sinatra.run/contrib/',
+    'homepage_uri' => 'https://sinatra.run/contrib/',
     'documentation_uri' => 'https://www.rubydoc.info/gems/sinatra-contrib',
     'rubygems_mfa_required' => 'true'
   }

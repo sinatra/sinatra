@@ -31,7 +31,7 @@ RubyGems 2.0 or newer is required to protect against public gem pushes. You can 
 
   s.metadata = {
     'source_code_uri' => 'https://github.com/sinatra/sinatra/tree/main/rack-protection',
-    'homepage_uri' => 'http://sinatra.run/protection/',
+    'homepage_uri' => 'https://sinatra.run/protection/',
     'documentation_uri' => 'https://www.rubydoc.info/gems/rack-protection',
     'rubygems_mfa_required' => 'true'
   }
