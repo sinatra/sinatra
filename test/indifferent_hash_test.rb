@@ -298,3 +298,89 @@ class TestIndifferentHash < Minitest::Test
     assert_instance_of Sinatra::IndifferentHash, hash
   end if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.0")
 end
+
+class TestIndifferentHashSymbolizeKeys < Minitest::Test
+  def test_returns_a_plain_hash_with_symbol_keys
+    result = Sinatra::IndifferentHash[a: 1, b: 2].symbolize_keys
+    assert_equal({ a: 1, b: 2 }, result)
+    assert_instance_of Hash, result
+    refute_kind_of Sinatra::IndifferentHash, result
+  end
+
+  def test_keys_are_actual_symbols
+    # Load-bearing: guards against a refactor onto #transform_keys, which would
+    # re-apply convert_key and silently turn the keys back into strings. A
+    # value-only check would not catch that, so assert the key classes.
+    result = Sinatra::IndifferentHash[a: 1, b: 2].symbolize_keys
+    assert_equal [Symbol, Symbol], result.keys.map(&:class)
+  end
+
+  def test_splats_into_named_keyword_arguments
+    # The core #1592 regression: bare **indifferent_hash raises ArgumentError
+    # because keyword arguments bind by symbol, but the symbolized result binds.
+    method = ->(a:, b:) { [a, b] }
+    assert_equal [1, 2], method.call(**Sinatra::IndifferentHash[a: 1, b: 2].symbolize_keys)
+  end
+
+  def test_splats_into_keyword_collector
+    collector = ->(**kwargs) { kwargs }
+    assert_equal({ a: 1 }, collector.call(**Sinatra::IndifferentHash[a: 1].symbolize_keys))
+  end
+
+  def test_invalid_encoding_key_is_left_as_a_string
+    # Param names are attacker-controlled; an unguarded #to_sym would raise
+    # EncodingError on a malformed key, turning a request into a 500.
+    bad_key = "\xC3\x28".dup.force_encoding('UTF-8')
+    refute bad_key.valid_encoding?
+
+    hash = Sinatra::IndifferentHash.new
+    hash[bad_key] = 1
+    hash[:good] = 2
+
+    result = nil
+    assert_silent { result = hash.symbolize_keys }
+    assert_equal 1, result[bad_key]
+    assert_includes result.keys, bad_key
+    assert_equal 2, result[:good]
+  end
+
+  def test_binary_key_with_valid_encoding_is_symbolized
+    binary_key = "\xAB".b
+    assert binary_key.valid_encoding?
+
+    result = Sinatra::IndifferentHash[binary_key => 1].symbolize_keys
+    assert_equal 1, result[binary_key.to_sym]
+  end
+
+  def test_non_string_keys_pass_through_unchanged
+    hash = Sinatra::IndifferentHash.new
+    hash[:a] = 1   # stored as "a"
+    hash[0] = :zero
+
+    result = hash.symbolize_keys
+    assert_equal :zero, result[0]
+    assert_includes result.keys, 0
+    assert_equal 1, result[:a]
+  end
+
+  def test_result_is_no_longer_indifferent
+    result = Sinatra::IndifferentHash[a: 1].symbolize_keys
+    assert_equal 1, result[:a]
+    assert_nil result['a']
+  end
+
+  def test_nested_values_stay_indifferent
+    hash = Sinatra::IndifferentHash[outer: { inner: 1 }]
+    result = hash.symbolize_keys
+
+    assert_kind_of Sinatra::IndifferentHash, result[:outer]
+    assert_equal 1, result[:outer][:inner]
+    assert_equal 1, result[:outer]['inner']
+  end
+
+  def test_does_not_mutate_the_receiver
+    hash = Sinatra::IndifferentHash[a: 1]
+    hash.symbolize_keys
+    assert_equal ['a'], hash.keys
+  end
+end

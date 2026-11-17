@@ -1,5 +1,8 @@
 ## Unreleased
 
+* New: Add `Sinatra::IndifferentHash#symbolize_keys`, the supported way to splat params into keyword
+  arguments (`some_method(**params.symbolize_keys)`) ([#2171](https://github.com/sinatra/sinatra/pull/2171))
+
 ## 4.2.1 / 2025-10-10
 
 * Fix: Revert "`PATH_INFO` can never be empty" ([#2124](https://github.com/sinatra/sinatra/pull/2124))
