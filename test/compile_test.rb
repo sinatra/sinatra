@@ -141,4 +141,9 @@ class CompileTest < Minitest::Test
   fails "/bar", "/foo/bar", :regexp
   raises "^/foo/bar$", :regexp
   parses "^/foo/bar$", "/foo/bar", {}, :regexp, :check_anchors => false
+
+  # Invalid capture names would silently change params
+  raises "/:a/:a"
+  raises "/:captures"
+  raises "/:Foo"
 end
