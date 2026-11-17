@@ -60,11 +60,11 @@ track patch requests.
   repository and build process but is managed the same as the website and
   project codebase.
 
-* [Sinatra Recipes](http://recipes.sinatrarb.com/) is a community
+* [Sinatra Recipes](http://recipes.sinatra.run/) is a community
   project where anyone is free to contribute ideas, recipes and tutorials. Which
   also has its own [Git repository](http://github.com/sinatra/sinatra-recipes).
 
-* [The Introduction](http://www.sinatrarb.com/intro.html) is generated from
+* [The Introduction](http://sinatra.run/intro.html) is generated from
   Sinatra's [README file](http://github.com/sinatra/sinatra/blob/main/README.md).
 
 * If you want to help translating the documentation, the README is already

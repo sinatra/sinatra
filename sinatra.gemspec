@@ -7,7 +7,7 @@ Gem::Specification.new 'sinatra', version do |s|
   s.summary           = 'Classy web-development dressed in a DSL'
   s.authors           = ['Blake Mizerany', 'Ryan Tomayko', 'Simon Rozet', 'Konstantin Haase']
   s.email             = 'sinatrarb@googlegroups.com'
-  s.homepage          = 'http://sinatrarb.com/'
+  s.homepage          = 'http://sinatra.run/'
   s.license           = 'MIT'
   s.files             = Dir['README*.md', 'lib/**/*', 'examples/*'] + [
     '.yardopts',
@@ -37,11 +37,11 @@ RubyGems 2.0 or newer is required to protect against public gem pushes. You can 
   s.metadata = {
     'source_code_uri' => 'https://github.com/sinatra/sinatra',
     'changelog_uri' => 'https://github.com/sinatra/sinatra/blob/main/CHANGELOG.md',
-    'homepage_uri' => 'http://sinatrarb.com/',
+    'homepage_uri' => 'http://sinatra.run/',
     'bug_tracker_uri' => 'https://github.com/sinatra/sinatra/issues',
     'mailing_list_uri' => 'http://groups.google.com/group/sinatrarb',
     'documentation_uri' => 'https://www.rubydoc.info/gems/sinatra',
-    'rubygems_mfa_required' => 'true',
+    'rubygems_mfa_required' => 'true'
   }
 
   s.required_ruby_version = '>= 2.7.8'

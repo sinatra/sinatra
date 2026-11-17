@@ -2502,7 +2502,7 @@ converted to `Sinatra::Base` components with two modifications:
 
 `Sinatra::Base` is a blank slate. Most options are disabled by default,
 including the built-in server. See [Configuring
-Settings](http://www.sinatrarb.com/configuration.html) for details on
+Settings](http://sinatra.run/configuration.html) for details on
 available options and their behavior. If you want behavior more similar
 to when you define your app at the top level (also known as Classic
 style), you can subclass `Sinatra::Application`:
@@ -2938,9 +2938,9 @@ SemVerTag.
 
 ## Further Reading
 
-* [Project Website](https://sinatrarb.com/) - Additional documentation,
+* [Project Website](https://sinatra.run/) - Additional documentation,
   news, and links to other resources.
-* [Contributing](https://sinatrarb.com/contributing) - Find a bug? Need
+* [Contributing](https://sinatra.run/contributing) - Find a bug? Need
   help? Have a patch?
 * [Issue tracker](https://github.com/sinatra/sinatra/issues)
 * [Twitter](https://twitter.com/sinatra)
@@ -2948,7 +2948,7 @@ SemVerTag.
 * IRC: [#sinatra](irc://chat.freenode.net/#sinatra) on [Freenode](https://freenode.net)
 * [Sinatra & Friends](https://discord.gg/ncjsfsNHh7) on Discord
 * [Sinatra Book](https://github.com/sinatra/sinatra-book) - Cookbook Tutorial
-* [Sinatra Recipes](http://recipes.sinatrarb.com/) - Community contributed
+* [Sinatra Recipes](http://recipes.sinatra.run/) - Community contributed
   recipes
 * API documentation for the [latest release](https://www.rubydoc.info/gems/sinatra)
   or the [current HEAD](https://www.rubydoc.info/github/sinatra/sinatra) on

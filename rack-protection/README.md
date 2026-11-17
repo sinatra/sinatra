@@ -163,19 +163,19 @@ use Rack::Protection, instrumenter: ActiveSupport::Notifications
 
 The instrumenter is passed a namespace (String) and environment (Hash). The namespace is 'rack.protection' and the attack type can be obtained from the environment key 'rack.protection.attack'.
 
-[authenticity-token]: http://www.sinatrarb.com/protection/authenticity_token
-[content-security-policy]: http://www.sinatrarb.com/protection/content_security_policy
-[cookie-tossing]: http://www.sinatrarb.com/protection/cookie_tossing
-[escaped-params]: http://www.sinatrarb.com/protection/escaped_params
-[form-token]: http://www.sinatrarb.com/protection/form_token
-[frame-options]: http://www.sinatrarb.com/protection/frame_options
+[authenticity-token]: http://sinatra.run/protection/authenticity_token
+[content-security-policy]: http://sinatra.run/protection/content_security_policy
+[cookie-tossing]: http://sinatra.run/protection/cookie_tossing
+[escaped-params]: http://sinatra.run/protection/escaped_params
+[form-token]: http://sinatra.run/protection/form_token
+[frame-options]: http://sinatra.run/protection/frame_options
 [host-authorization]: https://github.com/sinatra/sinatra/blob/main/rack-protection/lib/rack/protection/host_authorization.rb
-[http-origin]: http://www.sinatrarb.com/protection/http_origin
-[ip-spoofing]: http://www.sinatrarb.com/protection/ip_spoofing
-[json-csrf]: http://www.sinatrarb.com/protection/json_csrf
-[path-traversal]: http://www.sinatrarb.com/protection/path_traversal
-[remote-referrer]: http://www.sinatrarb.com/protection/remote_referrer
-[remote-token]: http://www.sinatrarb.com/protection/remote_token
-[session-hijacking]: http://www.sinatrarb.com/protection/session_hijacking
-[strict-transport]: http://www.sinatrarb.com/protection/strict_transport
-[xss-header]: http://www.sinatrarb.com/protection/xss_header
+[http-origin]: http://sinatra.run/protection/http_origin
+[ip-spoofing]: http://sinatra.run/protection/ip_spoofing
+[json-csrf]: http://sinatra.run/protection/json_csrf
+[path-traversal]: http://sinatra.run/protection/path_traversal
+[remote-referrer]: http://sinatra.run/protection/remote_referrer
+[remote-token]: http://sinatra.run/protection/remote_token
+[session-hijacking]: http://sinatra.run/protection/session_hijacking
+[strict-transport]: http://sinatra.run/protection/strict_transport
+[xss-header]: http://sinatra.run/protection/xss_header
