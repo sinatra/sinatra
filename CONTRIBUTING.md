@@ -64,7 +64,7 @@ track patch requests.
   project where anyone is free to contribute ideas, recipes and tutorials. Which
   also has its own [Git repository](http://github.com/sinatra/sinatra-recipes).
 
-* [The Introduction](http://sinatra.run/intro.html) is generated from
+* [The Introduction](https://sinatra.run/intro.html) is generated from
   Sinatra's [README file](http://github.com/sinatra/sinatra/blob/main/README.md).
 
 * If you want to help translating the documentation, the README is already

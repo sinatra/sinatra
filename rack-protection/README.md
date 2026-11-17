@@ -163,19 +163,19 @@ use Rack::Protection, instrumenter: ActiveSupport::Notifications
 
 The instrumenter is passed a namespace (String) and environment (Hash). The namespace is 'rack.protection' and the attack type can be obtained from the environment key 'rack.protection.attack'.
 
-[authenticity-token]: http://sinatra.run/protection/authenticity_token
-[content-security-policy]: http://sinatra.run/protection/content_security_policy
-[cookie-tossing]: http://sinatra.run/protection/cookie_tossing
-[escaped-params]: http://sinatra.run/protection/escaped_params
-[form-token]: http://sinatra.run/protection/form_token
-[frame-options]: http://sinatra.run/protection/frame_options
+[authenticity-token]: https://sinatra.run/protection/authenticity_token
+[content-security-policy]: https://sinatra.run/protection/content_security_policy
+[cookie-tossing]: https://sinatra.run/protection/cookie_tossing
+[escaped-params]: https://sinatra.run/protection/escaped_params
+[form-token]: https://sinatra.run/protection/form_token
+[frame-options]: https://sinatra.run/protection/frame_options
 [host-authorization]: https://github.com/sinatra/sinatra/blob/main/rack-protection/lib/rack/protection/host_authorization.rb
-[http-origin]: http://sinatra.run/protection/http_origin
-[ip-spoofing]: http://sinatra.run/protection/ip_spoofing
-[json-csrf]: http://sinatra.run/protection/json_csrf
-[path-traversal]: http://sinatra.run/protection/path_traversal
-[remote-referrer]: http://sinatra.run/protection/remote_referrer
-[remote-token]: http://sinatra.run/protection/remote_token
-[session-hijacking]: http://sinatra.run/protection/session_hijacking
-[strict-transport]: http://sinatra.run/protection/strict_transport
-[xss-header]: http://sinatra.run/protection/xss_header
+[http-origin]: https://sinatra.run/protection/http_origin
+[ip-spoofing]: https://sinatra.run/protection/ip_spoofing
+[json-csrf]: https://sinatra.run/protection/json_csrf
+[path-traversal]: https://sinatra.run/protection/path_traversal
+[remote-referrer]: https://sinatra.run/protection/remote_referrer
+[remote-token]: https://sinatra.run/protection/remote_token
+[session-hijacking]: https://sinatra.run/protection/session_hijacking
+[strict-transport]: https://sinatra.run/protection/strict_transport
+[xss-header]: https://sinatra.run/protection/xss_header
