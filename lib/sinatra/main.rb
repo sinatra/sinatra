@@ -20,7 +20,7 @@ module Sinatra
     end
     begin
       parser.parse!(ARGV.dup)
-    rescue StandardError => e
+    rescue StandardError, SystemExit => e
       PARAMS_CONFIG[:optparse_error] = e
     end
   end

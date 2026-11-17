@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Fix: Rescue `SystemExit` (in addition to `StandardError`) when parsing `ARGV` at `require 'sinatra'` time. Prevents host processes (e.g. `rake`, test runners) from being killed when `ARGV` contains options that match OptionParser's officious `--version` / `--help` handlers (notably `-v`), which call `abort`/`exit`.
+
 ## 4.2.1 / 2025-10-10
 
 * Fix: Revert "`PATH_INFO` can never be empty" ([#2124](https://github.com/sinatra/sinatra/pull/2124))
