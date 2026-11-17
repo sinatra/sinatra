@@ -1,5 +1,14 @@
 ## Unreleased
 
+* Fix: Two middleware entry points dropped the keyword marker, so keyword arguments reached the
+  middleware constructor as a trailing positional Hash ([#2184](https://github.com/sinatra/sinatra/issues/2184))
+  * `Sinatra.use`, the module-level form (`Sinatra.use Foo, key: value`). The bare top-level `use`
+    in a classic application was already correct, since `Sinatra::Delegator` flags its generated
+    methods; only this entry point was affected.
+  * `Sinatra::Reloader`'s `use` override. Middleware declaring both an optional positional Hash and
+    keywords (`def initialize(app, options = {}, **kwargs)`) now receives them in the keyword slot.
+  * `Sinatra::Base.middleware` entries are unchanged.
+
 ## 4.2.1 / 2025-10-10
 
 * Fix: Revert "`PATH_INFO` can never be empty" ([#2124](https://github.com/sinatra/sinatra/pull/2124))
