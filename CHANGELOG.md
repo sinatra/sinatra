@@ -1448,7 +1448,7 @@ the 1.0 release:
 
  * Test framework specific libraries (`sinatra/test/spec`,
    `sinatra/test/bacon`,`sinatra/test/rspec`, etc.) are obsolete. See
-   http://www.sinatrarb.com/testing.html for instructions on setting up a
+   http://sinatra.run/testing.html for instructions on setting up a
    testing environment under each of these frameworks.
 
  * `Sinatra::Default` is obsolete; use `Sinatra::Base` instead.
@@ -1478,7 +1478,7 @@ the 1.0 release:
 
  * The `Sinatra::Event` and `Sinatra::EventContext` classes are no longer
    supported. This may effect extensions written for versions prior to 0.9.2.
-   See [Writing Sinatra Extensions](http://www.sinatrarb.com/extensions.html)
+   See [Writing Sinatra Extensions](http://sinatra.run/extensions.html)
    for the officially supported extensions API.
 
  * The `set_option` and `set_options` methods are obsolete; use `set`
@@ -1619,7 +1619,7 @@ the 1.0 release:
    the DSL with all public methods defined in the mixin module;
    use Sinatra.helpers(mixin) to make all public methods defined
    in the mixin module available at the request level. [#138]
-   See http://www.sinatrarb.com/extensions.html for details.
+   See http://sinatra.run/extensions.html for details.
 
  * Named parameters in routes now capture the "." character. This makes
    routes like "/:path/:filename" match against requests like
@@ -1643,7 +1643,7 @@ the 1.0 release:
 
  * The testing framework specific files ('sinatra/test/spec',
    'sinatra/test/bacon', 'sinatra/test/rspec', etc.) have been deprecated.
-   See http://sinatrarb.com/testing.html for instructions on setting up
+   See http://sinatra.run/testing.html for instructions on setting up
    a testing environment with these frameworks.
 
  * The request-level #send_data method from Sinatra 0.3.3 has been added

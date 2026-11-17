@@ -288,13 +288,13 @@ class HelpersTest < Minitest::Test
 
     it 'accepts a URI object instead of a String' do
       mock_app do
-        get('/') { redirect URI.parse('http://sinatrarb.com') }
+        get('/') { redirect URI.parse('http://sinatra.run') }
       end
 
       get '/'
       assert_equal 302, status
       assert_equal '', body
-      assert_equal 'http://sinatrarb.com', response['Location']
+      assert_equal 'http://sinatra.run', response['Location']
     end
   end
 

@@ -156,25 +156,24 @@ end
 
 ### Documentation
 
-For more info check the [official docs](http://www.sinatrarb.com/contrib/) and
+For more info check the [official docs](http://sinatra.run/contrib/) and
 [api docs](https://www.rubydoc.info/gems/sinatra-contrib).
 
-[sinatra-reloader]: http://www.sinatrarb.com/contrib/reloader
-[sinatra-namespace]: http://www.sinatrarb.com/contrib/namespace
-[sinatra-content-for]: http://www.sinatrarb.com/contrib/content_for
-[sinatra-cookies]: http://www.sinatrarb.com/contrib/cookies
-[sinatra-streaming]: http://www.sinatrarb.com/contrib/streaming
-[sinatra-webdav]: http://www.sinatrarb.com/contrib/webdav
-[sinatra-runner]: http://www.sinatrarb.com/contrib/runner
-[sinatra-extension]: http://www.sinatrarb.com/contrib/extension
+[sinatra-reloader]: http://sinatra.run/contrib/reloader
+[sinatra-namespace]: http://sinatra.run/contrib/namespace
+[sinatra-content-for]: http://sinatra.run/contrib/content_for
+[sinatra-cookies]: http://sinatra.run/contrib/cookies
+[sinatra-streaming]: http://sinatra.run/contrib/streaming
+[sinatra-webdav]: http://sinatra.run/contrib/webdav
+[sinatra-runner]: http://sinatra.run/contrib/runner
+[sinatra-extension]: http://sinatra.run/contrib/extension
 [sinatra-test-helpers]: https://github.com/sinatra/sinatra/blob/main/sinatra-contrib/lib/sinatra/test_helpers.rb
-[sinatra-required-params]: http://www.sinatrarb.com/contrib/required_params
-[sinatra-custom-logger]: http://www.sinatrarb.com/contrib/custom_logger
-[sinatra-multi-route]: http://www.sinatrarb.com/contrib/multi_route
-[sinatra-json]: http://www.sinatrarb.com/contrib/json
-[sinatra-respond-with]: http://www.sinatrarb.com/contrib/respond_with
-[sinatra-config-file]: http://www.sinatrarb.com/contrib/config_file
-[sinatra-link-header]: http://www.sinatrarb.com/contrib/link_header
-[sinatra-capture]: http://www.sinatrarb.com/contrib/capture
+[sinatra-required-params]: http://sinatra.run/contrib/required_params
+[sinatra-custom-logger]: http://sinatra.run/contrib/custom_logger
+[sinatra-multi-route]: http://sinatra.run/contrib/multi_route
+[sinatra-json]: http://sinatra.run/contrib/json
+[sinatra-respond-with]: http://sinatra.run/contrib/respond_with
+[sinatra-config-file]: http://sinatra.run/contrib/config_file
+[sinatra-link-header]: http://sinatra.run/contrib/link_header
+[sinatra-capture]: http://sinatra.run/contrib/capture
 [sinatra-engine-tracking]: https://github.com/sinatra/sinatra/blob/main/sinatra-contrib/lib/sinatra/engine_tracking.rb
-

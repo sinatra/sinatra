@@ -35,11 +35,11 @@ module Rack
     #
     # == Example: Allow specific hosts
     #
-    #     use Rack::Protection::HostAuthorization, permitted_hosts: ["www.example.org", "sinatrarb.com"]
+    #     use Rack::Protection::HostAuthorization, permitted_hosts: ["www.example.org", "sinatra.run"]
     #
     # == Example: Allow all subdomains
     #
-    #     use Rack::Protection::HostAuthorization, permitted_hosts: [".example.org", ".sinatrarb.com"]
+    #     use Rack::Protection::HostAuthorization, permitted_hosts: [".example.org", ".sinatra.run"]
     #
     # == Example: Allow an IP range
     #
