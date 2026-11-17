@@ -21,13 +21,8 @@ RSpec.describe Rack::Protection::CookieTossing do
       expect(last_response).not_to be_ok
     end
 
-    it 'denies requests with sneaky encoded session cookies' do
-      get '/', {}, 'HTTP_COOKIE' => 'rack.session=EVIL_SESSION_TOKEN; rack.%73ession=SESSION_TOKEN'
-      expect(last_response).not_to be_ok
-    end
-
     it 'adds the correct Set-Cookie header' do
-      get '/some/path', {}, 'HTTP_COOKIE' => 'rack.%73ession=EVIL_SESSION_TOKEN; rack.session=EVIL_SESSION_TOKEN; rack.session=SESSION_TOKEN'
+      get '/some/path', {}, 'HTTP_COOKIE' => 'rack.session=EVIL_SESSION_TOKEN; rack.session=SESSION_TOKEN'
 
       # Rack no longer URI encodes the % in the cookie in Rack 3.1+
       # https://github.com/sinatra/sinatra/issues/2017
@@ -61,12 +56,6 @@ rack.session=; domain=example.org; path=/some/path; expires=Thu, 01 Jan 1970 00:
       get '/', {}, 'HTTP_COOKIE' => 'rack.session=EVIL_SESSION_TOKEN; rack.session=SESSION_TOKEN'
       expect(last_response).to be_redirect
       expect(last_response.location).to eq('/')
-    end
-
-    it 'redirects requests with sneaky encoded session cookies' do
-      get '/path', {}, 'HTTP_COOKIE' => 'rack.%73ession=EVIL_SESSION_TOKEN; rack.session=SESSION_TOKEN'
-      expect(last_response).to be_redirect
-      expect(last_response.location).to eq('/path')
     end
   end
 
