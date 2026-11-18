@@ -26,8 +26,7 @@ require 'sinatra/version'
 require_relative 'middleware/logger'
 
 module Sinatra
-  # The request object. See Rack::Request for more info:
-  # https://rubydoc.info/github/rack/rack/main/Rack/Request
+  # The request object. See Rack::Request for more info.
   class Request < Rack::Request
     HEADER_PARAM = /\s*[\w.]+=(?:[\w.]+|"(?:[^"\\]|\\.)*")?\s*/.freeze
     HEADER_VALUE_WITH_PARAMS = %r{(?:(?:\w+|\*)/(?:\w+(?:\.|-|\+)?|\*)*)\s*(?:;#{HEADER_PARAM})*}.freeze
@@ -165,9 +164,7 @@ module Sinatra
   end
 
   # The response object. See Rack::Response and Rack::Response::Helpers for
-  # more info:
-  # https://rubydoc.info/github/rack/rack/main/Rack/Response
-  # https://rubydoc.info/github/rack/rack/main/Rack/Response/Helpers
+  # more info.
   class Response < Rack::Response
     DROP_BODY_RESPONSES = [204, 304].freeze
 
