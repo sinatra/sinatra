@@ -1120,9 +1120,9 @@ module Sinatra
         conditions.each { |c| throw :pass if c.bind(self).call == false }
         block ? block[self, values] : yield(self, values)
       end
-    rescue StandardError
+    rescue StandardError => e
       @env['sinatra.error.params'] = @params
-      raise
+      raise e
     ensure
       params ||= {}
       params.each { |k, _| @params.delete(k) } unless @env['sinatra.error.params']
@@ -1633,9 +1633,9 @@ module Sinatra
 
         begin
           start_server(handler, server_settings, handler_name, &block)
-        rescue Errno::EADDRINUSE
+        rescue Errno::EADDRINUSE => e
           warn "== Someone is already performing on port #{port}!"
-          raise
+          raise e
         ensure
           quit!
         end
