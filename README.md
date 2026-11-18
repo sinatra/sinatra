@@ -154,6 +154,10 @@ end
 unlink '/' do
   .. separate something ..
 end
+
+query '/' do
+  .. find something ..
+end
 ```
 
 Routes are matched in the order they are defined. The first route that
