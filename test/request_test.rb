@@ -144,4 +144,17 @@ class RequestTest < Minitest::Test
     request = Sinatra::Request.new 'HTTP_ACCEPT' => 'application/rss+xml; charset=utf-8; version="http://purl.org/rss/1.0/"'
     assert request.accept?('application/rss+xml; version="http://purl.org/rss/1.0/"; charset=utf-8')
   end
+
+  it 'reads parameter values containing characters that are tokens but not word characters' do
+    request = Sinatra::Request.new 'HTTP_ACCEPT' => 'application/rss+xml; charset=utf-8'
+
+    assert_equal({ 'charset' => 'utf-8' }, request.accept.first.params)
+  end
+
+  it 'does not lose the q weight after a parameter value containing a hyphen' do
+    request = Sinatra::Request.new 'HTTP_ACCEPT' => 'application/json;charset=utf-8;q=0.3, text/html;q=0.9'
+
+    assert_equal %w[text/html application/json], request.accept.map(&:to_str)
+    assert_equal 'text/html', request.preferred_type('application/json', 'text/html')
+  end
 end
