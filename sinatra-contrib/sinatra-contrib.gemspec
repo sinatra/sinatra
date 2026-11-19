@@ -37,11 +37,9 @@ RubyGems 2.0 or newer is required to protect against public gem pushes. You can 
     'rubygems_mfa_required' => 'true'
   }
 
-  s.required_ruby_version = '>= 2.7.8'
+  s.required_ruby_version = '>= 3.3.0'
 
   s.add_dependency 'multi_json', '>= 0.0.2'
-  s.add_dependency 'mustermann', '~> 3.0'
-  s.add_dependency 'rack-protection', version
   s.add_dependency 'sinatra', version
   s.add_dependency 'tilt', '~> 2.0'
 end
