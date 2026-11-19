@@ -16,22 +16,19 @@ end
 
 get '/stream', provides: 'text/event-stream' do
   stream :keep_open do |out|
-    if connections.add?(out)
-      out.callback { connections.delete(out) }
-    end
-    out << "heartbeat:\n"
-    sleep 1
-  rescue
-    out.close
+    connections << out
+    # Drop this connection on disconnect, completion, or the keep_open TTL
+    # expiring. A failed write is now treated as a clean teardown, so there is
+    # no manual rescue here.
+    out.callback { connections.delete(out) }
+    out.sse_comment 'connected'
   end
 end
 
 post '/' do
-  connections.each do |out|
-    out << "data: #{params[:msg]}\n\n"
-  rescue
-    out.close
-  end
+  # Dup so the teardown callbacks (which delete from the set) do not mutate it
+  # mid-iteration. Writing to a vanished client is reaped for us.
+  connections.dup.each { |out| out.sse(params[:msg]) }
   204 # response without entity body
 end
 

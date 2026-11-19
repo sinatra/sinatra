@@ -131,8 +131,14 @@ module IntegrationHelper
 
     # TruffleRuby doesn't support `Fiber.set_scheduler` yet
     unsupported_truffleruby = RUBY_ENGINE == "truffleruby" && !Fiber.respond_to?(:set_scheduler)
-    # Ruby 2.7 uses falcon 0.42.3 which isn't working with rackup 2.2.0+
-    too_old_ruby = RUBY_VERSION <= "3.0.0"
+    # The Rack 3 callable-body streaming path needs Falcon >= ~0.54: 0.51.1 and
+    # earlier hand the Rack callable body an IO-less stream that is never flushed,
+    # so the streamed response arrives empty. Ruby < 3.2 can only resolve those
+    # older Falcons (0.54 needs Ruby 3.2, 0.55 needs 3.3), so skip Falcon there
+    # rather than exercising a version that cannot stream. Compared with
+    # Gem::Version because a string compare ("3.0.7" <= "3.0.0" is false) would
+    # silently fail to skip the patch releases CI actually runs.
+    too_old_ruby = Gem::Version.new(RUBY_VERSION) < Gem::Version.new("3.2")
 
     if unsupported_truffleruby || too_old_ruby
       warn "skip falcon server"

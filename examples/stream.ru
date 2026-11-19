@@ -4,8 +4,8 @@
 #
 # run *one* of these:
 #
-#   unicorn stream.ru                   # gem install unicorn
 #   puma stream.ru                      # gem install puma
+#   falcon serve -b http://localhost:9292 -c stream.ru   # gem install falcon
 
 require 'sinatra/base'
 
