@@ -58,8 +58,8 @@ module Sinatra
       self
     end
 
-    def configure(*args, &block)
-      record(:configure, *args) { |c| c.instance_exec(c, &block) }
+    def configure(*args, **kwargs, &block)
+      record(:configure, *args, **kwargs) { |c| c.instance_exec(c, &block) }
     end
 
     def registered(base = nil, &block)
@@ -68,22 +68,22 @@ module Sinatra
 
     private
 
-    def record(method, *args, &block)
-      recorded_methods << [method, args, block]
+    def record(method, *args, **kwargs, &block)
+      recorded_methods << [method, args, kwargs, block]
     end
 
     def replay(object)
-      recorded_methods.each { |m, a, b| object.send(m, *a, &b) }
+      recorded_methods.each { |m, a, k, b| object.send(m, *a, **k, &b) }
     end
 
     def recorded_methods
       @recorded_methods ||= []
     end
 
-    def method_missing(method, *args, &block)
+    def method_missing(method, *args, **kwargs, &block)
       return super unless Sinatra::Base.respond_to? method
 
-      record(method, *args, &block)
+      record(method, *args, **kwargs, &block)
       DontCall.new(method)
     end
 
