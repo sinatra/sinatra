@@ -879,4 +879,27 @@ RSpec.describe Sinatra::Namespace do
       end
     }.to raise_error(ArgumentError, 'may not set unknownsetting')
   end
+
+  it 'passes keyword arguments on to middleware used inside a namespace' do
+    levels = []
+    logger = Class.new do
+      define_method(:initialize) do |app, level: :info|
+        @app = app
+        levels << level
+      end
+
+      define_method(:call) { |env| @app.call(env) }
+    end
+
+    mock_app do
+      namespace '/foo' do
+        use logger, level: :debug
+        get { 'baz' }
+      end
+    end
+
+    get '/foo'
+
+    expect(levels).to eq([:debug])
+  end
 end

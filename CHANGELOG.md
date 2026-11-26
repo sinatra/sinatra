@@ -1,5 +1,8 @@
 ## Unreleased
 
+* Fix: `Sinatra::Extension` and `Sinatra::Namespace` pass keyword arguments on to middleware
+  * `use Middleware, level: :debug` inside an extension body or a `namespace` block no longer arrives at the middleware as a trailing positional Hash
+
 ## 4.2.2 / 2026-11-17
 
 * Fix: Require a dot before the domain for leading-dot `permitted_hosts` in `Rack::Protection::HostAuthorization`
